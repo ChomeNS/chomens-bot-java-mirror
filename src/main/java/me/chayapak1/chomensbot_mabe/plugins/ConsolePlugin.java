@@ -9,7 +9,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
-import org.jline.reader.UserInterruptException;
 
 public class ConsolePlugin {
     private final Bot bot;
@@ -29,8 +28,6 @@ public class ConsolePlugin {
                 String line = null;
                 try {
                     line = reader.readLine(prompt);
-                } catch (UserInterruptException e) {
-                    System.exit(1); // yup
                 } catch (EndOfFileException e) {
                     return;
                 } catch (Exception e) {
@@ -48,7 +45,7 @@ public class ConsolePlugin {
         if (line.startsWith(prefix)) {
             final ConsoleCommandContext context = new ConsoleCommandContext(bot);
 
-            final Component output = CommandHandlerPlugin.executeCommand(line.substring(prefix.length()), context);
+            final Component output = CommandHandlerPlugin.executeCommand(line.substring(prefix.length()), context, "h", "o");
             final String textOutput = ((TextComponent) output).content();
 
             if (!textOutput.equals("success")) {

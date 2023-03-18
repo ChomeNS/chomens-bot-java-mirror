@@ -19,7 +19,11 @@ public class ThrowCommand implements Command {
         return usages;
     }
 
-    public Component execute(CommandContext context, String[] args) throws Exception {
+    public int trustLevel() {
+        return 0;
+    }
+
+    public Component execute(CommandContext context, String[] args, String[] fullArgs) throws Exception {
         final String message = String.join(" ", args);
 
         throw new Exception(message.equals("") ? "among us" : message);

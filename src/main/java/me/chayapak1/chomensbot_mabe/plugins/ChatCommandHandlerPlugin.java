@@ -33,7 +33,7 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.ChatListener {
 
         final PlayerCommandContext context = new PlayerCommandContext(bot, displayName);
 
-        final Component output = CommandHandlerPlugin.executeCommand(commandString, context);
+        final Component output = CommandHandlerPlugin.executeCommand(commandString, context, bot.hashing().hash(), bot.hashing().ownerHash());
         final String textOutput = ((TextComponent) output).content();
 
         if (!textOutput.equals("success")) {

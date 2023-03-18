@@ -21,7 +21,11 @@ public class CowsayCommand implements Command {
         return usages;
     }
 
-    public Component execute(CommandContext context, String[] args) {
+    public int trustLevel() {
+        return 0;
+    }
+
+    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final String cow = args[0];
         final String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 

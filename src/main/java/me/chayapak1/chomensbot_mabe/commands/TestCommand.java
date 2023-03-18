@@ -20,7 +20,11 @@ public class TestCommand implements Command {
         return usages;
     }
 
-    public Component execute(CommandContext context, String[] args) {
+    public int trustLevel() {
+        return 0;
+    }
+
+    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         context.sendOutput(
                 Component.empty()
                         .append(Component.text("Hello, World! Username: "))

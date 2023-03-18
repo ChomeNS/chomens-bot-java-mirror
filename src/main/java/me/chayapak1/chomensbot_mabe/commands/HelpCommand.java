@@ -24,7 +24,11 @@ public class HelpCommand implements Command {
         return usages;
     }
 
-    public Component execute (CommandContext context, String[] args) {
+    public int trustLevel() {
+        return 0;
+    }
+
+    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         if (args.length == 0) {
             sendCommandList(context);
             return Component.text("success");
@@ -35,22 +39,47 @@ public class HelpCommand implements Command {
 
     public void sendCommandList(CommandContext context) {
         final List<Component> list = new ArrayList<>();
-
-        for (Map.Entry<String, Command> entry : CommandHandlerPlugin.commands().entrySet()) {
-            final String name = entry.getKey();
-
-            list.add(Component.text(name));
-        }
+        list.addAll(getCommandListByTrustLevel(0));
+        list.addAll(getCommandListByTrustLevel(1));
+        list.addAll(getCommandListByTrustLevel(2));
 
         final Component component = Component.empty()
                         .append(Component.text("Commands ").color(NamedTextColor.GRAY))
                         .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
                         .append(Component.text("Length: ").color(NamedTextColor.GRAY))
                         .append(Component.text(list.size()).color(NamedTextColor.GREEN))
+                        .append(Component.text(") ").color(NamedTextColor.DARK_GRAY))
+                        .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
+                        .append(Component.text("Public ").color(NamedTextColor.GREEN))
+                        .append(Component.text("Trusted ").color(NamedTextColor.RED))
+                        .append(Component.text("Owner").color(NamedTextColor.DARK_RED))
                         .append(Component.text(") - ").color(NamedTextColor.DARK_GRAY))
-                        .append(Component.join(JoinConfiguration.separator(Component.space()), list).color(NamedTextColor.GREEN));
+                        .append(Component.join(JoinConfiguration.separator(Component.space()), list));
 
         context.sendOutput(component);
+    }
+
+    public List<Component> getCommandListByTrustLevel (int trustLevel) {
+        final List<Component> list = new ArrayList<>();
+
+        for (Map.Entry<String, Command> entry : CommandHandlerPlugin.commands().entrySet()) {
+            final String name = entry.getKey();
+            final Command command = entry.getValue();
+
+            if (command.trustLevel() != trustLevel) continue;
+            list.add(Component.text(name).color(getColorByTrustLevel(trustLevel)));
+        }
+
+        return list;
+    }
+
+    public NamedTextColor getColorByTrustLevel (int trustLevel) {
+        return switch (trustLevel) {
+            case 0 -> NamedTextColor.GREEN;
+            case 1 -> NamedTextColor.RED;
+            case 2 -> NamedTextColor.DARK_RED;
+            default -> NamedTextColor.WHITE; // hm?
+        };
     }
 
     public Component sendUsages (CommandContext context, String[] args) {

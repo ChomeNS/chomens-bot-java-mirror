@@ -7,5 +7,7 @@ import java.util.List;
 public interface Command {
     String description();
     List<String> usage();
-    Component execute(CommandContext context, String[] args) throws Exception;
+    int trustLevel();
+
+    Component execute(CommandContext context, String[] args, String[] fullArgs) throws Exception;
 }

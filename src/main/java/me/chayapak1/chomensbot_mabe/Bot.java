@@ -32,6 +32,7 @@ public class Bot {
     @Getter private final CorePlugin core = new CorePlugin(this);
     @Getter private final CommandHandlerPlugin commandHandler = new CommandHandlerPlugin();
     @Getter private final ChatCommandHandlerPlugin chatCommandHandler = new ChatCommandHandlerPlugin(this);
+    @Getter private final HashingPlugin hashing = new HashingPlugin(this);
 
     public Bot (String host, int port, String username) {
         this.host = host;
