@@ -103,13 +103,18 @@ public class HelpCommand implements Command {
         final String commandName = args[0];
 
         for (Command command : bot.commandHandler().commands()) {
-            if (!command.name().equals(commandName)) continue;
+            if (!command.name().equals(commandName) && !command.alias().contains(commandName)) continue;
 
             final List<Component> usages = new ArrayList<>();
 
             usages.add(
                     Component.empty()
                             .append(Component.text(prefix + commandName).color(NamedTextColor.GOLD))
+                            .append(Component.text(
+                                    (command.alias().size() > 0 && !command.alias().get(0).equals("")) ?
+                                            " (" + String.join(", ", command.alias()) + ")" :
+                                            ""
+                            ))
                             .append(Component.text(" - " + command.description()).color(NamedTextColor.GRAY))
             );
 
