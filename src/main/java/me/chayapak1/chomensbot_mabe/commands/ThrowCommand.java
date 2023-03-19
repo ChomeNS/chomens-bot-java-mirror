@@ -8,15 +8,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ThrowCommand implements Command {
+    public String name() { return "throw"; }
+
     public String description() {
         return "A command to throw an error, kinda useless";
     }
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
-        usages.add("[message]");
+        usages.add("[{message}]");
 
         return usages;
+    }
+
+    public List<String> alias() {
+        final List<String> aliases = new ArrayList<>();
+        aliases.add("throwerror");
+
+        return aliases;
     }
 
     public int trustLevel() {

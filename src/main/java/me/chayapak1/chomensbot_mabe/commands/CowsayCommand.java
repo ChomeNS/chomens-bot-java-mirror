@@ -10,15 +10,24 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CowsayCommand implements Command {
+    public String name() { return "cowsay"; }
+
     public String description() {
         return "Moo";
     }
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
-        usages.add("<cow> <message>");
+        usages.add("<cow> <{message}>");
 
         return usages;
+    }
+
+    public List<String> alias() {
+        final List<String> aliases = new ArrayList<>();
+        aliases.add("");
+
+        return aliases;
     }
 
     public int trustLevel() {

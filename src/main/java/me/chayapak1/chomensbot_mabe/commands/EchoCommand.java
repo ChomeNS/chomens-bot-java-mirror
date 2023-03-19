@@ -9,15 +9,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EchoCommand implements Command {
+    public String name() { return "echo"; }
+
     public String description() {
         return "Says a message";
     }
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
-        usages.add("<message>");
+        usages.add("<{message}>");
 
         return usages;
+    }
+
+    public List<String> alias() {
+        final List<String> aliases = new ArrayList<>();
+        aliases.add("say");
+
+        return aliases;
     }
 
     public int trustLevel() {

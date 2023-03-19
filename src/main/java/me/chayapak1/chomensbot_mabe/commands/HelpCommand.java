@@ -10,9 +10,10 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class HelpCommand implements Command {
+    public String name() { return "help"; }
+
     public String description() {
         return "Shows the help";
     }
@@ -22,6 +23,15 @@ public class HelpCommand implements Command {
         usages.add("[command]");
 
         return usages;
+    }
+
+    public List<String> alias() {
+        final List<String> aliases = new ArrayList<>();
+        aliases.add("heko");
+        aliases.add("cmds");
+        aliases.add("commands");
+
+        return aliases;
     }
 
     public int trustLevel() {
@@ -62,9 +72,8 @@ public class HelpCommand implements Command {
     public List<Component> getCommandListByTrustLevel (int trustLevel) {
         final List<Component> list = new ArrayList<>();
 
-        for (Map.Entry<String, Command> entry : CommandHandlerPlugin.commands().entrySet()) {
-            final String name = entry.getKey();
-            final Command command = entry.getValue();
+        for (Command command : CommandHandlerPlugin.commands()) {
+            final String name = command.name();
 
             if (command.trustLevel() != trustLevel) continue;
             list.add(Component.text(name).color(getColorByTrustLevel(trustLevel)));
@@ -89,12 +98,10 @@ public class HelpCommand implements Command {
 
         final String commandName = args[0];
 
-        for (Map.Entry<String, Command> entry : CommandHandlerPlugin.commands().entrySet()) {
-            if (!entry.getKey().equals(commandName)) continue;
+        for (Command command : CommandHandlerPlugin.commands()) {
+            if (!command.name().equals(commandName)) continue;
 
             final List<Component> usages = new ArrayList<>();
-
-            final Command command = entry.getValue();
 
             usages.add(
                     Component.empty()
@@ -105,7 +112,7 @@ public class HelpCommand implements Command {
             usages.add(
                     Component.empty()
                             .append(Component.text("Trust level: ").color(NamedTextColor.GREEN))
-                            .append(Component.text("TODO").color(NamedTextColor.YELLOW))
+                            .append(Component.text(command.trustLevel()).color(NamedTextColor.YELLOW))
             );
 
             for (String usage : command.usage()) {

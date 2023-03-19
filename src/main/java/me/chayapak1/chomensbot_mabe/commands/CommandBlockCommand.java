@@ -9,15 +9,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandBlockCommand implements Command {
+    public String name() { return "cb"; }
+
     public String description() {
         return "Executes a command in the command core";
     }
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
-        usages.add("<command>");
+        usages.add("<{command}>");
 
         return usages;
+    }
+
+    public List<String> alias() {
+        final List<String> aliases = new ArrayList<>();
+        aliases.add("cmd");
+        aliases.add("commandblock");
+        aliases.add("run");
+
+        return aliases;
     }
 
     public int trustLevel() {

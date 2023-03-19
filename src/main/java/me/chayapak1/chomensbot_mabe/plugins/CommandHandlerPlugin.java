@@ -4,31 +4,31 @@ import lombok.Getter;
 import me.chayapak1.chomensbot_mabe.command.Command;
 import me.chayapak1.chomensbot_mabe.command.CommandContext;
 import me.chayapak1.chomensbot_mabe.commands.*;
+import me.chayapak1.chomensbot_mabe.util.ElementUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CommandHandlerPlugin {
-    @Getter private static final Map<String, Command> commands = new HashMap<>();
+    @Getter private static final List<Command> commands = new ArrayList<>();
 
     public CommandHandlerPlugin () {
-        registerCommand("cb", new CommandBlockCommand());
-        registerCommand("cowsay", new CowsayCommand());
-        registerCommand("echo", new EchoCommand());
-        registerCommand("help", new HelpCommand());
-        registerCommand("test", new TestCommand());
-        registerCommand("throw", new ThrowCommand());
-        registerCommand("validate", new ValidateCommand());
+        registerCommand(new CommandBlockCommand());
+        registerCommand(new CowsayCommand());
+        registerCommand(new EchoCommand());
+        registerCommand(new CreatorCommand());
+        registerCommand(new DiscordCommand());
+        registerCommand(new HelpCommand());
+        registerCommand(new TestCommand());
+        registerCommand(new ThrowCommand());
+        registerCommand(new ValidateCommand());
     }
 
-    public void registerCommand (String commandName, Command command) {
-        commands.put(commandName, command);
+    public void registerCommand (Command command) {
+        commands.add(command);
     }
 
     public static Component executeCommand (String input, CommandContext context, String hash, String ownerHash) {
@@ -36,7 +36,7 @@ public class CommandHandlerPlugin {
 
         final String commandName = splitInput[0];
 
-        final Command command = commands.get(commandName);
+        final Command command = ElementUtilities.findCommand(commands, commandName);
 
         // idea told this as "Condition 'command == null' is always 'false'" and its not true LMFAO
         if (command == null) return Component.text("Unknown command: " + commandName).color(NamedTextColor.RED);
@@ -45,10 +45,11 @@ public class CommandHandlerPlugin {
 
         final String[] fullArgs = Arrays.copyOfRange(splitInput, 1, splitInput.length);
         final int longestUsageIndex = getLongestUsageIndex(command.usage());
-        final int minimumArgs = getMinimumArgs(command.usage().get(longestUsageIndex));
-        final int maximumArgs = getMaximumArgs(command.usage().get(longestUsageIndex));
+        final String usage = command.usage().get(longestUsageIndex);
+        final int minimumArgs = getMinimumArgs(usage);
+        final int maximumArgs = getMaximumArgs(usage);
         if (fullArgs.length < minimumArgs) return Component.text("Excepted minimum of " + minimumArgs + " argument(s), got " + fullArgs.length).color(NamedTextColor.RED);
-        if (fullArgs.length > maximumArgs) return Component.text("Too much arguments, expected " + maximumArgs).color(NamedTextColor.RED);
+        if (fullArgs.length > maximumArgs && !usage.contains("{")) return Component.text("Too much arguments, expected " + maximumArgs).color(NamedTextColor.RED);
 
         String userHash = "";
         if (trustLevel > 0 && splitInput.length >= 2) userHash = splitInput[1];
