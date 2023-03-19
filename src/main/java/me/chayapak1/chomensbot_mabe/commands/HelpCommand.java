@@ -77,8 +77,6 @@ public class HelpCommand implements Command {
         for (Command command : bot.commandHandler().commands()) {
             final String name = command.name();
 
-            bot.logger().log(name);
-
             if (command.trustLevel() != trustLevel) continue;
             list.add(Component.text(name).color(getColorByTrustLevel(trustLevel)));
         }
