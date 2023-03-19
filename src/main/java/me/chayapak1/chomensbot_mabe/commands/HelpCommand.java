@@ -3,7 +3,6 @@ package me.chayapak1.chomensbot_mabe.commands;
 import me.chayapak1.chomensbot_mabe.Bot;
 import me.chayapak1.chomensbot_mabe.command.Command;
 import me.chayapak1.chomensbot_mabe.command.CommandContext;
-import me.chayapak1.chomensbot_mabe.plugins.CommandHandlerPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -38,7 +37,10 @@ public class HelpCommand implements Command {
         return 0;
     }
 
+    private Bot bot;
+
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+        this.bot = context.bot();
         if (args.length == 0) {
             sendCommandList(context);
             return Component.text("success");
@@ -72,8 +74,10 @@ public class HelpCommand implements Command {
     public List<Component> getCommandListByTrustLevel (int trustLevel) {
         final List<Component> list = new ArrayList<>();
 
-        for (Command command : CommandHandlerPlugin.commands()) {
+        for (Command command : bot.commandHandler().commands()) {
             final String name = command.name();
+
+            bot.logger().log(name);
 
             if (command.trustLevel() != trustLevel) continue;
             list.add(Component.text(name).color(getColorByTrustLevel(trustLevel)));
@@ -98,7 +102,7 @@ public class HelpCommand implements Command {
 
         final String commandName = args[0];
 
-        for (Command command : CommandHandlerPlugin.commands()) {
+        for (Command command : bot.commandHandler().commands()) {
             if (!command.name().equals(commandName)) continue;
 
             final List<Component> usages = new ArrayList<>();

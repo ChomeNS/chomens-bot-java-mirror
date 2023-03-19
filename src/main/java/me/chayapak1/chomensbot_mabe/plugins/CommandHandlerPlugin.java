@@ -10,10 +10,12 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class CommandHandlerPlugin {
-    @Getter private static final List<Command> commands = new ArrayList<>();
+    @Getter private final List<Command> commands = new ArrayList<>();
 
     public CommandHandlerPlugin () {
         registerCommand(new CommandBlockCommand());
@@ -31,7 +33,7 @@ public class CommandHandlerPlugin {
         commands.add(command);
     }
 
-    public static Component executeCommand (String input, CommandContext context, String hash, String ownerHash) {
+    public Component executeCommand (String input, CommandContext context, String hash, String ownerHash) {
         final String[] splitInput = input.split("\\s+");
 
         final String commandName = splitInput[0];

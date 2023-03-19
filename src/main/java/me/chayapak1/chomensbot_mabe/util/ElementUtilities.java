@@ -7,7 +7,13 @@ import java.util.List;
 public class ElementUtilities {
     public static Command findCommand(List<Command> commands, String searchTerm) {
         for (Command command : commands) {
-            if (command.name().equals(searchTerm) || command.alias().contains(searchTerm)) {
+            if (
+                    (
+                        command.name().equals(searchTerm.toLowerCase()) ||
+                        command.alias().contains(searchTerm.toLowerCase())
+                    ) &&
+                    !searchTerm.equals("") // ig yup
+            ) {
                 return command;
             }
         }

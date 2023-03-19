@@ -1,0 +1,5 @@
+reconnectDelay: 7000
+bots:
+  - host: 'localhost'
+    port: 25565
+    username: 'ChomeNS_Bot'
