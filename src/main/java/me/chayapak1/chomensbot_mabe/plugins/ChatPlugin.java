@@ -7,6 +7,7 @@ import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import me.chayapak1.chomensbot_mabe.Bot;
+import me.chayapak1.chomensbot_mabe.chatParsers.ChomeNSCustomChatParser;
 import me.chayapak1.chomensbot_mabe.chatParsers.KaboomChatParser;
 import me.chayapak1.chomensbot_mabe.chatParsers.MinecraftChatParser;
 import me.chayapak1.chomensbot_mabe.chatParsers.data.ChatParser;
@@ -36,6 +37,7 @@ public class ChatPlugin extends SessionAdapter {
         chatParsers = new ArrayList<>();
         chatParsers.add(new MinecraftChatParser());
         chatParsers.add(new KaboomChatParser());
+        chatParsers.add(new ChomeNSCustomChatParser());
     }
 
     @Override

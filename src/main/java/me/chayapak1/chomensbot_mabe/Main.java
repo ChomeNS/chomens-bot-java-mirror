@@ -41,8 +41,7 @@ public class Main {
 
         config = yaml.load(reader);
 
-        final Object reconnectDelayObject = config.get("reconnectDelay");
-        final int reconnectDelay = (int) reconnectDelayObject;
+        final int reconnectDelay = (int) ((Object) config.get("reconnectDelay"));
 
         List<Map<String, Object>> botsOptions = config.get("bots");
 
