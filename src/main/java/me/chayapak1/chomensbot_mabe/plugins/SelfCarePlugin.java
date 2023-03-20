@@ -87,6 +87,12 @@ public class SelfCarePlugin extends SessionAdapter {
         this.entityId = packet.getEntityId();
         this.gamemode = packet.getGameMode();
 
+        cspy = false;
+        vanish = false;
+        socialspy = false;
+        muted = false;
+        prefix = false;
+
         final Runnable task = () -> {
             final Session session = bot.session();
             final PacketProtocol protocol = session.getPacketProtocol();

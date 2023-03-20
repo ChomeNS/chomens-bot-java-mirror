@@ -40,6 +40,7 @@ public class Bot {
     @Getter private final CommandHandlerPlugin commandHandler = new CommandHandlerPlugin();
     @Getter private final ChatCommandHandlerPlugin chatCommandHandler = new ChatCommandHandlerPlugin(this);
     @Getter private final HashingPlugin hashing = new HashingPlugin(this);
+    @Getter private final MusicPlayerPlugin music = new MusicPlayerPlugin(this);
 
     public Bot (String host, int port, int reconnectDelay, String username, List<Bot> allBots) {
         this.host = host;

@@ -3,10 +3,18 @@ package me.chayapak1.chomensbot_mabe.plugins;
 import com.github.steveice10.mc.protocol.data.game.level.block.CommandBlockMode;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.inventory.ServerboundSetCommandBlockPacket;
 import com.nukkitx.math.vector.Vector3i;
+import lombok.Getter;
 import me.chayapak1.chomensbot_mabe.Bot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CorePlugin extends PositionPlugin.PositionListener {
     private final Bot bot;
+
+    @Getter private final List<Listener> listeners = new ArrayList<>();
+
+    @Getter private boolean ready = false;
 
     public final Vector3i coreStart = Vector3i.from(0, 0, 0);
     public final Vector3i coreEnd = Vector3i.from(15, 2, 15);
@@ -80,6 +88,11 @@ public class CorePlugin extends PositionPlugin.PositionListener {
                 bot.position().position().getZ()
         );
         refill();
+
+        if (!ready) {
+            ready = true;
+            for (Listener listener : listeners) listener.ready();
+        }
     }
 
     public void refill () {
@@ -96,4 +109,10 @@ public class CorePlugin extends PositionPlugin.PositionListener {
         );
         bot.chat().send(command);
     }
+
+    public static class Listener {
+        public void ready () {}
+    }
+
+    public void addListener (Listener listener) { listeners.add(listener); }
 }
