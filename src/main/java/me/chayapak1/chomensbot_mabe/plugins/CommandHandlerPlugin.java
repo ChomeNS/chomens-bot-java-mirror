@@ -28,6 +28,7 @@ public class CommandHandlerPlugin {
         registerCommand(new ThrowCommand());
         registerCommand(new ValidateCommand());
         registerCommand(new MusicCommand());
+        registerCommand(new RandomTeleportCommand());
     }
 
     public void registerCommand (Command command) {

@@ -18,14 +18,6 @@ public class UUIDUtilities {
         return intArray;
     }
 
-    public static UUID byString (String string, int version) {
-        UUID uuid = UUID.nameUUIDFromBytes(string.getBytes());
-        uuid = new UUID(uuid.getMostSignificantBits(), uuid.getLeastSignificantBits() & ~(0xfL << 12));
-        uuid = new UUID(uuid.getMostSignificantBits(), uuid.getLeastSignificantBits() | ((long) version << 12));
-
-        return uuid;
-    }
-
     public static IntArrayTag tag (UUID uuid) {
         return new IntArrayTag("", intArray(uuid));
     }
