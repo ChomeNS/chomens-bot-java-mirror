@@ -1,7 +1,18 @@
 package me.chayapak1.chomensbot_mabe.plugins;
 
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
+import com.github.steveice10.mc.protocol.data.game.entity.object.Direction;
+import com.github.steveice10.mc.protocol.data.game.entity.player.Hand;
+import com.github.steveice10.mc.protocol.data.game.entity.player.PlayerAction;
 import com.github.steveice10.mc.protocol.data.game.level.block.CommandBlockMode;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.inventory.ServerboundSetCommandBlockPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.serverbound.inventory.ServerboundSetCreativeModeSlotPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.serverbound.player.ServerboundPlayerActionPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.serverbound.player.ServerboundUseItemOnPacket;
+import com.github.steveice10.opennbt.tag.builtin.ByteTag;
+import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
+import com.github.steveice10.opennbt.tag.builtin.StringTag;
+import com.github.steveice10.packetlib.Session;
 import com.nukkitx.math.vector.Vector3i;
 import lombok.Getter;
 import me.chayapak1.chomensbot_mabe.Bot;
@@ -97,7 +108,7 @@ public class CorePlugin extends PositionPlugin.PositionListener {
 
     public void refill () {
         final String command = String.format(
-                "/minecraft:fill %s %s %s %s %s %s minecraft:command_block",
+                "/minecraft:fill %s %s %s %s %s %s minecraft:command_block{CustomName:'%s'}",
 
                 coreStart.getX() + origin.getX(),
                 coreStart.getY(),
@@ -105,9 +116,31 @@ public class CorePlugin extends PositionPlugin.PositionListener {
 
                 coreEnd.getX() + origin.getX(),
                 coreEnd.getY(),
-                coreEnd.getZ() + origin.getZ()
+                coreEnd.getZ() + origin.getZ(),
+
+                bot.config().core().customName()
         );
+
         bot.chat().send(command);
+
+        // no work :(
+//        CompoundTag tag = new CompoundTag("tag");
+//        CompoundTag blockEntityTag = new CompoundTag("BlockEntityTag");
+//        blockEntityTag.getValue().put("Command", new StringTag("Command", command));
+//        blockEntityTag.getValue().put("auto", new ByteTag("auto", (byte) 1));
+//        blockEntityTag.getValue().put("TrackOutput", new ByteTag("TrackOutput", (byte) 1));
+//        tag.getValue().put("BlockEntityTag", blockEntityTag);
+//
+//        final Vector3i temporaryBlockPosition = Vector3i.from(
+//                bot.position().position().getX(),
+//                bot.position().position().getX() - 1,
+//                bot.position().position().getZ()
+//        );
+//
+//        final Session session = bot.session();
+//        session.send(new ServerboundSetCreativeModeSlotPacket(45, new ItemStack(347 /* command block id */, 64, tag)));
+//        session.send(new ServerboundPlayerActionPacket(PlayerAction.START_DIGGING, temporaryBlockPosition, Direction.NORTH, 0));
+//        session.send(new ServerboundUseItemOnPacket(temporaryBlockPosition, Direction.NORTH, Hand.OFF_HAND, 0.5f, 0.5f, 0.5f, false, 0));
     }
 
     public static class Listener {

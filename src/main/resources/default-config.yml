@@ -2,8 +2,31 @@ reconnectDelay: 7000
 keys:
   normalKey: 'normal hash key here'
   ownerKey: 'OwnerHash™ key here'
+core:
+  layers: 3
+  # will add refill interval later after the bot can place command blocks to refill core
+  # refillInterval: 60000
+  # PLEASE give valid JSON component here else the core don't refill at all
+  customName: '[{"text":"ChomeNS ","color":"yellow"},{"text":"Core","color":"green"},{"text":"™","color":"gold"}]'
+selfCare:
+  checkInterval: 1000,
+
+  # vanilla
+  op: true,
+  gamemode: true,
+  endCredits: true,
+
+  # essentials
+  cspy: true,
+  vanish: true,
+  nickname: true,
+  socialspy: true,
+  mute: true,
+
+  # extras
+  prefix: true
 bots:
-  # username is optional, if doesn't exist it will default to random username
+  # username is optional, if it doesn't exist it will default to random username
   - host: 'localhost'
     port: 25565
     username: 'ChomeNS_Bot'
