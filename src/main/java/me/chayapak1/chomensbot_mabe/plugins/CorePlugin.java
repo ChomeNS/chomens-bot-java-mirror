@@ -1,18 +1,7 @@
 package me.chayapak1.chomensbot_mabe.plugins;
 
-import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
-import com.github.steveice10.mc.protocol.data.game.entity.object.Direction;
-import com.github.steveice10.mc.protocol.data.game.entity.player.Hand;
-import com.github.steveice10.mc.protocol.data.game.entity.player.PlayerAction;
 import com.github.steveice10.mc.protocol.data.game.level.block.CommandBlockMode;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.inventory.ServerboundSetCommandBlockPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.serverbound.inventory.ServerboundSetCreativeModeSlotPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.serverbound.player.ServerboundPlayerActionPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.serverbound.player.ServerboundUseItemOnPacket;
-import com.github.steveice10.opennbt.tag.builtin.ByteTag;
-import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
-import com.github.steveice10.opennbt.tag.builtin.StringTag;
-import com.github.steveice10.packetlib.Session;
 import com.nukkitx.math.vector.Vector3i;
 import lombok.Getter;
 import me.chayapak1.chomensbot_mabe.Bot;
@@ -28,7 +17,7 @@ public class CorePlugin extends PositionPlugin.PositionListener {
     @Getter private boolean ready = false;
 
     public final Vector3i coreStart = Vector3i.from(0, 0, 0);
-    public final Vector3i coreEnd = Vector3i.from(15, 2, 15);
+    public Vector3i coreEnd;
 
     public Vector3i origin;
 
@@ -93,6 +82,7 @@ public class CorePlugin extends PositionPlugin.PositionListener {
 
     @Override
     public void positionChange (Vector3i position) {
+        coreEnd = Vector3i.from(15, bot.config().core().layers() - 1, 15);
         origin = Vector3i.from(
                 bot.position().position().getX(),
                 0,

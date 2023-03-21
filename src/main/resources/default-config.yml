@@ -12,16 +12,16 @@ selfCare:
   checkInterval: 1000,
 
   # vanilla
-  op: true,
-  gamemode: true,
-  endCredits: true,
+  op: true
+  gamemode: true
+  endCredits: true
 
   # essentials
-  cspy: true,
-  vanish: true,
-  nickname: true,
-  socialspy: true,
-  mute: true,
+  cspy: true
+  vanish: true
+  nickname: true
+  socialspy: true
+  mute: true
 
   # extras
   prefix: true
