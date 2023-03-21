@@ -88,6 +88,7 @@ public class Bot {
                 for (SessionListener listener : listeners) {
                     listener.packetError(packetErrorEvent);
                 }
+                packetErrorEvent.setSuppress(false); // ? idk what this does but whatever
             }
 
             @Override

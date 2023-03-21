@@ -36,7 +36,8 @@ public class MusicPlayerPlugin extends SessionAdapter {
     @Getter @Setter private Song currentSong;
     @Getter @Setter private LinkedList<Song> songQueue = new LinkedList<>();
     @Getter @Setter private SongLoaderThread loaderThread;
-    private int ticksUntilPausedActionbar = 20;
+    @Getter @Setter private int loop = 0;
+    private int ticksUntilPausedBossbar = 20;
     private final String bossbarName = "chomens_bot:music"; // maybe make this in the config?
 
     public MusicPlayerPlugin (Bot bot) {
@@ -97,13 +98,13 @@ public class MusicPlayerPlugin extends SessionAdapter {
             if (currentSong == null) {
                 if (songQueue.size() == 0) return;
 
-                currentSong = songQueue.poll();
+                currentSong = songQueue.get(0); // songQueue.poll();
                 bot.chat().tellraw(Component.translatable("Now playing %s", Component.empty().append(currentSong.name).color(NamedTextColor.GOLD)));
                 currentSong.play();
             }
 
-            if (currentSong.paused && ticksUntilPausedActionbar-- < 0) return;
-            else ticksUntilPausedActionbar = 20;
+            if (currentSong.paused && ticksUntilPausedBossbar-- < 0) return;
+            else ticksUntilPausedBossbar = 20;
 
             bot.core().run("minecraft:bossbar add " + bossbarName + " \"\"");
             bot.core().run("minecraft:bossbar set " + bossbarName + " players " + SELECTOR);
@@ -120,13 +121,47 @@ public class MusicPlayerPlugin extends SessionAdapter {
             if (currentSong.finished()) {
                 removeBossbar();
                 bot.chat().tellraw(Component.translatable("Finished playing %s", Component.empty().append(currentSong.name).color(NamedTextColor.GOLD)));
-                currentSong = null;
+
+                if (loop == 1) {
+                    currentSong.setTime(0);
+                    return;
+                }
+                if (loop == 2) {
+                    skip();
+                    return;
+                }
+
+                songQueue.remove();
+
+                if (songQueue.size() == 0) {
+                    stopPlaying();
+                    bot.chat().tellraw(Component.text("Finished playing every sone in the queue"));
+                    return;
+                }
+                if (currentSong.size() > 0) {
+                    currentSong = songQueue.get(0);
+                    currentSong.setTime(0);
+                    currentSong.play();
+                }
             }
         };
 
         futurePlayTask = bot.executor().scheduleAtFixedRate(playTask, 50, 50, TimeUnit.MILLISECONDS);
 
         if (currentSong != null) currentSong.play();
+    }
+
+    public void skip () {
+        if (loop == 2) {
+            songQueue.add(songQueue.remove()); // bot.music.queue.push(bot.music.queue.shift()) in js
+        } else {
+            songQueue.remove();
+            stopPlaying();
+        }
+        if (songQueue.size() == 0) return;
+        currentSong = songQueue.get(0);
+        currentSong.setTime(0);
+        currentSong.play();
     }
 
     public void removeBossbar () {
@@ -144,14 +179,13 @@ public class MusicPlayerPlugin extends SessionAdapter {
         if (currentSong.paused) {
             return component
                     .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
-                    .append(Component.text("Paused", NamedTextColor.GREEN));
+                    .append(Component.text("Paused", NamedTextColor.LIGHT_PURPLE));
         }
 
-        if (currentSong.looping > 0) {
-            final int looping = currentSong().looping;
+        if (loop > 0) {
             return component
                     .append(Component.translatable(" | ", NamedTextColor.DARK_GRAY))
-                    .append(Component.translatable("Looping " + ((looping == 1) ? "current" : "all"), NamedTextColor.DARK_GREEN));
+                    .append(Component.translatable("Looping " + ((loop == 1) ? "current" : "all"), NamedTextColor.LIGHT_PURPLE));
         }
 
         return component;

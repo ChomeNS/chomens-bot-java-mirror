@@ -4,6 +4,7 @@ import me.chayapak1.chomensbot_mabe.Bot;
 import me.chayapak1.chomensbot_mabe.command.Command;
 import me.chayapak1.chomensbot_mabe.command.CommandContext;
 import me.chayapak1.chomensbot_mabe.plugins.MusicPlayerPlugin;
+import me.chayapak1.chomensbot_mabe.song.Song;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -16,6 +17,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class MusicCommand implements Command {
@@ -36,6 +38,9 @@ public class MusicCommand implements Command {
         usages.add("skip");
         usages.add("nowplaying");
         usages.add("queue");
+        usages.add("goto");
+        usages.add("pause");
+        usages.add("resume");
 
         return usages;
     }
@@ -66,6 +71,19 @@ public class MusicCommand implements Command {
             }
             case "skip" -> {
                 return skip(context);
+            }
+            case "nowplaying" -> {
+                return nowplaying(context);
+            }
+            case "queue" -> queue(context);
+            case "goto" -> {
+                return goTo(context, args);
+            }
+            case "pause", "resume" -> {
+                return pause(context);
+            }
+            default -> {
+                return Component.text("Invalid argument").color(NamedTextColor.RED);
             }
         }
 
@@ -102,15 +120,32 @@ public class MusicCommand implements Command {
 
         int loop;
         switch (args[1]) {
-            case "off" -> loop = 0;
-            case "current" -> loop = 1;
-            case "all" -> loop = 2;
+            case "off" -> {
+                loop = 0;
+                context.sendOutput(
+                        Component.empty()
+                                .append(Component.text("Looping is now "))
+                                .append(Component.text("disabled").color(NamedTextColor.RED))
+                );
+            }
+            case "current" -> {
+                loop = 1;
+                context.sendOutput(
+                        Component.empty()
+                                .append(Component.text("Now looping "))
+                                .append(bot.music().currentSong().name.color(NamedTextColor.GOLD))
+                );
+            }
+            case "all" -> {
+                loop = 2;
+                context.sendOutput(Component.text("Now looping every song"));
+            }
             default -> {
-                return Component.text("Invalid argument");
+                return Component.text("Invalid argument").color(NamedTextColor.RED);
             }
         }
 
-        bot.music().currentSong().looping = loop;
+        bot.music().loop(loop);
 
         return Component.text("success");
     }
@@ -167,7 +202,65 @@ public class MusicCommand implements Command {
                         .append(music.currentSong().name.color(NamedTextColor.GOLD))
         );
 
-        music.stopPlaying();
+        music.skip();
+
+        return Component.text("success");
+    }
+
+    public Component nowplaying (CommandContext context) {
+        final Bot bot = context.bot();
+        final Song song = bot.music().currentSong();
+        if (song == null) return Component.text("No song is currently playing").color(NamedTextColor.RED);
+        context.sendOutput(
+                Component.empty()
+                        .append(Component.text("Now playing "))
+                        .append(song.name.color(NamedTextColor.GOLD))
+        );
+
+        return Component.text("success");
+    }
+
+    public void queue (CommandContext context) {
+        final Bot bot = context.bot();
+        final LinkedList<Song> queue = bot.music().songQueue();
+
+        final List<Component> queueWithNames = new ArrayList<>();
+        for (Song song : queue) queueWithNames.add(song.name);
+
+        context.sendOutput(
+                Component.empty()
+                        .append(Component.text("Queue: ").color(NamedTextColor.GREEN))
+                        .append(Component.join(JoinConfiguration.separator(Component.space()), queueWithNames))
+        );
+    }
+
+    // lazy fix for java using "goto" as keyword real
+    public Component goTo (CommandContext context, String[] args) {
+        final Bot bot = context.bot();
+        final Song currentSong = bot.music().currentSong();
+        final long milliseconds = Long.getLong(args[0]);
+
+        if (currentSong == null) return Component.text("No song is currently playing").color(NamedTextColor.RED);
+        if (milliseconds < 0 || milliseconds > currentSong.length) return Component.text("Invalid timestamp").color(NamedTextColor.RED);
+
+        currentSong.setTime(milliseconds);
+
+        return Component.text("success");
+    }
+
+    public Component pause (CommandContext context) {
+        final Bot bot = context.bot();
+        final Song currentSong = bot.music().currentSong();
+
+        if (currentSong == null) return Component.text("No song is currently playing").color(NamedTextColor.RED);
+
+        if (currentSong.paused) {
+            currentSong.play();
+            context.sendOutput(Component.text("Resumed the current song"));
+        } else {
+            currentSong.pause();
+            context.sendOutput(Component.text("Paused the current song"));
+        }
 
         return Component.text("success");
     }

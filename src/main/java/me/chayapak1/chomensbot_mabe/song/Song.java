@@ -14,13 +14,12 @@ public class Song {
   public long startTime = 0; // Start time in millis since unix epoch
   public long length = 0; // Milliseconds in the song
   public long time = 0; // Time since start of song
-  public long loopPosition = 0; // Milliseconds into the song to start looping
-  public int loopCount = 0; // Number of times to loop
-  public int currentLoop = 0; // Number of loops so far
-  public int queueIndex = 0;
+  public long loopPosition = 200; // Milliseconds into the song to start looping
+//  public int loopCount = 0; // Number of times to loop
+//  public int currentLoop = 0; // Number of loops so far
 
   private Bot bot;
-  
+
   public Song (Component name, Bot bot) {
     this.bot = bot;
     this.name = name;
@@ -30,11 +29,11 @@ public class Song {
     this(Component.text(name), bot);
     this.bot = bot;
   }
-  
+
   public Note get (int i) {
     return notes.get(i);
   }
-  
+
   public void add (Note e) {
     notes.add(e);
   }
@@ -84,8 +83,7 @@ public class Song {
     if (position < notes.size()) {
       return notes.get(position).time <= time;
     } else {
-      if (time > length && shouldLoop()) {
-        loop();
+      if (finished() && bot.music().loop() > 0) {
         if (position < notes.size()) {
           return notes.get(position).time <= time;
         } else {
@@ -99,65 +97,61 @@ public class Song {
 
   public Note getNextNote () {
     if (position >= notes.size()) {
-      if (shouldLoop()) {
-        loop();
-      } else {
-        return null;
-      }
+      if (bot.music().loop() == 0) return null;
     }
     return notes.get(position++);
   }
 
   public boolean finished () {
-    return time > length && !shouldLoop();
+    return time > length;
   }
 
-  private void loop () {
+//  private void loop () {
+//    if (looping == 2) {
+//      System.out.println("before adding any single shit length " + bot.music().songQueue().size());
+//      System.out.println("looping is 2 position " + position);
+//      final Song toAdd = bot.music().songQueue().remove();
+//      System.out.println("TO ADD " + toAdd.name);
+//      bot.music().songQueue().add(toAdd);
+//      try {
+//        for (Song song : bot.music().songQueue()) {
+//          System.out.println("song in list here " + song.name);
+//        }
+//      } catch (Exception e) {
+//        e.printStackTrace();
+//      }
+//      System.out.println("BOT SONG QUEUEUE SIZE IS " + bot.music().songQueue().size());
+//    }
+//
+//    System.out.println("now doing the position and the shits to reset the shit TIME");
+//
 //    position = 0;
 //    startTime += length - loopPosition;
 //    time -= length - loopPosition;
 //    while (position < notes.size() && notes.get(position).time < loopPosition) {
 //      position++;
 //    }
-//    currentLoop++;
-//    if (looping == 1) {
-      position = 0;
-      startTime += length - loopPosition;
-      time -= length - loopPosition;
-      while (position < notes.size() && notes.get(position).time < loopPosition) {
-        position++;
-      }
-//      System.out.println("looping is 1 we did all shits here and position is " + position);
-//    } else if (looping == 2) {
-//      position = 0;
-//      setTime(0);
-//      System.out.println("looping is 2 position " + position);
-//      queueIndex = (queueIndex + 1) % bot.music().songQueue().size();
-//      System.out.println("queue INDEX IS " + queueIndex);
-//      System.out.println("BOT SONG QUEUEUE SIZE IS " + bot.music().songQueue().size());
-//    }
-//    System.out.println(currentLoop);
-    currentLoop++;
-  }
+////   currentLoop++;
+//  }
 
-  private boolean shouldLoop () {
-//    if (looping) {
+//  private boolean shouldLoop () {
+////    if (looping) {
+////      if (loopCount == 0) {
+////        return true;
+////      } else {
+////        return currentLoop < loopCount;
+////      }
+////    } else {
+////      return false;
+////    }
+//    if (looping == 1) {
 //      if (loopCount == 0) {
 //        return true;
 //      } else {
 //        return currentLoop < loopCount;
 //      }
-//    } else {
-//      return false;
-//    }
-    if (looping == 1) {
-      if (loopCount == 0) {
-        return true;
-      } else {
-        return currentLoop < loopCount;
-      }
-    } else return looping == 2;
-  }
+//    } else return looping == 2;
+//  }
 
   public int size () {
     return notes.size();
