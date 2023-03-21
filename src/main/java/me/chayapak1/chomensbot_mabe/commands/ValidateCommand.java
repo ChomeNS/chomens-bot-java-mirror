@@ -38,8 +38,8 @@ public class ValidateCommand implements Command {
         final Bot bot = context.bot();
         final String hash = fullArgs[0];
 
-        if (hash.equals(bot.hashing().hash())) context.sendOutput(Component.text("Valid hash").color(NamedTextColor.GREEN));
-        else if (hash.equals(bot.hashing().ownerHash())) context.sendOutput(Component.text("Valid OwnerHash").color(NamedTextColor.GREEN));
+        if (hash.equals(context.hash())) context.sendOutput(Component.text("Valid hash").color(NamedTextColor.GREEN));
+        else if (hash.equals(context.ownerHash())) context.sendOutput(Component.text("Valid OwnerHash").color(NamedTextColor.GREEN));
 
         return Component.text("success");
     }

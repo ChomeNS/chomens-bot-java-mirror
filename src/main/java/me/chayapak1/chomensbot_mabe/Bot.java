@@ -12,18 +12,19 @@ import me.chayapak1.chomensbot_mabe.plugins.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Bot {
-    private final ArrayList<SessionListener>listeners = new ArrayList<>();
+    private final ArrayList<SessionListener> listeners = new ArrayList<>();
 
     @Getter private final String host;
     @Getter private final int port;
     @Getter private final String username;
     @Getter private final List<Bot> allBots;
+    @Getter private final Map<String, String> keys;
 
     @Getter private Session session;
 
@@ -42,12 +43,13 @@ public class Bot {
     @Getter private final HashingPlugin hashing = new HashingPlugin(this);
     @Getter private final MusicPlayerPlugin music = new MusicPlayerPlugin(this);
 
-    public Bot (String host, int port, int reconnectDelay, String username, List<Bot> allBots) {
+    public Bot (String host, int port, int reconnectDelay, String username, List<Bot> allBots, Map<String, String> keys) {
         this.host = host;
         this.port = port;
         this.reconnectDelay = reconnectDelay;
         this.username = username;
         this.allBots = allBots;
+        this.keys = keys;
 
         reconnect();
     }

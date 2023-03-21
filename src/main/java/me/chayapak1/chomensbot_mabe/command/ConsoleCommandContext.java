@@ -1,5 +1,6 @@
 package me.chayapak1.chomensbot_mabe.command;
 
+import lombok.Getter;
 import me.chayapak1.chomensbot_mabe.Bot;
 import me.chayapak1.chomensbot_mabe.util.ComponentUtilities;
 import net.kyori.adventure.text.Component;
@@ -8,8 +9,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class ConsoleCommandContext extends CommandContext {
     private final Bot bot;
 
-    public ConsoleCommandContext (Bot bot) {
-        super(bot);
+    public ConsoleCommandContext (Bot bot, String hash, String ownerHash) {
+        super(bot, hash, ownerHash);
         this.bot = bot;
     }
 

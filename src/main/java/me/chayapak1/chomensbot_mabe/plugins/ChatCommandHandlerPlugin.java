@@ -31,7 +31,7 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.ChatListener {
         if (!contents.startsWith(prefix)) return;
         final String commandString = contents.substring(prefix.length());
 
-        final PlayerCommandContext context = new PlayerCommandContext(bot, displayName);
+        final PlayerCommandContext context = new PlayerCommandContext(bot, displayName, bot.hashing().hash(), bot.hashing().ownerHash());
 
         final Component output = bot.commandHandler().executeCommand(commandString, context, bot.hashing().hash(), bot.hashing().ownerHash());
         final String textOutput = ((TextComponent) output).content();

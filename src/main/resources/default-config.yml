@@ -1,4 +1,7 @@
 reconnectDelay: 7000
+keys:
+  normalKey: '�iB_D���k��j8H�{?[/ڭ�f�}Ѣ�^-=�Ț��v]��g>��=c'
+  ownerKey: 'b)R��nF�CW���#�\\[�S*8"t^eia�Z��k����K1�8zȢ�'
 bots:
   - host: 'localhost'
     port: 25565

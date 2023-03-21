@@ -2,6 +2,7 @@ package me.chayapak1.chomensbot_mabe;
 
 import me.chayapak1.chomensbot_mabe.plugins.ConsolePlugin;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -12,8 +13,9 @@ import java.util.concurrent.CountDownLatch;
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
         final File file = new File("config.yml");
-        final Yaml yaml = new Yaml();
-        Map<String, List<Map<String, Object>>> config;
+        final Constructor constructor = new Constructor(Configuration.class);
+        final Yaml yaml = new Yaml(constructor);
+        Configuration config;
 
         if (!file.exists()) {
             // creates config file from default-config.yml
@@ -41,21 +43,21 @@ public class Main {
 
         config = yaml.load(reader);
 
-        final int reconnectDelay = (int) ((Object) config.get("reconnectDelay"));
-
-        List<Map<String, Object>> botsOptions = config.get("bots");
+        final int reconnectDelay = config.reconnectDelay();
+        final Map<String, String> keys = config.keys();
+        Configuration.Bots[] botsOptions = config.bots();
 
         final List<Bot> allBots = new ArrayList<>();
 
-        final CountDownLatch latch = new CountDownLatch(botsOptions.size());
+        final CountDownLatch latch = new CountDownLatch(botsOptions.length);
 
-        for (Map<String, Object> botOption : botsOptions) {
-            final String host = (String) botOption.get("host");
-            final int port = (int) botOption.get("port");
-            final String username = (String) botOption.get("username");
+        for (Configuration.Bots botOption : botsOptions) {
+            final String host = botOption.host();
+            final int port = botOption.port();
+            final String username = botOption.username();
 
             new Thread(() -> {
-                final Bot bot = new Bot(host, port, reconnectDelay, username, allBots);
+                final Bot bot = new Bot(host, port, reconnectDelay, username, allBots, keys);
                 allBots.add(bot);
 
                 latch.countDown();

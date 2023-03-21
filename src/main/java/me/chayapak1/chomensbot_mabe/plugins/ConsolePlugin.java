@@ -77,7 +77,7 @@ public class ConsolePlugin {
             if (!bot.host().equals(consoleServer) && !consoleServer.equals("all")) continue;
 
             if (line.startsWith(prefix)) {
-                final ConsoleCommandContext context = new ConsoleCommandContext(bot);
+                final ConsoleCommandContext context = new ConsoleCommandContext(bot, "h", "o"); // ? should the hashes be hardcoded?
 
                 final Component output = bot.commandHandler().executeCommand(line.substring(prefix.length()), context, "h", "o");
                 final String textOutput = ((TextComponent) output).content();

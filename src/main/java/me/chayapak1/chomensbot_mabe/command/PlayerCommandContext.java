@@ -9,8 +9,8 @@ public class PlayerCommandContext extends CommandContext {
 
     private final Bot bot;
 
-    public PlayerCommandContext (Bot bot, String playerName) {
-        super(bot);
+    public PlayerCommandContext (Bot bot, String playerName, String hash, String ownerHash) {
+        super(bot, hash, ownerHash);
         this.bot = bot;
         this.playerName = playerName;
     }
