@@ -13,7 +13,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -25,13 +24,11 @@ public class Bot {
     @Getter private final int port;
     private final String _username;
     @Getter private final List<Bot> allBots;
-    @Getter private final Map<String, String> keys;
+    @Getter private final Configuration config;
 
     @Getter private String username;
 
     @Getter private Session session;
-
-    @Getter private final int reconnectDelay;
 
     @Getter private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
@@ -46,13 +43,12 @@ public class Bot {
     @Getter private final HashingPlugin hashing = new HashingPlugin(this);
     @Getter private final MusicPlayerPlugin music = new MusicPlayerPlugin(this);
 
-    public Bot (String host, int port, int reconnectDelay, String _username, List<Bot> allBots, Map<String, String> keys) {
+    public Bot (String host, int port, String _username, List<Bot> allBots, Configuration config) {
         this.host = host;
         this.port = port;
-        this.reconnectDelay = reconnectDelay;
         this._username = _username;
         this.allBots = allBots;
-        this.keys = keys;
+        this.config = config;
 
         reconnect();
     }
@@ -112,11 +108,13 @@ public class Bot {
                     listener.disconnected(disconnectedEvent);
                 }
 
+                final int reconnectDelay = config.reconnectDelay();
+
                 if (reconnectDelay < 0) return; // to disable reconnecting
 
                 Runnable task = () -> reconnect();
 
-                executor.schedule(task, reconnectDelay(), TimeUnit.MILLISECONDS);
+                executor.schedule(task, reconnectDelay, TimeUnit.MILLISECONDS);
             }
         });
 

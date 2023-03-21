@@ -9,7 +9,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
+import org.jline.terminal.TerminalBuilder;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,6 +33,10 @@ public class ConsolePlugin {
             bot.console(this);
             bot.logger(new LoggerPlugin(bot));
         }
+
+        try {
+            TerminalBuilder.builder().build();
+        } catch (IOException ignored) {}
 
         String prompt = "> ";
 

@@ -15,7 +15,7 @@ public class Main {
         final File file = new File("config.yml");
         final Constructor constructor = new Constructor(Configuration.class);
         final Yaml yaml = new Yaml(constructor);
-        Configuration config;
+        Configuration _config;
 
         if (!file.exists()) {
             // creates config file from default-config.yml
@@ -35,16 +35,16 @@ public class Main {
 
             System.out.println("config.yml file not found, so the default one was created");
 
-            config = yaml.load(is);
+            _config = yaml.load(is);
         }
 
         InputStream opt = new FileInputStream(file);
         BufferedReader reader = new BufferedReader(new InputStreamReader(opt));
 
-        config = yaml.load(reader);
+        _config = yaml.load(reader);
 
-        final int reconnectDelay = config.reconnectDelay();
-        final Map<String, String> keys = config.keys();
+        final Configuration config = _config;
+
         Configuration.Bots[] botsOptions = config.bots();
 
         final List<Bot> allBots = new ArrayList<>();
@@ -57,7 +57,7 @@ public class Main {
             final String username = botOption.username();
 
             new Thread(() -> {
-                final Bot bot = new Bot(host, port, reconnectDelay, username, allBots, keys);
+                final Bot bot = new Bot(host, port, username, allBots, config);
                 allBots.add(bot);
 
                 latch.countDown();

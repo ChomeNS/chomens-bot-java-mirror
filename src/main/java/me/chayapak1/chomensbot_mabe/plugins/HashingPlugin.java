@@ -20,11 +20,8 @@ public class HashingPlugin {
     }
 
     public void update () {
-        // final String ownerHashKey = "b)R��nF�CW���#�\\[�S*8\"t^eia�Z��k����K1�8zȢ�";
-        // final String normalHashKey = "�iB_D���k��j8H�{?[/ڭ�f�}Ѣ�^-=�Ț��v]��g>��=c";
-
-        final String normalHashKey = bot.keys().get("normalKey");
-        final String ownerHashKey = bot.keys().get("ownerKey");
+        final String normalHashKey = bot.config().keys().get("normalKey");
+        final String ownerHashKey = bot.config().keys().get("ownerKey");
 
         final String hashValue = System.currentTimeMillis() / 10_000 + normalHashKey;
         hash = Hashing.sha256()
