@@ -1,8 +1,9 @@
 reconnectDelay: 7000
 keys:
-  normalKey: '�iB_D���k��j8H�{?[/ڭ�f�}Ѣ�^-=�Ț��v]��g>��=c'
-  ownerKey: 'b)R��nF�CW���#�\\[�S*8"t^eia�Z��k����K1�8zȢ�'
+  normalKey: 'normal hash key here'
+  ownerKey: 'OwnerHash™ key here'
 bots:
+  # username is optional, if doesn't exist it will default to random username
   - host: 'localhost'
     port: 25565
     username: 'ChomeNS_Bot'

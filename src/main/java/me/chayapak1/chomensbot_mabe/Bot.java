@@ -9,6 +9,7 @@ import com.github.steveice10.packetlib.tcp.TcpClientSession;
 import lombok.Getter;
 import lombok.Setter;
 import me.chayapak1.chomensbot_mabe.plugins.*;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +23,11 @@ public class Bot {
 
     @Getter private final String host;
     @Getter private final int port;
-    @Getter private final String username;
+    private final String _username;
     @Getter private final List<Bot> allBots;
     @Getter private final Map<String, String> keys;
+
+    @Getter private String username;
 
     @Getter private Session session;
 
@@ -43,11 +46,11 @@ public class Bot {
     @Getter private final HashingPlugin hashing = new HashingPlugin(this);
     @Getter private final MusicPlayerPlugin music = new MusicPlayerPlugin(this);
 
-    public Bot (String host, int port, int reconnectDelay, String username, List<Bot> allBots, Map<String, String> keys) {
+    public Bot (String host, int port, int reconnectDelay, String _username, List<Bot> allBots, Map<String, String> keys) {
         this.host = host;
         this.port = port;
         this.reconnectDelay = reconnectDelay;
-        this.username = username;
+        this._username = _username;
         this.allBots = allBots;
         this.keys = keys;
 
@@ -55,6 +58,9 @@ public class Bot {
     }
 
     public void reconnect () {
+        if (_username == null) username = RandomStringUtils.randomAlphabetic(8);
+        else username = _username;
+
         Session session = new TcpClientSession(host, port, new MinecraftProtocol(username), null);
         this.session = session;
 
