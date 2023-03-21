@@ -42,7 +42,6 @@ public class CommandHandlerPlugin {
 
         final Command command = ElementUtilities.findCommand(commands, commandName);
 
-        // idea told this as "Condition 'command == null' is always 'false'" and its not true LMFAO
         if (command == null) return Component.text("Unknown command: " + commandName).color(NamedTextColor.RED);
 
         final int trustLevel = command.trustLevel();
