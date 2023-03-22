@@ -33,7 +33,8 @@ public class DownloadUtilities {
         URLConnection conn = url.openConnection();
         conn.setConnectTimeout(5000);
         conn.setReadTimeout(10000);
-        conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:86.0) Gecko/20100101 Firefox/86.0");
+        // https://www.whatismybrowser.com/guides/the-latest-user-agent/windows
+        conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36");
 
         try (BufferedInputStream downloadStream = new BufferedInputStream(conn.getInputStream())) {
             ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
