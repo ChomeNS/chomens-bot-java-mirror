@@ -118,7 +118,6 @@ public class ComponentUtilities {
 
         // map totallynotskidded™ too from https://github.com/PrismarineJS/prismarine-chat/blob/master/index.js#L299
         String code;
-        System.out.println(color);
         if (color == NamedTextColor.BLACK) code = "0";
         else if (color == NamedTextColor.DARK_BLUE) code = "1";
         else if (color == NamedTextColor.DARK_GREEN) code = "2";
