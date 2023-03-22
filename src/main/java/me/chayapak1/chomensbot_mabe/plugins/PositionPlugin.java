@@ -32,9 +32,10 @@ public class PositionPlugin extends SessionAdapter {
     }
 
     public void packetReceived (ClientboundPlayerPositionPacket packet) {
+        bot.session().send(new ServerboundAcceptTeleportationPacket(packet.getTeleportId()));
+
         position = Vector3i.from(packet.getX(), packet.getY(), packet.getZ());
         for (PositionListener listener : listeners) { listener.positionChange(position); }
-        bot.session().send(new ServerboundAcceptTeleportationPacket(packet.getTeleportId()));
     }
 
     public void addListener (PositionListener listener) { listeners.add(listener); }

@@ -4,8 +4,7 @@ keys:
   ownerKey: 'OwnerHash™ key here'
 core:
   layers: 3
-  # will add refill interval later after the bot can place command blocks to refill core
-  # refillInterval: 60000
+  refillInterval: 60000
   # PLEASE give valid JSON component here else the core don't refill at all
   customName: '[{"text":"ChomeNS ","color":"yellow"},{"text":"Core","color":"green"},{"text":"™","color":"gold"}]'
 selfCare:

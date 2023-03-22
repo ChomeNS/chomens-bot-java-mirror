@@ -13,7 +13,7 @@ public class Configuration {
 
     public static class Core {
         @Getter public int layers = 3;
-//        @Getter public int refillInterval = 60 * 1000;
+        @Getter public int refillInterval = 60 * 1000;
         @Getter public String customName = "[{\"text\":\"ChomeNS \",\"color\":\"yellow\"},{\"text\":\"Core\",\"color\":\"green\"},{\"text\":\"™\",\"color\":\"gold\"}]";
     }
 
