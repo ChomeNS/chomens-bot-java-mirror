@@ -135,7 +135,7 @@ public class MusicPlayerPlugin extends SessionAdapter {
 
                 if (songQueue.size() == 0) {
                     stopPlaying();
-                    bot.chat().tellraw(Component.text("Finished playing every sone in the queue"));
+                    bot.chat().tellraw(Component.text("Finished playing every song in the queue"));
                     return;
                 }
                 if (currentSong.size() > 0) {
