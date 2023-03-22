@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-// totallynotskidded™ from chipmunkbot and added colors
+// totallynotskidded™ from chipmunkbot and added colors (anyone please fix my shitcode)
 public class ComponentUtilities {
     private static final Map<String, String> language = loadJsonStringMap("language.json");
     private static final Map<String, String> keybinds = loadJsonStringMap("keybinds.json");
@@ -89,7 +89,7 @@ public class ComponentUtilities {
 
         builder.append(stringifyPartially(message, true, false));
 
-        for (Component child : message.children()) builder.append(stringify(child));
+        for (Component child : message.children()) builder.append(stringifyMotd(child));
 
         return builder.toString();
     }
@@ -99,7 +99,7 @@ public class ComponentUtilities {
 
         builder.append(stringifyPartially(message, false, true));
 
-        for (Component child : message.children()) builder.append(stringify(child));
+        for (Component child : message.children()) builder.append(stringifyAnsi(child));
 
         return builder.toString();
     }
@@ -114,8 +114,11 @@ public class ComponentUtilities {
     }
 
     public static String getColor (TextColor color, boolean motd, boolean ansi) {
+        if (color == null) return null;
+
         // map totallynotskidded™ too from https://github.com/PrismarineJS/prismarine-chat/blob/master/index.js#L299
         String code;
+        System.out.println(color);
         if (color == NamedTextColor.BLACK) code = "0";
         else if (color == NamedTextColor.DARK_BLUE) code = "1";
         else if (color == NamedTextColor.DARK_GREEN) code = "2";
@@ -136,13 +139,11 @@ public class ComponentUtilities {
             try {
                 code = color.asHexString();
             } catch (NullPointerException e) {
-                code = "r";
+                code = ""; // mabe...,,.,..,
             }
         }
 
         if (motd) {
-            if (color == null) return null;
-
             return "§" + code;
         } else if (ansi) {
             String ansiCode = ansiMap.get(code);
