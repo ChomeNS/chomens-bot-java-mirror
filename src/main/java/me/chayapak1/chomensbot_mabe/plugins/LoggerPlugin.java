@@ -4,6 +4,7 @@ import com.github.steveice10.packetlib.event.session.ConnectedEvent;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import me.chayapak1.chomensbot_mabe.Bot;
+import me.chayapak1.chomensbot_mabe.util.ComponentUtilities;
 import net.kyori.adventure.text.Component;
 
 public class LoggerPlugin extends ChatPlugin.ChatListener {
@@ -39,6 +40,7 @@ public class LoggerPlugin extends ChatPlugin.ChatListener {
 
     @Override
     public void systemMessageReceived(String message, Component component) {
-        log(message);
+        final String ansiMessage = ComponentUtilities.stringifyAnsi(component);
+        log(ansiMessage);
     }
 }
