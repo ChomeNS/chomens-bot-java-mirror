@@ -22,13 +22,13 @@ import me.chayapak1.chomensbot_mabe.Bot;
 import me.chayapak1.chomensbot_mabe.Configuration;
 import net.kyori.adventure.text.Component;
 
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class SelfCarePlugin extends SessionAdapter {
     private final Bot bot;
 
-    private ScheduledFuture<?> futureTask;
+    private TimerTask checkTask;
 
     @Getter @Setter boolean visibility = false;
 
@@ -108,21 +108,25 @@ public class SelfCarePlugin extends SessionAdapter {
         muted = false;
         prefix = false;
 
-        final Runnable task = () -> {
-            final Session session = bot.session();
-            final PacketProtocol protocol = session.getPacketProtocol();
-            if (
-                    !session.isConnected() ||
-                            (
-                                    protocol instanceof MinecraftProtocol &&
-                                            ((MinecraftProtocol) protocol).getState() != ProtocolState.GAME
-                            )
-            ) return;
+        checkTask = new TimerTask() {
+            @Override
+            public void run() {
+                final Session session = bot.session();
+                final PacketProtocol protocol = session.getPacketProtocol();
+                if (
+                        !session.isConnected() ||
+                                (
+                                        protocol instanceof MinecraftProtocol &&
+                                                ((MinecraftProtocol) protocol).getState() != ProtocolState.GAME
+                                )
+                ) return;
 
-            check();
+                check();
+            }
         };
 
-        futureTask = bot.executor().scheduleAtFixedRate(task, bot.config().selfCare().checkInterval(), 500, TimeUnit.MILLISECONDS);
+        final Timer timer = new Timer();
+        timer.schedule(checkTask, 1, bot.config().selfCare().checkInterval());
     }
 
     public void packetReceived (ClientboundGameEventPacket packet) {
@@ -152,6 +156,6 @@ public class SelfCarePlugin extends SessionAdapter {
 
     @Override
     public void disconnected (DisconnectedEvent event) {
-        futureTask.cancel(true);
+        checkTask.cancel();
     }
 }

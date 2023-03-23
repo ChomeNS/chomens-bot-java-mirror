@@ -13,9 +13,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Bot {
     private final ArrayList<SessionListener> listeners = new ArrayList<>();
@@ -29,8 +28,6 @@ public class Bot {
     @Getter private String username;
 
     @Getter private Session session;
-
-    @Getter private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(69);
 
     @Getter @Setter private ConsolePlugin console;
     @Getter @Setter private LoggerPlugin logger; // in ConsolePlugin
@@ -50,14 +47,14 @@ public class Bot {
         this.allBots = allBots;
         this.config = config;
 
-        chat = new ChatPlugin(this);
-        selfCare = new SelfCarePlugin(this);
-        position = new PositionPlugin(this);
-        core = new CorePlugin(this);
-        commandHandler = new CommandHandlerPlugin();
-        chatCommandHandler = new ChatCommandHandlerPlugin(this);
-        hashing = new HashingPlugin(this);
-        music = new MusicPlayerPlugin(this);
+        this.chat = new ChatPlugin(this);
+        this.selfCare = new SelfCarePlugin(this);
+        this.position = new PositionPlugin(this);
+        this.core = new CorePlugin(this);
+        this.commandHandler = new CommandHandlerPlugin();
+        this.chatCommandHandler = new ChatCommandHandlerPlugin(this);
+        this.hashing = new HashingPlugin(this);
+        this.music = new MusicPlayerPlugin(this);
 
         reconnect();
     }
@@ -121,9 +118,13 @@ public class Bot {
 
                 if (reconnectDelay < 0) return; // to disable reconnecting
 
-                Runnable task = () -> reconnect();
-
-                executor.schedule(task, reconnectDelay, TimeUnit.MILLISECONDS);
+                final Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        reconnect();
+                    }
+                }, reconnectDelay, 1);
             }
         });
 

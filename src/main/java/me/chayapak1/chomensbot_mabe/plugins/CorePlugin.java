@@ -18,11 +18,7 @@ import com.nukkitx.math.vector.Vector3i;
 import lombok.Getter;
 import me.chayapak1.chomensbot_mabe.Bot;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
 
 public class CorePlugin extends PositionPlugin.PositionListener {
     private final Bot bot;
@@ -107,7 +103,14 @@ public class CorePlugin extends PositionPlugin.PositionListener {
 
         if (!ready) {
             ready = true;
-            bot.executor().schedule(this::refill, bot.config().core().refillInterval(), TimeUnit.MILLISECONDS);
+
+            final Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    refill();
+                }
+            }, 1, bot.config().core().refillInterval());
             for (Listener listener : listeners) listener.ready();
         }
     }

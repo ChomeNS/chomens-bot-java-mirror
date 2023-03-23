@@ -18,13 +18,13 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.LinkedList;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MusicPlayerPlugin extends SessionAdapter {
     private final Bot bot;
 
-    private ScheduledFuture<?> futurePlayTask;
+    private TimerTask playTask;
 
     public static final String SELECTOR  = "@a[tag=!nomusic,tag=!chomens_bot_nomusic]";
     public static File SONG_DIR = new File("songs");
@@ -85,69 +85,73 @@ public class MusicPlayerPlugin extends SessionAdapter {
     }
 
     public void coreReady () {
-        final Runnable playTask = () -> {
-            if (loaderThread != null && !loaderThread.isAlive()) {
-                if (loaderThread.exception != null) {
-                    bot.chat().tellraw(Component.translatable("Failed to load song: %s", loaderThread.exception.message()).color(NamedTextColor.RED));
-                } else {
-                    songQueue.add(loaderThread.song);
-                    bot.chat().tellraw(Component.translatable("Added %s to the song queue", Component.empty().append(loaderThread.song.name).color(NamedTextColor.GOLD)));
-                }
-                loaderThread = null;
-            }
-
-            if (currentSong == null) {
-                if (songQueue.size() == 0) return;
-
-                currentSong = songQueue.get(0); // songQueue.poll();
-                bot.chat().tellraw(Component.translatable("Now playing %s", Component.empty().append(currentSong.name).color(NamedTextColor.GOLD)));
-                currentSong.play();
-            }
-
-            if (currentSong.paused && ticksUntilPausedBossbar-- < 0) return;
-            else ticksUntilPausedBossbar = 20;
-
-            bot.core().run("minecraft:bossbar add " + bossbarName + " \"\"");
-            bot.core().run("minecraft:bossbar set " + bossbarName + " players " + SELECTOR);
-            bot.core().run("minecraft:bossbar set " + bossbarName + " name " + GsonComponentSerializer.gson().serialize(generateBossbar()));
-            bot.core().run("minecraft:bossbar set " + bossbarName + " color yellow");
-            bot.core().run("minecraft:bossbar set " + bossbarName + " visible true");
-            bot.core().run("minecraft:bossbar set " + bossbarName + " value " + (int) Math.floor(currentSong.time));
-            bot.core().run("minecraft:bossbar set " + bossbarName + " max " + currentSong.length);
-
-            if (currentSong.paused) return;
-
-            handlePlaying();
-
-            if (currentSong.finished()) {
-                removeBossbar();
-                bot.chat().tellraw(Component.translatable("Finished playing %s", Component.empty().append(currentSong.name).color(NamedTextColor.GOLD)));
-
-                if (loop == 1) {
-                    currentSong.setTime(0);
-                    return;
-                }
-                if (loop == 2) {
-                    skip();
-                    return;
+        playTask = new TimerTask() {
+            @Override
+            public void run() {
+                if (loaderThread != null && !loaderThread.isAlive()) {
+                    if (loaderThread.exception != null) {
+                        bot.chat().tellraw(Component.translatable("Failed to load song: %s", loaderThread.exception.message()).color(NamedTextColor.RED));
+                    } else {
+                        songQueue.add(loaderThread.song);
+                        bot.chat().tellraw(Component.translatable("Added %s to the song queue", Component.empty().append(loaderThread.song.name).color(NamedTextColor.GOLD)));
+                    }
+                    loaderThread = null;
                 }
 
-                songQueue.remove();
+                if (currentSong == null) {
+                    if (songQueue.size() == 0) return;
 
-                if (songQueue.size() == 0) {
-                    stopPlaying();
-                    bot.chat().tellraw(Component.text("Finished playing every song in the queue"));
-                    return;
-                }
-                if (currentSong.size() > 0) {
-                    currentSong = songQueue.get(0);
-                    currentSong.setTime(0);
+                    currentSong = songQueue.get(0); // songQueue.poll();
+                    bot.chat().tellraw(Component.translatable("Now playing %s", Component.empty().append(currentSong.name).color(NamedTextColor.GOLD)));
                     currentSong.play();
+                }
+
+                if (currentSong.paused && ticksUntilPausedBossbar-- < 0) return;
+                else ticksUntilPausedBossbar = 20;
+
+                bot.core().run("minecraft:bossbar add " + bossbarName + " \"\"");
+                bot.core().run("minecraft:bossbar set " + bossbarName + " players " + SELECTOR);
+                bot.core().run("minecraft:bossbar set " + bossbarName + " name " + GsonComponentSerializer.gson().serialize(generateBossbar()));
+                bot.core().run("minecraft:bossbar set " + bossbarName + " color yellow");
+                bot.core().run("minecraft:bossbar set " + bossbarName + " visible true");
+                bot.core().run("minecraft:bossbar set " + bossbarName + " value " + (int) Math.floor(currentSong.time));
+                bot.core().run("minecraft:bossbar set " + bossbarName + " max " + currentSong.length);
+
+                if (currentSong.paused) return;
+
+                handlePlaying();
+
+                if (currentSong.finished()) {
+                    removeBossbar();
+                    bot.chat().tellraw(Component.translatable("Finished playing %s", Component.empty().append(currentSong.name).color(NamedTextColor.GOLD)));
+
+                    if (loop == 1) {
+                        currentSong.setTime(0);
+                        return;
+                    }
+                    if (loop == 2) {
+                        skip();
+                        return;
+                    }
+
+                    songQueue.remove();
+
+                    if (songQueue.size() == 0) {
+                        stopPlaying();
+                        bot.chat().tellraw(Component.text("Finished playing every song in the queue"));
+                        return;
+                    }
+                    if (currentSong.size() > 0) {
+                        currentSong = songQueue.get(0);
+                        currentSong.setTime(0);
+                        currentSong.play();
+                    }
                 }
             }
         };
 
-        futurePlayTask = bot.executor().scheduleAtFixedRate(playTask, 50, 50, TimeUnit.MILLISECONDS);
+        final Timer timer = new Timer();
+        timer.schedule(playTask, 1, 50);
 
         if (currentSong != null) currentSong.play();
     }
@@ -220,7 +224,7 @@ public class MusicPlayerPlugin extends SessionAdapter {
 
     @Override
     public void disconnected (DisconnectedEvent event) {
-        futurePlayTask.cancel(false);
+        playTask.cancel();
 
         if (currentSong != null) currentSong.pause(); // nice.
     }
