@@ -230,7 +230,7 @@ public class MusicCommand implements Command {
         context.sendOutput(
                 Component.empty()
                         .append(Component.text("Queue: ").color(NamedTextColor.GREEN))
-                        .append(Component.join(JoinConfiguration.separator(Component.space()), queueWithNames))
+                        .append(Component.join(JoinConfiguration.separator(Component.text(", ")), queueWithNames).color(NamedTextColor.AQUA))
         );
     }
 

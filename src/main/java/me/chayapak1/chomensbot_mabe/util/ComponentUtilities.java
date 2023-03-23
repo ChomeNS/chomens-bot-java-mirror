@@ -108,7 +108,7 @@ public class ComponentUtilities {
         if (message instanceof TextComponent) return stringifyPartially((TextComponent) message, motd, ansi);
         if (message instanceof TranslatableComponent) return stringifyPartially((TranslatableComponent) message, motd, ansi);
         if (message instanceof SelectorComponent) return stringifyPartially((SelectorComponent) message, motd, ansi);
-        if (message instanceof KeybindComponent) return stringifyPartially((KeybindComponent) message);
+        if (message instanceof KeybindComponent) return stringifyPartially((KeybindComponent) message, motd, ansi);
 
         return "";
     }
@@ -211,9 +211,9 @@ public class ComponentUtilities {
         return color + message.pattern(); // * Client-side selector components are equivalent to text ones, and do NOT list entities.
     }
 
-    public static String stringifyPartially (KeybindComponent message) {
+    public static String stringifyPartially (KeybindComponent message, boolean motd, boolean ansi) {
         String keybind = message.keybind();
         Component component = keybinds.containsKey(keybind) ? Component.translatable(keybind) : Component.text(keybind); // TODO: Fix some keys like `key.keyboard.a`
-        return stringifyPartially(component, false, false);
+        return stringifyPartially(component, motd, ansi);
     }
 }

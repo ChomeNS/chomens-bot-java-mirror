@@ -29,6 +29,7 @@ public class CommandHandlerPlugin {
         registerCommand(new ValidateCommand());
         registerCommand(new MusicCommand());
         registerCommand(new RandomTeleportCommand());
+        registerCommand(new BotVisibilityCommand());
     }
 
     public void registerCommand (Command command) {

@@ -30,18 +30,18 @@ public class Bot {
 
     @Getter private Session session;
 
-    @Getter private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    @Getter private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(69);
 
-    @Getter private final ChatPlugin chat = new ChatPlugin(this);
-    @Getter @Setter private LoggerPlugin logger; // in ConsolePlugin
-    @Getter private final SelfCarePlugin selfCare = new SelfCarePlugin(this);
     @Getter @Setter private ConsolePlugin console;
-    @Getter private final PositionPlugin position = new PositionPlugin(this);
-    @Getter private final CorePlugin core = new CorePlugin(this);
-    @Getter private final CommandHandlerPlugin commandHandler = new CommandHandlerPlugin();
-    @Getter private final ChatCommandHandlerPlugin chatCommandHandler = new ChatCommandHandlerPlugin(this);
-    @Getter private final HashingPlugin hashing = new HashingPlugin(this);
-    @Getter private final MusicPlayerPlugin music = new MusicPlayerPlugin(this);
+    @Getter @Setter private LoggerPlugin logger; // in ConsolePlugin
+    @Getter private final ChatPlugin chat;
+    @Getter private final SelfCarePlugin selfCare;
+    @Getter private final PositionPlugin position;
+    @Getter private final CorePlugin core;
+    @Getter private final CommandHandlerPlugin commandHandler;
+    @Getter private final ChatCommandHandlerPlugin chatCommandHandler;
+    @Getter private final HashingPlugin hashing;
+    @Getter private final MusicPlayerPlugin music;
 
     public Bot (String host, int port, String _username, List<Bot> allBots, Configuration config) {
         this.host = host;
@@ -49,6 +49,15 @@ public class Bot {
         this._username = _username;
         this.allBots = allBots;
         this.config = config;
+
+        chat = new ChatPlugin(this);
+        selfCare = new SelfCarePlugin(this);
+        position = new PositionPlugin(this);
+        core = new CorePlugin(this);
+        commandHandler = new CommandHandlerPlugin();
+        chatCommandHandler = new ChatCommandHandlerPlugin(this);
+        hashing = new HashingPlugin(this);
+        music = new MusicPlayerPlugin(this);
 
         reconnect();
     }

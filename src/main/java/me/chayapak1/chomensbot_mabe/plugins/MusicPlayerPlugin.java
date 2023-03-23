@@ -16,6 +16,7 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
+import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -169,12 +170,20 @@ public class MusicPlayerPlugin extends SessionAdapter {
     }
 
     public Component generateBossbar () {
+        final DecimalFormat formatter = new DecimalFormat("#,###");
+
         Component component = Component.empty()
                 .append(Component.empty().append(currentSong.name).color(NamedTextColor.GREEN))
                 .append(Component.text(" | ").color(NamedTextColor.DARK_GRAY))
                 .append(Component.translatable("%s / %s", formatTime(currentSong.time).color(NamedTextColor.GRAY), formatTime(currentSong.length).color(NamedTextColor.GRAY)).color(NamedTextColor.DARK_GRAY))
                 .append(Component.text(" | ").color(NamedTextColor.DARK_GRAY))
-                .append(Component.translatable("%s / %s", Component.text(currentSong.position, NamedTextColor.GRAY), Component.text(currentSong.size(), NamedTextColor.GRAY)).color(NamedTextColor.DARK_GRAY));
+                .append(
+                    Component.translatable(
+                            "%s / %s",
+                            Component.text(formatter.format(currentSong.position), NamedTextColor.GRAY),
+                            Component.text(formatter.format(currentSong.size()), NamedTextColor.GRAY)
+                    ).color(NamedTextColor.DARK_GRAY)
+                );
 
         if (currentSong.paused) {
             return component
