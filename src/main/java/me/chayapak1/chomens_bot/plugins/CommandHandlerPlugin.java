@@ -31,6 +31,7 @@ public class CommandHandlerPlugin {
         registerCommand(new RandomTeleportCommand());
         registerCommand(new BotVisibilityCommand());
         registerCommand(new TPSBarCommand());
+        registerCommand(new NetMessageCommand());
     }
 
     public void registerCommand (Command command) {

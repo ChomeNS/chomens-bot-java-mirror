@@ -91,13 +91,10 @@ public class MusicCommand implements Command {
     }
 
     public Component play (CommandContext context, String[] args) {
-        final Bot bot = context.bot();
         final MusicPlayerPlugin player = context.bot().music();
 
         final String _path = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
         final Path path = Path.of(root.toString(), _path);
-
-        bot.logger().log(path.toString());
 
         try {
             if (!path.toString().contains("http")) player.loadSong(path);
