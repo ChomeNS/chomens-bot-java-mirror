@@ -1,0 +1,43 @@
+package me.chayapak1.chomens_bot.plugins;
+
+import lombok.Getter;
+import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.chatParsers.data.PlayerMessage;
+import me.chayapak1.chomens_bot.command.PlayerCommandContext;
+import me.chayapak1.chomens_bot.util.ComponentUtilities;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+
+public class ChatCommandHandlerPlugin extends ChatPlugin.ChatListener {
+    @Getter private final String prefix = "j*";
+
+    public final Bot bot;
+
+    public ChatCommandHandlerPlugin(Bot bot) {
+        this.bot = bot;
+
+        bot.chat().addListener(this);
+    }
+
+    @Override
+    public void playerMessageReceived (PlayerMessage message) {
+        final Component displayNameComponent = message.parameters().get("sender");
+        final Component messageComponent = message.parameters().get("contents");
+        if (displayNameComponent == null || messageComponent == null) return;
+
+        final String displayName = ComponentUtilities.stringify(displayNameComponent);
+        final String contents = ComponentUtilities.stringify(messageComponent);
+
+        if (!contents.startsWith(prefix)) return;
+        final String commandString = contents.substring(prefix.length());
+
+        final PlayerCommandContext context = new PlayerCommandContext(bot, displayName, bot.hashing().hash(), bot.hashing().ownerHash());
+
+        final Component output = bot.commandHandler().executeCommand(commandString, context, bot.hashing().hash(), bot.hashing().ownerHash());
+        final String textOutput = ((TextComponent) output).content();
+
+        if (!textOutput.equals("success")) {
+            context.sendOutput(output);
+        }
+    }
+}

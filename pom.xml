@@ -108,7 +108,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>me.chayapak1.chomensbot_mabe.Main</mainClass>
+                            <mainClass>me.chayapak1.chomens_bot.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
