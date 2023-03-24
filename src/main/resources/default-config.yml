@@ -16,16 +16,19 @@ selfCare:
   endCredits: true
 
   # essentials
-  cspy: true
   vanish: true
   nickname: true
   socialspy: true
   mute: true
 
   # extras
+  cspy: true
   prefix: true
 bots:
-  # username is optional, if it doesn't exist it will default to random username
+  # username and kaboom are optional.
+  # for username if it doesn't exist it will default to random username
+  # for kaboom it will just default to `false`
   - host: 'localhost'
     port: 25565
     username: 'ChomeNS_Bot'
+    kaboom: false
