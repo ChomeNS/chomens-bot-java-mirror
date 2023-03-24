@@ -41,7 +41,7 @@ public class BotVisibilityCommand implements Command {
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();
 
-        if (args[0] == null) {
+        if (args.length == 0) {
             final boolean visibility = bot.selfCare().visibility();
             bot.selfCare().visibility(!visibility);
 
@@ -58,6 +58,7 @@ public class BotVisibilityCommand implements Command {
             switch (args[0]) {
                 case "on", "true" -> {
                     bot.selfCare().visibility(true);
+                    bot.chat().send("/essentials:vanish disable");
                     context.sendOutput(
                             Component.empty()
                                     .append(Component.text("The bot's visibility is now "))
@@ -66,6 +67,7 @@ public class BotVisibilityCommand implements Command {
                 }
                 case "off", "false" -> {
                     bot.selfCare().visibility(false);
+                    bot.chat().send("/essentials:vanish enable");
                     context.sendOutput(
                             Component.empty()
                                     .append(Component.text("The bot's visibility is now "))

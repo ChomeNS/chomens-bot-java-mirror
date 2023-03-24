@@ -112,6 +112,7 @@ public class CommandHandlerPlugin {
                 count++;
             }
         }
+        if (usage.contains("<hash>")) count--; // bad fix?
         return count;
     }
 
