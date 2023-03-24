@@ -114,6 +114,7 @@ public class MusicPlayerPlugin extends SessionAdapter {
                 bot.core().run("minecraft:bossbar set " + bossbarName + " name " + GsonComponentSerializer.gson().serialize(generateBossbar()));
                 bot.core().run("minecraft:bossbar set " + bossbarName + " color yellow");
                 bot.core().run("minecraft:bossbar set " + bossbarName + " visible true");
+                bot.core().run("minecraft:bossbar set " + bossbarName + " style progress");
                 bot.core().run("minecraft:bossbar set " + bossbarName + " value " + (int) Math.floor(currentSong.time));
                 bot.core().run("minecraft:bossbar set " + bossbarName + " max " + currentSong.length);
 

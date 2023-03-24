@@ -30,6 +30,7 @@ public class CommandHandlerPlugin {
         registerCommand(new MusicCommand());
         registerCommand(new RandomTeleportCommand());
         registerCommand(new BotVisibilityCommand());
+        registerCommand(new TPSBarCommand());
     }
 
     public void registerCommand (Command command) {

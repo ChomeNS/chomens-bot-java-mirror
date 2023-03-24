@@ -39,6 +39,7 @@ public class Bot {
     @Getter private final ChatCommandHandlerPlugin chatCommandHandler;
     @Getter private final HashingPlugin hashing;
     @Getter private final MusicPlayerPlugin music;
+    @Getter private final TPSPlugin tps;
 
     public Bot (String host, int port, String _username, List<Bot> allBots, Configuration config) {
         this.host = host;
@@ -55,6 +56,7 @@ public class Bot {
         this.chatCommandHandler = new ChatCommandHandlerPlugin(this);
         this.hashing = new HashingPlugin(this);
         this.music = new MusicPlayerPlugin(this);
+        this.tps = new TPSPlugin(this);
 
         reconnect();
     }
@@ -124,7 +126,7 @@ public class Bot {
                     public void run() {
                         reconnect();
                     }
-                }, reconnectDelay, 1);
+                }, 1, reconnectDelay);
             }
         });
 
