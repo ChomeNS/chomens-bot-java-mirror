@@ -86,18 +86,15 @@ public class CorePlugin extends PositionPlugin.PositionListener {
 
         if (x > coreEnd.getX()) {
             x = coreStart.getX();
-            bot.logger().log("x is more than limit (" + coreEnd.getX() + ") so adding z..");
             z++;
         }
 
         if (z > coreEnd.getZ()) {
             z = coreStart.getZ();
-            bot.logger().log("z is more than limit (" + coreEnd.getZ() + ") so adding y..");
             y++;
         }
 
         if (y > coreEnd.getY()) {
-            bot.logger().log("y is more than limit (" + coreEnd.getY() + ") so resetting everything..");
             x = coreStart.getX();
             y = coreStart.getY();
             z = coreStart.getZ();
