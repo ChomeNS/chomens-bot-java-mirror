@@ -127,6 +127,10 @@ public class CorePlugin extends PositionPlugin.PositionListener {
         }
     }
 
+    public void reset () {
+        relativeCorePosition = Vector3i.from(coreStart);
+    }
+
     public void refill () {
         final String command = String.format(
                 "minecraft:fill %s %s %s %s %s %s minecraft:command_block{CustomName:'%s'}",

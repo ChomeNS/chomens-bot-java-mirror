@@ -32,6 +32,7 @@ public class CommandHandlerPlugin {
         registerCommand(new BotVisibilityCommand());
         registerCommand(new TPSBarCommand());
         registerCommand(new NetMessageCommand());
+        registerCommand(new RefillCoreCommand());
     }
 
     public void registerCommand (Command command) {

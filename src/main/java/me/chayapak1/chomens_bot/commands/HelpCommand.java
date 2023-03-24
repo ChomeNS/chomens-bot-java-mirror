@@ -98,11 +98,10 @@ public class HelpCommand implements Command {
 
         final String prefix = bot.chatCommandHandler().prefix();
 
-        final String commandName = args[0];
-
         for (Command command : bot.commandHandler().commands()) {
-            if (!command.name().equals(commandName) && !command.alias().contains(commandName)) continue;
+            if (!command.name().equals(args[0]) && !command.alias().contains(args[0])) continue;
 
+            final String commandName = command.name();
             final List<Component> usages = new ArrayList<>();
 
             usages.add(
