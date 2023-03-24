@@ -235,7 +235,13 @@ public class MusicCommand implements Command {
     public Component goTo (CommandContext context, String[] args) {
         final Bot bot = context.bot();
         final Song currentSong = bot.music().currentSong();
-        final long milliseconds = Long.getLong(args[0]);
+
+        final long milliseconds;
+        try {
+            milliseconds = Long.parseLong(args[1]);
+        } catch (NumberFormatException e) {
+            return Component.text("Invalid timestamp").color(NamedTextColor.RED);
+        }
 
         if (currentSong == null) return Component.text("No song is currently playing").color(NamedTextColor.RED);
         if (milliseconds < 0 || milliseconds > currentSong.length) return Component.text("Invalid timestamp").color(NamedTextColor.RED);
