@@ -40,10 +40,6 @@ public class MinecraftChatParser implements ChatParser {
         final Component senderComponent = args.get(0);
         final Component contents = args.get(1);
 
-        // Find the sender and attempt to map it to a player
-        final HoverEvent<?> hoverEvent = senderComponent.hoverEvent();
-        if (hoverEvent == null || !hoverEvent.action().equals(HoverEvent.Action.SHOW_ENTITY)) return null;
-
         parameters.put("sender", senderComponent);
         parameters.put("contents", contents);
 
