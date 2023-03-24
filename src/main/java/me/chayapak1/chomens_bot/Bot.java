@@ -126,7 +126,7 @@ public class Bot {
                     public void run() {
                         reconnect();
                     }
-                }, 1, reconnectDelay);
+                }, reconnectDelay);
             }
         });
 

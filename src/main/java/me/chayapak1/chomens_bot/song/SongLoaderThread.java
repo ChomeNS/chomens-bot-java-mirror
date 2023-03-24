@@ -24,14 +24,12 @@ public class SongLoaderThread extends Thread {
   public SongLoaderThread (URL location, Bot bot) throws SongLoaderException {
     this.bot = bot;
     isUrl = true;
-    System.out.println("its url");
     songUrl = location;
   }
 
   public SongLoaderThread (Path location, Bot bot) throws SongLoaderException {
     this.bot = bot;
     isUrl = false;
-    System.out.println("its path");
     songPath = location.toFile();
   }
 
@@ -47,7 +45,6 @@ public class SongLoaderThread extends Thread {
         name = songPath.getName();
       }
     } catch (Exception e) {
-      System.out.println("WHAT THE SUS EXCEPTION YUP ! !! %@%$");
       e.printStackTrace();
       exception = new SongLoaderException(Component.text(e.getMessage()), e);
       return;
@@ -66,7 +63,7 @@ public class SongLoaderThread extends Thread {
     }
 
     if (song == null) {
-      exception = new SongLoaderException(Component.translatable("Invalid song format"));
+      exception = new SongLoaderException(Component.translatable("Invalid format"));
     }
   }
 

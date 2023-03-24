@@ -69,7 +69,7 @@ public class MusicPlayerPlugin extends SessionAdapter {
 
     public void loadSong (URL location) {
         if (loaderThread != null) {
-            bot.chat().tellraw(Component.translatable("Already loading a song, can't load another", NamedTextColor.RED));
+            bot.chat().tellraw(Component.translatable("Already loading a song", NamedTextColor.RED));
             return;
         }
 

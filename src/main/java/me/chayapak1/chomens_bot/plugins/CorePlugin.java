@@ -14,6 +14,8 @@ import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
 import com.github.steveice10.opennbt.tag.builtin.StringTag;
 import com.github.steveice10.opennbt.tag.builtin.Tag;
 import com.github.steveice10.packetlib.Session;
+import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
+import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.nukkitx.math.vector.Vector3i;
 import lombok.Getter;
 import me.chayapak1.chomens_bot.Bot;
@@ -38,6 +40,13 @@ public class CorePlugin extends PositionPlugin.PositionListener {
         this.bot = bot;
 
         bot.position().addListener(this);
+
+        bot.addListener(new SessionAdapter() {
+            @Override
+            public void disconnected (DisconnectedEvent event) {
+                ready = false;
+            }
+        });
     }
 
     public void run (String command) {
