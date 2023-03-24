@@ -37,5 +37,6 @@ public class Configuration {
         @Getter public String host;
         @Getter public int port;
         @Getter public String username;
+        @Getter public boolean kaboom = false;
     }
 }

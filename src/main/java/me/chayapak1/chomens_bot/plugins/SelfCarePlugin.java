@@ -82,12 +82,12 @@ public class SelfCarePlugin extends SessionAdapter {
 
         if (selfCares.gamemode() && gamemode != GameMode.CREATIVE) bot.chat().send("/minecraft:gamemode creative @s[type=player]");
         else if (selfCares.op() && permissionLevel < 2) bot.chat().send("/minecraft:op @s[type=player]");
-        else if (selfCares.cspy() && !cspy) bot.chat().send("/commandspy:commandspy on");
+        else if (selfCares.cspy() && !cspy && bot.kaboom()) bot.chat().send("/commandspy:commandspy on");
         else if (selfCares.vanish() && !vanish && !visibility) bot.chat().send("/essentials:vanish enable");
         else if (selfCares.nickname() && !nickname) bot.chat().send("/essentials:nickname off");
         else if (selfCares.socialspy() && !socialspy) bot.chat().send("/essentials:socialspy enable");
         else if (selfCares.mute() && muted) bot.chat().send("/essentials:mute " + bot.username());
-        else if (selfCares.prefix() && !prefix) bot.chat().send("/extras:prefix &8[&eChomeNS Bot&8]");
+        else if (selfCares.prefix() && !prefix && bot.kaboom()) bot.chat().send("/extras:prefix &8[&eChomeNS Bot&8]");
     }
 
     @Override

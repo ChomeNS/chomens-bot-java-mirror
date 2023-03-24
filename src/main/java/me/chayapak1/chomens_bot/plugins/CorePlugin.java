@@ -36,8 +36,11 @@ public class CorePlugin extends PositionPlugin.PositionListener {
 
     public Vector3i relativeCorePosition = Vector3i.from(coreStart);
 
+    private boolean kaboom;
+
     public CorePlugin (Bot bot) {
         this.bot = bot;
+        this.kaboom = bot.kaboom();
 
         bot.position().addListener(this);
 
@@ -61,7 +64,7 @@ public class CorePlugin extends PositionPlugin.PositionListener {
         bot.session().send(new ServerboundSetCommandBlockPacket(
                 absoluteCorePosition(),
                 command,
-                CommandBlockMode.REDSTONE,
+                kaboom ? CommandBlockMode.AUTO : CommandBlockMode.REDSTONE,
                 true,
                 false,
                 true
@@ -155,7 +158,7 @@ public class CorePlugin extends PositionPlugin.PositionListener {
         );
 
         final Session session = bot.session();
-        session.send(new ServerboundSetCreativeModeSlotPacket(36, new ItemStack(347 /* command block id */, 64, new CompoundTag("", tag))));
+        session.send(new ServerboundSetCreativeModeSlotPacket(36, new ItemStack(kaboom ? 466 /* repeating command block id */ : 347 /* command block id */, 64, new CompoundTag("", tag))));
         session.send(new ServerboundPlayerActionPacket(PlayerAction.START_DIGGING, temporaryBlockPosition, Direction.NORTH, 0));
         session.send(new ServerboundUseItemOnPacket(temporaryBlockPosition, Direction.UP, Hand.MAIN_HAND, 0.5f, 0.5f, 0.5f, false, 1));
     }

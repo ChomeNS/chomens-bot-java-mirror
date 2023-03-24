@@ -54,9 +54,10 @@ public class Main {
             final String host = botOption.host();
             final int port = botOption.port();
             final String username = botOption.username();
+            final boolean kaboom = botOption.kaboom();
 
             new Thread(() -> {
-                final Bot bot = new Bot(host, port, username, allBots, config);
+                final Bot bot = new Bot(host, port, username, kaboom, allBots, config);
                 allBots.add(bot);
 
                 latch.countDown();

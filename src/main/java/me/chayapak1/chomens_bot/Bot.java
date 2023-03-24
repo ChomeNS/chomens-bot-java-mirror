@@ -22,6 +22,7 @@ public class Bot {
     @Getter private final String host;
     @Getter private final int port;
     private final String _username;
+    @Getter private final boolean kaboom;
     @Getter private final List<Bot> allBots;
     @Getter private final Configuration config;
 
@@ -41,10 +42,11 @@ public class Bot {
     @Getter private final MusicPlayerPlugin music;
     @Getter private final TPSPlugin tps;
 
-    public Bot (String host, int port, String _username, List<Bot> allBots, Configuration config) {
+    public Bot (String host, int port, String _username, boolean kaboom, List<Bot> allBots, Configuration config) {
         this.host = host;
         this.port = port;
         this._username = _username;
+        this.kaboom = kaboom;
         this.allBots = allBots;
         this.config = config;
 
