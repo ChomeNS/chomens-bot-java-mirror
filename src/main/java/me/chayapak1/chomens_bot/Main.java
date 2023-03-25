@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot;
 
 import me.chayapak1.chomens_bot.plugins.ConsolePlugin;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
