@@ -1,10 +1,12 @@
 package me.chayapak1.chomens_bot.commands;
 
+import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,10 @@ public class ServerEvalCommand implements Command {
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         try {
+            final Bot bot = context.bot();
+
+            bot.eval().globals().set("context", CoerceJavaToLua.coerce(context));
+
             final LuaValue output = context.bot().eval().run(String.join(" ", args));
 
             context.sendOutput(Component.text(output.toString()).color(NamedTextColor.GREEN));
