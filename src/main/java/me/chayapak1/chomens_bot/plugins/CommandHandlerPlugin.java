@@ -33,6 +33,8 @@ public class CommandHandlerPlugin {
         registerCommand(new TPSBarCommand());
         registerCommand(new NetMessageCommand());
         registerCommand(new RefillCoreCommand());
+        registerCommand(new WikipediaCommand());
+        registerCommand(new UrbanCommand());
     }
 
     public void registerCommand (Command command) {

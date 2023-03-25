@@ -13,7 +13,7 @@ import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 
 public class DownloadUtilities {
-    private static class DefaultTrustManager implements X509TrustManager {
+    public static class DefaultTrustManager implements X509TrustManager {
         @Override
         public void checkClientTrusted(X509Certificate[] arg0, String arg1) {}
 
