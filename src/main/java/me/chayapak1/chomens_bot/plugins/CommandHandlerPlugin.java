@@ -37,6 +37,7 @@ public class CommandHandlerPlugin {
         registerCommand(new UrbanCommand());
         registerCommand(new ClearChatCommand());
         registerCommand(new ListCommand());
+        registerCommand(new ServerEvalCommand());
     }
 
     public void registerCommand (Command command) {
