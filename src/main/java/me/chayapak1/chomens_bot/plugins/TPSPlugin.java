@@ -67,7 +67,7 @@ public class TPSPlugin extends SessionAdapter {
         bot.core().run("minecraft:bossbar set " + bossbarName + " name " + GsonComponentSerializer.gson().serialize(component));
         bot.core().run("minecraft:bossbar set " + bossbarName + " color yellow");
         bot.core().run("minecraft:bossbar set " + bossbarName + " visible true");
-        bot.core().run("minecraft:bossbar set " + bossbarName + " style progress");
+        bot.core().run("minecraft:bossbar set " + bossbarName + " style notched_20");
         bot.core().run("minecraft:bossbar set " + bossbarName + " value " + (int) tickRate);
         bot.core().run("minecraft:bossbar set " + bossbarName + " max 20");
     }
