@@ -56,7 +56,7 @@ public class CommandHandlerPlugin {
         final int minimumArgs = getMinimumArgs(usage);
         final int maximumArgs = getMaximumArgs(usage);
         if (fullArgs.length < minimumArgs) return Component.text("Excepted minimum of " + minimumArgs + " argument(s), got " + fullArgs.length).color(NamedTextColor.RED);
-        if (fullArgs.length > maximumArgs && !usage.contains("{")) return Component.text("Too much arguments, expected " + maximumArgs).color(NamedTextColor.RED);
+        if (fullArgs.length > maximumArgs && !usage.contains("{")) return Component.text("Too much arguments, expected " + maximumArgs + " max").color(NamedTextColor.RED);
 
         String userHash = "";
         if (trustLevel > 0 && splitInput.length >= 2) userHash = splitInput[1];
