@@ -10,6 +10,7 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.chatParsers.ChomeNSCustomChatParser;
 import me.chayapak1.chomens_bot.chatParsers.KaboomChatParser;
 import me.chayapak1.chomens_bot.chatParsers.MinecraftChatParser;
+import me.chayapak1.chomens_bot.chatParsers.commandSpy.CommandSpyParser;
 import me.chayapak1.chomens_bot.chatParsers.data.ChatParser;
 import me.chayapak1.chomens_bot.chatParsers.data.PlayerMessage;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
@@ -28,16 +29,21 @@ public class ChatPlugin extends SessionAdapter {
 
     private final List<ChatParser> chatParsers;
 
+    private final CommandSpyParser commandSpyParser;
+
     private final List<ChatListener> listeners = new ArrayList<>();
 
     public ChatPlugin (Bot bot) {
         this.bot = bot;
+
+        this.commandSpyParser = new CommandSpyParser(bot);
+
         bot.addListener(this);
 
         chatParsers = new ArrayList<>();
-        chatParsers.add(new MinecraftChatParser());
-        chatParsers.add(new KaboomChatParser());
-        chatParsers.add(new ChomeNSCustomChatParser());
+        chatParsers.add(new MinecraftChatParser(bot));
+        chatParsers.add(new KaboomChatParser(bot));
+        chatParsers.add(new ChomeNSCustomChatParser(bot));
     }
 
     @Override
@@ -66,10 +72,14 @@ public class ChatPlugin extends SessionAdapter {
             if (playerMessage != null) break;
         }
 
+        PlayerMessage commandSpyMessage;
+        commandSpyMessage = commandSpyParser.parse(component);
+
         final String message = ComponentUtilities.stringify(component);
         for (ChatListener listener : listeners) {
             listener.systemMessageReceived(message, component);
             if (playerMessage != null) listener.playerMessageReceived(playerMessage);
+            if (commandSpyMessage != null) listener.commandSpyMessageReceived(commandSpyMessage);
         }
     }
 
@@ -109,6 +119,7 @@ public class ChatPlugin extends SessionAdapter {
 
     public static class ChatListener {
         public void playerMessageReceived (PlayerMessage message) {}
+        public void commandSpyMessageReceived (PlayerMessage message) {}
         public void systemMessageReceived (String message, Component component) {}
     }
 }

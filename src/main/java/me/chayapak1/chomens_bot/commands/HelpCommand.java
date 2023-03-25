@@ -96,7 +96,7 @@ public class HelpCommand implements Command {
     public Component sendUsages (CommandContext context, String[] args) {
         final Bot bot = context.bot();
 
-        final String prefix = bot.chatCommandHandler().prefix();
+        final String prefix = context.prefix();
 
         for (Command command : bot.commandHandler().commands()) {
             if (!command.name().equals(args[0]) && !command.alias().contains(args[0])) continue;

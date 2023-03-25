@@ -36,6 +36,8 @@ public class Bot {
     @Getter private final SelfCarePlugin selfCare;
     @Getter private final PositionPlugin position;
     @Getter private final CorePlugin core;
+    @Getter private final PlayersPlugin players;
+    @Getter private final TabCompletePlugin tabComplete;
     @Getter private final CommandHandlerPlugin commandHandler;
     @Getter private final ChatCommandHandlerPlugin chatCommandHandler;
     @Getter private final HashingPlugin hashing;
@@ -54,6 +56,8 @@ public class Bot {
         this.selfCare = new SelfCarePlugin(this);
         this.position = new PositionPlugin(this);
         this.core = new CorePlugin(this);
+        this.players = new PlayersPlugin(this);
+        this.tabComplete = new TabCompletePlugin(this);
         this.commandHandler = new CommandHandlerPlugin();
         this.chatCommandHandler = new ChatCommandHandlerPlugin(this);
         this.hashing = new HashingPlugin(this);

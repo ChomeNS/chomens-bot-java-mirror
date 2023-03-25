@@ -148,7 +148,7 @@ public class MusicCommand implements Command {
     }
 
     public Component list (CommandContext context, String[] args) {
-        final String prefix = context.bot().chatCommandHandler().prefix();
+        final String prefix = context.prefix();
 
         final Path _path = Path.of(root.toString(), String.join(" ", args));
         final Path path = (args.length < 2) ? root : _path;

@@ -2,11 +2,19 @@ package me.chayapak1.chomens_bot;
 
 import lombok.Getter;
 
+import java.util.List;
 import java.util.Map;
 
 public class Configuration {
+    @Getter public List<String> prefixes;
+    @Getter public List<String> commandSpyPrefixes;
+
+    @Getter public Map<String, String> consolePrefixes;
+
     @Getter public int reconnectDelay = 7000;
+
     @Getter public Map<String, String> keys;
+
     @Getter public Core core = new Core();
     @Getter public SelfCare selfCare = new SelfCare();
     @Getter public Bots[] bots = new Bots[]{};

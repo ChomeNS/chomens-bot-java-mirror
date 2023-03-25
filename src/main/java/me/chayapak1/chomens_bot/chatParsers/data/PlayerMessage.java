@@ -10,4 +10,5 @@ import java.util.Map;
 @AllArgsConstructor
 public class PlayerMessage {
     private Map<String, Component> parameters;
+    private MutablePlayerListEntry sender;
 }

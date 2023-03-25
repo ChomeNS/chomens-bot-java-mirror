@@ -1,4 +1,16 @@
+prefixes:
+  - 'default*'
+  - 'defaultcbot '
+
+commandSpyPrefixes:
+  - '/defaultcbot '
+
+consolePrefixes:
+  normalCommandsPrefix: '.'
+  consoleServerPrefix: '/'
+
 reconnectDelay: 7000
+
 keys:
   normalKey: 'normal hash key here'
   ownerKey: 'OwnerHash™ key here'

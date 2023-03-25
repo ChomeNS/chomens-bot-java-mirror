@@ -20,14 +20,17 @@ public class ConsolePlugin {
 
     @Getter private String consoleServer = "all";
 
-    @Getter private final String prefix = ".";
-    @Getter private final String consoleServerPrefix = "/";
+    @Getter private String prefix;
+    @Getter private String consoleServerPrefix;
 
     public ConsolePlugin (List<Bot> allBots) {
         this.allBots = allBots;
         this.reader = LineReaderBuilder.builder().build();
 
         for (Bot bot : allBots) {
+            prefix = bot.config().consolePrefixes().get("normalCommandsPrefix");
+            consoleServerPrefix = bot.config().consolePrefixes().get("consoleServerPrefix");
+
             bot.console(this);
             bot.logger(new LoggerPlugin(bot));
         }
@@ -79,7 +82,7 @@ public class ConsolePlugin {
             if (!bot.host().equals(consoleServer) && !consoleServer.equals("all")) continue;
 
             if (line.startsWith(prefix)) {
-                final ConsoleCommandContext context = new ConsoleCommandContext(bot, "h", "o"); // ? should the hashes be hardcoded?
+                final ConsoleCommandContext context = new ConsoleCommandContext(bot, prefix, "h", "o"); // ? should the hashes be hardcoded?
 
                 final Component output = bot.commandHandler().executeCommand(line.substring(prefix.length()), context, "h", "o");
                 final String textOutput = ((TextComponent) output).content();
