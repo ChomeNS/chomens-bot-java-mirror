@@ -36,6 +36,7 @@ public class CommandHandlerPlugin {
         registerCommand(new WikipediaCommand());
         registerCommand(new UrbanCommand());
         registerCommand(new ClearChatCommand());
+        registerCommand(new ListCommand());
     }
 
     public void registerCommand (Command command) {

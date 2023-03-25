@@ -6,6 +6,7 @@ import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundPl
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
+import lombok.Getter;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.chatParsers.data.MutablePlayerListEntry;
 import net.kyori.adventure.text.Component;
@@ -16,7 +17,7 @@ import java.util.UUID;
 
 public class PlayersPlugin extends SessionAdapter {
     private final Bot bot;
-    public List<MutablePlayerListEntry> list = new ArrayList<>();
+    @Getter private List<MutablePlayerListEntry> list = new ArrayList<>();
 
     public PlayersPlugin (Bot bot) {
         this.bot = bot;
