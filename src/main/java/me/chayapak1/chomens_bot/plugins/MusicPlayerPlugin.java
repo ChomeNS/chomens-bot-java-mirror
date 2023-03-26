@@ -35,6 +35,9 @@ public class MusicPlayerPlugin extends SessionAdapter {
     @Getter @Setter private LinkedList<Song> songQueue = new LinkedList<>();
     @Getter @Setter private SongLoaderThread loaderThread;
     @Getter @Setter private Loop loop = Loop.OFF;
+
+    @Getter @Setter private boolean nightcore = false; // don't tell anyone plz..,,.,.
+
     private int ticksUntilPausedBossbar = 20;
     private final String bossbarName = "chomens_bot:music"; // maybe make this in the config?
 
@@ -109,7 +112,7 @@ public class MusicPlayerPlugin extends SessionAdapter {
                 bot.core().run("minecraft:bossbar add " + bossbarName + " \"\"");
                 bot.core().run("minecraft:bossbar set " + bossbarName + " players " + SELECTOR);
                 bot.core().run("minecraft:bossbar set " + bossbarName + " name " + GsonComponentSerializer.gson().serialize(generateBossbar()));
-                bot.core().run("minecraft:bossbar set " + bossbarName + " color yellow");
+                bot.core().run("minecraft:bossbar set " + bossbarName + " color " + (nightcore ? "purple" : "yellow"));
                 bot.core().run("minecraft:bossbar set " + bossbarName + " visible true");
                 bot.core().run("minecraft:bossbar set " + bossbarName + " style progress");
                 bot.core().run("minecraft:bossbar set " + bossbarName + " value " + (int) Math.floor(currentSong.time));
@@ -175,7 +178,7 @@ public class MusicPlayerPlugin extends SessionAdapter {
         final DecimalFormat formatter = new DecimalFormat("#,###");
 
         Component component = Component.empty()
-                .append(Component.empty().append(currentSong.name).color(NamedTextColor.GREEN))
+                .append(Component.empty().append(currentSong.name).color(nightcore ? NamedTextColor.LIGHT_PURPLE : NamedTextColor.GREEN))
                 .append(Component.text(" | ").color(NamedTextColor.DARK_GRAY))
                 .append(Component.translatable("%s / %s", formatTime(currentSong.time).color(NamedTextColor.GRAY), formatTime(currentSong.length).color(NamedTextColor.GRAY)).color(NamedTextColor.DARK_GRAY))
                 .append(Component.text(" | ").color(NamedTextColor.DARK_GRAY))
@@ -232,7 +235,7 @@ public class MusicPlayerPlugin extends SessionAdapter {
         while (currentSong.reachedNextNote()) {
             final Note note = currentSong.getNextNote();
 
-            final double floatingPitch = Math.pow(2, (note.pitch - 12) / 12.0);
+            final double floatingPitch = Math.pow(2, ((nightcore ? note.pitch + 1 : note.pitch) - 12) / 12.0);
 
             bot.core().run("minecraft:execute as " + SELECTOR + " at @s run playsound " + note.instrument.sound + " record @s ~ ~ ~ " + note.volume + " " + floatingPitch);
         }
