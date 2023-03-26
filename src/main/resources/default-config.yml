@@ -11,6 +11,12 @@ consolePrefixes:
 
 reconnectDelay: 7000
 
+discord:
+  prefix: 'default!'
+  token: 'token here'
+  servers:
+    localhost:25565: 'channel id'
+
 keys:
   normalKey: 'normal hash key here'
   ownerKey: 'OwnerHash™ key here'

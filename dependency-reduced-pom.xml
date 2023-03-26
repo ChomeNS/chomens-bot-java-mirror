@@ -46,6 +46,11 @@
       <name>Minecraft Libraries</name>
       <url>https://libraries.minecraft.net</url>
     </repository>
+    <repository>
+      <id>dv8tion</id>
+      <name>m2-dv8tion</name>
+      <url>https://m2.dv8tion.net/releases</url>
+    </repository>
   </repositories>
   <properties>
     <maven.compiler.target>17</maven.compiler.target>

@@ -53,6 +53,10 @@ public class Bot {
         this.allBots = allBots;
         this.config = config;
 
+        try {
+            DiscordPlugin.readyLatch().await();
+        } catch (InterruptedException ignored) { System.exit(1); }
+
         this.chat = new ChatPlugin(this);
         this.selfCare = new SelfCarePlugin(this);
         this.position = new PositionPlugin(this);

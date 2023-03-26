@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot;
 
 import lombok.Getter;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ public class Configuration {
     @Getter public Map<String, String> keys;
 
     @Getter public Core core = new Core();
+    @Getter public Discord discord = new Discord();
     @Getter public SelfCare selfCare = new SelfCare();
     @Getter public Bots[] bots = new Bots[]{};
 
@@ -23,6 +25,18 @@ public class Configuration {
         @Getter public int layers = 3;
         @Getter public int refillInterval = 60 * 1000;
         @Getter public String customName = "[{\"text\":\"ChomeNS \",\"color\":\"yellow\"},{\"text\":\"Core\",\"color\":\"green\"},{\"text\":\"™\",\"color\":\"gold\"}]";
+    }
+
+    public static class Discord {
+        @Getter public String prefix = "default!";
+        @Getter public String token;
+        @Getter public Map<String, String> servers = new HashMap<>();
+        @Getter public EmbedColors embedColors = new EmbedColors();
+    }
+
+    public static class EmbedColors {
+        @Getter public String normal = "#FFFF00";
+        @Getter public String error = "#FF0000";
     }
 
     public static class SelfCare {

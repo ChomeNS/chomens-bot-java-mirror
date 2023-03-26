@@ -5,6 +5,8 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.commands.*;
 import me.chayapak1.chomens_bot.util.ElementUtilities;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -44,7 +46,7 @@ public class CommandHandlerPlugin {
         commands.add(command);
     }
 
-    public Component executeCommand (String input, CommandContext context, String hash, String ownerHash) {
+    public Component executeCommand (String input, CommandContext context, boolean discord, String hash, String ownerHash, MessageReceivedEvent event) {
         final String[] splitInput = input.split("\\s+");
 
         final String commandName = splitInput[0];
@@ -68,17 +70,33 @@ public class CommandHandlerPlugin {
 
         final String[] args = Arrays.copyOfRange(splitInput, (trustLevel > 0) ? 2 : 1, splitInput.length);
 
+        // fix shit random messy code
         if (command.trustLevel() > 0) {
-            if (
-                    command.trustLevel() == 1 &&
-                            !userHash.equals(hash) &&
-                            !userHash.equals(ownerHash)
-            ) return Component.text("Invalid hash").color(NamedTextColor.RED);
+            if (!discord) {
+                final List<Role> roles = event.getMember().getRoles();
 
-            if (
-                    command.trustLevel() == 2 &&
-                            !userHash.equals(ownerHash)
-            ) return Component.text("Invalid OwnerHash").color(NamedTextColor.RED);
+                if (
+                        command.trustLevel() == 1 &&
+                                roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase("Trusted")) &&
+                                roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase("Host"))
+                ) return Component.text("You're not in the trusted role!").color(NamedTextColor.RED);
+
+                if (
+                        command.trustLevel() == 2 &&
+                                roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase("Host"))
+                ) return Component.text("You're not in the host role!").color(NamedTextColor.RED);
+            } else {
+                if (
+                        command.trustLevel() == 1 &&
+                                !userHash.equals(hash) &&
+                                !userHash.equals(ownerHash)
+                ) return Component.text("Invalid hash").color(NamedTextColor.RED);
+
+                if (
+                        command.trustLevel() == 2 &&
+                                !userHash.equals(ownerHash)
+                ) return Component.text("Invalid OwnerHash").color(NamedTextColor.RED);
+            }
         }
 
         try {
@@ -87,15 +105,19 @@ public class CommandHandlerPlugin {
             exception.printStackTrace();
 
             final String stackTrace = ExceptionUtils.getStackTrace(exception);
-            return Component
-                    .text("An error occurred while trying to execute the command, hover here for more details", NamedTextColor.RED)
-                    .hoverEvent(
-                            HoverEvent.showText(
-                                    Component
-                                            .text(stackTrace)
-                                            .color(NamedTextColor.RED)
-                            )
-                    );
+            if (!discord) {
+                return Component
+                        .text("An error occurred while trying to execute the command, hover here for more details", NamedTextColor.RED)
+                        .hoverEvent(
+                                HoverEvent.showText(
+                                        Component
+                                                .text(stackTrace)
+                                                .color(NamedTextColor.RED)
+                                )
+                        );
+            } else {
+                return Component.text(stackTrace).color(NamedTextColor.RED);
+            }
         }
     }
 

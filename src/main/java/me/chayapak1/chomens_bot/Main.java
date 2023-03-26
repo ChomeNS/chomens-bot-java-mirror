@@ -1,7 +1,7 @@
 package me.chayapak1.chomens_bot;
 
 import me.chayapak1.chomens_bot.plugins.ConsolePlugin;
-import org.yaml.snakeyaml.LoaderOptions;
+import me.chayapak1.chomens_bot.plugins.DiscordPlugin;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -11,6 +11,10 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 public class Main {
+    public static final List<Bot> allBots = new ArrayList<>();
+
+    public static CountDownLatch latch = null;
+
     public static void main(String[] args) throws IOException, InterruptedException {
         final File file = new File("config.yml");
         final Constructor constructor = new Constructor(Configuration.class);
@@ -47,9 +51,7 @@ public class Main {
 
         Configuration.Bots[] botsOptions = config.bots();
 
-        final List<Bot> allBots = new ArrayList<>();
-
-        final CountDownLatch latch = new CountDownLatch(botsOptions.length);
+        latch = new CountDownLatch(botsOptions.length);
 
         for (Configuration.Bots botOption : botsOptions) {
             final String host = botOption.host();
@@ -64,6 +66,8 @@ public class Main {
                 latch.countDown();
             }).start();
         }
+
+        new DiscordPlugin(config);
 
         latch.await();
         new ConsolePlugin(allBots);
