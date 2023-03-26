@@ -19,6 +19,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.jetbrains.annotations.NotNull;
 
@@ -87,7 +88,6 @@ public class DiscordPlugin {
                                               event.getAuthor().getId().equals(jda.getSelfUser().getId())
                               ) return;
 
-                              final String tag = event.getAuthor().getAsTag();
                               final Message _message = event.getMessage();
                               final String message = _message.getContentRaw();
 
@@ -104,10 +104,10 @@ public class DiscordPlugin {
                                   return;
                               }
 
-                              Component discordComponent = Component.empty();
+                              Component attachmentsComponent = Component.empty();
                               if (_message.getAttachments().size() > 0) {
                                   for (Message.Attachment attachment : _message.getAttachments()) {
-                                      discordComponent = discordComponent
+                                      attachmentsComponent = attachmentsComponent
                                               .append(Component.text(" "))
                                               .append(
                                                 Component
@@ -118,13 +118,45 @@ public class DiscordPlugin {
                                   }
                               }
 
+                              final String tag = event.getMember().getUser().getDiscriminator();
+
+                              String name = event.getMember().getNickname();
+                              final String fallbackName = event.getMember().getEffectiveName();
+                              if (name == null) name = fallbackName;
+
+                              final Component nameComponent = Component
+                                      .text(name)
+                                      .clickEvent(ClickEvent.copyToClipboard(fallbackName + "#" + tag))
+                                      .hoverEvent(
+                                              HoverEvent.showText(
+                                                      Component.translatable(
+                                                              "%s#%s\n%s",
+                                                              Component.text(fallbackName).color(NamedTextColor.WHITE),
+                                                              Component.text(tag).color(NamedTextColor.GRAY),
+                                                              Component.text("Click here to copy the tag to your clipboard").color(NamedTextColor.GREEN)
+                                                      ).color(NamedTextColor.DARK_GRAY)
+                                              )
+                                      )
+                                      .color(NamedTextColor.RED);
+
+                              final String discordUrl = "https://discord.gg/xdgCkUyaA4";
+
+                              final Component discordComponent = Component.empty()
+                                      .append(Component.text("ChomeNS ").color(NamedTextColor.YELLOW))
+                                      .append(Component.text("Discord").color(NamedTextColor.BLUE))
+                                      .hoverEvent(
+                                              HoverEvent.showText(
+                                                      Component.text("Click here to join the Discord server").color(NamedTextColor.GREEN)
+                                              )
+                                      )
+                                      .clickEvent(ClickEvent.openUrl(discordUrl));
+
                               final Component component = Component.translatable(
-                                      "[%s %s] %s › %s%s",
-                                      Component.text("ChomeNS").color(NamedTextColor.YELLOW),
-                                      Component.text("Discord").color(NamedTextColor.BLUE),
-                                      Component.text(tag).color(NamedTextColor.RED),
+                                      "[%s] %s › %s%s",
+                                      discordComponent,
+                                      nameComponent,
                                       Component.text(message).color(NamedTextColor.GRAY),
-                                      discordComponent
+                                      attachmentsComponent
                               ).color(NamedTextColor.DARK_GRAY);
                               bot.chat().tellraw(component);
                           }
