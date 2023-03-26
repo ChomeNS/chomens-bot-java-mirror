@@ -5,10 +5,7 @@ import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import lombok.Getter;
 import lombok.Setter;
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.song.Note;
-import me.chayapak1.chomens_bot.song.Song;
-import me.chayapak1.chomens_bot.song.SongLoaderException;
-import me.chayapak1.chomens_bot.song.SongLoaderThread;
+import me.chayapak1.chomens_bot.song.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -37,7 +34,7 @@ public class MusicPlayerPlugin extends SessionAdapter {
     @Getter @Setter private Song currentSong;
     @Getter @Setter private LinkedList<Song> songQueue = new LinkedList<>();
     @Getter @Setter private SongLoaderThread loaderThread;
-    @Getter @Setter private int loop = 0;
+    @Getter @Setter private Loop loop = Loop.OFF;
     private int ticksUntilPausedBossbar = 20;
     private final String bossbarName = "chomens_bot:music"; // maybe make this in the config?
 
@@ -126,11 +123,11 @@ public class MusicPlayerPlugin extends SessionAdapter {
                     removeBossbar();
                     bot.chat().tellraw(Component.translatable("Finished playing %s", Component.empty().append(currentSong.name).color(NamedTextColor.GOLD)));
 
-                    if (loop == 1) {
+                    if (loop == Loop.CURRENT) {
                         currentSong.setTime(0);
                         return;
                     }
-                    if (loop == 2) {
+                    if (loop == Loop.ALL) {
                         skip();
                         return;
                     }
@@ -158,7 +155,7 @@ public class MusicPlayerPlugin extends SessionAdapter {
     }
 
     public void skip () {
-        if (loop == 2) {
+        if (loop == Loop.ALL) {
             songQueue.add(songQueue.remove()); // bot.music.queue.push(bot.music.queue.shift()) in js
         } else {
             songQueue.remove();
@@ -196,10 +193,10 @@ public class MusicPlayerPlugin extends SessionAdapter {
                     .append(Component.text("Paused", NamedTextColor.LIGHT_PURPLE));
         }
 
-        if (loop > 0) {
+        if (loop != Loop.OFF) {
             return component
                     .append(Component.translatable(" | ", NamedTextColor.DARK_GRAY))
-                    .append(Component.translatable("Looping " + ((loop == 1) ? "current" : "all"), NamedTextColor.LIGHT_PURPLE));
+                    .append(Component.translatable("Looping " + ((loop == Loop.CURRENT) ? "current" : "all"), NamedTextColor.LIGHT_PURPLE));
         }
 
         return component;

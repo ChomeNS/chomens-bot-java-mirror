@@ -9,7 +9,6 @@ public class Song {
   public ArrayList<Note> notes = new ArrayList<>();
   public Component name;
   public int position = 0; // Current note index
-  public int looping = 0; // 0 for no looping, 1 for current loop, 2 for all loops
   public boolean paused = true;
   public long startTime = 0; // Start time in millis since unix epoch
   public long length = 0; // Milliseconds in the song
@@ -65,14 +64,11 @@ public class Song {
 
   public void setTime (long t) {
     time = t;
-//    System.out.println("time is " + time);
     startTime = System.currentTimeMillis() - time;
-//    System.out.println("start time is " + startTime);
     position = 0;
     while (position < notes.size() && notes.get(position).time < t) {
       position++;
     }
-//    System.out.println("position is " + position);
   }
 
   public void advanceTime () {
@@ -83,7 +79,7 @@ public class Song {
     if (position < notes.size()) {
       return notes.get(position).time <= time;
     } else {
-      if (finished() && bot.music().loop() > 0) {
+      if (finished() && bot.music().loop() != Loop.OFF) {
         if (position < notes.size()) {
           return notes.get(position).time <= time;
         } else {
@@ -97,7 +93,7 @@ public class Song {
 
   public Note getNextNote () {
     if (position >= notes.size()) {
-      if (bot.music().loop() == 0) return null;
+      if (bot.music().loop() == Loop.OFF) return null;
     }
     return notes.get(position++);
   }
@@ -105,53 +101,6 @@ public class Song {
   public boolean finished () {
     return time > length;
   }
-
-//  private void loop () {
-//    if (looping == 2) {
-//      System.out.println("before adding any single shit length " + bot.music().songQueue().size());
-//      System.out.println("looping is 2 position " + position);
-//      final Song toAdd = bot.music().songQueue().remove();
-//      System.out.println("TO ADD " + toAdd.name);
-//      bot.music().songQueue().add(toAdd);
-//      try {
-//        for (Song song : bot.music().songQueue()) {
-//          System.out.println("song in list here " + song.name);
-//        }
-//      } catch (Exception e) {
-//        e.printStackTrace();
-//      }
-//      System.out.println("BOT SONG QUEUEUE SIZE IS " + bot.music().songQueue().size());
-//    }
-//
-//    System.out.println("now doing the position and the shits to reset the shit TIME");
-//
-//    position = 0;
-//    startTime += length - loopPosition;
-//    time -= length - loopPosition;
-//    while (position < notes.size() && notes.get(position).time < loopPosition) {
-//      position++;
-//    }
-////   currentLoop++;
-//  }
-
-//  private boolean shouldLoop () {
-////    if (looping) {
-////      if (loopCount == 0) {
-////        return true;
-////      } else {
-////        return currentLoop < loopCount;
-////      }
-////    } else {
-////      return false;
-////    }
-//    if (looping == 1) {
-//      if (loopCount == 0) {
-//        return true;
-//      } else {
-//        return currentLoop < loopCount;
-//      }
-//    } else return looping == 2;
-//  }
 
   public int size () {
     return notes.size();

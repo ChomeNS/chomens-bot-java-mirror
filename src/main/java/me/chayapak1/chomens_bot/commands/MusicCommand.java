@@ -4,6 +4,7 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.plugins.MusicPlayerPlugin;
+import me.chayapak1.chomens_bot.song.Loop;
 import me.chayapak1.chomens_bot.song.Song;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
@@ -115,10 +116,10 @@ public class MusicCommand implements Command {
     public Component loop (CommandContext context, String[] args) {
         final Bot bot = context.bot();
 
-        int loop;
+        Loop loop;
         switch (args[1]) {
             case "off" -> {
-                loop = 0;
+                loop = Loop.OFF;
                 context.sendOutput(
                         Component.empty()
                                 .append(Component.text("Looping is now "))
@@ -126,7 +127,7 @@ public class MusicCommand implements Command {
                 );
             }
             case "current" -> {
-                loop = 1;
+                loop = Loop.CURRENT;
                 context.sendOutput(
                         Component.empty()
                                 .append(Component.text("Now looping "))
@@ -134,7 +135,7 @@ public class MusicCommand implements Command {
                 );
             }
             case "all" -> {
-                loop = 2;
+                loop = Loop.ALL;
                 context.sendOutput(Component.text("Now looping every song"));
             }
             default -> {

@@ -152,7 +152,6 @@ public class NBSConverter {
 
     Song song = new Song(songName.trim().length() > 0 ? songName : fileName, bot);
     if (loop > 0) {
-      song.looping = 1;
       song.loopPosition = getMilliTime(loopStartTick, tempo);
 //      song.loopCount = maxLoopCount;
     }
