@@ -12,11 +12,13 @@ import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.EscapeCodeBlock;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.jetbrains.annotations.NotNull;
 
@@ -86,7 +88,8 @@ public class DiscordPlugin {
                               ) return;
 
                               final String tag = event.getAuthor().getAsTag();
-                              final String message = event.getMessage().getContentRaw();
+                              final Message _message = event.getMessage();
+                              final String message = _message.getContentRaw();
 
                               if (message.startsWith(prefix)) {
                                   final DiscordCommandContext context = new DiscordCommandContext(bot, prefix, event, null, null);
@@ -101,12 +104,27 @@ public class DiscordPlugin {
                                   return;
                               }
 
+                              Component discordComponent = Component.empty();
+                              if (_message.getAttachments().size() > 0) {
+                                  for (Message.Attachment attachment : _message.getAttachments()) {
+                                      discordComponent = discordComponent
+                                              .append(Component.text(" "))
+                                              .append(
+                                                Component
+                                                          .text("[Attachment]")
+                                                          .clickEvent(ClickEvent.openUrl(attachment.getProxyUrl()))
+                                                          .color(NamedTextColor.GREEN)
+                                              );
+                                  }
+                              }
+
                               final Component component = Component.translatable(
-                                      "[%s %s] %s › %s",
+                                      "[%s %s] %s › %s%s",
                                       Component.text("ChomeNS").color(NamedTextColor.YELLOW),
                                       Component.text("Discord").color(NamedTextColor.BLUE),
                                       Component.text(tag).color(NamedTextColor.RED),
-                                      Component.text(message).color(NamedTextColor.GRAY)
+                                      Component.text(message).color(NamedTextColor.GRAY),
+                                      discordComponent
                               ).color(NamedTextColor.DARK_GRAY);
                               bot.chat().tellraw(component);
                           }
@@ -186,8 +204,13 @@ public class DiscordPlugin {
             synchronized (logMessages) {
                 StringBuilder logMessage = logMessages.get(channelId);
                 message = logMessage.toString();
-                if (message.length() >= 2000) {
-                    message = message.substring(0, 2000);
+                final int maxLength = 2_000 - ("""
+                        ```ansi
+
+                        ```"""
+                ).length(); // kinda sus
+                if (message.length() >= maxLength) {
+                    message = message.substring(0, maxLength);
                 }
                 logMessage.setLength(0);
             }
