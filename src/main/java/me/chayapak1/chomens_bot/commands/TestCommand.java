@@ -17,7 +17,7 @@ public class TestCommand implements Command {
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
-        usages.add("");
+        usages.add("[{args}]");
 
         return usages;
     }
@@ -34,12 +34,15 @@ public class TestCommand implements Command {
     }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        context.sendOutput(
-                Component.empty()
-                        .append(Component.text("Hello, World! Username: "))
-                        .append(context.displayName())
-                        .color(NamedTextColor.GREEN)
-        );
+        final Component component = Component.translatable(
+                "Hello, World! Username: %s, Sender UUID: %s, Prefix: %s, Args: %s",
+                context.displayName(),
+                Component.text(context.sender().profile().getIdAsString()),
+                Component.text(context.prefix()),
+                Component.text(String.join(", ", args))
+        ).color(NamedTextColor.GREEN);
+
+        context.sendOutput(component);
 
         return Component.text("success");
     }

@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.command;
 
 import lombok.Getter;
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.chatParsers.data.MutablePlayerListEntry;
 import net.kyori.adventure.text.Component;
 
 public class PlayerCommandContext extends CommandContext {
@@ -11,8 +12,8 @@ public class PlayerCommandContext extends CommandContext {
 
     private final Bot bot;
 
-    public PlayerCommandContext (Bot bot, String playerName, String prefix, String selector, String hash, String ownerHash) {
-        super(bot, prefix, hash, ownerHash);
+    public PlayerCommandContext (Bot bot, String playerName, String prefix, String selector, MutablePlayerListEntry sender, String hash, String ownerHash) {
+        super(bot, prefix, sender, hash, ownerHash);
         this.bot = bot;
         this.playerName = playerName;
         this.selector = selector;

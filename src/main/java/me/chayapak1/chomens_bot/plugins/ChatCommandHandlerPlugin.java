@@ -53,7 +53,7 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.ChatListener {
 
         final String selector = cspy ? UUIDUtilities.selector(message.sender().profile().getId()) : "@a";
 
-        final PlayerCommandContext context = new PlayerCommandContext(bot, displayName, prefix, selector, bot.hashing().hash(), bot.hashing().ownerHash());
+        final PlayerCommandContext context = new PlayerCommandContext(bot, displayName, prefix, selector, message.sender(), bot.hashing().hash(), bot.hashing().ownerHash());
 
         final Component output = bot.commandHandler().executeCommand(commandString, context, bot.hashing().hash(), bot.hashing().ownerHash());
         final String textOutput = ((TextComponent) output).content();
