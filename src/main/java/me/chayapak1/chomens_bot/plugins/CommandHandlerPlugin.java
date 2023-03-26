@@ -60,19 +60,19 @@ public class CommandHandlerPlugin {
         final String[] fullArgs = Arrays.copyOfRange(splitInput, 1, splitInput.length);
         final int longestUsageIndex = getLongestUsageIndex(command.usage());
         final String usage = command.usage().get(longestUsageIndex);
-        final int minimumArgs = getMinimumArgs(usage);
-        final int maximumArgs = getMaximumArgs(usage);
+        final int minimumArgs = getMinimumArgs(usage, discord, command.trustLevel());
+        final int maximumArgs = getMaximumArgs(usage, discord, command.trustLevel());
         if (fullArgs.length < minimumArgs) return Component.text("Excepted minimum of " + minimumArgs + " argument(s), got " + fullArgs.length).color(NamedTextColor.RED);
         if (fullArgs.length > maximumArgs && !usage.contains("{")) return Component.text("Too much arguments, expected " + maximumArgs + " max").color(NamedTextColor.RED);
 
         String userHash = "";
         if (trustLevel > 0 && splitInput.length >= 2) userHash = splitInput[1];
 
-        final String[] args = Arrays.copyOfRange(splitInput, (trustLevel > 0) ? 2 : 1, splitInput.length);
+        final String[] args = Arrays.copyOfRange(splitInput, (trustLevel > 0 && !discord) ? 2 : 1, splitInput.length);
 
         // fix shit random messy code
         if (command.trustLevel() > 0) {
-            if (!discord) {
+            if (discord) {
                 final List<Role> roles = event.getMember().getRoles();
 
                 if (
@@ -134,7 +134,7 @@ public class CommandHandlerPlugin {
         return longestIndex;
     }
 
-    private static int getMinimumArgs(String usage) {
+    private static int getMinimumArgs(String usage, boolean discord, int trustLevel) {
         int count = 0;
         for (int i = 0; i < usage.length(); i++) {
             if (usage.charAt(i) == '<') {
@@ -142,16 +142,18 @@ public class CommandHandlerPlugin {
             }
         }
         if (usage.contains("<hash>")) count--; // bad fix?
+        if ((discord && trustLevel > 0)) count--;
         return count;
     }
 
-    private static int getMaximumArgs(String usage) {
+    private static int getMaximumArgs(String usage, boolean discord, int trustLevel) {
         int count = 0;
         for (int i = 0; i < usage.length(); i++) {
             if (usage.charAt(i) == '<' || usage.charAt(i) == '[') {
                 count++;
             }
         }
+        if (discord && trustLevel > 0) count++;
         return count;
     }
 }
