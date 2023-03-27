@@ -7,10 +7,10 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 // idea totallynotskidded™ from chipmunkbot (the js one)
-public class AntiClearChatPlugin extends ChatPlugin.ChatListener {
+public class ClearChatUsernamePlugin extends ChatPlugin.ChatListener {
     private final Bot bot;
 
-    public AntiClearChatPlugin (Bot bot) {
+    public ClearChatUsernamePlugin(Bot bot) {
         this.bot = bot;
 
         bot.chat().addListener(this);

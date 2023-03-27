@@ -2,6 +2,7 @@ package land.chipmunk.chayapak.chomens_bot;
 
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ public class Configuration {
 
     @Getter public Core core = new Core();
     @Getter public Discord discord = new Discord();
+    @Getter public List<String> trusted = new ArrayList<>();
     @Getter public SelfCare selfCare = new SelfCare();
     @Getter public Bots[] bots = new Bots[]{};
 
@@ -60,5 +62,6 @@ public class Configuration {
         @Getter public int port;
         @Getter public String username;
         @Getter public boolean kaboom = false;
+        @Getter public String serverName;
     }
 }

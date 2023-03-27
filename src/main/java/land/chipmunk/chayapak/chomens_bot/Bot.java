@@ -23,6 +23,7 @@ public class Bot {
     @Getter private final int port;
     private final String _username;
     @Getter private final boolean kaboom;
+    @Getter private final String serverName;
     @Getter private final List<Bot> allBots;
     @Getter private final Configuration config;
 
@@ -44,13 +45,15 @@ public class Bot {
     @Getter private final MusicPlayerPlugin music;
     @Getter private final TPSPlugin tps;
     @Getter private final EvalRunnerPlugin eval;
-    @Getter private final AntiClearChatPlugin antiClearChat;
+    @Getter private final ClearChatUsernamePlugin clearChatUsername;
+    @Getter private final TrustedPlugin trusted;
 
-    public Bot (String host, int port, String _username, boolean kaboom, List<Bot> allBots, Configuration config) {
+    public Bot (String host, int port, String _username, boolean kaboom, String serverName, List<Bot> allBots, Configuration config) {
         this.host = host;
         this.port = port;
         this._username = _username;
         this.kaboom = kaboom;
+        this.serverName = serverName;
         this.allBots = allBots;
         this.config = config;
 
@@ -70,7 +73,8 @@ public class Bot {
         this.music = new MusicPlayerPlugin(this);
         this.tps = new TPSPlugin(this);
         this.eval = new EvalRunnerPlugin(this);
-        this.antiClearChat = new AntiClearChatPlugin(this);
+        this.clearChatUsername = new ClearChatUsernamePlugin(this);
+        this.trusted = new TrustedPlugin(this);
 
         reconnect();
     }

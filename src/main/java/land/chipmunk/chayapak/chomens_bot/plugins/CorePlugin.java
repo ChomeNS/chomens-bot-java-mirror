@@ -53,6 +53,8 @@ public class CorePlugin extends PositionPlugin.PositionListener {
     }
 
     public void run (String command) {
+        if (!ready) return;
+
         bot.session().send(new ServerboundSetCommandBlockPacket(
                 absoluteCorePosition(),
                 "",
