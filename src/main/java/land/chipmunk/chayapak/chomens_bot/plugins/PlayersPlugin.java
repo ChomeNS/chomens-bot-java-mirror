@@ -85,7 +85,8 @@ public class PlayersPlugin extends SessionAdapter {
 
         list.add(target);
 
-        for (PlayerListener listener : listeners) { listener.playerJoined(target); }
+        if (duplicate == null) for (PlayerListener listener : listeners) { listener.playerJoined(target); }
+        else for (PlayerListener listener : listeners) { listener.playerUnVanished(target); }
     }
 
     private void updateGamemode (PlayerListEntry newEntry) {
@@ -132,6 +133,7 @@ public class PlayersPlugin extends SessionAdapter {
 
             for (int i = 0; i < matches.length; i++) {
                 if (tooltips[i] != null || !matches[i].equals(username)) continue;
+                for (PlayerListener listener : listeners) { listener.playerVanished(target); }
                 return packet;
             }
 
@@ -147,9 +149,11 @@ public class PlayersPlugin extends SessionAdapter {
 
     public static class PlayerListener {
         public void playerJoined (MutablePlayerListEntry target) {}
+        public void playerUnVanished (MutablePlayerListEntry target) {}
         public void playerGameModeUpdated (MutablePlayerListEntry target, GameMode gameMode) {}
         public void playerLatencyUpdated (MutablePlayerListEntry target, int ping) {}
         public void playerDisplayNameUpdated (MutablePlayerListEntry target, Component displayName) {}
         public void playerLeft (MutablePlayerListEntry target) {}
+        public void playerVanished (MutablePlayerListEntry target) {}
     }
 }

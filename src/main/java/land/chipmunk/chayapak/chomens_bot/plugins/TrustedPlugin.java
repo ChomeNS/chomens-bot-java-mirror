@@ -44,7 +44,8 @@ public class TrustedPlugin extends PlayersPlugin.PlayerListener {
                 Component.empty()
                         .append(Component.text("Hello, ").color(NamedTextColor.GREEN))
                         .append(Component.text(target.profile().getName()).color(NamedTextColor.GOLD))
-                        .append(Component.text("!").color(NamedTextColor.GREEN))
+                        .append(Component.text("!").color(NamedTextColor.GREEN)),
+                target.profile().getId()
         );
 
         broadcast(
