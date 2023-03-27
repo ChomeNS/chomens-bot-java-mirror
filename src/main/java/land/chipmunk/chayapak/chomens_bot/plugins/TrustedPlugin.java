@@ -40,6 +40,13 @@ public class TrustedPlugin extends PlayersPlugin.PlayerListener {
     public void playerJoined (MutablePlayerListEntry target) {
         if (!trusted.contains(target.profile().getName())) return;
 
+        bot.chat().tellraw(
+                Component.empty()
+                        .append(Component.text("Hello, ").color(NamedTextColor.GREEN))
+                        .append(Component.text(target.profile().getName()).color(NamedTextColor.GOLD))
+                        .append(Component.text("!").color(NamedTextColor.GREEN))
+        );
+
         broadcast(
                 Component.translatable(
                         "Trusted player %s is now online",
