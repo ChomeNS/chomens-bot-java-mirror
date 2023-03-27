@@ -44,6 +44,7 @@ public class Bot {
     @Getter private final MusicPlayerPlugin music;
     @Getter private final TPSPlugin tps;
     @Getter private final EvalRunnerPlugin eval;
+    @Getter private final AntiClearChatPlugin antiClearChat;
 
     public Bot (String host, int port, String _username, boolean kaboom, List<Bot> allBots, Configuration config) {
         this.host = host;
@@ -69,6 +70,7 @@ public class Bot {
         this.music = new MusicPlayerPlugin(this);
         this.tps = new TPSPlugin(this);
         this.eval = new EvalRunnerPlugin(this);
+        this.antiClearChat = new AntiClearChatPlugin(this);
 
         reconnect();
     }
