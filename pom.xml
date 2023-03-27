@@ -132,7 +132,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>me.chayapak1.chomens_bot.Main</mainClass>
+                            <mainClass>land.chipmunk.chayapak.chomens_bot.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
