@@ -70,15 +70,16 @@ public class DiscordPlugin {
         for (Bot bot : Main.allBots) {
             String channelId = servers.get(bot.host() + ":" + bot.port());
 
-            boolean channelAlreadyAddedListeners = alreadyAddedListeners.getOrDefault(channelId, false);
-
               bot.addListener(new SessionAdapter() {
                   @Override
                   public void connected(ConnectedEvent event) {
                       boolean channelAlreadyAddedListeners = alreadyAddedListeners.getOrDefault(channelId, false);
-                      if (channelAlreadyAddedListeners) return;
 
                       sendMessageInstantly("Successfully connected to: " + "`" + bot.host() + ":" + bot.port() + "`", channelId);
+
+                      if (channelAlreadyAddedListeners) return;
+
+                      alreadyAddedListeners.put(channelId, true);
 
                       jda.addEventListener(new ListenerAdapter() {
                           @Override
@@ -161,8 +162,6 @@ public class DiscordPlugin {
                               bot.chat().tellraw(component);
                           }
                       });
-
-                      alreadyAddedListeners.put(channelId, true);
 
                       bot.chat().addListener(new ChatPlugin.ChatListener() {
                           @Override

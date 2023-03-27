@@ -40,6 +40,8 @@ public class CommandHandlerPlugin {
         registerCommand(new ClearChatCommand());
         registerCommand(new ListCommand());
         registerCommand(new ServerEvalCommand());
+        registerCommand(new UUIDCommand());
+        registerCommand(new TimeCommand());
     }
 
     public void registerCommand (Command command) {
