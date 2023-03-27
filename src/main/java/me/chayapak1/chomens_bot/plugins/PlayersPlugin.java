@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.plugins;
 
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;
+import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundPlayerInfoPacket;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
@@ -18,6 +19,8 @@ import java.util.UUID;
 public class PlayersPlugin extends SessionAdapter {
     private final Bot bot;
     @Getter private List<MutablePlayerListEntry> list = new ArrayList<>();
+
+    private final List<PlayerListener> listeners = new ArrayList<>();
 
     public PlayersPlugin (Bot bot) {
         this.bot = bot;
@@ -78,28 +81,44 @@ public class PlayersPlugin extends SessionAdapter {
         final MutablePlayerListEntry duplicate = getEntry(newEntry);
         if (duplicate != null) list.remove(duplicate);
 
-        list.add(new MutablePlayerListEntry(newEntry));
+        final MutablePlayerListEntry target = new MutablePlayerListEntry(newEntry);
+
+        list.add(target);
+
+        for (PlayerListener listener : listeners) { listener.playerJoined(target); }
     }
 
     private void updateGamemode (PlayerListEntry newEntry) {
         final MutablePlayerListEntry target = getEntry(newEntry);
         if (target == null) return;
 
-        target.gamemode(newEntry.getGameMode());
+        final GameMode gameMode = newEntry.getGameMode();
+
+        target.gamemode(gameMode);
+
+        for (PlayerListener listener : listeners) { listener.playerGameModeUpdated(target, gameMode); }
     }
 
     private void updateLatency (PlayerListEntry newEntry) {
         final MutablePlayerListEntry target = getEntry(newEntry);
         if (target == null) return;
 
-        target.latency(newEntry.getPing());
+        final int ping = newEntry.getPing();
+
+        target.latency(ping);
+
+        for (PlayerListener listener : listeners) { listener.playerLatencyUpdated(target, ping); }
     }
 
     private void updateDisplayName (PlayerListEntry newEntry) {
         final MutablePlayerListEntry target = getEntry(newEntry);
         if (target == null) return;
 
-        target.displayName(newEntry.getDisplayName());
+        final Component displayName = newEntry.getDisplayName();
+
+        target.displayName(displayName);
+
+        for (PlayerListener listener : listeners) { listener.playerDisplayNameUpdated(target, displayName); }
     }
 
     private void removePlayer (PlayerListEntry newEntry) {
@@ -117,7 +136,20 @@ public class PlayersPlugin extends SessionAdapter {
             }
 
             list.remove(target);
+
+            for (PlayerListener listener : listeners) { listener.playerLeft(target); }
+
             return packet;
         });
+    }
+
+    public void addListener (PlayerListener listener) { listeners.add(listener); }
+
+    public static class PlayerListener {
+        public void playerJoined (MutablePlayerListEntry target) {}
+        public void playerGameModeUpdated (MutablePlayerListEntry target, GameMode gameMode) {}
+        public void playerLatencyUpdated (MutablePlayerListEntry target, int ping) {}
+        public void playerDisplayNameUpdated (MutablePlayerListEntry target, Component displayName) {}
+        public void playerLeft (MutablePlayerListEntry target) {}
     }
 }
