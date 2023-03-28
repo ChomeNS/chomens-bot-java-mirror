@@ -8,8 +8,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 public class BruhifyPlugin {
     @Getter @Setter private String bruhifyText = "";
@@ -17,29 +16,24 @@ public class BruhifyPlugin {
     private int startHue = 0;
 
     public BruhifyPlugin (Bot bot) {
-        final Timer timer = new Timer();
+        bot.executor().scheduleAtFixedRate(() -> {
+            if (bruhifyText.equals("")) return;
 
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (bruhifyText.equals("")) return;
+            int hue = startHue;
+            String displayName = bruhifyText;
+            int increment = (int)(360.0 / Math.max(displayName.length(), 20));
 
-                int hue = startHue;
-                String displayName = bruhifyText;
-                int increment = (int)(360.0 / Math.max(displayName.length(), 20));
+            Component component = Component.empty();
 
-                Component component = Component.empty();
-
-                for (char character : displayName.toCharArray()) {
-                    String color = String.format("#%06x", ColorUtilities.hsvToRgb(hue, 100, 100));
-                    component = component.append(Component.text(character).color(TextColor.fromHexString(color)));
-                    hue = (hue + increment) % 360;
-                }
-
-                bot.core().run("minecraft:title @a actionbar " + GsonComponentSerializer.gson().serialize(component));
-
-                startHue = (startHue + increment) % 360;
+            for (char character : displayName.toCharArray()) {
+                String color = String.format("#%06x", ColorUtilities.hsvToRgb(hue, 100, 100));
+                component = component.append(Component.text(character).color(TextColor.fromHexString(color)));
+                hue = (hue + increment) % 360;
             }
-        }, 50, 100);
+
+            bot.core().run("minecraft:title @a actionbar " + GsonComponentSerializer.gson().serialize(component));
+
+            startHue = (startHue + increment) % 360;
+        }, 50, 100, TimeUnit.MILLISECONDS);
     }
 }

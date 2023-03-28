@@ -4,6 +4,7 @@ import com.github.steveice10.packetlib.event.session.ConnectedEvent;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import land.chipmunk.chayapak.chomens_bot.Bot;
+import land.chipmunk.chayapak.chomens_bot.Logger;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import net.kyori.adventure.text.Component;
 
@@ -29,11 +30,16 @@ public class LoggerPlugin extends ChatPlugin.ChatListener {
     }
 
     public void log (String message) {
-        bot.console().reader().printAbove(
-                String.format(
-                        "[%s] %s",
-                        bot.host() + ":" + bot.port(),
-                        message
+        final String formattedMessage = String.format(
+                "[%s] %s",
+                bot.host() + ":" + bot.port(),
+                message
+        );
+        bot.console().reader().printAbove(formattedMessage);
+        Logger.log(
+                formattedMessage.replaceAll( // use replaceAll for regexes, use replace for normal string
+                        "\u001B\\[[;\\d]*[ -/]*[@-~]",
+                        ""
                 )
         );
     }

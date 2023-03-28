@@ -21,6 +21,7 @@ import lombok.Getter;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class CorePlugin extends PositionPlugin.PositionListener {
     private final Bot bot;
@@ -118,13 +119,7 @@ public class CorePlugin extends PositionPlugin.PositionListener {
         if (!ready) {
             ready = true;
 
-            final Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    refill();
-                }
-            }, 1, bot.config().core().refillInterval());
+            bot.executor().scheduleAtFixedRate(this::refill, 0, bot.config().core().refillInterval(), TimeUnit.MILLISECONDS);
             for (Listener listener : listeners) listener.ready();
         }
     }

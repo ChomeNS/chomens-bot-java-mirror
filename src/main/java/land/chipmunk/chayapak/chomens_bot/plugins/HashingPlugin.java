@@ -5,8 +5,7 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import lombok.Getter;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 public class HashingPlugin {
     private final Bot bot;
@@ -17,13 +16,7 @@ public class HashingPlugin {
     public HashingPlugin (Bot bot) {
         this.bot = bot;
 
-        final Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                update();
-            }
-        }, 1, 1000);
+        bot.executor().scheduleAtFixedRate(this::update, 0, 1, TimeUnit.SECONDS);
     }
 
     public void update () {

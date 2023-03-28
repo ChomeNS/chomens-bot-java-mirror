@@ -13,8 +13,9 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Bot {
     private final ArrayList<SessionListener> listeners = new ArrayList<>();
@@ -30,6 +31,8 @@ public class Bot {
     @Getter private String username;
 
     @Getter private Session session;
+
+    @Getter private ScheduledExecutorService executor = Executors.newScheduledThreadPool(100);
 
     @Getter @Setter private ConsolePlugin console;
     @Getter @Setter private LoggerPlugin logger; // in ConsolePlugin
@@ -140,13 +143,7 @@ public class Bot {
 
                 if (reconnectDelay < 0) return; // to disable reconnecting
 
-                final Timer timer = new Timer();
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        reconnect();
-                    }
-                }, reconnectDelay);
+                executor.schedule(() -> reconnect(), reconnectDelay, TimeUnit.MILLISECONDS);
             }
         });
 

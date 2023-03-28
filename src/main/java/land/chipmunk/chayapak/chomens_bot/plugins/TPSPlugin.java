@@ -12,8 +12,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.util.Arrays;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 public class TPSPlugin extends SessionAdapter {
     private final Bot bot;
@@ -32,13 +31,7 @@ public class TPSPlugin extends SessionAdapter {
 
         bot.addListener(this);
 
-        final Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                updateTPSBar();
-            }
-        }, 1, 50);
+        bot.executor().scheduleAtFixedRate(this::updateTPSBar, 0, 50, TimeUnit.MILLISECONDS);
     }
 
     public void on () {

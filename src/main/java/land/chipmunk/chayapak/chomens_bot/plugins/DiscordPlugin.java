@@ -26,9 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.security.auth.login.LoginException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class DiscordPlugin {
     @Getter private JDA jda;
@@ -171,15 +170,7 @@ public class DiscordPlugin {
                           }
                       });
 
-                      final TimerTask task = new TimerTask() {
-                          @Override
-                          public void run() {
-                              onDiscordTick(channelId);
-                          }
-                      };
-
-                      final Timer timer = new Timer();
-                      timer.schedule(task, 50, 50);
+                      bot.executor().scheduleAtFixedRate(() -> onDiscordTick(channelId), 0, 50, TimeUnit.MILLISECONDS);
                   }
 
                   @Override

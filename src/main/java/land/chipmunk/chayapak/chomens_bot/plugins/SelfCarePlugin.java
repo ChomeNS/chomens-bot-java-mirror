@@ -16,19 +16,19 @@ import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.packet.PacketProtocol;
-import lombok.Getter;
-import lombok.Setter;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Configuration;
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class SelfCarePlugin extends SessionAdapter {
     private final Bot bot;
 
-    private TimerTask checkTask;
+    private ScheduledFuture<?> checkTask;
 
     @Getter @Setter boolean visibility = false;
 
@@ -108,25 +108,21 @@ public class SelfCarePlugin extends SessionAdapter {
         muted = false;
         prefix = false;
 
-        checkTask = new TimerTask() {
-            @Override
-            public void run() {
-                final Session session = bot.session();
-                final PacketProtocol protocol = session.getPacketProtocol();
-                if (
-                        !session.isConnected() ||
-                                (
-                                        protocol instanceof MinecraftProtocol &&
-                                                ((MinecraftProtocol) protocol).getState() != ProtocolState.GAME
-                                )
-                ) return;
+        final Runnable task = () -> {
+            final Session session = bot.session();
+            final PacketProtocol protocol = session.getPacketProtocol();
+            if (
+                    !session.isConnected() ||
+                            (
+                                    protocol instanceof MinecraftProtocol &&
+                                            ((MinecraftProtocol) protocol).getState() != ProtocolState.GAME
+                            )
+            ) return;
 
-                check();
-            }
+            check();
         };
 
-        final Timer timer = new Timer();
-        timer.schedule(checkTask, 1, bot.config().selfCare().checkInterval());
+        checkTask = bot.executor().scheduleAtFixedRate(task, 0, bot.config().selfCare().checkInterval(), TimeUnit.MILLISECONDS);
     }
 
     public void packetReceived (ClientboundGameEventPacket packet) {
@@ -156,6 +152,6 @@ public class SelfCarePlugin extends SessionAdapter {
 
     @Override
     public void disconnected (DisconnectedEvent event) {
-        checkTask.cancel();
+        checkTask.cancel(true);
     }
 }
