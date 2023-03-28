@@ -157,7 +157,7 @@ public class DiscordPlugin {
                                       "[%s] %s › %s%s",
                                       discordComponent,
                                       nameComponent,
-                                      Component.text(message).color(NamedTextColor.GRAY),
+                                      Component.text(message.replace("\uD83D", "☠") /* mirko forced me to do it :( */).color(NamedTextColor.GRAY),
                                       attachmentsComponent
                               ).color(NamedTextColor.DARK_GRAY);
                               bot.chat().tellraw(component);
