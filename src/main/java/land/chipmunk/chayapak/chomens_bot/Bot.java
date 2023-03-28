@@ -47,6 +47,7 @@ public class Bot {
     @Getter private final EvalRunnerPlugin eval;
     @Getter private final ClearChatUsernamePlugin clearChatUsername;
     @Getter private final TrustedPlugin trusted;
+    @Getter private final BruhifyPlugin bruhify;
 
     public Bot (String host, int port, String _username, boolean kaboom, String serverName, List<Bot> allBots, Configuration config) {
         this.host = host;
@@ -75,6 +76,7 @@ public class Bot {
         this.eval = new EvalRunnerPlugin(this);
         this.clearChatUsername = new ClearChatUsernamePlugin(this);
         this.trusted = new TrustedPlugin(this);
+        this.bruhify = new BruhifyPlugin(this);
 
         reconnect();
     }

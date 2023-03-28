@@ -42,6 +42,7 @@ public class CommandHandlerPlugin {
         registerCommand(new ServerEvalCommand());
         registerCommand(new UUIDCommand());
         registerCommand(new TimeCommand());
+        registerCommand(new BruhifyCommand());
     }
 
     public void registerCommand (Command command) {
