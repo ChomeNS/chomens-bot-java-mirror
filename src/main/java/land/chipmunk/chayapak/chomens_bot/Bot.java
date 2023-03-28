@@ -118,7 +118,7 @@ public class Bot {
                 for (SessionListener listener : listeners) {
                     listener.packetError(packetErrorEvent);
                 }
-                packetErrorEvent.setSuppress(false); // ? idk what this does but whatever
+                packetErrorEvent.setSuppress(true); // fix the ohio sus exploit
             }
 
             @Override
