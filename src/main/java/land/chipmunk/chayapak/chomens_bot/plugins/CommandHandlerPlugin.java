@@ -43,6 +43,7 @@ public class CommandHandlerPlugin {
         registerCommand(new UUIDCommand());
         registerCommand(new TimeCommand());
         registerCommand(new BruhifyCommand());
+        registerCommand(new GrepLogCommand());
     }
 
     public void registerCommand (Command command) {

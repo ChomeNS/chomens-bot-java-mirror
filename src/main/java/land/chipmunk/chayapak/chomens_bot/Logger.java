@@ -84,7 +84,7 @@ public class Logger {
     }
 
     public static synchronized void compressLogFile() throws IOException {
-        if (Files.size(logFile.toPath()) > 100*1024*1024) { // Will not save because log file is too big
+        if (Files.size(logFile.toPath()) > 100 * 1024 * 1024) { // Will not save because log file is too big
             return;
         }
 

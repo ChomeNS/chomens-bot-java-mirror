@@ -69,6 +69,8 @@ public class DiscordPlugin {
         for (Bot bot : Main.allBots) {
             String channelId = servers.get(bot.host() + ":" + bot.port());
 
+            bot.discord(this);
+
               bot.addListener(new SessionAdapter() {
                   @Override
                   public void connected(ConnectedEvent event) {

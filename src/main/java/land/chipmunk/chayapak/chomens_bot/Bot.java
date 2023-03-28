@@ -36,6 +36,7 @@ public class Bot {
 
     @Getter @Setter private ConsolePlugin console;
     @Getter @Setter private LoggerPlugin logger; // in ConsolePlugin
+    @Getter @Setter private DiscordPlugin discord;
     @Getter private final ChatPlugin chat;
     @Getter private final SelfCarePlugin selfCare;
     @Getter private final PositionPlugin position;
@@ -51,6 +52,7 @@ public class Bot {
     @Getter private final ClearChatUsernamePlugin clearChatUsername;
     @Getter private final TrustedPlugin trusted;
     @Getter private final BruhifyPlugin bruhify;
+    @Getter private final GrepLogPlugin grepLog;
 
     public Bot (String host, int port, String _username, boolean kaboom, String serverName, List<Bot> allBots, Configuration config) {
         this.host = host;
@@ -80,6 +82,7 @@ public class Bot {
         this.clearChatUsername = new ClearChatUsernamePlugin(this);
         this.trusted = new TrustedPlugin(this);
         this.bruhify = new BruhifyPlugin(this);
+        this.grepLog = new GrepLogPlugin(this);
 
         reconnect();
     }
