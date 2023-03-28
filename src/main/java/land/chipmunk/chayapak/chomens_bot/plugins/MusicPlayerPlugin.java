@@ -148,7 +148,7 @@ public class MusicPlayerPlugin extends SessionAdapter {
             }
         };
 
-        playTask = bot.executor().schedule(task, 50, TimeUnit.MILLISECONDS);
+        playTask = bot.executor().scheduleAtFixedRate(task, 50, 50, TimeUnit.MILLISECONDS);
 
         if (currentSong != null) currentSong.play();
     }
