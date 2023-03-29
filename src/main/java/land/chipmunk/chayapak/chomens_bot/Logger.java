@@ -20,7 +20,6 @@ public class Logger {
 
     public static LocalDate currentLogDate;
     public static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("'['dd/MM/yyyy HH:mm:ss']' ");
-    public static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("'dd/MM/yyyy'");
 
     public static String prevEntry = "";
     public static int duplicateCounter = 1;
@@ -30,14 +29,18 @@ public class Logger {
     public static long freezeTime = 0;
 
     static {
-        init();
-        executor.scheduleAtFixedRate(() -> {
-            try {
-                tick();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }, 0, 50, TimeUnit.MILLISECONDS);
+        try {
+            init();
+            executor.scheduleAtFixedRate(() -> {
+                try {
+                    tick();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }, 0, 50, TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void init() {
@@ -72,7 +75,7 @@ public class Logger {
     }
 
     public static synchronized void makeNewLogFile() throws IOException {
-        currentLogDate = LocalDate.parse(LocalDate.now().format(dateFormatter));
+        currentLogDate = LocalDate.now();
         logWriter = new OutputStreamWriter(new FileOutputStream(logFile, false), StandardCharsets.UTF_8);
         logWriter.write(currentLogDate.toString() + '\n');
         logWriter.flush();
