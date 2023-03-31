@@ -1,15 +1,17 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
-import com.github.steveice10.packetlib.event.session.ConnectedEvent;
+import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
+import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
-import land.chipmunk.chayapak.chomens_bot.util.EscapeCodeBlock;
-import lombok.Getter;
+import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Configuration;
 import land.chipmunk.chayapak.chomens_bot.Main;
 import land.chipmunk.chayapak.chomens_bot.command.DiscordCommandContext;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
+import land.chipmunk.chayapak.chomens_bot.util.EscapeCodeBlock;
+import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -71,7 +73,9 @@ public class DiscordPlugin {
 
               bot.addListener(new SessionAdapter() {
                   @Override
-                  public void connected(ConnectedEvent event) {
+                  public void packetReceived (Session session, Packet packet) {
+                      if (!(packet instanceof ClientboundLoginPacket)) return;
+
                       boolean channelAlreadyAddedListeners = alreadyAddedListeners.getOrDefault(channelId, false);
 
                       sendMessageInstantly("Successfully connected to: " + "`" + bot.host() + ":" + bot.port() + "`", channelId);
@@ -92,7 +96,7 @@ public class DiscordPlugin {
                               if (message.startsWith(prefix)) {
                                   final DiscordCommandContext context = new DiscordCommandContext(bot, prefix, event, null, null);
 
-                                  final Component output = bot.commandHandler().executeCommand(message.substring(prefix.length()), context, true, null, null, event);
+                                  final Component output = bot.commandHandler().executeCommand(message.substring(prefix.length()), context, false, true, null, null, event);
                                   final String textOutput = ((TextComponent) output).content();
 
                                   if (!textOutput.equals("success")) {

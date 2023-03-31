@@ -44,13 +44,15 @@ public class CommandHandlerPlugin {
         registerCommand(new TimeCommand());
         registerCommand(new BruhifyCommand());
         registerCommand(new GrepLogCommand());
+        registerCommand(new SudoAllCommand());
+        registerCommand(new EndCommand());
     }
 
     public void registerCommand (Command command) {
         commands.add(command);
     }
 
-    public Component executeCommand (String input, CommandContext context, boolean discord, String hash, String ownerHash, MessageReceivedEvent event) {
+    public Component executeCommand (String input, CommandContext context, boolean inGame, boolean discord, String hash, String ownerHash, MessageReceivedEvent event) {
         final String[] splitInput = input.split("\\s+");
 
         final String commandName = splitInput[0];
@@ -64,15 +66,15 @@ public class CommandHandlerPlugin {
         final String[] fullArgs = Arrays.copyOfRange(splitInput, 1, splitInput.length);
         final int longestUsageIndex = getLongestUsageIndex(command.usage());
         final String usage = command.usage().get(longestUsageIndex);
-        final int minimumArgs = getMinimumArgs(usage, discord, command.trustLevel());
-        final int maximumArgs = getMaximumArgs(usage, discord, command.trustLevel());
+        final int minimumArgs = getMinimumArgs(usage, inGame, command.trustLevel());
+        final int maximumArgs = getMaximumArgs(usage, inGame, command.trustLevel());
         if (fullArgs.length < minimumArgs) return Component.text("Excepted minimum of " + minimumArgs + " argument(s), got " + fullArgs.length).color(NamedTextColor.RED);
         if (fullArgs.length > maximumArgs && !usage.contains("{")) return Component.text("Too much arguments, expected " + maximumArgs + " max").color(NamedTextColor.RED);
 
         String userHash = "";
         if (trustLevel > 0 && splitInput.length >= 2) userHash = splitInput[1];
 
-        final String[] args = Arrays.copyOfRange(splitInput, (trustLevel > 0 && !discord) ? 2 : 1, splitInput.length);
+        final String[] args = Arrays.copyOfRange(splitInput, (trustLevel > 0 && inGame) ? 2 : 1, splitInput.length);
 
         // fix shit random messy code
         if (command.trustLevel() > 0) {
@@ -109,7 +111,7 @@ public class CommandHandlerPlugin {
             exception.printStackTrace();
 
             final String stackTrace = ExceptionUtils.getStackTrace(exception);
-            if (!discord) {
+            if (inGame) {
                 return Component
                         .text("An error occurred while trying to execute the command, hover here for more details", NamedTextColor.RED)
                         .hoverEvent(
@@ -138,7 +140,7 @@ public class CommandHandlerPlugin {
         return longestIndex;
     }
 
-    private static int getMinimumArgs(String usage, boolean discord, int trustLevel) {
+    private static int getMinimumArgs(String usage, boolean inGame, int trustLevel) {
         int count = 0;
         for (int i = 0; i < usage.length(); i++) {
             if (usage.charAt(i) == '<') {
@@ -146,18 +148,18 @@ public class CommandHandlerPlugin {
             }
         }
         if (usage.contains("<hash>")) count--; // bad fix?
-        if ((discord && trustLevel > 0)) count--;
+        if ((!inGame && trustLevel > 0)) count--;
         return count;
     }
 
-    private static int getMaximumArgs(String usage, boolean discord, int trustLevel) {
+    private static int getMaximumArgs(String usage, boolean inGame, int trustLevel) {
         int count = 0;
         for (int i = 0; i < usage.length(); i++) {
             if (usage.charAt(i) == '<' || usage.charAt(i) == '[') {
                 count++;
             }
         }
-        if (discord && trustLevel > 0) count++;
+        if (!inGame && trustLevel > 0) count++;
         return count;
     }
 }

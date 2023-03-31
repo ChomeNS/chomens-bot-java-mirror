@@ -65,6 +65,8 @@ public class Bot {
 
         try {
             DiscordPlugin.readyLatch().await();
+
+            Thread.sleep(2000); // prob the worst way to fix this thing
         } catch (InterruptedException ignored) { System.exit(1); }
 
         this.chat = new ChatPlugin(this);
@@ -84,16 +86,12 @@ public class Bot {
         this.bruhify = new BruhifyPlugin(this);
         this.grepLog = new GrepLogPlugin(this);
 
-        try {
-            Thread.sleep(1000); // real
-        } catch (InterruptedException ignored) {
-            System.exit(1);
-        }
-
         reconnect();
     }
 
     public void reconnect () {
+        if (session != null) session.disconnect("Disconnect");
+
         if (_username == null) username = RandomStringUtils.randomAlphabetic(8);
         else username = _username;
 
@@ -105,14 +103,14 @@ public class Bot {
 
             @Override
             public void packetReceived(Session session, Packet packet) {
+                for (SessionListener listener : listeners) {
+                    listener.packetReceived(session, packet);
+                }
+
                 if (packet instanceof ClientboundLoginPacket) {
                     for (SessionListener listener : listeners) {
                         listener.connected(new ConnectedEvent(session));
                     }
-                }
-
-                for (SessionListener listener : listeners) {
-                    listener.packetReceived(session, packet);
                 }
             }
 
