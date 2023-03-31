@@ -16,10 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class MusicCommand implements Command {
     private Path root;
@@ -162,6 +159,14 @@ public class MusicCommand implements Command {
 
         final String[] filenames = path.toFile().list();
         if (filenames == null) return Component.text("Directory doesn't exist").color(NamedTextColor.RED);
+
+        Arrays.sort(filenames, (s1, s2) -> {
+            int result = s1.compareToIgnoreCase(s2);
+            if (result == 0) {
+                return s2.compareTo(s1);
+            }
+            return result;
+        });
 
         final List<Component> list = new ArrayList<>();
         int i = 0;
