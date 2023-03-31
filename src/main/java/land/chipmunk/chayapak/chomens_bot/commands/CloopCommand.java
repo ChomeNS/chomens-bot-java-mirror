@@ -52,17 +52,40 @@ public class CloopCommand implements Command {
                 } catch (IllegalArgumentException ignored) {
                     return Component.text("Invalid index").color(NamedTextColor.RED);
                 }
-                bot.cloop().add(interval, String.join(" ", Arrays.copyOfRange(args, 2, args.length)));
+
+                final String command = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+
+                bot.cloop().add(interval, command);
+
+                context.sendOutput(
+                        Component.translatable(
+                                "Added %s with interval %s to the cloops",
+                                Component.text(command).color(NamedTextColor.AQUA),
+                                Component.text(interval).color(NamedTextColor.GOLD)
+                        )
+                );
             }
             case "remove" -> {
                 try {
                     final int index = Integer.parseInt(args[1]);
                     bot.cloop().remove(index);
+
+                    context.sendOutput(
+                            Component.translatable(
+                                    "Removed cloop %s",
+                                    Component.text(index).color(NamedTextColor.GOLD)
+                            )
+                    );
                 } catch (IllegalArgumentException | NullPointerException ignored) {
                     return Component.text("Invalid index").color(NamedTextColor.RED);
                 }
             }
-            case "clear" -> bot.cloop().clear();
+            case "clear" -> {
+                bot.cloop().clear();
+                context.sendOutput(
+                        Component.text("Cleared all cloops")
+                );
+            }
             case "list" -> {
                 final List<Component> cloopsComponent = new ArrayList<>();
 

@@ -39,7 +39,8 @@ public class MusicCommand implements Command {
         usages.add("skip");
         usages.add("nowplaying");
         usages.add("queue");
-        usages.add("goto");
+        usages.add("goto <timestamp>");
+        usages.add("pitch <pitch>");
         usages.add("pause");
         usages.add("resume");
 
@@ -80,6 +81,9 @@ public class MusicCommand implements Command {
             case "goto" -> {
                 return goTo(context, args);
             }
+            case "pitch" -> {
+                return pitch(context, args);
+            }
             case "pause", "resume" -> {
                 return pause(context);
             }
@@ -111,6 +115,8 @@ public class MusicCommand implements Command {
         final Bot bot = context.bot();
         bot.music().stopPlaying();
         bot.music().songQueue().clear();
+
+        context.sendOutput(Component.text("Cleared the song queue"));
     }
 
     public Component loop (CommandContext context, String[] args) {
@@ -248,6 +254,27 @@ public class MusicCommand implements Command {
         if (milliseconds < 0 || milliseconds > currentSong.length) return Component.text("Invalid timestamp").color(NamedTextColor.RED);
 
         currentSong.setTime(milliseconds);
+
+        return Component.text("success");
+    }
+
+    public Component pitch (CommandContext context, String[] args) {
+        final Bot bot = context.bot();
+
+        float pitch;
+        try {
+            pitch = Float.parseFloat(args[1]);
+        } catch (IllegalArgumentException ignored) {
+            return Component.text("Invalid pitch").color(NamedTextColor.RED);
+        }
+
+        bot.music().pitch(pitch);
+
+        context.sendOutput(
+                Component.empty()
+                        .append(Component.text("Set the pitch to "))
+                        .append(Component.text(pitch).color(NamedTextColor.GOLD))
+        );
 
         return Component.text("success");
     }

@@ -77,7 +77,7 @@ public class Song {
 
   public boolean reachedNextNote () {
     if (position < notes.size()) {
-      return notes.get(position).time <= (bot.music().nightcore() ? time - 8 : time);
+      return notes.get(position).time <= time;
     } else {
       if (finished() && bot.music().loop() != Loop.OFF) {
         if (position < notes.size()) {
