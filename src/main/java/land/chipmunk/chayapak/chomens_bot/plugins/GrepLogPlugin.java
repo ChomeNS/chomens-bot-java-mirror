@@ -10,6 +10,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
@@ -70,6 +71,8 @@ public class GrepLogPlugin {
             );
 
             final File[] fileList = Logger.logDir.listFiles();
+
+            Arrays.sort(fileList, Comparator.comparing(File::getName)); // VERY IMPORTANT
 
             for (File file : fileList) {
                 final String fileName = file.getName();
