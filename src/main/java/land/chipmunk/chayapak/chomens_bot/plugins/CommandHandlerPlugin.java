@@ -46,6 +46,7 @@ public class CommandHandlerPlugin {
         registerCommand(new GrepLogCommand());
         registerCommand(new SudoAllCommand());
         registerCommand(new EndCommand());
+        registerCommand(new CloopCommand());
     }
 
     public void registerCommand (Command command) {
