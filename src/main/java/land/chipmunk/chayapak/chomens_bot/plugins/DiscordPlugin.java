@@ -69,8 +69,6 @@ public class DiscordPlugin {
         for (Bot bot : Main.allBots) {
             String channelId = servers.get(bot.host() + ":" + bot.port());
 
-            bot.discord(this);
-
               bot.addListener(new SessionAdapter() {
                   @Override
                   public void connected(ConnectedEvent event) {
@@ -79,8 +77,6 @@ public class DiscordPlugin {
                       sendMessageInstantly("Successfully connected to: " + "`" + bot.host() + ":" + bot.port() + "`", channelId);
 
                       if (channelAlreadyAddedListeners) return;
-
-                      alreadyAddedListeners.put(channelId, true);
 
                       jda.addEventListener(new ListenerAdapter() {
                           @Override
@@ -176,6 +172,8 @@ public class DiscordPlugin {
                           }
                       });
 
+                      alreadyAddedListeners.put(channelId, true);
+
                       bot.executor().scheduleAtFixedRate(() -> onDiscordTick(channelId), 0, 50, TimeUnit.MILLISECONDS);
                   }
 
@@ -184,6 +182,8 @@ public class DiscordPlugin {
                       sendMessageInstantly("Disconnected: " + "`" + event.getReason().replace("`", "\\`") + "`", channelId);
                   }
               });
+
+            bot.discord(this);
         }
     }
 

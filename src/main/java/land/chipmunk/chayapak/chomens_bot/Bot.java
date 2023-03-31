@@ -84,6 +84,12 @@ public class Bot {
         this.bruhify = new BruhifyPlugin(this);
         this.grepLog = new GrepLogPlugin(this);
 
+        try {
+            Thread.sleep(1000); // real
+        } catch (InterruptedException ignored) {
+            System.exit(1);
+        }
+
         reconnect();
     }
 
@@ -99,10 +105,13 @@ public class Bot {
 
             @Override
             public void packetReceived(Session session, Packet packet) {
-                for (SessionListener listener : listeners) {
-                    if (packet instanceof ClientboundLoginPacket) {
+                if (packet instanceof ClientboundLoginPacket) {
+                    for (SessionListener listener : listeners) {
                         listener.connected(new ConnectedEvent(session));
                     }
+                }
+
+                for (SessionListener listener : listeners) {
                     listener.packetReceived(session, packet);
                 }
             }
