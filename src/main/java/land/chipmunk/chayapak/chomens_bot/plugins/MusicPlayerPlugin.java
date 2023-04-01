@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import land.chipmunk.chayapak.chomens_bot.song.*;
+import land.chipmunk.chayapak.chomens_bot.util.NumberUtilities;
 import lombok.Getter;
 import lombok.Setter;
 import land.chipmunk.chayapak.chomens_bot.Bot;
@@ -231,7 +232,7 @@ public class MusicPlayerPlugin extends SessionAdapter {
         while (currentSong.reachedNextNote()) {
             final Note note = currentSong.getNextNote();
 
-            final double floatingPitch = Math.pow(2, ((nightcore ? note.pitch + 1 : note.pitch) - 12) / 12.0);
+            final double floatingPitch = NumberUtilities.clamp(Math.pow(2, ((nightcore ? note.pitch + 1 : note.pitch) - 12) / 12.0), 0, 2);
 
             bot.core().run("minecraft:execute as " + SELECTOR + " at @s run playsound " + note.instrument.sound + " record @s ~ ~ ~ " + note.volume + " " + floatingPitch);
         }
