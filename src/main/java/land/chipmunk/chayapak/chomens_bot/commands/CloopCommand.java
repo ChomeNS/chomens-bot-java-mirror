@@ -49,8 +49,9 @@ public class CloopCommand implements Command {
                 int interval;
                 try {
                     interval = Integer.parseInt(args[1]);
+                    if (interval < 1) interval = 1;
                 } catch (IllegalArgumentException ignored) {
-                    return Component.text("Invalid index").color(NamedTextColor.RED);
+                    return Component.text("Invalid interval").color(NamedTextColor.RED);
                 }
 
                 final String command = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
@@ -76,7 +77,7 @@ public class CloopCommand implements Command {
                                     Component.text(index).color(NamedTextColor.GOLD)
                             )
                     );
-                } catch (IllegalArgumentException | NullPointerException ignored) {
+                } catch (IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
                     return Component.text("Invalid index").color(NamedTextColor.RED);
                 }
             }
