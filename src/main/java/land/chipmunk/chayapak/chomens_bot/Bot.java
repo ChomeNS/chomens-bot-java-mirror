@@ -99,8 +99,6 @@ public class Bot {
 
         Session session = new TcpClientSession(host, port, new MinecraftProtocol(username), null);
 
-        System.out.println("adding listener");
-
         session.addListener(new SessionAdapter() {
             // same stuff over and over yup
 
