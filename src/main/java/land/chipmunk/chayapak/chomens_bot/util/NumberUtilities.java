@@ -8,12 +8,10 @@ public class NumberUtilities {
     }
 
     public static float clamp (float value, float min, float max) {
-        if (value < min) return min;
-        return Math.min(value, max);
+        return Math.max(Math.min(value, max), min);
     }
 
     public static double clamp (double value, double min, double max) {
-        if (value < min) return min;
-        return Math.min(value, max);
+        return Math.max(Math.min(value, max), min);
     }
 }

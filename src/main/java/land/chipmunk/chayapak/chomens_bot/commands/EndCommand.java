@@ -36,7 +36,7 @@ public class EndCommand implements Command {
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();
 
-        bot.reconnect();
+        bot.session().disconnect("End command");
 
         return Component.text("success");
     }

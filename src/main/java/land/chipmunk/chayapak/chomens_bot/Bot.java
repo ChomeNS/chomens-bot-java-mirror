@@ -30,7 +30,7 @@ public class Bot {
 
     @Getter private String username;
 
-    @Getter private Session session;
+    @Getter public Session session;
 
     @Getter private ScheduledExecutorService executor = Executors.newScheduledThreadPool(100);
 
@@ -92,12 +92,12 @@ public class Bot {
     }
 
     public void reconnect () {
-        if (session != null) session.disconnect("Disconnect");
-
         if (_username == null) username = RandomStringUtils.randomAlphabetic(8);
         else username = _username;
 
         Session session = new TcpClientSession(host, port, new MinecraftProtocol(username), null);
+
+        this.session = session;
 
         session.addListener(new SessionAdapter() {
             // same stuff over and over yup
@@ -155,8 +155,6 @@ public class Bot {
                 }
             }
         });
-
-        this.session = session;
 
         session.connect();
     }
