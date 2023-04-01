@@ -67,7 +67,7 @@ public class Bot {
         try {
             DiscordPlugin.readyLatch().await();
 
-            Thread.sleep(2000); // prob the worst way to fix this thing
+            // Thread.sleep(2000); // prob the worst way to fix this thing
         } catch (InterruptedException ignored) { System.exit(1); }
 
         this.chat = new ChatPlugin(this);
@@ -98,7 +98,8 @@ public class Bot {
         else username = _username;
 
         Session session = new TcpClientSession(host, port, new MinecraftProtocol(username), null);
-        this.session = session;
+
+        System.out.println("adding listener");
 
         session.addListener(new SessionAdapter() {
             // same stuff over and over yup
@@ -147,17 +148,17 @@ public class Bot {
 
             @Override
             public void disconnected(DisconnectedEvent disconnectedEvent) {
+                final int reconnectDelay = config.reconnectDelay();
+
+                executor.schedule(() -> reconnect(), reconnectDelay, TimeUnit.MILLISECONDS);
+
                 for (SessionListener listener : listeners) {
                     listener.disconnected(disconnectedEvent);
                 }
-
-                final int reconnectDelay = config.reconnectDelay();
-
-                if (reconnectDelay < 0) return; // to disable reconnecting
-
-                executor.schedule(() -> reconnect(), reconnectDelay, TimeUnit.MILLISECONDS);
             }
         });
+
+        this.session = session;
 
         session.connect();
     }
