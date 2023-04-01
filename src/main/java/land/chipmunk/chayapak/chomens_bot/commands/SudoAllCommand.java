@@ -19,7 +19,7 @@ public class SudoAllCommand implements Command {
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
-        usages.add("<{c:message|command}>");
+        usages.add("<hash> <{c:message|command}>");
 
         return usages;
     }

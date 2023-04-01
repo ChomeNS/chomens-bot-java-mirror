@@ -17,7 +17,7 @@ public class EndCommand implements Command {
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
-        usages.add("");
+        usages.add("<hash>");
 
         return usages;
     }

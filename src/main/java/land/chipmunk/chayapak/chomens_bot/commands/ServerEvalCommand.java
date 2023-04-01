@@ -20,7 +20,7 @@ public class ServerEvalCommand implements Command {
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
-        usages.add("<{code}>");
+        usages.add("<ownerHash> <{code}>");
 
         return usages;
     }

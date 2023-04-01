@@ -21,10 +21,10 @@ public class CloopCommand implements Command {
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
-        usages.add("add <interval> <{command}>");
-        usages.add("remove <index>");
-        usages.add("clear");
-        usages.add("list");
+        usages.add("<hash> add <interval> <{command}>");
+        usages.add("<hash> remove <index>");
+        usages.add("<hash> clear");
+        usages.add("<hash> list");
 
         return usages;
     }
