@@ -168,10 +168,7 @@ public class NBSConverter {
         // key += customInstrument.pitch;
       }
 
-      // when the imposter is sus!!1!
-//      if (key < 33 || key > 57) {
-//        continue;
-//      }
+      if (key < 30 || key > 60) continue;
 
       byte layerVolume = 100;
       if (nbsLayers.size() > note.layer) {
