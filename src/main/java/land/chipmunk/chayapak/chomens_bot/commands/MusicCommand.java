@@ -154,8 +154,10 @@ public class MusicCommand implements Command {
     public Component list (CommandContext context, String[] args) {
         final String prefix = context.prefix();
 
-        final Path _path = Path.of(root.toString(), String.join(" ", args));
+        final Path _path = Path.of(root.toString(), String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
         final Path path = (args.length < 2) ? root : _path;
+
+        if (!path.normalize().startsWith(root.toString())) return Component.text("no").color(NamedTextColor.RED);
 
         final String[] filenames = path.toFile().list();
         if (filenames == null) return Component.text("Directory doesn't exist").color(NamedTextColor.RED);
