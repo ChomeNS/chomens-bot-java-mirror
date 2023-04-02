@@ -95,14 +95,18 @@ public class MusicCommand implements Command {
     public Component play (CommandContext context, String[] args) {
         final MusicPlayerPlugin player = context.bot().music();
 
-        final String _path = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-        final Path path = Path.of(root.toString(), _path);
-
+        String _path;
+        Path path;
         try {
+            _path = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+            path = Path.of(root.toString(), _path);
+
             if (!path.toString().contains("http")) player.loadSong(path);
             else player.loadSong(new URL(_path));
         } catch (MalformedURLException e) {
             return Component.text("Invalid URL").color(NamedTextColor.RED);
+        } catch (Exception e) {
+            return Component.text(e.toString()).color(NamedTextColor.RED);
         }
 
         return Component.text("success");
