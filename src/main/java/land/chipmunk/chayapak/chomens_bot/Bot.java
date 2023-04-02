@@ -46,6 +46,7 @@ public class Bot {
     @Getter private final CommandHandlerPlugin commandHandler;
     @Getter private final ChatCommandHandlerPlugin chatCommandHandler;
     @Getter private final HashingPlugin hashing;
+    @Getter private final BossbarManagerPlugin bossbar;
     @Getter private final MusicPlayerPlugin music;
     @Getter private final TPSPlugin tps;
     @Getter private final EvalRunnerPlugin eval;
@@ -79,6 +80,7 @@ public class Bot {
         this.commandHandler = new CommandHandlerPlugin();
         this.chatCommandHandler = new ChatCommandHandlerPlugin(this);
         this.hashing = new HashingPlugin(this);
+        this.bossbar = new BossbarManagerPlugin(this);
         this.music = new MusicPlayerPlugin(this);
         this.tps = new TPSPlugin(this);
         this.eval = new EvalRunnerPlugin(this);

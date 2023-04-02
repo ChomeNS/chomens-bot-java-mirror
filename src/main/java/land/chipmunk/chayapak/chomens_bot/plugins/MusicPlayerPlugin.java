@@ -2,14 +2,16 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
+import land.chipmunk.chayapak.chomens_bot.Bot;
+import land.chipmunk.chayapak.chomens_bot.data.BossBar;
+import land.chipmunk.chayapak.chomens_bot.data.BossBarColor;
+import land.chipmunk.chayapak.chomens_bot.data.BossBarStyle;
 import land.chipmunk.chayapak.chomens_bot.song.*;
 import land.chipmunk.chayapak.chomens_bot.util.NumberUtilities;
 import lombok.Getter;
 import lombok.Setter;
-import land.chipmunk.chayapak.chomens_bot.Bot;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.io.File;
 import java.net.URL;
@@ -41,7 +43,8 @@ public class MusicPlayerPlugin extends SessionAdapter {
     @Getter @Setter private float pitch = 0;
 
     private int ticksUntilPausedBossbar = 20;
-    private final String bossbarName = "chomens_bot:music"; // maybe make this in the config?
+
+    private final String bossbarName = "music";
 
     public MusicPlayerPlugin (Bot bot) {
         this.bot = bot;
@@ -101,6 +104,16 @@ public class MusicPlayerPlugin extends SessionAdapter {
             if (currentSong == null) {
                 if (songQueue.size() == 0) return;
 
+                bot.bossbar().add(bossbarName, new BossBar(
+                        Component.empty(),
+                        BossBarColor.WHITE,
+                        0,
+                        "",
+                        BossBarStyle.PROGRESS,
+                        0,
+                        false
+                ));
+
                 currentSong = songQueue.get(0); // songQueue.poll();
                 bot.chat().tellraw(Component.translatable("Now playing %s", Component.empty().append(currentSong.name).color(NamedTextColor.GOLD)));
                 currentSong.play();
@@ -109,14 +122,15 @@ public class MusicPlayerPlugin extends SessionAdapter {
             if (currentSong.paused && ticksUntilPausedBossbar-- < 0) return;
             else ticksUntilPausedBossbar = 20;
 
-            bot.core().run("minecraft:bossbar add " + bossbarName + " \"\"");
-            bot.core().run("minecraft:bossbar set " + bossbarName + " players " + SELECTOR);
-            bot.core().run("minecraft:bossbar set " + bossbarName + " name " + GsonComponentSerializer.gson().serialize(generateBossbar()));
-            bot.core().run("minecraft:bossbar set " + bossbarName + " color " + (pitch > 0 ? "purple" : "yellow"));
-            bot.core().run("minecraft:bossbar set " + bossbarName + " visible true");
-            bot.core().run("minecraft:bossbar set " + bossbarName + " style progress");
-            bot.core().run("minecraft:bossbar set " + bossbarName + " value " + (int) Math.floor(currentSong.time));
-            bot.core().run("minecraft:bossbar set " + bossbarName + " max " + currentSong.length);
+            final BossBar bossBar = bot.bossbar().get(bossbarName);
+
+            bossBar.players(SELECTOR);
+            bossBar.name(generateBossbar());
+            bossBar.color(pitch > 0 ? BossBarColor.PURPLE : BossBarColor.YELLOW);
+            bossBar.visible(true);
+            bossBar.style(BossBarStyle.PROGRESS);
+            bossBar.value((int) Math.floor(currentSong.time));
+            bossBar.max(currentSong.length);
 
             if (currentSong.paused) return;
 
@@ -169,7 +183,7 @@ public class MusicPlayerPlugin extends SessionAdapter {
     }
 
     public void removeBossbar () {
-        bot.core().run("minecraft:bossbar remove " + bossbarName);
+        bot.bossbar().remove(bossbarName);
     }
 
     public Component generateBossbar () {

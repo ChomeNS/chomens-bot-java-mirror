@@ -6,10 +6,12 @@ import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
+import land.chipmunk.chayapak.chomens_bot.data.BossBar;
+import land.chipmunk.chayapak.chomens_bot.data.BossBarColor;
+import land.chipmunk.chayapak.chomens_bot.data.BossBarStyle;
 import land.chipmunk.chayapak.chomens_bot.util.NumberUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -24,23 +26,38 @@ public class TPSPlugin extends SessionAdapter {
     private long timeLastTimeUpdate = -1;
     private long timeGameJoined;
 
-    private final String bossbarName = "chomens_bot:tpsbar";
+    private final String bossbarName = "tpsbar";
 
     public TPSPlugin (Bot bot) {
         this.bot = bot;
 
         bot.addListener(this);
 
-        bot.executor().scheduleAtFixedRate(this::updateTPSBar, 0, 50, TimeUnit.MILLISECONDS);
+        bot.core().addListener(new CorePlugin.Listener() {
+               @Override
+               public void ready() {
+                   bot.executor().scheduleAtFixedRate(() -> updateTPSBar(), 0, 50, TimeUnit.MILLISECONDS);
+               }
+           }
+        );
     }
 
     public void on () {
         enabled = true;
+        bot.bossbar().add(bossbarName, new BossBar(
+                Component.empty(),
+                BossBarColor.WHITE,
+                0,
+                "",
+                BossBarStyle.PROGRESS,
+                0,
+                false
+        ));
     }
 
     public void off () {
         enabled = false;
-        bot.core().run("minecraft:bossbar remove " + bossbarName);
+        bot.bossbar().remove(bossbarName);
     }
 
     private void updateTPSBar () {
@@ -54,15 +71,15 @@ public class TPSPlugin extends SessionAdapter {
                 Component.text(tickRate).color(NamedTextColor.GREEN)
         ).color(NamedTextColor.GRAY);
 
-        // TODO: move these to like a bossbar manager of some sort
-        bot.core().run("minecraft:bossbar add " + bossbarName + " \"\"");
-        bot.core().run("minecraft:bossbar set " + bossbarName + " players @a");
-        bot.core().run("minecraft:bossbar set " + bossbarName + " name " + GsonComponentSerializer.gson().serialize(component));
-        bot.core().run("minecraft:bossbar set " + bossbarName + " color yellow");
-        bot.core().run("minecraft:bossbar set " + bossbarName + " visible true");
-        bot.core().run("minecraft:bossbar set " + bossbarName + " style notched_20");
-        bot.core().run("minecraft:bossbar set " + bossbarName + " value " + (int) tickRate);
-        bot.core().run("minecraft:bossbar set " + bossbarName + " max 20");
+        final BossBar bossBar = bot.bossbar().get(bossbarName);
+
+        bossBar.players("@a");
+        bossBar.name(component);
+        bossBar.color(BossBarColor.YELLOW);
+        bossBar.visible(true);
+        bossBar.style(BossBarStyle.NOTCHED_20);
+        bossBar.value((int) tickRate);
+        bossBar.max(20);
     }
 
     @Override
