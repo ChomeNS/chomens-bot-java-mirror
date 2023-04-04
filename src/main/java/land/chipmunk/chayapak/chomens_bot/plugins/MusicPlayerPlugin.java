@@ -12,7 +12,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 
 import java.io.File;
 import java.net.URL;
@@ -46,7 +45,6 @@ public class MusicPlayerPlugin extends SessionAdapter {
     private int ticksUntilPausedBossbar = 20;
 
     private final String bossbarName = "music";
-    private Runnable runnable;
 
     public MusicPlayerPlugin (Bot bot) {
         this.bot = bot;
@@ -92,7 +90,79 @@ public class MusicPlayerPlugin extends SessionAdapter {
     }
 
     public void coreReady () {
-        final Runnable task = runnable;
+        final Runnable task = () -> {
+            if (loaderThread != null && !loaderThread.isAlive()) {
+                if (loaderThread.exception != null) {
+                    bot.chat().tellraw(Component.translatable("Failed to load song: %s", loaderThread.exception.message()).color(NamedTextColor.RED));
+                } else {
+                    songQueue.add(loaderThread.song);
+                    bot.chat().tellraw(Component.translatable("Added %s to the song queue", Component.empty().append(loaderThread.song.name).color(NamedTextColor.GOLD)));
+                }
+                loaderThread = null;
+            }
+
+            if (currentSong == null) {
+                if (songQueue.size() == 0) return;
+
+                bot.bossbar().add(bossbarName, new BossBar(
+                        Component.empty(),
+                        BossBarColor.WHITE,
+                        0,
+                        "",
+                        BossBarStyle.PROGRESS,
+                        0,
+                        false
+                ));
+
+                currentSong = songQueue.get(0); // songQueue.poll();
+                bot.chat().tellraw(Component.translatable("Now playing %s", Component.empty().append(currentSong.name).color(NamedTextColor.GOLD)));
+                currentSong.play();
+            }
+
+            if (currentSong.paused && ticksUntilPausedBossbar-- < 0) return;
+            else ticksUntilPausedBossbar = 20;
+
+            final BossBar bossBar = bot.bossbar().get(bossbarName);
+
+            bossBar.players(SELECTOR);
+            bossBar.name(generateBossbar());
+            bossBar.color(pitch > 0 ? BossBarColor.PURPLE : BossBarColor.YELLOW);
+            bossBar.visible(true);
+            bossBar.style(BossBarStyle.PROGRESS);
+            bossBar.value((int) Math.floor(currentSong.time));
+            bossBar.max(currentSong.length);
+
+            if (currentSong.paused) return;
+
+            handlePlaying();
+
+            if (currentSong.finished()) {
+                removeBossbar();
+                bot.chat().tellraw(Component.translatable("Finished playing %s", Component.empty().append(currentSong.name).color(NamedTextColor.GOLD)));
+
+                if (loop == Loop.CURRENT) {
+                    currentSong.setTime(0);
+                    return;
+                }
+                if (loop == Loop.ALL) {
+                    skip();
+                    return;
+                }
+
+                songQueue.remove();
+
+                if (songQueue.size() == 0) {
+                    stopPlaying();
+                    bot.chat().tellraw(Component.text("Finished playing every song in the queue"));
+                    return;
+                }
+                if (currentSong.size() > 0) {
+                    currentSong = songQueue.get(0);
+                    currentSong.setTime(0);
+                    currentSong.play();
+                }
+            }
+        };
 
         playTask = bot.executor().scheduleAtFixedRate(task, 50, 50, TimeUnit.MILLISECONDS);
 
