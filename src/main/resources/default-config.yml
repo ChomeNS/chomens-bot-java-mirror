@@ -23,6 +23,9 @@ trusted:
 keys:
   normalKey: 'normal hash key here'
   ownerKey: 'OwnerHash™ key here'
+
+weatherApiKey: 'key here' # weatherapi.com key
+
 core:
   layers: 3
   refillInterval: 60000

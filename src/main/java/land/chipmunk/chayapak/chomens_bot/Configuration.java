@@ -17,6 +17,8 @@ public class Configuration {
 
     @Getter public Map<String, String> keys;
 
+    @Getter public String weatherApiKey;
+
     @Getter public Core core = new Core();
     @Getter public Discord discord = new Discord();
     @Getter public List<String> trusted = new ArrayList<>();

@@ -47,6 +47,7 @@ public class CommandHandlerPlugin {
         registerCommand(new SudoAllCommand());
         registerCommand(new EndCommand());
         registerCommand(new CloopCommand());
+        registerCommand(new WeatherCommand());
     }
 
     public void registerCommand (Command command) {
