@@ -1,8 +1,10 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
+import land.chipmunk.chayapak.chomens_bot.Configuration;
 import lombok.Getter;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.ConsoleCommandContext;
+import net.dv8tion.jda.api.JDA;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -10,6 +12,7 @@ import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,7 +26,9 @@ public class ConsolePlugin {
     @Getter private String prefix;
     @Getter private String consoleServerPrefix;
 
-    public ConsolePlugin (List<Bot> allBots) {
+    private static final List<Listener> listeners = new ArrayList<>();
+
+    public ConsolePlugin (List<Bot> allBots, Configuration discordConfig, JDA jda) {
         this.allBots = allBots;
         this.reader = LineReaderBuilder.builder().build();
 
@@ -32,8 +37,11 @@ public class ConsolePlugin {
             consoleServerPrefix = bot.config().consolePrefixes().get("consoleServerPrefix");
 
             bot.console(this);
+
             bot.logger(new LoggerPlugin(bot));
         }
+
+        new DiscordPlugin(discordConfig, jda);
 
         String prompt = "> ";
 
@@ -53,6 +61,8 @@ public class ConsolePlugin {
                 handleLine(line);
             }
         }).start();
+
+        for (Listener listener : listeners) { listener.ready(); }
     }
 
     public void handleLine (String line) {
@@ -103,5 +113,11 @@ public class ConsolePlugin {
                     ).color(NamedTextColor.DARK_GRAY)
             );
         }
+    }
+
+    public static void addListener (Listener listener) { listeners.add(listener); }
+
+    public static class Listener {
+        public void ready () {}
     }
 }

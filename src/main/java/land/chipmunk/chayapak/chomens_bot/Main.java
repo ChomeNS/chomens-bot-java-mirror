@@ -1,21 +1,20 @@
 package land.chipmunk.chayapak.chomens_bot;
 
 import land.chipmunk.chayapak.chomens_bot.plugins.ConsolePlugin;
-import land.chipmunk.chayapak.chomens_bot.plugins.DiscordPlugin;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
+import javax.security.auth.login.LoginException;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 public class Main {
     public static final List<Bot> allBots = new ArrayList<>();
 
-    public static CountDownLatch latch = null;
-
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException {
         final File file = new File("config.yml");
         final Constructor constructor = new Constructor(Configuration.class);
         final Yaml yaml = new Yaml(constructor);
@@ -51,7 +50,19 @@ public class Main {
 
         Configuration.Bots[] botsOptions = config.bots();
 
-        latch = new CountDownLatch(botsOptions.length);
+        // idk if these should be here lol, but it is just the discord stuff
+        JDA jda = null;
+        JDABuilder builder = JDABuilder.createDefault(config.discord().token());
+        try {
+            jda = builder.build();
+            jda.awaitReady();
+        } catch (LoginException e) {
+            System.err.println("Failed to login to Discord, stacktrace:");
+            e.printStackTrace();
+            System.exit(1);
+        } catch (InterruptedException ignored) {
+            System.exit(1);
+        }
 
         for (Configuration.Bots botOption : botsOptions) {
             final String host = botOption.host();
@@ -60,17 +71,10 @@ public class Main {
             final boolean kaboom = botOption.kaboom();
             final String serverName = botOption.serverName();
 
-            new Thread(() -> {
-                final Bot bot = new Bot(host, port, username, kaboom, serverName, allBots, config);
-                allBots.add(bot);
-
-                latch.countDown();
-            }).start();
+            final Bot bot = new Bot(host, port, username, kaboom, serverName, allBots, config);
+            allBots.add(bot);
         }
 
-        new DiscordPlugin(config);
-
-        latch.await();
-        new ConsolePlugin(allBots);
+        new ConsolePlugin(allBots, config, jda);
     }
 }

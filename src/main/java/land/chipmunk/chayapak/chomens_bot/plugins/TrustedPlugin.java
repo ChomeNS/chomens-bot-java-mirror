@@ -23,6 +23,8 @@ public class TrustedPlugin extends PlayersPlugin.PlayerListener {
 
     public void broadcast (Component message) {
         for (Bot allBot : bot.allBots()) {
+            if (!allBot.loggedIn()) continue;
+
             for (String player : trusted) {
                 final Component component = Component.translatable(
                         "[%s] [%s] %s",

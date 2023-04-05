@@ -1,10 +1,8 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
-import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
-import com.github.steveice10.packetlib.Session;
+import com.github.steveice10.packetlib.event.session.ConnectedEvent;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
-import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Configuration;
 import land.chipmunk.chayapak.chomens_bot.Main;
@@ -13,7 +11,6 @@ import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.EscapeCodeBlock;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -25,12 +22,11 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.jetbrains.annotations.NotNull;
 
-import javax.security.auth.login.LoginException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+// please ignore my shitcode
 public class DiscordPlugin {
     @Getter private JDA jda;
 
@@ -38,49 +34,42 @@ public class DiscordPlugin {
 
     public final String prefix;
 
-    @Getter private static CountDownLatch readyLatch = new CountDownLatch(1);
-
     private final Map<String, Boolean> alreadyAddedListeners = new HashMap<>();
 
-    public DiscordPlugin (Configuration config) {
+    public DiscordPlugin (Configuration config, JDA jda) {
         final Configuration.Discord options = config.discord();
         this.prefix = options.prefix();
         this.servers = options.servers();
-
-        JDABuilder builder = JDABuilder.createDefault(options.token());
-
-        new Thread(() -> {
-            try {
-                jda = builder.build();
-                jda.awaitReady();
-            } catch (LoginException e) {
-                System.err.println("Failed to login to Discord, stacktrace:");
-                e.printStackTrace();
-                System.exit(1);
-            } catch (InterruptedException ignored) {
-                System.exit(1);
-            }
-
-            readyLatch.countDown();
-        }).start();
-
-        try {
-            Main.latch.await();
-        } catch (InterruptedException ignored) { System.exit(1); }
+        this.jda = jda;
 
         for (Bot bot : Main.allBots) {
             String channelId = servers.get(bot.host() + ":" + bot.port());
 
+            System.out.println("bot for server " + bot.host() + ":" + bot.port());
+            System.out.println("adding listeners...");
+
               bot.addListener(new SessionAdapter() {
                   @Override
-                  public void packetReceived (Session session, Packet packet) {
-                      if (!(packet instanceof ClientboundLoginPacket)) return;
-
+                  public void connected (ConnectedEvent event) {
                       boolean channelAlreadyAddedListeners = alreadyAddedListeners.getOrDefault(channelId, false);
+
+                      System.out.println("connected, added listeners is " + channelAlreadyAddedListeners);
 
                       sendMessageInstantly("Successfully connected to: " + "`" + bot.host() + ":" + bot.port() + "`", channelId);
 
+                      System.out.println("sent message...");
+
                       if (channelAlreadyAddedListeners) return;
+
+                      bot.executor().scheduleAtFixedRate(() -> onDiscordTick(channelId), 0, 50, TimeUnit.MILLISECONDS);
+
+                      bot.chat().addListener(new ChatPlugin.ChatListener() {
+                          @Override
+                          public void systemMessageReceived (String ignoredMessage, Component component) {
+                              final String content = ComponentUtilities.stringifyAnsi(component);
+                              sendMessage(EscapeCodeBlock.escape(content.replace("\u001b[9", "\u001b[3")), channelId);
+                          }
+                      });
 
                       jda.addEventListener(new ListenerAdapter() {
                           @Override
@@ -141,7 +130,7 @@ public class DiscordPlugin {
                                       )
                                       .color(NamedTextColor.RED);
 
-                              final String discordUrl = "https://discord.gg/xdgCkUyaA4";
+                              final String discordUrl = "https://discord.gg/xdgCkUyaA4"; // too lazy to make a config
 
                               final Component discordComponent = Component.empty()
                                       .append(Component.text("ChomeNS ").color(NamedTextColor.YELLOW))
@@ -168,17 +157,7 @@ public class DiscordPlugin {
                           }
                       });
 
-                      bot.chat().addListener(new ChatPlugin.ChatListener() {
-                          @Override
-                          public void systemMessageReceived (String ignoredMessage, Component component) {
-                              final String content = ComponentUtilities.stringifyAnsi(component);
-                              sendMessage(EscapeCodeBlock.escape(content.replace("\u001b[9", "\u001b[3")), channelId);
-                          }
-                      });
-
                       alreadyAddedListeners.put(channelId, true);
-
-                      bot.executor().scheduleAtFixedRate(() -> onDiscordTick(channelId), 0, 50, TimeUnit.MILLISECONDS);
                   }
 
                   @Override

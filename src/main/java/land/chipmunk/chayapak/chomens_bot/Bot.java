@@ -32,29 +32,32 @@ public class Bot {
 
     @Getter public Session session;
 
+    @Getter private boolean loggedIn = false;
+
     @Getter private ScheduledExecutorService executor = Executors.newScheduledThreadPool(100);
 
     @Getter @Setter private ConsolePlugin console;
     @Getter @Setter private LoggerPlugin logger; // in ConsolePlugin
-    @Getter @Setter private DiscordPlugin discord;
-    @Getter private final ChatPlugin chat;
-    @Getter private final SelfCarePlugin selfCare;
-    @Getter private final PositionPlugin position;
-    @Getter private final CorePlugin core;
-    @Getter private final PlayersPlugin players;
-    @Getter private final TabCompletePlugin tabComplete;
-    @Getter private final CommandHandlerPlugin commandHandler;
-    @Getter private final ChatCommandHandlerPlugin chatCommandHandler;
-    @Getter private final HashingPlugin hashing;
-    @Getter private final BossbarManagerPlugin bossbar;
-    @Getter private final MusicPlayerPlugin music;
-    @Getter private final TPSPlugin tps;
-    @Getter private final EvalRunnerPlugin eval;
-    @Getter private final ClearChatUsernamePlugin clearChatUsername;
-    @Getter private final TrustedPlugin trusted;
-    @Getter private final BruhifyPlugin bruhify;
-    @Getter private final GrepLogPlugin grepLog;
-    @Getter private final CloopPlugin cloop;
+    @Getter @Setter private DiscordPlugin discord; // same for this one too
+
+    @Getter private ChatPlugin chat;
+    @Getter private SelfCarePlugin selfCare;
+    @Getter private PositionPlugin position;
+    @Getter private CorePlugin core;
+    @Getter private PlayersPlugin players;
+    @Getter private TabCompletePlugin tabComplete;
+    @Getter private CommandHandlerPlugin commandHandler;
+    @Getter private ChatCommandHandlerPlugin chatCommandHandler;
+    @Getter private HashingPlugin hashing;
+    @Getter private BossbarManagerPlugin bossbar;
+    @Getter private MusicPlayerPlugin music;
+    @Getter private TPSPlugin tps;
+    @Getter private EvalRunnerPlugin eval;
+    @Getter private ClearChatUsernamePlugin clearChatUsername;
+    @Getter private TrustedPlugin trusted;
+    @Getter private BruhifyPlugin bruhify;
+    @Getter private GrepLogPlugin grepLog;
+    @Getter private CloopPlugin cloop;
 
     public Bot (String host, int port, String _username, boolean kaboom, String serverName, List<Bot> allBots, Configuration config) {
         this.host = host;
@@ -65,12 +68,15 @@ public class Bot {
         this.allBots = allBots;
         this.config = config;
 
-        try {
-            DiscordPlugin.readyLatch().await();
+        ConsolePlugin.addListener(new ConsolePlugin.Listener() {
+            @Override
+            public void ready() {
+                Bot.this.ready();
+            }
+        });
+    }
 
-            // Thread.sleep(2000); // prob the worst way to fix this thing
-        } catch (InterruptedException ignored) { System.exit(1); }
-
+    public void ready () {
         this.chat = new ChatPlugin(this);
         this.selfCare = new SelfCarePlugin(this);
         this.position = new PositionPlugin(this);
@@ -112,6 +118,7 @@ public class Bot {
 
                 if (packet instanceof ClientboundLoginPacket) {
                     for (SessionListener listener : listeners) {
+                        loggedIn = true;
                         listener.connected(new ConnectedEvent(session));
                     }
                 }
@@ -148,6 +155,8 @@ public class Bot {
 
             @Override
             public void disconnected(DisconnectedEvent disconnectedEvent) {
+                loggedIn = false;
+
                 final int reconnectDelay = config.reconnectDelay();
 
                 executor.schedule(() -> reconnect(), reconnectDelay, TimeUnit.MILLISECONDS);

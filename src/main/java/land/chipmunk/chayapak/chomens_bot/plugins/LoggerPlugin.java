@@ -11,6 +11,8 @@ import net.kyori.adventure.text.Component;
 public class LoggerPlugin extends ChatPlugin.ChatListener {
     private final Bot bot;
 
+    private boolean addedListener = false;
+
     public LoggerPlugin(Bot bot) {
         this.bot = bot;
 
@@ -18,16 +20,17 @@ public class LoggerPlugin extends ChatPlugin.ChatListener {
             @Override
             public void connected (ConnectedEvent event) {
                 log("Successfully connected to: " + bot.host() + ":" + bot.port());
+
+                if (addedListener) return;
+                bot.chat().addListener(LoggerPlugin.this);
+                addedListener = true;
             }
 
             @Override
             public void disconnected (DisconnectedEvent event) {
                 log("Disconnected from " + bot.host() + ":" + bot.port() + ", reason: " + event.getReason());
-                event.getCause().printStackTrace();
             }
         });
-
-        bot.chat().addListener(this);
     }
 
     public void log (String message) {
