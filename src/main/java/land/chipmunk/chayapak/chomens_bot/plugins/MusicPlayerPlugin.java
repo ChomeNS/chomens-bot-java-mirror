@@ -104,15 +104,7 @@ public class MusicPlayerPlugin extends SessionAdapter {
             if (currentSong == null) {
                 if (songQueue.size() == 0) return;
 
-                bot.bossbar().add(bossbarName, new BossBar(
-                        Component.empty(),
-                        BossBarColor.WHITE,
-                        0,
-                        "",
-                        BossBarStyle.PROGRESS,
-                        0,
-                        false
-                ));
+                addBossBar();
 
                 currentSong = songQueue.get(0); // songQueue.poll();
                 bot.chat().tellraw(Component.translatable("Now playing %s", Component.empty().append(currentSong.name).color(NamedTextColor.GOLD)));
@@ -122,7 +114,9 @@ public class MusicPlayerPlugin extends SessionAdapter {
             if (currentSong.paused && ticksUntilPausedBossbar-- < 0) return;
             else ticksUntilPausedBossbar = 20;
 
-            final BossBar bossBar = bot.bossbar().get(bossbarName);
+            BossBar bossBar = bot.bossbar().get(bossbarName);
+
+            if (bossBar == null) bossBar = addBossBar();
 
             bossBar.players(SELECTOR);
             bossBar.name(generateBossbar());
@@ -152,7 +146,7 @@ public class MusicPlayerPlugin extends SessionAdapter {
 
                 if (songQueue.size() == 0) {
                     stopPlaying();
-                    removeBossbar();
+                    removeBossBar();
                     bot.chat().tellraw(Component.text("Finished playing every song in the queue"));
                     return;
                 }
@@ -182,7 +176,23 @@ public class MusicPlayerPlugin extends SessionAdapter {
         currentSong.play();
     }
 
-    public void removeBossbar () {
+    public BossBar addBossBar () {
+        final BossBar bossBar = new BossBar(
+                Component.empty(),
+                BossBarColor.WHITE,
+                0,
+                "",
+                BossBarStyle.PROGRESS,
+                0,
+                false
+        );
+
+        bot.bossbar().add(bossbarName, bossBar);
+
+        return bossBar;
+    }
+
+    public void removeBossBar() {
         bot.bossbar().remove(bossbarName);
     }
 
@@ -232,7 +242,7 @@ public class MusicPlayerPlugin extends SessionAdapter {
 
     public void stopPlaying () {
         currentSong = null;
-        removeBossbar();
+        removeBossBar();
     }
 
     @Override
