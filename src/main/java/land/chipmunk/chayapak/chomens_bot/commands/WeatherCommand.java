@@ -29,7 +29,7 @@ public class WeatherCommand implements Command {
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
-        usages.add("<location>");
+        usages.add("<{location}>");
 
         return usages;
     }
