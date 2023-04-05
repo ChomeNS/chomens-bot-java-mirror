@@ -45,19 +45,12 @@ public class DiscordPlugin {
         for (Bot bot : Main.allBots) {
             String channelId = servers.get(bot.host() + ":" + bot.port());
 
-            System.out.println("bot for server " + bot.host() + ":" + bot.port());
-            System.out.println("adding listeners...");
-
               bot.addListener(new SessionAdapter() {
                   @Override
                   public void connected (ConnectedEvent event) {
                       boolean channelAlreadyAddedListeners = alreadyAddedListeners.getOrDefault(channelId, false);
 
-                      System.out.println("connected, added listeners is " + channelAlreadyAddedListeners);
-
                       sendMessageInstantly("Successfully connected to: " + "`" + bot.host() + ":" + bot.port() + "`", channelId);
-
-                      System.out.println("sent message...");
 
                       if (channelAlreadyAddedListeners) return;
 
