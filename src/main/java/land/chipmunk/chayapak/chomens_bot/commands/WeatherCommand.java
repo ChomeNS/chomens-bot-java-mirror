@@ -75,7 +75,7 @@ public class WeatherCommand implements Command {
             final String time = formatter.print(dateTime);
 
             final Component component = Component.translatable(
-                    "Weather for %s, %s:\n%s, feels like %s\nTime: %s",
+                    "Weather forecast for %s, %s:\n%s, feels like %s\nTime: %s",
                     Component.text(jsonObject.get("location").getAsJsonObject().get("name").getAsString()).color(NamedTextColor.AQUA),
                     Component.text(jsonObject.get("location").getAsJsonObject().get("country").getAsString()).color(NamedTextColor.AQUA),
                     Component.text(jsonObject.get("current").getAsJsonObject().get("temp_c").getAsString() + "°C").color(NamedTextColor.GOLD),
