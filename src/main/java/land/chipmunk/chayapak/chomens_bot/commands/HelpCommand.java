@@ -8,6 +8,7 @@ import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class HelpCommand implements Command {
@@ -71,13 +72,20 @@ public class HelpCommand implements Command {
         context.sendOutput(component);
     }
 
-    public List<Component> getCommandListByTrustLevel (int trustLevel) {
+    public List<Component> getCommandListByTrustLevel(int trustLevel) {
         final List<Component> list = new ArrayList<>();
 
-        for (Command command : bot.commandHandler().commands()) {
-            final String name = command.name();
+        List<String> commandNames = new ArrayList<>();
 
+        for (Command command : bot.commandHandler().commands()) {
             if (command.trustLevel() != trustLevel) continue;
+
+            commandNames.add(command.name());
+        }
+
+        Collections.sort(commandNames);
+
+        for (String name : commandNames) {
             list.add(Component.text(name).color(getColorByTrustLevel(trustLevel)));
         }
 
