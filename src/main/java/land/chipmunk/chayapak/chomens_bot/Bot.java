@@ -58,6 +58,7 @@ public class Bot {
     @Getter private BruhifyPlugin bruhify;
     @Getter private GrepLogPlugin grepLog;
     @Getter private CloopPlugin cloop;
+    @Getter private MazePlugin maze;
 
     public Bot (String host, int port, String _username, boolean kaboom, String serverName, List<Bot> allBots, Configuration config) {
         this.host = host;
@@ -95,6 +96,7 @@ public class Bot {
         this.bruhify = new BruhifyPlugin(this);
         this.grepLog = new GrepLogPlugin(this);
         this.cloop = new CloopPlugin(this);
+        this.maze = new MazePlugin(this);
 
         reconnect();
     }

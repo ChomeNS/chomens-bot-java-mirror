@@ -50,6 +50,7 @@ public class CommandHandlerPlugin {
         registerCommand(new WeatherCommand());
         registerCommand(new ServerInfoCommand());
         registerCommand(new BotUserCommand());
+        registerCommand(new GenerateMazeCommand());
     }
 
     public void registerCommand (Command command) {
