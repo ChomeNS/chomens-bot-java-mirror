@@ -39,33 +39,6 @@ public class MazePlugin {
 
         final String command = "minecraft:fill %s %s %s %s %s %s %s";
 
-        // lazy fix for the sus border issue
-        bot.core().run(
-                String.format(
-                        command,
-                        x + generator.width(),
-                        startY,
-                        z,
-                        x + generator.width(),
-                        startY + 3,
-                        z + generator.height(),
-                        "minecraft:stone"
-                )
-        );
-
-        bot.core().run(
-                String.format(
-                        command,
-                        x,
-                        startY,
-                        z + generator.height(),
-                        x + generator.width(),
-                        startY + 3,
-                        z + generator.height(),
-                        "minecraft:stone"
-                )
-        );
-
         // fill the floor
         bot.core().run(
                 String.format(
@@ -137,5 +110,32 @@ public class MazePlugin {
                 }
             }
         }
+
+        // lazy fix for the sus border issue
+        bot.core().run(
+                String.format(
+                        command,
+                        x + generator.width(),
+                        startY,
+                        z,
+                        x + generator.width(),
+                        startY + 3,
+                        z + generator.height(),
+                        "minecraft:stone"
+                )
+        );
+
+        bot.core().run(
+                String.format(
+                        command,
+                        x,
+                        startY,
+                        z + generator.height(),
+                        x + generator.width(),
+                        startY + 3,
+                        z + generator.height(),
+                        "minecraft:stone"
+                )
+        );
     }
 }
