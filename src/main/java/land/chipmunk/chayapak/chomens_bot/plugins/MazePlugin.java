@@ -2,6 +2,9 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.util.MazeGenerator;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class MazePlugin {
     private final Bot bot;
@@ -12,6 +15,15 @@ public class MazePlugin {
 
     // also totally didn't ask chatgpt for this too (but modified a bit)
     public void generate (MazeGenerator generator, int startX, int startY, int startZ) {
+        bot.chat().tellraw(
+                Component.translatable(
+                        "Generating maze at %s %s %s...",
+                        Component.text(startX).color(NamedTextColor.AQUA),
+                        Component.text(startY).color(NamedTextColor.AQUA),
+                        Component.text(startZ).color(NamedTextColor.AQUA)
+                )
+        );
+
         final int[][] maze = generator.maze();
 
         int x = startX;
@@ -136,6 +148,26 @@ public class MazePlugin {
                         z + generator.height(),
                         "minecraft:stone"
                 )
+        );
+
+        bot.chat().tellraw(
+                Component.empty()
+                        .append(Component.text("Done generating maze. "))
+                        .append(
+                                Component
+                                        .text("Click here to teleport")
+                                        .color(NamedTextColor.GREEN)
+                                        .clickEvent(
+                                                ClickEvent.runCommand(
+                                                        String.format(
+                                                                "/tp %s %s %s",
+                                                                startX,
+                                                                startY + 4,
+                                                                startZ
+                                                        )
+                                                )
+                                        )
+                        )
         );
     }
 }
