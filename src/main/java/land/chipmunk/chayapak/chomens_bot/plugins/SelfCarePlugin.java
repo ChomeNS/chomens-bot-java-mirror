@@ -41,6 +41,7 @@ public class SelfCarePlugin extends SessionAdapter {
     private boolean socialspy = false;
     private boolean muted = false;
     private boolean prefix = false;
+    private boolean username = true;
 
     public SelfCarePlugin (Bot bot) {
         this.bot = bot;
@@ -67,12 +68,12 @@ public class SelfCarePlugin extends SessionAdapter {
 
                 else if (message.equals("You now have the tag: [ChomeNS Bot]") || // for 1.19.2 (or 1.19?) and older clones
                          message.equals("You now have the tag: &8[&eChomeNS Bot&8]")
-                ) {
-                    prefix = true;
-                    return;
-                }
-                if (message.startsWith("You no longer have a tag")) prefix = false;
-                if (message.startsWith("You now have the tag: ")) prefix = false;
+                ) prefix = true;
+                else if (message.startsWith("You no longer have a tag")) prefix = false;
+                else if (message.startsWith("You now have the tag: ")) prefix = false;
+
+                else if (message.equals("Successfully set your username to \"" + bot.username() + "\"")) username = true;
+                else if (message.startsWith("Successfully set your username to \"")) username = false;
             }
         });
     }
@@ -88,6 +89,7 @@ public class SelfCarePlugin extends SessionAdapter {
         else if (selfCares.socialspy() && !socialspy) bot.chat().send("/essentials:socialspy enable");
         else if (selfCares.mute() && muted) bot.chat().send("/essentials:mute " + bot.username());
         else if (selfCares.prefix() && !prefix && bot.kaboom()) bot.chat().send("/extras:prefix &8[&eChomeNS Bot&8]");
+        else if (selfCares.username() && !username && bot.kaboom()) bot.chat().send("/extras:username " + bot.username());
     }
 
     @Override

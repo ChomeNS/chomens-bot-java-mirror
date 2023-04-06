@@ -49,6 +49,7 @@ public class CommandHandlerPlugin {
         registerCommand(new CloopCommand());
         registerCommand(new WeatherCommand());
         registerCommand(new ServerInfoCommand());
+        registerCommand(new BotUserCommand());
     }
 
     public void registerCommand (Command command) {

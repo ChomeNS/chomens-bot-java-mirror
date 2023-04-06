@@ -57,6 +57,7 @@ public class Configuration {
         @Getter public boolean mute = true;
 
         @Getter public boolean prefix = true;
+        @Getter public boolean username = true;
     }
 
     public static class Bots {

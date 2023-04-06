@@ -32,7 +32,7 @@ core:
   # PLEASE give valid JSON component here else the core don't refill at all
   customName: '[{"text":"ChomeNS ","color":"yellow"},{"text":"Core","color":"green"},{"text":"™","color":"gold"}]'
 selfCare:
-  checkInterval: 1000,
+  checkInterval: 1000
 
   # vanilla
   op: true
@@ -45,9 +45,12 @@ selfCare:
   socialspy: true
   mute: true
 
-  # extras
+  # commandspy
   cspy: true
+
+  # extras
   prefix: true
+  username: true # do NOT set this to false unless you know what you are doing
 bots:
   # username and kaboom are optional.
   # for username if it doesn't exist it will default to random username

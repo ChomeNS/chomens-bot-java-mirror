@@ -73,6 +73,8 @@ public class PlayersPlugin extends SessionAdapter {
         return null;
     }
 
+    public MutablePlayerListEntry getBotEntry () { return getEntry(bot.username()); }
+
     private MutablePlayerListEntry getEntry (PlayerListEntry other) {
         return getEntry(other.getProfile().getId());
     }
