@@ -156,16 +156,25 @@ public class GrepLogPlugin {
         }
 
         private void finish () {
-            bot.chat().tellraw(
-                    Component.translatable(
-                            "Log query finished, found %s matches. Results were sent in Discord",
-                            Component.text(matches).color(NamedTextColor.AQUA)
-                    )
-            );
+            if (results.toString().split("\n").length < 300) { // ig lazy fix for removing \n lol
+                bot.chat().tellraw(
+                        Component.empty()
+                                .append(Component.text("Log query output:"))
+                                .append(Component.newline())
+                                .append(Component.text(results.toString()))
+                );
+            } else {
+                bot.chat().tellraw(
+                        Component.translatable(
+                                "Log query finished, found %s matches. Results were sent in Discord",
+                                Component.text(matches).color(NamedTextColor.AQUA)
+                        )
+                );
 
-            final String channelId = bot.discord().servers.get(bot.host() + ":" + bot.port());
-            final TextChannel logChannel = bot.discord().jda().getTextChannelById(channelId);
-            logChannel.sendMessage("Log query output").addFile(results.toString().getBytes(), "report.txt").queue();
+                final String channelId = bot.discord().servers.get(bot.host() + ":" + bot.port());
+                final TextChannel logChannel = bot.discord().jda().getTextChannelById(channelId);
+                logChannel.sendMessage("Log query output").addFile(results.toString().getBytes(), "report.txt").queue();
+            }
         }
     }
 }
