@@ -8,8 +8,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class ConsoleCommandContext extends CommandContext {
     private final Bot bot;
 
-    public ConsoleCommandContext (Bot bot, String prefix, String hash, String ownerHash) {
-        super(bot, prefix, bot.players().getEntry(bot.username()) /* real */, hash, ownerHash);
+    public ConsoleCommandContext (Bot bot, String prefix) {
+        super(bot, prefix, bot.players().getEntry(bot.username()) /* real */, null, null);
         this.bot = bot;
     }
 

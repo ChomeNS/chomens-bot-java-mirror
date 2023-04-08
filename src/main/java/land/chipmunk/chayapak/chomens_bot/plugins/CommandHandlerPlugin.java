@@ -58,7 +58,7 @@ public class CommandHandlerPlugin {
     }
 
     // literally the same quality as the js chomens bot
-    public Component executeCommand (String input, CommandContext context, boolean inGame, boolean discord, String hash, String ownerHash, MessageReceivedEvent event) {
+    public Component executeCommand (String input, CommandContext context, boolean inGame, boolean discord, boolean console, String hash, String ownerHash, MessageReceivedEvent event) {
         final String[] splitInput = input.split("\\s+");
 
         final String commandName = splitInput[0];
@@ -77,14 +77,14 @@ public class CommandHandlerPlugin {
         if (fullArgs.length < minimumArgs) return Component.text("Excepted minimum of " + minimumArgs + " argument(s), got " + fullArgs.length).color(NamedTextColor.RED);
         if (fullArgs.length > maximumArgs && !usage.contains("{")) return Component.text("Too much arguments, expected " + maximumArgs + " max").color(NamedTextColor.RED);
 
-        if (trustLevel > 0 && splitInput.length < 2) return Component.text("Please provide a hash").color(NamedTextColor.RED);
+        if (trustLevel > 0 && splitInput.length < 2 && !console) return Component.text("Please provide a hash").color(NamedTextColor.RED);
 
         String userHash = "";
-        if (trustLevel > 0) userHash = splitInput[1];
+        if (trustLevel > 0 && !console) userHash = splitInput[1];
 
         final String[] args = Arrays.copyOfRange(splitInput, (trustLevel > 0 && inGame) ? 2 : 1, splitInput.length);
 
-        if (command.trustLevel() > 0) {
+        if (command.trustLevel() > 0 && !console) {
             if (discord) {
                 final List<Role> roles = event.getMember().getRoles();
 

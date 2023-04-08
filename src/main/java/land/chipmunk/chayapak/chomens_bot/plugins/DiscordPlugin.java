@@ -78,7 +78,7 @@ public class DiscordPlugin {
                               if (message.startsWith(prefix)) {
                                   final DiscordCommandContext context = new DiscordCommandContext(bot, prefix, event, null, null);
 
-                                  final Component output = bot.commandHandler().executeCommand(message.substring(prefix.length()), context, false, true, null, null, event);
+                                  final Component output = bot.commandHandler().executeCommand(message.substring(prefix.length()), context, false, true, false, null, null, event);
                                   final String textOutput = ((TextComponent) output).content();
 
                                   if (!textOutput.equals("success")) {

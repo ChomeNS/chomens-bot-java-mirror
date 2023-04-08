@@ -92,9 +92,9 @@ public class ConsolePlugin {
             if (!bot.host().equals(consoleServer) && !consoleServer.equals("all")) continue;
 
             if (line.startsWith(prefix)) {
-                final ConsoleCommandContext context = new ConsoleCommandContext(bot, prefix, "h", "o"); // ? should the hashes be hardcoded?
+                final ConsoleCommandContext context = new ConsoleCommandContext(bot, prefix);
 
-                final Component output = bot.commandHandler().executeCommand(line.substring(prefix.length()), context, false, false, "h", "o", null);
+                final Component output = bot.commandHandler().executeCommand(line.substring(prefix.length()), context, false, false, true, null, null, null);
                 final String textOutput = ((TextComponent) output).content();
 
                 if (!textOutput.equals("success")) {
