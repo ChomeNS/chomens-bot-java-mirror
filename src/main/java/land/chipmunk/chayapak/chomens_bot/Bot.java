@@ -25,7 +25,7 @@ public class Bot {
     private final String _username;
     @Getter private final boolean kaboom;
     @Getter private final String serverName;
-    @Getter private final boolean useChat;
+    @Getter @Setter private boolean useChat;
     @Getter private final List<Bot> allBots;
     @Getter private final Configuration config;
 
