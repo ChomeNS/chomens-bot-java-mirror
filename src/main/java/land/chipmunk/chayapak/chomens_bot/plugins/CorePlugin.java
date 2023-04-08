@@ -5,8 +5,10 @@ import com.github.steveice10.mc.protocol.data.game.entity.object.Direction;
 import com.github.steveice10.mc.protocol.data.game.entity.player.Hand;
 import com.github.steveice10.mc.protocol.data.game.entity.player.PlayerAction;
 import com.github.steveice10.mc.protocol.data.game.level.block.CommandBlockMode;
+import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundTagQueryPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.inventory.ServerboundSetCommandBlockPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.inventory.ServerboundSetCreativeModeSlotPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.serverbound.level.ServerboundBlockEntityTagQuery;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.player.ServerboundPlayerActionPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.player.ServerboundUseItemOnPacket;
 import com.github.steveice10.opennbt.tag.builtin.ByteTag;
@@ -16,11 +18,16 @@ import com.github.steveice10.opennbt.tag.builtin.Tag;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
+import com.github.steveice10.packetlib.packet.Packet;
 import com.nukkitx.math.vector.Vector3i;
-import lombok.Getter;
 import land.chipmunk.chayapak.chomens_bot.Bot;
+import lombok.Getter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class CorePlugin extends PositionPlugin.PositionListener {
@@ -37,6 +44,9 @@ public class CorePlugin extends PositionPlugin.PositionListener {
 
     public Vector3i relativeCorePosition = Vector3i.from(coreStart);
 
+    private int nextTransactionId = 0;
+    private final Map<Integer, CompletableFuture<CompoundTag>> transactions = new HashMap<>();
+
     private final boolean kaboom;
 
     public CorePlugin (Bot bot) {
@@ -49,6 +59,11 @@ public class CorePlugin extends PositionPlugin.PositionListener {
             @Override
             public void disconnected (DisconnectedEvent event) {
                 ready = false;
+            }
+
+            @Override
+            public void packetReceived(Session session, Packet packet) {
+                if (packet instanceof ClientboundTagQueryPacket) CorePlugin.this.packetReceived((ClientboundTagQueryPacket) packet);
             }
         });
     }
@@ -74,6 +89,28 @@ public class CorePlugin extends PositionPlugin.PositionListener {
         ));
 
         incrementBlock();
+    }
+
+    public CompletableFuture<CompoundTag> runTracked (String command) {
+        final Vector3i position = absoluteCorePosition();
+
+        run(command);
+
+        final int transactionId = nextTransactionId++;
+
+        // promises are renamed to future lmao
+        final CompletableFuture<CompoundTag> future = new CompletableFuture<>();
+        transactions.put(transactionId, future);
+
+        final Runnable afterTick = () -> bot.session().send(new ServerboundBlockEntityTagQuery(transactionId, position));
+
+        bot.executor().schedule(afterTick, 50, TimeUnit.MILLISECONDS);
+
+        return future;
+    }
+
+    public void packetReceived (ClientboundTagQueryPacket packet) {
+        transactions.get(packet.getTransactionId()).complete(packet.getNbt());
     }
 
     public Vector3i absoluteCorePosition () {
