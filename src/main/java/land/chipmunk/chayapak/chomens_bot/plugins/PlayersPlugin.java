@@ -12,13 +12,13 @@ import land.chipmunk.chayapak.chomens_bot.chatParsers.data.MutablePlayerListEntr
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayersPlugin extends SessionAdapter {
     private final Bot bot;
     @Getter private List<MutablePlayerListEntry> list = new ArrayList<>();
+
+    private final Map<MutablePlayerListEntry, String> loginNames = new HashMap<>();
 
     private final List<PlayerListener> listeners = new ArrayList<>();
 
@@ -86,9 +86,24 @@ public class PlayersPlugin extends SessionAdapter {
         final MutablePlayerListEntry target = new MutablePlayerListEntry(newEntry);
 
         list.add(target);
+        loginNames.put(target, target.profile().getIdAsString());
 
         if (duplicate == null) for (PlayerListener listener : listeners) { listener.playerJoined(target); }
-        else for (PlayerListener listener : listeners) { listener.playerUnVanished(target); }
+        else {
+            for (Map.Entry<MutablePlayerListEntry, String> entry : loginNames.entrySet()) {
+                if (
+                        !entry.getValue().equals(newEntry.getProfile().getIdAsString()) ||
+                                entry.getKey().profile().getName().equals(newEntry.getProfile().getName())
+                ) continue;
+
+                loginNames.remove(entry.getKey(), entry.getValue());
+
+                for (PlayerListener listener : listeners) { listener.playerUserNameChanged(entry.getKey()); }
+
+                return;
+            }
+            for (PlayerListener listener : listeners) { listener.playerUnVanished(target); }
+        }
     }
 
     private void updateGamemode (PlayerListEntry newEntry) {
@@ -155,6 +170,7 @@ public class PlayersPlugin extends SessionAdapter {
         public void playerGameModeUpdated (MutablePlayerListEntry target, GameMode gameMode) {}
         public void playerLatencyUpdated (MutablePlayerListEntry target, int ping) {}
         public void playerDisplayNameUpdated (MutablePlayerListEntry target, Component displayName) {}
+        public void playerUserNameChanged (MutablePlayerListEntry target) {}
         public void playerLeft (MutablePlayerListEntry target) {}
         public void playerVanished (MutablePlayerListEntry target) {}
     }
