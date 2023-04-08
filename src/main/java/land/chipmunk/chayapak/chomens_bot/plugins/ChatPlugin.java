@@ -84,9 +84,7 @@ public class ChatPlugin extends SessionAdapter {
         }
     }
 
-    public void send (String _message, String prefix) {
-        final String message = prefix + _message;
-
+    public void send (String message) {
         final String[] splitted = message.split("(?<=\\G.{100})|\\n");
 
         int i = 200;
@@ -121,23 +119,12 @@ public class ChatPlugin extends SessionAdapter {
         }
     }
 
-    public void send (String message) {
-        send(message, "");
-    }
-
-    public void whisper (String targets, String message) {
-        send(message, "/tell " + targets + " ");
-    }
-
     public void tellraw (Component component, String targets) {
         if (bot.useChat()) {
-            if (targets.equals("@a")) {
-                final String stringified = ComponentUtilities.stringifyMotd(component).replace("§", "&");
-                send(stringified);
-            } else {
-                final String stringified = ComponentUtilities.stringify(component);
-                whisper(targets, stringified);
-            }
+            if (!targets.equals("@a")) return; // worst fix of all time!1!
+
+            final String stringified = ComponentUtilities.stringifyMotd(component).replace("§", "&");
+            send(stringified);
         } else {
             bot.core().run("minecraft:tellraw " + targets + " " + GsonComponentSerializer.gson().serialize(component));
         }
