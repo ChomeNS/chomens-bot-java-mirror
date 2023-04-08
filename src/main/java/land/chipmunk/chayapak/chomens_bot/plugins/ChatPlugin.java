@@ -23,6 +23,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class ChatPlugin extends SessionAdapter {
     private final Bot bot;
@@ -83,32 +84,63 @@ public class ChatPlugin extends SessionAdapter {
         }
     }
 
-    public void send (String message) {
-        if (message.startsWith("/")) {
-            bot.session().send(new ServerboundChatCommandPacket(
-                    message.substring(1),
-                    Instant.now().toEpochMilli(),
-                    0L,
-                    new ArrayList<>(),
-                    false,
-                    new ArrayList<>(),
-                    null
-            ));
-        } else {
-            bot.session().send(new ServerboundChatPacket(
-                    message,
-                    Instant.now().toEpochMilli(),
-                    0L,
-                    new byte[0],
-                    false,
-                    new ArrayList<>(),
-                    null
-            ));
+    public void send (String _message, String prefix) {
+        final String message = prefix + _message;
+
+        final String[] splitted = message.split("(?<=\\G.{100})|\\n");
+
+        int i = 200;
+        for (String splitMessage : splitted) {
+            if (splitMessage.trim().equals("")) continue;
+
+            bot.executor().schedule(() -> {
+                if (splitMessage.startsWith("/")) {
+                    bot.session().send(new ServerboundChatCommandPacket(
+                            splitMessage.substring(1),
+                            Instant.now().toEpochMilli(),
+                            0L,
+                            new ArrayList<>(),
+                            false,
+                            new ArrayList<>(),
+                            null
+                    ));
+                } else {
+                    bot.session().send(new ServerboundChatPacket(
+                            splitMessage,
+                            Instant.now().toEpochMilli(),
+                            0L,
+                            new byte[0],
+                            false,
+                            new ArrayList<>(),
+                            null
+                    ));
+                }
+            }, i, TimeUnit.MILLISECONDS);
+
+            i = i + 200;
         }
     }
 
+    public void send (String message) {
+        send(message, "");
+    }
+
+    public void whisper (String targets, String message) {
+        send(message, "/tell " + targets + " ");
+    }
+
     public void tellraw (Component component, String targets) {
-        bot.core().run("minecraft:tellraw " + targets + " " + GsonComponentSerializer.gson().serialize(component));
+        if (bot.useChat()) {
+            if (targets.equals("@a")) {
+                final String stringified = ComponentUtilities.stringifyMotd(component).replace("§", "&");
+                send(stringified);
+            } else {
+                final String stringified = ComponentUtilities.stringify(component);
+                whisper(targets, stringified);
+            }
+        } else {
+            bot.core().run("minecraft:tellraw " + targets + " " + GsonComponentSerializer.gson().serialize(component));
+        }
     }
 
     public void tellraw (Component component, UUID uuid) { tellraw(component, UUIDUtilities.selector(uuid)); }

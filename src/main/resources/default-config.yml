@@ -60,3 +60,4 @@ bots:
     username: 'ChomeNS_Bot'
     kaboom: false
     serverName: 'Localhost' # name it whatever you like, it will be used as server name in trusted broadcast
+    useChat: false # when the bot sends output (tellraw) it will chat instead of using the core to run tellraw

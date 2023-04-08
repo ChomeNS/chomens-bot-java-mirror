@@ -66,5 +66,6 @@ public class Configuration {
         @Getter public String username;
         @Getter public boolean kaboom = false;
         @Getter public String serverName;
+        @Getter public boolean useChat = false;
     }
 }

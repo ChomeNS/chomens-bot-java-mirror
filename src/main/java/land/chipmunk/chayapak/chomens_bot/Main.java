@@ -70,8 +70,9 @@ public class Main {
             final String username = botOption.username();
             final boolean kaboom = botOption.kaboom();
             final String serverName = botOption.serverName();
+            final boolean useChat = botOption.useChat();
 
-            final Bot bot = new Bot(host, port, username, kaboom, serverName, allBots, config);
+            final Bot bot = new Bot(host, port, username, kaboom, serverName, useChat, allBots, config);
             allBots.add(bot);
         }
 
