@@ -1,8 +1,11 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
+import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundDisconnectPacket;
+import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.ConnectedEvent;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
+import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Configuration;
 import land.chipmunk.chayapak.chomens_bot.Main;
@@ -45,9 +48,32 @@ public class DiscordPlugin {
         for (Bot bot : Main.allBots) {
             String channelId = servers.get(bot.host() + ":" + bot.port());
 
+            // toooooo ohio fix
+            final boolean[] disconencted = {false};
+
               bot.addListener(new SessionAdapter() {
                   @Override
+                  public void packetReceived(Session session, Packet packet) {
+                      if (packet instanceof ClientboundDisconnectPacket) packetReceived((ClientboundDisconnectPacket) packet);
+                  }
+
+                  public void packetReceived (ClientboundDisconnectPacket packet) {
+                      disconencted[0] = true;
+
+                      final String reason = ComponentUtilities.stringifyAnsi(packet.getReason());
+                      sendMessageInstantly(
+                              "Disconnected: \n" +
+                              "```ansi\n" +
+                              reason.replace("`", "\\`") +
+                              "\n```"
+                              , channelId
+                      );
+                  }
+
+                  @Override
                   public void connected (ConnectedEvent event) {
+                      disconencted[0] = false;
+
                       boolean channelAlreadyAddedListeners = alreadyAddedListeners.getOrDefault(channelId, false);
 
                       sendMessageInstantly("Successfully connected to: " + "`" + bot.host() + ":" + bot.port() + "`", channelId);
@@ -155,6 +181,7 @@ public class DiscordPlugin {
 
                   @Override
                   public void disconnected(DisconnectedEvent event) {
+                      if (disconencted[0]) return;
                       sendMessageInstantly("Disconnected: " + "`" + event.getReason().replace("`", "\\`") + "`", channelId);
                   }
               });
