@@ -18,8 +18,6 @@ public class PlayersPlugin extends SessionAdapter {
     private final Bot bot;
     @Getter private List<MutablePlayerListEntry> list = new ArrayList<>();
 
-    private final Map<MutablePlayerListEntry, String> loginNames = new HashMap<>();
-
     private final List<PlayerListener> listeners = new ArrayList<>();
 
     public PlayersPlugin (Bot bot) {
@@ -86,10 +84,10 @@ public class PlayersPlugin extends SessionAdapter {
         final MutablePlayerListEntry target = new MutablePlayerListEntry(newEntry);
 
         list.add(target);
-        loginNames.put(target, target.profile().getIdAsString());
+        // loginNames.put(target, target.profile().getIdAsString());
 
         if (duplicate == null) for (PlayerListener listener : listeners) { listener.playerJoined(target); }
-        else {
+        /* else {
             for (Map.Entry<MutablePlayerListEntry, String> entry : loginNames.entrySet()) {
                 if (
                         !entry.getValue().equals(newEntry.getProfile().getIdAsString()) ||
@@ -102,8 +100,9 @@ public class PlayersPlugin extends SessionAdapter {
 
                 return;
             }
-            for (PlayerListener listener : listeners) { listener.playerUnVanished(target); }
-        }
+         */
+        else for (PlayerListener listener : listeners) { listener.playerUnVanished(target); }
+        // }
     }
 
     private void updateGamemode (PlayerListEntry newEntry) {
