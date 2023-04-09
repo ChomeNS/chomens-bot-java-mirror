@@ -101,8 +101,40 @@ public class MusicCommand implements Command {
             _path = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
             path = Path.of(root.toString(), _path);
 
-            if (!path.toString().contains("http")) player.loadSong(path);
-            else player.loadSong(new URL(_path));
+            if (path.toString().contains("http")) player.loadSong(new URL(_path));
+            else {
+                // ignore my shitcode for autocomplete
+                final String separator = File.separator;
+
+                if (_path.contains(separator) && !_path.equals("")) {
+                    final String[] pathSplitted = _path.split(separator);
+
+                    final List<String> pathSplittedClone = new ArrayList<>(Arrays.stream(pathSplitted.clone()).toList());
+                    pathSplittedClone.remove(pathSplittedClone.size() - 1);
+
+                    final Path realPath = Path.of(root.toString(), String.join(separator, pathSplittedClone));
+
+                    final String[] songs = realPath.toFile().list();
+
+                    if (songs == null) return Component.text("Directory does not exist").color(NamedTextColor.RED);
+
+                    final String lowerCaseFile = pathSplitted[pathSplitted.length - 1].toLowerCase();
+
+                    final String file = Arrays.stream(songs)
+                            .filter(song -> song.toLowerCase().contains(lowerCaseFile))
+                            .toArray(String[]::new)[0];
+
+                    player.loadSong(Path.of(realPath.toString(), file));
+                } else {
+                    final String[] songs = root.toFile().list();
+
+                    final String file = Arrays.stream(songs)
+                            .filter(song -> song.toLowerCase().contains(_path))
+                            .toArray(String[]::new)[0];
+
+                    player.loadSong(Path.of(root.toString(), file));
+                }
+            }
         } catch (MalformedURLException e) {
             return Component.text("Invalid URL").color(NamedTextColor.RED);
         } catch (Exception e) {
