@@ -103,7 +103,7 @@ public class MusicCommand implements Command {
 
             if (path.toString().contains("http")) player.loadSong(new URL(_path));
             else {
-                // ignore my shitcode for autocomplete
+                // ignore my ohio code for autocomplete
                 final String separator = File.separator;
 
                 if (_path.contains(separator) && !_path.equals("")) {
@@ -129,7 +129,7 @@ public class MusicCommand implements Command {
                     final String[] songs = root.toFile().list();
 
                     final String file = Arrays.stream(songs)
-                            .filter(song -> song.toLowerCase().contains(_path))
+                            .filter(song -> song.toLowerCase().contains(_path.toLowerCase()))
                             .toArray(String[]::new)[0];
 
                     player.loadSong(Path.of(root.toString(), file));
@@ -137,6 +137,8 @@ public class MusicCommand implements Command {
             }
         } catch (MalformedURLException e) {
             return Component.text("Invalid URL").color(NamedTextColor.RED);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return Component.text("Song not found").color(NamedTextColor.RED);
         } catch (Exception e) {
             return Component.text(e.toString()).color(NamedTextColor.RED);
         }
