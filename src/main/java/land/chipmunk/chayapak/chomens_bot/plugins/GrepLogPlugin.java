@@ -156,7 +156,7 @@ public class GrepLogPlugin {
         }
 
         private void finish () {
-            if (results.toString().split("\n").length < 300) { // ig lazy fix for removing \n lol
+            if (results.toString().split("\n").length < 100) { // ig lazy fix for removing \n lol
                 bot.chat().tellraw(
                         Component.empty()
                                 .append(Component.text("Log query output:"))
