@@ -208,7 +208,7 @@ public class MusicCommand implements Command {
             return result;
         });
 
-        final List<Component> list = new ArrayList<>();
+        final List<Component> fullList = new ArrayList<>();
         int i = 0;
         for (String filename : filenames) {
             final String pathString = path.toString();
@@ -221,13 +221,13 @@ public class MusicCommand implements Command {
                 location = Paths.get(""); // wtf mabe
             }
             final String joinedPath = (args.length < 2) ? filename : Paths.get(location.getFileName().toString(), filename).toString();
-            list.add(
+            fullList.add(
                     Component
                             .text(filename, (i++ & 1) == 0 ? NamedTextColor.YELLOW : NamedTextColor.GOLD)
                             .clickEvent(
                                     ClickEvent.suggestCommand(
                                             prefix +
-                                                    "music" + // ? How do I make this dynamic?
+                                                    name() +
                                                     (file.isFile() ? " play " : " list ") +
                                                     joinedPath.replace("'", "\\'")
                                     )
@@ -235,8 +235,19 @@ public class MusicCommand implements Command {
             );
         }
 
-        final Component component = Component.join(JoinConfiguration.separator(Component.space()), list);
-        context.sendOutput(component);
+        final int eachSize = 100;
+
+        int index = 0;
+
+        while (index < fullList.size()) {
+            List<Component> list = fullList.subList(index, Math.min(index + eachSize, fullList.size()));
+
+            final Component component = Component.join(JoinConfiguration.separator(Component.space()), list);
+            context.sendOutput(component);
+
+            index += eachSize;
+            list.clear();
+        }
 
         return Component.text("success");
     }
