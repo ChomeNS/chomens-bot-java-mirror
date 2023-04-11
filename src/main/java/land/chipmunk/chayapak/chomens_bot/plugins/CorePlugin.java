@@ -109,6 +109,28 @@ public class CorePlugin extends PositionPlugin.PositionListener {
         return future;
     }
 
+    public void runPlaceBlock (String command) {
+        if (!ready) return;
+
+        Map<String, Tag> tag = new HashMap<>();
+        Map<String, Tag> blockEntityTag = new HashMap<>();
+        blockEntityTag.put("Command", new StringTag("Command", command));
+        blockEntityTag.put("auto", new ByteTag("auto", (byte) 1));
+        blockEntityTag.put("TrackOutput", new ByteTag("TrackOutput", (byte) 1));
+        tag.put("BlockEntityTag", new CompoundTag("BlockEntityTag", blockEntityTag));
+
+        final Vector3i temporaryBlockPosition = Vector3i.from(
+                bot.position().position().getX(),
+                bot.position().position().getY() - 1,
+                bot.position().position().getZ()
+        );
+
+        final Session session = bot.session();
+        session.send(new ServerboundSetCreativeModeSlotPacket(36, new ItemStack(kaboom ? 466 /* repeating command block id */ : 347 /* command block id */, 64, new CompoundTag("", tag))));
+        session.send(new ServerboundPlayerActionPacket(PlayerAction.START_DIGGING, temporaryBlockPosition, Direction.NORTH, 0));
+        session.send(new ServerboundUseItemOnPacket(temporaryBlockPosition, Direction.UP, Hand.MAIN_HAND, 0.5f, 0.5f, 0.5f, false, 1));
+    }
+
     public void packetReceived (ClientboundTagQueryPacket packet) {
         transactions.get(packet.getTransactionId()).complete(packet.getNbt());
     }
@@ -184,23 +206,7 @@ public class CorePlugin extends PositionPlugin.PositionListener {
 
 //        bot.chat().send(command);
 
-        Map<String, Tag> tag = new HashMap<>();
-        Map<String, Tag> blockEntityTag = new HashMap<>();
-        blockEntityTag.put("Command", new StringTag("Command", command));
-        blockEntityTag.put("auto", new ByteTag("auto", (byte) 1));
-        blockEntityTag.put("TrackOutput", new ByteTag("TrackOutput", (byte) 1));
-        tag.put("BlockEntityTag", new CompoundTag("BlockEntityTag", blockEntityTag));
-
-        final Vector3i temporaryBlockPosition = Vector3i.from(
-                bot.position().position().getX(),
-                bot.position().position().getY() - 1,
-                bot.position().position().getZ()
-        );
-
-        final Session session = bot.session();
-        session.send(new ServerboundSetCreativeModeSlotPacket(36, new ItemStack(kaboom ? 466 /* repeating command block id */ : 347 /* command block id */, 64, new CompoundTag("", tag))));
-        session.send(new ServerboundPlayerActionPacket(PlayerAction.START_DIGGING, temporaryBlockPosition, Direction.NORTH, 0));
-        session.send(new ServerboundUseItemOnPacket(temporaryBlockPosition, Direction.UP, Hand.MAIN_HAND, 0.5f, 0.5f, 0.5f, false, 1));
+        runPlaceBlock(command);
     }
 
     public static class Listener {
