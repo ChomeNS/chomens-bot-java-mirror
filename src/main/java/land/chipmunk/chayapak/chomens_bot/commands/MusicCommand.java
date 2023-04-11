@@ -303,7 +303,7 @@ public class MusicCommand implements Command {
 
         final long milliseconds;
         try {
-            milliseconds = Long.parseLong(args[1]);
+            milliseconds = Long.parseLong(args[1]) / 1000;
         } catch (NumberFormatException e) {
             return Component.text("Invalid timestamp").color(NamedTextColor.RED);
         }
