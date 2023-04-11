@@ -55,9 +55,13 @@ bots:
   # username and kaboom are optional.
   # for username if it doesn't exist it will default to random username
   # for kaboom it will just default to `false`
+  # for serverName name it whatever you like, it will be used as server name in trusted broadcast
+  # for useChat when the bot sends output (tellraw) it will chat instead of using the core to run tellraw
+  # for hasEssentials it is self-explanatory. if the server has essentials plugin just set it to true
   - host: 'localhost'
     port: 25565
     username: 'ChomeNS_Bot'
     kaboom: false
-    serverName: 'Localhost' # name it whatever you like, it will be used as server name in trusted broadcast
-    useChat: false # when the bot sends output (tellraw) it will chat instead of using the core to run tellraw
+    serverName: 'Localhost'
+    useChat: false
+    hasEssentials: false

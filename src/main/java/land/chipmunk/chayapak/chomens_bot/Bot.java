@@ -26,6 +26,7 @@ public class Bot {
     @Getter private final boolean kaboom;
     @Getter private final String serverName;
     @Getter @Setter private boolean useChat;
+    @Getter private final boolean hasEssentials;
     @Getter private final List<Bot> allBots;
     @Getter private final Configuration config;
 
@@ -61,13 +62,14 @@ public class Bot {
     @Getter private CloopPlugin cloop;
     @Getter private MazePlugin maze;
 
-    public Bot (String host, int port, String _username, boolean kaboom, String serverName, boolean useChat, List<Bot> allBots, Configuration config) {
+    public Bot (String host, int port, String _username, boolean kaboom, String serverName, boolean useChat, boolean hasEssentials, List<Bot> allBots, Configuration config) {
         this.host = host;
         this.port = port;
         this._username = _username;
         this.kaboom = kaboom;
         this.serverName = serverName;
         this.useChat = useChat;
+        this.hasEssentials = hasEssentials;
         this.allBots = allBots;
         this.config = config;
 

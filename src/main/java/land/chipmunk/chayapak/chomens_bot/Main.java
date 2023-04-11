@@ -71,8 +71,9 @@ public class Main {
             final boolean kaboom = botOption.kaboom();
             final String serverName = botOption.serverName();
             final boolean useChat = botOption.useChat();
+            final boolean hasEssentials = botOption.hasEssentials();
 
-            final Bot bot = new Bot(host, port, username, kaboom, serverName, useChat, allBots, config);
+            final Bot bot = new Bot(host, port, username, kaboom, serverName, useChat, hasEssentials, allBots, config);
             allBots.add(bot);
         }
 
