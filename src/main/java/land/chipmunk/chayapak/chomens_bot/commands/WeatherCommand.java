@@ -13,7 +13,6 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.io.FileNotFoundException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -62,7 +61,7 @@ public class WeatherCommand implements Command {
                     + "&aqi=no"
             );
 
-            final String jsonOutput = HttpUtilities.request(url);
+            final String jsonOutput = HttpUtilities.getRequest(url);
 
             final JsonObject jsonObject = gson.fromJson(jsonOutput, JsonObject.class);
 

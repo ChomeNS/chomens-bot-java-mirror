@@ -52,7 +52,7 @@ public class UrbanCommand implements Command {
                             URLEncoder.encode(term, StandardCharsets.UTF_8)
             );
 
-            final String jsonOutput = HttpUtilities.request(url);
+            final String jsonOutput = HttpUtilities.getRequest(url);
 
             final JsonObject jsonObject = gson.fromJson(jsonOutput, JsonObject.class);
 

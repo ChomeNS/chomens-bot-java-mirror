@@ -54,7 +54,7 @@ public class WikipediaCommand implements Command {
                             )
             );
 
-            final String jsonOutput = HttpUtilities.request(url);
+            final String jsonOutput = HttpUtilities.getRequest(url);
 
             final JsonObject jsonObject = gson.fromJson(jsonOutput, JsonObject.class);
 
