@@ -38,6 +38,7 @@ public class MusicCommand implements Command {
         usages.add("queue");
         usages.add("goto <timestamp>");
         usages.add("pitch <pitch>");
+        usages.add("speed <speed>");
         usages.add("pause");
         usages.add("resume");
 
@@ -80,6 +81,9 @@ public class MusicCommand implements Command {
             }
             case "pitch" -> {
                 return pitch(context, args);
+            }
+            case "speed" -> {
+                return speed(context, args);
             }
             case "pause", "resume" -> {
                 return pause(context);
@@ -332,6 +336,27 @@ public class MusicCommand implements Command {
                 Component.empty()
                         .append(Component.text("Set the pitch to "))
                         .append(Component.text(pitch).color(NamedTextColor.GOLD))
+        );
+
+        return Component.text("success");
+    }
+
+    public Component speed (CommandContext context, String[] args) {
+        final Bot bot = context.bot();
+
+        float speed;
+        try {
+            speed = Float.parseFloat(args[1]);
+        } catch (IllegalArgumentException ignored) {
+            return Component.text("Invalid speed").color(NamedTextColor.RED);
+        }
+
+        bot.music().speed(speed);
+
+        context.sendOutput(
+                Component.empty()
+                        .append(Component.text("Set the speed to "))
+                        .append(Component.text(speed).color(NamedTextColor.GOLD))
         );
 
         return Component.text("success");

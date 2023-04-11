@@ -41,6 +41,7 @@ public class MusicPlayerPlugin extends SessionAdapter {
 
     // sus nightcore stuff,..,.,.
     @Getter @Setter private float pitch = 0;
+    @Getter @Setter private float speed = 1;
 
     private int ticksUntilPausedBossbar = 20;
 
@@ -123,7 +124,7 @@ public class MusicPlayerPlugin extends SessionAdapter {
             bossBar.color(pitch > 0 ? BossBarColor.PURPLE : BossBarColor.YELLOW);
             bossBar.visible(true);
             bossBar.style(BossBarStyle.PROGRESS);
-            bossBar.value((int) Math.floor(currentSong.time));
+            bossBar.value((int) Math.floor(currentSong.time * speed));
             bossBar.max(currentSong.length);
 
             if (currentSong.paused) return;
@@ -202,7 +203,7 @@ public class MusicPlayerPlugin extends SessionAdapter {
         Component component = Component.empty()
                 .append(Component.empty().append(currentSong.name).color(pitch > 0 ? NamedTextColor.LIGHT_PURPLE : NamedTextColor.GREEN))
                 .append(Component.text(" | ").color(NamedTextColor.DARK_GRAY))
-                .append(Component.translatable("%s / %s", formatTime(currentSong.time).color(NamedTextColor.GRAY), formatTime(currentSong.length).color(NamedTextColor.GRAY)).color(NamedTextColor.DARK_GRAY))
+                .append(Component.translatable("%s / %s", formatTime((long) (currentSong.time * speed)).color(NamedTextColor.GRAY), formatTime(currentSong.length).color(NamedTextColor.GRAY)).color(NamedTextColor.DARK_GRAY))
                 .append(Component.text(" | ").color(NamedTextColor.DARK_GRAY))
                 .append(
                     Component.translatable(
