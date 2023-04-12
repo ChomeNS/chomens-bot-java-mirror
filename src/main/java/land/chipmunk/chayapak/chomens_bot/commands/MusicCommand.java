@@ -161,7 +161,7 @@ public class MusicCommand implements Command {
     public Component loop (CommandContext context, String[] args) {
         final Bot bot = context.bot();
 
-        if (args[1] == null) return Component.text("Invalid argument").color(NamedTextColor.RED);
+        if (args.length < 2) return Component.text("Invalid argument").color(NamedTextColor.RED);
 
         Loop loop;
         switch (args[1]) {
