@@ -283,7 +283,7 @@ public class MusicPlayerPlugin extends SessionAdapter {
                             " record @s ~ ~ ~ " +
                             note.volume +
                             " " +
-                            ((pitch / 10 != 0) ? NumberUtilities.clamp(floatingPitch, 0, 2) : floatingPitch)
+                            NumberUtilities.clamp(floatingPitch, 0, 2)
             );
         }
     }
