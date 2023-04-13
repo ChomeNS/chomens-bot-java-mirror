@@ -258,9 +258,33 @@ public class MusicPlayerPlugin extends SessionAdapter {
         while (currentSong.reachedNextNote()) {
             final Note note = currentSong.getNextNote();
 
-            final double floatingPitch = NumberUtilities.clamp(Math.pow(2, ((note.pitch + (pitch / 10)) - 12) / 12.0), 0, 2);
+            float key = note.pitch;
 
-            bot.core().run("minecraft:execute as " + SELECTOR + " at @s run playsound " + note.instrument.sound + " record @s ~ ~ ~ " + note.volume + " " + floatingPitch);
+            if (key < 33) key -= 9;
+            else if (key > 57) key -= 57;
+            else key -= 33;
+
+            // duplicate codes real
+            double floatingPitch = Math.pow(
+                    2,
+                    (key + (pitch / 10)) / 12
+            );
+
+            if (floatingPitch > 2) floatingPitch = Math.pow(
+                    2,
+                    (key + (pitch / 10)) / 12
+            );
+
+            bot.core().run(
+                    "minecraft:execute as " +
+                            SELECTOR +
+                            " at @s run playsound " +
+                            note.instrument.sound +
+                            " record @s ~ ~ ~ " +
+                            note.volume +
+                            " " +
+                            ((pitch / 10 != 0) ? NumberUtilities.clamp(floatingPitch, 0, 2) : floatingPitch)
+            );
         }
     }
 }
