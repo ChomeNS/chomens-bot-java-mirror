@@ -264,16 +264,13 @@ public class MusicPlayerPlugin extends SessionAdapter {
             else if (key > 57) key -= 57;
             else key -= 33;
 
-            // duplicate codes real
-            double floatingPitch = Math.pow(
+            final double floatingPitch = Math.pow(
                     2,
                     (key + (pitch / 10)) / 12
             );
 
-            if (floatingPitch > 2) floatingPitch = Math.pow(
-                    2,
-                    (key + (pitch / 10)) / 12
-            );
+            // if the thing is still out of range just ignore and don't play it!1!1
+            if (floatingPitch < -1 || floatingPitch > 3) continue;
 
             bot.core().run(
                     "minecraft:execute as " +
