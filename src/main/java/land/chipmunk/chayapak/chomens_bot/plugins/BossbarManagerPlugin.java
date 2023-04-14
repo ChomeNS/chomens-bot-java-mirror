@@ -20,6 +20,9 @@ public class BossbarManagerPlugin extends CorePlugin.Listener {
 
     private final Map<String, BossBar> bossBars = new HashMap<>();
 
+    @Getter @Setter private boolean enabled = true;
+    @Getter @Setter private boolean actionbar = false;
+
     @Getter @Setter private String bossBarPrefix = "chomens_bot:";
     @Getter @Setter private String textDisplayPrefix = "chomens_bot_";
 
@@ -42,20 +45,25 @@ public class BossbarManagerPlugin extends CorePlugin.Listener {
     }
 
     public void tick () {
+        if (!enabled) return;
         for (Map.Entry<String, BossBar> _bossBar : bossBars.entrySet()) {
             final String name = _bossBar.getKey();
             final BossBar bossBar = _bossBar.getValue();
 
             final String stringifiedComponent = GsonComponentSerializer.gson().serialize(bossBar.name());
 
-            bot.core().run("minecraft:bossbar add " + bossBarPrefix + name + " \"\"");
-            bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " players " + bossBar.players());
-            bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " name " + stringifiedComponent);
-            bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " color " + bossBar.color().color);
-            bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " visible " + bossBar.visible());
-            bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " style " + bossBar.style().style);
-            bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " value " + bossBar.value());
-            bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " max " + bossBar.max());
+            if (!actionbar) {
+                bot.core().run("minecraft:bossbar add " + bossBarPrefix + name + " \"\"");
+                bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " players " + bossBar.players());
+                bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " name " + stringifiedComponent);
+                bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " color " + bossBar.color().color);
+                bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " visible " + bossBar.visible());
+                bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " style " + bossBar.style().style);
+                bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " value " + bossBar.value());
+                bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " max " + bossBar.max());
+            } else {
+                bot.core().run("minecraft:title " + bossBar.players() + " actionbar " + stringifiedComponent);
+            }
 
             // is there any way instead of using random?
             bot.core().run("minecraft:data modify entity @e[tag=" + textDisplayPrefix + name + ",limit=1,sort=random] text set value '" + stringifiedComponent.replace("'", "\\\'") + "'");
