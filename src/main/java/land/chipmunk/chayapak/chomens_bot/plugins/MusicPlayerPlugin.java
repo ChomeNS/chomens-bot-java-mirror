@@ -137,8 +137,6 @@ public class MusicPlayerPlugin extends SessionAdapter {
             if (currentSong.finished()) {
                 bot.chat().tellraw(Component.translatable("Finished playing %s", Component.empty().append(currentSong.name).color(NamedTextColor.GOLD)));
 
-                fileName = null;
-
                 if (loop == Loop.CURRENT) {
                     currentSong.setTime(0);
                     return;
@@ -153,6 +151,7 @@ public class MusicPlayerPlugin extends SessionAdapter {
                 if (songQueue.size() == 0) {
                     stopPlaying();
                     removeBossBar();
+                    fileName = null;
                     bot.chat().tellraw(Component.text("Finished playing every song in the queue"));
                     return;
                 }
