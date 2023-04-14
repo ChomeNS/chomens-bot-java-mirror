@@ -11,26 +11,31 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class SongLoaderThread extends Thread {
-  private String location;
+  public String fileName;
+
   private File songPath;
   private URL songUrl;
   public SongLoaderException exception;
   public Song song;
 
-  private Bot bot;
+  private final Bot bot;
 
-  private boolean isUrl = false;
+  private final boolean isUrl;
 
   public SongLoaderThread (URL location, Bot bot) throws SongLoaderException {
     this.bot = bot;
     isUrl = true;
     songUrl = location;
+
+    fileName = location.getFile();
   }
 
   public SongLoaderThread (Path location, Bot bot) throws SongLoaderException {
     this.bot = bot;
     isUrl = false;
     songPath = location.toFile();
+
+    fileName = location.getFileName().toString();
   }
 
   public void run () {

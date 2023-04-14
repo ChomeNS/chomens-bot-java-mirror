@@ -145,12 +145,12 @@ public class NBSConverter {
         customInstrument.name = getString(buffer, bytes.length);
         customInstrument.file = getString(buffer, bytes.length);
         customInstrument.pitch = buffer.get();
-        customInstrument.key = buffer.get() == 0 ? false : true;
+        customInstrument.key = buffer.get() != 0;
         customInstruments.add(customInstrument);
       }
     }
 
-    Song song = new Song(songName.trim().length() > 0 ? songName : fileName, bot);
+    Song song = new Song(songName.trim().length() > 0 ? songName : fileName, bot, songName, songAuthor, songOriginalAuthor, songDescription, true);
     if (loop > 0) {
       song.loopPosition = getMilliTime(loopStartTick, tempo);
 //      song.loopCount = maxLoopCount;
@@ -189,7 +189,7 @@ public class NBSConverter {
     if (length > maxSize) {
       throw new IOException("String is too large");
     }
-    byte arr[] = new byte[length];
+    byte[] arr = new byte[length];
     buffer.get(arr, 0, length);
     return new String(arr);
   }

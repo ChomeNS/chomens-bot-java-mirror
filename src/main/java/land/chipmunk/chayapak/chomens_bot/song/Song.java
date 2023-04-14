@@ -14,18 +14,31 @@ public class Song {
   public long length = 0; // Milliseconds in the song
   public long time = 0; // Time since start of song
   public long loopPosition = 200; // Milliseconds into the song to start looping
+
+  public String songName;
+  public String songAuthor;
+  public String songOriginalAuthor;
+  public String songDescription;
+
+  public boolean nbs;
+
 //  public int loopCount = 0; // Number of times to loop
 //  public int currentLoop = 0; // Number of loops so far
 
   private Bot bot;
 
-  public Song (Component name, Bot bot) {
+  public Song (Component name, Bot bot, String songName, String songAuthor, String songOriginalAuthor, String songDescription, boolean nbs) {
     this.bot = bot;
     this.name = name;
+    this.songName = songName;
+    this.songAuthor = songAuthor;
+    this.songOriginalAuthor = songOriginalAuthor;
+    this.songDescription = songDescription;
+    this.nbs = nbs;
   }
 
-  public Song (String name, Bot bot) {
-    this(Component.text(name), bot);
+  public Song (String name, Bot bot, String songName, String songAuthor, String songOriginalAuthor, String songDescription, boolean nbs) {
+    this(Component.text(name), bot, songName, songAuthor, songOriginalAuthor, songDescription, nbs);
     this.bot = bot;
   }
 

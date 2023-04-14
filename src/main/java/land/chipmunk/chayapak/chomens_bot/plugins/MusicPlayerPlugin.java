@@ -34,6 +34,8 @@ public class MusicPlayerPlugin extends SessionAdapter {
         }
     }
 
+    @Getter private String fileName;
+
     @Getter @Setter private Song currentSong;
     @Getter @Setter private LinkedList<Song> songQueue = new LinkedList<>();
     @Getter @Setter private SongLoaderThread loaderThread;
@@ -57,7 +59,7 @@ public class MusicPlayerPlugin extends SessionAdapter {
 
     public void loadSong (Path location) {
         if (loaderThread != null) {
-            bot.chat().tellraw(Component.translatable("Already loading a song, can't load another", NamedTextColor.RED));
+            bot.chat().tellraw(Component.translatable("Already loading a song", NamedTextColor.RED));
             return;
         }
 
@@ -97,6 +99,8 @@ public class MusicPlayerPlugin extends SessionAdapter {
                     bot.chat().tellraw(Component.translatable("Failed to load song: %s", loaderThread.exception.message()).color(NamedTextColor.RED));
                 } else {
                     songQueue.add(loaderThread.song);
+                    fileName = loaderThread.fileName;
+                    System.out.println(fileName + " " + loaderThread.fileName);
                     bot.chat().tellraw(Component.translatable("Added %s to the song queue", Component.empty().append(loaderThread.song.name).color(NamedTextColor.GOLD)));
                 }
                 loaderThread = null;
@@ -133,6 +137,8 @@ public class MusicPlayerPlugin extends SessionAdapter {
 
             if (currentSong.finished()) {
                 bot.chat().tellraw(Component.translatable("Finished playing %s", Component.empty().append(currentSong.name).color(NamedTextColor.GOLD)));
+
+                fileName = null;
 
                 if (loop == Loop.CURRENT) {
                     currentSong.setTime(0);
@@ -258,19 +264,20 @@ public class MusicPlayerPlugin extends SessionAdapter {
         while (currentSong.reachedNextNote()) {
             final Note note = currentSong.getNextNote();
 
+            final boolean nbs = currentSong.nbs;
+
             float key = note.pitch;
 
-            if (key < 33) key -= 9;
-            else if (key > 57) key -= 57;
-            else key -= 33;
+            if (nbs) {
+                if (key < 33) key -= 9;
+                else if (key > 57) key -= 57;
+                else key -= 33;
+            }
 
             final double floatingPitch = Math.pow(
                     2,
                     (key + (pitch / 10)) / 12
             );
-
-            // if the thing is still out of range just ignore and don't play it!1!1
-            if (floatingPitch < -1 || floatingPitch > 3) continue;
 
             bot.core().run(
                     "minecraft:execute as " +

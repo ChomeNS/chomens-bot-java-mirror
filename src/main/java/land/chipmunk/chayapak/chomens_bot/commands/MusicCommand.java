@@ -16,7 +16,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class MusicCommand implements Command {
     private Path root;
@@ -41,6 +44,7 @@ public class MusicCommand implements Command {
         usages.add("speed <speed>");
         usages.add("pause");
         usages.add("resume");
+        usages.add("info");
 
         return usages;
     }
@@ -57,9 +61,9 @@ public class MusicCommand implements Command {
     }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        root = Path.of(context.bot().music().SONG_DIR.getPath());
+        root = Path.of(MusicPlayerPlugin.SONG_DIR.getPath());
         switch (args[0]) {
-            case "play" -> {
+            case "play", "playurl", "playnbs", "playnbsurl" -> {
                 return play(context, args);
             }
             case "stop" -> stop(context);
@@ -87,6 +91,9 @@ public class MusicCommand implements Command {
             }
             case "pause", "resume" -> {
                 return pause(context);
+            }
+            case "info" -> {
+                return info(context);
             }
             default -> {
                 return Component.text("Invalid argument").color(NamedTextColor.RED);
@@ -375,6 +382,35 @@ public class MusicCommand implements Command {
             currentSong.pause();
             context.sendOutput(Component.text("Paused the current song"));
         }
+
+        return Component.text("success");
+    }
+
+    public Component info (CommandContext context) {
+        final Bot bot = context.bot();
+        final Song currentSong = bot.music().currentSong();
+        final String fileName = bot.music().fileName();
+
+        if (currentSong == null) return Component.text("No song is currently playing").color(NamedTextColor.RED);
+
+        // ig very code yup
+        final String songAuthor = currentSong.songAuthor == null || currentSong.songAuthor.equals("") ? "N/A" : currentSong.songAuthor;
+        final String songOriginalAuthor = currentSong.songOriginalAuthor == null || currentSong.songOriginalAuthor.equals("") ? "N/A" : currentSong.songOriginalAuthor;
+        final String songDescription = currentSong.songDescription == null || currentSong.songDescription.equals("") ? "N/A" : currentSong.songDescription;
+
+        final Component component = Component.translatable(
+                """
+                        Filename: %s
+                        Author: %s
+                        Original author: %s
+                        Description: %s""",
+                Component.text(fileName).color(NamedTextColor.AQUA),
+                Component.text(songAuthor).color(NamedTextColor.AQUA),
+                Component.text(songOriginalAuthor).color(NamedTextColor.AQUA),
+                Component.text(songDescription).color(NamedTextColor.AQUA)
+        ).color(NamedTextColor.GOLD);
+
+        context.sendOutput(component);
 
         return Component.text("success");
     }

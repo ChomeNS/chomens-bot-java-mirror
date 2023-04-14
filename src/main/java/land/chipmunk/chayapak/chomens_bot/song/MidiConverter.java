@@ -2,12 +2,12 @@ package land.chipmunk.chayapak.chomens_bot.song;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-
 import javax.sound.midi.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 
 public class MidiConverter {
   public static final int SET_INSTRUMENT = 0xC0;
@@ -31,7 +31,7 @@ public class MidiConverter {
   }
   
   public static Song getSong(Sequence sequence, String name, Bot bot) {
-    Song song = new Song(name, bot);
+    Song song = new Song(name, bot, null, null, null, null, false);
 
     long tpq = sequence.getResolution();
 
@@ -40,8 +40,7 @@ public class MidiConverter {
       for (int i = 0; i < track.size(); i++) {
         MidiEvent event = track.get(i);
         MidiMessage message = event.getMessage();
-        if (message instanceof MetaMessage) {
-          MetaMessage mm = (MetaMessage) message;
+        if (message instanceof MetaMessage mm) {
           if (mm.getType() == SET_TEMPO) {
             tempoEvents.add(event);
           }
@@ -49,7 +48,7 @@ public class MidiConverter {
       }
     }
     
-    Collections.sort(tempoEvents, (a, b) -> Long.compare(a.getTick(), b.getTick()));
+    tempoEvents.sort(Comparator.comparingLong(MidiEvent::getTick));
     
     for (Track track : sequence.getTracks()) {
 
@@ -75,8 +74,7 @@ public class MidiConverter {
           tempoEventIdx++;
         }
         
-        if (message instanceof ShortMessage) {
-          ShortMessage sm = (ShortMessage) message;
+        if (message instanceof ShortMessage sm) {
           if (sm.getCommand() == SET_INSTRUMENT) {
             ids[sm.getChannel()] = sm.getData1();
           }
