@@ -100,7 +100,6 @@ public class MusicPlayerPlugin extends SessionAdapter {
                 } else {
                     songQueue.add(loaderThread.song);
                     fileName = loaderThread.fileName;
-                    System.out.println(fileName + " " + loaderThread.fileName);
                     bot.chat().tellraw(Component.translatable("Added %s to the song queue", Component.empty().append(loaderThread.song.name).color(NamedTextColor.GOLD)));
                 }
                 loaderThread = null;
@@ -276,7 +275,10 @@ public class MusicPlayerPlugin extends SessionAdapter {
 
             final double floatingPitch = Math.pow(
                     2,
-                    (key + (pitch / 10)) / 12
+                    !nbs ?
+                            // sus math real
+                            ((key + (pitch / 10)) - 12) / 12.0 : // if it is midi
+                            (key + (pitch / 10)) / 12 // if it is nbs
             );
 
             bot.core().run(
