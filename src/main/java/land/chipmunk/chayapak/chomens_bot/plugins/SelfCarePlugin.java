@@ -84,12 +84,24 @@ public class SelfCarePlugin extends SessionAdapter {
         if (selfCares.gamemode() && gamemode != GameMode.CREATIVE) bot.chat().send("/minecraft:gamemode creative @s[type=player]");
         else if (selfCares.op() && permissionLevel < 2) bot.chat().send("/minecraft:op @s[type=player]");
         else if (selfCares.cspy() && !cspy && bot.kaboom()) bot.chat().send("/commandspy:commandspy on");
-        else if (selfCares.vanish() && !vanish && !visibility && bot.hasEssentials()) bot.chat().send("/essentials:vanish enable");
-        else if (selfCares.nickname() && !nickname && bot.hasEssentials()) bot.chat().send("/essentials:nickname off");
-        else if (selfCares.socialspy() && !socialspy && bot.hasEssentials()) bot.chat().send("/essentials:socialspy enable");
-        else if (selfCares.mute() && muted && bot.hasEssentials()) bot.chat().send("/essentials:mute " + bot.username());
         else if (selfCares.prefix() && !prefix && bot.kaboom()) bot.chat().send("/extras:prefix &8[&eChomeNS Bot&8]");
         else if (selfCares.username() && !username && bot.kaboom()) bot.chat().send("/extras:username " + bot.username());
+        else if (selfCares.vanish() && !vanish && !visibility && bot.hasEssentials()) {
+            if (bot.useChat()) bot.chat().send("/essentials:vanish enable");
+            else bot.core().run("essentials:vanish " + bot.username() + " enable");
+        }
+        else if (selfCares.nickname() && !nickname && bot.hasEssentials()) {
+            if (bot.useChat()) bot.chat().send("/essentials:nickname off");
+            else bot.core().run("essentials:nickname " + bot.username() + " off");
+        }
+        else if (selfCares.socialspy() && !socialspy && bot.hasEssentials()) {
+            if (bot.useChat()) bot.chat().send("/essentials:socialspy enable");
+            else bot.core().run("essentials:socialspy " + bot.username() + " enable");
+        }
+        else if (selfCares.mute() && muted && bot.hasEssentials()) {
+            if (bot.useChat()) bot.chat().send("/essentials:mute " + bot.username());
+            else bot.core().run("essentials:mute " + bot.username());
+        }
     }
 
     @Override
