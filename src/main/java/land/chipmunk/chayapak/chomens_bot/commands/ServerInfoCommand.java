@@ -8,6 +8,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryUsage;
+import java.lang.management.OperatingSystemMXBean;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
@@ -46,14 +48,8 @@ public class ServerInfoCommand implements Command {
         // totallynotskidded™ from extras' serverinfo
         final Component component;
 
-        final long heapUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed() / 1024 / 1024;
-        final long nonHeapUsage = ManagementFactory.getMemoryMXBean()
-                .getNonHeapMemoryUsage().getUsed() / 1024 / 1024;
-        final long memoryMax = (
-                ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax()
-                        + ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage().getMax()
-        ) / 1024 / 1024;
-        final long memoryUsage = (heapUsage + nonHeapUsage);
+        final MemoryUsage heapUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
+        final OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
 
         final StringBuilder builder = new StringBuilder();
 
@@ -97,19 +93,20 @@ public class ServerInfoCommand implements Command {
                             OS name: %s
                             CPU cores: %s
                             CPU model: %s
-                            Available memory: %s
-                            Total memory usage: %s
                             Heap memory usage: %s""",
                     Component.text(InetAddress.getLocalHost().getHostName()).color(NamedTextColor.AQUA),
                     Component.text(System.getProperty("user.dir")).color(NamedTextColor.AQUA),
-                    Component.text(ManagementFactory.getOperatingSystemMXBean().getArch()).color(NamedTextColor.AQUA),
-                    Component.text(ManagementFactory.getOperatingSystemMXBean().getVersion()).color(NamedTextColor.AQUA),
-                    Component.text(ManagementFactory.getOperatingSystemMXBean().getName()).color(NamedTextColor.AQUA),
+                    Component.text(os.getArch()).color(NamedTextColor.AQUA),
+                    Component.text(os.getVersion()).color(NamedTextColor.AQUA),
+                    Component.text(os.getName()).color(NamedTextColor.AQUA),
                     Component.text(String.valueOf(Runtime.getRuntime().availableProcessors())).color(NamedTextColor.AQUA),
                     cpuModel,
-                    Component.text(memoryMax + " MB").color(NamedTextColor.AQUA),
-                    Component.text(memoryUsage + " MB").color(NamedTextColor.AQUA),
-                    Component.text(heapUsage + " MB").color(NamedTextColor.AQUA)
+                    Component
+                            .translatable(
+                                    "%s MB / %s MB",
+                                    Component.text(heapUsage.getUsed() / 1024L / 1024L),
+                                    Component.text(heapUsage.getMax() / 1024L / 1024L)
+                            ).color(NamedTextColor.AQUA)
             ).color(NamedTextColor.GOLD);
 
             context.sendOutput(component);
