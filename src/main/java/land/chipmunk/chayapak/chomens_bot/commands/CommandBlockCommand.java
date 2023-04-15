@@ -6,6 +6,7 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.util.ArrayList;
@@ -52,7 +53,9 @@ public class CommandBlockCommand implements Command {
 
             final Component output = GsonComponentSerializer.gson().deserialize(lastOutput.getValue());
 
-            context.sendOutput(output);
+            final List<Component> children = output.children();
+
+            context.sendOutput(Component.join(JoinConfiguration.separator(Component.space()), children));
 
             return tags;
         });
