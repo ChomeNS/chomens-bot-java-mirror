@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class CorePlugin extends PositionPlugin.PositionListener {
@@ -36,6 +37,8 @@ public class CorePlugin extends PositionPlugin.PositionListener {
     @Getter private final List<Listener> listeners = new ArrayList<>();
 
     @Getter private boolean ready = false;
+
+    private ScheduledFuture<?> refillTask;
 
     public final Vector3i coreStart = Vector3i.from(0, 0, 0);
     public Vector3i coreEnd;
@@ -59,6 +62,8 @@ public class CorePlugin extends PositionPlugin.PositionListener {
             @Override
             public void disconnected (DisconnectedEvent event) {
                 ready = false;
+
+                refillTask.cancel(true);
             }
 
             @Override
@@ -126,7 +131,7 @@ public class CorePlugin extends PositionPlugin.PositionListener {
         );
 
         final Session session = bot.session();
-        session.send(new ServerboundSetCreativeModeSlotPacket(36, new ItemStack(kaboom ? 466 /* repeating command block id */ : 347 /* command block id */, 64, new CompoundTag("", tag))));
+        session.send(new ServerboundSetCreativeModeSlotPacket(36, new ItemStack(kaboom ? 490 /* repeating command block id */ : 371 /* command block id */, 64, new CompoundTag("", tag))));
         session.send(new ServerboundPlayerActionPacket(PlayerAction.START_DIGGING, temporaryBlockPosition, Direction.NORTH, 0));
         session.send(new ServerboundUseItemOnPacket(temporaryBlockPosition, Direction.UP, Hand.MAIN_HAND, 0.5f, 0.5f, 0.5f, false, 1));
     }
@@ -178,7 +183,7 @@ public class CorePlugin extends PositionPlugin.PositionListener {
         if (!ready) {
             ready = true;
 
-            bot.executor().scheduleAtFixedRate(this::refill, 0, bot.config().core().refillInterval(), TimeUnit.MILLISECONDS);
+            refillTask = bot.executor().scheduleAtFixedRate(this::refill, 0, bot.config().core().refillInterval(), TimeUnit.MILLISECONDS);
             for (Listener listener : listeners) listener.ready();
         }
     }
