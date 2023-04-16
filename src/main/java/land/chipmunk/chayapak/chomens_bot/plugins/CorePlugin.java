@@ -64,6 +64,8 @@ public class CorePlugin extends PositionPlugin.PositionListener {
                 ready = false;
 
                 refillTask.cancel(true);
+
+                reset();
             }
 
             @Override
@@ -76,14 +78,6 @@ public class CorePlugin extends PositionPlugin.PositionListener {
     public void run (String command) {
         if (!ready) return;
 
-        bot.session().send(new ServerboundSetCommandBlockPacket(
-                absoluteCorePosition(),
-                "",
-                CommandBlockMode.REDSTONE,
-                false,
-                false,
-                false
-        ));
         bot.session().send(new ServerboundSetCommandBlockPacket(
                 absoluteCorePosition(),
                 command,
