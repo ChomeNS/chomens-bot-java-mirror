@@ -7,40 +7,53 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.List;
+import java.util.UUID;
 
 public class TrustedPlugin extends PlayersPlugin.PlayerListener {
     private final Bot bot;
 
-    @Getter private final List<String> trusted;
+    @Getter private final List<String> list;
 
     public TrustedPlugin (Bot bot) {
         this.bot = bot;
 
-        this.trusted = bot.config().trusted();
+        this.list = bot.config().trusted();
 
         bot.players().addListener(this);
     }
 
-    public void broadcast (Component message) {
-        for (Bot allBot : bot.allBots()) {
-            if (!allBot.loggedIn()) continue;
+    public void broadcast (Component message, UUID exceptTarget) {
+        for (Bot bot : bot.allBots()) {
+            if (!bot.loggedIn()) continue;
 
-            for (String player : trusted) {
+            for (String player : list) {
+                final MutablePlayerListEntry entry = bot.players().getEntry(player);
+
+                if (entry == null) continue;
+
+                if (entry.profile().getId() == exceptTarget) continue;
+
                 final Component component = Component.translatable(
                         "[%s] [%s] %s",
                         Component.text("ChomeNS Bot").color(NamedTextColor.YELLOW),
-                        Component.text(bot.serverName()).color(NamedTextColor.GRAY),
+                        Component.text(this.bot.serverName()).color(NamedTextColor.GRAY),
                         message.color(NamedTextColor.WHITE)
                 ).color(NamedTextColor.DARK_GRAY);
 
-                allBot.chat().tellraw(component, player);
+                bot.chat().tellraw(component, player);
             }
         }
     }
 
+    public void broadcast (Component message) { broadcast(message, null); }
+
+    // these can be used in servereval
+    public void broadcast (String message) { broadcast(Component.text(message), null); }
+    public void broadcast (String message, UUID exceptTarget) { broadcast(Component.text(message), exceptTarget); }
+
     @Override
     public void playerJoined (MutablePlayerListEntry target) {
-        if (!trusted.contains(target.profile().getName())) return;
+        if (!list.contains(target.profile().getName())) return;
 
         bot.chat().tellraw(
                 Component.empty()
@@ -54,13 +67,14 @@ public class TrustedPlugin extends PlayersPlugin.PlayerListener {
                 Component.translatable(
                         "Trusted player %s is now online",
                         Component.text(target.profile().getName()).color(NamedTextColor.GREEN)
-                )
+                ),
+                target.profile().getId()
         );
     }
 
     @Override
     public void playerLeft (MutablePlayerListEntry target) {
-        if (!trusted.contains(target.profile().getName())) return;
+        if (!list.contains(target.profile().getName())) return;
 
         broadcast(
                 Component.translatable(
