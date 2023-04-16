@@ -48,7 +48,7 @@ public class RandomTeleportCommand implements Command {
         context.sendOutput(
                 Component.empty()
                         .append(Component.text("Teleporting "))
-                        .append(sender.displayName().color(NamedTextColor.AQUA))
+                        .append(Component.text(sender.profile().getName()).color(NamedTextColor.AQUA))
                         .append(Component.text(" to ").color(NamedTextColor.WHITE))
                         .append(Component.text(stringPosition).color(NamedTextColor.GREEN))
                         .append(Component.text("...").color(NamedTextColor.WHITE))
