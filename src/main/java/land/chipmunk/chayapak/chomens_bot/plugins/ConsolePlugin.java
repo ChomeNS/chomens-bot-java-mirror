@@ -108,7 +108,7 @@ public class ConsolePlugin {
                     Component.translatable(
                             "[%s] %s › %s",
                             Component.text(bot.username() + " Console").color(NamedTextColor.GRAY),
-                            Component.text("chayapak").color(NamedTextColor.GREEN),
+                            Component.text(bot.config().ownerName()).color(NamedTextColor.GREEN),
                             Component.text(line).color(NamedTextColor.GRAY)
                     ).color(NamedTextColor.DARK_GRAY)
             );

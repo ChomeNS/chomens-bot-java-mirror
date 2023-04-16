@@ -21,6 +21,9 @@ public class Configuration {
 
     @Getter public Core core = new Core();
     @Getter public Discord discord = new Discord();
+    
+    @Getter public String ownerName = "chayapak"; // mabe mabe
+    
     @Getter public List<String> trusted = new ArrayList<>();
     @Getter public SelfCare selfCare = new SelfCare();
     @Getter public Bots[] bots = new Bots[]{};
