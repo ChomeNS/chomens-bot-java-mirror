@@ -255,8 +255,9 @@ public class MusicCommand implements Command {
 
         int index = 0;
 
-        while (index < fullList.size()) {
-            List<Component> list = fullList.subList(index, Math.min(index + eachSize, fullList.size()));
+        while (index <= fullList.size()) {
+            // we MUST make a new copy of the list else everything will fard..,.
+            List<Component> list = new ArrayList<>(fullList).subList(index, Math.min(index + eachSize, fullList.size()));
 
             final Component component = Component.join(JoinConfiguration.separator(Component.space()), list);
             context.sendOutput(component);
