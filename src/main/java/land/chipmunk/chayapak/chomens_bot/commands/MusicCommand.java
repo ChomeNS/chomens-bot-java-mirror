@@ -114,6 +114,9 @@ public class MusicCommand implements Command {
 
             if (path.toString().contains("http")) player.loadSong(new URL(_path));
             else {
+                // among us protection!!!11
+                if (!path.normalize().startsWith(root.toString())) return Component.text("no").color(NamedTextColor.RED);
+
                 // ignore my ohio code for autocomplete
                 final String separator = File.separator;
 
