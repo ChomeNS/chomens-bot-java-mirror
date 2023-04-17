@@ -61,6 +61,7 @@ public class Bot {
     @Getter private GrepLogPlugin grepLog;
     @Getter private CloopPlugin cloop;
     @Getter private MazePlugin maze;
+    @Getter private ExploitsPlugin exploits;
 
     public Bot (String host, int port, String _username, boolean kaboom, String serverName, boolean useChat, boolean hasEssentials, List<Bot> allBots, Configuration config) {
         this.host = host;
@@ -101,6 +102,7 @@ public class Bot {
         this.grepLog = new GrepLogPlugin(this);
         this.cloop = new CloopPlugin(this);
         this.maze = new MazePlugin(this);
+        this.exploits = new ExploitsPlugin(this);
 
         reconnect();
     }

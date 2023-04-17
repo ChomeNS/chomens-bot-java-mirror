@@ -52,6 +52,7 @@ public class CommandHandlerPlugin {
         registerCommand(new BotUserCommand());
         registerCommand(new GenerateMazeCommand());
         registerCommand(new TranslateCommand());
+        registerCommand(new KickCommand());
     }
 
     public void registerCommand (Command command) {
