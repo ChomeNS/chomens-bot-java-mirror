@@ -50,6 +50,11 @@ selfCare:
   # commandspy
   cspy: true
 
+  # icu (icontrolUwU)
+  icu:
+    enabled: true
+    positionPacketsPerSecond: 10 # 10 seems to be a best number for me
+
   # extras
   prefix: true
   username: true # do NOT set this to false unless you know what you are doing

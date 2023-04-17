@@ -16,6 +16,7 @@ import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.packet.PacketProtocol;
+import com.nukkitx.math.vector.Vector3i;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Configuration;
 import lombok.Getter;
@@ -35,6 +36,7 @@ public class SelfCarePlugin extends SessionAdapter {
     private int entityId;
     private GameMode gamemode;
     private int permissionLevel;
+    private int positionPacketsPerSecond = 0;
     private boolean cspy = false;
     private boolean vanish = false;
     private boolean nickname = false;
@@ -76,6 +78,13 @@ public class SelfCarePlugin extends SessionAdapter {
                 else if (message.startsWith("Successfully set your username to \"")) username = false;
             }
         });
+
+        bot.position().addListener(new PositionPlugin.PositionListener() {
+            @Override
+            public void positionChange(Vector3i position) {
+                SelfCarePlugin.this.positionChange();
+            }
+        });
     }
 
     public void check () {
@@ -86,6 +95,7 @@ public class SelfCarePlugin extends SessionAdapter {
         else if (selfCares.cspy() && !cspy && bot.kaboom()) bot.chat().send("/commandspy:commandspy on");
         else if (selfCares.prefix() && !prefix && bot.kaboom()) bot.chat().send("/extras:prefix &8[&eChomeNS Bot&8]");
         else if (selfCares.username() && !username && bot.kaboom()) bot.chat().send("/extras:username " + bot.username());
+        else if (selfCares.icu().enabled() && positionPacketsPerSecond > selfCares.icu().positionPacketsPerSecond()) bot.core().run("essentials:sudo * icu stop");
         else if (selfCares.vanish() && !vanish && !visibility && bot.hasEssentials()) {
             if (bot.useChat()) bot.chat().send("/essentials:vanish enable");
             else bot.core().run("essentials:vanish " + bot.username() + " enable");
@@ -121,6 +131,7 @@ public class SelfCarePlugin extends SessionAdapter {
         socialspy = false;
         muted = false;
         prefix = false;
+        positionPacketsPerSecond = 0;
 
         final Runnable task = () -> {
             final Session session = bot.session();
@@ -162,6 +173,13 @@ public class SelfCarePlugin extends SessionAdapter {
         else if (event == EntityEvent.PLAYER_OP_PERMISSION_LEVEL_2) permissionLevel = 2;
         else if (event == EntityEvent.PLAYER_OP_PERMISSION_LEVEL_3) permissionLevel = 3;
         else if (event == EntityEvent.PLAYER_OP_PERMISSION_LEVEL_4) permissionLevel = 4;
+    }
+
+    // totallynotskidded™ from smp.,.,
+    public void positionChange () {
+        positionPacketsPerSecond++;
+
+        bot.executor().schedule(() -> positionPacketsPerSecond--, 1, TimeUnit.SECONDS);
     }
 
     @Override

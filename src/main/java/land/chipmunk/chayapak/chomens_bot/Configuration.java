@@ -53,14 +53,22 @@ public class Configuration {
         @Getter public boolean gamemode = true;
         @Getter public boolean endCredits = true;
 
-        @Getter public boolean cspy = true;
         @Getter public boolean vanish = true;
         @Getter public boolean nickname = true;
         @Getter public boolean socialspy = true;
         @Getter public boolean mute = true;
 
+        @Getter public boolean cspy = true;
+
+        @Getter public AntiIcuSelfCare icu = new AntiIcuSelfCare();
+
         @Getter public boolean prefix = true;
         @Getter public boolean username = true;
+    }
+
+    public static class AntiIcuSelfCare {
+        @Getter public boolean enabled = true;
+        @Getter public int positionPacketsPerSecond = 10;
     }
 
     public static class Bots {
