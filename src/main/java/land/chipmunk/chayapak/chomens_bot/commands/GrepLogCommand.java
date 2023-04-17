@@ -47,19 +47,22 @@ public class GrepLogCommand implements Command {
         boolean ignoreCase = false;
         boolean regex = false;
 
-        switch (_args[0]) {
-            case "-ignorecase" -> {
-                ignoreCase = true;
-                args = Arrays.copyOfRange(_args, 1, _args.length);
-            }
-            case "-regex" -> {
-                regex = true;
-                args = Arrays.copyOfRange(_args, 1, _args.length);
-            }
-            case "stop" -> {
-                bot.grepLog().thread().interrupt();
-                return Component.text("success");
-            }
+        // this is a mess
+        if (_args[0].equals("-ignorecase")) {
+            ignoreCase = true;
+            args = Arrays.copyOfRange(_args, 1, _args.length);
+        } else if (_args[0].equals("-regex")) {
+            regex = true;
+            args = Arrays.copyOfRange(_args, 1, _args.length);
+        } else if (_args[1].equals("-ignorecase")) {
+            ignoreCase = true;
+            args = Arrays.copyOfRange(_args, 2, _args.length);
+        } else if (_args[1].equals("-regex")) {
+            regex = true;
+            args = Arrays.copyOfRange(_args, 2, _args.length);
+        } else if (_args[0].equals("stop")) {
+            bot.grepLog().thread().interrupt();
+            return Component.text("success");
         }
 
         bot.grepLog().query(String.join(" ", args), regex, ignoreCase);
