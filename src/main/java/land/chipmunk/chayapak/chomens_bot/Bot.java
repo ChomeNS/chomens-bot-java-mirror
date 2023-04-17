@@ -43,8 +43,8 @@ public class Bot {
     @Getter @Setter private DiscordPlugin discord; // same for this one too
 
     @Getter private ChatPlugin chat;
-    @Getter private SelfCarePlugin selfCare;
     @Getter private PositionPlugin position;
+    @Getter private SelfCarePlugin selfCare;
     @Getter private CorePlugin core;
     @Getter private PlayersPlugin players;
     @Getter private TabCompletePlugin tabComplete;
@@ -83,8 +83,8 @@ public class Bot {
 
     public void ready () {
         this.chat = new ChatPlugin(this);
-        this.selfCare = new SelfCarePlugin(this);
         this.position = new PositionPlugin(this);
+        this.selfCare = new SelfCarePlugin(this);
         this.core = new CorePlugin(this);
         this.players = new PlayersPlugin(this);
         this.tabComplete = new TabCompletePlugin(this);
