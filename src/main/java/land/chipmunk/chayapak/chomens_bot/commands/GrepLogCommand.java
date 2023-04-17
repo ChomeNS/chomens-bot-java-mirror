@@ -47,6 +47,11 @@ public class GrepLogCommand implements Command {
         boolean ignoreCase = false;
         boolean regex = false;
 
+        if (_args[0].equals("stop")) {
+            bot.grepLog().thread().interrupt();
+            return Component.text("success");
+        }
+
         // this is a mess
         if (_args[0].equals("-ignorecase")) {
             ignoreCase = true;
@@ -54,15 +59,14 @@ public class GrepLogCommand implements Command {
         } else if (_args[0].equals("-regex")) {
             regex = true;
             args = Arrays.copyOfRange(_args, 1, _args.length);
-        } else if (_args[1].equals("-ignorecase")) {
+        }
+
+        if (_args.length > 1 && _args[1].equals("-ignorecase")) {
             ignoreCase = true;
             args = Arrays.copyOfRange(_args, 2, _args.length);
-        } else if (_args[1].equals("-regex")) {
+        } else if (_args.length > 1 && _args[1].equals("-regex")) {
             regex = true;
             args = Arrays.copyOfRange(_args, 2, _args.length);
-        } else if (_args[0].equals("stop")) {
-            bot.grepLog().thread().interrupt();
-            return Component.text("success");
         }
 
         bot.grepLog().query(String.join(" ", args), regex, ignoreCase);
