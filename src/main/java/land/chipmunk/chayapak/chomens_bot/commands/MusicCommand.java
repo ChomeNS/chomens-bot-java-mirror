@@ -245,7 +245,7 @@ public class MusicCommand implements Command {
                                             prefix +
                                                     name() +
                                                     (file.isFile() ? " play " : " list ") +
-                                                    joinedPath.replace("'", "\\'")
+                                                    joinedPath
                                     )
                             )
             );
