@@ -45,11 +45,6 @@ public class CommandSpyParser implements ChatParser {
 
         if (sender == null) return null;
 
-        final Map<String, Component> parameters = new HashMap<>();
-
-        parameters.put("sender", username);
-        parameters.put("contents", command);
-
-        return new PlayerMessage(parameters, sender);
+        return new PlayerMessage(sender, username, command);
     }
 }
