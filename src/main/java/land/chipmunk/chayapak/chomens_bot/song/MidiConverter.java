@@ -140,7 +140,7 @@ public class MidiConverter {
     float volume = (float) velocity / 127.0f;
     long time = microTime / 1000L;
 
-    return new Note(instrument, pitch, volume, time);
+    return new Note(instrument, pitch, volume, time, -1, 100);
   }
 
   private static Note getMidiPercussionNote (int midiPitch, int velocity, long microTime) {
@@ -151,7 +151,7 @@ public class MidiConverter {
       Instrument instrument = Instrument.fromId(noteId / 25);
       long time = microTime / 1000L;
 
-      return new Note(instrument, pitch, volume, time);
+      return new Note(instrument, pitch, volume, time, -1, 100);
     }
     return null;
   }

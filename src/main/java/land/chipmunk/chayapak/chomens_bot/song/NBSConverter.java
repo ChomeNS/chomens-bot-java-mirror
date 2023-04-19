@@ -27,7 +27,7 @@ public class NBSConverter {
     Instrument.PLING,
   };
 
-  private static class NBSNote {
+  public static class NBSNote {
     public int tick;
     public short layer;
     public byte instrument;
@@ -37,7 +37,7 @@ public class NBSConverter {
     public short pitch = 0;
   }
 
-  private static class NBSLayer {
+  public static class NBSLayer {
     public String name;
     public byte lock = 0;
     public byte volume;
@@ -176,7 +176,7 @@ public class NBSConverter {
       }
 
       int pitch = key-33;
-      song.add(new Note(instrument, pitch, (float) note.velocity * (float) layerVolume / 10000f, getMilliTime(note.tick, tempo)));
+      song.add(new Note(instrument, pitch, (float) note.velocity * (float) layerVolume / 10000f, getMilliTime(note.tick, tempo), note.panning, nbsLayers.get(note.layer).stereo));
     }
 
     song.length = song.get(song.size()-1).time + 50;

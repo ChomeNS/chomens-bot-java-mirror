@@ -266,12 +266,21 @@ public class MusicPlayerPlugin extends SessionAdapter {
 
             final double floatingPitch = 0.5 * (Math.pow(2, ((key + (pitch / 10)) / 12)));
 
+            // totallynotskidded from opennbs
+            int blockPosition = 0;
+
+            if (currentSong.nbs) {
+                final int s = (note.stereo + note.panning) / 2; // Stereo values to X coordinates, calc'd from the average of both note and layer pan.
+                if (s > 100) blockPosition = (s - 100) / -100;
+                if (s < 100) blockPosition = ((s - 100) * -1) / 100;
+            }
+
             bot.core().run(
                     "minecraft:execute as " +
                             SELECTOR +
                             " at @s run playsound " +
                             note.instrument.sound +
-                            " record @s ~ ~ ~ " +
+                            " record @s ^" + blockPosition + " ^ ^ " +
                             note.volume +
                             " " +
                             NumberUtilities.clamp(floatingPitch, 0, 2)
