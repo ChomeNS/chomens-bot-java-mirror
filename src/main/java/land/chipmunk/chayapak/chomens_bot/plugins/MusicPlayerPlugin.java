@@ -262,23 +262,9 @@ public class MusicPlayerPlugin extends SessionAdapter {
         while (currentSong.reachedNextNote()) {
             final Note note = currentSong.getNextNote();
 
-            final boolean nbs = currentSong.nbs;
-
             float key = note.pitch;
 
-            if (nbs) {
-                if (key < 33) key -= 9;
-                else if (key > 57) key -= 57;
-                else key -= 33;
-            }
-
-            final double floatingPitch = Math.pow(
-                    2,
-                    !nbs ?
-                            // sus math real
-                            ((key + (pitch / 10)) - 12) / 12.0 : // if it is midi
-                            (key + (pitch / 10)) / 12 // if it is nbs
-            );
+            final double floatingPitch = 0.5 * (Math.pow(2, ((key + (pitch / 10)) / 12)));
 
             bot.core().run(
                     "minecraft:execute as " +
