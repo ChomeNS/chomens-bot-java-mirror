@@ -1,14 +1,13 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
-import land.chipmunk.chayapak.chomens_bot.Configuration;
-import lombok.Getter;
 import land.chipmunk.chayapak.chomens_bot.Bot;
+import land.chipmunk.chayapak.chomens_bot.Configuration;
 import land.chipmunk.chayapak.chomens_bot.command.ConsoleCommandContext;
+import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 
@@ -50,10 +49,6 @@ public class ConsolePlugin {
                 String line = null;
                 try {
                     line = reader.readLine(prompt);
-                } catch (NoClassDefFoundError e) {
-                    line = reader.readLine(prompt);
-                } catch (EndOfFileException e) {
-                    return;
                 } catch (Exception e) {
                     System.exit(1);
                 }
