@@ -39,6 +39,8 @@ public class Configuration {
         @Getter public String token;
         @Getter public Map<String, String> servers = new HashMap<>();
         @Getter public EmbedColors embedColors = new EmbedColors();
+        @Getter public String trustedRoleName = "Trusted";
+        @Getter public String adminRoleName = "Admin";
     }
 
     public static class EmbedColors {

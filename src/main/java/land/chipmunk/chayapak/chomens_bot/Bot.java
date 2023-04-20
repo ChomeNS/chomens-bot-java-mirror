@@ -89,7 +89,7 @@ public class Bot {
         this.core = new CorePlugin(this);
         this.players = new PlayersPlugin(this);
         this.tabComplete = new TabCompletePlugin(this);
-        this.commandHandler = new CommandHandlerPlugin();
+        this.commandHandler = new CommandHandlerPlugin(this);
         this.chatCommandHandler = new ChatCommandHandlerPlugin(this);
         this.hashing = new HashingPlugin(this);
         this.bossbar = new BossbarManagerPlugin(this);

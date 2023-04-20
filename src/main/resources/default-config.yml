@@ -14,6 +14,8 @@ reconnectDelay: 7000
 discord:
   prefix: 'default!'
   token: 'token here'
+  trustedRoleName: 'Trusted'
+  adminRoleName: 'Admin' # NOTE: admin will be able to access servereval..
   servers:
     localhost:25565: 'channel id'
 

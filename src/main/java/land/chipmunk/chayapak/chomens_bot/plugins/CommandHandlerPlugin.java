@@ -1,5 +1,6 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
+import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import land.chipmunk.chayapak.chomens_bot.commands.*;
@@ -17,9 +18,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CommandHandlerPlugin {
+    private final Bot bot;
+
     @Getter private final List<Command> commands = new ArrayList<>();
 
-    public CommandHandlerPlugin () {
+    public CommandHandlerPlugin (Bot bot) {
+        this.bot = bot;
+
         registerCommand(new CommandBlockCommand());
         registerCommand(new CowsayCommand());
         registerCommand(new EchoCommand());
@@ -79,10 +84,10 @@ public class CommandHandlerPlugin {
         if (fullArgs.length < minimumArgs) return Component.text("Excepted minimum of " + minimumArgs + " argument(s), got " + fullArgs.length).color(NamedTextColor.RED);
         if (fullArgs.length > maximumArgs && !usage.contains("{")) return Component.text("Too much arguments, expected " + maximumArgs + " max").color(NamedTextColor.RED);
 
-        if (trustLevel > 0 && splitInput.length < 2 && !console) return Component.text("Please provide a hash").color(NamedTextColor.RED);
+        if (trustLevel > 0 && splitInput.length < 2 && inGame) return Component.text("Please provide a hash").color(NamedTextColor.RED);
 
         String userHash = "";
-        if (trustLevel > 0 && !console) userHash = splitInput[1];
+        if (trustLevel > 0 && inGame) userHash = splitInput[1];
 
         final String[] args = Arrays.copyOfRange(splitInput, (trustLevel > 0 && inGame) ? 2 : 1, splitInput.length);
 
@@ -90,16 +95,19 @@ public class CommandHandlerPlugin {
             if (discord) {
                 final List<Role> roles = event.getMember().getRoles();
 
+                final String trustedRoleName = bot.config().discord().trustedRoleName();
+                final String adminRoleName = bot.config().discord().adminRoleName();
+
                 if (
                         command.trustLevel() == 1 &&
-                                roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase("Trusted")) &&
-                                roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase("Host"))
+                                roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase(trustedRoleName)) &&
+                                roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase(adminRoleName))
                 ) return Component.text("You're not in the trusted role!").color(NamedTextColor.RED);
 
                 if (
                         command.trustLevel() == 2 &&
-                                roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase("Host"))
-                ) return Component.text("You're not in the host role!").color(NamedTextColor.RED);
+                                roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase(adminRoleName))
+                ) return Component.text("You're not in the admin role!").color(NamedTextColor.RED);
             } else {
                 if (
                         command.trustLevel() == 1 &&
