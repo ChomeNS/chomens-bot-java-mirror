@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="improve and fix cmd handler (first commit on arch)&#10;yup this is my first commit on arch linux,.,.,..,.,.,&#10;yes i use arch btw :sunglasses:">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dependency-reduced-pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/dependency-reduced-pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/ChomeNSCustomChatParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/ChomeNSCustomChatParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/KaboomChatParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/KaboomChatParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/MinecraftChatParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/MinecraftChatParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/commandSpy/CommandSpyParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/commandSpy/CommandSpyParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/data/MutablePlayerListEntry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/data/MutablePlayerListEntry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/data/PlayerMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/data/PlayerMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/command/DiscordCommandContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/command/DiscordCommandContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ChatCommandHandlerPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ChatCommandHandlerPlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ChatPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ChatPlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ClearChatUsernamePlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ClearChatUsernamePlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CorePlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CorePlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/DiscordPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/DiscordPlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/LoggerPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/LoggerPlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/PlayersPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/PlayersPlugin.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectId" id="2NljChrU0rNqQmqh8CSQG0gdKNt" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/chayapak1/IdeaProjects/chomens-bot-java&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/.idea" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="ChomeNS Bot [package]" type="MavenRunConfiguration" factoryName="Maven" nameIsGenerated="true">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="package" />
+              </list>
+            </option>
+            <option name="pomFileName" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="" />
+      <created>1680245437032</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1680245437032</updated>
+    </task>
+    <task id="LOCAL-00037" summary="remove the thing">
+      <created>1681001658785</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1681001658785</updated>
+    </task>
+    <task id="LOCAL-00038" summary="add sus autocomplete (works, tested)">
+      <created>1681003794277</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1681003794277</updated>
+    </task>
+    <task id="LOCAL-00039" summary="actually fix a small (or big?) bug">
+      <created>1681014542708</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1681014542708</updated>
+    </task>
+    <task id="LOCAL-00040" summary="make better disconnect message reason">
+      <created>1681016779914</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1681016779914</updated>
+    </task>
+    <task id="LOCAL-00041" summary="actually split the among us">
+      <created>1681108314320</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1681108314320</updated>
+    </task>
+    <task id="LOCAL-00042" summary="reduce more real">
+      <created>1681115395510</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1681115395510</updated>
+    </task>
+    <task id="LOCAL-00043" summary="add translate">
+      <created>1681194542547</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1681194542547</updated>
+    </task>
+    <task id="LOCAL-00044" summary="among">
+      <created>1681194626010</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1681194626010</updated>
+    </task>
+    <task id="LOCAL-00045" summary="add hasEssentials to config">
+      <created>1681195005971</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1681195005971</updated>
+    </task>
+    <task id="LOCAL-00046" summary="among us 1000">
+      <created>1681199224918</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1681199224918</updated>
+    </task>
+    <task id="LOCAL-00047" summary="Ooops">
+      <created>1681200589515</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1681200589515</updated>
+    </task>
+    <task id="LOCAL-00048" summary="add speed">
+      <created>1681205431995</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1681205431996</updated>
+    </task>
+    <task id="LOCAL-00049" summary="among">
+      <created>1681287412000</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1681287412000</updated>
+    </task>
+    <task id="LOCAL-00050" summary="actually make more notes play (but mabe worse pitch idk)">
+      <created>1681367090767</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1681367090770</updated>
+    </task>
+    <task id="LOCAL-00051" summary="i forgor to among us">
+      <created>1681367264222</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1681367264222</updated>
+    </task>
+    <task id="LOCAL-00052" summary="i forgor nbs converter">
+      <created>1681372930407</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1681372930407</updated>
+    </task>
+    <task id="LOCAL-00053" summary="make it better or worse">
+      <created>1681439228534</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1681439228535</updated>
+    </task>
+    <task id="LOCAL-00054" summary="add stuff fix stuff improve stuff">
+      <created>1681454086491</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1681454086491</updated>
+    </task>
+    <task id="LOCAL-00055" summary="remove debug line and fix pitch issue.,,.">
+      <created>1681455582686</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1681455582686</updated>
+    </task>
+    <task id="LOCAL-00056" summary="fix filename real l l l">
+      <created>1681457880562</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1681457880562</updated>
+    </task>
+    <task id="LOCAL-00057" summary="bossbar manager actionbar and enabled">
+      <created>1681461700243</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1681461700243</updated>
+    </task>
+    <task id="LOCAL-00058" summary="bossbar manager actionbar and enabled">
+      <created>1681535433129</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1681535433130</updated>
+    </task>
+    <task id="LOCAL-00059" summary="forgor">
+      <created>1681535781354</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1681535781354</updated>
+    </task>
+    <task id="LOCAL-00060" summary="improve serverinfo">
+      <created>1681536905476</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1681536905476</updated>
+    </task>
+    <task id="LOCAL-00061" summary="make self care use core if it can">
+      <created>1681547507213</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1681547507213</updated>
+    </task>
+    <task id="LOCAL-00062" summary="remove the time from cb">
+      <created>1681547771112</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1681547771112</updated>
+    </task>
+    <task id="LOCAL-00063" summary="ig change to `ChomeNS Bot` in .name yup">
+      <created>1681558738607</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1681558738607</updated>
+    </task>
+    <task id="LOCAL-00064" summary="hopefully fix the core problem?">
+      <created>1681607369880</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1681607369882</updated>
+    </task>
+    <task id="LOCAL-00065" summary="maybe patch the sus">
+      <created>1681613674861</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1681613674862</updated>
+    </task>
+    <task id="LOCAL-00066" summary="fix music list&#10;it took me ages to figure this out that i need to just &#10;CLONE THE LIST">
+      <created>1681617940254</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1681617940254</updated>
+    </task>
+    <task id="LOCAL-00067" summary="actually make creator configurable instead of hardcoding">
+      <created>1681619945065</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1681619945065</updated>
+    </task>
+    <task id="LOCAL-00068" summary="improve trusted plugin">
+      <created>1681626702317</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1681626702317</updated>
+    </task>
+    <task id="LOCAL-00069" summary="add among us to the position plugin (useful af)&#10;yes it is SOOOOOO good">
+      <created>1681636934907</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1681636934907</updated>
+    </task>
+    <task id="LOCAL-00070" summary="improve rtp">
+      <created>1681638481198</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1681638481198</updated>
+    </task>
+    <task id="LOCAL-00071" summary="forgor that i used displayname">
+      <created>1681638788599</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1681638788599</updated>
+    </task>
+    <task id="LOCAL-00072" summary="i forgor to remove the code i copied from my chipmunkbot fork">
+      <created>1681692239505</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1681692239506</updated>
+    </task>
+    <task id="LOCAL-00073" summary="probably fix greplog but more mess,....">
+      <created>1681723369155</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1681723369155</updated>
+    </task>
+    <task id="LOCAL-00074" summary="this is why you should test the code before commiting">
+      <created>1681723861848</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1681723861848</updated>
+    </task>
+    <task id="LOCAL-00075" summary="add icu self care&#10;i control uwu uwuw uw uwu wu">
+      <created>1681725375832</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1681725375832</updated>
+    </task>
+    <task id="LOCAL-00076" summary="i forgor to commit bot">
+      <created>1681725538670</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1681725538670</updated>
+    </task>
+    <task id="LOCAL-00077" summary="add kick !!!!">
+      <created>1681727904938</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1681727904938</updated>
+    </task>
+    <task id="LOCAL-00078" summary="actually probably fix thing (it kick others)">
+      <created>1681728469710</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1681728469710</updated>
+    </task>
+    <task id="LOCAL-00079" summary="FINALLY FIX EXTRA COLOR PARSING LETS GOOOOOOO&#10;messy code but whatever,..,.,">
+      <created>1681806588635</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1681806588637</updated>
+    </task>
+    <task id="LOCAL-00080" summary="what the fuck i commited the wrong file">
+      <created>1681806738901</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1681806738901</updated>
+    </task>
+    <task id="LOCAL-00081" summary="mabe">
+      <created>1681806777109</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1681806777109</updated>
+    </task>
+    <task id="LOCAL-00082" summary="mess with the pitch correction again to fix the sus problem">
+      <created>1681882635433</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1681882635434</updated>
+    </task>
+    <task id="LOCAL-00083" summary="fard">
+      <created>1681882806578</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1681882806578</updated>
+    </task>
+    <task id="LOCAL-00084" summary="add a working (or not?) stereo to music">
+      <created>1681885244617</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1681885244617</updated>
+    </task>
+    <task id="LOCAL-00085" summary="improve and fix cmd handler (first commit on arch)&#10;yup this is my first commit on arch linux,.,.,..,.,.,&#10;yes i use arch btw :sunglasses:">
+      <created>1681972329495</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1681972329498</updated>
+    </task>
+    <option name="localTasksCounter" value="86" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="make self care use core if it can" />
+    <MESSAGE value="remove the time from cb" />
+    <MESSAGE value="ig change to `ChomeNS Bot` in .name yup" />
+    <MESSAGE value="hopefully fix the core problem?" />
+    <MESSAGE value="maybe patch the sus" />
+    <MESSAGE value="fix music list&#10;it took me ages to figure this out that i need to just &#10;CLONE THE LIST" />
+    <MESSAGE value="actually make creator configurable instead of hardcoding" />
+    <MESSAGE value="improve trusted plugin" />
+    <MESSAGE value="add among us to the position plugin (useful af)&#10;yes it is SOOOOOO good" />
+    <MESSAGE value="improve rtp" />
+    <MESSAGE value="forgor that i used displayname" />
+    <MESSAGE value="i forgor to remove the code i copied from my chipmunkbot fork" />
+    <MESSAGE value="probably fix greplog but more mess,...." />
+    <MESSAGE value="this is why you should test the code before commiting" />
+    <MESSAGE value="add icu self care&#10;i control uwu uwuw uw uwu wu" />
+    <MESSAGE value="i forgor to commit bot" />
+    <MESSAGE value="add kick !!!!" />
+    <MESSAGE value="actually probably fix thing (it kick others)" />
+    <MESSAGE value="FINALLY FIX EXTRA COLOR PARSING LETS GOOOOOOO&#10;messy code but whatever,..,.," />
+    <MESSAGE value="what the fuck i commited the wrong file" />
+    <MESSAGE value="mabe" />
+    <MESSAGE value="mess with the pitch correction again to fix the sus problem" />
+    <MESSAGE value="fard" />
+    <MESSAGE value="add a working (or not?) stereo to music" />
+    <MESSAGE value="improve and fix cmd handler (first commit on arch)&#10;yup this is my first commit on arch linux,.,.,..,.,.,&#10;yes i use arch btw :sunglasses:" />
+    <option name="LAST_COMMIT_MESSAGE" value="improve and fix cmd handler (first commit on arch)&#10;yup this is my first commit on arch linux,.,.,..,.,.,&#10;yes i use arch btw :sunglasses:" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

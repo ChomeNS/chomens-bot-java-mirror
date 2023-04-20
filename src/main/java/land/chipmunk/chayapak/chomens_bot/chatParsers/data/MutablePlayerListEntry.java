@@ -19,8 +19,9 @@ public class MutablePlayerListEntry {
     private long expiresAt;
     private PublicKey publicKey;
     private byte[] keySignature;
+    private boolean listed;
 
     public MutablePlayerListEntry (PlayerListEntry entry) {
-        this(entry.getProfile(), entry.getGameMode(), entry.getPing(), entry.getDisplayName(), entry.getExpiresAt(), entry.getPublicKey(), entry.getKeySignature());
+        this(entry.getProfile(), entry.getGameMode(), entry.getLatency(), entry.getDisplayName(), entry.getExpiresAt(), entry.getPublicKey(), entry.getKeySignature(), entry.isListed());
     }
 }

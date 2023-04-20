@@ -18,7 +18,7 @@
     <repositories>
         <repository>
             <id>opencollab</id>
-            <url>https://repo.opencollab.dev/maven-releases/</url>
+            <url>https://repo.opencollab.dev/maven-snapshots/</url>
         </repository>
 
         <repository>
@@ -38,7 +38,7 @@
         <dependency>
             <groupId>com.github.steveice10</groupId>
             <artifactId>mcprotocollib</artifactId>
-            <version>1.19.2-1</version>
+            <version>1.19.4-SNAPSHOT</version>
         </dependency>
 
         <dependency>

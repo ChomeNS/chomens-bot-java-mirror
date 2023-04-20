@@ -3,7 +3,8 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
-import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundPlayerInfoPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundPlayerInfoUpdatePacket;
+import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundPlayerInfoRemovePacket;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
@@ -27,17 +28,29 @@ public class PlayersPlugin extends SessionAdapter {
 
     @Override
     public void packetReceived (Session session, Packet packet) {
-        if (packet instanceof ClientboundPlayerInfoPacket) packetReceived((ClientboundPlayerInfoPacket) packet);
+        if (packet instanceof ClientboundPlayerInfoUpdatePacket) packetReceived((ClientboundPlayerInfoUpdatePacket) packet);
+        else if (packet instanceof ClientboundPlayerInfoRemovePacket) packetReceived((ClientboundPlayerInfoRemovePacket) packet);
     }
 
-    public void packetReceived (ClientboundPlayerInfoPacket packet) {
-        PlayerListEntryAction action = packet.getAction();
-        for (PlayerListEntry entry : packet.getEntries()) {
-            if (action == PlayerListEntryAction.ADD_PLAYER) addPlayer(entry);
-            else if (action == PlayerListEntryAction.UPDATE_GAMEMODE) updateGamemode(entry);
-            else if (action == PlayerListEntryAction.UPDATE_LATENCY) updateLatency(entry);
-            else if (action == PlayerListEntryAction.UPDATE_DISPLAY_NAME) updateDisplayName(entry);
-            else if (action == PlayerListEntryAction.REMOVE_PLAYER) removePlayer(entry);
+    public void packetReceived (ClientboundPlayerInfoUpdatePacket packet) {
+        EnumSet<PlayerListEntryAction> actions = packet.getActions();
+        for (PlayerListEntryAction action : actions) {
+            for (PlayerListEntry entry : packet.getEntries()) {
+                if (action == PlayerListEntryAction.ADD_PLAYER) addPlayer(entry);
+                else if (action == PlayerListEntryAction.INITIALIZE_CHAT) initializeChat(entry);
+                else if (action == PlayerListEntryAction.UPDATE_LISTED) updateListed(entry);
+                else if (action == PlayerListEntryAction.UPDATE_GAME_MODE) updateGamemode(entry);
+                else if (action == PlayerListEntryAction.UPDATE_LATENCY) updateLatency(entry);
+                else if (action == PlayerListEntryAction.UPDATE_DISPLAY_NAME) updateDisplayName(entry);
+            }
+        }
+    }
+
+    public void packetReceived (ClientboundPlayerInfoRemovePacket packet) {
+        final List<UUID> uuids = packet.getProfileIds();
+
+        for (UUID uuid : uuids) {
+            removePlayer(uuid);
         }
     }
 
@@ -75,6 +88,20 @@ public class PlayersPlugin extends SessionAdapter {
 
     private MutablePlayerListEntry getEntry (PlayerListEntry other) {
         return getEntry(other.getProfile().getId());
+    }
+
+    private void initializeChat (PlayerListEntry newEntry) {
+        final MutablePlayerListEntry target = getEntry(newEntry);
+        if (target == null) return;
+
+        target.publicKey(newEntry.getPublicKey());
+    }
+
+    private void updateListed (PlayerListEntry newEntry) {
+        final MutablePlayerListEntry target = getEntry(newEntry);
+        if (target == null) return;
+
+        target.listed(newEntry.isListed());
     }
 
     private void addPlayer (PlayerListEntry newEntry) {
@@ -120,7 +147,7 @@ public class PlayersPlugin extends SessionAdapter {
         final MutablePlayerListEntry target = getEntry(newEntry);
         if (target == null) return;
 
-        final int ping = newEntry.getPing();
+        final int ping = newEntry.getLatency();
 
         target.latency(ping);
 
@@ -138,8 +165,8 @@ public class PlayersPlugin extends SessionAdapter {
         for (PlayerListener listener : listeners) { listener.playerDisplayNameUpdated(target, displayName); }
     }
 
-    private void removePlayer (PlayerListEntry newEntry) {
-        final MutablePlayerListEntry target = getEntry(newEntry);
+    private void removePlayer (UUID uuid) {
+        final MutablePlayerListEntry target = getEntry(uuid);
         if (target == null) return;
 
         bot.tabComplete().tabComplete("/minecraft:scoreboard players add ").thenApply(packet -> {
@@ -149,6 +176,7 @@ public class PlayersPlugin extends SessionAdapter {
 
             for (int i = 0; i < matches.length; i++) {
                 if (tooltips[i] != null || !matches[i].equals(username)) continue;
+                target.listed(false);
                 for (PlayerListener listener : listeners) { listener.playerVanished(target); }
                 return packet;
             }

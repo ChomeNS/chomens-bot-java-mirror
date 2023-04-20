@@ -40,8 +40,6 @@ public class MinecraftChatParser implements ChatParser {
         final String key = message.key();
         if (args.size() < 2 || !typeMap.containsKey(key)) return null;
 
-        final Map<String, Component> parameters = new HashMap<>();
-
         final Component senderComponent = args.get(0);
         final Component contents = args.get(1);
 
@@ -50,9 +48,6 @@ public class MinecraftChatParser implements ChatParser {
 
         if (sender == null) return null;
 
-        parameters.put("sender", senderComponent);
-        parameters.put("contents", contents);
-
-        return new PlayerMessage(parameters, sender);
+        return new PlayerMessage(sender, senderComponent, contents);
     }
 }

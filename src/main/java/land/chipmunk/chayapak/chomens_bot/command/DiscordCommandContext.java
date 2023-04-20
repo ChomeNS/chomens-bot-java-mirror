@@ -33,7 +33,8 @@ public class DiscordCommandContext extends CommandContext {
                         Component.text(event.getAuthor().getName()),
                         0L,
                         null,
-                        new byte[0]
+                        new byte[0],
+                        true
                 ),
                 hash,
                 ownerHash

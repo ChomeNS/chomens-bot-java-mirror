@@ -125,7 +125,7 @@ public class CorePlugin extends PositionPlugin.PositionListener {
         );
 
         final Session session = bot.session();
-        session.send(new ServerboundSetCreativeModeSlotPacket(36, new ItemStack(kaboom ? 466 /* repeating command block id */ : 347 /* command block id */, 64, new CompoundTag("", tag))));
+        session.send(new ServerboundSetCreativeModeSlotPacket(36, new ItemStack(kaboom ? 490 /* repeating command block id */ : 371 /* command block id */, 64, new CompoundTag("", tag))));
         session.send(new ServerboundPlayerActionPacket(PlayerAction.START_DIGGING, temporaryBlockPosition, Direction.NORTH, 0));
         session.send(new ServerboundUseItemOnPacket(temporaryBlockPosition, Direction.UP, Hand.MAIN_HAND, 0.5f, 0.5f, 0.5f, false, 1));
     }

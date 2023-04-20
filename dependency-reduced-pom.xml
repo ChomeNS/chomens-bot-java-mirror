@@ -39,7 +39,7 @@
   <repositories>
     <repository>
       <id>opencollab</id>
-      <url>https://repo.opencollab.dev/maven-releases/</url>
+      <url>https://repo.opencollab.dev/maven-snapshots/</url>
     </repository>
     <repository>
       <id>minecraft-libraries</id>

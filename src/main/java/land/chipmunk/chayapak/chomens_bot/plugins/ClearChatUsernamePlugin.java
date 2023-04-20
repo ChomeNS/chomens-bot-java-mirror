@@ -19,7 +19,7 @@ public class ClearChatUsernamePlugin extends ChatPlugin.ChatListener {
     @Override
     public void commandSpyMessageReceived (PlayerMessage message) {
         final String username = message.sender().profile().getName();
-        final String command = ((TextComponent) message.parameters().get("contents")).content();
+        final String command = ((TextComponent) message.contents()).content();
 
         if (
                 command.equals("/clearchat") ||

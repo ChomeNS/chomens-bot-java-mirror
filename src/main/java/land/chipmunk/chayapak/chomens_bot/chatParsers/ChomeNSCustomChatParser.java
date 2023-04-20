@@ -8,12 +8,10 @@ import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 // Might be a confusing name, but I mean the [Chat] chayapak custom chat thing or any other
-// custom chat that uses the `[%s] %s › %s` translation
+// custom chat that uses the `[%s] %s › %s` translation or %s %s › %s
 public class ChomeNSCustomChatParser implements ChatParser {
     private final Bot bot;
 
@@ -30,9 +28,7 @@ public class ChomeNSCustomChatParser implements ChatParser {
     // very similar to MinecraftChatParser
     public PlayerMessage parse (TranslatableComponent message) {
         final List<Component> args = message.args();
-        if (args.size() < 3 || !message.key().equals("[%s] %s › %s")) return null;
-
-        final Map<String, Component> parameters = new HashMap<>();
+        if (args.size() < 3 || (!message.key().equals("[%s] %s › %s") && !message.key().equals("%s %s › %s"))) return null;
 
         final Component username = args.get(1);
         final Component contents = args.get(2);
@@ -42,9 +38,6 @@ public class ChomeNSCustomChatParser implements ChatParser {
 
         if (sender == null) return null;
 
-        parameters.put("sender", username);
-        parameters.put("contents", contents);
-
-        return new PlayerMessage(parameters, sender);
+        return new PlayerMessage(sender, username, contents);
     }
 }

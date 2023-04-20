@@ -9,9 +9,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CommandSpyParser implements ChatParser {
     private final Bot bot;
@@ -45,11 +43,6 @@ public class CommandSpyParser implements ChatParser {
 
         if (sender == null) return null;
 
-        final Map<String, Component> parameters = new HashMap<>();
-
-        parameters.put("sender", username);
-        parameters.put("contents", command);
-
-        return new PlayerMessage(parameters, sender);
+        return new PlayerMessage(sender, username, command);
     }
 }

@@ -64,13 +64,9 @@ public class KaboomChatParser implements ChatParser {
 
         MutablePlayerListEntry sender = bot.players().getEntry(Component.empty().append(prefix).append(displayName));
         if (sender == null) sender = bot.players().getEntry(prefix.append(displayName)); // old
-        if (sender == null) sender = new MutablePlayerListEntry(new GameProfile(new UUID(0L, 0L), null), GameMode.SURVIVAL, 0, displayName, 0L, null, new byte[0]); // new and currently using
+        if (sender == null) sender = new MutablePlayerListEntry(new GameProfile(new UUID(0L, 0L), null), GameMode.SURVIVAL, 0, displayName, 0L, null, new byte[0], true); // new and currently using
 
-        parameters.put("sender", displayName);
-        parameters.put("prefix", prefix);
-        parameters.put("contents", contents);
-
-        return new PlayerMessage(parameters, sender);
+        return new PlayerMessage(sender, displayName, contents);
     }
 
     private boolean isSeperatorAt (List<Component> children, int start) {

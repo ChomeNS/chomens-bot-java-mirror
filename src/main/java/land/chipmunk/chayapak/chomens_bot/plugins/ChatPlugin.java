@@ -1,8 +1,9 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
+import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundDisguisedChatPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundPlayerChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundSystemChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundChatCommandPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundChatPacket;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
@@ -12,6 +13,7 @@ import land.chipmunk.chayapak.chomens_bot.chatParsers.KaboomChatParser;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.MinecraftChatParser;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.commandSpy.CommandSpyParser;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.data.ChatParser;
+import land.chipmunk.chayapak.chomens_bot.chatParsers.data.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.data.PlayerMessage;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.UUIDUtilities;
@@ -20,9 +22,7 @@ import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class ChatPlugin extends SessionAdapter {
@@ -49,9 +49,9 @@ public class ChatPlugin extends SessionAdapter {
 
     @Override
     public void packetReceived (Session session, Packet packet) {
-        if (packet instanceof ClientboundSystemChatPacket) {
-            packetReceived((ClientboundSystemChatPacket) packet);
-        }
+        if (packet instanceof ClientboundSystemChatPacket) packetReceived((ClientboundSystemChatPacket) packet);
+        else if (packet instanceof ClientboundPlayerChatPacket) packetReceived((ClientboundPlayerChatPacket) packet);
+        else if (packet instanceof ClientboundDisguisedChatPacket) packetReceived((ClientboundDisguisedChatPacket) packet);
     }
 
     public void packetReceived (ClientboundSystemChatPacket packet) {
@@ -84,6 +84,53 @@ public class ChatPlugin extends SessionAdapter {
         }
     }
 
+    public void packetReceived (ClientboundPlayerChatPacket packet) {
+        final UUID senderUUID = packet.getSender();
+
+        final MutablePlayerListEntry entry = bot.players().getEntry(senderUUID);
+
+        if (entry == null) return;
+
+        final PlayerMessage playerMessage = new PlayerMessage(entry, packet.getName(), Component.text(packet.getContent()));
+
+        for (ChatListener listener : listeners) {
+            listener.playerMessageReceived(playerMessage);
+
+            final Component component = Component.translatable(
+                    "chat.type.text",
+                    entry.displayName(),
+                    Component.text(packet.getContent())
+            );
+            listener.systemMessageReceived(
+                    ComponentUtilities.stringify(component),
+                    component
+            );
+        }
+    }
+
+    public void packetReceived (ClientboundDisguisedChatPacket packet) {
+        // totallynotskidded™ from chipmunkbot
+        PlayerMessage parsedFromMessage = null;
+        final Component component = packet.getMessage();
+
+        for (ChatParser parser : chatParsers) {
+            parsedFromMessage = parser.parse(component);
+            if (parsedFromMessage != null) break;
+        }
+
+        if (parsedFromMessage == null) return;
+
+        final PlayerMessage playerMessage = new PlayerMessage(parsedFromMessage.sender(), packet.getName(), parsedFromMessage.contents());
+
+        for (ChatListener listener : listeners) {
+            listener.playerMessageReceived(playerMessage);
+            listener.systemMessageReceived(
+                    ComponentUtilities.stringify(component),
+                    component
+            );
+        }
+    }
+
     public void send (String message) {
         final String[] splitted = message.split("(?<=\\G.{100})|\\n");
 
@@ -97,21 +144,21 @@ public class ChatPlugin extends SessionAdapter {
                             splitMessage.substring(1),
                             Instant.now().toEpochMilli(),
                             0L,
-                            new ArrayList<>(),
-                            false,
-                            new ArrayList<>(),
-                            null
+                            Collections.emptyList(),
+                            0,
+                            new BitSet()
                     ));
                 } else {
-                    bot.session().send(new ServerboundChatPacket(
-                            splitMessage,
-                            Instant.now().toEpochMilli(),
-                            0L,
-                            new byte[0],
-                            false,
-                            new ArrayList<>(),
-                            null
-                    ));
+                    // Temporary fix for the bot getting kicked instead of chatting
+                    bot.core().run("essentials:sudo " + bot.players().getBotEntry().profile().getIdAsString() + " c:" + splitMessage);
+//                    bot.session().send(new ServerboundChatPacket(
+//                            splitMessage,
+//                            Instant.now().toEpochMilli(),
+//                            0L,
+//                            new byte[0],
+//                            0,
+//                            new BitSet()
+//                    ));
                 }
             }, i, TimeUnit.MILLISECONDS);
 

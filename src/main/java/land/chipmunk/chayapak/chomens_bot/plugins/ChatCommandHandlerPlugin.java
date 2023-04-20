@@ -33,8 +33,8 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.ChatListener {
     public void commandSpyMessageReceived (PlayerMessage message) { listener(message, true); }
 
     private void listener (PlayerMessage message, boolean cspy) {
-        final Component displayNameComponent = message.parameters().get("sender");
-        final Component messageComponent = message.parameters().get("contents");
+        final Component displayNameComponent = message.displayName();
+        final Component messageComponent = message.contents();
         if (displayNameComponent == null || messageComponent == null) return;
 
         final String displayName = ComponentUtilities.stringify(displayNameComponent);
