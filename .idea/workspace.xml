@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="1.19.4 + add stuff (kinda broken ..,,.)">
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="add/improve/fix stuff&#10;ig mabe mabe mabe&#10;useCore!1!1!">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/MusicCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/MusicCommand.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,13 +94,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00038" summary="add sus autocomplete (works, tested)">
-      <created>1681003794277</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1681003794277</updated>
     </task>
     <task id="LOCAL-00039" summary="actually fix a small (or big?) bug">
       <created>1681014542708</created>
@@ -437,7 +431,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681984879688</updated>
     </task>
-    <option name="localTasksCounter" value="87" />
+    <task id="LOCAL-00087" summary="add/improve/fix stuff&#10;ig mabe mabe mabe&#10;useCore!1!1!">
+      <created>1682060041610</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1682060041611</updated>
+    </task>
+    <option name="localTasksCounter" value="88" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -452,7 +453,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="remove the time from cb" />
     <MESSAGE value="ig change to `ChomeNS Bot` in .name yup" />
     <MESSAGE value="hopefully fix the core problem?" />
     <MESSAGE value="maybe patch the sus" />
@@ -477,7 +477,8 @@
     <MESSAGE value="add a working (or not?) stereo to music" />
     <MESSAGE value="improve and fix cmd handler (first commit on arch)&#10;yup this is my first commit on arch linux,.,.,..,.,.,&#10;yes i use arch btw :sunglasses:" />
     <MESSAGE value="1.19.4 + add stuff (kinda broken ..,,.)" />
-    <option name="LAST_COMMIT_MESSAGE" value="1.19.4 + add stuff (kinda broken ..,,.)" />
+    <MESSAGE value="add/improve/fix stuff&#10;ig mabe mabe mabe&#10;useCore!1!1!" />
+    <option name="LAST_COMMIT_MESSAGE" value="add/improve/fix stuff&#10;ig mabe mabe mabe&#10;useCore!1!1!" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

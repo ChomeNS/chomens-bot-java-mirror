@@ -34,8 +34,6 @@ public class MusicPlayerPlugin extends SessionAdapter {
         }
     }
 
-    @Getter private String fileName;
-
     @Getter @Setter private Song currentSong;
     @Getter @Setter private LinkedList<Song> songQueue = new LinkedList<>();
     @Getter @Setter private SongLoaderThread loaderThread;
@@ -99,7 +97,6 @@ public class MusicPlayerPlugin extends SessionAdapter {
                     bot.chat().tellraw(Component.translatable("Failed to load song: %s", loaderThread.exception.message()).color(NamedTextColor.RED));
                 } else {
                     songQueue.add(loaderThread.song);
-                    fileName = loaderThread.fileName;
                     bot.chat().tellraw(Component.translatable("Added %s to the song queue", Component.empty().append(loaderThread.song.name).color(NamedTextColor.GOLD)));
                 }
                 loaderThread = null;
@@ -151,7 +148,6 @@ public class MusicPlayerPlugin extends SessionAdapter {
                 if (songQueue.size() == 0) {
                     stopPlaying();
                     removeBossBar();
-                    fileName = null;
                     bot.chat().tellraw(Component.text("Finished playing every song in the queue"));
                     return;
                 }

@@ -393,22 +393,22 @@ public class MusicCommand implements Command {
     public Component info (CommandContext context) {
         final Bot bot = context.bot();
         final Song currentSong = bot.music().currentSong();
-        final String fileName = bot.music().fileName();
 
         if (currentSong == null) return Component.text("No song is currently playing").color(NamedTextColor.RED);
 
         // ig very code yup
+        final Component title = currentSong.name;
         final String songAuthor = currentSong.songAuthor == null || currentSong.songAuthor.equals("") ? "N/A" : currentSong.songAuthor;
         final String songOriginalAuthor = currentSong.songOriginalAuthor == null || currentSong.songOriginalAuthor.equals("") ? "N/A" : currentSong.songOriginalAuthor;
         final String songDescription = currentSong.songDescription == null || currentSong.songDescription.equals("") ? "N/A" : currentSong.songDescription;
 
         final Component component = Component.translatable(
                 """
-                        Filename: %s
+                        Title/Filename: %s
                         Author: %s
                         Original author: %s
                         Description: %s""",
-                Component.text(fileName).color(NamedTextColor.AQUA),
+                title.color(NamedTextColor.AQUA),
                 Component.text(songAuthor).color(NamedTextColor.AQUA),
                 Component.text(songOriginalAuthor).color(NamedTextColor.AQUA),
                 Component.text(songDescription).color(NamedTextColor.AQUA)
