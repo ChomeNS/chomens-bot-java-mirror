@@ -6,6 +6,7 @@ import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundPlayerInfoUpdatePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundPlayerInfoRemovePacket;
 import com.github.steveice10.packetlib.Session;
+import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
@@ -17,7 +18,7 @@ import java.util.*;
 
 public class PlayersPlugin extends SessionAdapter {
     private final Bot bot;
-    @Getter private List<MutablePlayerListEntry> list = new ArrayList<>();
+    @Getter private final List<MutablePlayerListEntry> list = new ArrayList<>();
 
     private final List<PlayerListener> listeners = new ArrayList<>();
 
@@ -187,6 +188,11 @@ public class PlayersPlugin extends SessionAdapter {
 
             return packet;
         });
+    }
+
+    @Override
+    public void disconnected(DisconnectedEvent event) {
+        list.clear();
     }
 
     public void addListener (PlayerListener listener) { listeners.add(listener); }
