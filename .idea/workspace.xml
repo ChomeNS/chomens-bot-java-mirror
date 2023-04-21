@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="add/improve/fix stuff&#10;ig mabe mabe mabe&#10;useCore!1!1!">
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="ig fix music filename mabe mabe">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/MusicCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/MusicCommand.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,13 +93,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00039" summary="actually fix a small (or big?) bug">
-      <created>1681014542708</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1681014542708</updated>
     </task>
     <task id="LOCAL-00040" summary="make better disconnect message reason">
       <created>1681016779914</created>
@@ -438,7 +430,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682060041611</updated>
     </task>
-    <option name="localTasksCounter" value="88" />
+    <task id="LOCAL-00088" summary="ig fix music filename mabe mabe">
+      <created>1682073074933</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1682073074935</updated>
+    </task>
+    <option name="localTasksCounter" value="89" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -453,7 +452,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="ig change to `ChomeNS Bot` in .name yup" />
     <MESSAGE value="hopefully fix the core problem?" />
     <MESSAGE value="maybe patch the sus" />
     <MESSAGE value="fix music list&#10;it took me ages to figure this out that i need to just &#10;CLONE THE LIST" />
@@ -478,7 +476,8 @@
     <MESSAGE value="improve and fix cmd handler (first commit on arch)&#10;yup this is my first commit on arch linux,.,.,..,.,.,&#10;yes i use arch btw :sunglasses:" />
     <MESSAGE value="1.19.4 + add stuff (kinda broken ..,,.)" />
     <MESSAGE value="add/improve/fix stuff&#10;ig mabe mabe mabe&#10;useCore!1!1!" />
-    <option name="LAST_COMMIT_MESSAGE" value="add/improve/fix stuff&#10;ig mabe mabe mabe&#10;useCore!1!1!" />
+    <MESSAGE value="ig fix music filename mabe mabe" />
+    <option name="LAST_COMMIT_MESSAGE" value="ig fix music filename mabe mabe" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
