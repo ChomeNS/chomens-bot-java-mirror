@@ -52,6 +52,7 @@ public class BossbarManagerPlugin extends SessionAdapter {
     }
 
     private void update() {
+        if (!enabled) return;
         for (Map.Entry<String, BossBar> _bossBar : bossBars.entrySet()) {
             final String name = _bossBar.getKey();
             final BossBar bossBar = _bossBar.getValue();
@@ -84,6 +85,7 @@ public class BossbarManagerPlugin extends SessionAdapter {
     }
 
     private void createBossBar (String name, String players) {
+        if (!enabled) return;
         bot.core().run("minecraft:bossbar add " + bossBarPrefix + name + " \"\"");
         bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " players " + players);
     }

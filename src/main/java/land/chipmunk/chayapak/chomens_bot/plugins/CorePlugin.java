@@ -78,16 +78,20 @@ public class CorePlugin extends PositionPlugin.PositionListener {
     public void run (String command) {
         if (!ready) return;
 
-        bot.session().send(new ServerboundSetCommandBlockPacket(
-                absoluteCorePosition(),
-                command,
-                kaboom ? CommandBlockMode.AUTO : CommandBlockMode.REDSTONE,
-                true,
-                false,
-                true
-        ));
+        if (bot.useCore()) {
+            bot.session().send(new ServerboundSetCommandBlockPacket(
+                    absoluteCorePosition(),
+                    command,
+                    kaboom ? CommandBlockMode.AUTO : CommandBlockMode.REDSTONE,
+                    true,
+                    false,
+                    true
+            ));
 
-        incrementBlock();
+            incrementBlock();
+        } else if (command.length() < 256) {
+            bot.chat().send("/" + command);
+        }
     }
 
     public CompletableFuture<CompoundTag> runTracked (String command) {

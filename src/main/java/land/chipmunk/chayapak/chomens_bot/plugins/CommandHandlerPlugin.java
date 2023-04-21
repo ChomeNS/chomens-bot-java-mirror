@@ -58,6 +58,7 @@ public class CommandHandlerPlugin {
         registerCommand(new GenerateMazeCommand());
         registerCommand(new TranslateCommand());
         registerCommand(new KickCommand());
+        registerCommand(new ClearChatQueueCommand());
     }
 
     public void registerCommand (Command command) {

@@ -17,6 +17,7 @@ import land.chipmunk.chayapak.chomens_bot.chatParsers.data.MutablePlayerListEntr
 import land.chipmunk.chayapak.chomens_bot.chatParsers.data.PlayerMessage;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.UUIDUtilities;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -32,6 +33,8 @@ public class ChatPlugin extends SessionAdapter {
 
     private final CommandSpyParser commandSpyParser;
 
+    @Getter private final List<String> queue = new ArrayList<>();
+
     private final List<ChatListener> listeners = new ArrayList<>();
 
     public ChatPlugin (Bot bot) {
@@ -45,6 +48,8 @@ public class ChatPlugin extends SessionAdapter {
         chatParsers.add(new MinecraftChatParser(bot));
         chatParsers.add(new KaboomChatParser(bot));
         chatParsers.add(new ChomeNSCustomChatParser(bot));
+
+        bot.executor().scheduleAtFixedRate(this::sendChatTick, 0, 125, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -131,26 +136,28 @@ public class ChatPlugin extends SessionAdapter {
         }
     }
 
-    public void send (String message) {
-        final String[] splitted = message.split("(?<=\\G.{100})|\\n");
+    private void sendChatTick () {
+        if (queue.size() == 0) return;
 
-        int i = 200;
+        final String message = queue.get(0);
+
+        final String[] splitted = message.split("(?<=\\G.{255})|\\n");
+
         for (String splitMessage : splitted) {
             if (splitMessage.trim().equals("")) continue;
 
-            bot.executor().schedule(() -> {
-                if (splitMessage.startsWith("/")) {
-                    bot.session().send(new ServerboundChatCommandPacket(
-                            splitMessage.substring(1),
-                            Instant.now().toEpochMilli(),
-                            0L,
-                            Collections.emptyList(),
-                            0,
-                            new BitSet()
-                    ));
-                } else {
-                    // Temporary fix for the bot getting kicked instead of chatting
-                    bot.core().run("essentials:sudo " + bot.players().getBotEntry().profile().getIdAsString() + " c:" + splitMessage);
+            if (splitMessage.startsWith("/")) {
+                bot.session().send(new ServerboundChatCommandPacket(
+                        splitMessage.substring(1),
+                        Instant.now().toEpochMilli(),
+                        0L,
+                        Collections.emptyList(),
+                        0,
+                        new BitSet()
+                ));
+            } else {
+                // Temporary fix for the bot getting kicked instead of chatting
+                bot.core().run("essentials:sudo " + bot.players().getBotEntry().profile().getIdAsString() + " c:" + splitMessage);
 //                    bot.session().send(new ServerboundChatPacket(
 //                            splitMessage,
 //                            Instant.now().toEpochMilli(),
@@ -159,11 +166,14 @@ public class ChatPlugin extends SessionAdapter {
 //                            0,
 //                            new BitSet()
 //                    ));
-                }
-            }, i, TimeUnit.MILLISECONDS);
-
-            i = i + 200;
+            }
         }
+
+        queue.remove(0);
+    }
+
+    public void send (String message) {
+        queue.add(message);
     }
 
     public void tellraw (Component component, String targets) {

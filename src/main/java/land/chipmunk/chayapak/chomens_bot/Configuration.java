@@ -79,7 +79,8 @@ public class Configuration {
         @Getter public String username;
         @Getter public boolean kaboom = false;
         @Getter public String serverName;
+        @Getter public boolean useCore = true;
         @Getter public boolean useChat = false;
-        @Getter public boolean hasEssentials = false;
+        @Getter public boolean hasEssentials = true;
     }
 }

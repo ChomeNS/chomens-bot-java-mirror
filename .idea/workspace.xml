@@ -4,31 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="improve and fix cmd handler (first commit on arch)&#10;yup this is my first commit on arch linux,.,.,..,.,.,&#10;yes i use arch btw :sunglasses:">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dependency-reduced-pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/dependency-reduced-pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/ChomeNSCustomChatParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/ChomeNSCustomChatParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/KaboomChatParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/KaboomChatParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/MinecraftChatParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/MinecraftChatParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/commandSpy/CommandSpyParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/commandSpy/CommandSpyParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/data/MutablePlayerListEntry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/data/MutablePlayerListEntry.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/data/PlayerMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/chatParsers/data/PlayerMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/command/DiscordCommandContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/command/DiscordCommandContext.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ChatCommandHandlerPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ChatCommandHandlerPlugin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ChatPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ChatPlugin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ClearChatUsernamePlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ClearChatUsernamePlugin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CorePlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CorePlugin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/DiscordPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/DiscordPlugin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/LoggerPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/LoggerPlugin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/PlayersPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/PlayersPlugin.java" afterDir="false" />
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="1.19.4 + add stuff (kinda broken ..,,.)">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,13 +93,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00037" summary="remove the thing">
-      <created>1681001658785</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1681001658785</updated>
     </task>
     <task id="LOCAL-00038" summary="add sus autocomplete (works, tested)">
       <created>1681003794277</created>
@@ -460,7 +430,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681972329498</updated>
     </task>
-    <option name="localTasksCounter" value="86" />
+    <task id="LOCAL-00086" summary="1.19.4 + add stuff (kinda broken ..,,.)">
+      <created>1681984879688</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1681984879688</updated>
+    </task>
+    <option name="localTasksCounter" value="87" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -475,7 +452,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="make self care use core if it can" />
     <MESSAGE value="remove the time from cb" />
     <MESSAGE value="ig change to `ChomeNS Bot` in .name yup" />
     <MESSAGE value="hopefully fix the core problem?" />
@@ -500,7 +476,8 @@
     <MESSAGE value="fard" />
     <MESSAGE value="add a working (or not?) stereo to music" />
     <MESSAGE value="improve and fix cmd handler (first commit on arch)&#10;yup this is my first commit on arch linux,.,.,..,.,.,&#10;yes i use arch btw :sunglasses:" />
-    <option name="LAST_COMMIT_MESSAGE" value="improve and fix cmd handler (first commit on arch)&#10;yup this is my first commit on arch linux,.,.,..,.,.,&#10;yes i use arch btw :sunglasses:" />
+    <MESSAGE value="1.19.4 + add stuff (kinda broken ..,,.)" />
+    <option name="LAST_COMMIT_MESSAGE" value="1.19.4 + add stuff (kinda broken ..,,.)" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
