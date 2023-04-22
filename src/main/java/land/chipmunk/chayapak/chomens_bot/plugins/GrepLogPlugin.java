@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Logger;
 import lombok.Getter;
+import lombok.Setter;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -19,7 +20,7 @@ import java.util.zip.GZIPInputStream;
 public class GrepLogPlugin {
     private final Bot bot;
 
-    @Getter private GrepLogThread thread = null;
+    @Getter @Setter private GrepLogThread thread = null;
 
     public GrepLogPlugin (Bot bot) {
         this.bot = bot;

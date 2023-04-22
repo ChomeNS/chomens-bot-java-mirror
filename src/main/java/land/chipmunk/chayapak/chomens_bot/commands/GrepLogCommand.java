@@ -52,6 +52,8 @@ public class GrepLogCommand implements Command {
             if (bot.grepLog().thread() == null) return Component.text("No query is running").color(NamedTextColor.RED);
 
             bot.grepLog().thread().interrupt();
+            bot.grepLog().thread(null);
+
             context.sendOutput(Component.text("Log query stopped"));
             return Component.text("success");
         }
