@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="fard">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="fard 2" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -93,13 +91,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00044" summary="among">
-      <created>1681194626010</created>
-      <option name="number" value="00044" />
-      <option name="presentableId" value="LOCAL-00044" />
-      <option name="project" value="LOCAL" />
-      <updated>1681194626010</updated>
     </task>
     <task id="LOCAL-00045" summary="add hasEssentials to config">
       <created>1681195005971</created>
@@ -437,7 +428,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682130155082</updated>
     </task>
-    <option name="localTasksCounter" value="93" />
+    <task id="LOCAL-00093" summary="fard 2">
+      <created>1682131432220</created>
+      <option name="number" value="00093" />
+      <option name="presentableId" value="LOCAL-00093" />
+      <option name="project" value="LOCAL" />
+      <updated>1682131432220</updated>
+    </task>
+    <option name="localTasksCounter" value="94" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -452,7 +450,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="actually make creator configurable instead of hardcoding" />
     <MESSAGE value="improve trusted plugin" />
     <MESSAGE value="add among us to the position plugin (useful af)&#10;yes it is SOOOOOO good" />
     <MESSAGE value="improve rtp" />
@@ -477,7 +474,8 @@
     <MESSAGE value="hopefully fix the broken players plugin" />
     <MESSAGE value="f" />
     <MESSAGE value="fard" />
-    <option name="LAST_COMMIT_MESSAGE" value="fard" />
+    <MESSAGE value="fard 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="fard 2" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
