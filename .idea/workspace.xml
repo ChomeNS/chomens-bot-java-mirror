@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="hopefully fix the broken players plugin">
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="f">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/PlayersPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/PlayersPlugin.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,13 +93,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00042" summary="reduce more real">
-      <created>1681115395510</created>
-      <option name="number" value="00042" />
-      <option name="presentableId" value="LOCAL-00042" />
-      <option name="project" value="LOCAL" />
-      <updated>1681115395510</updated>
     </task>
     <task id="LOCAL-00043" summary="add translate">
       <created>1681194542547</created>
@@ -438,7 +430,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682120738153</updated>
     </task>
-    <option name="localTasksCounter" value="91" />
+    <task id="LOCAL-00091" summary="f">
+      <created>1682122055989</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1682122055990</updated>
+    </task>
+    <option name="localTasksCounter" value="92" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -453,7 +452,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix music list&#10;it took me ages to figure this out that i need to just &#10;CLONE THE LIST" />
     <MESSAGE value="actually make creator configurable instead of hardcoding" />
     <MESSAGE value="improve trusted plugin" />
     <MESSAGE value="add among us to the position plugin (useful af)&#10;yes it is SOOOOOO good" />
@@ -478,7 +476,8 @@
     <MESSAGE value="ig fix music filename mabe mabe" />
     <MESSAGE value="probally fix bossbar plugin with actionbar mabe" />
     <MESSAGE value="hopefully fix the broken players plugin" />
-    <option name="LAST_COMMIT_MESSAGE" value="hopefully fix the broken players plugin" />
+    <MESSAGE value="f" />
+    <option name="LAST_COMMIT_MESSAGE" value="f" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

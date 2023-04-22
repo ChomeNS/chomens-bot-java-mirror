@@ -137,27 +137,28 @@ public class ChatPlugin extends SessionAdapter {
     }
 
     private void sendChatTick () {
-        if (queue.size() == 0) return;
+        try {
+            if (queue.size() == 0) return;
 
-        final String message = queue.get(0);
+            final String message = queue.get(0);
 
-        final String[] splitted = message.split("(?<=\\G.{255})|\\n");
+            final String[] splitted = message.split("(?<=\\G.{255})|\\n");
 
-        for (String splitMessage : splitted) {
-            if (splitMessage.trim().equals("")) continue;
+            for (String splitMessage : splitted) {
+                if (splitMessage.trim().equals("")) continue;
 
-            if (splitMessage.startsWith("/")) {
-                bot.session().send(new ServerboundChatCommandPacket(
-                        splitMessage.substring(1),
-                        Instant.now().toEpochMilli(),
-                        0L,
-                        Collections.emptyList(),
-                        0,
-                        new BitSet()
-                ));
-            } else {
-                // Temporary fix for the bot getting kicked instead of chatting
-                bot.core().run("essentials:sudo " + bot.players().getBotEntry().profile().getIdAsString() + " c:" + splitMessage);
+                if (splitMessage.startsWith("/")) {
+                    bot.session().send(new ServerboundChatCommandPacket(
+                            splitMessage.substring(1),
+                            Instant.now().toEpochMilli(),
+                            0L,
+                            Collections.emptyList(),
+                            0,
+                            new BitSet()
+                    ));
+                } else {
+                    // Temporary fix for the bot getting kicked instead of chatting
+                    bot.core().run("essentials:sudo " + bot.players().getBotEntry().profile().getIdAsString() + " c:" + splitMessage);
 //                    bot.session().send(new ServerboundChatPacket(
 //                            splitMessage,
 //                            Instant.now().toEpochMilli(),
@@ -166,10 +167,13 @@ public class ChatPlugin extends SessionAdapter {
 //                            0,
 //                            new BitSet()
 //                    ));
+                }
             }
-        }
 
-        queue.remove(0);
+            queue.remove(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void send (String message) {
