@@ -58,12 +58,14 @@ public class SongLoaderThread extends Thread {
     try {
       song = MidiConverter.getSongFromBytes(bytes, name, bot);
     } catch (Exception e) {
+      e.printStackTrace();
     }
 
     if (song == null) {
       try {
         song = NBSConverter.getSongFromBytes(bytes, name, bot);
       } catch (Exception e) {
+        e.printStackTrace();
       }
     }
 
