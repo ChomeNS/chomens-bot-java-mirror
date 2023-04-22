@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="readme i guess">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="make better console logging like the old js chomens bot" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,19 +41,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/chayapak1/IdeaProjects/chomens-bot-java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "jdk.selected.JAVA_MODULE": "17",
+    "last_opened_file_path": "/home/chayapak1/IdeaProjects/chomens-bot-java",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.keymap"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/.idea" />
@@ -96,27 +94,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00046" summary="among us 1000">
-      <created>1681199224918</created>
-      <option name="number" value="00046" />
-      <option name="presentableId" value="LOCAL-00046" />
-      <option name="project" value="LOCAL" />
-      <updated>1681199224918</updated>
-    </task>
-    <task id="LOCAL-00047" summary="Ooops">
-      <created>1681200589515</created>
-      <option name="number" value="00047" />
-      <option name="presentableId" value="LOCAL-00047" />
-      <option name="project" value="LOCAL" />
-      <updated>1681200589515</updated>
-    </task>
-    <task id="LOCAL-00048" summary="add speed">
-      <created>1681205431995</created>
-      <option name="number" value="00048" />
-      <option name="presentableId" value="LOCAL-00048" />
-      <option name="project" value="LOCAL" />
-      <updated>1681205431996</updated>
     </task>
     <task id="LOCAL-00049" summary="among">
       <created>1681287412000</created>
@@ -440,7 +417,28 @@
       <option name="project" value="LOCAL" />
       <updated>1682133205363</updated>
     </task>
-    <option name="localTasksCounter" value="95" />
+    <task id="LOCAL-00095" summary="change a bit mabe">
+      <created>1682141185843</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1682141185843</updated>
+    </task>
+    <task id="LOCAL-00096" summary="improve reconnect i guess">
+      <created>1682141715244</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1682141715244</updated>
+    </task>
+    <task id="LOCAL-00097" summary="make better console logging like the old js chomens bot">
+      <created>1682142828982</created>
+      <option name="number" value="00097" />
+      <option name="presentableId" value="LOCAL-00097" />
+      <option name="project" value="LOCAL" />
+      <updated>1682142828982</updated>
+    </task>
+    <option name="localTasksCounter" value="98" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -455,9 +453,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add among us to the position plugin (useful af)&#10;yes it is SOOOOOO good" />
-    <MESSAGE value="improve rtp" />
-    <MESSAGE value="forgor that i used displayname" />
     <MESSAGE value="i forgor to remove the code i copied from my chipmunkbot fork" />
     <MESSAGE value="probably fix greplog but more mess,...." />
     <MESSAGE value="this is why you should test the code before commiting" />
@@ -480,7 +475,10 @@
     <MESSAGE value="fard" />
     <MESSAGE value="fard 2" />
     <MESSAGE value="readme i guess" />
-    <option name="LAST_COMMIT_MESSAGE" value="readme i guess" />
+    <MESSAGE value="change a bit mabe" />
+    <MESSAGE value="improve reconnect i guess" />
+    <MESSAGE value="make better console logging like the old js chomens bot" />
+    <option name="LAST_COMMIT_MESSAGE" value="make better console logging like the old js chomens bot" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

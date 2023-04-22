@@ -132,12 +132,13 @@ public class MusicPlayerPlugin extends SessionAdapter {
             handlePlaying();
 
             if (currentSong.finished()) {
-                bot.chat().tellraw(Component.translatable("Finished playing %s", Component.empty().append(currentSong.name).color(NamedTextColor.GOLD)));
-
                 if (loop == Loop.CURRENT) {
                     currentSong.setTime(0);
                     return;
                 }
+
+                bot.chat().tellraw(Component.translatable("Finished playing %s", Component.empty().append(currentSong.name).color(NamedTextColor.GOLD)));
+
                 if (loop == Loop.ALL) {
                     skip();
                     return;
