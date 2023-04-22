@@ -158,7 +158,7 @@ public class ChatPlugin extends SessionAdapter {
                     ));
                 } else {
                     // Temporary fix for the bot getting kicked instead of chatting
-                    bot.core().run("essentials:sudo " + bot.players().getBotEntry().profile().getIdAsString() + " c:" + splitMessage);
+                    bot.core().run("essentials:sudo " + bot.username() + " c:" + splitMessage);
 //                    bot.session().send(new ServerboundChatPacket(
 //                            splitMessage,
 //                            Instant.now().toEpochMilli(),

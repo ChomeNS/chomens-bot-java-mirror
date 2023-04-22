@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="f">
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="fard">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -93,13 +93,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00043" summary="add translate">
-      <created>1681194542547</created>
-      <option name="number" value="00043" />
-      <option name="presentableId" value="LOCAL-00043" />
-      <option name="project" value="LOCAL" />
-      <updated>1681194542547</updated>
     </task>
     <task id="LOCAL-00044" summary="among">
       <created>1681194626010</created>
@@ -437,7 +430,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682122055990</updated>
     </task>
-    <option name="localTasksCounter" value="92" />
+    <task id="LOCAL-00092" summary="fard">
+      <created>1682130155082</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1682130155082</updated>
+    </task>
+    <option name="localTasksCounter" value="93" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -468,7 +468,6 @@
     <MESSAGE value="what the fuck i commited the wrong file" />
     <MESSAGE value="mabe" />
     <MESSAGE value="mess with the pitch correction again to fix the sus problem" />
-    <MESSAGE value="fard" />
     <MESSAGE value="add a working (or not?) stereo to music" />
     <MESSAGE value="improve and fix cmd handler (first commit on arch)&#10;yup this is my first commit on arch linux,.,.,..,.,.,&#10;yes i use arch btw :sunglasses:" />
     <MESSAGE value="1.19.4 + add stuff (kinda broken ..,,.)" />
@@ -477,7 +476,8 @@
     <MESSAGE value="probally fix bossbar plugin with actionbar mabe" />
     <MESSAGE value="hopefully fix the broken players plugin" />
     <MESSAGE value="f" />
-    <option name="LAST_COMMIT_MESSAGE" value="f" />
+    <MESSAGE value="fard" />
+    <option name="LAST_COMMIT_MESSAGE" value="fard" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
