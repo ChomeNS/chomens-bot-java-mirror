@@ -43,17 +43,20 @@ public class GrepLogCommand implements Command {
     public Component execute(CommandContext context, String[] _args, String[] fullArgs) {
         final Bot bot = context.bot();
 
-        if (bot.grepLog().thread() != null) return Component.text("Another query is already running").color(NamedTextColor.RED);
-
         String[] args = _args;
 
         boolean ignoreCase = false;
         boolean regex = false;
 
         if (_args[0].equals("stop")) {
+            if (bot.grepLog().thread() == null) return Component.text("No query is running").color(NamedTextColor.RED);
+
             bot.grepLog().thread().interrupt();
+            context.sendOutput(Component.text("Log query stopped"));
             return Component.text("success");
         }
+
+        if (bot.grepLog().thread() != null) return Component.text("Another query is already running").color(NamedTextColor.RED);
 
         // this is a mess
         if (_args[0].equals("-ignorecase")) {
