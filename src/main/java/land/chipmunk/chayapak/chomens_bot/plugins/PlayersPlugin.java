@@ -203,7 +203,6 @@ public class PlayersPlugin extends SessionAdapter {
         public void playerGameModeUpdated (MutablePlayerListEntry target, GameMode gameMode) {}
         public void playerLatencyUpdated (MutablePlayerListEntry target, int ping) {}
         public void playerDisplayNameUpdated (MutablePlayerListEntry target, Component displayName) {}
-        public void playerUserNameChanged (MutablePlayerListEntry target) {}
         public void playerLeft (MutablePlayerListEntry target) {}
         public void playerVanished (MutablePlayerListEntry target) {}
     }
