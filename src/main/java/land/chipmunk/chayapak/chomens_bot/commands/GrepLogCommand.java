@@ -4,6 +4,7 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +42,8 @@ public class GrepLogCommand implements Command {
 
     public Component execute(CommandContext context, String[] _args, String[] fullArgs) {
         final Bot bot = context.bot();
+
+        if (bot.grepLog().thread() != null) return Component.text("Another query is already running").color(NamedTextColor.RED);
 
         String[] args = _args;
 
