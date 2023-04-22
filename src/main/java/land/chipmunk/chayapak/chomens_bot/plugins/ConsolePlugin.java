@@ -72,11 +72,11 @@ public class ConsolePlugin {
             if (commandName.equals("csvr") || commandName.equals("consoleserver")) {
                 for (Bot bot : allBots) {
                     if (args.length == 0) {
-                        bot.logger().log("No server specified");
+                        bot.logger().info("No server specified");
                         return;
                     }
                     consoleServer = args[0];
-                    bot.logger().log("Set the console server to " + consoleServer);
+                    bot.logger().info("Set the console server to " + consoleServer);
                 }
             }
 

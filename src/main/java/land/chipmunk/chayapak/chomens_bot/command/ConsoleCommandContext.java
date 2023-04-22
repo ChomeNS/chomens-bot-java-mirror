@@ -16,7 +16,7 @@ public class ConsoleCommandContext extends CommandContext {
     @Override
     public void sendOutput (Component component) {
         final String message = ComponentUtilities.stringifyAnsi(component);
-        bot.logger().log(message);
+        bot.logger().info(message);
     }
 
     @Override
