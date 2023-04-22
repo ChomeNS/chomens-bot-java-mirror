@@ -56,6 +56,22 @@ public class SongLoaderThread extends Thread {
     }
 
     try {
+      if (name.endsWith(".mid") || name.endsWith(".midi")) {
+        song = MidiConverter.getSongFromBytes(bytes, name, bot);
+        return;
+      }
+
+      if (name.endsWith(".nbs")) {
+        song = NBSConverter.getSongFromBytes(bytes, name, bot);
+        return;
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+
+      exception = new SongLoaderException(Component.translatable("Invalid format"));
+    }
+
+    try {
       song = MidiConverter.getSongFromBytes(bytes, name, bot);
     } catch (Exception e) {
       e.printStackTrace();
