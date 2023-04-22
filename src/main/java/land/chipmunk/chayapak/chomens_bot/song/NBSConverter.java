@@ -176,7 +176,12 @@ public class NBSConverter {
       }
 
       int pitch = key-33;
-      song.add(new Note(instrument, pitch, (float) note.velocity * (float) layerVolume / 10000f, getMilliTime(note.tick, tempo), note.panning, nbsLayers.get(note.layer).stereo));
+
+      try {
+        song.add(new Note(instrument, pitch, (float) note.velocity * (float) layerVolume / 10000f, getMilliTime(note.tick, tempo), note.panning, nbsLayers.get(note.layer).stereo));
+      } catch (Exception e) {
+        song.add(new Note(instrument, pitch, (float) note.velocity * (float) layerVolume / 10000f, getMilliTime(note.tick, tempo), -1, 100));
+      }
     }
 
     song.length = song.get(song.size()-1).time + 50;
