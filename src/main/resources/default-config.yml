@@ -9,7 +9,7 @@ consolePrefixes:
   normalCommandsPrefix: '.'
   consoleServerPrefix: '/'
 
-reconnectDelay: 7000
+reconnectDelay: 2000
 
 discord:
   prefix: 'default!'

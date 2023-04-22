@@ -7,6 +7,7 @@ import com.github.steveice10.packetlib.event.session.*;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpClientSession;
 import land.chipmunk.chayapak.chomens_bot.plugins.*;
+import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -37,7 +38,7 @@ public class Bot {
 
     @Getter private boolean loggedIn = false;
 
-    @Getter private ScheduledExecutorService executor = Executors.newScheduledThreadPool(100);
+    @Getter private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(100);
 
     @Getter @Setter private ConsolePlugin console;
     @Getter @Setter private LoggerPlugin logger; // in ConsolePlugin
@@ -167,7 +168,15 @@ public class Bot {
             public void disconnected(DisconnectedEvent disconnectedEvent) {
                 loggedIn = false;
 
-                final int reconnectDelay = config.reconnectDelay();
+                int reconnectDelay = config.reconnectDelay();
+
+                final String stringMessage = ComponentUtilities.stringify(disconnectedEvent.getReason());
+
+                // this part is ported from chomens bot js
+                if (
+                        stringMessage.equals("Wait 5 seconds before connecting, thanks! :)") ||
+                                stringMessage.equals("You are logging in too fast, try again later.")
+                ) reconnectDelay = 1000 * 7;
 
                 executor.schedule(() -> reconnect(), reconnectDelay, TimeUnit.MILLISECONDS);
 
