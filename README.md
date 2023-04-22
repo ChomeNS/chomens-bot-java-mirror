@@ -1,2 +1,2 @@
-# chomens-bot-java
-A Java verison of ChomeNS Bot. Still work-in-progress.
+# ChomeNS Bot Java
+A Java verison of ChomeNS Bot.
