@@ -48,7 +48,7 @@ public class LoggerPlugin extends ChatPlugin.ChatListener {
                 "[%s %s] [%s] %s",
                 Component.text(dateTime.format(dateTimeFormatter)).color(NamedTextColor.GRAY),
                 prefix,
-                Component.text(bot.host() + ":" + bot.port()).color(NamedTextColor.GRAY),
+                Component.text(bot.options().serverName()).color(NamedTextColor.GRAY),
                 Component.text(_message).color(NamedTextColor.WHITE)
         ).color(NamedTextColor.DARK_GRAY);
 
