@@ -10,10 +10,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
@@ -81,52 +79,30 @@ public class GrepLogPlugin {
 
             Arrays.sort(fileList, Comparator.comparing(File::getName)); // VERY IMPORTANT
 
-            // split the list into smaller chunks
-            int chunkSize = fileList.length / Runtime.getRuntime().availableProcessors();
-            final List<File[]> fileChunks = new ArrayList<>();
-            for (int i = 0; i < fileList.length; i += chunkSize) {
-                int end = Math.min(i + chunkSize, fileList.length);
-                fileChunks.add(Arrays.copyOfRange(fileList, i, end));
-            }
+            for (File file : fileList) {
+                final String fileName = file.getName();
+                if (fileName.matches(".*\\.txt\\.gz")) {
+                    try (
+                            FileInputStream fin = new FileInputStream(file);
+                            GZIPInputStream gzin = new GZIPInputStream(fin, 65536);
+                            BufferedReader br = new BufferedReader(new InputStreamReader(gzin, StandardCharsets.UTF_8))
+                    ) {
+                        br.readLine();
+                        readFile(br);
+                    } catch (Exception ignored) {
+                    } // TODO: Handle exception
+                } else {
+                    try (
+                            FileInputStream fin = new FileInputStream(file);
+                            BufferedReader br = new BufferedReader(new InputStreamReader(fin, StandardCharsets.UTF_8))
+                    ) {
+                        br.readLine();
+                        readFile(br);
+                    } catch (Exception ignored) {
+                    } // TODO: Handle exception
+                }
 
-            final List<Thread> threads = new ArrayList<>();
-            for (File[] chunk : fileChunks) {
-                final Thread thread = new Thread(() -> {
-                    for (File file : chunk) {
-                        final String fileName = file.getName();
-                        if (fileName.matches(".*\\.txt\\.gz")) {
-                            try (
-                                    FileInputStream fin = new FileInputStream(file);
-                                    GZIPInputStream gzin = new GZIPInputStream(fin, 65536);
-                                    BufferedReader br = new BufferedReader(new InputStreamReader(gzin, StandardCharsets.UTF_8))
-                            ) {
-                                br.readLine();
-                                readFile(br);
-                            } catch (Exception ignored) {
-                            } // TODO: Handle exception
-                        } else {
-                            try (
-                                    FileInputStream fin = new FileInputStream(file);
-                                    BufferedReader br = new BufferedReader(new InputStreamReader(fin, StandardCharsets.UTF_8))
-                            ) {
-                                br.readLine();
-                                readFile(br);
-                            } catch (Exception ignored) {
-                            } // TODO: Handle exception
-                        }
-
-                        if (queryStopped) break;
-                    }
-                });
-                thread.start();
-                threads.add(thread);
-            }
-
-            // wait for all of the threads to finish
-            for (Thread thread : threads) {
-                try {
-                    thread.join();
-                } catch (InterruptedException ignored) {}
+                if (queryStopped) break;
             }
 
             finish();
