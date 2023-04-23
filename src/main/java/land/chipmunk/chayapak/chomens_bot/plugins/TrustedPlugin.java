@@ -36,7 +36,7 @@ public class TrustedPlugin extends PlayersPlugin.PlayerListener {
                 final Component component = Component.translatable(
                         "[%s] [%s] %s",
                         Component.text("ChomeNS Bot").color(NamedTextColor.YELLOW),
-                        Component.text(this.bot.serverName()).color(NamedTextColor.GRAY),
+                        Component.text(this.bot.options().serverName()).color(NamedTextColor.GRAY),
                         message.color(NamedTextColor.WHITE)
                 ).color(NamedTextColor.DARK_GRAY);
 

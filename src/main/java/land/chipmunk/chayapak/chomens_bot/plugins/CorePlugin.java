@@ -54,7 +54,7 @@ public class CorePlugin extends PositionPlugin.PositionListener {
 
     public CorePlugin (Bot bot) {
         this.bot = bot;
-        this.kaboom = bot.kaboom();
+        this.kaboom = bot.options().kaboom();
 
         bot.position().addListener(this);
 
@@ -78,7 +78,7 @@ public class CorePlugin extends PositionPlugin.PositionListener {
     public void run (String command) {
         if (!ready) return;
 
-        if (bot.useCore()) {
+        if (bot.options().useCore()) {
             bot.session().send(new ServerboundSetCommandBlockPacket(
                     absoluteCorePosition(),
                     command,

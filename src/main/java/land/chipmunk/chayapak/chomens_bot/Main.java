@@ -48,7 +48,7 @@ public class Main {
 
         final Configuration config = _config;
 
-        Configuration.Bots[] botsOptions = config.bots();
+        Configuration.BotOption[] botsOptions = config.bots();
 
         // idk if these should be here lol, but it is just the discord stuff
         JDA jda = null;
@@ -64,17 +64,8 @@ public class Main {
             System.exit(1);
         }
 
-        for (Configuration.Bots botOption : botsOptions) {
-            final String host = botOption.host();
-            final int port = botOption.port();
-            final String username = botOption.username();
-            final boolean kaboom = botOption.kaboom();
-            final String serverName = botOption.serverName();
-            final boolean useCore = botOption.useCore();
-            final boolean useChat = botOption.useChat();
-            final boolean hasEssentials = botOption.hasEssentials();
-
-            final Bot bot = new Bot(host, port, username, kaboom, serverName, useCore, useChat, hasEssentials, allBots, config);
+        for (Configuration.BotOption botOption : botsOptions) {
+            final Bot bot = new Bot(botOption, allBots, config);
             allBots.add(bot);
         }
 

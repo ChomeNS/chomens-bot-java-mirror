@@ -181,7 +181,7 @@ public class ChatPlugin extends SessionAdapter {
     }
 
     public void tellraw (Component component, String targets) {
-        if (bot.useChat()) {
+        if (bot.options().useChat()) {
             if (!targets.equals("@a")) return; // worst fix of all time!1!
 
             final String stringified = ComponentUtilities.stringifyMotd(component).replace("§", "&");

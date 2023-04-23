@@ -23,14 +23,12 @@ public class Bot {
 
     @Getter private final String host;
     @Getter private final int port;
-    private final String _username;
-    @Getter private final boolean kaboom;
-    @Getter private final String serverName;
-    @Getter @Setter private boolean useCore;
-    @Getter @Setter private boolean useChat;
-    @Getter private final boolean hasEssentials;
-    @Getter private final List<Bot> allBots;
+
+    @Getter private final Configuration.BotOption options;
+
     @Getter private final Configuration config;
+
+    @Getter private List<Bot> allBots;
 
     @Getter private String username;
 
@@ -65,16 +63,14 @@ public class Bot {
     @Getter private MazePlugin maze;
     @Getter private ExploitsPlugin exploits;
 
-    public Bot (String host, int port, String _username, boolean kaboom, String serverName, boolean useCore, boolean useChat, boolean hasEssentials, List<Bot> allBots, Configuration config) {
-        this.host = host;
-        this.port = port;
-        this._username = _username;
-        this.kaboom = kaboom;
-        this.serverName = serverName;
-        this.useCore = useCore;
-        this.useChat = useChat;
-        this.hasEssentials = hasEssentials;
+    public Bot (Configuration.BotOption botOption, List<Bot> allBots, Configuration config) {
+        this.host = botOption.host;
+        this.port = botOption.port;
+
+        this.options = botOption;
+
         this.allBots = allBots;
+
         this.config = config;
 
         ConsolePlugin.addListener(new ConsolePlugin.Listener() {
@@ -111,6 +107,8 @@ public class Bot {
     }
 
     public void reconnect () {
+        final String _username = options.username();
+
         if (_username == null) username = RandomStringUtils.randomAlphabetic(8);
         else username = _username;
 

@@ -26,7 +26,7 @@ public class Configuration {
     
     @Getter public List<String> trusted = new ArrayList<>();
     @Getter public SelfCare selfCare = new SelfCare();
-    @Getter public Bots[] bots = new Bots[]{};
+    @Getter public BotOption[] bots = new BotOption[]{};
 
     public static class Core {
         @Getter public int layers = 3;
@@ -73,7 +73,7 @@ public class Configuration {
         @Getter public int positionPacketsPerSecond = 10;
     }
 
-    public static class Bots {
+    public static class BotOption {
         @Getter public String host;
         @Getter public int port;
         @Getter public String username;
