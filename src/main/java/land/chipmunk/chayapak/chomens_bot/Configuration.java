@@ -1,6 +1,7 @@
 package land.chipmunk.chayapak.chomens_bot;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,8 +80,8 @@ public class Configuration {
         @Getter public String username;
         @Getter public boolean kaboom = false;
         @Getter public String serverName;
-        @Getter public boolean useCore = true;
-        @Getter public boolean useChat = false;
+        @Getter @Setter public boolean useCore = true;
+        @Getter @Setter public boolean useChat = false;
         @Getter public boolean hasEssentials = true;
     }
 }
