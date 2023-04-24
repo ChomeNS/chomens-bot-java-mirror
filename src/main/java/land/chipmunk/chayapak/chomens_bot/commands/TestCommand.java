@@ -36,7 +36,7 @@ public class TestCommand implements Command {
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Component component = Component.translatable(
                 "Hello, World! Username: %s, Sender UUID: %s, Prefix: %s, Args: %s",
-                context.sender().profile().getName(),
+                Component.text(context.sender().profile().getName()),
                 Component.text(context.sender().profile().getIdAsString()),
                 Component.text(context.prefix()),
                 Component.text(String.join(", ", args))
