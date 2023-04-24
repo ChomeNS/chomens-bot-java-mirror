@@ -70,7 +70,12 @@ public class CommandHandlerPlugin {
     public Component executeCommand (String input, CommandContext context, boolean inGame, boolean discord, boolean console, String hash, String ownerHash, MessageReceivedEvent event) {
         final String[] splitInput = input.split("\\s+");
 
-        final String commandName = splitInput[0];
+        String commandName;
+        try {
+            commandName = splitInput[0];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return Component.text("Empty command").color(NamedTextColor.RED);
+        }
 
         final Command command = ElementUtilities.findCommand(commands, commandName);
 

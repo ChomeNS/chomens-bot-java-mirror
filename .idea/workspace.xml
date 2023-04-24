@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="improve returning output of commands">
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="thanks blackilykat for solving the thing.,.,.,&#10;yes just change the thing to null and its all done">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Bot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CommandHandlerPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CommandHandlerPlugin.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,13 +98,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00067" summary="actually make creator configurable instead of hardcoding">
-      <created>1681619945065</created>
-      <option name="number" value="00067" />
-      <option name="presentableId" value="LOCAL-00067" />
-      <option name="project" value="LOCAL" />
-      <updated>1681619945065</updated>
     </task>
     <task id="LOCAL-00068" summary="improve trusted plugin">
       <created>1681626702317</created>
@@ -441,7 +435,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682324452741</updated>
     </task>
-    <option name="localTasksCounter" value="116" />
+    <task id="LOCAL-00116" summary="thanks blackilykat for solving the thing.,.,.,&#10;yes just change the thing to null and its all done">
+      <created>1682334617794</created>
+      <option name="number" value="00116" />
+      <option name="presentableId" value="LOCAL-00116" />
+      <option name="project" value="LOCAL" />
+      <updated>1682334617795</updated>
+    </task>
+    <option name="localTasksCounter" value="117" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -456,7 +457,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="f" />
     <MESSAGE value="fard" />
     <MESSAGE value="fard 2" />
     <MESSAGE value="readme i guess" />
@@ -481,7 +481,8 @@
     <MESSAGE value="fix extras chat" />
     <MESSAGE value="actually improve the systemMessageReceived thing" />
     <MESSAGE value="improve returning output of commands" />
-    <option name="LAST_COMMIT_MESSAGE" value="improve returning output of commands" />
+    <MESSAGE value="thanks blackilykat for solving the thing.,.,.,&#10;yes just change the thing to null and its all done" />
+    <option name="LAST_COMMIT_MESSAGE" value="thanks blackilykat for solving the thing.,.,.,&#10;yes just change the thing to null and its all done" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
