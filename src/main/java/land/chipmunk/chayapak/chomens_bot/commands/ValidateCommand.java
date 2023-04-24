@@ -1,6 +1,5 @@
 package land.chipmunk.chayapak.chomens_bot.commands;
 
-import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import net.kyori.adventure.text.Component;
@@ -35,12 +34,11 @@ public class ValidateCommand implements Command {
     }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
         final String hash = fullArgs[0];
 
-        if (hash.equals(context.hash())) context.sendOutput(Component.text("Valid hash").color(NamedTextColor.GREEN));
-        else if (hash.equals(context.ownerHash())) context.sendOutput(Component.text("Valid OwnerHash").color(NamedTextColor.GREEN));
+        if (hash.equals(context.hash())) return Component.text("Valid hash").color(NamedTextColor.GREEN);
+        else if (hash.equals(context.ownerHash())) return Component.text("Valid OwnerHash").color(NamedTextColor.GREEN);
 
-        return Component.text("success");
+        return null;
     }
 }

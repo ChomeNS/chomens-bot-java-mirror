@@ -6,7 +6,6 @@ import land.chipmunk.chayapak.chomens_bot.command.ConsoleCommandContext;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -90,9 +89,8 @@ public class ConsolePlugin {
                 final ConsoleCommandContext context = new ConsoleCommandContext(bot, prefix);
 
                 final Component output = bot.commandHandler().executeCommand(line.substring(prefix.length()), context, false, false, true, null, null, null);
-                final String textOutput = ((TextComponent) output).content();
 
-                if (!textOutput.equals("success")) {
+                if (output != null) {
                     context.sendOutput(output);
                 }
 

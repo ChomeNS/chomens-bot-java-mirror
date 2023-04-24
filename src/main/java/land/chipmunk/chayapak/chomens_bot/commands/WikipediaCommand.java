@@ -58,15 +58,11 @@ public class WikipediaCommand implements Command {
 
             final JsonObject jsonObject = gson.fromJson(jsonOutput, JsonObject.class);
 
-            context.sendOutput(
-                    Component.text(jsonObject.get("extract").getAsString()).color(NamedTextColor.GREEN)
-            );
+            return Component.text(jsonObject.get("extract").getAsString()).color(NamedTextColor.GREEN);
         } catch (FileNotFoundException ignored) {
             return Component.text("Cannot find page: " + page).color(NamedTextColor.RED);
         } catch (Exception e) {
             return Component.text(e.toString()).color(NamedTextColor.RED);
         }
-
-        return Component.text("success");
     }
 }

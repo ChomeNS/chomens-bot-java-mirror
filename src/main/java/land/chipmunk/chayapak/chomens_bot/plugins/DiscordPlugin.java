@@ -16,7 +16,6 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -79,10 +78,9 @@ public class DiscordPlugin {
                                   final DiscordCommandContext context = new DiscordCommandContext(bot, prefix, event, null, null);
 
                                   final Component output = bot.commandHandler().executeCommand(message.substring(prefix.length()), context, false, true, false, null, null, event);
-                                  final String textOutput = ((TextComponent) output).content();
 
-                                  if (!textOutput.equals("success")) {
-                                      context.sendError(output);
+                                  if (output != null) {
+                                      context.sendOutput(output);
                                   }
 
                                   return;

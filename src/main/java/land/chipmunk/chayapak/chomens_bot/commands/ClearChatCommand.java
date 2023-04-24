@@ -65,6 +65,6 @@ public class ClearChatCommand implements Command {
             );
         }
 
-        return Component.text("success");
+        return null;
     }
 }

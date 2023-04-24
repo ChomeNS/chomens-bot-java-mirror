@@ -109,9 +109,9 @@ public class ServerInfoCommand implements Command {
                             ).color(NamedTextColor.AQUA)
             ).color(NamedTextColor.GOLD);
 
-            context.sendOutput(component);
+            return component;
         } catch (UnknownHostException ignored) {}
 
-        return Component.text("success");
+        return null;
     }
 }

@@ -42,6 +42,6 @@ public class SudoAllCommand implements Command {
             bot.core().run("essentials:sudo " + entry.profile().getName() + " " + String.join(" ", args));
         }
 
-        return Component.text("success");
+        return null;
     }
 }

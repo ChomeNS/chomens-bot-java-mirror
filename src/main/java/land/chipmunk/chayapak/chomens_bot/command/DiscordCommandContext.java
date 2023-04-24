@@ -56,18 +56,6 @@ public class DiscordCommandContext extends CommandContext {
         event.getMessage().replyEmbeds(embed).queue();
     }
 
-    public void sendError (Component component) {
-        final String output = ComponentUtilities.stringifyAnsi(component);
-        final EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle("Error");
-        builder.setColor(Color.decode(bot.config().discord().embedColors().error()));
-        builder.setDescription("```ansi\n" + output + "\n```");
-
-        final MessageEmbed embed = builder.build();
-
-        event.getMessage().replyEmbeds(embed).queue();
-    }
-
     @Override
     public Component displayName () {
         return Component.text(event.getAuthor().getName());

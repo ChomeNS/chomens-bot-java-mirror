@@ -49,37 +49,29 @@ public class BotVisibilityCommand implements Command {
             final String visibleOrInvisible = bot.selfCare().visibility() ? "visible" : "invisible";
             final String disableOrEnable = bot.selfCare().visibility() ? "disable" : "enable";
             bot.chat().send("/essentials:vanish " + disableOrEnable);
-            context.sendOutput(
-                    Component.empty()
-                            .append(Component.text("The bot's visibility is now "))
-                            .append(Component.text(visibleOrInvisible).color(greenOrGold))
-            );
+            return Component.empty()
+                    .append(Component.text("The bot's visibility is now "))
+                    .append(Component.text(visibleOrInvisible).color(greenOrGold));
         } else {
             switch (args[0]) {
                 case "on", "true" -> {
                     bot.selfCare().visibility(true);
                     bot.chat().send("/essentials:vanish disable");
-                    context.sendOutput(
-                            Component.empty()
-                                    .append(Component.text("The bot's visibility is now "))
-                                    .append(Component.text("visible").color(NamedTextColor.GREEN))
-                    );
+                    return Component.empty()
+                            .append(Component.text("The bot's visibility is now "))
+                            .append(Component.text("visible").color(NamedTextColor.GREEN));
                 }
                 case "off", "false" -> {
                     bot.selfCare().visibility(false);
                     bot.chat().send("/essentials:vanish enable");
-                    context.sendOutput(
-                            Component.empty()
-                                    .append(Component.text("The bot's visibility is now "))
-                                    .append(Component.text("invisible").color(NamedTextColor.GOLD))
-                    );
+                    return Component.empty()
+                            .append(Component.text("The bot's visibility is now "))
+                            .append(Component.text("invisible").color(NamedTextColor.GOLD));
                 }
                 default -> {
-
+                    return Component.text("Invalid argument").color(NamedTextColor.RED);
                 }
             }
         }
-
-        return Component.text("success");
     }
 }

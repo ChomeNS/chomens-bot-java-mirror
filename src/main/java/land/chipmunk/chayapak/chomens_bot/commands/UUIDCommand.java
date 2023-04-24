@@ -48,46 +48,40 @@ public class UUIDCommand implements Command {
             final String name = entry.profile().getName();
             final String uuid = entry.profile().getIdAsString();
 
-            context.sendOutput(
-                    Component.translatable(
-                            "%s's UUID: %s",
-                            Component.text(name),
-                            Component
-                                    .text(uuid)
-                                    .hoverEvent(
-                                            HoverEvent.showText(
-                                                    Component.text("Click here to copy the UUID to your clipboard").color(NamedTextColor.GREEN)
-                                            )
+            return Component.translatable(
+                    "%s's UUID: %s",
+                    Component.text(name),
+                    Component
+                            .text(uuid)
+                            .hoverEvent(
+                                    HoverEvent.showText(
+                                            Component.text("Click here to copy the UUID to your clipboard").color(NamedTextColor.GREEN)
                                     )
-                                    .clickEvent(
-                                            ClickEvent.copyToClipboard(uuid)
-                                    )
-                                    .color(NamedTextColor.AQUA)
-                    ).color(NamedTextColor.GREEN)
-            );
+                            )
+                            .clickEvent(
+                                    ClickEvent.copyToClipboard(uuid)
+                            )
+                            .color(NamedTextColor.AQUA)
+            ).color(NamedTextColor.GREEN);
         } else {
             final MutablePlayerListEntry entry = context.sender();
 
             final String uuid = entry.profile().getIdAsString();
 
-            context.sendOutput(
-                    Component.translatable(
-                            "Your UUID: %s",
-                            Component
-                                    .text(uuid)
-                                    .hoverEvent(
-                                            HoverEvent.showText(
-                                                    Component.text("Click here to copy the UUID to your clipboard").color(NamedTextColor.GREEN)
-                                            )
+            return Component.translatable(
+                    "Your UUID: %s",
+                    Component
+                            .text(uuid)
+                            .hoverEvent(
+                                    HoverEvent.showText(
+                                            Component.text("Click here to copy the UUID to your clipboard").color(NamedTextColor.GREEN)
                                     )
-                                    .clickEvent(
-                                            ClickEvent.copyToClipboard(uuid)
-                                    )
-                                    .color(NamedTextColor.AQUA)
-                    ).color(NamedTextColor.GREEN)
-            );
+                            )
+                            .clickEvent(
+                                    ClickEvent.copyToClipboard(uuid)
+                            )
+                            .color(NamedTextColor.AQUA)
+            ).color(NamedTextColor.GREEN);
         }
-
-        return Component.text("success");
     }
 }

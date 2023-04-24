@@ -74,34 +74,28 @@ public class FilterCommand implements Command {
                 final String player = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 
                 bot.filter().add(player, regex, ignoreCase);
-                context.sendOutput(
-                        Component.translatable(
-                                "Added %s to the filters",
-                                Component.text(player).color(NamedTextColor.AQUA)
-                        )
+                return Component.translatable(
+                        "Added %s to the filters",
+                        Component.text(player).color(NamedTextColor.AQUA)
                 );
             }
             case "remove" -> {
                 try {
                     final int index = Integer.parseInt(args[1]);
 
-                    context.sendOutput(
-                            Component.translatable(
-                                    "Removed %s from the filters",
-                                    Component.text(bot.filter().filteredPlayers().get(index).playerName).color(NamedTextColor.AQUA)
-                            )
-                    );
+                    final FilteredPlayer removed = bot.filter().remove(index);
 
-                    bot.filter().remove(index);
+                    return Component.translatable(
+                            "Removed %s from the filters",
+                            Component.text(removed.playerName).color(NamedTextColor.AQUA)
+                    );
                 } catch (IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
                     return Component.text("Invalid index").color(NamedTextColor.RED);
                 }
             }
             case "clear" -> {
                 bot.filter().clear();
-                context.sendOutput(
-                        Component.text("Cleared the filter")
-                );
+                return Component.text("Cleared the filter");
             }
             case "list" -> {
                 final List<Component> filtersComponents = new ArrayList<>();
@@ -119,7 +113,7 @@ public class FilterCommand implements Command {
                     index++;
                 }
 
-                final Component component = Component.empty()
+                return Component.empty()
                         .append(Component.text("Filtered players ").color(NamedTextColor.GREEN))
                         .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
                         .append(Component.text(bot.filter().filteredPlayers().size()).color(NamedTextColor.GRAY))
@@ -128,14 +122,10 @@ public class FilterCommand implements Command {
                         .append(
                                 Component.join(JoinConfiguration.newlines(), filtersComponents)
                         );
-
-                context.sendOutput(component);
             }
             default -> {
                 return Component.text("Invalid argument").color(NamedTextColor.RED);
             }
         }
-
-        return Component.text("success");
     }
 }

@@ -44,8 +44,6 @@ public class CowsayCommand implements Command {
 
         final String result = cowExecutor.execute();
 
-        context.sendOutput(Component.text(result));
-
-        return Component.text("success");
+        return Component.text(result);
     }
 }

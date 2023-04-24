@@ -60,6 +60,6 @@ public class CommandBlockCommand implements Command {
             return tags;
         });
 
-        return Component.text("success");
+        return null;
     }
 }

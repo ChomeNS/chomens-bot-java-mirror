@@ -38,6 +38,6 @@ public class EchoCommand implements Command {
 
         bot.chat().send(String.join(" ", args));
 
-        return Component.text("success");
+        return null;
     }
 }

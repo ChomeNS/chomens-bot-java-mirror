@@ -38,6 +38,6 @@ public class ClearChatQueueCommand implements Command {
 
         bot.chat().queue().clear();
 
-        return Component.text("success");
+        return null;
     }
 }

@@ -1,13 +1,12 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
-import lombok.Getter;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.data.PlayerMessage;
 import land.chipmunk.chayapak.chomens_bot.command.PlayerCommandContext;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.UUIDUtilities;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 
 import java.util.List;
 
@@ -56,9 +55,8 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.ChatListener {
         final PlayerCommandContext context = new PlayerCommandContext(bot, displayName, prefix, selector, message.sender(), bot.hashing().hash(), bot.hashing().ownerHash());
 
         final Component output = bot.commandHandler().executeCommand(commandString, context, true, false, false, bot.hashing().hash(), bot.hashing().ownerHash(), null);
-        final String textOutput = ((TextComponent) output).content();
 
-        if (!textOutput.equals("success")) {
+        if (output != null) {
             context.sendOutput(output);
         }
     }

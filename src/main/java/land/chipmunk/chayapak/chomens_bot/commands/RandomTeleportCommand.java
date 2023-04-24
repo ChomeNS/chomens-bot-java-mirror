@@ -45,17 +45,13 @@ public class RandomTeleportCommand implements Command {
         final int positionZ = NumberUtilities.between(1_000, 1_000_000);
         final String stringPosition = positionX + " 100 " + positionZ; // very 100 y
 
-        context.sendOutput(
-                Component.empty()
-                        .append(Component.text("Teleporting "))
-                        .append(Component.text(sender.profile().getName()).color(NamedTextColor.AQUA))
-                        .append(Component.text(" to ").color(NamedTextColor.WHITE))
-                        .append(Component.text(stringPosition).color(NamedTextColor.GREEN))
-                        .append(Component.text("...").color(NamedTextColor.WHITE))
-        );
-
         bot.core().run("essentials:teleport " + sender.profile().getIdAsString() + " " + stringPosition);
 
-        return Component.text("success");
+        return Component.empty()
+                .append(Component.text("Teleporting "))
+                .append(Component.text(sender.profile().getName()).color(NamedTextColor.AQUA))
+                .append(Component.text(" to ").color(NamedTextColor.WHITE))
+                .append(Component.text(stringPosition).color(NamedTextColor.GREEN))
+                .append(Component.text("...").color(NamedTextColor.WHITE));
     }
 }

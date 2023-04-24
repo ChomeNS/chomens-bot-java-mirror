@@ -93,8 +93,8 @@ public class FilterPlugin extends PlayersPlugin.PlayerListener {
         filteredPlayers.add(new FilteredPlayer(playerName, regex, ignoreCase));
     }
 
-    public void remove (int index) {
-        filteredPlayers.remove(index);
+    public FilteredPlayer remove (int index) {
+        return filteredPlayers.remove(index);
     }
 
     public void clear () {

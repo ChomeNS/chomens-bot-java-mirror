@@ -74,18 +74,14 @@ public class TranslateCommand implements Command {
 
             final String output = translation.get("trans").getAsString();
 
-            context.sendOutput(
-                    Component
-                            .translatable(
-                                    "Result: %s",
-                                    Component.text(output).color(NamedTextColor.GREEN)
-                            )
-                            .color(NamedTextColor.GOLD)
-            );
+            return Component
+                    .translatable(
+                            "Result: %s",
+                            Component.text(output).color(NamedTextColor.GREEN)
+                    )
+                    .color(NamedTextColor.GOLD);
         } catch (Exception e) {
             return Component.text(e.toString()).color(NamedTextColor.RED);
         }
-
-        return Component.text("success");
     }
 }

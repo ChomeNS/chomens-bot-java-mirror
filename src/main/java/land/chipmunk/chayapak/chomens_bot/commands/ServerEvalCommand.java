@@ -44,11 +44,9 @@ public class ServerEvalCommand implements Command {
 
             final LuaValue output = context.bot().eval().run(String.join(" ", args));
 
-            context.sendOutput(Component.text(output.toString()).color(NamedTextColor.GREEN));
+            return Component.text(output.toString()).color(NamedTextColor.GREEN);
         } catch (Exception e) {
             return Component.text(e.toString()).color(NamedTextColor.RED);
         }
-
-        return Component.text("success");
     }
 }

@@ -40,25 +40,19 @@ public class TPSBarCommand implements Command {
         switch (args[0]) {
             case "on" -> {
                 bot.tps().on();
-                context.sendOutput(
-                        Component.empty()
-                                .append(Component.text("TPSBar is now "))
-                                .append(Component.text("enabled").color(NamedTextColor.GREEN))
-                );
+                return Component.empty()
+                        .append(Component.text("TPSBar is now "))
+                        .append(Component.text("enabled").color(NamedTextColor.GREEN));
             }
             case "off" -> {
                 bot.tps().off();
-                context.sendOutput(
-                        Component.empty()
-                                .append(Component.text("TPSBar is now "))
-                                .append(Component.text("disabled").color(NamedTextColor.RED))
-                );
+                return Component.empty()
+                        .append(Component.text("TPSBar is now "))
+                        .append(Component.text("disabled").color(NamedTextColor.RED));
             }
             default -> {
                 return Component.text("Invalid argument").color(NamedTextColor.RED);
             }
         }
-
-        return Component.text("success");
     }
 }

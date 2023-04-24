@@ -56,6 +56,6 @@ public class GenerateMazeCommand implements Command {
             return Component.text("Invalid position/size").color(NamedTextColor.RED);
         }
 
-        return Component.text("success");
+        return null;
     }
 }

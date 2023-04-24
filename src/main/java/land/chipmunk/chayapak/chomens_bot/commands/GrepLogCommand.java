@@ -54,8 +54,7 @@ public class GrepLogCommand implements Command {
             bot.grepLog().thread().interrupt();
             bot.grepLog().thread(null);
 
-            context.sendOutput(Component.text("Log query stopped"));
-            return Component.text("success");
+            return Component.text("Log query stopped");
         }
 
         if (bot.grepLog().thread() != null) return Component.text("Another query is already running").color(NamedTextColor.RED);
@@ -79,6 +78,6 @@ public class GrepLogCommand implements Command {
 
         bot.grepLog().query(String.join(" ", args), regex, ignoreCase);
 
-        return Component.text("success");
+        return null;
     }
 }

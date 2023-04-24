@@ -58,12 +58,10 @@ public class CloopCommand implements Command {
 
                 bot.cloop().add(interval, command);
 
-                context.sendOutput(
-                        Component.translatable(
-                                "Added %s with interval %s to the cloops",
-                                Component.text(command).color(NamedTextColor.AQUA),
-                                Component.text(interval).color(NamedTextColor.GOLD)
-                        )
+                return Component.translatable(
+                        "Added %s with interval %s to the cloops",
+                        Component.text(command).color(NamedTextColor.AQUA),
+                        Component.text(interval).color(NamedTextColor.GOLD)
                 );
             }
             case "remove" -> {
@@ -71,11 +69,9 @@ public class CloopCommand implements Command {
                     final int index = Integer.parseInt(args[1]);
                     bot.cloop().remove(index);
 
-                    context.sendOutput(
-                            Component.translatable(
-                                    "Removed cloop %s",
-                                    Component.text(index).color(NamedTextColor.GOLD)
-                            )
+                    return Component.translatable(
+                            "Removed cloop %s",
+                            Component.text(index).color(NamedTextColor.GOLD)
                     );
                 } catch (IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
                     return Component.text("Invalid index").color(NamedTextColor.RED);
@@ -83,9 +79,7 @@ public class CloopCommand implements Command {
             }
             case "clear" -> {
                 bot.cloop().clear();
-                context.sendOutput(
-                        Component.text("Cleared all cloops")
-                );
+                return Component.text("Cleared all cloops");
             }
             case "list" -> {
                 final List<Component> cloopsComponent = new ArrayList<>();
@@ -103,7 +97,7 @@ public class CloopCommand implements Command {
                     index++;
                 }
 
-                final Component component = Component.empty()
+                return Component.empty()
                         .append(Component.text("Cloops ").color(NamedTextColor.GREEN))
                         .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
                         .append(Component.text(bot.cloop().loops().size()).color(NamedTextColor.GRAY))
@@ -112,14 +106,10 @@ public class CloopCommand implements Command {
                         .append(
                                 Component.join(JoinConfiguration.newlines(), cloopsComponent)
                         );
-
-                context.sendOutput(component);
             }
             default -> {
                 return Component.text("Invalid argument").color(NamedTextColor.RED);
             }
         }
-
-        return Component.text("success");
     }
 }

@@ -73,7 +73,7 @@ public class WeatherCommand implements Command {
 
             final String time = formatter.print(dateTime);
 
-            final Component component = Component.translatable(
+            return Component.translatable(
                     "Weather forecast for %s, %s:\n%s, feels like %s\nTime: %s",
                     Component.text(jsonObject.get("location").getAsJsonObject().get("name").getAsString()).color(NamedTextColor.AQUA),
                     Component.text(jsonObject.get("location").getAsJsonObject().get("country").getAsString()).color(NamedTextColor.AQUA),
@@ -82,12 +82,8 @@ public class WeatherCommand implements Command {
                     Component.text(time).color(NamedTextColor.AQUA)
 
             );
-
-            context.sendOutput(component);
         } catch (Exception e) {
             return Component.text("Location \"" + location + "\" not found").color(NamedTextColor.RED);
         }
-
-        return Component.text("success");
     }
 }

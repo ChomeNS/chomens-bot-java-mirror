@@ -79,6 +79,6 @@ public class UrbanCommand implements Command {
             return Component.text(e.toString()).color(NamedTextColor.RED);
         }
 
-        return Component.text("success");
+        return null;
     }
 }

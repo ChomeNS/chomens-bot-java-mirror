@@ -75,7 +75,7 @@ public class ListCommand implements Command {
             );
         }
 
-        final Component component = Component.empty()
+        return Component.empty()
                 .append(Component.text("Players ").color(NamedTextColor.GREEN))
                 .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
                 .append(Component.text(list.size()).color(NamedTextColor.GRAY))
@@ -84,9 +84,5 @@ public class ListCommand implements Command {
                 .append(
                         Component.join(JoinConfiguration.newlines(), playersComponent)
                 );
-
-        context.sendOutput(component);
-
-        return Component.text("success");
     }
 }

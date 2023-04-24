@@ -37,13 +37,9 @@ public class CreatorCommand implements Command {
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();
 
-        context.sendOutput(
-                Component.empty()
-                        .append(Component.text("ChomeNS Bot ").color(NamedTextColor.YELLOW))
-                        .append(Component.text("was created by ").color(NamedTextColor.WHITE))
-                        .append(Component.text(bot.config().ownerName()).color(NamedTextColor.GREEN))
-        );
-
-        return Component.text("success");
+        return Component.empty()
+                .append(Component.text("ChomeNS Bot ").color(NamedTextColor.YELLOW))
+                .append(Component.text("was created by ").color(NamedTextColor.WHITE))
+                .append(Component.text(bot.config().ownerName()).color(NamedTextColor.GREEN));
     }
 }

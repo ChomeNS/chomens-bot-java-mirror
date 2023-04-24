@@ -66,7 +66,9 @@ public class MusicCommand implements Command {
             case "play", "playurl", "playnbs", "playnbsurl" -> {
                 return play(context, args);
             }
-            case "stop" -> stop(context);
+            case "stop" -> {
+                return stop(context);
+            }
             case "loop" -> {
                 return loop(context, args);
             }
@@ -79,7 +81,9 @@ public class MusicCommand implements Command {
             case "nowplaying" -> {
                 return nowplaying(context);
             }
-            case "queue" -> queue(context);
+            case "queue" -> {
+                return queue(context);
+            }
             case "goto" -> {
                 return goTo(context, args);
             }
@@ -99,8 +103,6 @@ public class MusicCommand implements Command {
                 return Component.text("Invalid argument").color(NamedTextColor.RED);
             }
         }
-
-        return Component.text("success");
     }
 
     public Component play (CommandContext context, String[] args) {
@@ -157,15 +159,15 @@ public class MusicCommand implements Command {
             return Component.text(e.toString()).color(NamedTextColor.RED);
         }
 
-        return Component.text("success");
+        return null;
     }
 
-    public void stop (CommandContext context) {
+    public Component stop (CommandContext context) {
         final Bot bot = context.bot();
         bot.music().stopPlaying();
         bot.music().songQueue().clear();
 
-        context.sendOutput(Component.text("Cleared the song queue"));
+        return Component.text("Cleared the song queue");
     }
 
     public Component loop (CommandContext context, String[] args) {
@@ -202,7 +204,7 @@ public class MusicCommand implements Command {
 
         bot.music().loop(loop);
 
-        return Component.text("success");
+        return null;
     }
 
     public Component list (CommandContext context, String[] args) {
@@ -266,49 +268,40 @@ public class MusicCommand implements Command {
             list.clear();
         }
 
-        return Component.text("success");
+        return null;
     }
 
     public Component skip (CommandContext context) {
         final MusicPlayerPlugin music = context.bot().music();
         if (music.currentSong() == null) return Component.text("No song is currently playing").color(NamedTextColor.RED);
 
-        context.sendOutput(
-                Component.empty()
-                        .append(Component.text("Skipping "))
-                        .append(music.currentSong().name.color(NamedTextColor.GOLD))
-        );
-
         music.skip();
 
-        return Component.text("success");
+        return Component.empty()
+                .append(Component.text("Skipping "))
+                .append(music.currentSong().name.color(NamedTextColor.GOLD));
     }
 
     public Component nowplaying (CommandContext context) {
         final Bot bot = context.bot();
         final Song song = bot.music().currentSong();
         if (song == null) return Component.text("No song is currently playing").color(NamedTextColor.RED);
-        context.sendOutput(
-                Component.empty()
-                        .append(Component.text("Now playing "))
-                        .append(song.name.color(NamedTextColor.GOLD))
-        );
 
-        return Component.text("success");
+        return Component.empty()
+                .append(Component.text("Now playing "))
+                .append(song.name.color(NamedTextColor.GOLD));
     }
 
-    public void queue (CommandContext context) {
+    public Component queue (CommandContext context) {
         final Bot bot = context.bot();
         final LinkedList<Song> queue = bot.music().songQueue();
 
         final List<Component> queueWithNames = new ArrayList<>();
         for (Song song : queue) queueWithNames.add(song.name);
 
-        context.sendOutput(
-                Component.empty()
-                        .append(Component.text("Queue: ").color(NamedTextColor.GREEN))
-                        .append(Component.join(JoinConfiguration.separator(Component.text(", ")), queueWithNames).color(NamedTextColor.AQUA))
-        );
+        return Component.empty()
+                .append(Component.text("Queue: ").color(NamedTextColor.GREEN))
+                .append(Component.join(JoinConfiguration.separator(Component.text(", ")), queueWithNames).color(NamedTextColor.AQUA));
     }
 
     // lazy fix for java using "goto" as keyword real
@@ -328,7 +321,7 @@ public class MusicCommand implements Command {
 
         currentSong.setTime(milliseconds);
 
-        return Component.text("success");
+        return null;
     }
 
     public Component pitch (CommandContext context, String[] args) {
@@ -343,13 +336,9 @@ public class MusicCommand implements Command {
 
         bot.music().pitch(pitch);
 
-        context.sendOutput(
-                Component.empty()
-                        .append(Component.text("Set the pitch to "))
-                        .append(Component.text(pitch).color(NamedTextColor.GOLD))
-        );
-
-        return Component.text("success");
+        return Component.empty()
+                .append(Component.text("Set the pitch to "))
+                .append(Component.text(pitch).color(NamedTextColor.GOLD));
     }
 
     public Component speed (CommandContext context, String[] args) {
@@ -364,13 +353,9 @@ public class MusicCommand implements Command {
 
         bot.music().speed(speed);
 
-        context.sendOutput(
-                Component.empty()
-                        .append(Component.text("Set the speed to "))
-                        .append(Component.text(speed).color(NamedTextColor.GOLD))
-        );
-
-        return Component.text("success");
+        return Component.empty()
+                .append(Component.text("Set the speed to "))
+                .append(Component.text(speed).color(NamedTextColor.GOLD));
     }
 
     public Component pause (CommandContext context) {
@@ -381,13 +366,11 @@ public class MusicCommand implements Command {
 
         if (currentSong.paused) {
             currentSong.play();
-            context.sendOutput(Component.text("Resumed the current song"));
+            return Component.text("Resumed the current song");
         } else {
             currentSong.pause();
-            context.sendOutput(Component.text("Paused the current song"));
+            return Component.text("Paused the current song");
         }
-
-        return Component.text("success");
     }
 
     public Component info (CommandContext context) {
@@ -402,7 +385,7 @@ public class MusicCommand implements Command {
         final String songOriginalAuthor = currentSong.songOriginalAuthor == null || currentSong.songOriginalAuthor.equals("") ? "N/A" : currentSong.songOriginalAuthor;
         final String songDescription = currentSong.songDescription == null || currentSong.songDescription.equals("") ? "N/A" : currentSong.songDescription;
 
-        final Component component = Component.translatable(
+        return Component.translatable(
                 """
                         Title/Filename: %s
                         Author: %s
@@ -413,9 +396,5 @@ public class MusicCommand implements Command {
                 Component.text(songOriginalAuthor).color(NamedTextColor.AQUA),
                 Component.text(songDescription).color(NamedTextColor.AQUA)
         ).color(NamedTextColor.GOLD);
-
-        context.sendOutput(component);
-
-        return Component.text("success");
     }
 }

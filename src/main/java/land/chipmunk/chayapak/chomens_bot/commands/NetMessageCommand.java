@@ -65,6 +65,6 @@ public class NetMessageCommand implements Command {
             allBot.chat().tellraw(component);
         }
 
-        return Component.text("success");
+        return null;
     }
 }

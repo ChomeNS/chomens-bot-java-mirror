@@ -42,6 +42,6 @@ public class BruhifyCommand implements Command {
             bot.bruhify().bruhifyText(String.join(" ", args));
         }
 
-        return Component.text("success");
+        return null;
     }
 }

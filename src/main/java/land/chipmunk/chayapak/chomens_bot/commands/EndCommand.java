@@ -38,6 +38,6 @@ public class EndCommand implements Command {
 
         bot.session().disconnect("End command");
 
-        return Component.text("success");
+        return null;
     }
 }

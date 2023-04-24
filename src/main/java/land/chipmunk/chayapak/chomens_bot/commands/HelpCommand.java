@@ -43,20 +43,19 @@ public class HelpCommand implements Command {
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         this.bot = context.bot();
         if (args.length == 0) {
-            sendCommandList(context);
-            return Component.text("success");
+            return sendCommandList();
         } else {
             return sendUsages(context, args);
         }
     }
 
-    public void sendCommandList(CommandContext context) {
+    public Component sendCommandList () {
         final List<Component> list = new ArrayList<>();
         list.addAll(getCommandListByTrustLevel(0));
         list.addAll(getCommandListByTrustLevel(1));
         list.addAll(getCommandListByTrustLevel(2));
 
-        final Component component = Component.empty()
+        return Component.empty()
                         .append(Component.text("Commands ").color(NamedTextColor.GRAY))
                         .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
                         .append(Component.text("Length: ").color(NamedTextColor.GRAY))
@@ -68,8 +67,6 @@ public class HelpCommand implements Command {
                         .append(Component.text("Owner").color(NamedTextColor.DARK_RED))
                         .append(Component.text(") - ").color(NamedTextColor.DARK_GRAY))
                         .append(Component.join(JoinConfiguration.separator(Component.space()), list));
-
-        context.sendOutput(component);
     }
 
     public List<Component> getCommandListByTrustLevel(int trustLevel) {
@@ -138,9 +135,7 @@ public class HelpCommand implements Command {
                 );
             }
 
-            context.sendOutput(Component.join(JoinConfiguration.separator(Component.newline()), usages));
-
-            return Component.text("success");
+            return Component.join(JoinConfiguration.separator(Component.newline()), usages);
         }
 
         return Component.text("Unknown command").color(NamedTextColor.RED);

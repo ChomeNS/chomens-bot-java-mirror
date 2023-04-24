@@ -4,9 +4,47 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="fix test?">
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="actually improve the systemMessageReceived thing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ChatPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ChatPlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/command/DiscordCommandContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/command/DiscordCommandContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/BotUserCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/BotUserCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/BotVisibilityCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/BotVisibilityCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/BruhifyCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/BruhifyCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/ClearChatCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/ClearChatCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/ClearChatQueueCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/ClearChatQueueCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/CloopCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/CloopCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/CommandBlockCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/CommandBlockCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/CowsayCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/CowsayCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/CreatorCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/CreatorCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/DiscordCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/DiscordCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/EchoCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/EchoCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/EndCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/EndCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/FilterCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/FilterCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/GenerateMazeCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/GenerateMazeCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/GrepLogCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/GrepLogCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/HelpCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/HelpCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/KickCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/KickCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/ListCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/ListCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/MusicCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/MusicCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/NetMessageCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/NetMessageCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/RandomTeleportCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/RandomTeleportCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/RefillCoreCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/RefillCoreCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/ServerEvalCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/ServerEvalCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/ServerInfoCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/ServerInfoCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/SudoAllCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/SudoAllCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/TPSBarCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/TPSBarCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/TestCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/TestCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/TimeCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/TimeCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/TranslateCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/TranslateCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/UUIDCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/UUIDCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/UrbanCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/UrbanCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/ValidateCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/ValidateCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/WeatherCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/WeatherCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/WikipediaCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/WikipediaCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ChatCommandHandlerPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ChatCommandHandlerPlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ConsolePlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ConsolePlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/DiscordPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/DiscordPlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/FilterPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/FilterPlugin.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,20 +135,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00064" summary="hopefully fix the core problem?">
-      <created>1681607369880</created>
-      <option name="number" value="00064" />
-      <option name="presentableId" value="LOCAL-00064" />
-      <option name="project" value="LOCAL" />
-      <updated>1681607369882</updated>
-    </task>
-    <task id="LOCAL-00065" summary="maybe patch the sus">
-      <created>1681613674861</created>
-      <option name="number" value="00065" />
-      <option name="presentableId" value="LOCAL-00065" />
-      <option name="project" value="LOCAL" />
-      <updated>1681613674862</updated>
     </task>
     <task id="LOCAL-00066" summary="fix music list&#10;it took me ages to figure this out that i need to just &#10;CLONE THE LIST">
       <created>1681617940254</created>
@@ -441,7 +465,21 @@
       <option name="project" value="LOCAL" />
       <updated>1682321509974</updated>
     </task>
-    <option name="localTasksCounter" value="113" />
+    <task id="LOCAL-00113" summary="fix extras chat">
+      <created>1682322013136</created>
+      <option name="number" value="00113" />
+      <option name="presentableId" value="LOCAL-00113" />
+      <option name="project" value="LOCAL" />
+      <updated>1682322013139</updated>
+    </task>
+    <task id="LOCAL-00114" summary="actually improve the systemMessageReceived thing">
+      <created>1682322237090</created>
+      <option name="number" value="00114" />
+      <option name="presentableId" value="LOCAL-00114" />
+      <option name="project" value="LOCAL" />
+      <updated>1682322237090</updated>
+    </task>
+    <option name="localTasksCounter" value="115" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -456,8 +494,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="ig fix music filename mabe mabe" />
-    <MESSAGE value="probally fix bossbar plugin with actionbar mabe" />
     <MESSAGE value="hopefully fix the broken players plugin" />
     <MESSAGE value="f" />
     <MESSAGE value="fard" />
@@ -481,7 +517,9 @@
     <MESSAGE value="fix chat (/say and /me) i guess" />
     <MESSAGE value="actually fix the fix&#10;the first &quot;fix&quot; is just fix like just fix,..,&#10;then the second one is the last commit, &quot;fix chat (/say and /me) i guess&quot;" />
     <MESSAGE value="fix test?" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix test?" />
+    <MESSAGE value="fix extras chat" />
+    <MESSAGE value="actually improve the systemMessageReceived thing" />
+    <option name="LAST_COMMIT_MESSAGE" value="actually improve the systemMessageReceived thing" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

@@ -39,6 +39,6 @@ public class RefillCoreCommand implements Command {
         bot.core().reset();
         bot.core().refill();
 
-        return Component.text("success");
+        return null;
     }
 }

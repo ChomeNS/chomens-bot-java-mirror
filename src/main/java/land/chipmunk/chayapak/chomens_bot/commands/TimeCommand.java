@@ -53,14 +53,10 @@ public class TimeCommand implements Command {
         final DateTimeFormatter formatter = DateTimeFormat.forPattern("EEEE, MMMM d, YYYY, hh:mm:ss a");
         final String formattedTime = formatter.print(dateTime);
 
-        context.sendOutput(
-                Component.translatable(
-                        "The current date and time for the timezone %s is: %s",
-                        Component.text(timezone).color(NamedTextColor.AQUA),
-                        Component.text(formattedTime).color(NamedTextColor.GREEN)
-                )
+        return Component.translatable(
+                "The current date and time for the timezone %s is: %s",
+                Component.text(timezone).color(NamedTextColor.AQUA),
+                Component.text(formattedTime).color(NamedTextColor.GREEN)
         );
-
-        return Component.text("success");
     }
 }

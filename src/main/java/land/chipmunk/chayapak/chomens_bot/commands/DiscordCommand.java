@@ -36,17 +36,13 @@ public class DiscordCommand implements Command {
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final String link = "https://discord.gg/xdgCkUyaA4";
-        context.sendOutput(
-                Component.empty()
-                        .append(Component.text("The Discord invite is ").color(NamedTextColor.WHITE))
-                        .append(
-                                Component
-                                        .text(link)
-                                        .clickEvent(ClickEvent.openUrl(link))
-                                        .color(NamedTextColor.BLUE)
-                        )
-        );
-
-        return Component.text("success");
+        return Component.empty()
+                .append(Component.text("The Discord invite is ").color(NamedTextColor.WHITE))
+                .append(
+                        Component
+                                .text(link)
+                                .clickEvent(ClickEvent.openUrl(link))
+                                .color(NamedTextColor.BLUE)
+                );
     }
 }

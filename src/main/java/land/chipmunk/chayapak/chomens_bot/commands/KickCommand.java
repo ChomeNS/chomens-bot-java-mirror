@@ -46,14 +46,10 @@ public class KickCommand implements Command {
         final String name = entry.profile().getName();
         final UUID uuid = entry.profile().getId();
 
-        context.sendOutput(
-                Component.empty()
-                        .append(Component.text("Kicking player "))
-                        .append(Component.text(name).color(NamedTextColor.GOLD))
-        );
-
         bot.exploits().kick(uuid);
 
-        return Component.text("success");
+        return Component.empty()
+                .append(Component.text("Kicking player "))
+                .append(Component.text(name).color(NamedTextColor.GOLD));
     }
 }

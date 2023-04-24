@@ -42,38 +42,34 @@ public class BotUserCommand implements Command {
         final String username = bot.username();
         final String uuid = bot.players().getBotEntry().profile().getIdAsString();
 
-        context.sendOutput(
-                Component.translatable(
-                        "The bot's username is: %s and the UUID is: %s",
-                        Component
-                                .text(username)
-                                .hoverEvent(
-                                        HoverEvent.showText(
-                                                Component
-                                                        .text("Click here to copy the username to your clipboard")
-                                                        .color(NamedTextColor.GREEN)
-                                        )
+        return Component.translatable(
+                "The bot's username is: %s and the UUID is: %s",
+                Component
+                        .text(username)
+                        .hoverEvent(
+                                HoverEvent.showText(
+                                        Component
+                                                .text("Click here to copy the username to your clipboard")
+                                                .color(NamedTextColor.GREEN)
                                 )
-                                .clickEvent(
-                                        ClickEvent.copyToClipboard(username)
+                        )
+                        .clickEvent(
+                                ClickEvent.copyToClipboard(username)
+                        )
+                        .color(NamedTextColor.GOLD),
+                Component
+                        .text(uuid)
+                        .hoverEvent(
+                                HoverEvent.showText(
+                                        Component
+                                                .text("Click here to copy the UUID to your clipboard")
+                                                .color(NamedTextColor.GREEN)
                                 )
-                                .color(NamedTextColor.GOLD),
-                        Component
-                                .text(uuid)
-                                .hoverEvent(
-                                        HoverEvent.showText(
-                                                Component
-                                                        .text("Click here to copy the UUID to your clipboard")
-                                                        .color(NamedTextColor.GREEN)
-                                        )
-                                )
-                                .clickEvent(
-                                        ClickEvent.copyToClipboard(uuid)
-                                )
-                                .color(NamedTextColor.AQUA)
-                )
+                        )
+                        .clickEvent(
+                                ClickEvent.copyToClipboard(uuid)
+                        )
+                        .color(NamedTextColor.AQUA)
         );
-
-        return Component.text("success");
     }
 }
