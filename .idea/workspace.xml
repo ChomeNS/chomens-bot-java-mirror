@@ -4,13 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="actually revert greplog update because it breaks stuff">
-      <change afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/FilterCommand.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/data/FilteredPlayer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/FilterPlugin.java" afterDir="false" />
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="fix chat (/say and /me) i guess">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Bot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CommandHandlerPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CommandHandlerPlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/command/ConsoleCommandContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/command/ConsoleCommandContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/command/PlayerCommandContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/command/PlayerCommandContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/TestCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/TestCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ChatPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ChatPlugin.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,13 +100,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00060" summary="improve serverinfo">
-      <created>1681536905476</created>
-      <option name="number" value="00060" />
-      <option name="presentableId" value="LOCAL-00060" />
-      <option name="project" value="LOCAL" />
-      <updated>1681536905476</updated>
     </task>
     <task id="LOCAL-00061" summary="make self care use core if it can">
       <created>1681547507213</created>
@@ -445,7 +437,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682250189954</updated>
     </task>
-    <option name="localTasksCounter" value="109" />
+    <task id="LOCAL-00109" summary="add filter (ignore messy code plz)">
+      <created>1682317167720</created>
+      <option name="number" value="00109" />
+      <option name="presentableId" value="LOCAL-00109" />
+      <option name="project" value="LOCAL" />
+      <updated>1682317167721</updated>
+    </task>
+    <option name="localTasksCounter" value="110" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -460,8 +459,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add a working (or not?) stereo to music" />
-    <MESSAGE value="improve and fix cmd handler (first commit on arch)&#10;yup this is my first commit on arch linux,.,.,..,.,.,&#10;yes i use arch btw :sunglasses:" />
     <MESSAGE value="1.19.4 + add stuff (kinda broken ..,,.)" />
     <MESSAGE value="add/improve/fix stuff&#10;ig mabe mabe mabe&#10;useCore!1!1!" />
     <MESSAGE value="ig fix music filename mabe mabe" />
@@ -485,7 +482,9 @@
     <MESSAGE value="put the setter back" />
     <MESSAGE value="use serverName instead of host:port for console i guess" />
     <MESSAGE value="actually revert greplog update because it breaks stuff" />
-    <option name="LAST_COMMIT_MESSAGE" value="actually revert greplog update because it breaks stuff" />
+    <MESSAGE value="add filter (ignore messy code plz)" />
+    <MESSAGE value="fix chat (/say and /me) i guess" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix chat (/say and /me) i guess" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

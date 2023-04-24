@@ -26,6 +26,6 @@ public class PlayerCommandContext extends CommandContext {
 
     @Override
     public Component displayName () {
-        return Component.text(playerName);
+        return sender().displayName();
     }
 }

@@ -9,7 +9,7 @@ public class ConsoleCommandContext extends CommandContext {
     private final Bot bot;
 
     public ConsoleCommandContext (Bot bot, String prefix) {
-        super(bot, prefix, bot.players().getEntry(bot.username()) /* real */, null, null);
+        super(bot, prefix, bot.players().getBotEntry() /* real */, null, null);
         this.bot = bot;
     }
 
@@ -21,6 +21,6 @@ public class ConsoleCommandContext extends CommandContext {
 
     @Override
     public Component displayName () {
-        return Component.text(bot.username()).color(NamedTextColor.YELLOW);
+        return sender().displayName().color(NamedTextColor.YELLOW);
     }
 }

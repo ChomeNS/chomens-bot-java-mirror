@@ -96,43 +96,69 @@ public class ChatPlugin extends SessionAdapter {
 
         if (entry == null) return;
 
-        final PlayerMessage playerMessage = new PlayerMessage(entry, packet.getName(), Component.text(packet.getContent()));
+        final PlayerMessage playerMessage = new PlayerMessage(
+                entry,
+                packet.getName(),
+                Component.text(packet.getContent())
+        );
 
         for (ChatListener listener : listeners) {
             listener.playerMessageReceived(playerMessage);
 
-            final Component component = Component.translatable(
-                    "chat.type.text",
-                    entry.displayName(),
-                    Component.text(packet.getContent())
-            );
-            listener.systemMessageReceived(
-                    ComponentUtilities.stringify(component),
-                    component
-            );
+            if (packet.getChatType() == 4) { // type 4 is /say
+                final Component component = Component.translatable(
+                        "chat.type.announcement",
+                        playerMessage.displayName(),
+                        playerMessage.contents()
+                );
+
+                listener.systemMessageReceived(
+                        ComponentUtilities.stringify(component),
+                        component
+                );
+            } else {
+                final Component unsignedContent = packet.getUnsignedContent();
+
+                if (unsignedContent == null) return;
+
+                listener.systemMessageReceived(
+                        ComponentUtilities.stringify(unsignedContent),
+                        unsignedContent
+                );
+            }
         }
     }
 
     public void packetReceived (ClientboundDisguisedChatPacket packet) {
-        // totallynotskidded™ from chipmunkbot
-        PlayerMessage parsedFromMessage = null;
-        final Component component = packet.getMessage();
+        // totallynotskidded™ from chipmunkbot and modified a bit i guess
+        // PlayerMessage parsedFromMessage = null;
 
-        for (ChatParser parser : chatParsers) {
-            parsedFromMessage = parser.parse(component);
-            if (parsedFromMessage != null) break;
-        }
+        // i think im missing other types
+        if (packet.getChatType() == 1) { // type 1 is /me
+            final Component name = packet.getName();
+            final Component content = packet.getMessage();
 
-        if (parsedFromMessage == null) return;
+            for (ChatParser parser : chatParsers) {
+                final Component component = Component.translatable(
+                        "chat.type.emote",
+                        name,
+                        content
+                );
 
-        final PlayerMessage playerMessage = new PlayerMessage(parsedFromMessage.sender(), packet.getName(), parsedFromMessage.contents());
+                final PlayerMessage parsed = parser.parse(component);
 
-        for (ChatListener listener : listeners) {
-            listener.playerMessageReceived(playerMessage);
-            listener.systemMessageReceived(
-                    ComponentUtilities.stringify(component),
-                    component
-            );
+                if (parsed == null) continue;
+
+                final PlayerMessage playerMessage = new PlayerMessage(parsed.sender(), packet.getName(), parsed.contents());
+
+                for (ChatListener listener : listeners) {
+                    listener.playerMessageReceived(playerMessage);
+                    listener.systemMessageReceived(
+                            ComponentUtilities.stringify(component),
+                            component
+                    );
+                }
+            }
         }
     }
 
