@@ -4,6 +4,7 @@ import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundDi
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundPlayerChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundSystemChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundChatCommandPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundChatPacket;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
@@ -192,16 +193,14 @@ public class ChatPlugin extends SessionAdapter {
                             new BitSet()
                     ));
                 } else {
-                    // Temporary fix for the bot getting kicked instead of chatting
-                    bot.core().run("essentials:sudo " + bot.username() + " c:" + splitMessage);
-//                    bot.session().send(new ServerboundChatPacket(
-//                            splitMessage,
-//                            Instant.now().toEpochMilli(),
-//                            0L,
-//                            new byte[0],
-//                            0,
-//                            new BitSet()
-//                    ));
+                    bot.session().send(new ServerboundChatPacket(
+                            splitMessage,
+                            Instant.now().toEpochMilli(),
+                            0L,
+                            null,
+                            0,
+                            new BitSet()
+                    ));
                 }
             }
 
