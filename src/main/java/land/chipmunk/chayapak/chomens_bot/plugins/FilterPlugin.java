@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.data.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.data.FilteredPlayer;
+import land.chipmunk.chayapak.chomens_bot.util.UUIDUtilities;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -70,11 +71,9 @@ public class FilterPlugin extends PlayersPlugin.PlayerListener {
 
         if (player == null) return;
 
-        System.out.println("joined event kicking " + target.profile().getName());
-
-        /* bot.core().run("essentials:mute " + target.profile().getIdAsString() + " 10y");
+        bot.core().run("essentials:mute " + target.profile().getIdAsString() + " 10y");
         bot.core().run("minecraft:execute run deop " + UUIDUtilities.selector(target.profile().getId()));
-        bot.exploits().kick(target.profile().getId()); */
+        bot.exploits().kick(target.profile().getId());
     }
 
     public void tick () {
@@ -83,9 +82,8 @@ public class FilterPlugin extends PlayersPlugin.PlayerListener {
 
             if (player == null) continue;
 
-            System.out.println("kicking " + target.profile().getName());
 
-            // bot.exploits().kick(target.profile().getId());
+            bot.exploits().kick(target.profile().getId());
         }
     }
 

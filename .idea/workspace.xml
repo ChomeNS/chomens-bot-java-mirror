@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="thanks blackilykat for solving the thing.,.,.,&#10;yes just change the thing to null and its all done">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Bot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CommandHandlerPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CommandHandlerPlugin.java" afterDir="false" />
-    </list>
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="fix chomens bot crsah exploit 2023 working" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -98,13 +94,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00068" summary="improve trusted plugin">
-      <created>1681626702317</created>
-      <option name="number" value="00068" />
-      <option name="presentableId" value="LOCAL-00068" />
-      <option name="project" value="LOCAL" />
-      <updated>1681626702317</updated>
     </task>
     <task id="LOCAL-00069" summary="add among us to the position plugin (useful af)&#10;yes it is SOOOOOO good">
       <created>1681636934907</created>
@@ -442,7 +431,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682334617795</updated>
     </task>
-    <option name="localTasksCounter" value="117" />
+    <task id="LOCAL-00117" summary="fix chomens bot crsah exploit 2023 working">
+      <created>1682339222332</created>
+      <option name="number" value="00117" />
+      <option name="presentableId" value="LOCAL-00117" />
+      <option name="project" value="LOCAL" />
+      <updated>1682339222332</updated>
+    </task>
+    <option name="localTasksCounter" value="118" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -457,7 +453,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fard" />
     <MESSAGE value="fard 2" />
     <MESSAGE value="readme i guess" />
     <MESSAGE value="change a bit mabe" />
@@ -482,7 +477,8 @@
     <MESSAGE value="actually improve the systemMessageReceived thing" />
     <MESSAGE value="improve returning output of commands" />
     <MESSAGE value="thanks blackilykat for solving the thing.,.,.,&#10;yes just change the thing to null and its all done" />
-    <option name="LAST_COMMIT_MESSAGE" value="thanks blackilykat for solving the thing.,.,.,&#10;yes just change the thing to null and its all done" />
+    <MESSAGE value="fix chomens bot crsah exploit 2023 working" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix chomens bot crsah exploit 2023 working" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
