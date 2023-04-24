@@ -62,6 +62,7 @@ public class Bot {
     @Getter private CloopPlugin cloop;
     @Getter private MazePlugin maze;
     @Getter private ExploitsPlugin exploits;
+    @Getter private FilterPlugin filter;
 
     public Bot (Configuration.BotOption botOption, List<Bot> allBots, Configuration config) {
         this.host = botOption.host;
@@ -102,6 +103,7 @@ public class Bot {
         this.cloop = new CloopPlugin(this);
         this.maze = new MazePlugin(this);
         this.exploits = new ExploitsPlugin(this);
+        this.filter = new FilterPlugin(this);
 
         reconnect();
     }

@@ -4,8 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="put the setter back">
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="actually revert greplog update because it breaks stuff">
+      <change afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/FilterCommand.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/data/FilteredPlayer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/FilterPlugin.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Bot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CommandHandlerPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CommandHandlerPlugin.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,26 +41,26 @@
     </option>
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectId" id="2NljChrU0rNqQmqh8CSQG0gdKNt" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "jdk.selected.JAVA_MODULE": "17",
-    "last_opened_file_path": "/home/chayapak1/IdeaProjects/CrackUtils",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "discord-application"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/chayapak1/IdeaProjects/CrackUtils&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;discord-application&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/.idea" />
@@ -96,20 +101,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00058" summary="bossbar manager actionbar and enabled">
-      <created>1681535433129</created>
-      <option name="number" value="00058" />
-      <option name="presentableId" value="LOCAL-00058" />
-      <option name="project" value="LOCAL" />
-      <updated>1681535433130</updated>
-    </task>
-    <task id="LOCAL-00059" summary="forgor">
-      <created>1681535781354</created>
-      <option name="number" value="00059" />
-      <option name="presentableId" value="LOCAL-00059" />
-      <option name="project" value="LOCAL" />
-      <updated>1681535781354</updated>
     </task>
     <task id="LOCAL-00060" summary="improve serverinfo">
       <created>1681536905476</created>
@@ -440,7 +431,21 @@
       <option name="project" value="LOCAL" />
       <updated>1682209891989</updated>
     </task>
-    <option name="localTasksCounter" value="107" />
+    <task id="LOCAL-00107" summary="use serverName instead of host:port for console i guess">
+      <created>1682223323007</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
+      <option name="project" value="LOCAL" />
+      <updated>1682223323007</updated>
+    </task>
+    <task id="LOCAL-00108" summary="actually revert greplog update because it breaks stuff">
+      <created>1682250189952</created>
+      <option name="number" value="00108" />
+      <option name="presentableId" value="LOCAL-00108" />
+      <option name="project" value="LOCAL" />
+      <updated>1682250189954</updated>
+    </task>
+    <option name="localTasksCounter" value="109" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -455,8 +460,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="mabe" />
-    <MESSAGE value="mess with the pitch correction again to fix the sus problem" />
     <MESSAGE value="add a working (or not?) stereo to music" />
     <MESSAGE value="improve and fix cmd handler (first commit on arch)&#10;yup this is my first commit on arch linux,.,.,..,.,.,&#10;yes i use arch btw :sunglasses:" />
     <MESSAGE value="1.19.4 + add stuff (kinda broken ..,,.)" />
@@ -480,7 +483,9 @@
     <MESSAGE value="probably lazy fix the sus" />
     <MESSAGE value="improve bot options? mabe mabe" />
     <MESSAGE value="put the setter back" />
-    <option name="LAST_COMMIT_MESSAGE" value="put the setter back" />
+    <MESSAGE value="use serverName instead of host:port for console i guess" />
+    <MESSAGE value="actually revert greplog update because it breaks stuff" />
+    <option name="LAST_COMMIT_MESSAGE" value="actually revert greplog update because it breaks stuff" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

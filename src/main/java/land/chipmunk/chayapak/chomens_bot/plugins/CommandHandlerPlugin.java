@@ -59,6 +59,7 @@ public class CommandHandlerPlugin {
         registerCommand(new TranslateCommand());
         registerCommand(new KickCommand());
         registerCommand(new ClearChatQueueCommand());
+        registerCommand(new FilterCommand());
     }
 
     public void registerCommand (Command command) {
