@@ -82,7 +82,7 @@ public class LoggerPlugin extends ChatPlugin.ChatListener {
     }
 
     @Override
-    public void systemMessageReceived(String message, Component component) {
+    public void systemMessageReceived(Component component) {
         final String ansiMessage = ComponentUtilities.stringifyAnsi(component);
         log(ansiMessage);
     }

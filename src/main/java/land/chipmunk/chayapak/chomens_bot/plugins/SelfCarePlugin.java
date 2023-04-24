@@ -19,6 +19,7 @@ import com.github.steveice10.packetlib.packet.PacketProtocol;
 import com.nukkitx.math.vector.Vector3i;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Configuration;
+import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -52,7 +53,9 @@ public class SelfCarePlugin extends SessionAdapter {
 
         bot.chat().addListener(new ChatPlugin.ChatListener() {
             @Override
-            public void systemMessageReceived(String message, Component component) {
+            public void systemMessageReceived(Component component) {
+                final String message = ComponentUtilities.stringify(component);
+
                 if (message.equals("Successfully enabled CommandSpy")) cspy = true;
                 else if (message.equals("Successfully disabled CommandSpy")) cspy = false;
 

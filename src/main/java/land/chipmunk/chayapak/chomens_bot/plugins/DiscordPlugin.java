@@ -58,7 +58,7 @@ public class DiscordPlugin {
 
                       bot.chat().addListener(new ChatPlugin.ChatListener() {
                           @Override
-                          public void systemMessageReceived (String ignoredMessage, Component component) {
+                          public void systemMessageReceived (Component component) {
                               final String content = ComponentUtilities.stringifyAnsi(component);
                               sendMessage(EscapeCodeBlock.escape(content.replace("\u001b[9", "\u001b[3")), channelId);
                           }

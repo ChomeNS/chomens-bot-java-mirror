@@ -81,9 +81,8 @@ public class ChatPlugin extends SessionAdapter {
         PlayerMessage commandSpyMessage;
         commandSpyMessage = commandSpyParser.parse(component);
 
-        final String message = ComponentUtilities.stringify(component);
         for (ChatListener listener : listeners) {
-            listener.systemMessageReceived(message, component);
+            listener.systemMessageReceived(component);
             if (playerMessage != null) listener.playerMessageReceived(playerMessage);
             if (commandSpyMessage != null) listener.commandSpyMessageReceived(commandSpyMessage);
         }
@@ -112,19 +111,13 @@ public class ChatPlugin extends SessionAdapter {
                         playerMessage.contents()
                 );
 
-                listener.systemMessageReceived(
-                        ComponentUtilities.stringify(component),
-                        component
-                );
+                listener.systemMessageReceived(component);
             } else {
                 final Component unsignedContent = packet.getUnsignedContent();
 
                 if (unsignedContent == null) return;
 
-                listener.systemMessageReceived(
-                        ComponentUtilities.stringify(unsignedContent),
-                        unsignedContent
-                );
+                listener.systemMessageReceived(unsignedContent);
             }
         }
     }
@@ -154,10 +147,7 @@ public class ChatPlugin extends SessionAdapter {
 
                 for (ChatListener listener : listeners) {
                     listener.playerMessageReceived(playerMessage);
-                    listener.systemMessageReceived(
-                            ComponentUtilities.stringify(component),
-                            component
-                    );
+                    listener.systemMessageReceived(component);
                 }
             }
         } else {
@@ -176,10 +166,7 @@ public class ChatPlugin extends SessionAdapter {
 
             for (ChatListener listener : listeners) {
                 listener.playerMessageReceived(playerMessage);
-                listener.systemMessageReceived(
-                        ComponentUtilities.stringify(component),
-                        component
-                );
+                listener.systemMessageReceived(component);
             }
         }
     }
@@ -248,6 +235,6 @@ public class ChatPlugin extends SessionAdapter {
     public static class ChatListener {
         public void playerMessageReceived (PlayerMessage message) {}
         public void commandSpyMessageReceived (PlayerMessage message) {}
-        public void systemMessageReceived (String message, Component component) {}
+        public void systemMessageReceived (Component component) {}
     }
 }
