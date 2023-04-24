@@ -130,17 +130,18 @@ public class ChatPlugin extends SessionAdapter {
     }
 
     public void packetReceived (ClientboundDisguisedChatPacket packet) {
-        // totallynotskidded™ from chipmunkbot and modified a bit i guess
-        // PlayerMessage parsedFromMessage = null;
+        // totallynotskidded™ from chipmunkbot and modified i guess
+
+        final int type = packet.getChatType();
 
         // i think im missing other types
-        if (packet.getChatType() == 1) { // type 1 is /me
+        if (type == 1 || type == 4) { // type 1 is /me, type 4 is /say
             final Component name = packet.getName();
             final Component content = packet.getMessage();
 
             for (ChatParser parser : chatParsers) {
                 final Component component = Component.translatable(
-                        "chat.type.emote",
+                        type == 1 ? "chat.type.emote" : "chat.type.announcement",
                         name,
                         content
                 );
