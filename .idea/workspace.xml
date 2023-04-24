@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="fix chat (/say and /me) i guess">
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="fix test?">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ChatPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ChatPlugin.java" afterDir="false" />
     </list>
@@ -97,20 +97,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00062" summary="remove the time from cb">
-      <created>1681547771112</created>
-      <option name="number" value="00062" />
-      <option name="presentableId" value="LOCAL-00062" />
-      <option name="project" value="LOCAL" />
-      <updated>1681547771112</updated>
-    </task>
-    <task id="LOCAL-00063" summary="ig change to `ChomeNS Bot` in .name yup">
-      <created>1681558738607</created>
-      <option name="number" value="00063" />
-      <option name="presentableId" value="LOCAL-00063" />
-      <option name="project" value="LOCAL" />
-      <updated>1681558738607</updated>
     </task>
     <task id="LOCAL-00064" summary="hopefully fix the core problem?">
       <created>1681607369880</created>
@@ -441,7 +427,21 @@
       <option name="project" value="LOCAL" />
       <updated>1682320575423</updated>
     </task>
-    <option name="localTasksCounter" value="111" />
+    <task id="LOCAL-00111" summary="actually fix the fix&#10;the first &quot;fix&quot; is just fix like just fix,..,&#10;then the second one is the last commit, &quot;fix chat (/say and /me) i guess&quot;">
+      <created>1682321283783</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1682321283783</updated>
+    </task>
+    <task id="LOCAL-00112" summary="fix test?">
+      <created>1682321509974</created>
+      <option name="number" value="00112" />
+      <option name="presentableId" value="LOCAL-00112" />
+      <option name="project" value="LOCAL" />
+      <updated>1682321509974</updated>
+    </task>
+    <option name="localTasksCounter" value="113" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -456,8 +456,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="1.19.4 + add stuff (kinda broken ..,,.)" />
-    <MESSAGE value="add/improve/fix stuff&#10;ig mabe mabe mabe&#10;useCore!1!1!" />
     <MESSAGE value="ig fix music filename mabe mabe" />
     <MESSAGE value="probally fix bossbar plugin with actionbar mabe" />
     <MESSAGE value="hopefully fix the broken players plugin" />
@@ -481,7 +479,9 @@
     <MESSAGE value="actually revert greplog update because it breaks stuff" />
     <MESSAGE value="add filter (ignore messy code plz)" />
     <MESSAGE value="fix chat (/say and /me) i guess" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix chat (/say and /me) i guess" />
+    <MESSAGE value="actually fix the fix&#10;the first &quot;fix&quot; is just fix like just fix,..,&#10;then the second one is the last commit, &quot;fix chat (/say and /me) i guess&quot;" />
+    <MESSAGE value="fix test?" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix test?" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

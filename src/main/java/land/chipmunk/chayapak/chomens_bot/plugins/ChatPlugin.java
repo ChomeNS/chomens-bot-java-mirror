@@ -160,6 +160,27 @@ public class ChatPlugin extends SessionAdapter {
                     );
                 }
             }
+        } else {
+            final Component component = packet.getMessage();
+
+            PlayerMessage parsedFromMessage = null;
+
+            for (ChatParser parser : chatParsers) {
+                parsedFromMessage = parser.parse(component);
+                if (parsedFromMessage != null) break;
+            }
+
+            if (parsedFromMessage == null) return;
+
+            final PlayerMessage playerMessage = new PlayerMessage(parsedFromMessage.sender(), packet.getName(), parsedFromMessage.contents());
+
+            for (ChatListener listener : listeners) {
+                listener.playerMessageReceived(playerMessage);
+                listener.systemMessageReceived(
+                        ComponentUtilities.stringify(component),
+                        component
+                );
+            }
         }
     }
 
