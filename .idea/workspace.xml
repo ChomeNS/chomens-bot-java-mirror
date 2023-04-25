@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="add connecting message">
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="add reconnect delay to each bot option (optional)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Bot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Configuration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Configuration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/default-config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/default-config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/NetMessageCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/NetMessageCommand.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,13 +97,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00073" summary="probably fix greplog but more mess,....">
-      <created>1681723369155</created>
-      <option name="number" value="00073" />
-      <option name="presentableId" value="LOCAL-00073" />
-      <option name="project" value="LOCAL" />
-      <updated>1681723369155</updated>
     </task>
     <task id="LOCAL-00074" summary="this is why you should test the code before commiting">
       <created>1681723861848</created>
@@ -443,7 +434,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682403103168</updated>
     </task>
-    <option name="localTasksCounter" value="122" />
+    <task id="LOCAL-00122" summary="add reconnect delay to each bot option (optional)">
+      <created>1682404816045</created>
+      <option name="number" value="00122" />
+      <option name="presentableId" value="LOCAL-00122" />
+      <option name="project" value="LOCAL" />
+      <updated>1682404816045</updated>
+    </task>
+    <option name="localTasksCounter" value="123" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -458,7 +456,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="make better console logging like the old js chomens bot" />
     <MESSAGE value="fart !!!!" />
     <MESSAGE value="sex" />
     <MESSAGE value="probably improve logquery?" />
@@ -483,7 +480,8 @@
     <MESSAGE value="gex" />
     <MESSAGE value="make trusted broadcast log in console" />
     <MESSAGE value="add connecting message" />
-    <option name="LAST_COMMIT_MESSAGE" value="add connecting message" />
+    <MESSAGE value="add reconnect delay to each bot option (optional)" />
+    <option name="LAST_COMMIT_MESSAGE" value="add reconnect delay to each bot option (optional)" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

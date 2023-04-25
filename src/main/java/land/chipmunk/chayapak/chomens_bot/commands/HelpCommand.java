@@ -64,7 +64,7 @@ public class HelpCommand implements Command {
                         .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
                         .append(Component.text("Public ").color(NamedTextColor.GREEN))
                         .append(Component.text("Trusted ").color(NamedTextColor.RED))
-                        .append(Component.text("Owner").color(NamedTextColor.DARK_RED))
+                        .append(Component.text("Admin").color(NamedTextColor.DARK_RED))
                         .append(Component.text(") - ").color(NamedTextColor.DARK_GRAY))
                         .append(Component.join(JoinConfiguration.separator(Component.space()), list));
     }

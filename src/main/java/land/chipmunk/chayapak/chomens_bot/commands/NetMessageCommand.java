@@ -57,7 +57,7 @@ public class NetMessageCommand implements Command {
                                                 .append(Component.text("Click here to copy the server host and port to your clipboard").color(NamedTextColor.GREEN))
                                 )
                         ),
-                context.displayName().color(NamedTextColor.GRAY),
+                Component.text(context.sender().profile().getName()).color(NamedTextColor.GRAY),
                 Component.text(String.join(" ", args)).color(NamedTextColor.GRAY)
         ).color(NamedTextColor.DARK_GRAY);
 
