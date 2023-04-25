@@ -81,6 +81,12 @@ public class LoggerPlugin extends ChatPlugin.ChatListener {
         bot.console().reader().printAbove(message);
     }
 
+    public void custom (Component prefix, Component _message) {
+        final String message = prefix(prefix, ComponentUtilities.stringifyAnsi(_message));
+
+        bot.console().reader().printAbove(message);
+    }
+
     @Override
     public void systemMessageReceived(Component component) {
         final String ansiMessage = ComponentUtilities.stringifyAnsi(component);

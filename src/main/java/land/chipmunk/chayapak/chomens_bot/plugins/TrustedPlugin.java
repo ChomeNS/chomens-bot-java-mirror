@@ -26,6 +26,8 @@ public class TrustedPlugin extends PlayersPlugin.PlayerListener {
         for (Bot bot : bot.allBots()) {
             if (!bot.loggedIn()) continue;
 
+            bot.logger().custom(Component.text("Trusted Broadcast").color(NamedTextColor.AQUA), message);
+
             for (String player : list) {
                 final MutablePlayerListEntry entry = bot.players().getEntry(player);
 
