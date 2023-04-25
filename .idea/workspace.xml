@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="fix chomens bot crsah exploit 2023 working" />
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="i forgor 1 thing lmfao">
+      <change afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/SeenCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CommandHandlerPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CommandHandlerPlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/PlayersPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/PlayersPlugin.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -94,13 +99,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00069" summary="add among us to the position plugin (useful af)&#10;yes it is SOOOOOO good">
-      <created>1681636934907</created>
-      <option name="number" value="00069" />
-      <option name="presentableId" value="LOCAL-00069" />
-      <option name="project" value="LOCAL" />
-      <updated>1681636934907</updated>
     </task>
     <task id="LOCAL-00070" summary="improve rtp">
       <created>1681638481198</created>
@@ -438,7 +436,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682339222332</updated>
     </task>
-    <option name="localTasksCounter" value="118" />
+    <task id="LOCAL-00118" summary="i forgor 1 thing lmfao">
+      <created>1682343832831</created>
+      <option name="number" value="00118" />
+      <option name="presentableId" value="LOCAL-00118" />
+      <option name="project" value="LOCAL" />
+      <updated>1682343832831</updated>
+    </task>
+    <option name="localTasksCounter" value="119" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -453,7 +458,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fard 2" />
     <MESSAGE value="readme i guess" />
     <MESSAGE value="change a bit mabe" />
     <MESSAGE value="improve reconnect i guess" />
@@ -478,7 +482,8 @@
     <MESSAGE value="improve returning output of commands" />
     <MESSAGE value="thanks blackilykat for solving the thing.,.,.,&#10;yes just change the thing to null and its all done" />
     <MESSAGE value="fix chomens bot crsah exploit 2023 working" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix chomens bot crsah exploit 2023 working" />
+    <MESSAGE value="i forgor 1 thing lmfao" />
+    <option name="LAST_COMMIT_MESSAGE" value="i forgor 1 thing lmfao" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
