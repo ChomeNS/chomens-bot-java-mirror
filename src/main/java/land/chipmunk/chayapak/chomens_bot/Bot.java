@@ -69,6 +69,7 @@ public class Bot {
         this.port = botOption.port;
 
         this.options = botOption;
+        if (options.reconnectDelay == -1) options.reconnectDelay = config.reconnectDelay;
 
         this.allBots = allBots;
 
@@ -172,7 +173,7 @@ public class Bot {
             public void disconnected(DisconnectedEvent disconnectedEvent) {
                 loggedIn = false;
 
-                int reconnectDelay = config.reconnectDelay();
+                int reconnectDelay = options.reconnectDelay();
 
                 final String stringMessage = ComponentUtilities.stringify(disconnectedEvent.getReason());
 

@@ -4,12 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="make trusted broadcast log in console">
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="add connecting message">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Bot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/DiscordPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/DiscordPlugin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/LoggerPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/LoggerPlugin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/MusicPlayerPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/MusicPlayerPlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Configuration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Configuration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/default-config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/default-config.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,13 +99,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00072" summary="i forgor to remove the code i copied from my chipmunkbot fork">
-      <created>1681692239505</created>
-      <option name="number" value="00072" />
-      <option name="presentableId" value="LOCAL-00072" />
-      <option name="project" value="LOCAL" />
-      <updated>1681692239506</updated>
     </task>
     <task id="LOCAL-00073" summary="probably fix greplog but more mess,....">
       <created>1681723369155</created>
@@ -444,7 +436,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682401966540</updated>
     </task>
-    <option name="localTasksCounter" value="121" />
+    <task id="LOCAL-00121" summary="add connecting message">
+      <created>1682403103168</created>
+      <option name="number" value="00121" />
+      <option name="presentableId" value="LOCAL-00121" />
+      <option name="project" value="LOCAL" />
+      <updated>1682403103168</updated>
+    </task>
+    <option name="localTasksCounter" value="122" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -459,7 +458,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="improve reconnect i guess" />
     <MESSAGE value="make better console logging like the old js chomens bot" />
     <MESSAGE value="fart !!!!" />
     <MESSAGE value="sex" />
@@ -484,7 +482,8 @@
     <MESSAGE value="i forgor 1 thing lmfao" />
     <MESSAGE value="gex" />
     <MESSAGE value="make trusted broadcast log in console" />
-    <option name="LAST_COMMIT_MESSAGE" value="make trusted broadcast log in console" />
+    <MESSAGE value="add connecting message" />
+    <option name="LAST_COMMIT_MESSAGE" value="add connecting message" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

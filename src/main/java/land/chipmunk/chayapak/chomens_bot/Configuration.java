@@ -14,7 +14,7 @@ public class Configuration {
 
     @Getter public Map<String, String> consolePrefixes;
 
-    @Getter public int reconnectDelay = 7000;
+    @Getter public int reconnectDelay = 2000;
 
     @Getter public Map<String, String> keys;
 
@@ -83,5 +83,6 @@ public class Configuration {
         @Getter @Setter public boolean useCore = true;
         @Getter @Setter public boolean useChat = false;
         @Getter public boolean hasEssentials = true;
+        @Getter public int reconnectDelay = -1;
     }
 }
