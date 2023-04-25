@@ -8,7 +8,6 @@ import com.github.steveice10.mc.protocol.packet.ingame.clientbound.entity.player
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.entity.spawn.ClientboundAddPlayerPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.level.ServerboundAcceptTeleportationPacket;
 import com.github.steveice10.packetlib.Session;
-import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.nukkitx.math.vector.Vector3f;
 import com.nukkitx.math.vector.Vector3i;
@@ -23,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 // some part of the code used to be in a test plugin but i thought it would be useful in the future so i moved it here
-public class PositionPlugin extends SessionAdapter {
+public class PositionPlugin extends Bot.Listener {
     private final Bot bot;
 
     private final List<PositionListener> listeners = new ArrayList<>();

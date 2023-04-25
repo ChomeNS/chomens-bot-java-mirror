@@ -7,16 +7,18 @@ import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundPl
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundPlayerInfoUpdatePacket;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
-import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.data.MutablePlayerListEntry;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.UUID;
 
-public class PlayersPlugin extends SessionAdapter {
+public class PlayersPlugin extends Bot.Listener {
     private final Bot bot;
     @Getter private final List<MutablePlayerListEntry> list = new ArrayList<>();
 

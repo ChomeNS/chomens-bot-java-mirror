@@ -19,7 +19,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Bot {
-    private final ArrayList<SessionListener> listeners = new ArrayList<>();
+    private final ArrayList<Listener> listeners = new ArrayList<>();
 
     @Getter private final String host;
     @Getter private final int port;
@@ -108,7 +108,11 @@ public class Bot {
         reconnect();
     }
 
-    public void reconnect () {
+    private void reconnect () {
+        for (Listener listener : listeners) {
+            listener.connecting();
+        }
+
         final String _username = options.username();
 
         if (_username == null) username = RandomStringUtils.randomAlphabetic(8);
@@ -189,7 +193,11 @@ public class Bot {
         session.connect();
     }
 
-    public void addListener (SessionListener listener) {
+    public void addListener (Listener listener) {
         listeners.add(listener);
+    }
+
+    public static class Listener extends SessionAdapter {
+        public void connecting () {}
     }
 }

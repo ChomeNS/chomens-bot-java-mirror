@@ -3,7 +3,6 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundCommandSuggestionsPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundCommandSuggestionPacket;
 import com.github.steveice10.packetlib.Session;
-import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 
@@ -11,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class TabCompletePlugin extends SessionAdapter {
+public class TabCompletePlugin extends Bot.Listener {
     private final Bot bot;
     private int nextTransactionId = 0;
     private final Map<Integer, CompletableFuture<ClientboundCommandSuggestionsPacket>> transactions = new HashMap<>();

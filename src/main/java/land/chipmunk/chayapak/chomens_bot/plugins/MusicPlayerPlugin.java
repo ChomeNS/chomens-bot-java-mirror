@@ -1,7 +1,6 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
-import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.BossBar;
 import land.chipmunk.chayapak.chomens_bot.data.BossBarColor;
@@ -21,7 +20,7 @@ import java.util.LinkedList;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class MusicPlayerPlugin extends SessionAdapter {
+public class MusicPlayerPlugin extends Bot.Listener {
     private final Bot bot;
 
     private ScheduledFuture<?> playTask;

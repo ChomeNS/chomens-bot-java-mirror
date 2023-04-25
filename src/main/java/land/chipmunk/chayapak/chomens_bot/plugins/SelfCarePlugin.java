@@ -13,7 +13,6 @@ import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.Clientb
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundClientCommandPacket;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
-import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.packet.PacketProtocol;
 import com.nukkitx.math.vector.Vector3i;
@@ -27,7 +26,7 @@ import net.kyori.adventure.text.Component;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class SelfCarePlugin extends SessionAdapter {
+public class SelfCarePlugin extends Bot.Listener {
     private final Bot bot;
 
     private ScheduledFuture<?> checkTask;

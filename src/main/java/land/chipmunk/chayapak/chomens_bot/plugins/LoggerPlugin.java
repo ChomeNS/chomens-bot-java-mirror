@@ -2,7 +2,6 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import com.github.steveice10.packetlib.event.session.ConnectedEvent;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
-import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Logger;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
@@ -22,10 +21,27 @@ public class LoggerPlugin extends ChatPlugin.ChatListener {
     public LoggerPlugin(Bot bot) {
         this.bot = bot;
 
-        bot.addListener(new SessionAdapter() {
+        bot.addListener(new Bot.Listener() {
+            @Override
+            public void connecting() {
+                info(
+                        String.format(
+                                "Connecting to: %s:%s",
+                                bot.host(),
+                                bot.port()
+                        )
+                );
+            }
+
             @Override
             public void connected (ConnectedEvent event) {
-                info("Successfully connected to: " + bot.host() + ":" + bot.port());
+                info(
+                        String.format(
+                                "Successfully connected to: %s:%s",
+                                bot.host(),
+                                bot.port()
+                        )
+                );
 
                 if (addedListener) return;
                 bot.chat().addListener(LoggerPlugin.this);

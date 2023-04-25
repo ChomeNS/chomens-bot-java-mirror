@@ -3,7 +3,6 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundSetTimePacket;
 import com.github.steveice10.packetlib.Session;
-import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.BossBar;
@@ -16,7 +15,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public class TPSPlugin extends SessionAdapter {
+public class TPSPlugin extends Bot.Listener {
     private final Bot bot;
 
     private boolean enabled = false;

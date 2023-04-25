@@ -2,7 +2,6 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import com.github.steveice10.packetlib.event.session.ConnectedEvent;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
-import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Configuration;
 import land.chipmunk.chayapak.chomens_bot.Main;
@@ -44,12 +43,31 @@ public class DiscordPlugin {
         for (Bot bot : Main.allBots) {
             String channelId = servers.get(bot.host() + ":" + bot.port());
 
-              bot.addListener(new SessionAdapter() {
+              bot.addListener(new Bot.Listener() {
+                  @Override
+                  public void connecting() {
+                      sendMessageInstantly(
+                              String.format(
+                                      "Connecting to: `%s:%s`",
+                                      bot.host(),
+                                      bot.port()
+                              ),
+                              channelId
+                      );
+                  }
+
                   @Override
                   public void connected (ConnectedEvent event) {
                       boolean channelAlreadyAddedListeners = alreadyAddedListeners.getOrDefault(channelId, false);
 
-                      sendMessageInstantly("Successfully connected to: " + "`" + bot.host() + ":" + bot.port() + "`", channelId);
+                      sendMessageInstantly(
+                              String.format(
+                                      "Successfully connected to: `%s:%s`",
+                                      bot.host(),
+                                      bot.port()
+                              ),
+                              channelId
+                      );
 
                       if (channelAlreadyAddedListeners) return;
 

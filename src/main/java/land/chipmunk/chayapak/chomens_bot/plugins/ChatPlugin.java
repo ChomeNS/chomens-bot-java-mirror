@@ -6,7 +6,6 @@ import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundSy
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundChatCommandPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundChatPacket;
 import com.github.steveice10.packetlib.Session;
-import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.ChomeNSCustomChatParser;
@@ -27,7 +26,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class ChatPlugin extends SessionAdapter {
+public class ChatPlugin extends Bot.Listener {
     private final Bot bot;
 
     private final List<ChatParser> chatParsers;
