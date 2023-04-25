@@ -121,7 +121,7 @@ public class DiscordPlugin {
                               final String tag = event.getMember().getUser().getDiscriminator();
 
                               String name = event.getMember().getNickname();
-                              final String fallbackName = event.getMember().getEffectiveName();
+                              final String fallbackName = event.getAuthor().getName();
                               if (name == null) name = fallbackName;
 
                               final Component nameComponent = Component
