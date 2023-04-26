@@ -54,7 +54,7 @@ public class TimeCommand implements Command {
         final String formattedTime = formatter.print(dateTime);
 
         return Component.translatable(
-                "The current date and time for the timezone %s is: %s",
+                "The current time for %s is: %s",
                 Component.text(timezone).color(NamedTextColor.AQUA),
                 Component.text(formattedTime).color(NamedTextColor.GREEN)
         );

@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="change stuff a bit" />
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="fix fallback name?">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -94,13 +96,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00075" summary="add icu self care&#10;i control uwu uwuw uw uwu wu">
-      <created>1681725375832</created>
-      <option name="number" value="00075" />
-      <option name="presentableId" value="LOCAL-00075" />
-      <option name="project" value="LOCAL" />
-      <updated>1681725375832</updated>
     </task>
     <task id="LOCAL-00076" summary="i forgor to commit bot">
       <created>1681725538670</created>
@@ -438,7 +433,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682421412681</updated>
     </task>
-    <option name="localTasksCounter" value="124" />
+    <task id="LOCAL-00124" summary="fix fallback name?">
+      <created>1682426984673</created>
+      <option name="number" value="00124" />
+      <option name="presentableId" value="LOCAL-00124" />
+      <option name="project" value="LOCAL" />
+      <updated>1682426984674</updated>
+    </task>
+    <option name="localTasksCounter" value="125" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -453,7 +455,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="sex" />
     <MESSAGE value="probably improve logquery?" />
     <MESSAGE value="forgor to set the thread to null" />
     <MESSAGE value="log exception for funni?" />
@@ -478,7 +479,8 @@
     <MESSAGE value="add connecting message" />
     <MESSAGE value="add reconnect delay to each bot option (optional)" />
     <MESSAGE value="change stuff a bit" />
-    <option name="LAST_COMMIT_MESSAGE" value="change stuff a bit" />
+    <MESSAGE value="fix fallback name?" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix fallback name?" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
