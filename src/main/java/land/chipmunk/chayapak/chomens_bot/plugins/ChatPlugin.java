@@ -49,7 +49,7 @@ public class ChatPlugin extends Bot.Listener {
         chatParsers.add(new KaboomChatParser(bot));
         chatParsers.add(new ChomeNSCustomChatParser(bot));
 
-        bot.executor().scheduleAtFixedRate(this::sendChatTick, 0, 125, TimeUnit.MILLISECONDS);
+        bot.executor().scheduleAtFixedRate(this::sendChatTick, 0, bot.config().chatQueueDelay(), TimeUnit.MILLISECONDS);
     }
 
     @Override

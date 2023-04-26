@@ -16,6 +16,8 @@ public class Configuration {
 
     @Getter public int reconnectDelay = 2000;
 
+    @Getter public int chatQueueDelay = 125;
+
     @Getter public Map<String, String> keys;
 
     @Getter public String weatherApiKey;

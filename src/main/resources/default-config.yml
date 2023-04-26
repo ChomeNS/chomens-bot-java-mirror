@@ -11,6 +11,8 @@ consolePrefixes:
 
 reconnectDelay: 2000
 
+chatQueueDelay: 125
+
 discord:
   prefix: 'default!'
   token: 'token here'
