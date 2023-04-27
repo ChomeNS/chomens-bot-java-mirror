@@ -18,7 +18,7 @@ import com.github.steveice10.opennbt.tag.builtin.Tag;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.packet.Packet;
-import com.nukkitx.math.vector.Vector3i;
+import org.cloudburstmc.math.vector.Vector3i;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import lombok.Getter;
 

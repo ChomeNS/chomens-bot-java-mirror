@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="make time output shorter?&#10;mabe">
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="chat queue delay in config">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Configuration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Configuration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ChatPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ChatPlugin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/default-config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/default-config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CorePlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CorePlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/PositionPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/PositionPlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/SelfCarePlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/SelfCarePlugin.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,13 +100,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00077" summary="add kick !!!!">
-      <created>1681727904938</created>
-      <option name="number" value="00077" />
-      <option name="presentableId" value="LOCAL-00077" />
-      <option name="project" value="LOCAL" />
-      <updated>1681727904938</updated>
     </task>
     <task id="LOCAL-00078" summary="actually probably fix thing (it kick others)">
       <created>1681728469710</created>
@@ -443,7 +437,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682488807875</updated>
     </task>
-    <option name="localTasksCounter" value="126" />
+    <task id="LOCAL-00126" summary="chat queue delay in config">
+      <created>1682497425727</created>
+      <option name="number" value="00126" />
+      <option name="presentableId" value="LOCAL-00126" />
+      <option name="project" value="LOCAL" />
+      <updated>1682497425727</updated>
+    </task>
+    <option name="localTasksCounter" value="127" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -458,7 +459,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="forgor to set the thread to null" />
     <MESSAGE value="log exception for funni?" />
     <MESSAGE value="fart?!?!?!" />
     <MESSAGE value="probably lazy fix the sus" />
@@ -483,7 +483,8 @@
     <MESSAGE value="change stuff a bit" />
     <MESSAGE value="fix fallback name?" />
     <MESSAGE value="make time output shorter?&#10;mabe" />
-    <option name="LAST_COMMIT_MESSAGE" value="make time output shorter?&#10;mabe" />
+    <MESSAGE value="chat queue delay in config" />
+    <option name="LAST_COMMIT_MESSAGE" value="chat queue delay in config" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
