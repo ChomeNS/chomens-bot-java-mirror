@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="chat queue delay in config">
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="new 1.19.4 update i guess">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CorePlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CorePlugin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/PositionPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/PositionPlugin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/SelfCarePlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/SelfCarePlugin.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,13 +96,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00078" summary="actually probably fix thing (it kick others)">
-      <created>1681728469710</created>
-      <option name="number" value="00078" />
-      <option name="presentableId" value="LOCAL-00078" />
-      <option name="project" value="LOCAL" />
-      <updated>1681728469710</updated>
     </task>
     <task id="LOCAL-00079" summary="FINALLY FIX EXTRA COLOR PARSING LETS GOOOOOOO&#10;messy code but whatever,..,.,">
       <created>1681806588635</created>
@@ -444,7 +433,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682497425727</updated>
     </task>
-    <option name="localTasksCounter" value="127" />
+    <task id="LOCAL-00127" summary="new 1.19.4 update i guess">
+      <created>1682596318209</created>
+      <option name="number" value="00127" />
+      <option name="presentableId" value="LOCAL-00127" />
+      <option name="project" value="LOCAL" />
+      <updated>1682596318211</updated>
+    </task>
+    <option name="localTasksCounter" value="128" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -459,7 +455,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="log exception for funni?" />
     <MESSAGE value="fart?!?!?!" />
     <MESSAGE value="probably lazy fix the sus" />
     <MESSAGE value="improve bot options? mabe mabe" />
@@ -484,7 +479,8 @@
     <MESSAGE value="fix fallback name?" />
     <MESSAGE value="make time output shorter?&#10;mabe" />
     <MESSAGE value="chat queue delay in config" />
-    <option name="LAST_COMMIT_MESSAGE" value="chat queue delay in config" />
+    <MESSAGE value="new 1.19.4 update i guess" />
+    <option name="LAST_COMMIT_MESSAGE" value="new 1.19.4 update i guess" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

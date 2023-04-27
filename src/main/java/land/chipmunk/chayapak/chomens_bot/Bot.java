@@ -28,7 +28,7 @@ public class Bot {
 
     @Getter private final Configuration config;
 
-    @Getter private List<Bot> allBots;
+    @Getter private List<Bot> bots;
 
     @Getter private String username;
 
@@ -64,14 +64,14 @@ public class Bot {
     @Getter private ExploitsPlugin exploits;
     @Getter private FilterPlugin filter;
 
-    public Bot (Configuration.BotOption botOption, List<Bot> allBots, Configuration config) {
+    public Bot (Configuration.BotOption botOption, List<Bot> bots, Configuration config) {
         this.host = botOption.host;
         this.port = botOption.port;
 
         this.options = botOption;
         if (options.reconnectDelay == -1) options.reconnectDelay = config.reconnectDelay;
 
-        this.allBots = allBots;
+        this.bots = bots;
 
         this.config = config;
 

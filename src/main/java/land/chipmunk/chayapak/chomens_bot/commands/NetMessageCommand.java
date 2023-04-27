@@ -39,7 +39,7 @@ public class NetMessageCommand implements Command {
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();
-        final List<Bot> bots = bot.allBots();
+        final List<Bot> bots = bot.bots();
 
         final String hostAndPort = bot.host() + ":" + bot.port();
 

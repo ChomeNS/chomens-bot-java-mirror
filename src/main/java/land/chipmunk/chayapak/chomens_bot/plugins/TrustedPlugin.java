@@ -23,7 +23,7 @@ public class TrustedPlugin extends PlayersPlugin.PlayerListener {
     }
 
     public void broadcast (Component message, UUID exceptTarget) {
-        for (Bot bot : bot.allBots()) {
+        for (Bot bot : bot.bots()) {
             if (!bot.loggedIn()) continue;
 
             bot.logger().custom(Component.text("Trusted Broadcast").color(NamedTextColor.AQUA), message);

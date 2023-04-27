@@ -40,7 +40,7 @@ public class DiscordPlugin {
         this.servers = options.servers();
         this.jda = jda;
 
-        for (Bot bot : Main.allBots) {
+        for (Bot bot : Main.bots) {
             String channelId = servers.get(bot.host() + ":" + bot.port());
 
               bot.addListener(new Bot.Listener() {

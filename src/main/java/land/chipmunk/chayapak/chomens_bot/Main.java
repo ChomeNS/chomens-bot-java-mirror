@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    public static final List<Bot> allBots = new ArrayList<>();
+    public static final List<Bot> bots = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
         final File file = new File("config.yml");
@@ -65,10 +65,10 @@ public class Main {
         }
 
         for (Configuration.BotOption botOption : botsOptions) {
-            final Bot bot = new Bot(botOption, allBots, config);
-            allBots.add(bot);
+            final Bot bot = new Bot(botOption, bots, config);
+            bots.add(bot);
         }
 
-        new ConsolePlugin(allBots, config, jda);
+        new ConsolePlugin(bots, config, jda);
     }
 }
