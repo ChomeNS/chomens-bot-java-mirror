@@ -63,6 +63,7 @@ public class Bot {
     @Getter private MazePlugin maze;
     @Getter private ExploitsPlugin exploits;
     @Getter private FilterPlugin filter;
+    @Getter private CommandSuggestionPlugin commandSuggestion;
 
     public Bot (Configuration.BotOption botOption, List<Bot> bots, Configuration config) {
         this.host = botOption.host;
@@ -105,6 +106,7 @@ public class Bot {
         this.maze = new MazePlugin(this);
         this.exploits = new ExploitsPlugin(this);
         this.filter = new FilterPlugin(this);
+        this.commandSuggestion = new CommandSuggestionPlugin(this);
 
         reconnect();
     }

@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="amogus">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="patch sus?" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -96,13 +94,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00081" summary="mabe">
-      <created>1681806777109</created>
-      <option name="number" value="00081" />
-      <option name="presentableId" value="LOCAL-00081" />
-      <option name="project" value="LOCAL" />
-      <updated>1681806777109</updated>
     </task>
     <task id="LOCAL-00082" summary="mess with the pitch correction again to fix the sus problem">
       <created>1681882635433</created>
@@ -440,7 +431,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682644881919</updated>
     </task>
-    <option name="localTasksCounter" value="130" />
+    <task id="LOCAL-00130" summary="patch sus?">
+      <created>1682654933076</created>
+      <option name="number" value="00130" />
+      <option name="presentableId" value="LOCAL-00130" />
+      <option name="project" value="LOCAL" />
+      <updated>1682654933076</updated>
+    </task>
+    <option name="localTasksCounter" value="131" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -455,7 +453,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="improve bot options? mabe mabe" />
     <MESSAGE value="put the setter back" />
     <MESSAGE value="use serverName instead of host:port for console i guess" />
     <MESSAGE value="actually revert greplog update because it breaks stuff" />
@@ -480,7 +477,8 @@
     <MESSAGE value="new 1.19.4 update i guess" />
     <MESSAGE value="bots mabe" />
     <MESSAGE value="amogus" />
-    <option name="LAST_COMMIT_MESSAGE" value="amogus" />
+    <MESSAGE value="patch sus?" />
+    <option name="LAST_COMMIT_MESSAGE" value="patch sus?" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
