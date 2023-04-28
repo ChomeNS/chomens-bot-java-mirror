@@ -8,12 +8,10 @@ import net.kyori.adventure.text.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BruhifyCommand implements Command {
-    public String name() { return "bruhify"; }
+public class BruhifyCommand extends Command {
+    public String name = "bruhify";
 
-    public String description() {
-        return "RecycleBot bruhify but actionbar";
-    }
+    public String description = "RecycleBot bruhify but actionbar";
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -29,9 +27,7 @@ public class BruhifyCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 0;
-    }
+    public int trustLevel = 0;
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();

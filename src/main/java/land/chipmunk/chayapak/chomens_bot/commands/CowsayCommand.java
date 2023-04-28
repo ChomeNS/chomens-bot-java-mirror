@@ -9,12 +9,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CowsayCommand implements Command {
-    public String name() { return "cowsay"; }
+public class CowsayCommand extends Command {
+    public String name = "cowsay";
 
-    public String description() {
-        return "Moo";
-    }
+    public String description = "Moo";
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -30,9 +28,7 @@ public class CowsayCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 0;
-    }
+    public int trustLevel = 0;
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final String cow = args[0];

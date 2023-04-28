@@ -19,12 +19,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class ServerInfoCommand implements Command {
-    public String name() { return "serverinfo"; }
+public class ServerInfoCommand extends Command {
+    public String name = "serverinfo";
 
-    public String description() {
-        return "Shows the info about the server that is hosting the bot";
-    }
+    public String description = "Shows the info about the server that is hosting the bot";
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -40,9 +38,7 @@ public class ServerInfoCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 0;
-    }
+    public int trustLevel = 0;
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         // totallynotskidded™ from extras' serverinfo

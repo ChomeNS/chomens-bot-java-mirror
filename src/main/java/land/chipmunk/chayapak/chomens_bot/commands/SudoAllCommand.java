@@ -10,12 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 // ayunsudo renamed.
-public class SudoAllCommand implements Command {
-    public String name() { return "sudoall"; }
+public class SudoAllCommand extends Command {
+    public String name = "sudoall";
 
-    public String description() {
-        return "Sudoes everyone";
-    }
+    public String description = "Sudoes everyone";
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -31,9 +29,7 @@ public class SudoAllCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 1;
-    }
+    public int trustLevel = 1;
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();

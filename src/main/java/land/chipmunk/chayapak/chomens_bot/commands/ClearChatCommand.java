@@ -11,12 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class ClearChatCommand implements Command {
-    public String name() { return "clearchat"; }
+public class ClearChatCommand extends Command {
+    public String name = "clearchat";
 
-    public String description() {
-        return "Clears the chat";
-    }
+    public String description = "Clears the chat";
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -32,9 +30,7 @@ public class ClearChatCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 0;
-    }
+    public int trustLevel = 0;
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();

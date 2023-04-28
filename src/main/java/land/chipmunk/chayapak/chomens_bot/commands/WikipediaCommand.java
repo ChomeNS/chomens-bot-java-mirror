@@ -15,12 +15,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WikipediaCommand implements Command {
-    public String name() { return "wikipedia"; }
+public class WikipediaCommand extends Command {
+    public String name = "wikipedia";
 
-    public String description() {
-        return "Wikipedia in Minecraft";
-    }
+    public String description = "Wikipedia in Minecraft";
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -36,9 +34,7 @@ public class WikipediaCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 0;
-    }
+    public int trustLevel = 0;
 
     public Component execute (CommandContext context, String[] args, String[] fullArgs) {
         final String page = String.join(" ", args);

@@ -9,12 +9,10 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BotVisibilityCommand implements Command {
-    public String name() { return "botvisibility"; }
+public class BotVisibilityCommand extends Command {
+    public String name = "botvisibility";
 
-    public String description() {
-        return "Changes the bot's visibility";
-    }
+    public String description = "Changes the bot's visibility";
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -34,9 +32,7 @@ public class BotVisibilityCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 1;
-    }
+    public int trustLevel = 1;
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();

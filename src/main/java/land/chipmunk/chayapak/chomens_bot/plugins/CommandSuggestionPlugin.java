@@ -48,9 +48,9 @@ public class CommandSuggestionPlugin extends ChatPlugin.ChatListener {
             output.add(Component.text(transactionId));
 
             for (Command command : bot.commandHandler().commands()) {
-                if (!command.name().startsWith(input)) continue;
+                if (!command.name.startsWith(input)) continue;
 
-                output.add(Component.text(command.name()));
+                output.add(Component.text(command.name));
             }
 
             bot.chat().tellraw(Component.join(JoinConfiguration.noSeparators(), output), player);

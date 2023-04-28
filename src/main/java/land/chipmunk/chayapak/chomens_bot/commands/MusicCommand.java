@@ -21,14 +21,12 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MusicCommand implements Command {
+public class MusicCommand extends Command {
     private Path root;
 
-    public String name() { return "music"; }
+    public String name = "music";
 
-    public String description() {
-        return "Plays music";
-    }
+    public String description = "Plays music";
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -56,9 +54,7 @@ public class MusicCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 0;
-    }
+    public int trustLevel = 0;
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         root = Path.of(MusicPlayerPlugin.SONG_DIR.getPath());
@@ -245,7 +241,7 @@ public class MusicCommand implements Command {
                             .clickEvent(
                                     ClickEvent.suggestCommand(
                                             prefix +
-                                                    name() +
+                                                    name + // command name !!!
                                                     (file.isFile() ? " play " : " list ") +
                                                     joinedPath
                                     )

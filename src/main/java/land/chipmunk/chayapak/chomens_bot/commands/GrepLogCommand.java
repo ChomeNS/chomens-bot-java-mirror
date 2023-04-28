@@ -10,12 +10,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class GrepLogCommand implements Command {
-    public String name() { return "greplog"; }
+public class GrepLogCommand extends Command {
+    public String name = "greplog";
 
-    public String description() {
-        return "Queries the bot's log files";
-    }
+    public String description = "Queries the bot's log files";
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -36,9 +34,7 @@ public class GrepLogCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 0;
-    }
+    public int trustLevel = 0;
 
     public Component execute(CommandContext context, String[] _args, String[] fullArgs) {
         final Bot bot = context.bot();

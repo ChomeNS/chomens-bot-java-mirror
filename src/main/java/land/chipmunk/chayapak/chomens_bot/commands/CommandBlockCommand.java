@@ -14,12 +14,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-public class CommandBlockCommand implements Command {
-    public String name() { return "cb"; }
+public class CommandBlockCommand extends Command {
+    public String name = "cb";
 
-    public String description() {
-        return "Executes a command in the command core and return it's output";
-    }
+    public String description = "Executes a command in the command core and return it's output";
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -37,9 +35,7 @@ public class CommandBlockCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 0;
-    }
+    public int trustLevel = 0;
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) throws ExecutionException, InterruptedException {
         final Bot bot = context.bot();

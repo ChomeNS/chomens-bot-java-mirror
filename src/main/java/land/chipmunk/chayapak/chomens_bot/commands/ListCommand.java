@@ -13,12 +13,10 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListCommand implements Command {
-    public String name() { return "list"; }
+public class ListCommand extends Command {
+    public String name = "list";
 
-    public String description() {
-        return "Lists all players in the server (including vanished)";
-    }
+    public String description = "Lists all players in the server (including vanished)";
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -34,9 +32,7 @@ public class ListCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 0;
-    }
+    public int trustLevel = 0;
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();

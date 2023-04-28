@@ -9,12 +9,10 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreatorCommand implements Command {
-    public String name() { return "creator"; }
+public class CreatorCommand extends Command {
+    public String name = "creator";
 
-    public String description() {
-        return "Shows the bot's creator";
-    }
+    public String description = "Shows the bot's creator";
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -30,9 +28,7 @@ public class CreatorCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 0;
-    }
+    public int trustLevel = 0;
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();

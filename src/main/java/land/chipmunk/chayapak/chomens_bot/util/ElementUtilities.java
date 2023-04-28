@@ -9,7 +9,7 @@ public class ElementUtilities {
         for (Command command : commands) {
             if (
                     (
-                        command.name().equals(searchTerm.toLowerCase()) ||
+                        command.name.equals(searchTerm.toLowerCase()) ||
                         command.alias().contains(searchTerm.toLowerCase())
                     ) &&
                     !searchTerm.equals("") // ig yup

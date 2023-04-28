@@ -16,12 +16,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UrbanCommand implements Command {
-    public String name() { return "urban"; }
+public class UrbanCommand extends Command {
+    public String name = "urban";
 
-    public String description() {
-        return "Urban Dictionary in Minecraft";
-    }
+    public String description = "Urban Dictionary in Minecraft";
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -37,9 +35,7 @@ public class UrbanCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 0;
-    }
+    public int trustLevel = 0;
 
     public Component execute (CommandContext context, String[] args, String[] fullArgs) {
         final String term = String.join(" ", args);

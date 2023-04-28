@@ -8,12 +8,10 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestCommand implements Command {
-    public String name() { return "test"; }
+public class TestCommand extends Command {
+    public String name = "test";
 
-    public String description() {
-        return "Tests if the bot is working";
-    }
+    public String description = "Tests if the bot is working";
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -29,9 +27,7 @@ public class TestCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 0;
-    }
+    public int trustLevel = 0;
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         return Component.translatable(

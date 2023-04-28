@@ -16,12 +16,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TranslateCommand implements Command {
-    public String name() { return "translate"; }
+public class TranslateCommand extends Command {
+    public String name = "translate";
 
-    public String description() {
-        return "Translate a message using Google Translate";
-    }
+    public String description = "Translate a message using Google Translate";
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -37,9 +35,7 @@ public class TranslateCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 0;
-    }
+    public int trustLevel = 0;
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final String from = args[0];

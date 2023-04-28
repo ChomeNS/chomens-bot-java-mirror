@@ -8,12 +8,10 @@ import net.kyori.adventure.text.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EchoCommand implements Command {
-    public String name() { return "echo"; }
+public class EchoCommand extends Command {
+    public String name = "echo";
 
-    public String description() {
-        return "Says a message";
-    }
+    public String description = "Says a message";
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -29,9 +27,7 @@ public class EchoCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 0;
-    }
+    public int trustLevel = 0;
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();
