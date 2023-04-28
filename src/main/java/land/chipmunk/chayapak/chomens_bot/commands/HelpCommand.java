@@ -5,6 +5,7 @@ import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.ArrayList;
@@ -40,8 +41,11 @@ public class HelpCommand implements Command {
 
     private Bot bot;
 
+    private CommandContext context;
+
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         this.bot = context.bot();
+        this.context = context;
         if (args.length == 0) {
             return sendCommandList();
         } else {
@@ -83,7 +87,16 @@ public class HelpCommand implements Command {
         Collections.sort(commandNames);
 
         for (String name : commandNames) {
-            list.add(Component.text(name).color(getColorByTrustLevel(trustLevel)));
+            list.add(
+                    Component
+                            .text(name)
+                            .color(getColorByTrustLevel(trustLevel))
+                            .hoverEvent(
+                                    HoverEvent.showText(
+                                            sendUsages(context, new String[] { name })
+                                    )
+                            )
+            );
         }
 
         return list;
