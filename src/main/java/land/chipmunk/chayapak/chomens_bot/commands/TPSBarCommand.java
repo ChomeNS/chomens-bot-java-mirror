@@ -9,10 +9,12 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TPSBarCommand extends Command {
-    public String name = "tpsbar";
+public class TPSBarCommand implements Command {
+    public String name() { return "tpsbar"; }
 
-    public String description = "Shows the server's TPS using Minecraft Bossbar";
+    public String description() {
+        return "Shows the server's TPS using Minecraft Bossbar";
+    }
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -28,7 +30,9 @@ public class TPSBarCommand extends Command {
         return aliases;
     }
 
-    public int trustLevel = 0;
+    public int trustLevel() {
+        return 0;
+    }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();

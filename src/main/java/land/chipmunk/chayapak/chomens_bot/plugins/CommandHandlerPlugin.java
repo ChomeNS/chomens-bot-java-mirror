@@ -81,13 +81,13 @@ public class CommandHandlerPlugin {
 
         if (command == null) return Component.text("Unknown command: " + commandName).color(NamedTextColor.RED);
 
-        final int trustLevel = command.trustLevel;
+        final int trustLevel = command.trustLevel();
 
         final String[] fullArgs = Arrays.copyOfRange(splitInput, 1, splitInput.length);
         final int longestUsageIndex = getLongestUsageIndex(command.usage());
         final String usage = command.usage().get(longestUsageIndex);
-        final int minimumArgs = getMinimumArgs(usage, inGame, command.trustLevel);
-        final int maximumArgs = getMaximumArgs(usage, inGame, command.trustLevel);
+        final int minimumArgs = getMinimumArgs(usage, inGame, command.trustLevel());
+        final int maximumArgs = getMaximumArgs(usage, inGame, command.trustLevel());
         if (fullArgs.length < minimumArgs) return Component.text("Excepted minimum of " + minimumArgs + " argument(s), got " + fullArgs.length).color(NamedTextColor.RED);
         if (fullArgs.length > maximumArgs && !usage.contains("{")) return Component.text("Too much arguments, expected " + maximumArgs + " max").color(NamedTextColor.RED);
 
@@ -98,7 +98,7 @@ public class CommandHandlerPlugin {
 
         final String[] args = Arrays.copyOfRange(splitInput, (trustLevel > 0 && inGame) ? 2 : 1, splitInput.length);
 
-        if (command.trustLevel > 0 && !console) {
+        if (command.trustLevel() > 0 && !console) {
             if (discord) {
                 final List<Role> roles = event.getMember().getRoles();
 
@@ -106,24 +106,24 @@ public class CommandHandlerPlugin {
                 final String adminRoleName = bot.config().discord().adminRoleName();
 
                 if (
-                        command.trustLevel == 1 &&
+                        command.trustLevel() == 1 &&
                                 roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase(trustedRoleName)) &&
                                 roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase(adminRoleName))
                 ) return Component.text("You're not in the trusted role!").color(NamedTextColor.RED);
 
                 if (
-                        command.trustLevel == 2 &&
+                        command.trustLevel() == 2 &&
                                 roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase(adminRoleName))
                 ) return Component.text("You're not in the admin role!").color(NamedTextColor.RED);
             } else {
                 if (
-                        command.trustLevel == 1 &&
+                        command.trustLevel() == 1 &&
                                 !userHash.equals(hash) &&
                                 !userHash.equals(ownerHash)
                 ) return Component.text("Invalid hash").color(NamedTextColor.RED);
 
                 if (
-                        command.trustLevel == 2 &&
+                        command.trustLevel() == 2 &&
                                 !userHash.equals(ownerHash)
                 ) return Component.text("Invalid OwnerHash").color(NamedTextColor.RED);
             }

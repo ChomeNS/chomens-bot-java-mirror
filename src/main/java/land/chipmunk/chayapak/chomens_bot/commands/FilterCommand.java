@@ -12,10 +12,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FilterCommand extends Command {
-    public String name = "filter";
+public class FilterCommand implements Command {
+    public String name() { return "filter"; }
 
-    public String description = "Filter players";
+    public String description() {
+        return "Filter players";
+    }
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -37,7 +39,9 @@ public class FilterCommand extends Command {
         return aliases;
     }
 
-    public int trustLevel = 1;
+    public int trustLevel() {
+        return 1;
+    }
 
     // most of these codes are from cloop and greplog
     public Component execute(CommandContext context, String[] _args, String[] fullArgs) {

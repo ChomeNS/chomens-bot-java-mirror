@@ -8,10 +8,12 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ValidateCommand extends Command {
-    public String name = "validate";
+public class ValidateCommand implements Command {
+    public String name() { return "validate"; }
 
-    public String description = "Validates a hash";
+    public String description() {
+        return "Validates a hash";
+    }
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -27,7 +29,9 @@ public class ValidateCommand extends Command {
         return aliases;
     }
 
-    public int trustLevel = 1;
+    public int trustLevel() {
+        return 1;
+    }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final String hash = fullArgs[0];

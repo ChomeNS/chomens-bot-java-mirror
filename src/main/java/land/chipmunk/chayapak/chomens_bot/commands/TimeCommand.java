@@ -12,10 +12,12 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TimeCommand extends Command {
-    public String name = "time";
+public class TimeCommand implements Command {
+    public String name() { return "time"; }
 
-    public String description = "Shows the date and time for the specified timezone";
+    public String description() {
+        return "Shows the date and time for the specified timezone";
+    }
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -32,7 +34,9 @@ public class TimeCommand extends Command {
         return aliases;
     }
 
-    public int trustLevel = 0;
+    public int trustLevel() {
+        return 0;
+    }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final String timezone = args[0];

@@ -9,10 +9,12 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DiscordCommand extends Command {
-    public String name = "discord";
+public class DiscordCommand implements Command {
+    public String name() { return "discord"; }
 
-    public String description = "Shows the Discord invite";
+    public String description() {
+        return "Shows the Discord invite";
+    }
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -28,7 +30,9 @@ public class DiscordCommand extends Command {
         return aliases;
     }
 
-    public int trustLevel = 0;
+    public int trustLevel() {
+        return 0;
+    }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final String link = "https://discord.gg/xdgCkUyaA4";

@@ -11,10 +11,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class HelpCommand extends Command {
-    public String name = "help";
+public class HelpCommand implements Command {
+    public String name() { return "help"; }
 
-    public String description = "Shows the help";
+    public String description() {
+        return "Shows the help";
+    }
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -32,7 +34,9 @@ public class HelpCommand extends Command {
         return aliases;
     }
 
-    public int trustLevel = 0;
+    public int trustLevel() {
+        return 0;
+    }
 
     private Bot bot;
 
@@ -71,9 +75,9 @@ public class HelpCommand extends Command {
         List<String> commandNames = new ArrayList<>();
 
         for (Command command : bot.commandHandler().commands()) {
-            if (command.trustLevel != trustLevel) continue;
+            if (command.trustLevel() != trustLevel) continue;
 
-            commandNames.add(command.name);
+            commandNames.add(command.name());
         }
 
         Collections.sort(commandNames);
@@ -100,9 +104,9 @@ public class HelpCommand extends Command {
         final String prefix = context.prefix();
 
         for (Command command : bot.commandHandler().commands()) {
-            if (!command.name.equals(args[0]) && !command.alias().contains(args[0])) continue;
+            if (!command.name().equals(args[0]) && !command.alias().contains(args[0])) continue;
 
-            final String commandName = command.name;
+            final String commandName = command.name();
             final List<Component> usages = new ArrayList<>();
 
             usages.add(
@@ -113,13 +117,13 @@ public class HelpCommand extends Command {
                                             " (" + String.join(", ", command.alias()) + ")" :
                                             ""
                             ))
-                            .append(Component.text(" - " + command.description).color(NamedTextColor.GRAY))
+                            .append(Component.text(" - " + command.description()).color(NamedTextColor.GRAY))
             );
 
             usages.add(
                     Component.empty()
                             .append(Component.text("Trust level: ").color(NamedTextColor.GREEN))
-                            .append(Component.text(command.trustLevel).color(NamedTextColor.YELLOW))
+                            .append(Component.text(command.trustLevel()).color(NamedTextColor.YELLOW))
             );
 
             for (String usage : command.usage()) {

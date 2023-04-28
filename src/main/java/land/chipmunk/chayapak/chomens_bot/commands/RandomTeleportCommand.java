@@ -11,10 +11,12 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RandomTeleportCommand extends Command {
-    public String name = "rtp";
+public class RandomTeleportCommand implements Command {
+    public String name() { return "rtp"; }
 
-    public String description = "Randomly teleports you";
+    public String description() {
+        return "Randomly teleports you";
+    }
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -30,7 +32,9 @@ public class RandomTeleportCommand extends Command {
         return aliases;
     }
 
-    public int trustLevel = 0;
+    public int trustLevel() {
+        return 0;
+    }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();

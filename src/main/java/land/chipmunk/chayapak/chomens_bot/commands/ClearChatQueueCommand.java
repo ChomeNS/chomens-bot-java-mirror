@@ -8,10 +8,12 @@ import net.kyori.adventure.text.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClearChatQueueCommand extends Command {
-    public String name = "clearchatqueue";
+public class ClearChatQueueCommand implements Command {
+    public String name() { return "clearchatqueue"; }
 
-    public String description = "Clears the bot's chat queue";
+    public String description() {
+        return "Clears the bot's chat queue";
+    }
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -27,7 +29,9 @@ public class ClearChatQueueCommand extends Command {
         return aliases;
     }
 
-    public int trustLevel = 0;
+    public int trustLevel() {
+        return 0;
+    }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();

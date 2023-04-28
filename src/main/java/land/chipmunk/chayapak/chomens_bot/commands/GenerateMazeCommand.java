@@ -10,10 +10,12 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GenerateMazeCommand extends Command {
-    public String name = "generatemaze";
+public class GenerateMazeCommand implements Command {
+    public String name() { return "generatemaze"; }
 
-    public String description = "Generates a maze";
+    public String description() {
+        return "Generates a maze";
+    }
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -30,7 +32,9 @@ public class GenerateMazeCommand extends Command {
         return aliases;
     }
 
-    public int trustLevel = 0;
+    public int trustLevel() {
+        return 0;
+    }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();

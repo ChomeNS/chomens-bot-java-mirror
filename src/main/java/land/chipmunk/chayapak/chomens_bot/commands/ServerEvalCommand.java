@@ -11,10 +11,12 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServerEvalCommand extends Command {
-    public String name = "servereval";
+public class ServerEvalCommand implements Command {
+    public String name() { return "servereval"; }
 
-    public String description = "Evaluate codes using LuaJ";
+    public String description() {
+        return "Evaluate codes using LuaJ";
+    }
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -30,7 +32,9 @@ public class ServerEvalCommand extends Command {
         return aliases;
     }
 
-    public int trustLevel = 2;
+    public int trustLevel() {
+        return 2;
+    }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         try {

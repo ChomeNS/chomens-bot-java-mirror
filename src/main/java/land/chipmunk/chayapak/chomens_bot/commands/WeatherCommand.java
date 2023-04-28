@@ -19,10 +19,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WeatherCommand extends Command {
-    public String name = "weather";
+public class WeatherCommand implements Command {
+    public String name() { return "weather"; }
 
-    public String description = "Shows the weather in a place";
+    public String description() {
+        return "Shows the weather in a place";
+    }
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -38,7 +40,9 @@ public class WeatherCommand extends Command {
         return aliases;
     }
 
-    public int trustLevel = 0;
+    public int trustLevel() {
+        return 0;
+    }
 
     public Component execute (CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();

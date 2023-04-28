@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="use alphanumeric">
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="revert commit">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/command/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/command/Command.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/BotUserCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/BotUserCommand.java" afterDir="false" />
@@ -43,6 +43,8 @@
       <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/WeatherCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/WeatherCommand.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/WikipediaCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/WikipediaCommand.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CommandHandlerPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CommandHandlerPlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CommandSuggestionPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CommandSuggestionPlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/util/ElementUtilities.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/util/ElementUtilities.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,6 +63,7 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -133,6 +136,13 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
+    </task>
+    <task id="LOCAL-00087" summary="add/improve/fix stuff&#10;ig mabe mabe mabe&#10;useCore!1!1!">
+      <created>1682060041610</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1682060041611</updated>
     </task>
     <task id="LOCAL-00088" summary="ig fix music filename mabe mabe">
       <created>1682073074933</created>
@@ -470,14 +480,7 @@
       <option name="project" value="LOCAL" />
       <updated>1682673335876</updated>
     </task>
-    <task id="LOCAL-00136" summary="use alphanumeric">
-      <created>1682676091534</created>
-      <option name="number" value="00136" />
-      <option name="presentableId" value="LOCAL-00136" />
-      <option name="project" value="LOCAL" />
-      <updated>1682676091535</updated>
-    </task>
-    <option name="localTasksCounter" value="137" />
+    <option name="localTasksCounter" value="136" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -516,8 +519,8 @@
     <MESSAGE value="use block change and multi block change packets&#10;and also change the core refill delay !!!" />
     <MESSAGE value="actually i forgor 1 thing&#10;its the command block update thing which we want to ignore it" />
     <MESSAGE value="port a thing from chomens bot js to java" />
-    <MESSAGE value="use alphanumeric" />
-    <option name="LAST_COMMIT_MESSAGE" value="use alphanumeric" />
+    <MESSAGE value="revert commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="revert commit" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

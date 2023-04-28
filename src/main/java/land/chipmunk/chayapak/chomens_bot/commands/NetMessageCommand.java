@@ -11,10 +11,12 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NetMessageCommand extends Command {
-    public String name = "netmsg";
+public class NetMessageCommand implements Command {
+    public String name() { return "netmsg"; }
 
-    public String description = "Broadcasts a message to all of the servers that the bot is connected";
+    public String description() {
+        return "Broadcasts a message to all of the servers that the bot is connected";
+    }
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -31,7 +33,9 @@ public class NetMessageCommand extends Command {
         return aliases;
     }
 
-    public int trustLevel = 0;
+    public int trustLevel() {
+        return 0;
+    }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();

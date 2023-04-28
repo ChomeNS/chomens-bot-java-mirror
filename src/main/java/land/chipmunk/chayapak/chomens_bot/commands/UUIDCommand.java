@@ -12,10 +12,12 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UUIDCommand extends Command {
-    public String name = "uuid";
+public class UUIDCommand implements Command {
+    public String name() { return "uuid"; }
 
-    public String description = "Shows your UUID or other player's UUID";
+    public String description() {
+        return "Shows your UUID or other player's UUID";
+    }
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -31,7 +33,9 @@ public class UUIDCommand extends Command {
         return aliases;
     }
 
-    public int trustLevel = 0;
+    public int trustLevel() {
+        return 0;
+    }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();

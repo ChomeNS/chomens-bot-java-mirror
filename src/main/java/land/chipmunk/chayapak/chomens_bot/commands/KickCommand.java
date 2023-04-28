@@ -11,10 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class KickCommand extends Command {
-    public String name = "kick";
+public class KickCommand implements Command {
+    public String name() { return "kick"; }
 
-    public String description = "Kicks a player";
+    public String description() {
+        return "Kicks a player";
+    }
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
@@ -30,7 +32,9 @@ public class KickCommand extends Command {
         return aliases;
     }
 
-    public int trustLevel = 1;
+    public int trustLevel() {
+        return 1;
+    }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();
