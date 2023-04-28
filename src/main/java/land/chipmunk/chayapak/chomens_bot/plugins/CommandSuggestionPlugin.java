@@ -43,8 +43,6 @@ public class CommandSuggestionPlugin extends ChatPlugin.ChatListener {
             }
             final String input = ((TextComponent) inputComponent).content();
 
-            System.out.println("input is \"" + input + "\"");
-
             final List<Component> output = new ArrayList<>();
             output.add(Component.text(id));
             output.add(Component.text(transactionId));
