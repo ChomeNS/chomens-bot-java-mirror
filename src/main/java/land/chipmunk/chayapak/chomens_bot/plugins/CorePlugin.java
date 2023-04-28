@@ -4,7 +4,10 @@ import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
 import com.github.steveice10.mc.protocol.data.game.entity.object.Direction;
 import com.github.steveice10.mc.protocol.data.game.entity.player.Hand;
 import com.github.steveice10.mc.protocol.data.game.entity.player.PlayerAction;
+import com.github.steveice10.mc.protocol.data.game.level.block.BlockChangeEntry;
 import com.github.steveice10.mc.protocol.data.game.level.block.CommandBlockMode;
+import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundBlockUpdatePacket;
+import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundSectionBlocksUpdatePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundTagQueryPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.inventory.ServerboundSetCommandBlockPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.inventory.ServerboundSetCreativeModeSlotPacket;
@@ -18,9 +21,9 @@ import com.github.steveice10.opennbt.tag.builtin.Tag;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.packet.Packet;
-import org.cloudburstmc.math.vector.Vector3i;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import lombok.Getter;
+import org.cloudburstmc.math.vector.Vector3i;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +46,7 @@ public class CorePlugin extends PositionPlugin.PositionListener {
     public Vector3i coreEnd;
 
     public Vector3i origin;
+    public Vector3i originEnd;
 
     public Vector3i relativeCorePosition = Vector3i.from(coreStart);
 
@@ -70,6 +74,8 @@ public class CorePlugin extends PositionPlugin.PositionListener {
             @Override
             public void packetReceived(Session session, Packet packet) {
                 if (packet instanceof ClientboundTagQueryPacket) CorePlugin.this.packetReceived((ClientboundTagQueryPacket) packet);
+                else if (packet instanceof ClientboundBlockUpdatePacket) CorePlugin.this.packetReceived((ClientboundBlockUpdatePacket) packet);
+                else if (packet instanceof ClientboundSectionBlocksUpdatePacket) CorePlugin.this.packetReceived((ClientboundSectionBlocksUpdatePacket) packet);
             }
         });
     }
@@ -137,8 +143,38 @@ public class CorePlugin extends PositionPlugin.PositionListener {
         transactions.get(packet.getTransactionId()).complete(packet.getNbt());
     }
 
+    public void packetReceived (ClientboundBlockUpdatePacket packet) {
+        final BlockChangeEntry entry = packet.getEntry();
+
+        final Vector3i position = entry.getPosition();
+
+        if (isCore(position)) refill();
+    }
+
+    public void packetReceived (ClientboundSectionBlocksUpdatePacket packet) {
+        final BlockChangeEntry[] entries = packet.getEntries();
+
+        boolean willRefill = false;
+
+        for (BlockChangeEntry entry : entries) {
+            final Vector3i position = entry.getPosition();
+
+            if (isCore(position)) willRefill = true;
+        }
+
+        if (willRefill) refill();
+    }
+
     public Vector3i absoluteCorePosition () {
         return relativeCorePosition.add(origin);
+    }
+
+    // ported from chomens bot js
+    private boolean isCore (Vector3i position) {
+        return
+                position.getX() >= origin.getX() && position.getX() <= originEnd.getX() &&
+                        position.getY() >= origin.getY() && position.getY() <= originEnd.getY() &&
+                        position.getZ() >= origin.getZ() && position.getZ() <= originEnd.getZ();
     }
 
     private void incrementBlock () {
@@ -175,6 +211,8 @@ public class CorePlugin extends PositionPlugin.PositionListener {
                 0,
                 bot.position().position().getZ()
         );
+        originEnd = origin.add(coreEnd);
+
         refill();
 
         if (!ready) {
