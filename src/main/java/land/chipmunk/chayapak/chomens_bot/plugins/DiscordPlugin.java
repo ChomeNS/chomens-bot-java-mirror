@@ -157,8 +157,7 @@ public class DiscordPlugin {
                                       nameComponent,
                                       Component.text(
                                               message
-                                                      .replace("\uD83D\uDC80", "☠") /* mirko forced me to do it :( */
-                                                      .replace("\uD83D", "☠")
+                                                      .replace("\uD83D\uDC80", "☠") // mirko forced me to do it :(
                                       ).color(NamedTextColor.GRAY),
                                       attachmentsComponent
                               ).color(NamedTextColor.DARK_GRAY);
