@@ -17,7 +17,6 @@ import com.github.steveice10.mc.protocol.packet.ingame.serverbound.player.Server
 import com.github.steveice10.opennbt.tag.builtin.ByteTag;
 import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
 import com.github.steveice10.opennbt.tag.builtin.StringTag;
-import com.github.steveice10.opennbt.tag.builtin.Tag;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.packet.Packet;
@@ -120,12 +119,12 @@ public class CorePlugin extends PositionPlugin.PositionListener {
     public void runPlaceBlock (String command) {
         if (!ready) return;
 
-        Map<String, Tag> tag = new HashMap<>();
-        Map<String, Tag> blockEntityTag = new HashMap<>();
-        blockEntityTag.put("Command", new StringTag("Command", command));
-        blockEntityTag.put("auto", new ByteTag("auto", (byte) 1));
-        blockEntityTag.put("TrackOutput", new ByteTag("TrackOutput", (byte) 1));
-        tag.put("BlockEntityTag", new CompoundTag("BlockEntityTag", blockEntityTag));
+        final CompoundTag tag = new CompoundTag("");
+        final CompoundTag blockEntityTag = new CompoundTag("BlockEntityTag");
+        blockEntityTag.put(new StringTag("Command", command));
+        blockEntityTag.put(new ByteTag("auto", (byte) 1));
+        blockEntityTag.put(new ByteTag("TrackOutput", (byte) 1));
+        tag.put(blockEntityTag);
 
         final Vector3i temporaryBlockPosition = Vector3i.from(
                 bot.position().position().getX(),
@@ -134,7 +133,7 @@ public class CorePlugin extends PositionPlugin.PositionListener {
         );
 
         final Session session = bot.session();
-        session.send(new ServerboundSetCreativeModeSlotPacket(36, new ItemStack(kaboom ? 490 /* repeating command block id */ : 371 /* command block id */, 64, new CompoundTag("", tag))));
+        session.send(new ServerboundSetCreativeModeSlotPacket(36, new ItemStack(kaboom ? 490 /* repeating command block id */ : 371 /* command block id */, 64, tag)));
         session.send(new ServerboundPlayerActionPacket(PlayerAction.START_DIGGING, temporaryBlockPosition, Direction.NORTH, 0));
         session.send(new ServerboundUseItemOnPacket(temporaryBlockPosition, Direction.UP, Hand.MAIN_HAND, 0.5f, 0.5f, 0.5f, false, 1));
     }
