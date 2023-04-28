@@ -219,9 +219,9 @@ public class CorePlugin extends PositionPlugin.PositionListener {
     public void positionChange (Vector3i position) {
         coreEnd = Vector3i.from(15, bot.config().core().layers() - 1, 15);
         origin = Vector3i.from(
-                bot.position().position().getX(),
+                Math.floor((double) bot.position().position().getX() / 16) * 16,
                 0,
-                bot.position().position().getZ()
+                Math.floor((double) bot.position().position().getZ() / 16) * 16
         );
         originEnd = origin.add(coreEnd);
 
