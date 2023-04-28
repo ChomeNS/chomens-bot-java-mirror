@@ -44,7 +44,7 @@ public class NetMessageCommand implements Command {
         final String hostAndPort = bot.host() + ":" + bot.port();
 
         final Component component = Component.translatable(
-                "[%s] %s › %s",
+                "[%s]%s%s%s› %s",
                 Component
                         .text(hostAndPort)
                         .color(NamedTextColor.GRAY)
@@ -57,7 +57,9 @@ public class NetMessageCommand implements Command {
                                                 .append(Component.text("Click here to copy the server host and port to your clipboard").color(NamedTextColor.GREEN))
                                 )
                         ),
+                Component.text(" "),
                 Component.text(context.sender().profile().getName()).color(NamedTextColor.GRAY),
+                Component.text(" "),
                 Component.text(String.join(" ", args)).color(NamedTextColor.GRAY)
         ).color(NamedTextColor.DARK_GRAY);
 

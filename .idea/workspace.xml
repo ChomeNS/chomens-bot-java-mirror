@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="bots mabe">
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="amogus">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -96,13 +96,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00080" summary="what the fuck i commited the wrong file">
-      <created>1681806738901</created>
-      <option name="number" value="00080" />
-      <option name="presentableId" value="LOCAL-00080" />
-      <option name="project" value="LOCAL" />
-      <updated>1681806738901</updated>
     </task>
     <task id="LOCAL-00081" summary="mabe">
       <created>1681806777109</created>
@@ -440,7 +433,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682601960493</updated>
     </task>
-    <option name="localTasksCounter" value="129" />
+    <task id="LOCAL-00129" summary="amogus">
+      <created>1682644881918</created>
+      <option name="number" value="00129" />
+      <option name="presentableId" value="LOCAL-00129" />
+      <option name="project" value="LOCAL" />
+      <updated>1682644881919</updated>
+    </task>
+    <option name="localTasksCounter" value="130" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -455,7 +455,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="probably lazy fix the sus" />
     <MESSAGE value="improve bot options? mabe mabe" />
     <MESSAGE value="put the setter back" />
     <MESSAGE value="use serverName instead of host:port for console i guess" />
@@ -480,7 +479,8 @@
     <MESSAGE value="chat queue delay in config" />
     <MESSAGE value="new 1.19.4 update i guess" />
     <MESSAGE value="bots mabe" />
-    <option name="LAST_COMMIT_MESSAGE" value="bots mabe" />
+    <MESSAGE value="amogus" />
+    <option name="LAST_COMMIT_MESSAGE" value="amogus" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
