@@ -118,7 +118,7 @@ public class Bot {
 
         final String _username = options.username();
 
-        if (_username == null) username = RandomStringUtils.randomAlphabetic(8);
+        if (_username == null) username = RandomStringUtils.randomAlphanumeric(8);
         else username = _username;
 
         Session session = new TcpClientSession(host, port, new MinecraftProtocol(username), null);
