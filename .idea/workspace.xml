@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="CompoundTag mabe mabe">
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="fix core?">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CorePlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CorePlugin.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,13 +99,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00090" summary="hopefully fix the broken players plugin">
-      <created>1682120738152</created>
-      <option name="number" value="00090" />
-      <option name="presentableId" value="LOCAL-00090" />
-      <option name="project" value="LOCAL" />
-      <updated>1682120738153</updated>
     </task>
     <task id="LOCAL-00091" summary="f">
       <created>1682122055989</created>
@@ -441,7 +436,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682682936127</updated>
     </task>
-    <option name="localTasksCounter" value="139" />
+    <task id="LOCAL-00139" summary="update language file to 1.19.4">
+      <created>1682730825558</created>
+      <option name="number" value="00139" />
+      <option name="presentableId" value="LOCAL-00139" />
+      <option name="project" value="LOCAL" />
+      <updated>1682730825558</updated>
+    </task>
+    <option name="localTasksCounter" value="140" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -456,8 +458,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="actually improve the systemMessageReceived thing" />
-    <MESSAGE value="improve returning output of commands" />
     <MESSAGE value="thanks blackilykat for solving the thing.,.,.,&#10;yes just change the thing to null and its all done" />
     <MESSAGE value="fix chomens bot crsah exploit 2023 working" />
     <MESSAGE value="i forgor 1 thing lmfao" />
@@ -481,7 +481,24 @@
     <MESSAGE value="revert commit" />
     <MESSAGE value="finally add usage to help's hoverevent&#10;piece of shit" />
     <MESSAGE value="CompoundTag mabe mabe" />
-    <option name="LAST_COMMIT_MESSAGE" value="CompoundTag mabe mabe" />
+    <MESSAGE value="update language file to 1.19.4" />
+    <MESSAGE value="fix core?" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix core?" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/TestCommand.java</url>
+          <line>13</line>
+          <properties class="land.chipmunk.chayapak.chomens_bot.commands.TestCommand" method="description">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
