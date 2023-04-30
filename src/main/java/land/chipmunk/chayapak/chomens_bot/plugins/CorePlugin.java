@@ -145,8 +145,6 @@ public class CorePlugin extends PositionPlugin.PositionListener {
     public void packetReceived (ClientboundBlockUpdatePacket packet) {
         final BlockChangeEntry entry = packet.getEntry();
 
-        System.out.println(entry.getBlock());
-
         if (
                 entry.getBlock() == 12369 ||
                         entry.getBlock() == 12379 ||
@@ -167,8 +165,6 @@ public class CorePlugin extends PositionPlugin.PositionListener {
 
         for (BlockChangeEntry entry : entries) {
             final Vector3i position = entry.getPosition();
-
-            System.out.println(entry.getBlock());
 
             if (
                     entry.getBlock() == 12369 ||
