@@ -16,7 +16,6 @@ public class BossbarManagerPlugin extends Bot.Listener {
     private final Bot bot;
 
     private ScheduledFuture<?> tickTask;
-    private ScheduledFuture<?> updateTask;
 
     private final Map<String, BossBar> bossBars = new HashMap<>();
 
@@ -41,26 +40,11 @@ public class BossbarManagerPlugin extends Bot.Listener {
 
     public void ready () {
         tickTask = bot.executor().scheduleAtFixedRate(this::tick, 0, 50, TimeUnit.MILLISECONDS);
-        updateTask = bot.executor().scheduleAtFixedRate(this::update, 0, 500, TimeUnit.MILLISECONDS);
     }
 
     @Override
     public void disconnected(DisconnectedEvent event) {
         tickTask.cancel(true);
-        updateTask.cancel(true);
-    }
-
-    private void update() {
-        if (!enabled || actionbar) return;
-        for (Map.Entry<String, BossBar> _bossBar : bossBars.entrySet()) {
-            final String name = _bossBar.getKey();
-            final BossBar bossBar = _bossBar.getValue();
-            createBossBar(name, bossBar.players());
-            bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " color " + bossBar.color().color);
-            bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " visible " + bossBar.visible());
-            bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " style " + bossBar.style().style);
-            bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " max " + bossBar.max());
-        }
     }
 
     public void tick () {
@@ -72,6 +56,10 @@ public class BossbarManagerPlugin extends Bot.Listener {
             final String stringifiedComponent = GsonComponentSerializer.gson().serialize(bossBar.name());
 
             if (!actionbar) {
+                bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " color " + bossBar.color().color);
+                bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " visible " + bossBar.visible());
+                bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " style " + bossBar.style().style);
+                bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " max " + bossBar.max());
                 bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " name " + stringifiedComponent);
                 bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " value " + bossBar.value());
             } else {

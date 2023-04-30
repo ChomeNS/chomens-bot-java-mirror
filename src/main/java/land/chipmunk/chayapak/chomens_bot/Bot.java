@@ -84,8 +84,6 @@ public class Bot {
                 Bot.this.ready();
             }
         });
-
-        executor.scheduleAtFixedRate(this::tick, 0, 10, TimeUnit.MILLISECONDS);
     }
 
     public void ready () {
@@ -113,18 +111,6 @@ public class Bot {
         this.commandSuggestion = new CommandSuggestionPlugin(this);
 
         reconnect();
-    }
-
-    public void sendPacket (Packet packet) {
-        packetQueue.add(packet);
-    }
-
-    private void tick () {
-        if (!loggedIn || packetQueue.size() == 0) return;
-
-        session.send(packetQueue.get(0));
-
-        packetQueue.remove(0);
     }
 
     private void reconnect () {
