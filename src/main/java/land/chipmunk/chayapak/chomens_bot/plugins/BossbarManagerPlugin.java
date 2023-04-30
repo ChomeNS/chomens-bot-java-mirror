@@ -56,6 +56,8 @@ public class BossbarManagerPlugin extends Bot.Listener {
             final String stringifiedComponent = GsonComponentSerializer.gson().serialize(bossBar.name());
 
             if (!actionbar) {
+                bot.core().run("minecraft:bossbar add " + bossBarPrefix + name + " \"\"");
+                bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " players " + bossBar.players());
                 bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " color " + bossBar.color().color);
                 bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " visible " + bossBar.visible());
                 bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " style " + bossBar.style().style);
@@ -71,15 +73,8 @@ public class BossbarManagerPlugin extends Bot.Listener {
         }
     }
 
-    private void createBossBar (String name, String players) {
-        if (!enabled || actionbar) return;
-        bot.core().run("minecraft:bossbar add " + bossBarPrefix + name + " \"\"");
-        bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " players " + players);
-    }
-
     public void add (String name, BossBar bossBar) {
         bossBars.put(name, bossBar);
-        createBossBar(name, bossBar.players());
     }
 
     public void remove (String name) {
