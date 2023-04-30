@@ -183,7 +183,7 @@ public class ChatPlugin extends Bot.Listener {
                 if (splitMessage.trim().equals("")) continue;
 
                 if (splitMessage.startsWith("/")) {
-                    bot.sendPacket(new ServerboundChatCommandPacket(
+                    bot.session().send(new ServerboundChatCommandPacket(
                             splitMessage.substring(1),
                             Instant.now().toEpochMilli(),
                             0L,
@@ -192,7 +192,7 @@ public class ChatPlugin extends Bot.Listener {
                             new BitSet()
                     ));
                 } else {
-                    bot.sendPacket(new ServerboundChatPacket(
+                    bot.session().send(new ServerboundChatPacket(
                             splitMessage,
                             Instant.now().toEpochMilli(),
                             0L,

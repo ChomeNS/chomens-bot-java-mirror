@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="add fart !!!!!!!">
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="packet queue farded it">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Bot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/BossbarManagerPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/BossbarManagerPlugin.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,13 +112,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00096" summary="improve reconnect i guess">
-      <created>1682141715244</created>
-      <option name="number" value="00096" />
-      <option name="presentableId" value="LOCAL-00096" />
-      <option name="project" value="LOCAL" />
-      <updated>1682141715244</updated>
     </task>
     <task id="LOCAL-00097" summary="make better console logging like the old js chomens bot">
       <created>1682142828982</created>
@@ -454,7 +449,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682842148011</updated>
     </task>
-    <option name="localTasksCounter" value="145" />
+    <task id="LOCAL-00145" summary="packet queue farded it">
+      <created>1682854236394</created>
+      <option name="number" value="00145" />
+      <option name="presentableId" value="LOCAL-00145" />
+      <option name="project" value="LOCAL" />
+      <updated>1682854236395</updated>
+    </task>
+    <option name="localTasksCounter" value="146" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -469,7 +471,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="make trusted broadcast log in console" />
     <MESSAGE value="add connecting message" />
     <MESSAGE value="add reconnect delay to each bot option (optional)" />
     <MESSAGE value="change stuff a bit" />
@@ -494,7 +495,8 @@
     <MESSAGE value="fix error i guess" />
     <MESSAGE value="add packet queue for funni" />
     <MESSAGE value="add fart !!!!!!!" />
-    <option name="LAST_COMMIT_MESSAGE" value="add fart !!!!!!!" />
+    <MESSAGE value="packet queue farded it" />
+    <option name="LAST_COMMIT_MESSAGE" value="packet queue farded it" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

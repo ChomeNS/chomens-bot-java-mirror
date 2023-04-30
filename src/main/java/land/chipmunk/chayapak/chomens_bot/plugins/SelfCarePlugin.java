@@ -157,7 +157,7 @@ public class SelfCarePlugin extends Bot.Listener {
         final GameEventValue value = packet.getValue();
 
         if (notification == GameEvent.ENTER_CREDITS) {
-            bot.sendPacket(new ServerboundClientCommandPacket(ClientCommand.RESPAWN));
+            bot.session().send(new ServerboundClientCommandPacket(ClientCommand.RESPAWN));
             return;
         }
 
