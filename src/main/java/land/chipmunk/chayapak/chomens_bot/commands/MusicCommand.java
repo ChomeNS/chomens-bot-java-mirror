@@ -275,11 +275,15 @@ public class MusicCommand implements Command {
         final MusicPlayerPlugin music = context.bot().music();
         if (music.currentSong() == null) return Component.text("No song is currently playing").color(NamedTextColor.RED);
 
+        context.sendOutput(
+                Component.empty()
+                    .append(Component.text("Skipping "))
+                    .append(music.currentSong().name.color(NamedTextColor.GOLD))
+        );
+
         music.skip();
 
-        return Component.empty()
-                .append(Component.text("Skipping "))
-                .append(music.currentSong().name.color(NamedTextColor.GOLD));
+        return null;
     }
 
     public Component nowplaying (CommandContext context) {

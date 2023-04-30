@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="fix core?">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="remove debug line ig">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CorePlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/CorePlugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/MusicCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/commands/MusicCommand.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,20 +98,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00091" summary="f">
-      <created>1682122055989</created>
-      <option name="number" value="00091" />
-      <option name="presentableId" value="LOCAL-00091" />
-      <option name="project" value="LOCAL" />
-      <updated>1682122055990</updated>
-    </task>
-    <task id="LOCAL-00092" summary="fard">
-      <created>1682130155082</created>
-      <option name="number" value="00092" />
-      <option name="presentableId" value="LOCAL-00092" />
-      <option name="project" value="LOCAL" />
-      <updated>1682130155082</updated>
     </task>
     <task id="LOCAL-00093" summary="fard 2">
       <created>1682131432220</created>
@@ -443,7 +428,21 @@
       <option name="project" value="LOCAL" />
       <updated>1682730825558</updated>
     </task>
-    <option name="localTasksCounter" value="140" />
+    <task id="LOCAL-00140" summary="fix core?">
+      <created>1682823137043</created>
+      <option name="number" value="00140" />
+      <option name="presentableId" value="LOCAL-00140" />
+      <option name="project" value="LOCAL" />
+      <updated>1682823137045</updated>
+    </task>
+    <task id="LOCAL-00141" summary="remove debug line ig">
+      <created>1682823229424</created>
+      <option name="number" value="00141" />
+      <option name="presentableId" value="LOCAL-00141" />
+      <option name="project" value="LOCAL" />
+      <updated>1682823229424</updated>
+    </task>
+    <option name="localTasksCounter" value="142" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -458,7 +457,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="thanks blackilykat for solving the thing.,.,.,&#10;yes just change the thing to null and its all done" />
     <MESSAGE value="fix chomens bot crsah exploit 2023 working" />
     <MESSAGE value="i forgor 1 thing lmfao" />
     <MESSAGE value="gex" />
@@ -483,7 +481,8 @@
     <MESSAGE value="CompoundTag mabe mabe" />
     <MESSAGE value="update language file to 1.19.4" />
     <MESSAGE value="fix core?" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix core?" />
+    <MESSAGE value="remove debug line ig" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove debug line ig" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
