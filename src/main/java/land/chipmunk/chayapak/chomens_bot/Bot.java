@@ -38,6 +38,8 @@ public class Bot {
 
     @Getter private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(100);
 
+    private final List<Packet> packetQueue = new ArrayList<>();
+
     @Getter @Setter private ConsolePlugin console;
     @Getter @Setter private LoggerPlugin logger; // in ConsolePlugin
     @Getter @Setter private DiscordPlugin discord; // same for this one too
@@ -82,6 +84,8 @@ public class Bot {
                 Bot.this.ready();
             }
         });
+
+        executor.scheduleAtFixedRate(this::tick, 0, 10, TimeUnit.MILLISECONDS);
     }
 
     public void ready () {
@@ -109,6 +113,18 @@ public class Bot {
         this.commandSuggestion = new CommandSuggestionPlugin(this);
 
         reconnect();
+    }
+
+    public void sendPacket (Packet packet) {
+        packetQueue.add(packet);
+    }
+
+    private void tick () {
+        if (!loggedIn || packetQueue.size() == 0) return;
+
+        session.send(packetQueue.get(0));
+
+        packetQueue.remove(0);
     }
 
     private void reconnect () {

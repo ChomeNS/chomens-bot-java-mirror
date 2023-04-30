@@ -83,7 +83,7 @@ public class CorePlugin extends PositionPlugin.PositionListener {
         if (!ready) return;
 
         if (bot.options().useCore()) {
-            bot.session().send(new ServerboundSetCommandBlockPacket(
+            bot.sendPacket(new ServerboundSetCommandBlockPacket(
                     absoluteCorePosition(),
                     command,
                     kaboom ? CommandBlockMode.AUTO : CommandBlockMode.REDSTONE,
@@ -109,7 +109,7 @@ public class CorePlugin extends PositionPlugin.PositionListener {
         final CompletableFuture<CompoundTag> future = new CompletableFuture<>();
         transactions.put(transactionId, future);
 
-        final Runnable afterTick = () -> bot.session().send(new ServerboundBlockEntityTagQuery(transactionId, position));
+        final Runnable afterTick = () -> bot.sendPacket(new ServerboundBlockEntityTagQuery(transactionId, position));
 
         bot.executor().schedule(afterTick, 50, TimeUnit.MILLISECONDS);
 

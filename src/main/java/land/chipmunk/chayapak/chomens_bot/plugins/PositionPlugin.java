@@ -49,7 +49,7 @@ public class PositionPlugin extends Bot.Listener {
     }
 
     public void packetReceived (ClientboundPlayerPositionPacket packet) {
-        bot.session().send(new ServerboundAcceptTeleportationPacket(packet.getTeleportId()));
+        bot.sendPacket(new ServerboundAcceptTeleportationPacket(packet.getTeleportId()));
 
         position = Vector3i.from(packet.getX(), packet.getY(), packet.getZ());
         for (PositionListener listener : listeners) { listener.positionChange(position); }
