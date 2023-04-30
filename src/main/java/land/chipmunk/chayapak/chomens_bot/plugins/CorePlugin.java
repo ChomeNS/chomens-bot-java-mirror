@@ -75,6 +75,9 @@ public class CorePlugin extends PositionPlugin.PositionListener {
                 if (packet instanceof ClientboundTagQueryPacket) CorePlugin.this.packetReceived((ClientboundTagQueryPacket) packet);
                 else if (packet instanceof ClientboundBlockUpdatePacket) CorePlugin.this.packetReceived((ClientboundBlockUpdatePacket) packet);
                 else if (packet instanceof ClientboundSectionBlocksUpdatePacket) CorePlugin.this.packetReceived((ClientboundSectionBlocksUpdatePacket) packet);
+
+                // TODO: support this (used for worldedit)
+                // else if (packet instanceof ClientboundLevelChunkWithLightPacket) CorePlugin.this.packetReceived((ClientboundLevelChunkWithLightPacket) packet);
             }
         });
     }
@@ -179,6 +182,22 @@ public class CorePlugin extends PositionPlugin.PositionListener {
 
         if (willRefill) refill();
     }
+
+    /* public void packetReceived (ClientboundLevelChunkWithLightPacket packet) {
+        final BlockEntityInfo[] infos = packet.getBlockEntities();
+
+        boolean willRefill = false;
+
+        for (BlockEntityInfo info : infos) {
+            final Vector3i position = Vector3i.from(info.getX(), info.getY(), info.getZ());
+
+            System.out.println(position);
+
+            if (isCore(position)) willRefill = true;
+        }
+
+        if (willRefill) refill();
+    } */
 
     public Vector3i absoluteCorePosition () {
         return relativeCorePosition.add(origin);
