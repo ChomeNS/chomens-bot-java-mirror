@@ -40,7 +40,7 @@ public class BotUserCommand implements Command {
         final Bot bot = context.bot();
 
         final String username = bot.username();
-        final String uuid = bot.players().getBotEntry().profile().getIdAsString();
+        final String uuid = bot.profile().getIdAsString();
 
         return Component.translatable(
                 "The bot's username is: %s and the UUID is: %s",

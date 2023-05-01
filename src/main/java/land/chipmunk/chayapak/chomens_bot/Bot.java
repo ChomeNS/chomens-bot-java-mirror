@@ -1,7 +1,9 @@
 package land.chipmunk.chayapak.chomens_bot;
 
+import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
+import com.github.steveice10.mc.protocol.packet.login.clientbound.ClientboundGameProfilePacket;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.*;
 import com.github.steveice10.packetlib.packet.Packet;
@@ -32,13 +34,13 @@ public class Bot {
 
     @Getter private String username;
 
+    @Getter private GameProfile profile;
+
     @Getter public Session session;
 
     @Getter private boolean loggedIn = false;
 
     @Getter private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(100);
-
-    private final List<Packet> packetQueue = new ArrayList<>();
 
     @Getter @Setter private ConsolePlugin console;
     @Getter @Setter private LoggerPlugin logger; // in ConsolePlugin
@@ -141,7 +143,11 @@ public class Bot {
                         loggedIn = true;
                         listener.connected(new ConnectedEvent(session));
                     }
-                }
+                } else if (packet instanceof ClientboundGameProfilePacket) packetReceived((ClientboundGameProfilePacket) packet);
+            }
+
+            public void packetReceived(ClientboundGameProfilePacket packet) {
+                profile = packet.getProfile();
             }
 
             @Override
