@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="packet queue farded it">
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="fix mabe mabe&#10;untested">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Bot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/Bot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/BossbarManagerPlugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/BossbarManagerPlugin.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,19 +57,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/chayapak1/IdeaProjects/CrackUtils&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.new.ui&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "jdk.selected.JAVA_MODULE": "17",
+    "last_opened_file_path": "/home/chayapak1/projects/chipmunkmod",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "reference.settings.ide.settings.new.ui"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/.idea" />
@@ -112,20 +110,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00097" summary="make better console logging like the old js chomens bot">
-      <created>1682142828982</created>
-      <option name="number" value="00097" />
-      <option name="presentableId" value="LOCAL-00097" />
-      <option name="project" value="LOCAL" />
-      <updated>1682142828982</updated>
-    </task>
-    <task id="LOCAL-00098" summary="fart !!!!">
-      <created>1682164566394</created>
-      <option name="number" value="00098" />
-      <option name="presentableId" value="LOCAL-00098" />
-      <option name="project" value="LOCAL" />
-      <updated>1682164566394</updated>
     </task>
     <task id="LOCAL-00099" summary="sex">
       <created>1682167370618</created>
@@ -456,7 +440,21 @@
       <option name="project" value="LOCAL" />
       <updated>1682854236395</updated>
     </task>
-    <option name="localTasksCounter" value="146" />
+    <task id="LOCAL-00146" summary="i forgor">
+      <created>1682854330204</created>
+      <option name="number" value="00146" />
+      <option name="presentableId" value="LOCAL-00146" />
+      <option name="project" value="LOCAL" />
+      <updated>1682854330204</updated>
+    </task>
+    <task id="LOCAL-00147" summary="fix mabe mabe&#10;untested">
+      <created>1682854469604</created>
+      <option name="number" value="00147" />
+      <option name="presentableId" value="LOCAL-00147" />
+      <option name="project" value="LOCAL" />
+      <updated>1682854469605</updated>
+    </task>
+    <option name="localTasksCounter" value="148" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -471,8 +469,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add connecting message" />
-    <MESSAGE value="add reconnect delay to each bot option (optional)" />
     <MESSAGE value="change stuff a bit" />
     <MESSAGE value="fix fallback name?" />
     <MESSAGE value="make time output shorter?&#10;mabe" />
@@ -496,7 +492,9 @@
     <MESSAGE value="add packet queue for funni" />
     <MESSAGE value="add fart !!!!!!!" />
     <MESSAGE value="packet queue farded it" />
-    <option name="LAST_COMMIT_MESSAGE" value="packet queue farded it" />
+    <MESSAGE value="i forgor" />
+    <MESSAGE value="fix mabe mabe&#10;untested" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix mabe mabe&#10;untested" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -32,6 +32,8 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.ChatListener {
     public void commandSpyMessageReceived (PlayerMessage message) { listener(message, true); }
 
     private void listener (PlayerMessage message, boolean cspy) {
+        if (message.sender().profile().getName().equals(bot.username())) return;
+
         final Component displayNameComponent = message.displayName();
         final Component messageComponent = message.contents();
         if (displayNameComponent == null || messageComponent == null) return;
