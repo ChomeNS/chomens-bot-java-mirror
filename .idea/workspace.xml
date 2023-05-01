@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="add bot.profile() mabe" />
+    <list default="true" id="50f184fa-7bed-4956-baf5-7586ff26ea08" name="Changes" comment="add global ticker&#10;the performance is the same its still using like 100 - 300 heap usage&#10;doesn't really do anyhting.,.,,.&#10;real" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -108,13 +108,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1680245437032</updated>
-    </task>
-    <task id="LOCAL-00101" summary="forgor to set the thread to null">
-      <created>1682169054135</created>
-      <option name="number" value="00101" />
-      <option name="presentableId" value="LOCAL-00101" />
-      <option name="project" value="LOCAL" />
-      <updated>1682169054135</updated>
     </task>
     <task id="LOCAL-00102" summary="log exception for funni?">
       <created>1682169510400</created>
@@ -452,7 +445,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682905214836</updated>
     </task>
-    <option name="localTasksCounter" value="150" />
+    <task id="LOCAL-00150" summary="add global ticker&#10;the performance is the same its still using like 100 - 300 heap usage&#10;doesn't really do anyhting.,.,,.&#10;real">
+      <created>1682910530242</created>
+      <option name="number" value="00150" />
+      <option name="presentableId" value="LOCAL-00150" />
+      <option name="project" value="LOCAL" />
+      <updated>1682910530242</updated>
+    </task>
+    <option name="localTasksCounter" value="151" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -467,7 +467,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="make time output shorter?&#10;mabe" />
     <MESSAGE value="chat queue delay in config" />
     <MESSAGE value="new 1.19.4 update i guess" />
     <MESSAGE value="bots mabe" />
@@ -492,7 +491,8 @@
     <MESSAGE value="fix mabe mabe&#10;untested" />
     <MESSAGE value="patch skiddie exploit" />
     <MESSAGE value="add bot.profile() mabe" />
-    <option name="LAST_COMMIT_MESSAGE" value="add bot.profile() mabe" />
+    <MESSAGE value="add global ticker&#10;the performance is the same its still using like 100 - 300 heap usage&#10;doesn't really do anyhting.,.,,.&#10;real" />
+    <option name="LAST_COMMIT_MESSAGE" value="add global ticker&#10;the performance is the same its still using like 100 - 300 heap usage&#10;doesn't really do anyhting.,.,,.&#10;real" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
