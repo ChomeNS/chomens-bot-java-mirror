@@ -13,7 +13,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 public class TPSPlugin extends Bot.Listener {
     private final Bot bot;
@@ -35,7 +34,12 @@ public class TPSPlugin extends Bot.Listener {
         bot.core().addListener(new CorePlugin.Listener() {
                @Override
                public void ready() {
-                   bot.executor().scheduleAtFixedRate(() -> updateTPSBar(), 0, 50, TimeUnit.MILLISECONDS);
+                   bot.tick().addListener(new TickPlugin.Listener() {
+                       @Override
+                       public void onTick() {
+                           updateTPSBar();
+                       }
+                   });
                }
            }
         );

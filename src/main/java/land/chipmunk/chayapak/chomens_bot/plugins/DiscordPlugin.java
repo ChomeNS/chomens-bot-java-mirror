@@ -22,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 // please ignore my shitcode
 public class DiscordPlugin {
@@ -71,7 +70,12 @@ public class DiscordPlugin {
 
                       if (channelAlreadyAddedListeners) return;
 
-                      bot.executor().scheduleAtFixedRate(() -> onDiscordTick(channelId), 0, 50, TimeUnit.MILLISECONDS);
+                      bot.tick().addListener(new TickPlugin.Listener() {
+                          @Override
+                          public void onTick() {
+                              onDiscordTick(channelId);
+                          }
+                      });
 
                       bot.chat().addListener(new ChatPlugin.ChatListener() {
                           @Override

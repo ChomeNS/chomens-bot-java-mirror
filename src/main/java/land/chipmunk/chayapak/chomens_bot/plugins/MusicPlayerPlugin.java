@@ -17,13 +17,9 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.LinkedList;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 public class MusicPlayerPlugin extends Bot.Listener {
     private final Bot bot;
-
-    private ScheduledFuture<?> playTask;
 
     public static final String SELECTOR  = "@a[tag=!nomusic,tag=!chomens_bot_nomusic]";
     public static File SONG_DIR = new File("songs");
@@ -90,76 +86,77 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     public void coreReady () {
-        final Runnable task = () -> {
-            if (loaderThread != null && !loaderThread.isAlive()) {
-                if (loaderThread.exception != null) {
-                    bot.chat().tellraw(Component.translatable("Failed to load song: %s", loaderThread.exception.message()).color(NamedTextColor.RED));
-                } else {
-                    songQueue.add(loaderThread.song);
-                    bot.chat().tellraw(Component.translatable("Added %s to the song queue", Component.empty().append(loaderThread.song.name).color(NamedTextColor.GOLD)));
-                }
-                loaderThread = null;
-            }
-
-            if (currentSong == null) {
-                if (songQueue.size() == 0) return;
-
-                addBossBar();
-
-                currentSong = songQueue.get(0); // songQueue.poll();
-                bot.chat().tellraw(Component.translatable("Now playing %s", Component.empty().append(currentSong.name).color(NamedTextColor.GOLD)));
-                currentSong.play();
-            }
-
-            if (currentSong.paused && ticksUntilPausedBossbar-- < 0) return;
-            else ticksUntilPausedBossbar = 20;
-
-            BossBar bossBar = bot.bossbar().get(bossbarName);
-
-            if (bossBar == null) bossBar = addBossBar();
-
-            bossBar.players(SELECTOR);
-            bossBar.name(generateBossbar());
-            bossBar.color(pitch > 0 ? BossBarColor.PURPLE : BossBarColor.YELLOW);
-            bossBar.visible(true);
-            bossBar.style(BossBarStyle.PROGRESS);
-            bossBar.value((int) Math.floor(currentSong.time * speed));
-            bossBar.max(currentSong.length);
-
-            if (currentSong.paused) return;
-
-            handlePlaying();
-
-            if (currentSong.finished()) {
-                if (loop == Loop.CURRENT) {
-                    currentSong.setTime(0);
-                    return;
+        bot.tick().addListener(new TickPlugin.Listener() {
+            @Override
+            public void onTick() {
+                if (loaderThread != null && !loaderThread.isAlive()) {
+                    if (loaderThread.exception != null) {
+                        bot.chat().tellraw(Component.translatable("Failed to load song: %s", loaderThread.exception.message()).color(NamedTextColor.RED));
+                    } else {
+                        songQueue.add(loaderThread.song);
+                        bot.chat().tellraw(Component.translatable("Added %s to the song queue", Component.empty().append(loaderThread.song.name).color(NamedTextColor.GOLD)));
+                    }
+                    loaderThread = null;
                 }
 
-                bot.chat().tellraw(Component.translatable("Finished playing %s", Component.empty().append(currentSong.name).color(NamedTextColor.GOLD)));
+                if (currentSong == null) {
+                    if (songQueue.size() == 0) return;
 
-                if (loop == Loop.ALL) {
-                    skip();
-                    return;
-                }
+                    addBossBar();
 
-                songQueue.remove();
-
-                if (songQueue.size() == 0) {
-                    stopPlaying();
-                    removeBossBar();
-                    bot.chat().tellraw(Component.text("Finished playing every song in the queue"));
-                    return;
-                }
-                if (currentSong.size() > 0) {
-                    currentSong = songQueue.get(0);
-                    currentSong.setTime(0);
+                    currentSong = songQueue.get(0); // songQueue.poll();
+                    bot.chat().tellraw(Component.translatable("Now playing %s", Component.empty().append(currentSong.name).color(NamedTextColor.GOLD)));
                     currentSong.play();
                 }
-            }
-        };
 
-        playTask = bot.executor().scheduleAtFixedRate(task, 50, 50, TimeUnit.MILLISECONDS);
+                if (currentSong.paused && ticksUntilPausedBossbar-- < 0) return;
+                else ticksUntilPausedBossbar = 20;
+
+                BossBar bossBar = bot.bossbar().get(bossbarName);
+
+                if (bossBar == null) bossBar = addBossBar();
+
+                bossBar.players(SELECTOR);
+                bossBar.name(generateBossbar());
+                bossBar.color(pitch > 0 ? BossBarColor.PURPLE : BossBarColor.YELLOW);
+                bossBar.visible(true);
+                bossBar.style(BossBarStyle.PROGRESS);
+                bossBar.value((int) Math.floor(currentSong.time * speed));
+                bossBar.max(currentSong.length);
+
+                if (currentSong.paused) return;
+
+                handlePlaying();
+
+                if (currentSong.finished()) {
+                    if (loop == Loop.CURRENT) {
+                        currentSong.setTime(0);
+                        return;
+                    }
+
+                    bot.chat().tellraw(Component.translatable("Finished playing %s", Component.empty().append(currentSong.name).color(NamedTextColor.GOLD)));
+
+                    if (loop == Loop.ALL) {
+                        skip();
+                        return;
+                    }
+
+                    songQueue.remove();
+
+                    if (songQueue.size() == 0) {
+                        stopPlaying();
+                        removeBossBar();
+                        bot.chat().tellraw(Component.text("Finished playing every song in the queue"));
+                        return;
+                    }
+                    if (currentSong.size() > 0) {
+                        currentSong = songQueue.get(0);
+                        currentSong.setTime(0);
+                        currentSong.play();
+                    }
+                }
+            }
+        });
 
         if (currentSong != null) currentSong.play();
     }
@@ -248,8 +245,6 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
     @Override
     public void disconnected (DisconnectedEvent event) {
-        playTask.cancel(true);
-
         if (currentSong != null) currentSong.pause(); // nice.
     }
 

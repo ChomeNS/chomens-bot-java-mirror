@@ -46,6 +46,7 @@ public class Bot {
     @Getter @Setter private LoggerPlugin logger; // in ConsolePlugin
     @Getter @Setter private DiscordPlugin discord; // same for this one too
 
+    @Getter private TickPlugin tick;
     @Getter private ChatPlugin chat;
     @Getter private PositionPlugin position;
     @Getter private SelfCarePlugin selfCare;
@@ -89,6 +90,7 @@ public class Bot {
     }
 
     public void ready () {
+        this.tick = new TickPlugin(this);
         this.chat = new ChatPlugin(this);
         this.position = new PositionPlugin(this);
         this.selfCare = new SelfCarePlugin(this);

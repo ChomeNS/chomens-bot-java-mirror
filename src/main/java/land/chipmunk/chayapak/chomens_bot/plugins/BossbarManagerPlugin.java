@@ -1,6 +1,5 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
-import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.BossBar;
 import lombok.Getter;
@@ -9,13 +8,9 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 public class BossbarManagerPlugin extends Bot.Listener {
     private final Bot bot;
-
-    private ScheduledFuture<?> tickTask;
 
     private final Map<String, BossBar> bossBars = new HashMap<>();
 
@@ -28,23 +23,14 @@ public class BossbarManagerPlugin extends Bot.Listener {
     public BossbarManagerPlugin (Bot bot) {
         this.bot = bot;
 
-        bot.core().addListener(new CorePlugin.Listener() {
+        bot.tick().addListener(new TickPlugin.Listener() {
             @Override
-            public void ready() {
-                BossbarManagerPlugin.this.ready();
+            public void onTick() {
+                tick();
             }
         });
 
         bot.addListener(this);
-    }
-
-    public void ready () {
-        tickTask = bot.executor().scheduleAtFixedRate(this::tick, 0, 50, TimeUnit.MILLISECONDS);
-    }
-
-    @Override
-    public void disconnected(DisconnectedEvent event) {
-        tickTask.cancel(true);
     }
 
     public void tick () {
