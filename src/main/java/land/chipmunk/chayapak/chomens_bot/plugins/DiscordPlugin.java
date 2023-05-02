@@ -143,7 +143,7 @@ public class DiscordPlugin {
                                       )
                                       .color(NamedTextColor.RED);
 
-                              final String discordUrl = "https://discord.gg/xdgCkUyaA4"; // too lazy to make a config
+                              final String discordUrl = config.discord().inviteLink(); // too lazy to make a config
 
                               final Component discordComponent = Component.empty()
                                       .append(Component.text("ChomeNS ").color(NamedTextColor.YELLOW))
@@ -156,14 +156,16 @@ public class DiscordPlugin {
                                       .clickEvent(ClickEvent.openUrl(discordUrl));
 
                               final Component component = Component.translatable(
-                                      "[%s] %s › %s%s",
+                                      "[%s] %s › %s",
                                       discordComponent,
                                       nameComponent,
-                                      Component.text(
-                                              message
-                                                      .replace("\uD83D\uDC80", "☠") // mirko forced me to do it :(
-                                      ).color(NamedTextColor.GRAY),
-                                      attachmentsComponent
+                                      Component
+                                              .text(
+                                                      message
+                                                            .replace("\uD83D\uDC80", "☠")
+                                              )
+                                              .color(NamedTextColor.GRAY)
+                                              .append(attachmentsComponent)
                               ).color(NamedTextColor.DARK_GRAY);
                               bot.chat().tellraw(component);
                           }

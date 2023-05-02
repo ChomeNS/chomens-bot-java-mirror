@@ -45,6 +45,7 @@ public class Configuration {
         @Getter public String trustedRoleName = "Trusted";
         @Getter public String adminRoleName = "Admin";
         @Getter public String statusMessage = "Gay Sex";
+        @Getter public String inviteLink = "https://discord.gg/xdgCkUyaA4";
     }
 
     public static class EmbedColors {

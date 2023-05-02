@@ -19,6 +19,7 @@ discord:
   trustedRoleName: 'Trusted'
   adminRoleName: 'Admin' # NOTE: admin will be able to access servereval..
   statusMessage: 'Gay Sex'
+  inviteLink: 'https://discord.gg/xdgCkUyaA4'
   servers:
     localhost:25565: 'channel id'
 
