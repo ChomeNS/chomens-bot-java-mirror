@@ -1,2 +1,5 @@
 # Project exclude paths
 /target/
+
+# Exploits plugin
+/plugins/ExploitsPlugin.java
