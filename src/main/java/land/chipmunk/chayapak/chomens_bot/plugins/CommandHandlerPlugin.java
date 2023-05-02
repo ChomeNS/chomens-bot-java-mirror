@@ -90,6 +90,8 @@ public class CommandHandlerPlugin {
         final String[] fullArgs = Arrays.copyOfRange(splitInput, 1, splitInput.length);
         final int longestUsageIndex = getLongestUsageIndex(command.usage());
         final String usage = command.usage().get(longestUsageIndex);
+
+        // TODO: improve these minimum args and maximum args stuff
         final int minimumArgs = getMinimumArgs(usage, inGame, command.trustLevel());
         final int maximumArgs = getMaximumArgs(usage, inGame, command.trustLevel());
         if (fullArgs.length < minimumArgs) return Component.text("Excepted minimum of " + minimumArgs + " argument(s), got " + fullArgs.length).color(NamedTextColor.RED);
