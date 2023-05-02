@@ -71,6 +71,7 @@ public class Main {
             bots.add(bot);
         }
 
+        // fard
         new ConsolePlugin(bots, config, jda);
     }
 }
