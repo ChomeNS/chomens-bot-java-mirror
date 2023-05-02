@@ -44,6 +44,7 @@ public class Configuration {
         @Getter public EmbedColors embedColors = new EmbedColors();
         @Getter public String trustedRoleName = "Trusted";
         @Getter public String adminRoleName = "Admin";
+        @Getter public String statusMessage = "Gay Sex";
     }
 
     public static class EmbedColors {

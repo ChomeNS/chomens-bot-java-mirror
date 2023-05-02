@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot;
 import land.chipmunk.chayapak.chomens_bot.plugins.ConsolePlugin;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -63,6 +64,7 @@ public class Main {
         } catch (InterruptedException ignored) {
             System.exit(1);
         }
+        jda.getPresence().setPresence(Activity.playing(config.discord().statusMessage()), false); // what does `b` do? kinda sus,..,
 
         for (Configuration.BotOption botOption : botsOptions) {
             final Bot bot = new Bot(botOption, bots, config);
