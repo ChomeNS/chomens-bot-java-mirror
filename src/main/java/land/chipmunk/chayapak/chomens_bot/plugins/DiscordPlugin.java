@@ -143,7 +143,7 @@ public class DiscordPlugin {
                                       )
                                       .color(NamedTextColor.RED);
 
-                              final String discordUrl = config.discord().inviteLink(); // too lazy to make a config
+                              final String discordUrl = config.discord().inviteLink();
 
                               final Component discordComponent = Component.empty()
                                       .append(Component.text("ChomeNS ").color(NamedTextColor.YELLOW))
