@@ -15,7 +15,7 @@ public class KickCommand implements Command {
     public String name() { return "kick"; }
 
     public String description() {
-        return "Kicks a player";
+        return "Kicks a player using the complex NBT exploit (from KittyCorpBot)";
     }
 
     public List<String> usage() {
