@@ -6,48 +6,43 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class CloopPlugin {
     private final Bot bot;
 
     // too lazy to use executor
-    private final List<TimerTask> loopTasks = new ArrayList<>();
+    private final List<ScheduledFuture<?>> loopTasks = new ArrayList<>();
     @Getter private final List<CommandLoop> loops = new ArrayList<>();
-
-    private final Timer timer;
 
     public CloopPlugin (Bot bot) {
         this.bot = bot;
-        this.timer = new Timer();
     }
 
     public void add (int interval, String command) {
-        TimerTask loopTask = new TimerTask() {
-            public void run() {
-                bot.core().run(command);
-            }
-        };
-        loopTasks.add(loopTask);
+        Runnable loopTask = () -> bot.core().run(command);
+
         loops.add(new CommandLoop(command, interval)); // mabe,.,..
         // should i use 50 or 0?
-        timer.scheduleAtFixedRate(loopTask, 0, interval);
+        loopTasks.add(bot.executor().scheduleAtFixedRate(loopTask, 0, interval, TimeUnit.MILLISECONDS));
     }
 
     public void remove (int index) {
-        TimerTask loopTask = loopTasks.remove(index);
+        ScheduledFuture<?> loopTask = loopTasks.remove(index);
+
         if (loopTask != null) {
-            loopTask.cancel();
+            loopTask.cancel(true);
         }
 
         loops.remove(index);
     }
 
     public void clear () {
-        for (TimerTask loopTask : loopTasks) {
-            loopTask.cancel();
+        for (ScheduledFuture<?> loopTask : loopTasks) {
+            loopTask.cancel(true);
         }
+
         loopTasks.clear();
 
         loops.clear();
