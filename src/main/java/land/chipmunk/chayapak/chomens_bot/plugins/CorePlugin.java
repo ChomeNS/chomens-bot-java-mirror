@@ -32,7 +32,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class CorePlugin extends PositionPlugin.PositionListener {
+public class CorePlugin extends PositionPlugin.Listener {
     private final Bot bot;
 
     @Getter private final List<Listener> listeners = new ArrayList<>();

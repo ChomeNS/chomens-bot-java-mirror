@@ -9,7 +9,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.List;
 import java.util.UUID;
 
-public class TrustedPlugin extends PlayersPlugin.PlayerListener {
+public class TrustedPlugin extends PlayersPlugin.Listener {
     private final Bot bot;
 
     @Getter private final List<String> list;

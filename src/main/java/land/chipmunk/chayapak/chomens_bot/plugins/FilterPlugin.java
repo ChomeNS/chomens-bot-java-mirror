@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class FilterPlugin extends PlayersPlugin.PlayerListener {
+public class FilterPlugin extends PlayersPlugin.Listener {
     private final Bot bot;
 
     @Getter private final List<FilteredPlayer> filteredPlayers = new ArrayList<>();

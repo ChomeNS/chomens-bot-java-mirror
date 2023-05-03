@@ -10,7 +10,7 @@ import net.kyori.adventure.text.Component;
 
 import java.util.List;
 
-public class ChatCommandHandlerPlugin extends ChatPlugin.ChatListener {
+public class ChatCommandHandlerPlugin extends ChatPlugin.Listener {
     public final Bot bot;
 
     @Getter private final List<String> prefixes;

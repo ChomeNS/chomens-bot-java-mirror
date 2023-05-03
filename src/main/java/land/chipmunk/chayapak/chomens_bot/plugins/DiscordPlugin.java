@@ -77,7 +77,7 @@ public class DiscordPlugin {
                           }
                       });
 
-                      bot.chat().addListener(new ChatPlugin.ChatListener() {
+                      bot.chat().addListener(new ChatPlugin.Listener() {
                           @Override
                           public void systemMessageReceived (Component component) {
                               final String content = ComponentUtilities.stringifyAnsi(component);

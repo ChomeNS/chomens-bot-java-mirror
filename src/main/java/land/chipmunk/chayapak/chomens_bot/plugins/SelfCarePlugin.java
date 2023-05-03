@@ -50,7 +50,7 @@ public class SelfCarePlugin extends Bot.Listener {
 
         bot.addListener(this);
 
-        bot.chat().addListener(new ChatPlugin.ChatListener() {
+        bot.chat().addListener(new ChatPlugin.Listener() {
             @Override
             public void systemMessageReceived(Component component) {
                 final String message = ComponentUtilities.stringify(component);
@@ -81,7 +81,7 @@ public class SelfCarePlugin extends Bot.Listener {
             }
         });
 
-        bot.position().addListener(new PositionPlugin.PositionListener() {
+        bot.position().addListener(new PositionPlugin.Listener() {
             @Override
             public void positionChange(Vector3i position) {
                 SelfCarePlugin.this.positionChange();

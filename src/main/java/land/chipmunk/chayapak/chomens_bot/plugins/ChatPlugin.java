@@ -35,7 +35,7 @@ public class ChatPlugin extends Bot.Listener {
 
     @Getter private final List<String> queue = new ArrayList<>();
 
-    private final List<ChatListener> listeners = new ArrayList<>();
+    private final List<Listener> listeners = new ArrayList<>();
 
     public ChatPlugin (Bot bot) {
         this.bot = bot;
@@ -81,7 +81,7 @@ public class ChatPlugin extends Bot.Listener {
         PlayerMessage commandSpyMessage;
         commandSpyMessage = commandSpyParser.parse(component);
 
-        for (ChatListener listener : listeners) {
+        for (Listener listener : listeners) {
             listener.systemMessageReceived(component);
             if (playerMessage != null) listener.playerMessageReceived(playerMessage);
             if (commandSpyMessage != null) listener.commandSpyMessageReceived(commandSpyMessage);
@@ -101,7 +101,7 @@ public class ChatPlugin extends Bot.Listener {
                 Component.text(packet.getContent())
         );
 
-        for (ChatListener listener : listeners) {
+        for (Listener listener : listeners) {
             listener.playerMessageReceived(playerMessage);
 
             if (packet.getChatType() == 4) { // type 4 is /say
@@ -145,7 +145,7 @@ public class ChatPlugin extends Bot.Listener {
 
                 final PlayerMessage playerMessage = new PlayerMessage(parsed.sender(), packet.getName(), parsed.contents());
 
-                for (ChatListener listener : listeners) {
+                for (Listener listener : listeners) {
                     listener.playerMessageReceived(playerMessage);
                     listener.systemMessageReceived(component);
                 }
@@ -164,7 +164,7 @@ public class ChatPlugin extends Bot.Listener {
 
             final PlayerMessage playerMessage = new PlayerMessage(parsedFromMessage.sender(), packet.getName(), parsedFromMessage.contents());
 
-            for (ChatListener listener : listeners) {
+            for (Listener listener : listeners) {
                 listener.playerMessageReceived(playerMessage);
                 listener.systemMessageReceived(component);
             }
@@ -228,9 +228,9 @@ public class ChatPlugin extends Bot.Listener {
 
     public void tellraw (Component component) { tellraw(component, "@a"); }
 
-    public void addListener (ChatListener listener) { listeners.add(listener); }
+    public void addListener (Listener listener) { listeners.add(listener); }
 
-    public static class ChatListener {
+    public static class Listener {
         public void playerMessageReceived (PlayerMessage message) {}
         public void commandSpyMessageReceived (PlayerMessage message) {}
         public void systemMessageReceived (Component component) {}

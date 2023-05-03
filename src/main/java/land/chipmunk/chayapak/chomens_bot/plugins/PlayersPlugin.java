@@ -22,7 +22,7 @@ public class PlayersPlugin extends Bot.Listener {
     private final Bot bot;
     @Getter private final List<MutablePlayerListEntry> list = new ArrayList<>();
 
-    private final List<PlayerListener> listeners = new ArrayList<>();
+    private final List<Listener> listeners = new ArrayList<>();
 
     public PlayersPlugin (Bot bot) {
         this.bot = bot;
@@ -116,7 +116,7 @@ public class PlayersPlugin extends Bot.Listener {
         list.add(target);
         // loginNames.put(target, target.profile().getIdAsString());
 
-        if (duplicate == null) for (PlayerListener listener : listeners) { listener.playerJoined(target); }
+        if (duplicate == null) for (Listener listener : listeners) { listener.playerJoined(target); }
         /* else {
             for (Map.Entry<MutablePlayerListEntry, String> entry : loginNames.entrySet()) {
                 if (
@@ -131,7 +131,7 @@ public class PlayersPlugin extends Bot.Listener {
                 return;
             }
          */
-        else for (PlayerListener listener : listeners) { listener.playerUnVanished(target); }
+        else for (Listener listener : listeners) { listener.playerUnVanished(target); }
         // }
     }
 
@@ -143,7 +143,7 @@ public class PlayersPlugin extends Bot.Listener {
 
         target.gamemode(gameMode);
 
-        for (PlayerListener listener : listeners) { listener.playerGameModeUpdated(target, gameMode); }
+        for (Listener listener : listeners) { listener.playerGameModeUpdated(target, gameMode); }
     }
 
     private void updateLatency (PlayerListEntry newEntry) {
@@ -154,7 +154,7 @@ public class PlayersPlugin extends Bot.Listener {
 
         target.latency(ping);
 
-        for (PlayerListener listener : listeners) { listener.playerLatencyUpdated(target, ping); }
+        for (Listener listener : listeners) { listener.playerLatencyUpdated(target, ping); }
     }
 
     private void updateDisplayName (PlayerListEntry newEntry) {
@@ -165,7 +165,7 @@ public class PlayersPlugin extends Bot.Listener {
 
         target.displayName(displayName);
 
-        for (PlayerListener listener : listeners) { listener.playerDisplayNameUpdated(target, displayName); }
+        for (Listener listener : listeners) { listener.playerDisplayNameUpdated(target, displayName); }
     }
 
     private void removePlayer (UUID uuid) {
@@ -180,13 +180,13 @@ public class PlayersPlugin extends Bot.Listener {
             for (int i = 0; i < matches.length; i++) {
                 if (tooltips[i] != null || !matches[i].equals(username)) continue;
                 target.listed(false);
-                for (PlayerListener listener : listeners) { listener.playerVanished(target); }
+                for (Listener listener : listeners) { listener.playerVanished(target); }
                 return packet;
             }
 
             list.remove(target);
 
-            for (PlayerListener listener : listeners) { listener.playerLeft(target); }
+            for (Listener listener : listeners) { listener.playerLeft(target); }
 
             return packet;
         });
@@ -197,9 +197,9 @@ public class PlayersPlugin extends Bot.Listener {
         list.clear();
     }
 
-    public void addListener (PlayerListener listener) { listeners.add(listener); }
+    public void addListener (Listener listener) { listeners.add(listener); }
 
-    public static class PlayerListener {
+    public static class Listener {
         public void playerJoined (MutablePlayerListEntry target) {}
         public void playerUnVanished (MutablePlayerListEntry target) {}
         public void playerGameModeUpdated (MutablePlayerListEntry target, GameMode gameMode) {}

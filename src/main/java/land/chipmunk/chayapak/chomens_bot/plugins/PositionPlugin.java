@@ -25,7 +25,7 @@ import java.util.Map;
 public class PositionPlugin extends Bot.Listener {
     private final Bot bot;
 
-    private final List<PositionListener> listeners = new ArrayList<>();
+    private final List<Listener> listeners = new ArrayList<>();
 
     @Getter private Vector3i position = Vector3i.from(0, 0, 0);
 
@@ -52,7 +52,7 @@ public class PositionPlugin extends Bot.Listener {
         bot.session().send(new ServerboundAcceptTeleportationPacket(packet.getTeleportId()));
 
         position = Vector3i.from(packet.getX(), packet.getY(), packet.getZ());
-        for (PositionListener listener : listeners) { listener.positionChange(position); }
+        for (Listener listener : listeners) { listener.positionChange(position); }
     }
 
     public void packetReceived (ClientboundAddPlayerPacket packet) {
@@ -155,9 +155,9 @@ public class PositionPlugin extends Bot.Listener {
         return null;
     }
 
-    public void addListener (PositionListener listener) { listeners.add(listener); }
+    public void addListener (Listener listener) { listeners.add(listener); }
 
-    public static class PositionListener {
+    public static class Listener {
         public void positionChange (Vector3i position) {}
     }
 }

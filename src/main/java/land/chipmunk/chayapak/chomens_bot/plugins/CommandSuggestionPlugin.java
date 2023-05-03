@@ -11,7 +11,7 @@ import net.kyori.adventure.text.TextComponent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandSuggestionPlugin extends ChatPlugin.ChatListener {
+public class CommandSuggestionPlugin extends ChatPlugin.Listener {
     private final Bot bot;
 
     @Getter @Setter private String id = "chomens_bot_command_suggestion";

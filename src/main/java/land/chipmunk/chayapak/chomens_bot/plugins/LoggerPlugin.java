@@ -11,7 +11,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class LoggerPlugin extends ChatPlugin.ChatListener {
+public class LoggerPlugin extends ChatPlugin.Listener {
     private final Bot bot;
 
     private boolean addedListener = false;
