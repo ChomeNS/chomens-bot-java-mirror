@@ -20,7 +20,7 @@ public class MinecraftChatParser implements ChatParser {
     static {
         typeMap.put("chat.type.text", "minecraft:chat");
         typeMap.put("chat.type.announcement", "minecraft:say_command");
-        typeMap.put("chat.type.command", "minecraft:msg_command");
+        typeMap.put("commands.message.display.incoming", "minecraft:msg_command");
         typeMap.put("chat.type.team.text", "minecraft:team_msg_command");
         typeMap.put("chat.type.emote", "minecraft:emote_command");
     }
