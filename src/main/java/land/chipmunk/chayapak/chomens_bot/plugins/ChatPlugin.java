@@ -128,13 +128,24 @@ public class ChatPlugin extends Bot.Listener {
         final int type = packet.getChatType();
 
         // i think im missing other types
-        if (type == 1 || type == 4) { // type 1 is /me, type 4 is /say
+        if (type == 1 || type == 4 || type == 2) { // type 1 is /me, type 4 is /say, type 2 is /msg /tell or whatever thing
             final Component name = packet.getName();
             final Component content = packet.getMessage();
 
             for (ChatParser parser : chatParsers) {
+                String translate;
+
+                switch (type) {
+                    case 1 -> translate = "chat.type.emote";
+                    case 4 -> translate = "chat.type.announcement";
+                    case 2 -> translate = "commands.message.display.incoming";
+                    default -> {
+                        continue;
+                    }
+                }
+
                 final Component component = Component.translatable(
-                        type == 1 ? "chat.type.emote" : "chat.type.announcement",
+                        translate,
                         name,
                         content
                 );
