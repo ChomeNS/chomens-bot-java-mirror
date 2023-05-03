@@ -60,114 +60,127 @@ public class ChatPlugin extends Bot.Listener {
     }
 
     public void packetReceived (ClientboundSystemChatPacket packet) {
-        final Component component = packet.getContent();
-
         try {
-            final String key = ((TranslatableComponent) component).key();
+            final Component component = packet.getContent();
 
-            if (
-                    key.equals("advMode.setCommand.success") ||
-                    key.equals("advMode.notAllowed")
-            ) return;
-        } catch (ClassCastException ignored) {}
+            try {
+                final String key = ((TranslatableComponent) component).key();
 
-        PlayerMessage playerMessage = null;
+                if (
+                        key.equals("advMode.setCommand.success") ||
+                                key.equals("advMode.notAllowed")
+                ) return;
+            } catch (ClassCastException ignored) {
+            }
 
-        for (ChatParser parser : chatParsers) {
-            playerMessage = parser.parse(component);
-            if (playerMessage != null) break;
-        }
+            PlayerMessage playerMessage = null;
 
-        PlayerMessage commandSpyMessage;
-        commandSpyMessage = commandSpyParser.parse(component);
+            for (ChatParser parser : chatParsers) {
+                playerMessage = parser.parse(component);
+                if (playerMessage != null) break;
+            }
 
-        for (ChatListener listener : listeners) {
-            listener.systemMessageReceived(component);
-            if (playerMessage != null) listener.playerMessageReceived(playerMessage);
-            if (commandSpyMessage != null) listener.commandSpyMessageReceived(commandSpyMessage);
+            PlayerMessage commandSpyMessage;
+            commandSpyMessage = commandSpyParser.parse(component);
+
+            for (ChatListener listener : listeners) {
+                listener.systemMessageReceived(component);
+                if (playerMessage != null) listener.playerMessageReceived(playerMessage);
+                if (commandSpyMessage != null) listener.commandSpyMessageReceived(commandSpyMessage);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public void packetReceived (ClientboundPlayerChatPacket packet) {
-        final UUID senderUUID = packet.getSender();
+        try {
+            final UUID senderUUID = packet.getSender();
 
-        final MutablePlayerListEntry entry = bot.players().getEntry(senderUUID);
+            final MutablePlayerListEntry entry = bot.players().getEntry(senderUUID);
 
-        if (entry == null) return;
+            if (entry == null) return;
 
-        final PlayerMessage playerMessage = new PlayerMessage(
-                entry,
-                packet.getName(),
-                Component.text(packet.getContent())
-        );
+            final PlayerMessage playerMessage = new PlayerMessage(
+                    entry,
+                    packet.getName(),
+                    Component.text(packet.getContent())
+            );
 
-        for (ChatListener listener : listeners) {
-            listener.playerMessageReceived(playerMessage);
+            for (ChatListener listener : listeners) {
+                listener.playerMessageReceived(playerMessage);
 
-            if (packet.getChatType() == 4) { // type 4 is /say
-                final Component component = Component.translatable(
-                        "chat.type.announcement",
-                        playerMessage.displayName(),
-                        playerMessage.contents()
-                );
+                if (packet.getChatType() == 4) { // type 4 is /say
+                    final Component component = Component.translatable(
+                            "chat.type.announcement",
+                            playerMessage.displayName(),
+                            playerMessage.contents()
+                    );
 
-                listener.systemMessageReceived(component);
-            } else {
-                final Component unsignedContent = packet.getUnsignedContent();
+                    listener.systemMessageReceived(component);
+                } else {
+                    final Component unsignedContent = packet.getUnsignedContent();
 
-                if (unsignedContent == null) return;
+                    if (unsignedContent == null) return;
 
-                listener.systemMessageReceived(unsignedContent);
+                    listener.systemMessageReceived(unsignedContent);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public void packetReceived (ClientboundDisguisedChatPacket packet) {
         // totallynotskidded™ from chipmunkbot and modified i guess
 
-        final int type = packet.getChatType();
+        try {
+            final int type = packet.getChatType();
 
-        // i think im missing other types
-        if (type == 1 || type == 4) { // type 1 is /me, type 4 is /say
-            final Component name = packet.getName();
-            final Component content = packet.getMessage();
+            // i think im missing other types
+            if (type == 1 || type == 4) { // type 1 is /me, type 4 is /say
+                final Component name = packet.getName();
+                final Component content = packet.getMessage();
 
-            for (ChatParser parser : chatParsers) {
-                final Component component = Component.translatable(
-                        type == 1 ? "chat.type.emote" : "chat.type.announcement",
-                        name,
-                        content
-                );
+                for (ChatParser parser : chatParsers) {
+                    final Component component = Component.translatable(
+                            type == 1 ? "chat.type.emote" : "chat.type.announcement",
+                            name,
+                            content
+                    );
 
-                final PlayerMessage parsed = parser.parse(component);
+                    final PlayerMessage parsed = parser.parse(component);
 
-                if (parsed == null) continue;
+                    if (parsed == null) continue;
 
-                final PlayerMessage playerMessage = new PlayerMessage(parsed.sender(), packet.getName(), parsed.contents());
+                    final PlayerMessage playerMessage = new PlayerMessage(parsed.sender(), packet.getName(), parsed.contents());
+
+                    for (ChatListener listener : listeners) {
+                        listener.playerMessageReceived(playerMessage);
+                        listener.systemMessageReceived(component);
+                    }
+                }
+            } else {
+                final Component component = packet.getMessage();
+
+                PlayerMessage parsedFromMessage = null;
+
+                for (ChatParser parser : chatParsers) {
+                    parsedFromMessage = parser.parse(component);
+                    if (parsedFromMessage != null) break;
+                }
+
+                if (parsedFromMessage == null) return;
+
+                final PlayerMessage playerMessage = new PlayerMessage(parsedFromMessage.sender(), packet.getName(), parsedFromMessage.contents());
 
                 for (ChatListener listener : listeners) {
                     listener.playerMessageReceived(playerMessage);
                     listener.systemMessageReceived(component);
                 }
             }
-        } else {
-            final Component component = packet.getMessage();
-
-            PlayerMessage parsedFromMessage = null;
-
-            for (ChatParser parser : chatParsers) {
-                parsedFromMessage = parser.parse(component);
-                if (parsedFromMessage != null) break;
-            }
-
-            if (parsedFromMessage == null) return;
-
-            final PlayerMessage playerMessage = new PlayerMessage(parsedFromMessage.sender(), packet.getName(), parsedFromMessage.contents());
-
-            for (ChatListener listener : listeners) {
-                listener.playerMessageReceived(playerMessage);
-                listener.systemMessageReceived(component);
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
