@@ -34,6 +34,7 @@ public class ChatPlugin extends Bot.Listener {
     private final CommandSpyParser commandSpyParser;
 
     @Getter private final List<String> queue = new ArrayList<>();
+    private final List<String> _queue = new ArrayList<>();
 
     private final List<Listener> listeners = new ArrayList<>();
 
@@ -49,6 +50,7 @@ public class ChatPlugin extends Bot.Listener {
         chatParsers.add(new KaboomChatParser(bot));
         chatParsers.add(new ChomeNSCustomChatParser(bot));
 
+        bot.executor().scheduleAtFixedRate(this::_sendChatTick, 0, 1, TimeUnit.MILLISECONDS);
         bot.executor().scheduleAtFixedRate(this::sendChatTick, 0, bot.config().chatQueueDelay(), TimeUnit.MILLISECONDS);
     }
 
@@ -182,7 +184,8 @@ public class ChatPlugin extends Bot.Listener {
         }
     }
 
-    private void sendChatTick () {
+    // TODO: Probably improve this code
+    private void _sendChatTick () {
         try {
             if (queue.size() == 0) return;
 
@@ -190,34 +193,44 @@ public class ChatPlugin extends Bot.Listener {
 
             final String[] splitted = message.split("(?<=\\G.{255})|\\n");
 
-            for (String splitMessage : splitted) {
-                if (splitMessage.trim().equals("")) continue;
+            for (String subMessage : splitted) {
+                if (subMessage.trim().equals("")) continue;
 
-                if (splitMessage.startsWith("/")) {
-                    bot.session().send(new ServerboundChatCommandPacket(
-                            splitMessage.substring(1),
-                            Instant.now().toEpochMilli(),
-                            0L,
-                            Collections.emptyList(),
-                            0,
-                            new BitSet()
-                    ));
-                } else {
-                    bot.session().send(new ServerboundChatPacket(
-                            splitMessage,
-                            Instant.now().toEpochMilli(),
-                            0L,
-                            null,
-                            0,
-                            new BitSet()
-                    ));
-                }
+                _queue.add(subMessage);
             }
 
             queue.remove(0);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void sendChatTick () {
+        if (_queue.size() == 0) return;
+
+        final String message = _queue.get(0);
+
+        if (message.startsWith("/")) {
+            bot.session().send(new ServerboundChatCommandPacket(
+                    message.substring(1),
+                    Instant.now().toEpochMilli(),
+                    0L,
+                    Collections.emptyList(),
+                    0,
+                    new BitSet()
+            ));
+        } else {
+            bot.session().send(new ServerboundChatPacket(
+                    message,
+                    Instant.now().toEpochMilli(),
+                    0L,
+                    null,
+                    0,
+                    new BitSet()
+            ));
+        }
+
+        _queue.remove(0);
     }
 
     public void send (String message) {
