@@ -72,7 +72,7 @@ public class LoggerPlugin extends ChatPlugin.Listener {
     }
 
     public void log (String _message) {
-        final String message = prefix(Component.text("LOG").color(NamedTextColor.GOLD), _message);
+        final String message = prefix(Component.text("Log").color(NamedTextColor.GOLD), _message);
 
         bot.console().reader().printAbove(message);
 
@@ -92,7 +92,7 @@ public class LoggerPlugin extends ChatPlugin.Listener {
     }
 
     public void info (String _message) {
-        final String message = prefix(Component.text("INFO").color(NamedTextColor.GREEN), _message);
+        final String message = prefix(Component.text("Info").color(NamedTextColor.GREEN), _message);
 
         bot.console().reader().printAbove(message);
     }
