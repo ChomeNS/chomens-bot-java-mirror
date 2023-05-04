@@ -16,6 +16,7 @@ import land.chipmunk.chayapak.chomens_bot.chatParsers.data.ChatParser;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.data.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.data.PlayerMessage;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
+import land.chipmunk.chayapak.chomens_bot.util.IllegalCharactersUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.UUIDUtilities;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -194,7 +195,10 @@ public class ChatPlugin extends Bot.Listener {
             final String[] splitted = message.split("(?<=\\G.{255})|\\n");
 
             for (String subMessage : splitted) {
-                if (subMessage.trim().equals("")) continue;
+                if (
+                        subMessage.trim().equals("") ||
+                                IllegalCharactersUtilities.containsIllegalCharacters(subMessage)
+                ) continue;
 
                 _queue.add(subMessage);
             }

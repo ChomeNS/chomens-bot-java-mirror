@@ -7,7 +7,7 @@ import land.chipmunk.chayapak.chomens_bot.Configuration;
 import land.chipmunk.chayapak.chomens_bot.Main;
 import land.chipmunk.chayapak.chomens_bot.command.DiscordCommandContext;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
-import land.chipmunk.chayapak.chomens_bot.util.EscapeCodeBlock;
+import land.chipmunk.chayapak.chomens_bot.util.CodeBlockUtilities;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
@@ -81,7 +81,7 @@ public class DiscordPlugin {
                           @Override
                           public void systemMessageReceived (Component component) {
                               final String content = ComponentUtilities.stringifyAnsi(component);
-                              sendMessage(EscapeCodeBlock.escape(content.replace("\u001b[9", "\u001b[3")), channelId);
+                              sendMessage(CodeBlockUtilities.escape(content.replace("\u001b[9", "\u001b[3")), channelId);
                           }
                       });
 

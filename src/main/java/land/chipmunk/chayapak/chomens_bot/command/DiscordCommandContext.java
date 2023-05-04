@@ -3,7 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.command;
 import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.data.MutablePlayerListEntry;
-import land.chipmunk.chayapak.chomens_bot.util.EscapeCodeBlock;
+import land.chipmunk.chayapak.chomens_bot.util.CodeBlockUtilities;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -49,7 +49,7 @@ public class DiscordCommandContext extends CommandContext {
         final EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("Output");
         builder.setColor(Color.decode(bot.config().discord().embedColors().normal()));
-        builder.setDescription("```ansi\n" + EscapeCodeBlock.escape(output.replace("\u001b[9", "\u001b[3")) + "\n```");
+        builder.setDescription("```ansi\n" + CodeBlockUtilities.escape(output.replace("\u001b[9", "\u001b[3")) + "\n```");
 
         final MessageEmbed embed = builder.build();
 
