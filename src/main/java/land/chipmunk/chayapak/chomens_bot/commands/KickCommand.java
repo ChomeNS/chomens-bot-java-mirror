@@ -20,7 +20,7 @@ public class KickCommand implements Command {
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
-        usages.add("<{player}>");
+        usages.add("<hash> <{player}>");
 
         return usages;
     }
