@@ -35,7 +35,7 @@ public class ChatPlugin extends Bot.Listener {
     private final CommandSpyParser commandSpyParser;
 
     @Getter private final List<String> queue = new ArrayList<>();
-    private final List<String> _queue = new ArrayList<>();
+    @Getter private final List<String> _queue = new ArrayList<>();
 
     private final List<Listener> listeners = new ArrayList<>();
 

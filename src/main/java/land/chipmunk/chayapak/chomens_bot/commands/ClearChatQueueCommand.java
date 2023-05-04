@@ -36,6 +36,7 @@ public class ClearChatQueueCommand implements Command {
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();
 
+        bot.chat()._queue().clear();
         bot.chat().queue().clear();
 
         return null;
