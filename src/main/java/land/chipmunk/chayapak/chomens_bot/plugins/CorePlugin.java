@@ -106,6 +106,8 @@ public class CorePlugin extends PositionPlugin.Listener {
 
         run(command);
 
+        if (!bot.options().useCore()) return null;
+
         final int transactionId = nextTransactionId++;
 
         // promises are renamed to future lmao

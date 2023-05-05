@@ -46,6 +46,8 @@ public class CommandBlockCommand implements Command {
 
         final CompletableFuture<CompoundTag> future = bot.core().runTracked(String.join(" ", args));
 
+        if (future == null) return null;
+
         future.thenApply(tags -> {
             if (!tags.contains("LastOutput") || !(tags.get("LastOutput") instanceof StringTag)) return tags;
 
