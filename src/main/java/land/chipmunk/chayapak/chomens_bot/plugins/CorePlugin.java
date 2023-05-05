@@ -41,13 +41,13 @@ public class CorePlugin extends PositionPlugin.Listener {
 
     private ScheduledFuture<?> refillTask;
 
-    public final Vector3i coreStart = Vector3i.from(0, 0, 0);
-    public Vector3i coreEnd;
+    public final Vector3i coreStart;
+    public final Vector3i coreEnd;
 
     public Vector3i origin;
     public Vector3i originEnd;
 
-    public Vector3i relativeCorePosition = Vector3i.from(coreStart);
+    public Vector3i relativeCorePosition;
 
     private int nextTransactionId = 0;
     private final Map<Integer, CompletableFuture<CompoundTag>> transactions = new HashMap<>();
@@ -57,6 +57,19 @@ public class CorePlugin extends PositionPlugin.Listener {
     public CorePlugin (Bot bot) {
         this.bot = bot;
         this.kaboom = bot.options().kaboom();
+
+        this.coreStart = Vector3i.from(
+                bot.config().core().start().x(),
+                bot.config().core().start().y(),
+                bot.config().core().start().z()
+        );
+        this.coreEnd = Vector3i.from(
+                bot.config().core().end().x(),
+                bot.config().core().end().y(),
+                bot.config().core().end().z()
+        );
+
+        this.relativeCorePosition = Vector3i.from(coreStart);
 
         bot.position().addListener(this);
 
@@ -241,12 +254,28 @@ public class CorePlugin extends PositionPlugin.Listener {
 
     @Override
     public void positionChange (Vector3i position) {
-        coreEnd = Vector3i.from(15, bot.config().core().layers() - 1, 15);
-        origin = Vector3i.from(
-                Math.floor((double) bot.position().position().getX() / 16) * 16,
-                0,
-                Math.floor((double) bot.position().position().getZ() / 16) * 16
-        );
+        // hm?
+        if (
+                coreStart.getX() == 0 &&
+                        coreStart.getY() == 0 &&
+                        coreStart.getZ() == 0 &&
+
+                        coreEnd.getX() == 15 &&
+                        coreEnd.getY() == 2 &&
+                        coreEnd.getZ() == 15
+        ) {
+            origin = Vector3i.from(
+                    Math.floor((double) bot.position().position().getX() / 16) * 16,
+                    0,
+                    Math.floor((double) bot.position().position().getZ() / 16) * 16
+            );
+        } else {
+            origin = Vector3i.from(
+                    bot.position().position().getX(),
+                    0,
+                    bot.position().position().getZ()
+            );
+        }
         originEnd = origin.add(coreEnd);
 
         refill();

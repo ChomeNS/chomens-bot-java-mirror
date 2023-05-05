@@ -32,9 +32,16 @@ public class Configuration {
     @Getter public BotOption[] bots = new BotOption[]{};
 
     public static class Core {
-        @Getter public int layers = 3;
+        @Getter public Position start = new Position();
+        @Getter public Position end = new Position();
         @Getter public int refillInterval = (60 * 5) * 1000; // 5 minutes
         @Getter public String customName = "[{\"text\":\"ChomeNS \",\"color\":\"yellow\"},{\"text\":\"Core\",\"color\":\"green\"},{\"text\":\"™\",\"color\":\"gold\"}]";
+    }
+
+    public static class Position {
+        @Getter public int x = 0;
+        @Getter public int y = 0;
+        @Getter public int z = 0;
     }
 
     public static class Discord {
