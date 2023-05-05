@@ -40,7 +40,7 @@ public class Bot {
 
     @Getter private boolean loggedIn = false;
 
-    @Getter private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(100);
+    @Getter private final ScheduledExecutorService executor = Main.executor;
 
     @Getter @Setter private ConsolePlugin console;
     @Getter @Setter private LoggerPlugin logger; // in ConsolePlugin

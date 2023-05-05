@@ -11,9 +11,13 @@ import javax.security.auth.login.LoginException;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class Main {
     public static final List<Bot> bots = new ArrayList<>();
+
+    public static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(50);
 
     public static void main(String[] args) throws IOException {
         final File file = new File("config.yml");
