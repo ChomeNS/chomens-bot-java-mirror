@@ -142,8 +142,9 @@ public class CommandHandlerPlugin {
 
             final String stackTrace = ExceptionUtils.getStackTrace(exception);
             if (inGame) {
+                if (bot.options().useChat() || !bot.options().useCore()) return Component.text(exception.toString()).color(NamedTextColor.RED);
                 return Component
-                        .text("An error occurred while trying to execute the command, hover here for more details", NamedTextColor.RED)
+                        .text("An error occurred while trying to execute the command, hover here for stacktrace", NamedTextColor.RED)
                         .hoverEvent(
                                 HoverEvent.showText(
                                         Component
