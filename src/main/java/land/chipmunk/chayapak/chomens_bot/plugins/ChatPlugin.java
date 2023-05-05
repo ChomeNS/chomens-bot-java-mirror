@@ -135,24 +135,25 @@ public class ChatPlugin extends Bot.Listener {
             final Component name = packet.getName();
             final Component content = packet.getMessage();
 
+            String translate = null;
+
+            switch (type) {
+                case 1 -> translate = "chat.type.emote";
+                case 4 -> translate = "chat.type.announcement";
+                case 2 -> translate = "commands.message.display.incoming";
+            }
+
+            final Component component = Component.translatable(
+                    translate,
+                    name,
+                    content
+            );
+
+            for (Listener listener : listeners) {
+                listener.systemMessageReceived(component);
+            }
+
             for (ChatParser parser : chatParsers) {
-                String translate;
-
-                switch (type) {
-                    case 1 -> translate = "chat.type.emote";
-                    case 4 -> translate = "chat.type.announcement";
-                    case 2 -> translate = "commands.message.display.incoming";
-                    default -> {
-                        continue;
-                    }
-                }
-
-                final Component component = Component.translatable(
-                        translate,
-                        name,
-                        content
-                );
-
                 final PlayerMessage parsed = parser.parse(component);
 
                 if (parsed == null) continue;
@@ -161,7 +162,6 @@ public class ChatPlugin extends Bot.Listener {
 
                 for (Listener listener : listeners) {
                     listener.playerMessageReceived(playerMessage);
-                    listener.systemMessageReceived(component);
                 }
             }
         } else {
