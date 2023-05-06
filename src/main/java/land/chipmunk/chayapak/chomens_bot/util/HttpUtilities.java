@@ -14,6 +14,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
+// Author: _ChipMC_ (well I added some stuff)
 public class HttpUtilities {
     // ig duplicate codes yup real
 

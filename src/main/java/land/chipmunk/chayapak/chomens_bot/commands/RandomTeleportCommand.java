@@ -4,7 +4,7 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.data.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
-import land.chipmunk.chayapak.chomens_bot.util.NumberUtilities;
+import land.chipmunk.chayapak.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -41,8 +41,8 @@ public class RandomTeleportCommand implements Command {
 
         final MutablePlayerListEntry sender = context.sender();
 
-        final int positionX = NumberUtilities.between(1_000, 1_000_000);
-        final int positionZ = NumberUtilities.between(1_000, 1_000_000);
+        final int positionX = MathUtilities.between(1_000, 1_000_000);
+        final int positionZ = MathUtilities.between(1_000, 1_000_000);
         final String stringPosition = positionX + " 100 " + positionZ; // very 100 y
 
         bot.core().run("essentials:teleport " + sender.profile().getIdAsString() + " " + stringPosition);

@@ -6,7 +6,7 @@ import land.chipmunk.chayapak.chomens_bot.data.BossBar;
 import land.chipmunk.chayapak.chomens_bot.data.BossBarColor;
 import land.chipmunk.chayapak.chomens_bot.data.BossBarStyle;
 import land.chipmunk.chayapak.chomens_bot.song.*;
-import land.chipmunk.chayapak.chomens_bot.util.NumberUtilities;
+import land.chipmunk.chayapak.chomens_bot.util.MathUtilities;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.LinkedList;
 
+// Author: _ChipMC_ with some stuff added
 public class MusicPlayerPlugin extends Bot.Listener {
     private final Bot bot;
 
@@ -274,7 +275,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                             " record @s ^" + blockPosition + " ^ ^ " +
                             note.volume +
                             " " +
-                            NumberUtilities.clamp(floatingPitch, 0, 2)
+                            MathUtilities.clamp(floatingPitch, 0, 2)
             );
         }
     }

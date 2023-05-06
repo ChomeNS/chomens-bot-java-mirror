@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import lombok.Getter;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 
+// Author: _ChipMC_ or hhhzzzsss?
 public class SongLoaderException extends Exception {
   @Getter private final Component message;
 

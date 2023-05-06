@@ -4,6 +4,7 @@ import com.github.steveice10.opennbt.tag.builtin.IntArrayTag;
 import java.util.UUID;
 import java.nio.ByteBuffer;
 
+// Author: _ChipMC_ i guess
 public class UUIDUtilities {
     private UUIDUtilities () {}
 

@@ -8,7 +8,7 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.BossBar;
 import land.chipmunk.chayapak.chomens_bot.data.BossBarColor;
 import land.chipmunk.chayapak.chomens_bot.data.BossBarStyle;
-import land.chipmunk.chayapak.chomens_bot.util.NumberUtilities;
+import land.chipmunk.chayapak.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -94,7 +94,7 @@ public class TPSPlugin extends Bot.Listener {
     public void packetReceived (ClientboundSetTimePacket ignoredPacket) {
         long now = System.currentTimeMillis();
         float timeElapsed = (float) (now - timeLastTimeUpdate) / 1000.0F;
-        tickRates[nextIndex] = NumberUtilities.clamp(20.0f / timeElapsed, 0.0f, 20.0f);
+        tickRates[nextIndex] = MathUtilities.clamp(20.0f / timeElapsed, 0.0f, 20.0f);
         nextIndex = (nextIndex + 1) % tickRates.length;
         timeLastTimeUpdate = now;
     }

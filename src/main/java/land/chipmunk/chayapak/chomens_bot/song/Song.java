@@ -5,6 +5,7 @@ import net.kyori.adventure.text.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 
+// Author: hhhzzzsss & _ChipMC_ but i changed most of the stuff
 public class Song {
   public ArrayList<Note> notes = new ArrayList<>();
   public Component name;

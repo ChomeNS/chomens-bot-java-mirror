@@ -1,5 +1,6 @@
 package land.chipmunk.chayapak.chomens_bot.song;
 
+// Author: hhhzzzsss
 public class Instrument {
   public static final Instrument HARP = new Instrument(0, "harp", 54);
   public static final Instrument BASEDRUM = new Instrument(1, "basedrum", 0);

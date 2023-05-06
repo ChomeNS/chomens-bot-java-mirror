@@ -2,6 +2,7 @@ package land.chipmunk.chayapak.chomens_bot.song;
 
 import lombok.AllArgsConstructor;
 
+// Author: hhhzzzsss
 @AllArgsConstructor
 public class Note implements Comparable<Note> {
   public Instrument instrument;

@@ -1,6 +1,6 @@
 package land.chipmunk.chayapak.chomens_bot.util;
 
-public class NumberUtilities {
+public class MathUtilities {
     public static int between (int min, int max) {
         return (int) Math.floor(
                 Math.random() * (max - min) + min

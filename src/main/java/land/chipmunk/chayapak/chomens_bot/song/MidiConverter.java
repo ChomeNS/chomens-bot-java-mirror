@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 
+// Author: hhhzzzsss
 public class MidiConverter {
   public static final int SET_INSTRUMENT = 0xC0;
   public static final int SET_TEMPO = 0x51;

@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+// Author: _ChipMC_ or hhhzzzsss?
 public class SongLoaderThread extends Thread {
   public String fileName;
 
