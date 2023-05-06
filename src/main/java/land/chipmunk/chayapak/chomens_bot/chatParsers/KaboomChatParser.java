@@ -24,8 +24,8 @@ public class KaboomChatParser implements ChatParser {
     }
 
     private static final Style empty = Style.empty();
-    private static final Component SEPERATOR_COLON = Component.text(":");
-    private static final Component SEPERATOR_SPACE = Component.space();
+    private static final Component SEPARATOR_COLON = Component.text(":");
+    private static final Component SEPARATOR_SPACE = Component.space();
 
     @Override
     public PlayerMessage parse (Component message) {
@@ -70,6 +70,6 @@ public class KaboomChatParser implements ChatParser {
     }
 
     private boolean isSeperatorAt (List<Component> children, int start) {
-        return children.get(start).equals(SEPERATOR_COLON) && children.get(start + 1).equals(SEPERATOR_SPACE);
+        return children.get(start).equals(SEPARATOR_COLON) && children.get(start + 1).equals(SEPARATOR_SPACE);
     }
 }
