@@ -175,8 +175,21 @@ public class ComponentUtilities {
     public static Output stringifyPartially (TextComponent message, boolean motd, boolean ansi, String lastColor) {
         if (motd || ansi) {
             final String color = getColor(message.color(), motd, ansi);
+
+            String replacedContent = message.content();
+            // seems very mabe mabe
+            if (ansi) {
+                // is try-catch a great idea?
+                try {
+                    replacedContent = Pattern
+                            .compile("(\u00a7.)")
+                            .matcher(message.content())
+                            .replaceAll(m -> ansiMap.get(m.group(0).substring(1)));
+                } catch (Exception ignored) {}
+            }
+
             // messy af
-            return new Output((lastColor != null ? lastColor : "") + (color != null ? color : "") + message.content() + (ansi ? ansiMap.get("r") : ""), color);
+            return new Output((lastColor != null ? lastColor : "") + (color != null ? color : "") + replacedContent + (ansi ? ansiMap.get("r") : ""), color);
         }
 
         return new Output(message.content(), null);
