@@ -84,7 +84,11 @@ public class PositionPlugin extends Bot.Listener {
 
         if (player == null) return;
 
-        rotationMap.put(packet.getEntityId(), new Rotation(packet.getYaw(), packet.getPitch()));
+        final Rotation rotation = new Rotation(packet.getYaw(), packet.getPitch());
+
+        rotationMap.put(packet.getEntityId(), rotation);
+
+        for (Listener listener : listeners) listener.playerMoved(player, getPlayerPosition(player.profile().getName()), rotation);
     }
 
     public void packetReceived (ClientboundMoveEntityPosPacket packet) {
@@ -103,6 +107,8 @@ public class PositionPlugin extends Bot.Listener {
         );
 
         positionMap.put(packet.getEntityId(), position);
+
+        for (Listener listener : listeners) listener.playerMoved(player, position, getPlayerRotation(player.profile().getName()));
     }
 
     public void packetReceived (ClientboundMoveEntityPosRotPacket packet) {
@@ -121,8 +127,12 @@ public class PositionPlugin extends Bot.Listener {
                 packet.getMoveZ() + lastPosition.getZ()
         );
 
+        final Rotation rotation = new Rotation(packet.getYaw(), packet.getPitch());
+
         positionMap.put(packet.getEntityId(), position);
-        rotationMap.put(packet.getEntityId(), new Rotation(packet.getYaw(), packet.getPitch()));
+        rotationMap.put(packet.getEntityId(), rotation);
+
+        for (Listener listener : listeners) listener.playerMoved(player, position, rotation);
     }
 
     public Vector3f getPlayerPosition (String playerName) {
@@ -159,5 +169,6 @@ public class PositionPlugin extends Bot.Listener {
 
     public static class Listener {
         public void positionChange (Vector3i position) {}
+        public void playerMoved (MutablePlayerListEntry player, Vector3f position, Rotation rotation) {}
     }
 }

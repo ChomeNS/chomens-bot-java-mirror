@@ -135,7 +135,7 @@ public class CorePlugin extends PositionPlugin.Listener {
     }
 
     public void runPlaceBlock (String command) {
-        if (!ready) return;
+        if (!ready || !bot.options().useCore()) return;
 
         final CompoundTag tag = new CompoundTag("");
         final CompoundTag blockEntityTag = new CompoundTag("BlockEntityTag");
