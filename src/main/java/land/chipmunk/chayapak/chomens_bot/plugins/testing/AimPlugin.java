@@ -1,9 +1,10 @@
-package land.chipmunk.chayapak.chomens_bot.plugins;
+package land.chipmunk.chayapak.chomens_bot.plugins.testing;
 
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.player.ServerboundMovePlayerPosRotPacket;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.data.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.data.Rotation;
+import land.chipmunk.chayapak.chomens_bot.plugins.PositionPlugin;
 import org.cloudburstmc.math.vector.Vector3f;
 
 // unused lol
