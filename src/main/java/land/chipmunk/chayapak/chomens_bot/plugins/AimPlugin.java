@@ -6,10 +6,11 @@ import land.chipmunk.chayapak.chomens_bot.chatParsers.data.MutablePlayerListEntr
 import land.chipmunk.chayapak.chomens_bot.data.Rotation;
 import org.cloudburstmc.math.vector.Vector3f;
 
-public class MabePlugin extends PositionPlugin.Listener {
+// unused lol
+public class AimPlugin extends PositionPlugin.Listener {
     private final Bot bot;
 
-    public MabePlugin (Bot bot) {
+    public AimPlugin(Bot bot) {
         this.bot = bot;
         bot.position().addListener(this);
     }
