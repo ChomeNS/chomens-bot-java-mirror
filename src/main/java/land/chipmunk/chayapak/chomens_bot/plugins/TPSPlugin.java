@@ -12,14 +12,16 @@ import land.chipmunk.chayapak.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 
+// totallynotskidded™ from meteor client (https://github.com/MeteorDevelopment/meteor-client/blob/master/src/main/java/meteordevelopment/meteorclient/utils/world/TickRate.java)
 public class TPSPlugin extends Bot.Listener {
     private final Bot bot;
 
     private boolean enabled = false;
 
-    private final float[] tickRates = new float[20];
+    private final double[] tickRates = new double[20];
     private int nextIndex = 0;
     private long timeLastTimeUpdate = -1;
     private long timeGameJoined;
@@ -64,25 +66,45 @@ public class TPSPlugin extends Bot.Listener {
     }
 
     private void updateTPSBar () {
-        if (!enabled) return;
+        try {
+            if (!enabled) return;
 
-        final float floatTickRate = getTickRate();
-        final double tickRate = Math.round(floatTickRate);
+            final double tickRate = getTickRate();
 
-        final Component component = Component.translatable(
-                "TPS - %s",
-                Component.text(tickRate).color(NamedTextColor.GREEN)
-        ).color(NamedTextColor.GRAY);
+            final DecimalFormat formatter = new DecimalFormat("##.##");
 
-        final BossBar bossBar = bot.bossbar().get(bossbarName);
+            final Component component = Component.translatable(
+                    "%s - %s",
+                    Component.text("TPS").color(NamedTextColor.GRAY),
+                    Component.text(formatter.format(tickRate)).color(getColor(tickRate))
+            ).color(NamedTextColor.DARK_GRAY);
 
-        bossBar.players("@a");
-        bossBar.name(component);
-        bossBar.color(BossBarColor.YELLOW);
-        bossBar.visible(true);
-        bossBar.style(BossBarStyle.NOTCHED_20);
-        bossBar.value((int) tickRate);
-        bossBar.max(20);
+            final BossBar bossBar = bot.bossbar().get(bossbarName);
+
+            bossBar.players("@a");
+            bossBar.name(component);
+            bossBar.color(getBossBarColor(tickRate));
+            bossBar.visible(true);
+            bossBar.style(BossBarStyle.NOTCHED_20);
+            bossBar.value((int) tickRate);
+            bossBar.max(20);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private NamedTextColor getColor (double tickRate) {
+        if (tickRate > 15) return NamedTextColor.GREEN;
+        else if (tickRate == 15) return NamedTextColor.YELLOW;
+        else if (tickRate < 15 && tickRate > 10) return NamedTextColor.RED;
+        else return NamedTextColor.DARK_RED;
+    }
+
+    private BossBarColor getBossBarColor (double tickRate) {
+        if (tickRate > 15) return BossBarColor.GREEN;
+        else if (tickRate == 15) return BossBarColor.YELLOW;
+        else if (tickRate < 15 && tickRate > 10) return BossBarColor.RED;
+        else return BossBarColor.PURPLE;
     }
 
     @Override
@@ -105,12 +127,12 @@ public class TPSPlugin extends Bot.Listener {
         timeGameJoined = timeLastTimeUpdate = System.currentTimeMillis();
     }
 
-    public float getTickRate() {
+    public double getTickRate() {
         if (System.currentTimeMillis() - timeGameJoined < 4000) return 20;
 
         int numTicks = 0;
         float sumTickRates = 0.0f;
-        for (float tickRate : tickRates) {
+        for (double tickRate : tickRates) {
             if (tickRate > 0) {
                 sumTickRates += tickRate;
                 numTicks++;
