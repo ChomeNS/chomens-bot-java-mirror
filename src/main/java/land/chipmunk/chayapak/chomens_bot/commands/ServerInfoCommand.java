@@ -44,7 +44,7 @@ public class ServerInfoCommand implements Command {
         return 0;
     }
 
-    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+    public Component execute(CommandContext context, String[] args, String[] fullArgs) throws UnknownHostException {
         // totallynotskidded™ from extras' serverinfo
         final Component component;
 
@@ -83,35 +83,31 @@ public class ServerInfoCommand implements Command {
                 .map(s -> Component.text(s.split("\t: ")[1]).color(NamedTextColor.AQUA))
                 .orElseGet(() -> Component.text("N/A").color(NamedTextColor.AQUA));
 
-        try {
-            component = Component.translatable(
-                    """
-                            Hostname: %s
-                            Working directory: %s
-                            OS architecture: %s
-                            OS version: %s
-                            OS name: %s
-                            CPU cores: %s
-                            CPU model: %s
-                            Heap memory usage: %s""",
-                    Component.text(InetAddress.getLocalHost().getHostName()).color(NamedTextColor.AQUA),
-                    Component.text(System.getProperty("user.dir")).color(NamedTextColor.AQUA),
-                    Component.text(os.getArch()).color(NamedTextColor.AQUA),
-                    Component.text(os.getVersion()).color(NamedTextColor.AQUA),
-                    Component.text(os.getName()).color(NamedTextColor.AQUA),
-                    Component.text(String.valueOf(Runtime.getRuntime().availableProcessors())).color(NamedTextColor.AQUA),
-                    cpuModel,
-                    Component
-                            .translatable(
-                                    "%s MB / %s MB",
-                                    Component.text(heapUsage.getUsed() / 1024L / 1024L),
-                                    Component.text(heapUsage.getMax() / 1024L / 1024L)
-                            ).color(NamedTextColor.AQUA)
-            ).color(NamedTextColor.GOLD);
+        component = Component.translatable(
+                """
+                        Hostname: %s
+                        Working directory: %s
+                        OS architecture: %s
+                        OS version: %s
+                        OS name: %s
+                        CPU cores: %s
+                        CPU model: %s
+                        Heap memory usage: %s""",
+                Component.text(InetAddress.getLocalHost().getHostName()).color(NamedTextColor.AQUA),
+                Component.text(System.getProperty("user.dir")).color(NamedTextColor.AQUA),
+                Component.text(os.getArch()).color(NamedTextColor.AQUA),
+                Component.text(os.getVersion()).color(NamedTextColor.AQUA),
+                Component.text(os.getName()).color(NamedTextColor.AQUA),
+                Component.text(String.valueOf(Runtime.getRuntime().availableProcessors())).color(NamedTextColor.AQUA),
+                cpuModel,
+                Component
+                        .translatable(
+                                "%s MB / %s MB",
+                                Component.text(heapUsage.getUsed() / 1024L / 1024L),
+                                Component.text(heapUsage.getMax() / 1024L / 1024L)
+                        ).color(NamedTextColor.AQUA)
+        ).color(NamedTextColor.GOLD);
 
-            return component;
-        } catch (UnknownHostException ignored) {}
-
-        return null;
+        return component;
     }
 }
