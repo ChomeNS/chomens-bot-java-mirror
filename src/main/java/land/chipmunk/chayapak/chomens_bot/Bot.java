@@ -131,7 +131,7 @@ public class Bot {
         this.session = session;
 
         session.addListener(new SessionAdapter() {
-            // same stuff over and over yup
+            // fard
 
             @Override
             public void packetReceived(Session session, Packet packet) {
