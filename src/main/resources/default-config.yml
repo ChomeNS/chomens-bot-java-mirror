@@ -47,7 +47,7 @@ core:
   # PLEASE give valid JSON component here else the core don't refill at all
   customName: '[{"text":"ChomeNS ","color":"yellow"},{"text":"Core","color":"green"},{"text":"™","color":"gold"}]'
 selfCare:
-  checkInterval: 1000
+  checkInterval: 450
 
   # vanilla
   op: true
