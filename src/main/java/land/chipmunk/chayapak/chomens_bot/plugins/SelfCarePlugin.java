@@ -149,7 +149,7 @@ public class SelfCarePlugin extends Bot.Listener {
             check();
         };
 
-        checkTask = bot.executor().scheduleAtFixedRate(task, 0, bot.config().selfCare().checkInterval(), TimeUnit.MILLISECONDS);
+        checkTask = bot.executor().scheduleAtFixedRate(task, 0, bot.chat().queueDelay(), TimeUnit.MILLISECONDS);
     }
 
     public void packetReceived (ClientboundGameEventPacket packet) {

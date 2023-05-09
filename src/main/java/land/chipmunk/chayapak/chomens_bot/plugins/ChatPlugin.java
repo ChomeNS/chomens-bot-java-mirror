@@ -19,6 +19,7 @@ import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.IllegalCharactersUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.UUIDUtilities;
 import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -37,10 +38,14 @@ public class ChatPlugin extends Bot.Listener {
     @Getter private final List<String> queue = new ArrayList<>();
     @Getter private final List<String> _queue = new ArrayList<>();
 
+    @Getter @Setter private int queueDelay;
+
     private final List<Listener> listeners = new ArrayList<>();
 
     public ChatPlugin (Bot bot) {
         this.bot = bot;
+
+        queueDelay = bot.config().chatQueueDelay();
 
         this.commandSpyParser = new CommandSpyParser(bot);
 
@@ -52,7 +57,7 @@ public class ChatPlugin extends Bot.Listener {
         chatParsers.add(new ChomeNSCustomChatParser(bot));
 
         bot.executor().scheduleAtFixedRate(this::_sendChatTick, 0, 1, TimeUnit.MILLISECONDS);
-        bot.executor().scheduleAtFixedRate(this::sendChatTick, 0, bot.config().chatQueueDelay(), TimeUnit.MILLISECONDS);
+        bot.executor().scheduleAtFixedRate(this::sendChatTick, 0, queueDelay, TimeUnit.MILLISECONDS);
     }
 
     @Override
