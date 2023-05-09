@@ -26,7 +26,14 @@ public class TrustedPlugin extends PlayersPlugin.Listener {
         for (Bot bot : bot.bots()) {
             if (!bot.loggedIn()) continue;
 
-            bot.logger().custom(Component.text("Trusted Broadcast").color(NamedTextColor.AQUA), message);
+            final Component component = Component.translatable(
+                    "[%s] [%s] %s",
+                    Component.text("ChomeNS Bot").color(NamedTextColor.YELLOW),
+                    Component.text(this.bot.options().serverName()).color(NamedTextColor.GRAY),
+                    message.color(NamedTextColor.WHITE)
+            ).color(NamedTextColor.DARK_GRAY);
+
+            bot.logger().custom(Component.text("Trusted Broadcast").color(NamedTextColor.AQUA), component);
 
             for (String player : list) {
                 final MutablePlayerListEntry entry = bot.players().getEntry(player);
@@ -34,13 +41,6 @@ public class TrustedPlugin extends PlayersPlugin.Listener {
                 if (entry == null) continue;
 
                 if (entry.profile().getId() == exceptTarget) continue;
-
-                final Component component = Component.translatable(
-                        "[%s] [%s] %s",
-                        Component.text("ChomeNS Bot").color(NamedTextColor.YELLOW),
-                        Component.text(this.bot.options().serverName()).color(NamedTextColor.GRAY),
-                        message.color(NamedTextColor.WHITE)
-                ).color(NamedTextColor.DARK_GRAY);
 
                 bot.chat().tellraw(component, player);
             }
