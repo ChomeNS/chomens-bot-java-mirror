@@ -15,7 +15,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
     private final Map<String, BossBar> bossBars = new HashMap<>();
 
     @Getter @Setter private boolean enabled = true;
-    @Getter @Setter private boolean actionbar = false;
+    @Getter @Setter private boolean actionBar = false;
 
     @Getter @Setter private String bossBarPrefix = "chomens_bot:";
     @Getter @Setter private String textDisplayPrefix = "chomens_bot_";
@@ -41,7 +41,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
 
             final String stringifiedComponent = GsonComponentSerializer.gson().serialize(bossBar.name());
 
-            if (!actionbar) {
+            if (!actionBar) {
                 bot.core().run("minecraft:bossbar add " + bossBarPrefix + name + " \"\"");
                 bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " players " + bossBar.players());
                 bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " color " + bossBar.color().color);
@@ -51,7 +51,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
                 bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " name " + stringifiedComponent);
                 bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " value " + bossBar.value());
             } else {
-                bot.core().run("minecraft:title " + bossBar.players() + " actionbar " + stringifiedComponent);
+                bot.chat().actionBar(bossBar.name(), bossBar.players());
             }
 
             // is there any way instead of using random?

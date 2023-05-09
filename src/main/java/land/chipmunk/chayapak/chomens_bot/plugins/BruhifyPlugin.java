@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +30,7 @@ public class BruhifyPlugin {
                 hue = (hue + increment) % 360;
             }
 
-            bot.core().run("minecraft:title @a actionbar " + GsonComponentSerializer.gson().serialize(component));
+            bot.chat().actionBar(component);
 
             startHue = (startHue + increment) % 360;
         }, 50, 100, TimeUnit.MILLISECONDS);

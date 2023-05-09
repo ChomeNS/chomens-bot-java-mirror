@@ -261,6 +261,15 @@ public class ChatPlugin extends Bot.Listener {
 
     public void tellraw (Component component) { tellraw(component, "@a"); }
 
+    public void actionBar (Component component, String targets) {
+        if (bot.options().useChat()) return;
+        bot.core().run("minecraft:title " + targets + " actionbar " + GsonComponentSerializer.gson().serialize(component));
+    }
+
+    public void actionBar (Component component, UUID uuid) { actionBar(component, UUIDUtilities.selector(uuid)); }
+
+    public void actionBar (Component component) { actionBar(component, "@a"); }
+
     public void addListener (Listener listener) { listeners.add(listener); }
 
     public static class Listener {
