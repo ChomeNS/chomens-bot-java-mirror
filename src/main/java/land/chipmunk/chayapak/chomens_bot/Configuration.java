@@ -61,6 +61,8 @@ public class Configuration {
     }
 
     public static class SelfCare {
+        @Getter public int checkInterval;
+
         @Getter public boolean op = true;
         @Getter public boolean gamemode = true;
         @Getter public boolean endCredits = true;
