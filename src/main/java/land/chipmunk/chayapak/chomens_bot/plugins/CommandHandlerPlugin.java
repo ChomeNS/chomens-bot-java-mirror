@@ -79,11 +79,10 @@ public class CommandHandlerPlugin {
 
         final Command command = ElementUtilities.findCommand(commands, commandName);
 
-        // I think this is kinda annoying when you correct spelling mistakes or something like
-        // *whatever* (action or whatever you call it.,,.) so I removed the unknown command
-        // if (command == null) return Component.text("Unknown command: " + commandName).color(NamedTextColor.RED);
-
-        if (command == null) return null;
+        // I think this is kinda annoying when you correct spelling mistakes or something
+        // so I made it return nothing if it's in game
+        if (command == null && !inGame) return Component.text("Unknown command: " + commandName).color(NamedTextColor.RED);
+        else if (command == null) return null;
 
         final int trustLevel = command.trustLevel();
 

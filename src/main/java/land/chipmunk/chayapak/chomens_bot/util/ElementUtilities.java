@@ -4,7 +4,6 @@ import land.chipmunk.chayapak.chomens_bot.command.Command;
 
 import java.util.List;
 
-// Author: ChatGPT I guess
 public class ElementUtilities {
     public static Command findCommand(List<Command> commands, String searchTerm) {
         for (Command command : commands) {
