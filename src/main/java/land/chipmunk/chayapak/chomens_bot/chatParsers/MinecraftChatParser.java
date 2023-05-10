@@ -7,10 +7,12 @@ import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerMessage;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.event.HoverEvent;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class MinecraftChatParser implements ChatParser {
     private final Bot bot;
@@ -43,8 +45,17 @@ public class MinecraftChatParser implements ChatParser {
         final Component senderComponent = args.get(0);
         final Component contents = args.get(1);
 
-        final String stringUsername = ComponentUtilities.stringify(senderComponent);
-        MutablePlayerListEntry sender = bot.players().getEntry(stringUsername);
+        MutablePlayerListEntry sender;
+
+        final HoverEvent<?> hoverEvent = senderComponent.hoverEvent();
+        if (hoverEvent != null && hoverEvent.action().equals(HoverEvent.Action.SHOW_ENTITY)) {
+            HoverEvent.ShowEntity entityInfo = (HoverEvent.ShowEntity) hoverEvent.value();
+            final UUID senderUUID = entityInfo.id();
+            sender = bot.players().getEntry(senderUUID);
+        } else {
+            final String stringUsername = ComponentUtilities.stringify(senderComponent);
+            sender = bot.players().getEntry(stringUsername);
+        }
 
         if (sender == null) return null;
 
