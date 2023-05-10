@@ -4,6 +4,7 @@ import land.chipmunk.chayapak.chomens_bot.plugins.ConsolePlugin;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -21,7 +22,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         final File file = new File("config.yml");
-        final Constructor constructor = new Constructor(Configuration.class);
+        final Constructor constructor = new Constructor(Configuration.class, new LoaderOptions());
         final Yaml yaml = new Yaml(constructor);
         Configuration _config;
 
