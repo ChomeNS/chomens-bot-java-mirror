@@ -1,7 +1,7 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.chatParsers.data.PlayerMessage;
+import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerMessage;
 import land.chipmunk.chayapak.chomens_bot.command.PlayerCommandContext;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.UUIDUtilities;

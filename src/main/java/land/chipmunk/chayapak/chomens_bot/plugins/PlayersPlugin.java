@@ -9,7 +9,7 @@ import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.chatParsers.data.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 

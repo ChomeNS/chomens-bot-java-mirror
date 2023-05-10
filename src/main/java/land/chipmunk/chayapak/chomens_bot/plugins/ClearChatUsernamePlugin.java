@@ -1,6 +1,6 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
-import land.chipmunk.chayapak.chomens_bot.chatParsers.data.PlayerMessage;
+import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerMessage;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;

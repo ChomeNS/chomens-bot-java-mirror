@@ -1,4 +1,4 @@
-package land.chipmunk.chayapak.chomens_bot.chatParsers.data;
+package land.chipmunk.chayapak.chomens_bot.data.chat;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

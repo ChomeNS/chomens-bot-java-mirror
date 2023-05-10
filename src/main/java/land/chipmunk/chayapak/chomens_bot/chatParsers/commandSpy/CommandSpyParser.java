@@ -1,9 +1,9 @@
 package land.chipmunk.chayapak.chomens_bot.chatParsers.commandSpy;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.chatParsers.data.ChatParser;
-import land.chipmunk.chayapak.chomens_bot.chatParsers.data.MutablePlayerListEntry;
-import land.chipmunk.chayapak.chomens_bot.chatParsers.data.PlayerMessage;
+import land.chipmunk.chayapak.chomens_bot.data.chat.ChatParser;
+import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerMessage;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;

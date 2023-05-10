@@ -1,7 +1,7 @@
 package land.chipmunk.chayapak.chomens_bot.command;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.chatParsers.data.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 

@@ -1,7 +1,7 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.chatParsers.data.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

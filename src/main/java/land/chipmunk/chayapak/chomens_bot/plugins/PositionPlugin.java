@@ -12,7 +12,7 @@ import com.github.steveice10.packetlib.packet.Packet;
 import org.cloudburstmc.math.vector.Vector3f;
 import org.cloudburstmc.math.vector.Vector3i;
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.chatParsers.data.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.data.Rotation;
 import lombok.Getter;
 

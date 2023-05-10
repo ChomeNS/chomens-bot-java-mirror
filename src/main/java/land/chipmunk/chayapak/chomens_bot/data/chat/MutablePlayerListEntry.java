@@ -1,4 +1,4 @@
-package land.chipmunk.chayapak.chomens_bot.chatParsers.data;
+package land.chipmunk.chayapak.chomens_bot.data.chat;
 
 import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;

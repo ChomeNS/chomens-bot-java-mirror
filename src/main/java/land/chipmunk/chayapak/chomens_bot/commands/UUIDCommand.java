@@ -1,6 +1,6 @@
 package land.chipmunk.chayapak.chomens_bot.commands;
 
-import land.chipmunk.chayapak.chomens_bot.chatParsers.data.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
