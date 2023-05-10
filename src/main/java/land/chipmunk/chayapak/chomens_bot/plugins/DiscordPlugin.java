@@ -18,6 +18,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -155,17 +156,18 @@ public class DiscordPlugin {
                                       )
                                       .clickEvent(ClickEvent.openUrl(discordUrl));
 
+                              final Component deserialized = LegacyComponentSerializer.legacyAmpersand().deserialize(message.replace("\uD83D\uDC80", "☠"));
+
+                              final Component messageComponent = Component
+                                      .text("")
+                                      .color(NamedTextColor.GRAY)
+                                      .append(deserialized.append(attachmentsComponent));
+
                               final Component component = Component.translatable(
                                       "[%s] %s › %s",
                                       discordComponent,
                                       nameComponent,
-                                      Component
-                                              .text(
-                                                      message
-                                                            .replace("\uD83D\uDC80", "☠")
-                                              )
-                                              .color(NamedTextColor.GRAY)
-                                              .append(attachmentsComponent)
+                                      messageComponent
                               ).color(NamedTextColor.DARK_GRAY);
                               bot.chat().tellraw(component);
                           }
