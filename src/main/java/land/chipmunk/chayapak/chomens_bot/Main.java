@@ -43,8 +43,6 @@ public class Main {
             configWriter.close();
 
             System.out.println("config.yml file not found, so the default one was created");
-
-            _config = yaml.load(is);
         }
 
         InputStream opt = new FileInputStream(file);
