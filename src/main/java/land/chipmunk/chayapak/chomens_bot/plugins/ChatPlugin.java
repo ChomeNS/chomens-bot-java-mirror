@@ -9,6 +9,7 @@ import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.ChomeNSCustomChatParser;
+import land.chipmunk.chayapak.chomens_bot.chatParsers.CreayunChatParser;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.KaboomChatParser;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.MinecraftChatParser;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.commandSpy.CommandSpyParser;
@@ -55,6 +56,7 @@ public class ChatPlugin extends Bot.Listener {
         chatParsers.add(new MinecraftChatParser(bot));
         chatParsers.add(new KaboomChatParser(bot));
         chatParsers.add(new ChomeNSCustomChatParser(bot));
+        chatParsers.add(new CreayunChatParser(bot));
 
         bot.executor().scheduleAtFixedRate(this::_sendChatTick, 0, 1, TimeUnit.MILLISECONDS);
         bot.executor().scheduleAtFixedRate(this::sendChatTick, 0, queueDelay, TimeUnit.MILLISECONDS);
