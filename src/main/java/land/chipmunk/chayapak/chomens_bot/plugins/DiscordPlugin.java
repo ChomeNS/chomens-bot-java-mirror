@@ -11,17 +11,23 @@ import land.chipmunk.chayapak.chomens_bot.util.CodeBlockUtilities;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 // please ignore my shitcode
@@ -111,6 +117,8 @@ public class DiscordPlugin {
                                   return;
                               }
 
+                              // ignore weird codes mabe
+
                               Component attachmentsComponent = Component.empty();
                               if (_message.getAttachments().size() > 0) {
                                   for (Message.Attachment attachment : _message.getAttachments()) {
@@ -131,15 +139,53 @@ public class DiscordPlugin {
                               final String fallbackName = event.getAuthor().getName();
                               if (name == null) name = fallbackName;
 
+                              final List<Role> roles = event.getMember().getRoles();
+
+                              Component rolesComponent = Component.empty();
+                              if (roles.size() > 0) {
+                                  rolesComponent = rolesComponent
+                                          .append(Component.text("Roles:").color(NamedTextColor.GRAY))
+                                          .append(Component.newline());
+
+                                  final List<Component> rolesList = new ArrayList<>();
+
+                                  for (Role role : roles) {
+                                      final Color color = role.getColor();
+
+                                      rolesList.add(
+                                              Component
+                                                      .text(role.getName())
+                                                      .color(
+                                                              color == null ?
+                                                                      NamedTextColor.WHITE :
+                                                                      TextColor.color(
+                                                                              color.getRed(),
+                                                                              color.getGreen(),
+                                                                              color.getBlue()
+                                                                      )
+                                                      )
+                                      );
+                                  }
+
+                                  rolesComponent = rolesComponent.append(Component.join(JoinConfiguration.newlines(), rolesList));
+                              } else {
+                                  rolesComponent = rolesComponent.append(Component.text("No roles").color(NamedTextColor.GRAY));
+                              }
+
                               final Component nameComponent = Component
                                       .text(name)
                                       .clickEvent(ClickEvent.copyToClipboard(fallbackName + "#" + tag))
                                       .hoverEvent(
                                               HoverEvent.showText(
                                                       Component.translatable(
-                                                              "%s#%s\n%s",
+                                                              """
+                                                                      %s#%s
+                                                                      %s
+                                                                      
+                                                                      %s""",
                                                               Component.text(fallbackName).color(NamedTextColor.WHITE),
                                                               Component.text(tag).color(NamedTextColor.GRAY),
+                                                              rolesComponent,
                                                               Component.text("Click here to copy the tag to your clipboard").color(NamedTextColor.GREEN)
                                                       ).color(NamedTextColor.DARK_GRAY)
                                               )
