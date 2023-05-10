@@ -40,6 +40,8 @@ public class DiscordPlugin {
         this.servers = options.servers();
         this.jda = jda;
 
+        if (jda == null) return;
+
         for (Bot bot : Main.bots) {
             String channelId = servers.get(bot.host() + ":" + bot.port());
 
@@ -214,6 +216,7 @@ public class DiscordPlugin {
     }
 
     public void sendMessageInstantly (String message, String channelId) {
+        if (jda == null) return;
         final TextChannel logChannel = jda.getTextChannelById(channelId);
         logChannel.sendMessage(message).queue(
                 (msg) -> doneSendingInLogs.put(channelId, true),

@@ -56,18 +56,20 @@ public class Main {
 
         // idk if these should be here lol, but it is just the discord stuff
         JDA jda = null;
-        JDABuilder builder = JDABuilder.createDefault(config.discord().token());
-        try {
-            jda = builder.build();
-            jda.awaitReady();
-        } catch (LoginException e) {
-            System.err.println("Failed to login to Discord, stacktrace:");
-            e.printStackTrace();
-            System.exit(1);
-        } catch (InterruptedException ignored) {
-            System.exit(1);
+        if (config.discord().enabled()) {
+            JDABuilder builder = JDABuilder.createDefault(config.discord().token());
+            try {
+                jda = builder.build();
+                jda.awaitReady();
+            } catch (LoginException e) {
+                System.err.println("Failed to login to Discord, stacktrace:");
+                e.printStackTrace();
+                System.exit(1);
+            } catch (InterruptedException ignored) {
+                System.exit(1);
+            }
+            jda.getPresence().setPresence(Activity.playing(config.discord().statusMessage()), false); // what does `b` do? kinda sus,..,
         }
-        jda.getPresence().setPresence(Activity.playing(config.discord().statusMessage()), false); // what does `b` do? kinda sus,..,
 
         for (Configuration.BotOption botOption : botsOptions) {
             final Bot bot = new Bot(botOption, bots, config);

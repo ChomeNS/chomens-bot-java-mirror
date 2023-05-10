@@ -166,7 +166,7 @@ public class GrepLogPlugin {
                                 .append(Component.newline())
                                 .append(Component.text(results.toString()))
                 );
-            } else {
+            } else if (bot.config().discord().enabled()) {
                 bot.chat().tellraw(
                         Component.translatable(
                                 "Log query finished, found %s matches. Results were sent in Discord",

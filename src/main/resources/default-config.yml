@@ -14,6 +14,7 @@ reconnectDelay: 2000
 chatQueueDelay: 125
 
 discord:
+  enabled: true
   prefix: 'default!'
   token: 'token here'
   trustedRoleName: 'Trusted'
@@ -46,6 +47,7 @@ core:
   refillInterval: 300000 # (60 * 5) * 1000 (5 minutes)
   # PLEASE give valid JSON component here else the core don't refill at all
   customName: '[{"text":"ChomeNS ","color":"yellow"},{"text":"Core","color":"green"},{"text":"™","color":"gold"}]'
+
 selfCare:
   checkInterval: 450
 
@@ -66,7 +68,7 @@ selfCare:
   # icu (icontrolUwU)
   icu:
     enabled: true
-    positionPacketsPerSecond: 10 # 10 seems to be a best number for me
+    positionPacketsPerSecond: 10 # 10 seems to be the best number for me
 
   # extras
   prefix: true

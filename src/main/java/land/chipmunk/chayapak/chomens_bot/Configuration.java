@@ -45,6 +45,7 @@ public class Configuration {
     }
 
     public static class Discord {
+        @Getter public boolean enabled = true;
         @Getter public String prefix = "default!";
         @Getter public String token;
         @Getter public Map<String, String> servers = new HashMap<>();
