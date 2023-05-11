@@ -60,6 +60,7 @@ public class CommandHandlerPlugin {
         registerCommand(new KickCommand());
         registerCommand(new ClearChatQueueCommand());
         registerCommand(new FilterCommand());
+        registerCommand(new UptimeCommand());
     }
 
     public void registerCommand (Command command) {
