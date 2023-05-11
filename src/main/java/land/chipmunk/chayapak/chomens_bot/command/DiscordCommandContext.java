@@ -26,7 +26,7 @@ public class DiscordCommandContext extends CommandContext {
                 new MutablePlayerListEntry(
                         new GameProfile(
                                 new UUID(0L, 0L),
-                                null
+                                event.getAuthor().getName()
                         ),
                         GameMode.SURVIVAL,
                         0,
