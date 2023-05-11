@@ -63,8 +63,9 @@ public class NetMessageCommand implements Command {
                 Component.text(String.join(" ", args)).color(NamedTextColor.GRAY)
         ).color(NamedTextColor.DARK_GRAY);
 
-        for (Bot allBot : bots) {
-            allBot.chat().tellraw(component);
+        for (Bot eachBot : bots) {
+            if (!eachBot.loggedIn()) continue;
+            eachBot.chat().tellraw(component);
         }
 
         return null;

@@ -36,7 +36,7 @@ public class CreayunChatParser implements ChatParser {
             final String contents = matcher.group(2);
 
             MutablePlayerListEntry sender = bot.players().getEntry(displayName);
-            if (sender == null) sender = new MutablePlayerListEntry(new GameProfile(new UUID(0L, 0L), null), GameMode.SURVIVAL, 0, Component.text(displayName), 0L, null, new byte[0], true);
+            if (sender == null) sender = new MutablePlayerListEntry(new GameProfile(new UUID(0L, 0L), displayName), GameMode.SURVIVAL, 0, Component.text(displayName), 0L, null, new byte[0], true);
 
             return new PlayerMessage(sender, Component.text(displayName), Component.text(contents));
         }
