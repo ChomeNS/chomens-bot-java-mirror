@@ -12,6 +12,7 @@ public class EvalRunnerPlugin {
 
     public EvalRunnerPlugin (Bot bot) {
         globals.set("bot", CoerceJavaToLua.coerce(bot));
+        globals.set("class", CoerceJavaToLua.coerce(Class.class));
     }
 
     public LuaValue run (String code) {
