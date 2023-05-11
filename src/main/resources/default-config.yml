@@ -14,7 +14,7 @@ reconnectDelay: 2000
 chatQueueDelay: 125
 
 discord:
-  enabled: true
+  enabled: false
   prefix: 'default!'
   token: 'token here'
   trustedRoleName: 'Trusted'
@@ -72,7 +72,7 @@ selfCare:
 
   # extras
   prefix: true
-  username: true # do NOT set this to false unless you know what you are doing
+  username: true
 bots:
   # username, kaboom, useCore, useChat, hasEssentials and reconnectDelay are optional.
 
