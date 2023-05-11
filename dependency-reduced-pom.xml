@@ -31,6 +31,17 @@
             <goals>
               <goal>shade</goal>
             </goals>
+            <configuration>
+              <transformers>
+                <transformer>
+                  <mainClass>land.chipmunk.chayapak.chomens_bot.Main</mainClass>
+                  <manifestEntries>
+                    <Multi-Release>true</Multi-Release>
+                  </manifestEntries>
+                </transformer>
+                <transformer />
+              </transformers>
+            </configuration>
           </execution>
         </executions>
       </plugin>
