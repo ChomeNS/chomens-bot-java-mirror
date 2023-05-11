@@ -51,191 +51,191 @@ public class DiscordPlugin {
         for (Bot bot : Main.bots) {
             String channelId = servers.get(bot.host() + ":" + bot.port());
 
-              bot.addListener(new Bot.Listener() {
-                  @Override
-                  public void connecting() {
-                      sendMessageInstantly(
-                              String.format(
-                                      "Connecting to: `%s:%s`",
-                                      bot.host(),
-                                      bot.port()
-                              ),
-                              channelId
-                      );
-                  }
+            bot.addListener(new Bot.Listener() {
+                @Override
+                public void connecting() {
+                    sendMessageInstantly(
+                            String.format(
+                                    "Connecting to: `%s:%s`",
+                                    bot.host(),
+                                    bot.port()
+                            ),
+                            channelId
+                    );
+                }
 
-                  @Override
-                  public void connected (ConnectedEvent event) {
-                      boolean channelAlreadyAddedListeners = alreadyAddedListeners.getOrDefault(channelId, false);
+                @Override
+                public void connected (ConnectedEvent event) {
+                    boolean channelAlreadyAddedListeners = alreadyAddedListeners.getOrDefault(channelId, false);
 
-                      sendMessageInstantly(
-                              String.format(
-                                      "Successfully connected to: `%s:%s`",
-                                      bot.host(),
-                                      bot.port()
-                              ),
-                              channelId
-                      );
+                    sendMessageInstantly(
+                            String.format(
+                                    "Successfully connected to: `%s:%s`",
+                                    bot.host(),
+                                    bot.port()
+                            ),
+                            channelId
+                    );
 
-                      if (channelAlreadyAddedListeners) return;
+                    if (channelAlreadyAddedListeners) return;
 
-                      bot.tick().addListener(new TickPlugin.Listener() {
-                          @Override
-                          public void onTick() {
-                              onDiscordTick(channelId);
-                          }
-                      });
+                    bot.tick().addListener(new TickPlugin.Listener() {
+                        @Override
+                        public void onTick() {
+                            onDiscordTick(channelId);
+                        }
+                    });
 
-                      bot.chat().addListener(new ChatPlugin.Listener() {
-                          @Override
-                          public void systemMessageReceived (Component component) {
-                              final String content = ComponentUtilities.stringifyAnsi(component);
-                              sendMessage(CodeBlockUtilities.escape(content.replace("\u001b[9", "\u001b[3")), channelId);
-                          }
-                      });
+                    bot.chat().addListener(new ChatPlugin.Listener() {
+                        @Override
+                        public void systemMessageReceived (Component component) {
+                            final String content = ComponentUtilities.stringifyAnsi(component);
+                            sendMessage(CodeBlockUtilities.escape(content.replace("\u001b[9", "\u001b[3")), channelId);
+                        }
+                    });
 
-                      jda.addEventListener(new ListenerAdapter() {
-                          @Override
-                          public void onMessageReceived(@NotNull MessageReceivedEvent event) {
-                              if (
-                                      !event.getChannel().getId().equals(channelId) ||
-                                              event.getAuthor().getId().equals(jda.getSelfUser().getId())
-                              ) return;
+                    jda.addEventListener(new ListenerAdapter() {
+                        @Override
+                        public void onMessageReceived(@NotNull MessageReceivedEvent event) {
+                            if (
+                                    !event.getChannel().getId().equals(channelId) ||
+                                            event.getAuthor().getId().equals(jda.getSelfUser().getId())
+                            ) return;
 
-                              final Message _message = event.getMessage();
-                              final String message = _message.getContentRaw();
+                            final Message _message = event.getMessage();
+                            final String message = _message.getContentRaw();
 
-                              if (message.startsWith(prefix)) {
-                                  final DiscordCommandContext context = new DiscordCommandContext(bot, prefix, event, null, null);
+                            if (message.startsWith(prefix)) {
+                                final DiscordCommandContext context = new DiscordCommandContext(bot, prefix, event, null, null);
 
-                                  final Component output = bot.commandHandler().executeCommand(message.substring(prefix.length()), context, false, true, false, null, null, event);
+                                final Component output = bot.commandHandler().executeCommand(message.substring(prefix.length()), context, false, true, false, null, null, event);
 
-                                  if (output != null) {
-                                      context.sendOutput(output);
-                                  }
+                                if (output != null) {
+                                    context.sendOutput(output);
+                                }
 
-                                  return;
-                              }
+                                return;
+                            }
 
-                              // ignore weird codes mabe
+                            // ignore weird codes mabe
 
-                              Component attachmentsComponent = Component.empty();
-                              if (_message.getAttachments().size() > 0) {
-                                  for (Message.Attachment attachment : _message.getAttachments()) {
-                                      attachmentsComponent = attachmentsComponent
-                                              .append(Component.text(" "))
-                                              .append(
-                                                Component
-                                                          .text("[Attachment]")
-                                                          .clickEvent(ClickEvent.openUrl(attachment.getProxyUrl()))
-                                                          .color(NamedTextColor.GREEN)
-                                              );
-                                  }
-                              }
+                            Component attachmentsComponent = Component.empty();
+                            if (_message.getAttachments().size() > 0) {
+                                for (Message.Attachment attachment : _message.getAttachments()) {
+                                    attachmentsComponent = attachmentsComponent
+                                            .append(Component.text(" "))
+                                            .append(
+                                                    Component
+                                                            .text("[Attachment]")
+                                                            .clickEvent(ClickEvent.openUrl(attachment.getProxyUrl()))
+                                                            .color(NamedTextColor.GREEN)
+                                            );
+                                }
+                            }
 
-                              final String tag = event.getMember().getUser().getDiscriminator();
+                            final String tag = event.getMember().getUser().getDiscriminator();
 
-                              String name = event.getMember().getNickname();
-                              final String fallbackName = event.getAuthor().getName();
-                              if (name == null) name = fallbackName;
+                            String name = event.getMember().getNickname();
+                            final String fallbackName = event.getAuthor().getName();
+                            if (name == null) name = fallbackName;
 
-                              final List<Role> roles = event.getMember().getRoles();
+                            final List<Role> roles = event.getMember().getRoles();
 
-                              Component rolesComponent = Component.empty();
-                              if (roles.size() > 0) {
-                                  rolesComponent = rolesComponent
-                                          .append(Component.text("Roles:").color(NamedTextColor.GRAY))
-                                          .append(Component.newline());
+                            Component rolesComponent = Component.empty();
+                            if (roles.size() > 0) {
+                                rolesComponent = rolesComponent
+                                        .append(Component.text("Roles:").color(NamedTextColor.GRAY))
+                                        .append(Component.newline());
 
-                                  final List<Component> rolesList = new ArrayList<>();
+                                final List<Component> rolesList = new ArrayList<>();
 
-                                  for (Role role : roles) {
-                                      final Color color = role.getColor();
+                                for (Role role : roles) {
+                                    final Color color = role.getColor();
 
-                                      rolesList.add(
-                                              Component
-                                                      .text(role.getName())
-                                                      .color(
-                                                              color == null ?
-                                                                      NamedTextColor.WHITE :
-                                                                      TextColor.color(
-                                                                              color.getRed(),
-                                                                              color.getGreen(),
-                                                                              color.getBlue()
-                                                                      )
-                                                      )
-                                      );
-                                  }
+                                    rolesList.add(
+                                            Component
+                                                    .text(role.getName())
+                                                    .color(
+                                                            color == null ?
+                                                                    NamedTextColor.WHITE :
+                                                                    TextColor.color(
+                                                                            color.getRed(),
+                                                                            color.getGreen(),
+                                                                            color.getBlue()
+                                                                    )
+                                                    )
+                                    );
+                                }
 
-                                  rolesComponent = rolesComponent.append(Component.join(JoinConfiguration.newlines(), rolesList));
-                              } else {
-                                  rolesComponent = rolesComponent.append(Component.text("No roles").color(NamedTextColor.GRAY));
-                              }
+                                rolesComponent = rolesComponent.append(Component.join(JoinConfiguration.newlines(), rolesList));
+                            } else {
+                                rolesComponent = rolesComponent.append(Component.text("No roles").color(NamedTextColor.GRAY));
+                            }
 
-                              final Component nameComponent = Component
-                                      .text(name)
-                                      .clickEvent(ClickEvent.copyToClipboard(fallbackName + "#" + tag))
-                                      .hoverEvent(
-                                              HoverEvent.showText(
-                                                      Component.translatable(
-                                                              """
-                                                                      %s#%s
-                                                                      %s
-                                                                      
-                                                                      %s""",
-                                                              Component.text(fallbackName).color(NamedTextColor.WHITE),
-                                                              Component.text(tag).color(NamedTextColor.GRAY),
-                                                              rolesComponent,
-                                                              Component.text("Click here to copy the tag to your clipboard").color(NamedTextColor.GREEN)
-                                                      ).color(NamedTextColor.DARK_GRAY)
-                                              )
-                                      )
-                                      .color(NamedTextColor.RED);
+                            final Component nameComponent = Component
+                                    .text(name)
+                                    .clickEvent(ClickEvent.copyToClipboard(fallbackName + "#" + tag))
+                                    .hoverEvent(
+                                            HoverEvent.showText(
+                                                    Component.translatable(
+                                                            """
+                                                                    %s#%s
+                                                                    %s
+                                                                    
+                                                                    %s""",
+                                                            Component.text(fallbackName).color(NamedTextColor.WHITE),
+                                                            Component.text(tag).color(NamedTextColor.GRAY),
+                                                            rolesComponent,
+                                                            Component.text("Click here to copy the tag to your clipboard").color(NamedTextColor.GREEN)
+                                                    ).color(NamedTextColor.DARK_GRAY)
+                                            )
+                                    )
+                                    .color(NamedTextColor.RED);
 
-                              final String discordUrl = config.discord().inviteLink();
+                            final String discordUrl = config.discord().inviteLink();
 
-                              final Component discordComponent = Component.empty()
-                                      .append(Component.text("ChomeNS ").color(NamedTextColor.YELLOW))
-                                      .append(Component.text("Discord").color(NamedTextColor.BLUE))
-                                      .hoverEvent(
-                                              HoverEvent.showText(
-                                                      Component.text("Click here to join the Discord server").color(NamedTextColor.GREEN)
-                                              )
-                                      )
-                                      .clickEvent(ClickEvent.openUrl(discordUrl));
+                            final Component discordComponent = Component.empty()
+                                    .append(Component.text("ChomeNS ").color(NamedTextColor.YELLOW))
+                                    .append(Component.text("Discord").color(NamedTextColor.BLUE))
+                                    .hoverEvent(
+                                            HoverEvent.showText(
+                                                    Component.text("Click here to join the Discord server").color(NamedTextColor.GREEN)
+                                            )
+                                    )
+                                    .clickEvent(ClickEvent.openUrl(discordUrl));
 
-                              final Component deserialized = LegacyComponentSerializer.legacyAmpersand().deserialize(message.replace("\uD83D\uDC80", "☠"));
+                            final Component deserialized = LegacyComponentSerializer.legacyAmpersand().deserialize(message.replace("\uD83D\uDC80", "☠"));
 
-                              final Component messageComponent = Component
-                                      .text("")
-                                      .color(NamedTextColor.GRAY)
-                                      .append(deserialized.append(attachmentsComponent));
+                            final Component messageComponent = Component
+                                    .text("")
+                                    .color(NamedTextColor.GRAY)
+                                    .append(deserialized.append(attachmentsComponent));
 
-                              final Component component = Component.translatable(
-                                      "[%s] %s › %s",
-                                      discordComponent,
-                                      nameComponent,
-                                      messageComponent
-                              ).color(NamedTextColor.DARK_GRAY);
-                              bot.chat().tellraw(component);
-                          }
-                      });
+                            final Component component = Component.translatable(
+                                    "[%s] %s › %s",
+                                    discordComponent,
+                                    nameComponent,
+                                    messageComponent
+                            ).color(NamedTextColor.DARK_GRAY);
+                            bot.chat().tellraw(component);
+                        }
+                    });
 
-                      alreadyAddedListeners.put(channelId, true);
-                  }
+                    alreadyAddedListeners.put(channelId, true);
+                }
 
-                  @Override
-                  public void disconnected(DisconnectedEvent event) {
-                      final String reason = ComponentUtilities.stringifyAnsi(event.getReason());
-                      sendMessageInstantly(
-                              "Disconnected: \n" +
-                                      "```ansi\n" +
-                                      reason.replace("`", "\\`") +
-                                      "\n```"
-                              , channelId
-                      );
-                  }
-              });
+                @Override
+                public void disconnected(DisconnectedEvent event) {
+                    final String reason = ComponentUtilities.stringifyAnsi(event.getReason());
+                    sendMessageInstantly(
+                            "Disconnected: \n" +
+                                    "```ansi\n" +
+                                    reason.replace("`", "\\`") +
+                                    "\n```"
+                            , channelId
+                    );
+                }
+            });
 
             bot.discord(this);
         }
