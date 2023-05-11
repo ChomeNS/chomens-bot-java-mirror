@@ -86,7 +86,7 @@ public class TPSPlugin extends Bot.Listener {
             bossBar.color(getBossBarColor(tickRate));
             bossBar.visible(true);
             bossBar.style(BossBarStyle.NOTCHED_20);
-            bossBar.value((int) tickRate);
+            bossBar.value((int) Math.round(tickRate));
             bossBar.max(20);
         } catch (Exception e) {
             e.printStackTrace();
