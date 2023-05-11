@@ -3,3 +3,6 @@
 
 # Exploits plugin
 /plugins/ExploitsPlugin.java
+
+# Testing plugins
+/plugins/testing/
