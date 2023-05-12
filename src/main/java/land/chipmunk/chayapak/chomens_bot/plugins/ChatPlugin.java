@@ -222,8 +222,21 @@ public class ChatPlugin extends Bot.Listener {
         final String message = _queue.get(0);
 
         if (message.startsWith("/")) {
+            String removedMessage = message.substring(1);
+
+            final String[] splittedSpace = removedMessage.split("\\s+"); // [minecraft:test, arg1, arg2, ...]
+            final String[] splittedColon = splittedSpace[0].split(":"); // [minecraft, test]
+            if (bot.options().removeNamespaces() && splittedColon.length >= 2) {
+                removedMessage = String.join(":", Arrays.copyOfRange(splittedColon, 1, splittedColon.length));
+
+                if (splittedSpace.length > 1) {
+                    removedMessage += " ";
+                    removedMessage += String.join(" ", Arrays.copyOfRange(splittedSpace, 1, splittedSpace.length));
+                }
+            }
+
             bot.session().send(new ServerboundChatCommandPacket(
-                    message.substring(1),
+                    removedMessage,
                     Instant.now().toEpochMilli(),
                     0L,
                     Collections.emptyList(),

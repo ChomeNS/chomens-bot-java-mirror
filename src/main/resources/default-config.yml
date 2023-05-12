@@ -77,13 +77,14 @@ bots:
   # username, kaboom, useCore, useChat, hasEssentials and reconnectDelay are optional.
 
   # more info:
-  # for username if it doesn't exist it will default to random username
-  # for kaboom it will just default to `false`
-  # for serverName name it whatever you like, it will be used as server name in trusted broadcast and in console
-  # for useCore it just sends the command using chat instead of using core. recommended to enable useChat too when this is enabled
-  # for useChat when the bot sends output (tellraw) it will chat instead of using the core to run tellraw
-  # for hasEssentials it is self-explanatory. if the server has essentials plugin just set it to true
-  # for reconnectDelay if not specified it will just default to the global reconnectDelay
+  # username - if it doesn't exist it will default to random username
+  # kaboom - it will just default to `false`
+  # serverName - name it whatever you like, it will be used as server name in trusted broadcast and in console
+  # useCore - it just sends the command using chat instead of using core. recommended to enable useChat too when this is enabled
+  # useChat - when the bot sends output (tellraw) it will chat instead of using the core to run tellraw
+  # hasEssentials - if the server has essentials plugin just set it to true!! ! !!31
+  # reconnectDelay - if not specified it will just default to the global reconnectDelay
+  # removeNamespaces - when the bot sends a command it will remove like `minecraft:` for example if set to true
 
   - host: 'localhost'
     port: 25565
@@ -94,3 +95,4 @@ bots:
     useChat: false
     hasEssentials: false
     reconnectDelay: 2000
+    removeNamespaces: false

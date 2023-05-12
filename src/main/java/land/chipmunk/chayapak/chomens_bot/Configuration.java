@@ -96,5 +96,6 @@ public class Configuration {
         @Getter @Setter public boolean useChat = false;
         @Getter public boolean hasEssentials = true;
         @Getter public int reconnectDelay = -1;
+        @Getter public boolean removeNamespaces = false;
     }
 }
