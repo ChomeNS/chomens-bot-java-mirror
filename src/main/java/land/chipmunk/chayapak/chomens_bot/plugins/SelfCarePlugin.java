@@ -59,6 +59,7 @@ public class SelfCarePlugin extends Bot.Listener {
                 else if (message.equals("Successfully disabled CommandSpy")) cspy = false;
 
                 else if (message.equals("Vanish for " + bot.username() + ": enabled")) vanish = true;
+                else if (message.equals("You are now completely invisible to normal users, and hidden from in-game commands.")) vanish = true;
                 else if (message.equals("Vanish for " + bot.username() + ": disabled")) vanish = false;
 
                 else if (message.equals("You no longer have a nickname.")) nickname = true;
