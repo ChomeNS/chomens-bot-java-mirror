@@ -104,7 +104,7 @@ public class SelfCarePlugin extends Bot.Listener {
             else bot.core().run("essentials:vanish " + bot.username() + " enable");
         }
         else if (selfCares.nickname() && !nickname && bot.options().hasEssentials()) {
-            if (bot.options().useChat()) bot.chat().send("/essentials:nickname off");
+            if (bot.options().useChat()) bot.chat().send("/essentials:nick off");
             else bot.core().run("essentials:nickname " + bot.username() + " off");
         }
         else if (selfCares.socialspy() && !socialspy && bot.options().hasEssentials()) {
