@@ -3,8 +3,10 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.HttpUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -42,6 +44,8 @@ public class TranslateCommand implements Command {
     }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+        final Bot bot = context.bot();
+
         final String from = args[0];
         final String to = args[1];
 
@@ -79,7 +83,7 @@ public class TranslateCommand implements Command {
                             "Result: %s",
                             Component.text(output).color(NamedTextColor.GREEN)
                     )
-                    .color(NamedTextColor.GOLD);
+                    .color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary()));
         } catch (Exception e) {
             return Component.text(e.toString()).color(NamedTextColor.RED);
         }

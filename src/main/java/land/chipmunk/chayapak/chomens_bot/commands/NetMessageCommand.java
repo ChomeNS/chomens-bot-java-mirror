@@ -4,6 +4,7 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -58,7 +59,7 @@ public class NetMessageCommand implements Command {
                                 )
                         ),
                 Component.text(" "),
-                Component.text(context.sender().profile().getName()).color(NamedTextColor.GRAY),
+                context.sender().displayName().color(NamedTextColor.GRAY),
                 Component.text(" "),
                 Component.text(String.join(" ", args)).color(NamedTextColor.GRAY)
         ).color(NamedTextColor.DARK_GRAY);

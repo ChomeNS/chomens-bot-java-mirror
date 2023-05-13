@@ -4,6 +4,7 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -50,6 +51,7 @@ public class KickCommand implements Command {
 
         return Component.empty()
                 .append(Component.text("Kicking player "))
-                .append(Component.text(name).color(NamedTextColor.GOLD));
+                .append(Component.text(name).color(ColorUtilities.getColorByString(bot.config().colorPalette().username())))
+                .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
     }
 }

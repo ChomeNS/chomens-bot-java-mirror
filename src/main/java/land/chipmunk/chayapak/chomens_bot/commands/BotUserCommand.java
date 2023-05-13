@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -56,7 +57,7 @@ public class BotUserCommand implements Command {
                         .clickEvent(
                                 ClickEvent.copyToClipboard(username)
                         )
-                        .color(NamedTextColor.GOLD),
+                        .color(ColorUtilities.getColorByString(bot.config().colorPalette().username())),
                 Component
                         .text(uuid)
                         .hoverEvent(
@@ -69,7 +70,7 @@ public class BotUserCommand implements Command {
                         .clickEvent(
                                 ClickEvent.copyToClipboard(uuid)
                         )
-                        .color(NamedTextColor.AQUA)
-        );
+                        .color(ColorUtilities.getColorByString(bot.config().colorPalette().uuid()))
+        ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
     }
 }

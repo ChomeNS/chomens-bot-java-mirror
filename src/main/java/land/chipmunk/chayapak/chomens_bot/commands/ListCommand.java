@@ -4,6 +4,7 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -59,7 +60,7 @@ public class ListCommand implements Command {
                                     .clickEvent(
                                             ClickEvent.copyToClipboard(entry.profile().getName())
                                     )
-                                    .color(NamedTextColor.YELLOW),
+                                    .color(ColorUtilities.getColorByString(bot.config().colorPalette().username())),
                             Component
                                     .text(entry.profile().getIdAsString())
                                     .hoverEvent(
@@ -70,7 +71,7 @@ public class ListCommand implements Command {
                                     .clickEvent(
                                             ClickEvent.copyToClipboard(entry.profile().getIdAsString())
                                     )
-                                    .color(NamedTextColor.AQUA)
+                                    .color(ColorUtilities.getColorByString(bot.config().colorPalette().uuid()))
                     ).color(NamedTextColor.DARK_GRAY)
             );
         }

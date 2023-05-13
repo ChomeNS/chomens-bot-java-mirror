@@ -6,6 +6,7 @@ import land.chipmunk.chayapak.chomens_bot.data.BossBar;
 import land.chipmunk.chayapak.chomens_bot.data.BossBarColor;
 import land.chipmunk.chayapak.chomens_bot.data.BossBarStyle;
 import land.chipmunk.chayapak.chomens_bot.song.*;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.MathUtilities;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +19,7 @@ import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.LinkedList;
 
-// Author: _ChipMC_ with some stuff added
+// Author: _ChipMC_ & chayapak <3
 public class MusicPlayerPlugin extends Bot.Listener {
     private final Bot bot;
 
@@ -59,7 +60,14 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
         try {
             final SongLoaderThread _loaderThread = new SongLoaderThread(location, bot);
-            bot.chat().tellraw(Component.translatable("Loading %s", Component.text(location.getFileName().toString(), NamedTextColor.GOLD)));
+            bot.chat().tellraw(
+                    Component
+                            .translatable(
+                                    "Loading %s",
+                                    Component.text(location.getFileName().toString(), ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
+                            )
+                            .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+            );
             _loaderThread.start();
             loaderThread = _loaderThread;
         } catch (SongLoaderException e) {
@@ -77,7 +85,14 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
         try {
             final SongLoaderThread _loaderThread = new SongLoaderThread(location, bot);
-            bot.chat().tellraw(Component.translatable("Loading %s", Component.text(location.toString(), NamedTextColor.GOLD)));
+            bot.chat().tellraw(
+                    Component
+                            .translatable(
+                                    "Loading %s",
+                                    Component.text(location.toString(), ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
+                            )
+                            .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+            );
             _loaderThread.start();
             loaderThread = _loaderThread;
         } catch (SongLoaderException e) {
@@ -95,7 +110,12 @@ public class MusicPlayerPlugin extends Bot.Listener {
                         bot.chat().tellraw(Component.translatable("Failed to load song: %s", loaderThread.exception.message()).color(NamedTextColor.RED));
                     } else {
                         songQueue.add(loaderThread.song);
-                        bot.chat().tellraw(Component.translatable("Added %s to the song queue", Component.empty().append(loaderThread.song.name).color(NamedTextColor.GOLD)));
+                        bot.chat().tellraw(
+                                Component.translatable(
+                                        "Added %s to the song queue",
+                                        Component.empty().append(loaderThread.song.name).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
+                                ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+                        );
                     }
                     loaderThread = null;
                 }
@@ -106,7 +126,12 @@ public class MusicPlayerPlugin extends Bot.Listener {
                     addBossBar();
 
                     currentSong = songQueue.get(0); // songQueue.poll();
-                    bot.chat().tellraw(Component.translatable("Now playing %s", Component.empty().append(currentSong.name).color(NamedTextColor.GOLD)));
+                    bot.chat().tellraw(
+                            Component.translatable(
+                                    "Now playing %s",
+                                    Component.empty().append(currentSong.name).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
+                            ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+                    );
                     currentSong.play();
                 }
 
@@ -135,7 +160,12 @@ public class MusicPlayerPlugin extends Bot.Listener {
                         return;
                     }
 
-                    bot.chat().tellraw(Component.translatable("Finished playing %s", Component.empty().append(currentSong.name).color(NamedTextColor.GOLD)));
+                    bot.chat().tellraw(
+                            Component.translatable(
+                                    "Finished playing %s",
+                                    Component.empty().append(currentSong.name).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
+                            ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+                    );
 
                     if (loop == Loop.ALL) {
                         skip();
@@ -147,7 +177,11 @@ public class MusicPlayerPlugin extends Bot.Listener {
                     if (songQueue.size() == 0) {
                         stopPlaying();
                         removeBossBar();
-                        bot.chat().tellraw(Component.text("Finished playing every song in the queue"));
+                        bot.chat().tellraw(
+                                Component
+                                        .text("Finished playing every song in the queue")
+                                        .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+                        );
                         return;
                     }
                     if (currentSong.size() > 0) {

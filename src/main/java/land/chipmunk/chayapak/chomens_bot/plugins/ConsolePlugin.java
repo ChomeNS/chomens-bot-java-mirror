@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Configuration;
 import land.chipmunk.chayapak.chomens_bot.command.ConsoleCommandContext;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.kyori.adventure.text.Component;
@@ -101,7 +102,7 @@ public class ConsolePlugin {
                     Component.translatable(
                             "[%s] %s › %s",
                             Component.text(bot.username() + " Console").color(NamedTextColor.GRAY),
-                            Component.text(bot.config().ownerName()).color(NamedTextColor.GREEN),
+                            Component.text(bot.config().ownerName()).color(ColorUtilities.getColorByString(bot.config().colorPalette().ownerName())),
                             Component.text(line).color(NamedTextColor.GRAY)
                     ).color(NamedTextColor.DARK_GRAY)
             );

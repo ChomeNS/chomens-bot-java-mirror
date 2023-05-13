@@ -4,6 +4,7 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import land.chipmunk.chayapak.chomens_bot.data.FilteredPlayer;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -76,8 +77,8 @@ public class FilterCommand implements Command {
                 bot.filter().add(player, regex, ignoreCase);
                 return Component.translatable(
                         "Added %s to the filters",
-                        Component.text(player).color(NamedTextColor.AQUA)
-                );
+                        Component.text(player).color(ColorUtilities.getColorByString(bot.config().colorPalette().username()))
+                ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
             }
             case "remove" -> {
                 try {
@@ -87,15 +88,15 @@ public class FilterCommand implements Command {
 
                     return Component.translatable(
                             "Removed %s from the filters",
-                            Component.text(removed.playerName).color(NamedTextColor.AQUA)
-                    );
+                            Component.text(removed.playerName).color(ColorUtilities.getColorByString(bot.config().colorPalette().username()))
+                    ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
                 } catch (IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
                     return Component.text("Invalid index").color(NamedTextColor.RED);
                 }
             }
             case "clear" -> {
                 bot.filter().clear();
-                return Component.text("Cleared the filter");
+                return Component.text("Cleared the filter").color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
             }
             case "list" -> {
                 final List<Component> filtersComponents = new ArrayList<>();
@@ -105,8 +106,8 @@ public class FilterCommand implements Command {
                     filtersComponents.add(
                             Component.translatable(
                                     "%s › %s",
-                                    Component.text(index).color(NamedTextColor.GREEN),
-                                    Component.text(player.playerName).color(NamedTextColor.AQUA)
+                                    Component.text(index).color(ColorUtilities.getColorByString(bot.config().colorPalette().number())),
+                                    Component.text(player.playerName).color(ColorUtilities.getColorByString(bot.config().colorPalette().username()))
                             ).color(NamedTextColor.DARK_GRAY)
                     );
 

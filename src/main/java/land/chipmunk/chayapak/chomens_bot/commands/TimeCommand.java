@@ -1,7 +1,9 @@
 package land.chipmunk.chayapak.chomens_bot.commands;
 
+import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.joda.time.DateTime;
@@ -39,6 +41,8 @@ public class TimeCommand implements Command {
     }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+        final Bot bot = context.bot();
+
         final String timezone = args[0];
 
         DateTimeZone zone;
@@ -55,8 +59,8 @@ public class TimeCommand implements Command {
 
         return Component.translatable(
                 "The current time for %s is: %s",
-                Component.text(timezone).color(NamedTextColor.AQUA),
+                Component.text(timezone).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())),
                 Component.text(formattedTime).color(NamedTextColor.GREEN)
-        );
+        ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
     }
 }

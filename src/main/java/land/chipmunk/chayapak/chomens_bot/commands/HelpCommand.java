@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -124,7 +125,7 @@ public class HelpCommand implements Command {
 
             usages.add(
                     Component.empty()
-                            .append(Component.text(prefix + commandName).color(NamedTextColor.GOLD))
+                            .append(Component.text(prefix + commandName).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary())))
                             .append(Component.text(
                                     (command.alias().size() > 0 && !command.alias().get(0).equals("")) ?
                                             " (" + String.join(", ", command.alias()) + ")" :
@@ -144,7 +145,7 @@ public class HelpCommand implements Command {
                         Component.empty()
                                 .append(Component.text(prefix + commandName).color(NamedTextColor.GOLD))
                                 .append(Component.text(" "))
-                                .append(Component.text(usage).color(NamedTextColor.AQUA))
+                                .append(Component.text(usage).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())))
                 );
             }
 

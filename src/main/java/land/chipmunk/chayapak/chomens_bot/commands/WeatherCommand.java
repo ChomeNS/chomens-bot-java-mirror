@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.HttpUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -75,13 +76,12 @@ public class WeatherCommand implements Command {
 
             return Component.translatable(
                     "Weather forecast for %s, %s:\n%s, feels like %s\nTime: %s",
-                    Component.text(jsonObject.get("location").getAsJsonObject().get("name").getAsString()).color(NamedTextColor.AQUA),
-                    Component.text(jsonObject.get("location").getAsJsonObject().get("country").getAsString()).color(NamedTextColor.AQUA),
-                    Component.text(jsonObject.get("current").getAsJsonObject().get("temp_c").getAsString() + "°C").color(NamedTextColor.GOLD),
+                    Component.text(jsonObject.get("location").getAsJsonObject().get("name").getAsString()).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())),
+                    Component.text(jsonObject.get("location").getAsJsonObject().get("country").getAsString()).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())),
+                    Component.text(jsonObject.get("current").getAsJsonObject().get("temp_c").getAsString() + "°C").color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary())),
                     Component.text(jsonObject.get("current").getAsJsonObject().get("feelslike_c").getAsString() + "°C").color(NamedTextColor.GREEN),
-                    Component.text(time).color(NamedTextColor.AQUA)
-
-            );
+                    Component.text(time).color(ColorUtilities.getColorByString(bot.config().colorPalette().string()))
+            ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
         } catch (Exception e) {
             return Component.text("Location \"" + location + "\" not found").color(NamedTextColor.RED);
         }

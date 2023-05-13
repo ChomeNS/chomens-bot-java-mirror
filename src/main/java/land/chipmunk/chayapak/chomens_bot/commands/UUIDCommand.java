@@ -4,6 +4,7 @@ import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -61,7 +62,7 @@ public class UUIDCommand implements Command {
                             .clickEvent(
                                     ClickEvent.copyToClipboard(uuid)
                             )
-                            .color(NamedTextColor.AQUA)
+                            .color(ColorUtilities.getColorByString(bot.config().colorPalette().uuid()))
             ).color(NamedTextColor.GREEN);
         } else {
             final MutablePlayerListEntry entry = context.sender();
@@ -80,7 +81,7 @@ public class UUIDCommand implements Command {
                             .clickEvent(
                                     ClickEvent.copyToClipboard(uuid)
                             )
-                            .color(NamedTextColor.AQUA)
+                            .color(ColorUtilities.getColorByString(bot.config().colorPalette().uuid()))
             ).color(NamedTextColor.GREEN);
         }
     }

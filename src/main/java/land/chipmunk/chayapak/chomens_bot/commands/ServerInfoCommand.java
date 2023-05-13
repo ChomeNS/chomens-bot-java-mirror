@@ -1,9 +1,12 @@
 package land.chipmunk.chayapak.chomens_bot.commands;
 
+import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -45,6 +48,8 @@ public class ServerInfoCommand implements Command {
     }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) throws UnknownHostException {
+        final Bot bot = context.bot();
+
         // totallynotskidded™ from extras' serverinfo
         final Component component;
 
@@ -75,13 +80,15 @@ public class ServerInfoCommand implements Command {
             file.close();
         } catch (IOException ignored) {}
 
+        final TextColor color = ColorUtilities.getColorByString(bot.config().colorPalette().string());
+
         final String[] lines = builder.toString().split("\n");
         final Optional<String> modelName = Arrays.stream(lines)
                 .filter(line -> line.startsWith("model name"))
                 .findFirst();
         final Component cpuModel = modelName
-                .map(s -> Component.text(s.split("\t: ")[1]).color(NamedTextColor.AQUA))
-                .orElseGet(() -> Component.text("N/A").color(NamedTextColor.AQUA));
+                .map(s -> Component.text(s.split("\t: ")[1]).color(color))
+                .orElseGet(() -> Component.text("N/A").color(color));
 
         component = Component.translatable(
                 """
@@ -93,20 +100,20 @@ public class ServerInfoCommand implements Command {
                         CPU cores: %s
                         CPU model: %s
                         Heap memory usage: %s""",
-                Component.text(InetAddress.getLocalHost().getHostName()).color(NamedTextColor.AQUA),
-                Component.text(System.getProperty("user.dir")).color(NamedTextColor.AQUA),
-                Component.text(os.getArch()).color(NamedTextColor.AQUA),
-                Component.text(os.getVersion()).color(NamedTextColor.AQUA),
-                Component.text(os.getName()).color(NamedTextColor.AQUA),
-                Component.text(String.valueOf(Runtime.getRuntime().availableProcessors())).color(NamedTextColor.AQUA),
+                Component.text(InetAddress.getLocalHost().getHostName()).color(color),
+                Component.text(System.getProperty("user.dir")).color(color),
+                Component.text(os.getArch()).color(color),
+                Component.text(os.getVersion()).color(color),
+                Component.text(os.getName()).color(color),
+                Component.text(String.valueOf(Runtime.getRuntime().availableProcessors())).color(color),
                 cpuModel,
                 Component
                         .translatable(
                                 "%s MB / %s MB",
                                 Component.text(heapUsage.getUsed() / 1024L / 1024L),
                                 Component.text(heapUsage.getMax() / 1024L / 1024L)
-                        ).color(NamedTextColor.AQUA)
-        ).color(NamedTextColor.GOLD);
+                        ).color(color)
+        ).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary()));
 
         return component;
     }

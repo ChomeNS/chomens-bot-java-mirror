@@ -2,6 +2,7 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -28,7 +29,7 @@ public class TrustedPlugin extends PlayersPlugin.Listener {
 
             final Component component = Component.translatable(
                     "[%s] [%s] %s",
-                    Component.text("ChomeNS Bot").color(NamedTextColor.YELLOW),
+                    Component.text("ChomeNS Bot").color(ColorUtilities.getColorByString(bot.config().colorPalette().primary())),
                     Component.text(this.bot.options().serverName()).color(NamedTextColor.GRAY),
                     message.color(NamedTextColor.WHITE)
             ).color(NamedTextColor.DARK_GRAY);
@@ -60,7 +61,7 @@ public class TrustedPlugin extends PlayersPlugin.Listener {
         bot.chat().tellraw(
                 Component.empty()
                         .append(Component.text("Hello, ").color(NamedTextColor.GREEN))
-                        .append(Component.text(target.profile().getName()).color(NamedTextColor.GOLD))
+                        .append(Component.text(target.profile().getName()).color(ColorUtilities.getColorByString(bot.config().colorPalette().username())))
                         .append(Component.text("!").color(NamedTextColor.GREEN)),
                 target.profile().getId()
         );
@@ -81,8 +82,8 @@ public class TrustedPlugin extends PlayersPlugin.Listener {
         broadcast(
                 Component.translatable(
                         "Trusted player %s is now offline",
-                        Component.text(target.profile().getName()).color(NamedTextColor.GREEN)
-                )
+                        Component.text(target.profile().getName()).color(ColorUtilities.getColorByString(bot.config().colorPalette().username()))
+                ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
         );
     }
 }

@@ -1,6 +1,7 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.MazeGenerator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -18,10 +19,10 @@ public class MazePlugin {
         bot.chat().tellraw(
                 Component.translatable(
                         "Generating maze at %s %s %s...",
-                        Component.text(startX).color(NamedTextColor.AQUA),
-                        Component.text(startY).color(NamedTextColor.AQUA),
-                        Component.text(startZ).color(NamedTextColor.AQUA)
-                )
+                        Component.text(startX).color(ColorUtilities.getColorByString(bot.config().colorPalette().number())),
+                        Component.text(startY).color(ColorUtilities.getColorByString(bot.config().colorPalette().number())),
+                        Component.text(startZ).color(ColorUtilities.getColorByString(bot.config().colorPalette().number()))
+                ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
         );
 
         final int[][] maze = generator.maze();
@@ -168,6 +169,7 @@ public class MazePlugin {
                                                 )
                                         )
                         )
+                        .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
         );
     }
 }

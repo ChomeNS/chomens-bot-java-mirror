@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -38,8 +39,8 @@ public class CreatorCommand implements Command {
         final Bot bot = context.bot();
 
         return Component.empty()
-                .append(Component.text("ChomeNS Bot ").color(NamedTextColor.YELLOW))
-                .append(Component.text("was created by ").color(NamedTextColor.WHITE))
-                .append(Component.text("chayapak").color(NamedTextColor.GREEN));
+                .append(Component.text("ChomeNS Bot ").color(ColorUtilities.getColorByString(bot.config().colorPalette().primary())))
+                .append(Component.text("was created by ").color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor())))
+                .append(Component.text("chayapak").color(ColorUtilities.getColorByString(bot.config().colorPalette().ownerName())));
     }
 }

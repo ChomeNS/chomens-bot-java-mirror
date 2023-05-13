@@ -24,6 +24,16 @@ discord:
   servers:
     localhost:25565: 'channel id'
 
+colorPalette:
+  primary: 'yellow'
+  secondary: 'gold'
+  defaultColor: 'white' # ig java has the `default` keyword so i need to use defaultColor
+  username: 'gold'
+  uuid: 'aqua'
+  string: 'aqua'
+  number: 'gold'
+  ownerName: 'green'
+
 ownerName: 'chayapak' # currently this is only used in the console
 
 trusted:

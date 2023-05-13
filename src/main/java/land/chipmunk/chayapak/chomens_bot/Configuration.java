@@ -24,6 +24,8 @@ public class Configuration {
 
     @Getter public Core core = new Core();
     @Getter public Discord discord = new Discord();
+
+    @Getter public ColorPalette colorPalette = new ColorPalette();
     
     @Getter public String ownerName = "chayapak"; // mabe mabe
     
@@ -42,6 +44,17 @@ public class Configuration {
         @Getter public int x = 0;
         @Getter public int y = 0;
         @Getter public int z = 0;
+    }
+
+    public static class ColorPalette {
+        @Getter public String primary = "yellow";
+        @Getter public String secondary = "gold";
+        @Getter public String defaultColor = "white";
+        @Getter public String username = "gold";
+        @Getter public String uuid = "aqua";
+        @Getter public String string = "aqua";
+        @Getter public String number = "gold";
+        @Getter public String ownerName = "green";
     }
 
     public static class Discord {

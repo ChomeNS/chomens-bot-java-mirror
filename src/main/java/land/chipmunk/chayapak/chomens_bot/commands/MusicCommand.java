@@ -6,6 +6,7 @@ import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import land.chipmunk.chayapak.chomens_bot.plugins.MusicPlayerPlugin;
 import land.chipmunk.chayapak.chomens_bot.song.Loop;
 import land.chipmunk.chayapak.chomens_bot.song.Song;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -167,7 +168,7 @@ public class MusicCommand implements Command {
         bot.music().stopPlaying();
         bot.music().songQueue().clear();
 
-        return Component.text("Cleared the song queue");
+        return Component.text("Cleared the song queue").color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
     }
 
     public Component loop (CommandContext context, String[] args) {
@@ -183,6 +184,7 @@ public class MusicCommand implements Command {
                         Component.empty()
                                 .append(Component.text("Looping is now "))
                                 .append(Component.text("disabled").color(NamedTextColor.RED))
+                                .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
                 );
             }
             case "current" -> {
@@ -190,12 +192,13 @@ public class MusicCommand implements Command {
                 context.sendOutput(
                         Component.empty()
                                 .append(Component.text("Now looping "))
-                                .append(bot.music().currentSong().name.color(NamedTextColor.GOLD))
+                                .append(bot.music().currentSong().name.color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary())))
+                                .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
                 );
             }
             case "all" -> {
                 loop = Loop.ALL;
-                context.sendOutput(Component.text("Now looping every song"));
+                context.sendOutput(Component.text("Now looping every song").color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor())));
             }
             default -> {
                 return Component.text("Invalid argument").color(NamedTextColor.RED);
@@ -208,6 +211,8 @@ public class MusicCommand implements Command {
     }
 
     public Component list (CommandContext context, String[] args) {
+        final Bot bot = context.bot();
+
         final String prefix = context.prefix();
 
         final Path _path = Path.of(root.toString(), String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
@@ -241,7 +246,7 @@ public class MusicCommand implements Command {
             final String joinedPath = (args.length < 2) ? filename : Paths.get(location.getFileName().toString(), filename).toString();
             fullList.add(
                     Component
-                            .text(filename, (i++ & 1) == 0 ? NamedTextColor.YELLOW : NamedTextColor.GOLD)
+                            .text(filename, (i++ & 1) == 0 ? ColorUtilities.getColorByString(bot.config().colorPalette().primary()) : ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
                             .clickEvent(
                                     ClickEvent.suggestCommand(
                                             prefix +
@@ -272,13 +277,15 @@ public class MusicCommand implements Command {
     }
 
     public Component skip (CommandContext context) {
-        final MusicPlayerPlugin music = context.bot().music();
+        final Bot bot = context.bot();
+        final MusicPlayerPlugin music = bot.music();
         if (music.currentSong() == null) return Component.text("No song is currently playing").color(NamedTextColor.RED);
 
         context.sendOutput(
                 Component.empty()
                     .append(Component.text("Skipping "))
-                    .append(music.currentSong().name.color(NamedTextColor.GOLD))
+                    .append(music.currentSong().name.color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary())))
+                    .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
         );
 
         music.skip();
@@ -293,7 +300,8 @@ public class MusicCommand implements Command {
 
         return Component.empty()
                 .append(Component.text("Now playing "))
-                .append(song.name.color(NamedTextColor.GOLD));
+                .append(song.name.color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary())))
+                .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
     }
 
     public Component queue (CommandContext context) {
@@ -301,11 +309,16 @@ public class MusicCommand implements Command {
         final LinkedList<Song> queue = bot.music().songQueue();
 
         final List<Component> queueWithNames = new ArrayList<>();
-        for (Song song : queue) queueWithNames.add(song.name);
+        int i = 0;
+        for (Song song : queue) {
+            queueWithNames.add(
+                    song.name.color((i++ & 1) == 0 ? ColorUtilities.getColorByString(bot.config().colorPalette().primary()) : ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
+            );
+        }
 
         return Component.empty()
                 .append(Component.text("Queue: ").color(NamedTextColor.GREEN))
-                .append(Component.join(JoinConfiguration.separator(Component.text(", ")), queueWithNames).color(NamedTextColor.AQUA));
+                .append(Component.join(JoinConfiguration.separator(Component.text(", ")), queueWithNames));
     }
 
     // lazy fix for java using "goto" as keyword real
@@ -342,7 +355,8 @@ public class MusicCommand implements Command {
 
         return Component.empty()
                 .append(Component.text("Set the pitch to "))
-                .append(Component.text(pitch).color(NamedTextColor.GOLD));
+                .append(Component.text(pitch).color(ColorUtilities.getColorByString(bot.config().colorPalette().number())))
+                .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
     }
 
     public Component speed (CommandContext context, String[] args) {
@@ -359,7 +373,8 @@ public class MusicCommand implements Command {
 
         return Component.empty()
                 .append(Component.text("Set the speed to "))
-                .append(Component.text(speed).color(NamedTextColor.GOLD));
+                .append(Component.text(speed).color(ColorUtilities.getColorByString(bot.config().colorPalette().number())))
+                .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
     }
 
     public Component pause (CommandContext context) {

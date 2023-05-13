@@ -2,6 +2,7 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Logger;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -71,8 +72,8 @@ public class GrepLogPlugin {
             bot.chat().tellraw(
                     Component.translatable(
                             "Collecting %s in logs...",
-                            Component.text(query).color(NamedTextColor.GOLD)
-                    )
+                            Component.text(query).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
+                    ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
             );
 
             final File[] fileList = Logger.logDir.listFiles();
@@ -170,7 +171,7 @@ public class GrepLogPlugin {
                 bot.chat().tellraw(
                         Component.translatable(
                                 "Log query finished, found %s matches. Results were sent in Discord",
-                                Component.text(matches).color(NamedTextColor.AQUA)
+                                Component.text(matches).color(ColorUtilities.getColorByString(bot.config().colorPalette().number()))
                         )
                 );
 

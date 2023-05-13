@@ -1,7 +1,9 @@
 package land.chipmunk.chayapak.chomens_bot.commands;
 
+import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -36,6 +38,8 @@ public class UptimeCommand implements Command {
     }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+        final Bot bot = context.bot();
+
         final long uptime = ManagementFactory.getRuntimeMXBean().getUptime() / 1000;
 
         long days = TimeUnit.SECONDS.toDays(uptime);
@@ -44,7 +48,7 @@ public class UptimeCommand implements Command {
         long seconds = TimeUnit.SECONDS.toSeconds(uptime) - (TimeUnit.SECONDS.toMinutes(uptime) * 60);
 
         return Component.translatable(
-                "The bot's uptime is: %s",
+                "The bots uptime is: %s",
                 Component.translatable(
                         "%s days, %s hours, %s minutes, %s seconds",
                         Component.text(days),
@@ -52,6 +56,6 @@ public class UptimeCommand implements Command {
                         Component.text(minutes),
                         Component.text(seconds)
                 ).color(NamedTextColor.GREEN)
-        );
+        ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
     }
 }

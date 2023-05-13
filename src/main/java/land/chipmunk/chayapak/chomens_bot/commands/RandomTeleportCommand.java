@@ -4,6 +4,7 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -49,9 +50,10 @@ public class RandomTeleportCommand implements Command {
 
         return Component.empty()
                 .append(Component.text("Teleporting "))
-                .append(Component.text(sender.profile().getName()).color(NamedTextColor.AQUA))
+                .append(Component.text(sender.profile().getName()).color(ColorUtilities.getColorByString(bot.config().colorPalette().username())))
                 .append(Component.text(" to ").color(NamedTextColor.WHITE))
                 .append(Component.text(stringPosition).color(NamedTextColor.GREEN))
-                .append(Component.text("...").color(NamedTextColor.WHITE));
+                .append(Component.text("...").color(NamedTextColor.WHITE))
+                .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
     }
 }
