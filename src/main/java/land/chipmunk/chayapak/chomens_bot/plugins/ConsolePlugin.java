@@ -31,6 +31,8 @@ public class ConsolePlugin {
         this.allBots = allBots;
         this.reader = LineReaderBuilder.builder().build();
 
+        reader.option(LineReader.Option.DISABLE_EVENT_EXPANSION, true);
+
         for (Bot bot : allBots) {
             prefix = bot.config().consolePrefixes().get("normalCommandsPrefix");
             consoleServerPrefix = bot.config().consolePrefixes().get("consoleServerPrefix");
@@ -42,7 +44,7 @@ public class ConsolePlugin {
 
         new DiscordPlugin(discordConfig, jda);
 
-        String prompt = "> ";
+        final String prompt = "> ";
 
         new Thread(() -> {
             while (true) {
