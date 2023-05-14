@@ -68,17 +68,38 @@ public class ConsolePlugin {
         if (line.startsWith(consoleServerPrefix)) {
             final String substringLine = line.substring(consoleServerPrefix.length());
             final String[] splitInput = substringLine.split("\\s+");
+
             final String commandName = splitInput[0];
             final String[] args = Arrays.copyOfRange(splitInput, 1, splitInput.length);
 
             if (commandName.equals("csvr") || commandName.equals("consoleserver")) {
+                final List<String> servers = new ArrayList<>();
+
+                for (Bot bot : allBots) {
+                    servers.add(bot.host() + ":" + bot.port());
+                }
+
                 for (Bot bot : allBots) {
                     if (args.length == 0) {
                         bot.logger().info("No server specified");
                         return;
                     }
-                    consoleServer = args[0];
-                    bot.logger().info("Set the console server to " + consoleServer);
+
+                    if (String.join(" ", args).equalsIgnoreCase("all")) {
+                        consoleServer = "all";
+                        bot.logger().info("Set the console server to all servers");
+                        return;
+                    }
+                    try {
+                        // servers.find(server => server.toLowerCase().includes(args.join(' '))) in js i guess
+                        consoleServer = servers.stream()
+                                .filter(server -> server.toLowerCase().contains(String.join(" ", args)))
+                                .toArray(String[]::new)[0];
+
+                        bot.logger().info("Set the console server to " + String.join(", ", consoleServer));
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        bot.logger().info("Invalid server: " + String.join(" ", args));
+                    }
                 }
             }
 
@@ -86,7 +107,9 @@ public class ConsolePlugin {
         }
 
         for (Bot bot : allBots) {
-            if (!bot.host().equals(consoleServer) && !consoleServer.equals("all")) continue;
+            final String hostAndPort = bot.host() + ":" + bot.port();
+
+            if (!hostAndPort.equals(consoleServer) && !consoleServer.equals("all")) continue;
 
             if (line.startsWith(prefix)) {
                 final ConsoleCommandContext context = new ConsoleCommandContext(bot, prefix);
