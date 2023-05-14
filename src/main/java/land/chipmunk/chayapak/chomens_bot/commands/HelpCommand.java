@@ -143,7 +143,7 @@ public class HelpCommand implements Command {
             for (String usage : command.usage()) {
                 usages.add(
                         Component.empty()
-                                .append(Component.text(prefix + commandName).color(NamedTextColor.GOLD))
+                                .append(Component.text(prefix + commandName).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary())))
                                 .append(Component.text(" "))
                                 .append(Component.text(usage).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())))
                 );
