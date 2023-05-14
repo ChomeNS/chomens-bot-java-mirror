@@ -69,8 +69,8 @@ public class TrustedPlugin extends PlayersPlugin.Listener {
         broadcast(
                 Component.translatable(
                         "Trusted player %s is now online",
-                        Component.text(target.profile().getName()).color(NamedTextColor.GREEN)
-                ),
+                        Component.text(target.profile().getName()).color(ColorUtilities.getColorByString(bot.config().colorPalette().username()))
+                ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor())),
                 target.profile().getId()
         );
     }
