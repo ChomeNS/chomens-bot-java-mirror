@@ -98,6 +98,24 @@ public class ChatPlugin extends Bot.Listener {
         }
     }
 
+    private String getTranslationByChatType (int chatType) {
+        String translation = null;
+
+        // maybe use the registry in the login packet? too lazy.,.,,.
+        switch (chatType) {
+            case 0 -> translation = "chat.type.text"; // normal vanilla chat message
+            case 1 -> translation = "chat.type.emote"; // /me
+            case 2 -> translation = "commands.message.display.incoming"; // player that received /w message
+            case 3 -> translation = "commands.message.display.outgoing"; // player that sent /w message
+            case 4 -> translation = "chat.type.announcement"; // /say
+            case 5 -> translation = "chat.type.team.text"; // player that received /teammsg message
+            case 6 -> translation = "chat.type.team.sent"; // player that sent /teammsg message
+            case 7 -> translation = "%s"; // raw, idk when and where this is used
+        }
+
+        return translation;
+    }
+
     public void packetReceived (ClientboundPlayerChatPacket packet) {
         final UUID senderUUID = packet.getSender();
 
@@ -114,54 +132,64 @@ public class ChatPlugin extends Bot.Listener {
         for (Listener listener : listeners) {
             listener.playerMessageReceived(playerMessage);
 
-            if (packet.getChatType() == 4) { // type 4 is /say
-                final Component component = Component.translatable(
-                        "chat.type.announcement",
-                        playerMessage.displayName(),
-                        playerMessage.contents()
-                );
+            final Component unsignedContent = packet.getUnsignedContent();
+
+            final String translation = getTranslationByChatType(packet.getChatType());
+
+            if (translation != null && unsignedContent == null) {
+                TranslatableComponent component = Component.translatable(translation);
+
+                if (translation.equals("chat.type.team.text") || translation.equals("chat.type.team.sent")) { // ohio
+                    component = component.args(
+                            Component.empty(), // TODO: fix team name.,.,
+                            playerMessage.displayName(),
+                            playerMessage.contents()
+                    );
+                } else {
+                    component = component.args(playerMessage.displayName(), playerMessage.contents());
+                }
 
                 listener.systemMessageReceived(component);
             } else {
-                final Component unsignedContent = packet.getUnsignedContent();
-
-                if (unsignedContent == null) return;
-
                 listener.systemMessageReceived(unsignedContent);
             }
         }
     }
 
     public void packetReceived (ClientboundDisguisedChatPacket packet) {
-        // totallynotskidded™ from chipmunkbot and modified i guess
+        final String translation = getTranslationByChatType(packet.getChatType());
 
-        final int type = packet.getChatType();
+        final Component component = packet.getMessage();
 
-        // i think im missing other types
-        if (type == 1 || type == 4 || type == 2) { // type 1 is /me, type 4 is /say, type 2 is /msg /tell or whatever thing
+        PlayerMessage parsedFromMessage = null;
+
+        for (ChatParser parser : chatParsers) {
+            parsedFromMessage = parser.parse(component);
+            if (parsedFromMessage != null) break;
+        }
+
+        if (translation != null && parsedFromMessage == null) {
             final Component name = packet.getName();
             final Component content = packet.getMessage();
 
-            String translate = null;
+            TranslatableComponent translatableComponent = Component.translatable(translation);
 
-            switch (type) {
-                case 1 -> translate = "chat.type.emote";
-                case 4 -> translate = "chat.type.announcement";
-                case 2 -> translate = "commands.message.display.incoming";
+            if (translation.equals("chat.type.team.text") || translation.equals("chat.type.team.sent")) { // ohio
+                translatableComponent = translatableComponent.args(
+                        Component.empty(), // TODO: fix team name.,.,
+                        name,
+                        content
+                );
+            } else {
+                translatableComponent = translatableComponent.args(name, content);
             }
 
-            final Component component = Component.translatable(
-                    translate,
-                    name,
-                    content
-            );
-
             for (Listener listener : listeners) {
-                listener.systemMessageReceived(component);
+                listener.systemMessageReceived(translatableComponent);
             }
 
             for (ChatParser parser : chatParsers) {
-                final PlayerMessage parsed = parser.parse(component);
+                final PlayerMessage parsed = parser.parse(translatableComponent);
 
                 if (parsed == null) continue;
 
@@ -172,15 +200,6 @@ public class ChatPlugin extends Bot.Listener {
                 }
             }
         } else {
-            final Component component = packet.getMessage();
-
-            PlayerMessage parsedFromMessage = null;
-
-            for (ChatParser parser : chatParsers) {
-                parsedFromMessage = parser.parse(component);
-                if (parsedFromMessage != null) break;
-            }
-
             if (parsedFromMessage == null) return;
 
             final PlayerMessage playerMessage = new PlayerMessage(parsedFromMessage.sender(), packet.getName(), parsedFromMessage.contents());
