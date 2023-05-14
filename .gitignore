@@ -2,7 +2,7 @@
 /target/
 
 # Exploits plugin
-/plugins/ExploitsPlugin.java
+/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/ExploitsPlugin.java
 
 # Testing plugins
-/plugins/testing
+/src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/testing
