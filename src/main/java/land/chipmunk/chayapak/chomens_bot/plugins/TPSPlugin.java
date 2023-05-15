@@ -100,7 +100,7 @@ public class TPSPlugin extends Bot.Listener {
         else return NamedTextColor.DARK_RED;
     }
 
-    private BossBarColor getBossBarColor (double tickRate) {
+    private String getBossBarColor (double tickRate) {
         if (tickRate > 15) return BossBarColor.GREEN;
         else if (tickRate == 15) return BossBarColor.YELLOW;
         else if (tickRate < 15 && tickRate > 10) return BossBarColor.RED;

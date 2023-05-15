@@ -1,17 +1,11 @@
 package land.chipmunk.chayapak.chomens_bot.data;
 
-public enum BossBarColor {
-    BLUE("blue"),
-    GREEN("green"),
-    PINK("pink"),
-    PURPLE("purple"),
-    RED("red"),
-    WHITE("white"),
-    YELLOW("yellow"),;
-
-    public final String color;
-
-    BossBarColor (String color) {
-        this.color = color;
-    }
+public class BossBarColor {
+    public static final String BLUE = "blue";
+    public static final String GREEN = "green";
+    public static final String PINK = "pink";
+    public static final String PURPLE = "purple";
+    public static final String RED = "red";
+    public static final String WHITE = "white";
+    public static final String YELLOW = "yellow";
 }

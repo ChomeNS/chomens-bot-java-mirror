@@ -44,9 +44,9 @@ public class BossbarManagerPlugin extends Bot.Listener {
             if (!actionBar) {
                 bot.core().run("minecraft:bossbar add " + bossBarPrefix + name + " \"\"");
                 bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " players " + bossBar.players());
-                bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " color " + bossBar.color().color);
+                bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " color " + bossBar.color());
                 bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " visible " + bossBar.visible());
-                bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " style " + bossBar.style().style);
+                bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " style " + bossBar.style());
                 bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " max " + bossBar.max());
                 bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " name " + stringifiedComponent);
                 bot.core().run("minecraft:bossbar set " + bossBarPrefix + name + " value " + bossBar.value());
