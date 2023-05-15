@@ -121,8 +121,13 @@ public class MailCommand implements Command {
                 return null;
             }
             case "read" -> {
+                // TODO: use less for loops?
+
                 int senderMailSize = 0;
-                for (Mail ignored : bot.mail().mails()) senderMailSize++;
+                for (Mail mail : bot.mail().mails()) {
+                    if (!mail.sentTo().equals(sender.profile().getName())) continue;
+                    senderMailSize++;
+                }
 
                 if (senderMailSize == 0) return Component.text("You have no new mails").color(NamedTextColor.RED);
 
