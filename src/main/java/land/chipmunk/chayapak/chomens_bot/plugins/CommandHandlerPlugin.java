@@ -60,6 +60,7 @@ public class CommandHandlerPlugin {
         registerCommand(new ClearChatQueueCommand());
         registerCommand(new FilterCommand());
         registerCommand(new UptimeCommand());
+        registerCommand(new MailCommand());
     }
 
     public void registerCommand (Command command) {
@@ -97,13 +98,15 @@ public class CommandHandlerPlugin {
         final String[] fullArgs = Arrays.copyOfRange(splitInput, 1, splitInput.length);
 
         // TODO: improve these minimum args and maximum args stuff, the current one really sucks.,.,
+        final int shortestUsageIndex = getShortestUsageIndex(command.usage());
         final int longestUsageIndex = getLongestUsageIndex(command.usage());
-        final String usage = command.usage().get(longestUsageIndex);
+        final String shortestUsage = command.usage().get(shortestUsageIndex);
+        final String longestUsage = command.usage().get(longestUsageIndex);
 
-        final int minimumArgs = getMinimumArgs(usage, inGame, command.trustLevel());
-        final int maximumArgs = getMaximumArgs(usage, inGame, command.trustLevel());
+        final int minimumArgs = getMinimumArgs(shortestUsage, inGame, command.trustLevel());
+        final int maximumArgs = getMaximumArgs(longestUsage, inGame, command.trustLevel());
         if (fullArgs.length < minimumArgs) return Component.text("Excepted minimum of " + minimumArgs + " argument(s), got " + fullArgs.length).color(NamedTextColor.RED);
-        if (fullArgs.length > maximumArgs && !usage.contains("{")) return Component.text("Too much arguments, expected " + maximumArgs + " max").color(NamedTextColor.RED);
+        if (fullArgs.length > maximumArgs && !longestUsage.contains("{")) return Component.text("Too much arguments, expected " + maximumArgs + " max").color(NamedTextColor.RED);
 
         if (trustLevel > 0 && splitInput.length < 2 && inGame) return Component.text("Please provide a hash").color(NamedTextColor.RED);
 
@@ -192,6 +195,19 @@ public class CommandHandlerPlugin {
             }
         }
         return longestIndex;
+    }
+
+    private int getShortestUsageIndex(List<String> usages) {
+        int shortestIndex = 0;
+        int minLength = Integer.MAX_VALUE;
+        for (int i = 0; i < usages.size(); i++) {
+            String[] args = usages.get(i).split("\\s+");
+            if (args.length < minLength) {
+                shortestIndex = i;
+                minLength = args.length;
+            }
+        }
+        return shortestIndex;
     }
 
     private int getMinimumArgs(String usage, boolean inGame, int trustLevel) {

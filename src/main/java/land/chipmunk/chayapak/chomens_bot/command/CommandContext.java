@@ -15,12 +15,15 @@ public class CommandContext {
     @Getter private final String hash;
     @Getter private final String ownerHash;
 
-    public CommandContext(Bot bot, String prefix, MutablePlayerListEntry sender, String hash, String ownerHash) {
+    @Getter private final boolean inGame;
+
+    public CommandContext(Bot bot, String prefix, MutablePlayerListEntry sender, String hash, String ownerHash, boolean inGame) {
         this.bot = bot;
         this.prefix = prefix;
         this.sender = sender;
         this.hash = hash;
         this.ownerHash = ownerHash;
+        this.inGame = inGame;
     }
 
     public Component displayName () { return Component.empty(); }

@@ -68,6 +68,7 @@ public class Bot {
     @Getter private ExploitsPlugin exploits;
     @Getter private FilterPlugin filter;
     @Getter private CommandSuggestionPlugin commandSuggestion;
+    @Getter private MailPlugin mail;
 
     public Bot (Configuration.BotOption botOption, List<Bot> bots, Configuration config) {
         this.host = botOption.host;
@@ -112,6 +113,7 @@ public class Bot {
         this.exploits = new ExploitsPlugin(this);
         this.filter = new FilterPlugin(this);
         this.commandSuggestion = new CommandSuggestionPlugin(this);
+        this.mail = new MailPlugin(this);
 
         reconnect();
     }

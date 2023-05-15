@@ -37,7 +37,8 @@ public class DiscordCommandContext extends CommandContext {
                         true
                 ),
                 hash,
-                ownerHash
+                ownerHash,
+                false
         );
         this.bot = bot;
         this.event = event;
