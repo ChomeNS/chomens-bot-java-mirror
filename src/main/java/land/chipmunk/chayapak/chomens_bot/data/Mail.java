@@ -9,5 +9,6 @@ public class Mail {
     @Getter private final String sentBy;
     @Getter private final String sentTo;
     @Getter private final DateTime timeSent;
+    @Getter private final String server;
     @Getter private final String contents;
 }

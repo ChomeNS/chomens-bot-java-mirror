@@ -7,12 +7,14 @@ import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import land.chipmunk.chayapak.chomens_bot.data.Mail;
 import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.plugins.MailPlugin;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.joda.time.DateTime;
@@ -63,6 +65,7 @@ public class MailCommand implements Command {
                                 sender.profile().getName(),
                                 args[1],
                                 DateTime.now(),
+                                bot.host() + ":" + bot.port(),
                                 String.join(" ", Arrays.copyOfRange(args, 2, args.length))
                         )
                 );
@@ -107,6 +110,7 @@ public class MailCommand implements Command {
                                     sender.profile().getName(),
                                     args[1],
                                     DateTime.now(),
+                                    bot.host() + ":" + bot.port(),
                                     value.substring(1).substring(0, value.length() - 2)
                             )
                     );
@@ -124,7 +128,7 @@ public class MailCommand implements Command {
                 // TODO: use less for loops?
 
                 int senderMailSize = 0;
-                for (Mail mail : bot.mail().mails()) {
+                for (Mail mail : MailPlugin.mails()) {
                     if (!mail.sentTo().equals(sender.profile().getName())) continue;
                     senderMailSize++;
                 }
@@ -134,7 +138,7 @@ public class MailCommand implements Command {
                 final List<Component> mailsComponent = new ArrayList<>();
 
                 int i = 1;
-                for (Mail mail : bot.mail().mails()) {
+                for (Mail mail : MailPlugin.mails()) {
                     if (!mail.sentTo().equals(sender.profile().getName())) continue;
 
                     final DateTimeFormatter formatter = DateTimeFormat.forPattern("MMMM d, YYYY, hh:mm:ss a Z");
@@ -143,13 +147,27 @@ public class MailCommand implements Command {
                     mailsComponent.add(
                             Component.translatable(
                                     """
-                                            %s %s Send by: %s At: %s
+                                            %s %s Sent by: %s %s
                                             Contents:
                                             %s""",
                                     Component.text(i).color(ColorUtilities.getColorByString(bot.config().colorPalette().number())),
                                     Component.text("-").color(NamedTextColor.DARK_GRAY),
 
                                     Component.text(mail.sentBy()).color(ColorUtilities.getColorByString(bot.config().colorPalette().username())),
+                                    Component
+                                            .text("[Hover here for more info]")
+                                            .color(NamedTextColor.GREEN)
+                                            .hoverEvent(
+                                                    HoverEvent.showText(
+                                                            Component.translatable(
+                                                                    """
+                                                                            Time sent: %s
+                                                                            Server: %s""",
+                                                                    Component.text(formattedTime).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())),
+                                                                    Component.text(mail.server()).color(ColorUtilities.getColorByString(bot.config().colorPalette().string()))
+                                                            ).color(NamedTextColor.GREEN)
+                                                    )
+                                            ),
                                     Component.text(formattedTime).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())),
                                     Component.text(mail.contents()).color(NamedTextColor.WHITE)
                             ).color(NamedTextColor.GREEN)
@@ -176,7 +194,7 @@ public class MailCommand implements Command {
                 }
 
                 // thanks https://www.baeldung.com/java-concurrentmodificationexception#3-using-removeif:~:text=3.3.%20Using%20removeIf()
-                bot.mail().mails().removeIf(mail -> mail.sentTo().equals(sender.profile().getName()));
+                MailPlugin.mails().removeIf(mail -> mail.sentTo().equals(sender.profile().getName()));
 
                 return null;
             }

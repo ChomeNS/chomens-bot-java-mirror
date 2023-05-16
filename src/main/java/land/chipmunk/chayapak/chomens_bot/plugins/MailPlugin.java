@@ -15,7 +15,7 @@ public class MailPlugin extends PlayersPlugin.Listener {
     private final Bot bot;
 
     // TODO: make this persistent
-    @Getter private final List<Mail> mails = new ArrayList<>();
+    @Getter private static final List<Mail> mails = new ArrayList<>();
 
     public MailPlugin (Bot bot) {
         this.bot = bot;
