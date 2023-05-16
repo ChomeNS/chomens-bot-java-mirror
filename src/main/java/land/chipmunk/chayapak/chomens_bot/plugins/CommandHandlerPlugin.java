@@ -77,14 +77,9 @@ public class CommandHandlerPlugin {
             boolean console,
             MessageReceivedEvent event
     ) {
-        final String[] splitInput = input.split("\\s+");
+        final String[] splitInput = input.trim().split("\\s+");
 
-        String commandName;
-        try {
-            commandName = splitInput[0];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            return Component.text("Empty command").color(NamedTextColor.RED);
-        }
+        final String commandName = splitInput[0];
 
         final Command command = findCommand(commands, commandName);
 
