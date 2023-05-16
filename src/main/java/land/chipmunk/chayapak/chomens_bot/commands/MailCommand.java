@@ -168,7 +168,6 @@ public class MailCommand implements Command {
                                                             ).color(NamedTextColor.GREEN)
                                                     )
                                             ),
-                                    Component.text(formattedTime).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())),
                                     Component.text(mail.contents()).color(NamedTextColor.WHITE)
                             ).color(NamedTextColor.GREEN)
                     );
