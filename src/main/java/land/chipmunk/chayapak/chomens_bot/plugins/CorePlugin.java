@@ -162,13 +162,7 @@ public class CorePlugin extends PositionPlugin.Listener {
     public void packetReceived (ClientboundBlockUpdatePacket packet) {
         final BlockChangeEntry entry = packet.getEntry();
 
-        if (
-                entry.getBlock() == 12369 ||
-                        entry.getBlock() == 12379 ||
-                        entry.getBlock() == 7910 ||
-                        entry.getBlock() == 7908 ||
-                        entry.getBlock() == 12365
-        ) return;
+        if (isCommandBlock(entry.getBlock())) return;
 
         final Vector3i position = entry.getPosition();
 
@@ -183,18 +177,33 @@ public class CorePlugin extends PositionPlugin.Listener {
         for (BlockChangeEntry entry : entries) {
             final Vector3i position = entry.getPosition();
 
-            if (
-                    entry.getBlock() == 12369 ||
-                            entry.getBlock() == 12379 ||
-                            entry.getBlock() == 7910 ||
-                            entry.getBlock() == 7908 ||
-                            entry.getBlock() == 12365
-            ) return;
+            if (isCommandBlock(entry.getBlock())) return;
 
             if (isCore(position)) willRefill = true;
         }
 
         if (willRefill) refill();
+    }
+
+    private boolean isCommandBlock (int blockState) {
+        return
+                // command block
+                (
+                        blockState >= 7902 &&
+                                blockState <= 7913
+                ) ||
+
+                        // chain command block
+                        (
+                                blockState >= 12371 &&
+                                        blockState <= 12382
+                        ) ||
+
+                        // repeating command block
+                        (
+                                blockState >= 12359 &&
+                                        blockState <= 12370
+                        );
     }
 
     public void packetReceived (ClientboundLevelChunkWithLightPacket packet) {
