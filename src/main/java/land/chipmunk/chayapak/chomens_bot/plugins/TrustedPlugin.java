@@ -80,7 +80,7 @@ public class TrustedPlugin extends PlayersPlugin.Listener {
                             Time: %s
                             Online players: %s""",
                     Component.text(target.profile().getName()).color(ColorUtilities.getColorByString(bot.config().colorPalette().username())),
-                    Component.text(formattedTime).color(ColorUtilities.getColorByString(bot.config().colorPalette().username())),
+                    Component.text(formattedTime).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())),
                     Component.text(bot.players().list().size()).color(ColorUtilities.getColorByString(bot.config().colorPalette().number()))
             ).color(NamedTextColor.GREEN);
         }
