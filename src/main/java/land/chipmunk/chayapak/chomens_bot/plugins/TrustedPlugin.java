@@ -6,6 +6,9 @@ import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.List;
 import java.util.UUID;
@@ -58,11 +61,32 @@ public class TrustedPlugin extends PlayersPlugin.Listener {
     public void playerJoined (MutablePlayerListEntry target) {
         if (!list.contains(target.profile().getName())) return;
 
+        // based (VERY)
+        Component component;
+        if (!target.profile().getName().equals(bot.config().ownerName())) {
+            component = Component.translatable(
+                    "Hello, %s!",
+                    Component.text(target.profile().getName()).color(ColorUtilities.getColorByString(bot.config().colorPalette().username()))
+            ).color(NamedTextColor.GREEN);
+        } else {
+            final DateTime now = DateTime.now();
+
+            final DateTimeFormatter formatter = DateTimeFormat.forPattern("hh:mm:ss a");
+            final String formattedTime = formatter.print(now);
+
+            component = Component.translatable(
+                    """
+                            Hello, %s!
+                            Time: %s
+                            Online players: %s""",
+                    Component.text(target.profile().getName()).color(ColorUtilities.getColorByString(bot.config().colorPalette().username())),
+                    Component.text(formattedTime).color(ColorUtilities.getColorByString(bot.config().colorPalette().username())),
+                    Component.text(bot.players().list().size()).color(ColorUtilities.getColorByString(bot.config().colorPalette().number()))
+            ).color(NamedTextColor.GREEN);
+        }
+
         bot.chat().tellraw(
-                Component.empty()
-                        .append(Component.text("Hello, ").color(NamedTextColor.GREEN))
-                        .append(Component.text(target.profile().getName()).color(ColorUtilities.getColorByString(bot.config().colorPalette().username())))
-                        .append(Component.text("!").color(NamedTextColor.GREEN)),
+                component,
                 target.profile().getId()
         );
 
