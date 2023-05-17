@@ -7,6 +7,7 @@ import com.github.steveice10.mc.protocol.data.game.entity.player.PlayerAction;
 import com.github.steveice10.mc.protocol.data.game.level.block.BlockChangeEntry;
 import com.github.steveice10.mc.protocol.data.game.level.block.CommandBlockMode;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundBlockUpdatePacket;
+import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundLevelChunkWithLightPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundSectionBlocksUpdatePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundTagQueryPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.inventory.ServerboundSetCommandBlockPacket;
@@ -88,9 +89,7 @@ public class CorePlugin extends PositionPlugin.Listener {
                 if (packet instanceof ClientboundTagQueryPacket) CorePlugin.this.packetReceived((ClientboundTagQueryPacket) packet);
                 else if (packet instanceof ClientboundBlockUpdatePacket) CorePlugin.this.packetReceived((ClientboundBlockUpdatePacket) packet);
                 else if (packet instanceof ClientboundSectionBlocksUpdatePacket) CorePlugin.this.packetReceived((ClientboundSectionBlocksUpdatePacket) packet);
-
-                // TODO: support this (used for worldedit)
-                // else if (packet instanceof ClientboundLevelChunkWithLightPacket) CorePlugin.this.packetReceived((ClientboundLevelChunkWithLightPacket) packet);
+                else if (packet instanceof ClientboundLevelChunkWithLightPacket) CorePlugin.this.packetReceived((ClientboundLevelChunkWithLightPacket) packet);
             }
         });
     }
@@ -198,21 +197,11 @@ public class CorePlugin extends PositionPlugin.Listener {
         if (willRefill) refill();
     }
 
-    /* public void packetReceived (ClientboundLevelChunkWithLightPacket packet) {
-        final BlockEntityInfo[] infos = packet.getBlockEntities();
+    public void packetReceived (ClientboundLevelChunkWithLightPacket packet) {
+        final Vector3i position = Vector3i.from(packet.getX() * 16, 0, packet.getZ() * 16); // mabe
 
-        boolean willRefill = false;
-
-        for (BlockEntityInfo info : infos) {
-            final Vector3i position = Vector3i.from(info.getX(), info.getY(), info.getZ());
-
-            System.out.println(position);
-
-            if (isCore(position)) willRefill = true;
-        }
-
-        if (willRefill) refill();
-    } */
+        if (isCore(position)) refill();
+    }
 
     public Vector3i absoluteCorePosition () {
         return relativeCorePosition.add(origin);
