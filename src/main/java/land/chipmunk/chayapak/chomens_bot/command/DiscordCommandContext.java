@@ -25,11 +25,11 @@ public class DiscordCommandContext extends CommandContext {
                 prefix,
                 new MutablePlayerListEntry(
                         new GameProfile(
-                                new UUID(0L, 0L),
+                                UUID.nameUUIDFromBytes(("OfflinePlayer:" + event.getAuthor().getName()).getBytes()),
                                 event.getAuthor().getName()
                         ),
                         GameMode.SURVIVAL,
-                        0,
+                        -69420,
                         Component.text(event.getAuthor().getName()),
                         0L,
                         null,
