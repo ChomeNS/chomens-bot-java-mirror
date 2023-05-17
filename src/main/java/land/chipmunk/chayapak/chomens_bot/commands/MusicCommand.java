@@ -63,47 +63,21 @@ public class MusicCommand implements Command {
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         root = Path.of(MusicPlayerPlugin.SONG_DIR.getPath());
-        switch (args[0]) {
-            case "play", "playurl", "playnbs", "playnbsurl" -> {
-                return play(context, args);
-            }
-            case "stop" -> {
-                return stop(context);
-            }
-            case "loop" -> {
-                return loop(context, args);
-            }
-            case "list" -> {
-                return list(context, args);
-            }
-            case "skip" -> {
-                return skip(context);
-            }
-            case "nowplaying" -> {
-                return nowplaying(context);
-            }
-            case "queue" -> {
-                return queue(context);
-            }
-            case "goto" -> {
-                return goTo(context, args);
-            }
-            case "pitch" -> {
-                return pitch(context, args);
-            }
-            case "speed" -> {
-                return speed(context, args);
-            }
-            case "pause", "resume" -> {
-                return pause(context);
-            }
-            case "info" -> {
-                return info(context);
-            }
-            default -> {
-                return Component.text("Invalid argument").color(NamedTextColor.RED);
-            }
-        }
+        return switch (args[0]) {
+            case "play", "playurl", "playnbs", "playnbsurl" -> play(context, args);
+            case "stop" -> stop(context);
+            case "loop" -> loop(context, args);
+            case "list" -> list(context, args);
+            case "skip" -> skip(context);
+            case "nowplaying" -> nowplaying(context);
+            case "queue" -> queue(context);
+            case "goto" -> goTo(context, args);
+            case "pitch" -> pitch(context, args);
+            case "speed" -> speed(context, args);
+            case "pause", "resume" -> pause(context);
+            case "info" -> info(context);
+            default -> Component.text("Invalid argument").color(NamedTextColor.RED);
+        };
     }
 
     public Component play (CommandContext context, String[] args) {
