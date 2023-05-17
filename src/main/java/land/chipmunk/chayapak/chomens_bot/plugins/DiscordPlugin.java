@@ -10,9 +10,7 @@ import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.CodeBlockUtilities;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
@@ -25,10 +23,8 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 // please ignore my shitcode
 public class DiscordPlugin {
@@ -133,13 +129,14 @@ public class DiscordPlugin {
                                 }
                             }
 
-                            final String tag = event.getMember().getUser().getDiscriminator();
+                            final Member member = event.getMember();
+                            final String tag = member == null ? "0000" : member.getUser().getDiscriminator();
 
-                            String name = event.getMember().getNickname();
+                            String name = member == null ? null : member.getNickname();
                             final String fallbackName = event.getAuthor().getName();
                             if (name == null) name = fallbackName;
 
-                            final List<Role> roles = event.getMember().getRoles();
+                            final List<Role> roles = member == null ? Collections.emptyList() : member.getRoles();
 
                             Component rolesComponent = Component.empty();
                             if (roles.size() > 0) {
