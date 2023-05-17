@@ -6,6 +6,7 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Configuration;
 import land.chipmunk.chayapak.chomens_bot.Main;
 import land.chipmunk.chayapak.chomens_bot.command.DiscordCommandContext;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.CodeBlockUtilities;
 import lombok.Getter;
@@ -26,7 +27,8 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-// please ignore my shitcode
+// please ignore my ohio code
+// also this is one of the classes which has >100 lines or actually >300 LMAO
 public class DiscordPlugin {
     @Getter private JDA jda;
 
@@ -113,19 +115,47 @@ public class DiscordPlugin {
                                 return;
                             }
 
-                            // ignore weird codes mabe
+                            // ignore my very very ohio code,..,,.
 
                             Component attachmentsComponent = Component.empty();
                             if (_message.getAttachments().size() > 0) {
+                                attachmentsComponent = attachmentsComponent.append(Component.space());
                                 for (Message.Attachment attachment : _message.getAttachments()) {
                                     attachmentsComponent = attachmentsComponent
-                                            .append(Component.text(" "))
                                             .append(
                                                     Component
                                                             .text("[Attachment]")
                                                             .clickEvent(ClickEvent.openUrl(attachment.getProxyUrl()))
                                                             .color(NamedTextColor.GREEN)
-                                            );
+                                            )
+                                            .append(Component.space());
+                                }
+                            }
+
+                            Component embedsComponent = Component.empty();
+                            if (_message.getEmbeds().size() > 0) {
+                                if (_message.getAttachments().size() == 0) embedsComponent = embedsComponent.append(Component.space());
+                                for (MessageEmbed embed : _message.getEmbeds()) {
+                                    final Component hoverEvent = Component.translatable(
+                                            """
+                                                    Title: %s
+                                                    %s""",
+                                            embed.getTitle() == null ?
+                                                    Component.text("No title").color(NamedTextColor.GRAY) :
+                                                    Component.text(embed.getTitle()).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())),
+                                            embed.getDescription() == null ?
+                                                    Component.text("No description").color(NamedTextColor.GRAY) :
+                                                    Component.text(embed.getDescription()).color(NamedTextColor.WHITE)
+                                    ).color(NamedTextColor.GREEN);
+
+                                    embedsComponent = embedsComponent
+                                            .append(
+                                                Component
+                                                        .text("[Embed]")
+                                                        .hoverEvent(HoverEvent.showText(hoverEvent))
+                                                        .color(NamedTextColor.GREEN)
+                                            )
+                                            .append(Component.space());
                                 }
                             }
 
@@ -206,7 +236,11 @@ public class DiscordPlugin {
                             final Component messageComponent = Component
                                     .text("")
                                     .color(NamedTextColor.GRAY)
-                                    .append(deserialized.append(attachmentsComponent));
+                                    .append(
+                                            deserialized
+                                                    .append(attachmentsComponent)
+                                                    .append(embedsComponent)
+                                    );
 
                             final Component component = Component.translatable(
                                     "[%s] %s › %s",
