@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import lombok.AllArgsConstructor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -53,15 +54,10 @@ public class ComponentUtilities {
         ansiMap.put("r", "\u001b[0m");
     }
 
-    // im out of ideas and `Output` is the only class name i could think of,,,.
-    private static class Output {
+    @AllArgsConstructor
+    private static class PartiallyStringifiedOutput {
         public String output;
         public String lastColor;
-
-        public Output (String output, String lastColor) {
-            this.output = output;
-            this.lastColor = lastColor;
-        }
     }
 
     private ComponentUtilities () {
@@ -89,7 +85,7 @@ public class ComponentUtilities {
     private static String stringify (Component message, String lastColor) {
         final StringBuilder builder = new StringBuilder();
 
-        final Output output = stringifyPartially(message, false, false, lastColor);
+        final PartiallyStringifiedOutput output = stringifyPartially(message, false, false, lastColor);
 
         builder.append(output.output);
 
@@ -102,7 +98,7 @@ public class ComponentUtilities {
     private static String stringifyMotd (Component message, String lastColor) {
         final StringBuilder builder = new StringBuilder();
 
-        final Output output = stringifyPartially(message, true, false, lastColor);
+        final PartiallyStringifiedOutput output = stringifyPartially(message, true, false, lastColor);
 
         builder.append(output.output);
 
@@ -115,7 +111,7 @@ public class ComponentUtilities {
     private static String stringifyAnsi (Component message, String lastColor) {
         final StringBuilder builder = new StringBuilder();
 
-        final Output output = stringifyPartially(message, false, true, lastColor);
+        final PartiallyStringifiedOutput output = stringifyPartially(message, false, true, lastColor);
 
         builder.append(output.output);
 
@@ -124,13 +120,13 @@ public class ComponentUtilities {
         return builder.toString();
     }
 
-    public static Output stringifyPartially (Component message, boolean motd, boolean ansi, String lastColor) {
+    public static PartiallyStringifiedOutput stringifyPartially (Component message, boolean motd, boolean ansi, String lastColor) {
         if (message instanceof TextComponent) return stringifyPartially((TextComponent) message, motd, ansi, lastColor);
         if (message instanceof TranslatableComponent) return stringifyPartially((TranslatableComponent) message, motd, ansi, lastColor);
         if (message instanceof SelectorComponent) return stringifyPartially((SelectorComponent) message, motd, ansi, lastColor);
         if (message instanceof KeybindComponent) return stringifyPartially((KeybindComponent) message, motd, ansi, lastColor);
 
-        return new Output("", null);
+        return new PartiallyStringifiedOutput("", null);
     }
 
     public static String getColor (TextColor color, boolean motd, boolean ansi) {
@@ -172,7 +168,7 @@ public class ComponentUtilities {
         } else return null;
     }
 
-    public static Output stringifyPartially (TextComponent message, boolean motd, boolean ansi, String lastColor) {
+    public static PartiallyStringifiedOutput stringifyPartially (TextComponent message, boolean motd, boolean ansi, String lastColor) {
         if (motd || ansi) {
             final String color = getColor(message.color(), motd, ansi);
 
@@ -189,13 +185,13 @@ public class ComponentUtilities {
             }
 
             // messy af
-            return new Output((lastColor != null ? lastColor : "") + (color != null ? color : "") + replacedContent + (ansi ? ansiMap.get("r") : ""), color);
+            return new PartiallyStringifiedOutput((lastColor != null ? lastColor : "") + (color != null ? color : "") + replacedContent + (ansi ? ansiMap.get("r") : ""), color);
         }
 
-        return new Output(message.content(), null);
+        return new PartiallyStringifiedOutput(message.content(), null);
     }
 
-    public static Output stringifyPartially (TranslatableComponent message, boolean motd, boolean ansi, String lastColor) {
+    public static PartiallyStringifiedOutput stringifyPartially (TranslatableComponent message, boolean motd, boolean ansi, String lastColor) {
         String format = getOrReturnKey(message.key());
 
         // totallynotskidded™️ from HBot (and changed a bit)
@@ -234,18 +230,18 @@ public class ComponentUtilities {
         }
         matcher.appendTail(sb);
 
-        return new Output((lastColor != null ? lastColor : "") + color + sb + (ansi ? ansiMap.get("r") : ""), _color);
+        return new PartiallyStringifiedOutput((lastColor != null ? lastColor : "") + color + sb + (ansi ? ansiMap.get("r") : ""), _color);
     }
 
-    public static Output stringifyPartially (SelectorComponent message, boolean motd, boolean ansi, String lastColor) {
+    public static PartiallyStringifiedOutput stringifyPartially (SelectorComponent message, boolean motd, boolean ansi, String lastColor) {
         final String _color = getColor(message.color(), motd, ansi);
         String color;
         if (_color == null) color = "";
         else color = _color;
-        return new Output((lastColor != null ? lastColor : "") + color + message.pattern(), _color); // * Client-side selector components are equivalent to text ones, and do NOT list entities.
+        return new PartiallyStringifiedOutput((lastColor != null ? lastColor : "") + color + message.pattern(), _color); // * Client-side selector components are equivalent to text ones, and do NOT list entities.
     }
 
-    public static Output stringifyPartially (KeybindComponent message, boolean motd, boolean ansi, String lastColor) {
+    public static PartiallyStringifiedOutput stringifyPartially (KeybindComponent message, boolean motd, boolean ansi, String lastColor) {
         String keybind = message.keybind();
         Component component = keybinds.containsKey(keybind) ? Component.translatable(keybind) : Component.text(keybind); // TODO: Fix some keys like `key.keyboard.a`
         return stringifyPartially(component, motd, ansi, lastColor);
