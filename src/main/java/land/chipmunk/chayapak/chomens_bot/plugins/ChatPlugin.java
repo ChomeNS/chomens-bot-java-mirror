@@ -77,7 +77,7 @@ public class ChatPlugin extends Bot.Listener {
 
             if (
                     key.equals("advMode.setCommand.success") ||
-                    key.equals("advMode.notAllowed")
+                            key.equals("advMode.notAllowed")
             ) return;
         } catch (ClassCastException ignored) {}
 
