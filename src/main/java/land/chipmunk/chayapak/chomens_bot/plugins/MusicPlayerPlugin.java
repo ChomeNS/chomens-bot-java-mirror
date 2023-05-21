@@ -17,13 +17,14 @@ import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 
 // Author: _ChipMC_ & chayapak <3
 public class MusicPlayerPlugin extends Bot.Listener {
     private final Bot bot;
 
-    public static final String SELECTOR  = "@a[tag=!nomusic,tag=!chomens_bot_nomusic]";
+    public static final String SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic]";
     public static File SONG_DIR = new File("songs");
     static {
         if (!SONG_DIR.exists()) {
@@ -32,7 +33,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     @Getter @Setter private Song currentSong;
-    @Getter @Setter private LinkedList<Song> songQueue = new LinkedList<>();
+    @Getter @Setter private List<Song> songQueue = new ArrayList<>();
     @Getter @Setter private SongLoaderThread loaderThread;
     @Getter @Setter private Loop loop = Loop.OFF;
 
@@ -172,7 +173,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                         return;
                     }
 
-                    songQueue.remove();
+                    songQueue.remove(0);
 
                     if (songQueue.size() == 0) {
                         stopPlaying();
@@ -198,9 +199,9 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
     public void skip () {
         if (loop == Loop.ALL) {
-            songQueue.add(songQueue.remove()); // bot.music.queue.push(bot.music.queue.shift()) in js
+            songQueue.add(songQueue.remove(0)); // bot.music.queue.push(bot.music.queue.shift()) in js
         } else {
-            songQueue.remove();
+            songQueue.remove(0);
             stopPlaying();
         }
         if (songQueue.size() == 0) return;

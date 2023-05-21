@@ -19,7 +19,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 public class MusicCommand implements Command {
@@ -280,7 +279,7 @@ public class MusicCommand implements Command {
 
     public Component queue (CommandContext context) {
         final Bot bot = context.bot();
-        final LinkedList<Song> queue = bot.music().songQueue();
+        final List<Song> queue = bot.music().songQueue();
 
         final List<Component> queueWithNames = new ArrayList<>();
         int i = 0;
