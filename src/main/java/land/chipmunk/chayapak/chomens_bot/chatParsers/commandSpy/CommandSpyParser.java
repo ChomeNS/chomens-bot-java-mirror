@@ -30,7 +30,8 @@ public class CommandSpyParser implements ChatParser {
         if (
                 (
                         message.color() != NamedTextColor.AQUA ||
-                        message.color() != NamedTextColor.YELLOW
+                        message.color() != NamedTextColor.YELLOW ||
+                        message.style().isEmpty()
                 ) &&
                 children.size() < 2
         ) return null;
