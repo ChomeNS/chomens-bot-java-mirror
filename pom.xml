@@ -58,7 +58,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.26</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -68,22 +67,10 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.12.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.github.ricksbrown</groupId>
             <artifactId>cowsay</artifactId>
             <version>1.1.0</version>
             <classifier>lib</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.ricksbrown</groupId>
-            <artifactId>cowjar-extra</artifactId>
-            <version>1.1.0</version>
         </dependency>
 
         <dependency>
@@ -125,12 +112,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>com.github.ricksbrown</groupId>
-                <artifactId>cowsay</artifactId>
-                <version>1.1.0</version>
-            </plugin>
-
             <plugin>
                 <!-- Build an executable JAR -->
                 <groupId>org.apache.maven.plugins</groupId>

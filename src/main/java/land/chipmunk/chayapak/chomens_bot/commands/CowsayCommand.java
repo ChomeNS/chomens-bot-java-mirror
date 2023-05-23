@@ -18,7 +18,7 @@ public class CowsayCommand implements Command {
 
     public List<String> usage() {
         final List<String> usages = new ArrayList<>();
-        usages.add("<cow> <{message}>");
+        usages.add("<{message}>");
 
         return usages;
     }
@@ -35,11 +35,9 @@ public class CowsayCommand implements Command {
     }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final String cow = args[0];
-        final String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+        final String message = String.join(" ", args);
 
         final CowExecutor cowExecutor = new CowExecutor();
-        cowExecutor.setCowfile(cow);
         cowExecutor.setMessage(message);
 
         final String result = cowExecutor.execute();

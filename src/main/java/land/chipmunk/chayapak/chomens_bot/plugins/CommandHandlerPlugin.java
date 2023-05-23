@@ -4,13 +4,13 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import land.chipmunk.chayapak.chomens_bot.commands.*;
+import land.chipmunk.chayapak.chomens_bot.util.ExceptionUtilities;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -146,7 +146,7 @@ public class CommandHandlerPlugin {
         } catch (Exception e) {
             e.printStackTrace();
 
-            final String stackTrace = ExceptionUtils.getStackTrace(e);
+            final String stackTrace = ExceptionUtilities.getStacktrace(e);
             if (inGame) {
                 if (bot.options().useChat() || !bot.options().useCore()) return Component.text(e.toString()).color(NamedTextColor.RED);
                 return Component

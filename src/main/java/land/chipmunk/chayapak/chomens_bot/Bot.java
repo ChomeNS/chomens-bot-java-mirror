@@ -10,9 +10,9 @@ import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpClientSession;
 import land.chipmunk.chayapak.chomens_bot.plugins.*;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
+import land.chipmunk.chayapak.chomens_bot.util.RandomStringUtilities;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,7 +125,7 @@ public class Bot {
 
         final String _username = options.username();
 
-        if (_username == null) username = RandomStringUtils.randomAlphanumeric(8);
+        if (_username == null) username = RandomStringUtilities.generate(8);
         else username = _username;
 
         Session session = new TcpClientSession(host, port, new MinecraftProtocol(username), null);
