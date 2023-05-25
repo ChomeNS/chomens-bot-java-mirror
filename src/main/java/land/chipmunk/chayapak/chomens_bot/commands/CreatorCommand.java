@@ -14,7 +14,7 @@ public class CreatorCommand implements Command {
     public String name() { return "creator"; }
 
     public String description() {
-        return "Shows the bot's creator";
+        return "Shows the bots creator";
     }
 
     public List<String> usage() {
