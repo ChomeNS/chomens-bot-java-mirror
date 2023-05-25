@@ -71,9 +71,7 @@ public class SelfCarePlugin extends Bot.Listener {
                 else if (message.startsWith("You have been muted")) muted = true;
                 else if (message.equals("You have been unmuted.")) muted = false;
 
-                else if (message.equals("You now have the tag: [ChomeNS Bot]") || // for 1.19.2 (or 1.19?) and older clones
-                         message.equals("You now have the tag: &8[&eChomeNS Bot&8]")
-                ) prefix = true;
+                else if (message.equals("You now have the tag: " + bot.config().selfCare().prefix().prefix())) prefix = true;
                 else if (message.startsWith("You no longer have a tag")) prefix = false;
                 else if (message.startsWith("You now have the tag: ")) prefix = false;
 
@@ -96,7 +94,7 @@ public class SelfCarePlugin extends Bot.Listener {
         if (selfCares.gamemode() && gamemode != GameMode.CREATIVE) bot.chat().send("/minecraft:gamemode creative @s[type=player]");
         else if (selfCares.op() && permissionLevel < 2) bot.chat().send("/minecraft:op @s[type=player]");
         else if (selfCares.cspy() && !cspy && bot.options().kaboom()) bot.chat().send("/commandspy:commandspy on");
-        else if (selfCares.prefix() && !prefix && bot.options().kaboom()) bot.chat().send("/extras:prefix &8[&eChomeNS Bot&8]");
+        else if (selfCares.prefix().enabled() && !prefix && bot.options().kaboom()) bot.chat().send("/extras:prefix " + bot.config().selfCare().prefix().prefix());
         else if (selfCares.username() && !username && bot.options().kaboom()) bot.chat().send("/extras:username " + bot.username());
         else if (selfCares.icu().enabled() && positionPacketsPerSecond > selfCares.icu().positionPacketsPerSecond()) bot.core().run("essentials:sudo * icu stop");
         else if (selfCares.vanish() && !vanish && !visibility && bot.options().hasEssentials()) {

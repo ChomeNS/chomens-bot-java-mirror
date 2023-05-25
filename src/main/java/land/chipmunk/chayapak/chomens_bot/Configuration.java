@@ -88,15 +88,21 @@ public class Configuration {
 
         @Getter public boolean cspy = true;
 
-        @Getter public AntiIcuSelfCare icu = new AntiIcuSelfCare();
+        @Getter public Icu icu = new Icu();
 
-        @Getter public boolean prefix = true;
+        public static class Icu {
+            @Getter public boolean enabled = true;
+            @Getter public int positionPacketsPerSecond = 10;
+        }
+
+        @Getter public Prefix prefix = new Prefix();
+
+        public static class Prefix {
+            @Getter public boolean enabled = true;
+            @Getter public String prefix = "&8[&eChomeNS Bot&8]";
+        }
+
         @Getter public boolean username = true;
-    }
-
-    public static class AntiIcuSelfCare {
-        @Getter public boolean enabled = true;
-        @Getter public int positionPacketsPerSecond = 10;
     }
 
     public static class BotOption {
