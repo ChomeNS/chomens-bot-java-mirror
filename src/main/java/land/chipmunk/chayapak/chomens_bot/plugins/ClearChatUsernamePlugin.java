@@ -6,9 +6,14 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 // idea totallynotskidded™ from chipmunkbot (the js one)
 public class ClearChatUsernamePlugin extends ChatPlugin.Listener {
     private final Bot bot;
+
+    public static final Pattern PATTERN = Pattern.compile("/clearchat.*|/cc.*|/extras:clearchat.*|/extras:cc.*");
 
     public ClearChatUsernamePlugin(Bot bot) {
         this.bot = bot;
@@ -21,12 +26,10 @@ public class ClearChatUsernamePlugin extends ChatPlugin.Listener {
         final String username = message.sender().profile().getName();
         final String command = ((TextComponent) message.contents()).content();
 
-        if (
-                command.equals("/clearchat") ||
-                        command.equals("/cc") ||
-                        command.equals("/extras:clearchat") ||
-                        command.equals("/extras:cc")
-        ) {
+        final Matcher matcher = PATTERN.matcher(command);
+
+        if (matcher.find()) {
+            System.out.println("i found one");
             bot.chat().tellraw(
                     Component.empty()
                             .append(Component.text(username))
