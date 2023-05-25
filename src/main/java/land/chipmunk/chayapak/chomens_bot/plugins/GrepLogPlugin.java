@@ -90,8 +90,9 @@ public class GrepLogPlugin {
                     ) {
                         br.readLine();
                         readFile(br);
-                    } catch (Exception ignored) {
-                    } // TODO: Handle exception
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     try (
                             FileInputStream fin = new FileInputStream(file);
@@ -99,8 +100,9 @@ public class GrepLogPlugin {
                     ) {
                         br.readLine();
                         readFile(br);
-                    } catch (Exception ignored) {
-                    } // TODO: Handle exception
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 if (queryStopped) break;
