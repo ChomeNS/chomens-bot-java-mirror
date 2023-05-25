@@ -29,7 +29,6 @@ public class ClearChatUsernamePlugin extends ChatPlugin.Listener {
         final Matcher matcher = PATTERN.matcher(command);
 
         if (matcher.find()) {
-            System.out.println("i found one");
             bot.chat().tellraw(
                     Component.empty()
                             .append(Component.text(username))
