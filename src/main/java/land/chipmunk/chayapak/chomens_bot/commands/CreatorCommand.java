@@ -40,7 +40,7 @@ public class CreatorCommand implements Command {
 
         return Component.empty()
                 .append(Component.text("ChomeNS Bot ").color(ColorUtilities.getColorByString(bot.config().colorPalette().primary())))
-                .append(Component.text("was created by ").color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor())))
+                .append(Component.text("is created by ").color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor())))
                 .append(Component.text("chayapak").color(ColorUtilities.getColorByString(bot.config().colorPalette().ownerName())));
     }
 }
