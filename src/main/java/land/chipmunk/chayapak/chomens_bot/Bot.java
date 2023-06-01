@@ -119,6 +119,8 @@ public class Bot {
     }
 
     private void reconnect () {
+        if (session != null) session = null; // does this do nothing?
+
         for (Listener listener : listeners) {
             listener.connecting();
         }

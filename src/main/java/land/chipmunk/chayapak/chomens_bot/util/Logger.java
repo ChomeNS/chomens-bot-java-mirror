@@ -1,4 +1,6 @@
-package land.chipmunk.chayapak.chomens_bot;
+package land.chipmunk.chayapak.chomens_bot.util;
+
+import land.chipmunk.chayapak.chomens_bot.Main;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -6,7 +8,6 @@ import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
@@ -24,7 +25,7 @@ public class Logger {
     public static String prevEntry = "";
     public static int duplicateCounter = 1;
 
-    public static ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
+    public static ScheduledExecutorService executor = Main.executor;
     public static int spamLevel = 0;
     public static long freezeTime = 0;
 

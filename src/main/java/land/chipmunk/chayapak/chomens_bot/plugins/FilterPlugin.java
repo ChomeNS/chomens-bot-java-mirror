@@ -38,10 +38,10 @@ public class FilterPlugin extends PlayersPlugin.Listener {
             if (_filteredPlayer.regex) {
                 Pattern pattern = null;
                 if (_filteredPlayer.ignoreCase) {
-                    pattern = Pattern.compile("\\b" + _filteredPlayer.playerName + "\\b", Pattern.CASE_INSENSITIVE);
+                    pattern = Pattern.compile(_filteredPlayer.playerName, Pattern.CASE_INSENSITIVE);
                 } else {
                     try {
-                        pattern = Pattern.compile("\\b" + _filteredPlayer.playerName + "\\b");
+                        pattern = Pattern.compile(_filteredPlayer.playerName);
                     } catch (Exception e) {
                         bot.chat().tellraw(Component.text(e.toString()).color(NamedTextColor.RED));
                     }

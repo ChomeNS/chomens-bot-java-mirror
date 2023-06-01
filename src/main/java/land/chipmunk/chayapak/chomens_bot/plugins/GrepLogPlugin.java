@@ -1,7 +1,7 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.Logger;
+import land.chipmunk.chayapak.chomens_bot.util.Logger;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import lombok.Getter;
 import lombok.Setter;
