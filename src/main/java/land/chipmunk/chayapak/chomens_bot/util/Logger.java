@@ -158,7 +158,8 @@ public class Logger {
                     logWriter.write("\n");
                 }
 
-                logWriter.write(getTimePrefix() + str.replaceAll("\\[(\\d+?)x](?=$|[\r\n])", "[/$1x]")); // the replaceAll will prevent conflicts with the duplicate counter
+                if (str.length() > 32767) logWriter.write("Message too big, not logging this message"); // should these stuff be hardcoded?
+                else logWriter.write(getTimePrefix() + str.replaceAll("\\[(\\d+?)x](?=$|[\r\n])", "[/$1x]")); // the replaceAll will prevent conflicts with the duplicate counter
                 logWriter.flush();
 
                 duplicateCounter = 1;
