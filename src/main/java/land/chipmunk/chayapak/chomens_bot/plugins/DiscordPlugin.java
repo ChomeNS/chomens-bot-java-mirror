@@ -95,6 +95,7 @@ public class DiscordPlugin {
                     jda.addEventListener(new ListenerAdapter() {
                         @Override
                         public void onMessageReceived(@NotNull MessageReceivedEvent event) {
+                            // TODO: IMPROVE this code because why make 172 lines just for a single discord message
                             if (
                                     !event.getChannel().getId().equals(channelId) ||
                                             event.getAuthor().getId().equals(jda.getSelfUser().getId())
@@ -199,7 +200,7 @@ public class DiscordPlugin {
                                 rolesComponent = rolesComponent.append(Component.text("No roles").color(NamedTextColor.GRAY));
                             }
 
-                            final Component nameComponent = Component
+                            Component nameComponent = Component
                                     .text(name)
                                     .clickEvent(ClickEvent.copyToClipboard(fallbackName + "#" + tag))
                                     .hoverEvent(
@@ -216,8 +217,26 @@ public class DiscordPlugin {
                                                             Component.text("Click here to copy the tag to your clipboard").color(NamedTextColor.GREEN)
                                                     ).color(NamedTextColor.DARK_GRAY)
                                             )
-                                    )
-                                    .color(NamedTextColor.RED);
+                                    );
+
+                            // too ohio
+                            for (Role role : roles) {
+                                final Color color = role.getColor();
+
+                                if (color == null) continue;
+
+                                nameComponent = nameComponent.color(
+                                        TextColor.color(
+                                                color.getRed(),
+                                                color.getGreen(),
+                                                color.getBlue()
+                                        )
+                                );
+
+                                break;
+                            }
+
+                            if (nameComponent.color() == null) nameComponent = nameComponent.color(NamedTextColor.RED);
 
                             final String discordUrl = config.discord().inviteLink();
 
@@ -248,6 +267,7 @@ public class DiscordPlugin {
                                     nameComponent,
                                     messageComponent
                             ).color(NamedTextColor.DARK_GRAY);
+
                             bot.chat().tellraw(component);
                         }
                     });
