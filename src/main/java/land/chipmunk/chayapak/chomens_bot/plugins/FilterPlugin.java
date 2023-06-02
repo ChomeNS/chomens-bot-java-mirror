@@ -10,6 +10,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class FilterPlugin extends PlayersPlugin.Listener {
@@ -22,12 +23,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
 
         bot.players().addListener(this);
 
-        bot.tick().addListener(new TickPlugin.Listener() {
-            @Override
-            public void onTick() {
-                tick();
-            }
-        });
+        bot.executor().scheduleAtFixedRate(this::kick, 0, 5, TimeUnit.SECONDS);
     }
 
     private FilteredPlayer getPlayer (String name) {
@@ -80,12 +76,11 @@ public class FilterPlugin extends PlayersPlugin.Listener {
         bot.exploits().kick(target.profile().getId());
     }
 
-    public void tick () {
+    public void kick () {
         for (MutablePlayerListEntry target : bot.players().list()) {
             final FilteredPlayer player = getPlayer(target.profile().getName());
 
             if (player == null) continue;
-
 
             bot.exploits().kick(target.profile().getId());
         }
