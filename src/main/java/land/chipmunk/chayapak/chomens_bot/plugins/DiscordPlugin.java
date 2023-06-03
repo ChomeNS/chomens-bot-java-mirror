@@ -300,7 +300,6 @@ public class DiscordPlugin {
     final Map<String, Boolean> doneSendingInLogs = new HashMap<>();
 
     public void sendMessage(String message, String channelId) {
-        if (message.length() > 32767) return;
         synchronized (logMessages) {
             if (!logMessages.containsKey(channelId)) {
                 logMessages.put(channelId, new StringBuilder());
