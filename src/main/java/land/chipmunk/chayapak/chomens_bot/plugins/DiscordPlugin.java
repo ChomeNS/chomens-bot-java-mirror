@@ -285,8 +285,6 @@ public class DiscordPlugin {
                                     "\n```"
                             , channelId
                     );
-
-                    logMessages.clear();
                 }
             });
 
