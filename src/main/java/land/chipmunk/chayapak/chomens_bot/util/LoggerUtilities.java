@@ -14,7 +14,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 // totallynotskidded™ from HBot
-public class Logger {
+public class LoggerUtilities {
     public static File logDir = new File("logs");
     public static File logFile = new File(logDir, "log.txt");
     public static OutputStreamWriter logWriter;

@@ -3,7 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 import com.github.steveice10.packetlib.event.session.ConnectedEvent;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.util.Logger;
+import land.chipmunk.chayapak.chomens_bot.util.LoggerUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -83,7 +83,7 @@ public class LoggerPlugin extends ChatPlugin.Listener {
                 _message
         );
 
-        Logger.log(
+        LoggerUtilities.log(
                 formattedMessage.replaceAll( // use replaceAll for regexes, use replace for normal string
                         "\u001B\\[[;\\d]*[ -/]*[@-~]",
                         ""
