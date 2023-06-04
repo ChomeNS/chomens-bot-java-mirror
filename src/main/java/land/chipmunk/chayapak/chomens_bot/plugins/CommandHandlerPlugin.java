@@ -6,6 +6,7 @@ import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import land.chipmunk.chayapak.chomens_bot.commands.*;
 import land.chipmunk.chayapak.chomens_bot.util.ExceptionUtilities;
 import lombok.Getter;
+import lombok.Setter;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.kyori.adventure.text.Component;
@@ -20,6 +21,8 @@ public class CommandHandlerPlugin {
     private final Bot bot;
 
     @Getter private final List<Command> commands = new ArrayList<>();
+
+    @Getter @Setter private boolean disabled = false;
 
     public CommandHandlerPlugin (Bot bot) {
         this.bot = bot;
@@ -77,6 +80,8 @@ public class CommandHandlerPlugin {
             boolean console,
             MessageReceivedEvent event
     ) {
+        if (disabled) return null;
+
         final String[] splitInput = input.trim().split("\\s+");
 
         final String commandName = splitInput[0];
