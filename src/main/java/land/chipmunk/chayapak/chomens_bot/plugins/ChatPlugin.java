@@ -36,8 +36,7 @@ public class ChatPlugin extends Bot.Listener {
 
     private final CommandSpyParser commandSpyParser;
 
-    @Getter private final List<String> queue = new ArrayList<>();
-    @Getter private final List<String> _queue = new ArrayList<>();
+    private final List<String> queue = new ArrayList<>();
 
     @Getter @Setter private int queueDelay;
 
@@ -58,7 +57,6 @@ public class ChatPlugin extends Bot.Listener {
         chatParsers.add(new ChomeNSCustomChatParser(bot));
         chatParsers.add(new CreayunChatParser(bot));
 
-        bot.executor().scheduleAtFixedRate(this::_sendChatTick, 0, 1, TimeUnit.MILLISECONDS);
         bot.executor().scheduleAtFixedRate(this::sendChatTick, 0, queueDelay, TimeUnit.MILLISECONDS);
     }
 
@@ -211,34 +209,16 @@ public class ChatPlugin extends Bot.Listener {
         }
     }
 
-    // TODO: Probably improve this code
-    private void _sendChatTick () {
-        try {
-            if (queue.size() == 0) return;
-
-            final String message = queue.get(0);
-
-            final String[] splitted = message.split("(?<=\\G.{255})|\\n");
-
-            for (String subMessage : splitted) {
-                if (
-                        subMessage.trim().equals("") ||
-                                IllegalCharactersUtilities.containsIllegalCharacters(subMessage)
-                ) continue;
-
-                _queue.add(subMessage);
-            }
-
-            queue.remove(0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void fard () {
+        new Thread(() -> {
+            for (int i = 0; i < 69420; i++) queue.add("fard " + i);
+        }).start();
     }
 
     private void sendChatTick () {
-        if (_queue.size() == 0) return;
+        if (queue.size() == 0) return;
 
-        final String message = _queue.get(0);
+        final String message = queue.get(0);
 
         if (message.startsWith("/")) {
             String removedMessage = message.substring(1);
@@ -273,11 +253,22 @@ public class ChatPlugin extends Bot.Listener {
             ));
         }
 
-        _queue.remove(0);
+        queue.remove(0);
     }
 
+    public void clearQueue () { queue.clear(); }
+
     public void send (String message) {
-        queue.add(message);
+        final String[] splitted = message.split("(?<=\\G.{255})|\\n");
+
+        for (String subMessage : splitted) {
+            if (
+                    subMessage.trim().equals("") ||
+                            IllegalCharactersUtilities.containsIllegalCharacters(subMessage)
+            ) continue;
+
+            queue.add(subMessage);
+        }
     }
 
     public void tellraw (Component component, String targets) {

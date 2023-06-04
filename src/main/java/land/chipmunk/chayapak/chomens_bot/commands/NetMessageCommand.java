@@ -38,37 +38,35 @@ public class NetMessageCommand implements Command {
     }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        try {
-            final Bot bot = context.bot();
-            final List<Bot> bots = bot.bots();
+        final Bot bot = context.bot();
+        final List<Bot> bots = bot.bots();
 
-            final String hostAndPort = bot.host() + ":" + bot.port();
+        final String hostAndPort = bot.host() + ":" + bot.port();
 
-            final Component component = Component.translatable(
-                    "[%s]%s%s%s› %s",
-                    Component
-                            .text(hostAndPort)
-                            .color(NamedTextColor.GRAY)
-                            .clickEvent(ClickEvent.copyToClipboard(hostAndPort))
-                            .hoverEvent(
-                                    HoverEvent.showText(
-                                            Component.empty()
-                                                    .append(Component.text(hostAndPort).color(NamedTextColor.GRAY))
-                                                    .append(Component.newline())
-                                                    .append(Component.text("Click here to copy the server host and port to your clipboard").color(NamedTextColor.GREEN))
-                                    )
-                            ),
-                    Component.text(" "),
-                    context.sender().displayName().color(NamedTextColor.GRAY),
-                    Component.text(" "),
-                    Component.text(String.join(" ", args)).color(NamedTextColor.GRAY)
-            ).color(NamedTextColor.DARK_GRAY);
+        final Component component = Component.translatable(
+                "[%s]%s%s%s› %s",
+                Component
+                        .text(hostAndPort)
+                        .color(NamedTextColor.GRAY)
+                        .clickEvent(ClickEvent.copyToClipboard(hostAndPort))
+                        .hoverEvent(
+                                HoverEvent.showText(
+                                        Component.empty()
+                                                .append(Component.text(hostAndPort).color(NamedTextColor.GRAY))
+                                                .append(Component.newline())
+                                                .append(Component.text("Click here to copy the server host and port to your clipboard").color(NamedTextColor.GREEN))
+                                )
+                        ),
+                Component.text(" "),
+                context.sender().displayName().color(NamedTextColor.GRAY),
+                Component.text(" "),
+                Component.text(String.join(" ", args)).color(NamedTextColor.GRAY)
+        ).color(NamedTextColor.DARK_GRAY);
 
-            for (Bot eachBot : bots) {
-                if (!eachBot.loggedIn()) continue;
-                eachBot.chat().tellraw(component);
-            }
-        } catch (Exception ignored) {} // lazy fix for the bot spamming nullpointers in console (mabe)
+        for (Bot eachBot : bots) {
+            if (!eachBot.loggedIn()) continue;
+            eachBot.chat().tellraw(component);
+        }
 
         return null;
     }
