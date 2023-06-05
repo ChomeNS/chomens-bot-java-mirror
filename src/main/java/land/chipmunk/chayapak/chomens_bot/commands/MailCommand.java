@@ -64,6 +64,8 @@ public class MailCommand implements Command {
             case "send" -> {
                 int senderMailsSentTotal = 0;
                 for (Mail mail : MailPlugin.mails()) {
+                    if (mail.sentBy() == null) continue;
+
                     if (!mail.sentBy().equals(sender.profile().getName())) continue;
                     senderMailsSentTotal++;
                 }
