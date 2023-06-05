@@ -14,10 +14,6 @@ public class Configuration {
 
     @Getter public Map<String, String> consolePrefixes;
 
-    @Getter public int reconnectDelay = 2000;
-
-    @Getter public int chatQueueDelay = 125;
-
     @Getter public Map<String, String> keys;
 
     @Getter public String weatherApiKey;
@@ -114,7 +110,8 @@ public class Configuration {
         @Getter @Setter public boolean useCore = true;
         @Getter @Setter public boolean useChat = false;
         @Getter public boolean hasEssentials = true;
-        @Getter public int reconnectDelay = -1;
+        @Getter public int reconnectDelay = 2000;
         @Getter public boolean removeNamespaces = false;
+        @Getter public int chatQueueDelay = 125;
     }
 }

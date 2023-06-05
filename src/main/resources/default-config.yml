@@ -11,10 +11,6 @@ consolePrefixes:
   normalCommandsPrefix: '.'
   consoleServerPrefix: '/'
 
-reconnectDelay: 2000
-
-chatQueueDelay: 125
-
 discord:
   enabled: false
   prefix: 'default!'
@@ -94,7 +90,6 @@ bots:
   # useCore - if enabled it just sends the command using chat instead of using core. recommended to enable useChat too when this is enabled
   # useChat - when the bot tellraws it will chat instead of using the core to run tellraw
   # hasEssentials - if the server has essentials plugin just set it to true!! ! !!31
-  # reconnectDelay - if not specified it will just default to the global reconnectDelay
   # removeNamespaces - when the bot sends a command it will remove like `minecraft:` for example if set to true
 
   - host: 'localhost'
@@ -107,7 +102,10 @@ bots:
     hasEssentials: false
     reconnectDelay: 2000
     removeNamespaces: false
+    chatQueueDelay: 125
   # or without the optional ones:
   # - host: 'localhost'
   #   port: 25565
   #   serverName: 'Localhost'
+  #   reconnectDelay: 2000
+  #   chatQueueDelay: 125

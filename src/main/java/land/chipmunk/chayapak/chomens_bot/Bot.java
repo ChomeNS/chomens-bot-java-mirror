@@ -75,7 +75,6 @@ public class Bot {
         this.port = botOption.port;
 
         this.options = botOption;
-        if (options.reconnectDelay == -1) options.reconnectDelay = config.reconnectDelay;
 
         this.bots = bots;
 

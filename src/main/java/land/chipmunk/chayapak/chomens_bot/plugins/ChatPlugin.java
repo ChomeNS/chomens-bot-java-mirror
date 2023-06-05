@@ -45,7 +45,7 @@ public class ChatPlugin extends Bot.Listener {
     public ChatPlugin (Bot bot) {
         this.bot = bot;
 
-        queueDelay = bot.config().chatQueueDelay();
+        queueDelay = bot.options().chatQueueDelay();
 
         this.commandSpyParser = new CommandSpyParser(bot);
 
