@@ -24,7 +24,7 @@ public class LoggerPlugin extends ChatPlugin.Listener {
         bot.addListener(new Bot.Listener() {
             @Override
             public void connecting() {
-                info(
+                log(
                         String.format(
                                 "Connecting to: %s:%s",
                                 bot.host(),
@@ -35,7 +35,7 @@ public class LoggerPlugin extends ChatPlugin.Listener {
 
             @Override
             public void connected (ConnectedEvent event) {
-                info(
+                log(
                         String.format(
                                 "Successfully connected to: %s:%s",
                                 bot.host(),
@@ -51,7 +51,7 @@ public class LoggerPlugin extends ChatPlugin.Listener {
             @Override
             public void disconnected (DisconnectedEvent event) {
                 final String reason = ComponentUtilities.stringifyAnsi(event.getReason());
-                info("Disconnected from " + bot.host() + ":" + bot.port() + ", reason: " + reason);
+                log("Disconnected from " + bot.host() + ":" + bot.port() + ", reason: " + reason);
             }
         });
     }
