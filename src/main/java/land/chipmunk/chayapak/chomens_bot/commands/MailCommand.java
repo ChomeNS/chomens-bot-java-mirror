@@ -58,8 +58,18 @@ public class MailCommand implements Command {
 
         final MutablePlayerListEntry sender = context.sender();
 
+        // kinda messy ngl
+
         switch (args[0]) {
             case "send" -> {
+                int senderMailsSentTotal = 0;
+                for (Mail mail : MailPlugin.mails()) {
+                    if (!mail.sentBy().equals(sender.profile().getName())) continue;
+                    senderMailsSentTotal++;
+                }
+
+                if (senderMailsSentTotal > 256) return Component.text("You are sending too much mails!").color(NamedTextColor.RED);
+
                 bot.mail().send(
                         new Mail(
                                 sender.profile().getName(),
@@ -73,6 +83,14 @@ public class MailCommand implements Command {
                 return Component.text("Mail sent!").color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
             }
             case "sendselecteditem" -> {
+                int senderMailsSentTotal = 0;
+                for (Mail mail : MailPlugin.mails()) {
+                    if (!mail.sentTo().equals(sender.profile().getName())) continue;
+                    senderMailsSentTotal++;
+                }
+
+                if (senderMailsSentTotal > 256) return Component.text("You are sending too much mails!").color(NamedTextColor.RED);
+
                 final CompletableFuture<CompoundTag> future = bot.core().runTracked(
                         "minecraft:data get entity " +
                                 UUIDUtilities.selector(sender.profile().getId()) +
