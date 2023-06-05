@@ -57,8 +57,6 @@ core:
   customName: '[{"text":"ChomeNS ","color":"yellow"},{"text":"Core","color":"green"},{"text":"™","color":"gold"}]'
 
 selfCare:
-  checkInterval: 450
-
   # vanilla
   op: true
   gamemode: true
