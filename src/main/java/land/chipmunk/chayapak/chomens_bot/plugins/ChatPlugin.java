@@ -209,12 +209,6 @@ public class ChatPlugin extends Bot.Listener {
         }
     }
 
-    public void fard () {
-        new Thread(() -> {
-            for (int i = 0; i < 69420; i++) queue.add("fard " + i);
-        }).start();
-    }
-
     private void sendChatTick () {
         if (queue.size() == 0) return;
 
