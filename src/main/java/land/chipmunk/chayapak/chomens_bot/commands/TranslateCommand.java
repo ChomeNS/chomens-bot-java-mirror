@@ -53,39 +53,45 @@ public class TranslateCommand implements Command {
 
         final Gson gson = new Gson();
 
-        try {
-            final URL url = new URL("https://translate.google.com/translate_a/single?client=at&dt=t&dt=rm&dj=1");
+        new Thread(() -> {
+            try {
+                final URL url = new URL("https://translate.google.com/translate_a/single?client=at&dt=t&dt=rm&dj=1");
 
-            final String jsonOutput = HttpUtilities.postRequest(
-                    url,
-                    "application/x-www-form-urlencoded;charset=utf-8",
-                    String.format(
-                            "sl=%s&tl=%s&q=%s",
-                            from,
-                            to,
-                            URLEncoder.encode(
-                                    message,
-                                    StandardCharsets.UTF_8
+                final String jsonOutput = HttpUtilities.postRequest(
+                        url,
+                        "application/x-www-form-urlencoded;charset=utf-8",
+                        String.format(
+                                "sl=%s&tl=%s&q=%s",
+                                from,
+                                to,
+                                URLEncoder.encode(
+                                        message,
+                                        StandardCharsets.UTF_8
+                                )
+                        )
+                );
+
+                final JsonObject jsonObject = gson.fromJson(jsonOutput, JsonObject.class);
+
+                final JsonArray sentences = jsonObject.getAsJsonArray("sentences");
+
+                final JsonObject translation = sentences.get(0).getAsJsonObject();
+
+                final String output = translation.get("trans").getAsString();
+
+                context.sendOutput(
+                        Component
+                            .translatable(
+                                    "Result: %s",
+                                    Component.text(output).color(NamedTextColor.GREEN)
                             )
-                    )
-            );
+                            .color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
+                );
+            } catch (Exception e) {
+                context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
+            }
+        }).start();
 
-            final JsonObject jsonObject = gson.fromJson(jsonOutput, JsonObject.class);
-
-            final JsonArray sentences = jsonObject.getAsJsonArray("sentences");
-
-            final JsonObject translation = sentences.get(0).getAsJsonObject();
-
-            final String output = translation.get("trans").getAsString();
-
-            return Component
-                    .translatable(
-                            "Result: %s",
-                            Component.text(output).color(NamedTextColor.GREEN)
-                    )
-                    .color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary()));
-        } catch (Exception e) {
-            return Component.text(e.toString()).color(NamedTextColor.RED);
-        }
+        return null;
     }
 }

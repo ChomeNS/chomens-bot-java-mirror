@@ -45,24 +45,29 @@ public class WikipediaCommand implements Command {
 
         final Gson gson = new Gson();
 
-        try {
-            final URL url = new URL(
-                    "https://en.wikipedia.org/api/rest_v1/page/summary/" +
-                            URLEncoder.encode(
-                                page.replace(" ", "_"), // mabe.
-                                    StandardCharsets.UTF_8
-                            )
-            );
+        // TODO: mabe use the executor service thingy instead of threads because threads are b a d
+        new Thread(() -> {
+            try {
+                final URL url = new URL(
+                        "https://en.wikipedia.org/api/rest_v1/page/summary/" +
+                                URLEncoder.encode(
+                                        page.replace(" ", "_"), // mabe.
+                                        StandardCharsets.UTF_8
+                                )
+                );
 
-            final String jsonOutput = HttpUtilities.getRequest(url);
+                final String jsonOutput = HttpUtilities.getRequest(url);
 
-            final JsonObject jsonObject = gson.fromJson(jsonOutput, JsonObject.class);
+                final JsonObject jsonObject = gson.fromJson(jsonOutput, JsonObject.class);
 
-            return Component.text(jsonObject.get("extract").getAsString()).color(NamedTextColor.GREEN);
-        } catch (FileNotFoundException ignored) {
-            return Component.text("Cannot find page: " + page).color(NamedTextColor.RED);
-        } catch (Exception e) {
-            return Component.text(e.toString()).color(NamedTextColor.RED);
-        }
+                context.sendOutput(Component.text(jsonObject.get("extract").getAsString()).color(NamedTextColor.GREEN));
+            } catch (FileNotFoundException ignored) {
+                context.sendOutput(Component.text("Cannot find page: " + page).color(NamedTextColor.RED));
+            } catch (Exception e) {
+                context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
+            }
+        }).start();
+
+        return null;
     }
 }

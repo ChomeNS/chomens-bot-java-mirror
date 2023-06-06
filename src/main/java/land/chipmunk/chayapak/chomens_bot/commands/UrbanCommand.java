@@ -46,38 +46,40 @@ public class UrbanCommand implements Command {
 
         final Gson gson = new Gson();
 
-        try {
-            final URL url = new URL(
-                    "https://api.urbandictionary.com/v0/define?term=" +
-                            URLEncoder.encode(term, StandardCharsets.UTF_8)
-            );
+        new Thread(() -> {
+            try {
+                final URL url = new URL(
+                        "https://api.urbandictionary.com/v0/define?term=" +
+                                URLEncoder.encode(term, StandardCharsets.UTF_8)
+                );
 
-            final String jsonOutput = HttpUtilities.getRequest(url);
+                final String jsonOutput = HttpUtilities.getRequest(url);
 
-            final JsonObject jsonObject = gson.fromJson(jsonOutput, JsonObject.class);
+                final JsonObject jsonObject = gson.fromJson(jsonOutput, JsonObject.class);
 
-            final JsonArray list = jsonObject.getAsJsonArray("list");
+                final JsonArray list = jsonObject.getAsJsonArray("list");
 
-            if (list.size() == 0) return Component.text("No results found").color(NamedTextColor.RED);
+                if (list.size() == 0) context.sendOutput(Component.text("No results found").color(NamedTextColor.RED));
 
-            for (JsonElement element : list) {
-                final JsonObject definitionObject = element.getAsJsonObject();
+                for (JsonElement element : list) {
+                    final JsonObject definitionObject = element.getAsJsonObject();
 
-                final String word = definitionObject.get("word").getAsString();
-                final String definition = definitionObject.get("definition").getAsString();
+                    final String word = definitionObject.get("word").getAsString();
+                    final String definition = definitionObject.get("definition").getAsString();
 
-                final Component component = Component.translatable(
-                        "[%s] %s - %s",
-                        Component.text("Urban").color(NamedTextColor.RED),
-                        Component.text(word).color(NamedTextColor.GRAY),
-                        Component.text(definition).color(NamedTextColor.GRAY)
-                ).color(NamedTextColor.DARK_GRAY);
+                    final Component component = Component.translatable(
+                            "[%s] %s - %s",
+                            Component.text("Urban").color(NamedTextColor.RED),
+                            Component.text(word).color(NamedTextColor.GRAY),
+                            Component.text(definition).color(NamedTextColor.GRAY)
+                    ).color(NamedTextColor.DARK_GRAY);
 
-                context.sendOutput(component);
+                    context.sendOutput(component);
+                }
+            } catch (Exception e) {
+                context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
             }
-        } catch (Exception e) {
-            return Component.text(e.toString()).color(NamedTextColor.RED);
-        }
+        }).start();
 
         return null;
     }
