@@ -5,6 +5,8 @@ import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.util.LoggerUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -15,6 +17,8 @@ public class LoggerPlugin extends ChatPlugin.Listener {
     private final Bot bot;
 
     private boolean addedListener = false;
+
+    @Getter @Setter private boolean logToConsole = true;
 
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
@@ -74,7 +78,7 @@ public class LoggerPlugin extends ChatPlugin.Listener {
     public void log (String _message) {
         final String message = prefix(Component.text("Log").color(NamedTextColor.GOLD), _message);
 
-        bot.console().reader().printAbove(message);
+        if (logToConsole) bot.console().reader().printAbove(message);
 
 
         final String formattedMessage = String.format(
@@ -94,13 +98,13 @@ public class LoggerPlugin extends ChatPlugin.Listener {
     public void info (String _message) {
         final String message = prefix(Component.text("Info").color(NamedTextColor.GREEN), _message);
 
-        bot.console().reader().printAbove(message);
+        if (logToConsole) bot.console().reader().printAbove(message);
     }
 
     public void custom (Component prefix, Component _message) {
         final String message = prefix(prefix, ComponentUtilities.stringifyAnsi(_message));
 
-        bot.console().reader().printAbove(message);
+        if (logToConsole) bot.console().reader().printAbove(message);
     }
 
     @Override
