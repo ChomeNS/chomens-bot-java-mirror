@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import land.chipmunk.chayapak.chomens_bot.util.HttpUtilities;
@@ -42,11 +43,13 @@ public class UrbanCommand implements Command {
     }
 
     public Component execute (CommandContext context, String[] args, String[] fullArgs) {
+        final Bot bot = context.bot();
+
         final String term = String.join(" ", args);
 
         final Gson gson = new Gson();
 
-        new Thread(() -> {
+        bot.executorService().execute(() -> {
             try {
                 final URL url = new URL(
                         "https://api.urbandictionary.com/v0/define?term=" +
@@ -79,7 +82,7 @@ public class UrbanCommand implements Command {
             } catch (Exception e) {
                 context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
             }
-        }).start();
+        });
 
         return null;
     }

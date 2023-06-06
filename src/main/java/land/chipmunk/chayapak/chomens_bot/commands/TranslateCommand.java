@@ -53,7 +53,7 @@ public class TranslateCommand implements Command {
 
         final Gson gson = new Gson();
 
-        new Thread(() -> {
+        bot.executorService().execute(() -> {
             try {
                 final URL url = new URL("https://translate.google.com/translate_a/single?client=at&dt=t&dt=rm&dj=1");
 
@@ -90,7 +90,7 @@ public class TranslateCommand implements Command {
             } catch (Exception e) {
                 context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
             }
-        }).start();
+        });
 
         return null;
     }

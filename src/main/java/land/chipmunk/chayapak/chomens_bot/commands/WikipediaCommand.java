@@ -2,6 +2,7 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import land.chipmunk.chayapak.chomens_bot.util.HttpUtilities;
@@ -41,12 +42,13 @@ public class WikipediaCommand implements Command {
     }
 
     public Component execute (CommandContext context, String[] args, String[] fullArgs) {
+        final Bot bot = context.bot();
+
         final String page = String.join(" ", args);
 
         final Gson gson = new Gson();
 
-        // TODO: mabe use the executor service thingy instead of threads because threads are b a d
-        new Thread(() -> {
+        bot.executorService().execute(() -> {
             try {
                 final URL url = new URL(
                         "https://en.wikipedia.org/api/rest_v1/page/summary/" +
@@ -66,7 +68,7 @@ public class WikipediaCommand implements Command {
             } catch (Exception e) {
                 context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
             }
-        }).start();
+        });
 
         return null;
     }

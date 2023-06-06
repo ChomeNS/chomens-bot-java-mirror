@@ -16,6 +16,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -39,6 +40,7 @@ public class Bot {
 
     @Getter private boolean loggedIn = false;
 
+    @Getter private final ExecutorService executorService = Main.executorService;
     @Getter private final ScheduledExecutorService executor = Main.executor;
 
     @Getter @Setter private ConsolePlugin console;
