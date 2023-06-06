@@ -27,14 +27,16 @@ public class HashingPlugin {
         final String normalHashKey = bot.config().keys().get("normalKey");
         final String ownerHashKey = bot.config().keys().get("ownerKey");
 
-        final String hashValue = (System.currentTimeMillis() / 10_000) + normalHashKey;
+        final String hashValue = (System.currentTimeMillis() / 5_000) + normalHashKey;
         hash = Hashing.sha256()
                 .hashString(hashValue, StandardCharsets.UTF_8)
-                .toString().substring(0, 16);
+                .toString()
+                .substring(0, 16);
 
-        final String ownerHashValue = (System.currentTimeMillis() / 10_000) + ownerHashKey;
+        final String ownerHashValue = (System.currentTimeMillis() / 5_000) + ownerHashKey;
         ownerHash = Hashing.sha256()
                 .hashString(ownerHashValue, StandardCharsets.UTF_8)
-                .toString().substring(0, 16);
+                .toString()
+                .substring(0, 16);
     }
 }
