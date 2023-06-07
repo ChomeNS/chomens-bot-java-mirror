@@ -91,11 +91,14 @@ public class SelfCarePlugin extends Bot.Listener {
     public void check () {
         final Configuration.SelfCare selfCares = bot.config().selfCare();
 
+        // chat only
         if (selfCares.gamemode() && gamemode != GameMode.CREATIVE) bot.chat().send("/minecraft:gamemode creative @s[type=player]");
         else if (selfCares.op() && permissionLevel < 2) bot.chat().send("/minecraft:op @s[type=player]");
         else if (selfCares.cspy() && !cspy && bot.options().kaboom()) bot.chat().send("/commandspy:commandspy on");
         else if (selfCares.prefix().enabled() && !prefix && bot.options().kaboom()) bot.chat().send("/extras:prefix " + bot.config().selfCare().prefix().prefix());
         else if (selfCares.username() && !username && bot.options().kaboom()) bot.chat().send("/extras:username " + bot.username());
+
+        // core
         else if (selfCares.icu().enabled() && positionPacketsPerSecond > selfCares.icu().positionPacketsPerSecond()) bot.core().run("essentials:sudo * icu stop");
         else if (selfCares.vanish() && !vanish && !visibility && bot.options().hasEssentials()) {
             if (bot.options().useChat()) bot.chat().send("/essentials:vanish enable");
@@ -112,6 +115,8 @@ public class SelfCarePlugin extends Bot.Listener {
         else if (selfCares.mute() && muted && bot.options().hasEssentials()) {
             if (bot.options().useChat()) bot.chat().send("/essentials:mute " + bot.profile().getIdAsString());
             else bot.core().run("essentials:mute " + bot.profile().getIdAsString());
+
+            muted = false; // too lazy fix and probably the worst fix?
         }
     }
 
