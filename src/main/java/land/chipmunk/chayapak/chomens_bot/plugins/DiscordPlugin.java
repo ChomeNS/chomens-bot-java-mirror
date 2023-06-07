@@ -36,8 +36,6 @@ public class DiscordPlugin {
 
     public final String prefix;
 
-    private final Map<String, Boolean> alreadyAddedListeners = new HashMap<>();
-
     public DiscordPlugin (Configuration config, JDA jda) {
         final Configuration.Discord options = config.discord();
         this.prefix = options.prefix();
@@ -47,36 +45,11 @@ public class DiscordPlugin {
         if (jda == null) return;
 
         for (Bot bot : Main.bots) {
-            String channelId = servers.get(bot.host() + ":" + bot.port());
+            final String channelId = servers.get(bot.host() + ":" + bot.port());
 
             bot.addListener(new Bot.Listener() {
                 @Override
-                public void connecting() {
-                    sendMessageInstantly(
-                            String.format(
-                                    "Connecting to: `%s:%s`",
-                                    bot.host(),
-                                    bot.port()
-                            ),
-                            channelId
-                    );
-                }
-
-                @Override
-                public void connected (ConnectedEvent event) {
-                    boolean channelAlreadyAddedListeners = alreadyAddedListeners.getOrDefault(channelId, false);
-
-                    sendMessageInstantly(
-                            String.format(
-                                    "Successfully connected to: `%s:%s`",
-                                    bot.host(),
-                                    bot.port()
-                            ),
-                            channelId
-                    );
-
-                    if (channelAlreadyAddedListeners) return;
-
+                public void loadedPlugins() {
                     bot.tick().addListener(new TickPlugin.Listener() {
                         @Override
                         public void onTick() {
@@ -91,188 +64,30 @@ public class DiscordPlugin {
                             sendMessage(CodeBlockUtilities.escape(content.replace("\u001b[9", "\u001b[3")), channelId);
                         }
                     });
+                }
 
-                    jda.addEventListener(new ListenerAdapter() {
-                        @Override
-                        public void onMessageReceived(@NotNull MessageReceivedEvent event) {
-                            // TODO: IMPROVE this code because why make 172 lines just for a single discord message
-                            if (
-                                    !event.getChannel().getId().equals(channelId) ||
-                                            event.getAuthor().getId().equals(jda.getSelfUser().getId())
-                            ) return;
+                @Override
+                public void connecting() {
+                    sendMessageInstantly(
+                            String.format(
+                                    "Connecting to: `%s:%s`",
+                                    bot.host(),
+                                    bot.port()
+                            ),
+                            channelId
+                    );
+                }
 
-                            final Message _message = event.getMessage();
-                            final String message = _message.getContentRaw();
-
-                            if (message.startsWith(prefix)) {
-                                final DiscordCommandContext context = new DiscordCommandContext(bot, prefix, event, null, null);
-
-                                final Component output = bot.commandHandler().executeCommand(message.substring(prefix.length()), context, false, true, false, event);
-
-                                if (output != null) {
-                                    context.sendOutput(output);
-                                }
-
-                                return;
-                            }
-
-                            // ignore my very very ohio code,..,,.
-
-                            Component attachmentsComponent = Component.empty();
-                            if (_message.getAttachments().size() > 0) {
-                                attachmentsComponent = attachmentsComponent.append(Component.space());
-                                for (Message.Attachment attachment : _message.getAttachments()) {
-                                    attachmentsComponent = attachmentsComponent
-                                            .append(
-                                                    Component
-                                                            .text("[Attachment]")
-                                                            .clickEvent(ClickEvent.openUrl(attachment.getProxyUrl()))
-                                                            .color(NamedTextColor.GREEN)
-                                            )
-                                            .append(Component.space());
-                                }
-                            }
-
-                            Component embedsComponent = Component.empty();
-                            if (_message.getEmbeds().size() > 0) {
-                                if (_message.getAttachments().size() == 0) embedsComponent = embedsComponent.append(Component.space());
-                                for (MessageEmbed embed : _message.getEmbeds()) {
-                                    final Component hoverEvent = Component.translatable(
-                                            """
-                                                    Title: %s
-                                                    %s""",
-                                            embed.getTitle() == null ?
-                                                    Component.text("No title").color(NamedTextColor.GRAY) :
-                                                    Component.text(embed.getTitle()).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())),
-                                            embed.getDescription() == null ?
-                                                    Component.text("No description").color(NamedTextColor.GRAY) :
-                                                    Component.text(embed.getDescription()).color(NamedTextColor.WHITE)
-                                    ).color(NamedTextColor.GREEN);
-
-                                    embedsComponent = embedsComponent
-                                            .append(
-                                                Component
-                                                        .text("[Embed]")
-                                                        .hoverEvent(HoverEvent.showText(hoverEvent))
-                                                        .color(NamedTextColor.GREEN)
-                                            )
-                                            .append(Component.space());
-                                }
-                            }
-
-                            final Member member = event.getMember();
-                            final String tag = member == null ? "0000" : member.getUser().getDiscriminator();
-
-                            String name = member == null ? null : member.getNickname();
-                            final String fallbackName = event.getAuthor().getName();
-                            if (name == null) name = fallbackName;
-
-                            final List<Role> roles = member == null ? Collections.emptyList() : member.getRoles();
-
-                            Component rolesComponent = Component.empty();
-                            if (roles.size() > 0) {
-                                rolesComponent = rolesComponent
-                                        .append(Component.text("Roles:").color(NamedTextColor.GRAY))
-                                        .append(Component.newline());
-
-                                final List<Component> rolesList = new ArrayList<>();
-
-                                for (Role role : roles) {
-                                    final Color color = role.getColor();
-
-                                    rolesList.add(
-                                            Component
-                                                    .text(role.getName())
-                                                    .color(
-                                                            color == null ?
-                                                                    NamedTextColor.WHITE :
-                                                                    TextColor.color(
-                                                                            color.getRed(),
-                                                                            color.getGreen(),
-                                                                            color.getBlue()
-                                                                    )
-                                                    )
-                                    );
-                                }
-
-                                rolesComponent = rolesComponent.append(Component.join(JoinConfiguration.newlines(), rolesList));
-                            } else {
-                                rolesComponent = rolesComponent.append(Component.text("No roles").color(NamedTextColor.GRAY));
-                            }
-
-                            Component nameComponent = Component
-                                    .text(name)
-                                    .clickEvent(ClickEvent.copyToClipboard(fallbackName + "#" + tag))
-                                    .hoverEvent(
-                                            HoverEvent.showText(
-                                                    Component.translatable(
-                                                            """
-                                                                    %s#%s
-                                                                    %s
-                                                                    
-                                                                    %s""",
-                                                            Component.text(fallbackName).color(NamedTextColor.WHITE),
-                                                            Component.text(tag).color(NamedTextColor.GRAY),
-                                                            rolesComponent,
-                                                            Component.text("Click here to copy the tag to your clipboard").color(NamedTextColor.GREEN)
-                                                    ).color(NamedTextColor.DARK_GRAY)
-                                            )
-                                    );
-
-                            // too ohio
-                            for (Role role : roles) {
-                                final Color color = role.getColor();
-
-                                if (color == null) continue;
-
-                                nameComponent = nameComponent.color(
-                                        TextColor.color(
-                                                color.getRed(),
-                                                color.getGreen(),
-                                                color.getBlue()
-                                        )
-                                );
-
-                                break;
-                            }
-
-                            if (nameComponent.color() == null) nameComponent = nameComponent.color(NamedTextColor.RED);
-
-                            final String discordUrl = config.discord().inviteLink();
-
-                            final Component discordComponent = Component.empty()
-                                    .append(Component.text("ChomeNS ").color(NamedTextColor.YELLOW))
-                                    .append(Component.text("Discord").color(NamedTextColor.BLUE))
-                                    .hoverEvent(
-                                            HoverEvent.showText(
-                                                    Component.text("Click here to join the Discord server").color(NamedTextColor.GREEN)
-                                            )
-                                    )
-                                    .clickEvent(ClickEvent.openUrl(discordUrl));
-
-                            final Component deserialized = LegacyComponentSerializer.legacyAmpersand().deserialize(message.replace("\uD83D\uDC80", "☠"));
-
-                            final Component messageComponent = Component
-                                    .text("")
-                                    .color(NamedTextColor.GRAY)
-                                    .append(
-                                            deserialized
-                                                    .append(attachmentsComponent)
-                                                    .append(embedsComponent)
-                                    );
-
-                            final Component component = Component.translatable(
-                                    "[%s] %s › %s",
-                                    discordComponent,
-                                    nameComponent,
-                                    messageComponent
-                            ).color(NamedTextColor.DARK_GRAY);
-
-                            bot.chat().tellraw(component);
-                        }
-                    });
-
-                    alreadyAddedListeners.put(channelId, true);
+                @Override
+                public void connected (ConnectedEvent event) {
+                    sendMessageInstantly(
+                            String.format(
+                                    "Successfully connected to: `%s:%s`",
+                                    bot.host(),
+                                    bot.port()
+                            ),
+                            channelId
+                    );
                 }
 
                 @Override
@@ -285,6 +100,187 @@ public class DiscordPlugin {
                                     "\n```"
                             , channelId
                     );
+                }
+            });
+
+            jda.addEventListener(new ListenerAdapter() {
+                @Override
+                public void onMessageReceived(@NotNull MessageReceivedEvent event) {
+                    // TODO: IMPROVE this code because why make 172 lines just for a single discord message
+                    if (
+                            !event.getChannel().getId().equals(channelId) ||
+                                    event.getAuthor().getId().equals(jda.getSelfUser().getId()) ||
+                                    !bot.loggedIn()
+                    ) return;
+
+                    final Message _message = event.getMessage();
+                    final String message = _message.getContentRaw();
+
+                    if (message.startsWith(prefix)) {
+                        final DiscordCommandContext context = new DiscordCommandContext(bot, prefix, event, null, null);
+
+                        final Component output = bot.commandHandler().executeCommand(message.substring(prefix.length()), context, false, true, false, event);
+
+                        if (output != null) {
+                            context.sendOutput(output);
+                        }
+
+                        return;
+                    }
+
+                    // ignore my very very ohio code,..,,.
+
+                    Component attachmentsComponent = Component.empty();
+                    if (_message.getAttachments().size() > 0) {
+                        attachmentsComponent = attachmentsComponent.append(Component.space());
+                        for (Message.Attachment attachment : _message.getAttachments()) {
+                            attachmentsComponent = attachmentsComponent
+                                    .append(
+                                            Component
+                                                    .text("[Attachment]")
+                                                    .clickEvent(ClickEvent.openUrl(attachment.getProxyUrl()))
+                                                    .color(NamedTextColor.GREEN)
+                                    )
+                                    .append(Component.space());
+                        }
+                    }
+
+                    Component embedsComponent = Component.empty();
+                    if (_message.getEmbeds().size() > 0) {
+                        if (_message.getAttachments().size() == 0) embedsComponent = embedsComponent.append(Component.space());
+                        for (MessageEmbed embed : _message.getEmbeds()) {
+                            final Component hoverEvent = Component.translatable(
+                                    """
+                                            Title: %s
+                                            %s""",
+                                    embed.getTitle() == null ?
+                                            Component.text("No title").color(NamedTextColor.GRAY) :
+                                            Component.text(embed.getTitle()).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())),
+                                    embed.getDescription() == null ?
+                                            Component.text("No description").color(NamedTextColor.GRAY) :
+                                            Component.text(embed.getDescription()).color(NamedTextColor.WHITE)
+                            ).color(NamedTextColor.GREEN);
+
+                            embedsComponent = embedsComponent
+                                    .append(
+                                            Component
+                                                    .text("[Embed]")
+                                                    .hoverEvent(HoverEvent.showText(hoverEvent))
+                                                    .color(NamedTextColor.GREEN)
+                                    )
+                                    .append(Component.space());
+                        }
+                    }
+
+                    final Member member = event.getMember();
+                    final String tag = member == null ? "0000" : member.getUser().getDiscriminator();
+
+                    String name = member == null ? null : member.getNickname();
+                    final String fallbackName = event.getAuthor().getName();
+                    if (name == null) name = fallbackName;
+
+                    final List<Role> roles = member == null ? Collections.emptyList() : member.getRoles();
+
+                    Component rolesComponent = Component.empty();
+                    if (roles.size() > 0) {
+                        rolesComponent = rolesComponent
+                                .append(Component.text("Roles:").color(NamedTextColor.GRAY))
+                                .append(Component.newline());
+
+                        final List<Component> rolesList = new ArrayList<>();
+
+                        for (Role role : roles) {
+                            final Color color = role.getColor();
+
+                            rolesList.add(
+                                    Component
+                                            .text(role.getName())
+                                            .color(
+                                                    color == null ?
+                                                            NamedTextColor.WHITE :
+                                                            TextColor.color(
+                                                                    color.getRed(),
+                                                                    color.getGreen(),
+                                                                    color.getBlue()
+                                                            )
+                                            )
+                            );
+                        }
+
+                        rolesComponent = rolesComponent.append(Component.join(JoinConfiguration.newlines(), rolesList));
+                    } else {
+                        rolesComponent = rolesComponent.append(Component.text("No roles").color(NamedTextColor.GRAY));
+                    }
+
+                    Component nameComponent = Component
+                            .text(name)
+                            .clickEvent(ClickEvent.copyToClipboard(fallbackName + "#" + tag))
+                            .hoverEvent(
+                                    HoverEvent.showText(
+                                            Component.translatable(
+                                                    """
+                                                            %s#%s
+                                                            %s
+                                                            
+                                                            %s""",
+                                                    Component.text(fallbackName).color(NamedTextColor.WHITE),
+                                                    Component.text(tag).color(NamedTextColor.GRAY),
+                                                    rolesComponent,
+                                                    Component.text("Click here to copy the tag to your clipboard").color(NamedTextColor.GREEN)
+                                            ).color(NamedTextColor.DARK_GRAY)
+                                    )
+                            );
+
+                    // too ohio
+                    for (Role role : roles) {
+                        final Color color = role.getColor();
+
+                        if (color == null) continue;
+
+                        nameComponent = nameComponent.color(
+                                TextColor.color(
+                                        color.getRed(),
+                                        color.getGreen(),
+                                        color.getBlue()
+                                )
+                        );
+
+                        break;
+                    }
+
+                    if (nameComponent.color() == null) nameComponent = nameComponent.color(NamedTextColor.RED);
+
+                    final String discordUrl = config.discord().inviteLink();
+
+                    final Component discordComponent = Component.empty()
+                            .append(Component.text("ChomeNS ").color(NamedTextColor.YELLOW))
+                            .append(Component.text("Discord").color(NamedTextColor.BLUE))
+                            .hoverEvent(
+                                    HoverEvent.showText(
+                                            Component.text("Click here to join the Discord server").color(NamedTextColor.GREEN)
+                                    )
+                            )
+                            .clickEvent(ClickEvent.openUrl(discordUrl));
+
+                    final Component deserialized = LegacyComponentSerializer.legacyAmpersand().deserialize(message.replace("\uD83D\uDC80", "☠"));
+
+                    final Component messageComponent = Component
+                            .text("")
+                            .color(NamedTextColor.GRAY)
+                            .append(
+                                    deserialized
+                                            .append(attachmentsComponent)
+                                            .append(embedsComponent)
+                            );
+
+                    final Component component = Component.translatable(
+                            "[%s] %s › %s",
+                            discordComponent,
+                            nameComponent,
+                            messageComponent
+                    ).color(NamedTextColor.DARK_GRAY);
+
+                    bot.chat().tellraw(component);
                 }
             });
 
@@ -331,7 +327,7 @@ public class DiscordPlugin {
         long currentTime = System.currentTimeMillis();
         if (!nextLogTimes.containsKey(channelId) || (currentTime >= nextLogTimes.get(channelId) && doneSendingInLogs.get(channelId))
                 || currentTime - nextLogTimes.get(channelId) > 5000) {
-            long logDelay = 2000; // mabe don't hardcode this
+            long logDelay = 2000;
 
             nextLogTimes.put(channelId, currentTime + logDelay);
             String message;

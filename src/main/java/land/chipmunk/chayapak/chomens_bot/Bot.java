@@ -116,6 +116,8 @@ public class Bot {
         this.commandSuggestion = new CommandSuggestionPlugin(this);
         this.mail = new MailPlugin(this);
 
+        for (Listener listener : listeners) listener.loadedPlugins();
+
         reconnect();
     }
 
@@ -216,5 +218,6 @@ public class Bot {
 
     public static class Listener extends SessionAdapter {
         public void connecting () {}
+        public void loadedPlugins () {}
     }
 }
