@@ -28,7 +28,7 @@ public class Instrument {
     this.id = id;
     this.name = name;
     this.offset = offset;
-    this.sound = name;
+    this.sound = sound;
   }
 
   private Instrument (int id, String name, int offset) {

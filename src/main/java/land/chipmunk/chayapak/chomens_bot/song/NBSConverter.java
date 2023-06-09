@@ -163,10 +163,12 @@ public class NBSConverter {
         instrument = instrumentIndex[note.instrument];
       } else {
         int index = note.instrument - instrumentIndex.length;
+
         if (index >= customInstruments.size()) continue;
+
         NBSCustomInstrument customInstrument = customInstruments.get(index);
         instrument = Instrument.of(customInstrument.name);
-        // key += customInstrument.pitch;
+        key += customInstrument.pitch;
       }
 
       // if (key < 30 || key > 60) continue;
