@@ -49,7 +49,7 @@ public class UrbanCommand implements Command {
 
         final Gson gson = new Gson();
 
-        bot.executorService().execute(() -> {
+        bot.executorService().submit(() -> {
             try {
                 final URL url = new URL(
                         "https://api.urbandictionary.com/v0/define?term=" +

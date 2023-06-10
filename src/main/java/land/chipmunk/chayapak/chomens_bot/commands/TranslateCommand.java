@@ -53,7 +53,7 @@ public class TranslateCommand implements Command {
 
         final Gson gson = new Gson();
 
-        bot.executorService().execute(() -> {
+        bot.executorService().submit(() -> {
             try {
                 final URL url = new URL("https://translate.google.com/translate_a/single?client=at&dt=t&dt=rm&dj=1");
 
