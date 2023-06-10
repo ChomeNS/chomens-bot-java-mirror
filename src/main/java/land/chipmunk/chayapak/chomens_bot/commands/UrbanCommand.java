@@ -9,7 +9,10 @@ import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import land.chipmunk.chayapak.chomens_bot.util.HttpUtilities;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextDecoration;
 
 import java.net.URL;
 import java.net.URLEncoder;
@@ -68,18 +71,52 @@ public class UrbanCommand implements Command {
                     final JsonObject definitionObject = element.getAsJsonObject();
 
                     final String word = definitionObject.get("word").getAsString();
-                    final String definition = definitionObject.get("definition").getAsString();
+                    final String _definition = definitionObject.get("definition").getAsString();
+
+                    // whats the best way to implement this?
+                    // also ohio code warning
+                    Component definitionComponent = Component.empty();
+
+                    final String[] splittedDefinition = _definition.replaceAll("\r\n?", "\n").split("[\\[\\]]");
+                    for (int i = 0; i < splittedDefinition.length; i++) {
+                        final boolean even = i % 2 == 0;
+
+                        if (even) {
+                            definitionComponent = definitionComponent.append(
+                                    Component
+                                            .text(splittedDefinition[i])
+                                            .color(NamedTextColor.GRAY)
+                            );
+                        } else {
+                            definitionComponent = definitionComponent.append(
+                                    Component
+                                            .text(splittedDefinition[i])
+                                            .style(Style.style(TextDecoration.UNDERLINED))
+                                            .clickEvent(
+                                                    ClickEvent
+                                                            .suggestCommand(
+                                                                    context.prefix() +
+                                                                            name() +
+                                                                            " " +
+                                                                            splittedDefinition[i]
+                                                            )
+                                            )
+                                            .color(NamedTextColor.AQUA)
+                            );
+                        }
+                    }
 
                     final Component component = Component.translatable(
                             "[%s] %s - %s",
                             Component.text("Urban").color(NamedTextColor.RED),
                             Component.text(word).color(NamedTextColor.GRAY),
-                            Component.text(definition).color(NamedTextColor.GRAY)
+                            definitionComponent
                     ).color(NamedTextColor.DARK_GRAY);
 
                     context.sendOutput(component);
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
             }
         });
