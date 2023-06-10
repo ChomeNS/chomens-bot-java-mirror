@@ -291,7 +291,9 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
             float key = note.pitch;
 
-            final double floatingPitch = 0.5 * (Math.pow(2, ((key + (pitch / 10)) / 12)));
+            // totally didn't look at the minecraft code and found the note block pitch thingy so i totallydidnotskidded™ it
+            final double floatingPitch = Math.pow(2.0, ((key + (pitch / 10)) - 12) / 12.0);
+            // final double floatingPitch = 0.5 * (Math.pow(2, ((key + (pitch / 10)) / 12)));
 
             // totallynotskidded from opennbs
             int blockPosition = 0;
