@@ -14,7 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 public class Team {
     @Getter @Setter private String teamName;
-    @Getter private List<String> players;
     @Getter @Setter private Component displayName;
     @Getter @Setter private boolean friendlyFire;
     @Getter @Setter private boolean seeFriendlyInvisibles;

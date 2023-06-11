@@ -7,11 +7,12 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.Team;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TeamPlugin extends Bot.Listener {
-    @Getter private final List<Team> teams = new ArrayList<>();
+    @Getter private final Map<String, Team> teams = new HashMap<>();
+    @Getter private final Map<String, Team> teamsByPlayer = new HashMap<>();
 
     public TeamPlugin (Bot bot) {
         bot.addListener(this);
@@ -23,62 +24,58 @@ public class TeamPlugin extends Bot.Listener {
     }
 
     public void packetReceived(ClientboundSetPlayerTeamPacket packet) {
-        switch (packet.getAction()) {
-            case CREATE -> {
-                final Team team = new Team(
-                        packet.getTeamName(),
-                        List.of(packet.getPlayers()),
-                        packet.getDisplayName(),
-                        packet.isFriendlyFire(),
-                        packet.isSeeFriendlyInvisibles(),
-                        packet.getNameTagVisibility(),
-                        packet.getCollisionRule(),
-                        packet.getColor(),
-                        packet.getPrefix(),
-                        packet.getSuffix()
-                );
+        try {
+            switch (packet.getAction()) {
+                case CREATE -> {
+                    final Team team = new Team(
+                            packet.getTeamName(),
+                            packet.getDisplayName(),
+                            packet.isFriendlyFire(),
+                            packet.isSeeFriendlyInvisibles(),
+                            packet.getNameTagVisibility(),
+                            packet.getCollisionRule(),
+                            packet.getColor(),
+                            packet.getPrefix(),
+                            packet.getSuffix()
+                    );
 
-                teams.add(team);
+                    teams.put(packet.getTeamName(), team);
+                }
+                case REMOVE -> teams.remove(packet.getTeamName());
+                case UPDATE -> {
+                    final Team team = teams.get(packet.getTeamName());
+
+                    if (team == null) return;
+
+                    team.teamName(packet.getTeamName());
+                    team.displayName(packet.getDisplayName());
+                    team.friendlyFire(packet.isFriendlyFire());
+                    team.seeFriendlyInvisibles(packet.isSeeFriendlyInvisibles());
+                    team.nametagVisibility(packet.getNameTagVisibility());
+                    team.collisionRule(packet.getCollisionRule());
+                    team.color(packet.getColor());
+                    team.prefix(packet.getPrefix());
+                    team.suffix(packet.getSuffix());
+                }
+                case ADD_PLAYER -> {
+                    final Team team = teams.get(packet.getTeamName());
+
+                    if (team == null) return;
+
+                    for (String player : packet.getPlayers()) teamsByPlayer.put(player, team);
+                }
+                case REMOVE_PLAYER -> {
+                    final Team team = teams.get(packet.getTeamName());
+
+                    if (team == null) return;
+
+                    for (String player : packet.getPlayers()) teamsByPlayer.remove(player);
+                }
             }
-            case REMOVE -> teams.removeIf(team -> team.teamName().equals(packet.getTeamName()));
-            case UPDATE -> {
-                final Team team = teams
-                        .stream()
-                        .filter(eachTeam -> eachTeam.teamName().equals(packet.getTeamName()))
-                        .toArray(Team[]::new)[0];
+        } catch (Exception e) { e.printStackTrace(); }
+    }
 
-                if (team == null) return;
-
-                team.teamName(packet.getTeamName());
-                team.displayName(packet.getDisplayName());
-                team.friendlyFire(packet.isFriendlyFire());
-                team.seeFriendlyInvisibles(packet.isSeeFriendlyInvisibles());
-                team.nametagVisibility(packet.getNameTagVisibility());
-                team.collisionRule(packet.getCollisionRule());
-                team.color(packet.getColor());
-                team.prefix(packet.getPrefix());
-                team.suffix(packet.getSuffix());
-            }
-            case ADD_PLAYER -> {
-                final Team team = teams
-                        .stream()
-                        .filter(eachTeam -> eachTeam.teamName().equals(packet.getTeamName()))
-                        .toArray(Team[]::new)[0];
-
-                if (team == null) return;
-
-                team.players().addAll(List.of(packet.getPlayers()));
-            }
-            case REMOVE_PLAYER -> {
-                final Team team = teams
-                        .stream()
-                        .filter(eachTeam -> eachTeam.teamName().equals(packet.getTeamName()))
-                        .toArray(Team[]::new)[0];
-
-                if (team == null) return;
-
-                team.players().removeAll(List.of(packet.getPlayers()));
-            }
-        }
+    public Team getTeamByUsername (String username) {
+        return teamsByPlayer.get(username);
     }
 }
