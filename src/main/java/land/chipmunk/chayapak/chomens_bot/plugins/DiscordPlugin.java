@@ -106,15 +106,15 @@ public class DiscordPlugin {
             jda.addEventListener(new ListenerAdapter() {
                 @Override
                 public void onMessageReceived(@NotNull MessageReceivedEvent event) {
-                    // TODO: IMPROVE this code because why make 172 lines just for a single discord message
+                    // TODO: IMPROVE this code because why make 174 lines just for a fucking single discord message
                     if (
                             !event.getChannel().getId().equals(channelId) ||
                                     event.getAuthor().getId().equals(jda.getSelfUser().getId()) ||
                                     !bot.loggedIn()
                     ) return;
 
-                    final Message _message = event.getMessage();
-                    final String message = _message.getContentRaw();
+                    final Message messageEvent = event.getMessage();
+                    final String message = messageEvent.getContentRaw();
 
                     if (message.startsWith(prefix)) {
                         final DiscordCommandContext context = new DiscordCommandContext(bot, prefix, event, null, null);
@@ -131,9 +131,9 @@ public class DiscordPlugin {
                     // ignore my very very ohio code,..,,.
 
                     Component attachmentsComponent = Component.empty();
-                    if (_message.getAttachments().size() > 0) {
+                    if (messageEvent.getAttachments().size() > 0) {
                         attachmentsComponent = attachmentsComponent.append(Component.space());
-                        for (Message.Attachment attachment : _message.getAttachments()) {
+                        for (Message.Attachment attachment : messageEvent.getAttachments()) {
                             attachmentsComponent = attachmentsComponent
                                     .append(
                                             Component
@@ -146,9 +146,9 @@ public class DiscordPlugin {
                     }
 
                     Component embedsComponent = Component.empty();
-                    if (_message.getEmbeds().size() > 0) {
-                        if (_message.getAttachments().size() == 0) embedsComponent = embedsComponent.append(Component.space());
-                        for (MessageEmbed embed : _message.getEmbeds()) {
+                    if (messageEvent.getEmbeds().size() > 0) {
+                        if (messageEvent.getAttachments().size() == 0) embedsComponent = embedsComponent.append(Component.space());
+                        for (MessageEmbed embed : messageEvent.getEmbeds()) {
                             final Component hoverEvent = Component.translatable(
                                     """
                                             Title: %s
