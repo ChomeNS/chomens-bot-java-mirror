@@ -52,6 +52,7 @@ public class Bot {
     @Getter private PositionPlugin position;
     @Getter private SelfCarePlugin selfCare;
     @Getter private CorePlugin core;
+    @Getter private TeamPlugin team;
     @Getter private PlayersPlugin players;
     @Getter private TabCompletePlugin tabComplete;
     @Getter private CommandHandlerPlugin commandHandler;
@@ -97,6 +98,7 @@ public class Bot {
         this.position = new PositionPlugin(this);
         this.selfCare = new SelfCarePlugin(this);
         this.core = new CorePlugin(this);
+        this.team = new TeamPlugin(this);
         this.players = new PlayersPlugin(this);
         this.tabComplete = new TabCompletePlugin(this);
         this.commandHandler = new CommandHandlerPlugin(this);
