@@ -1,5 +1,6 @@
 package land.chipmunk.chayapak.chomens_bot.commands;
 
+import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
@@ -34,8 +35,8 @@ public class UUIDCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 0;
+    public TrustLevel trustLevel() {
+        return TrustLevel.PUBLIC;
     }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {

@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
@@ -36,8 +37,8 @@ public class HelpCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 0;
+    public TrustLevel trustLevel() {
+        return TrustLevel.PUBLIC;
     }
 
     private Bot bot;
@@ -56,9 +57,9 @@ public class HelpCommand implements Command {
 
     public Component sendCommandList () {
         final List<Component> list = new ArrayList<>();
-        list.addAll(getCommandListByTrustLevel(0));
-        list.addAll(getCommandListByTrustLevel(1));
-        list.addAll(getCommandListByTrustLevel(2));
+        list.addAll(getCommandListByTrustLevel(TrustLevel.PUBLIC));
+        list.addAll(getCommandListByTrustLevel(TrustLevel.TRUSTED));
+        list.addAll(getCommandListByTrustLevel(TrustLevel.ADMIN));
 
         return Component.empty()
                         .append(Component.text("Commands ").color(NamedTextColor.GRAY))
@@ -74,7 +75,7 @@ public class HelpCommand implements Command {
                         .append(Component.join(JoinConfiguration.separator(Component.space()), list));
     }
 
-    public List<Component> getCommandListByTrustLevel(int trustLevel) {
+    public List<Component> getCommandListByTrustLevel(TrustLevel trustLevel) {
         final List<Component> list = new ArrayList<>();
 
         List<String> commandNames = new ArrayList<>();
@@ -103,12 +104,11 @@ public class HelpCommand implements Command {
         return list;
     }
 
-    public NamedTextColor getColorByTrustLevel (int trustLevel) {
+    public NamedTextColor getColorByTrustLevel (TrustLevel trustLevel) {
         return switch (trustLevel) {
-            case 0 -> NamedTextColor.GREEN;
-            case 1 -> NamedTextColor.RED;
-            case 2 -> NamedTextColor.DARK_RED;
-            default -> NamedTextColor.WHITE; // hm?
+            case PUBLIC -> NamedTextColor.GREEN;
+            case TRUSTED -> NamedTextColor.RED;
+            case ADMIN -> NamedTextColor.DARK_RED;
         };
     }
 
@@ -137,7 +137,7 @@ public class HelpCommand implements Command {
             usages.add(
                     Component.empty()
                             .append(Component.text("Trust level: ").color(NamedTextColor.GREEN))
-                            .append(Component.text(command.trustLevel()).color(NamedTextColor.YELLOW))
+                            .append(Component.text(command.trustLevel().name()).color(NamedTextColor.YELLOW))
             );
 
             for (String usage : command.usage()) {

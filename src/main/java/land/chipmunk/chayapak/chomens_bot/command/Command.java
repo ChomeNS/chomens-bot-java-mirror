@@ -9,7 +9,7 @@ public interface Command {
     String description();
     List<String> usage();
     List<String> alias();
-    int trustLevel();
+    TrustLevel trustLevel();
 
     Component execute(CommandContext context, String[] args, String[] fullArgs) throws Exception;
 }

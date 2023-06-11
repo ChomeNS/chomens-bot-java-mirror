@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.data.CommandLoop;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
@@ -37,8 +38,8 @@ public class CloopCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 1;
+    public TrustLevel trustLevel() {
+        return TrustLevel.TRUSTED;
     }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {

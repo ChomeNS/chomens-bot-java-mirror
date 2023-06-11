@@ -5,6 +5,7 @@ import com.github.steveice10.opennbt.tag.builtin.StringTag;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.data.Mail;
 import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.plugins.MailPlugin;
@@ -49,8 +50,8 @@ public class MailCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 0;
+    public TrustLevel trustLevel() {
+        return TrustLevel.PUBLIC;
     }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {

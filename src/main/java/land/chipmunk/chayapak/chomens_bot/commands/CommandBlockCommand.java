@@ -5,6 +5,7 @@ import com.github.steveice10.opennbt.tag.builtin.StringTag;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -37,8 +38,8 @@ public class CommandBlockCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 0;
+    public TrustLevel trustLevel() {
+        return TrustLevel.PUBLIC;
     }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) throws ExecutionException, InterruptedException {

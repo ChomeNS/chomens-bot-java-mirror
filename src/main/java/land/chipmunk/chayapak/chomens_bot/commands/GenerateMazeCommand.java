@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.util.MazeGenerator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -32,8 +33,8 @@ public class GenerateMazeCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 0;
+    public TrustLevel trustLevel() {
+        return TrustLevel.PUBLIC;
     }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {

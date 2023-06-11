@@ -2,6 +2,7 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -29,8 +30,8 @@ public class ValidateCommand implements Command {
         return aliases;
     }
 
-    public int trustLevel() {
-        return 1;
+    public TrustLevel trustLevel() {
+        return TrustLevel.TRUSTED;
     }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {

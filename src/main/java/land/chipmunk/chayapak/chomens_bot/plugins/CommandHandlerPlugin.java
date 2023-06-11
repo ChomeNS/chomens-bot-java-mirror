@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.commands.*;
 import land.chipmunk.chayapak.chomens_bot.util.ExceptionUtilities;
 import lombok.Getter;
@@ -93,7 +94,7 @@ public class CommandHandlerPlugin {
         if (command == null && !inGame) return Component.text("Unknown command: " + commandName).color(NamedTextColor.RED);
         else if (command == null) return null;
 
-        final int trustLevel = command.trustLevel();
+        final TrustLevel trustLevel = command.trustLevel();
 
         final String[] fullArgs = Arrays.copyOfRange(splitInput, 1, splitInput.length);
 
@@ -108,14 +109,14 @@ public class CommandHandlerPlugin {
         if (fullArgs.length < minimumArgs) return Component.text("Excepted minimum of " + minimumArgs + " argument(s), got " + fullArgs.length).color(NamedTextColor.RED);
         if (fullArgs.length > maximumArgs && !longestUsage.contains("{")) return Component.text("Too much arguments, expected " + maximumArgs + " max").color(NamedTextColor.RED);
 
-        if (trustLevel > 0 && splitInput.length < 2 && inGame) return Component.text("Please provide a hash").color(NamedTextColor.RED);
+        if (trustLevel != TrustLevel.PUBLIC && splitInput.length < 2 && inGame) return Component.text("Please provide a hash").color(NamedTextColor.RED);
 
         String userHash = "";
-        if (trustLevel > 0 && inGame) userHash = splitInput[1];
+        if (trustLevel != TrustLevel.PUBLIC && inGame) userHash = splitInput[1];
 
-        final String[] args = Arrays.copyOfRange(splitInput, (trustLevel > 0 && inGame) ? 2 : 1, splitInput.length);
+        final String[] args = Arrays.copyOfRange(splitInput, (trustLevel != TrustLevel.PUBLIC && inGame) ? 2 : 1, splitInput.length);
 
-        if (command.trustLevel() > 0 && !console) {
+        if (command.trustLevel() != TrustLevel.PUBLIC && !console) {
             if (discord) {
                 final List<Role> roles = event.getMember().getRoles();
 
@@ -123,24 +124,24 @@ public class CommandHandlerPlugin {
                 final String adminRoleName = bot.config().discord().adminRoleName();
 
                 if (
-                        command.trustLevel() == 1 &&
+                        command.trustLevel() == TrustLevel.TRUSTED &&
                                 roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase(trustedRoleName)) &&
                                 roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase(adminRoleName))
                 ) return Component.text("You're not in the trusted role!").color(NamedTextColor.RED);
 
                 if (
-                        command.trustLevel() == 2 &&
+                        command.trustLevel() == TrustLevel.ADMIN &&
                                 roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase(adminRoleName))
                 ) return Component.text("You're not in the admin role!").color(NamedTextColor.RED);
             } else {
                 if (
-                        command.trustLevel() == 1 &&
+                        command.trustLevel() == TrustLevel.TRUSTED &&
                                 !userHash.equals(bot.hashing().hash()) &&
                                 !userHash.equals(bot.hashing().ownerHash())
                 ) return Component.text("Invalid hash").color(NamedTextColor.RED);
 
                 if (
-                        command.trustLevel() == 2 &&
+                        command.trustLevel() == TrustLevel.ADMIN &&
                                 !userHash.equals(bot.hashing().ownerHash())
                 ) return Component.text("Invalid OwnerHash").color(NamedTextColor.RED);
             }
@@ -210,7 +211,7 @@ public class CommandHandlerPlugin {
         return shortestIndex;
     }
 
-    private int getMinimumArgs(String usage, boolean inGame, int trustLevel) {
+    private int getMinimumArgs(String usage, boolean inGame, TrustLevel trustLevel) {
         int count = 0;
         for (int i = 0; i < usage.length(); i++) {
             if (usage.charAt(i) == '<') {
@@ -218,18 +219,18 @@ public class CommandHandlerPlugin {
             }
         }
         if (usage.contains("<hash>")) count--; // bad fix?
-        if ((!inGame && trustLevel > 0)) count--;
+        if ((!inGame && trustLevel != TrustLevel.PUBLIC)) count--;
         return count;
     }
 
-    private int getMaximumArgs(String usage, boolean inGame, int trustLevel) {
+    private int getMaximumArgs(String usage, boolean inGame, TrustLevel trustLevel) {
         int count = 0;
         for (int i = 0; i < usage.length(); i++) {
             if (usage.charAt(i) == '<' || usage.charAt(i) == '[') {
                 count++;
             }
         }
-        if (!inGame && trustLevel > 0) count++;
+        if (!inGame && trustLevel != TrustLevel.PUBLIC) count++;
         return count;
     }
 }
