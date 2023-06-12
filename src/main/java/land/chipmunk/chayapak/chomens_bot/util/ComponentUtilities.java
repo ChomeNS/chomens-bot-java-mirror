@@ -162,7 +162,19 @@ public class ComponentUtilities {
             return "§" + code;
         } else if (ansi) {
             String ansiCode = ansiMap.get(code);
-            if (ansiCode == null) ansiCode = "\u001b[38;2;" + color.red() + ";" + color.green() + ";" + color.blue() + "m";
+            if (ansiCode == null) {
+                // will using string builders use less memory or does nothing?
+                final StringBuilder builder = new StringBuilder();
+                builder.append("\u001b[38;2;");
+                builder.append(color.red());
+                builder.append(";");
+                builder.append(color.green());
+                builder.append(";");
+                builder.append(color.blue());
+                builder.append("m");
+
+                ansiCode = builder.toString();
+            }
 
             return ansiCode;
         } else return null;

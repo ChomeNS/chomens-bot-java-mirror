@@ -14,7 +14,7 @@ public class Configuration {
 
     @Getter public Map<String, String> consolePrefixes;
 
-    @Getter public Map<String, String> keys;
+    @Getter public Keys keys = new Keys();
 
     @Getter public String weatherApiKey;
 
@@ -28,6 +28,11 @@ public class Configuration {
     @Getter public List<String> trusted = new ArrayList<>();
     @Getter public SelfCare selfCare = new SelfCare();
     @Getter public BotOption[] bots = new BotOption[]{};
+
+    public static class Keys {
+        @Getter public String normalKey;
+        @Getter public String ownerKey;
+    }
 
     public static class Core {
         @Getter public Position start = new Position();
