@@ -1,8 +1,7 @@
 package land.chipmunk.chayapak.chomens_bot.song;
 
-import net.kyori.adventure.text.Component;
 import lombok.Getter;
-import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
+import net.kyori.adventure.text.Component;
 
 // Author: _ChipMC_ or hhhzzzsss?
 public class SongLoaderException extends Exception {
@@ -16,10 +15,5 @@ public class SongLoaderException extends Exception {
   public SongLoaderException (Component message, Throwable cause) {
     super(null, cause);
     this.message = message;
-  }
-
-  @Override
-  public String getMessage () {
-    return ComponentUtilities.stringify(message);
   }
 }

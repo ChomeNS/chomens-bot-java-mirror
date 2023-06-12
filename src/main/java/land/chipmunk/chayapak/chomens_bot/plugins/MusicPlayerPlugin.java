@@ -34,7 +34,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
     @Getter @Setter private Song currentSong;
     @Getter @Setter private List<Song> songQueue = new ArrayList<>();
-    @Getter @Setter private SongLoaderThread loaderThread;
+    @Getter @Setter private SongLoaderRunnable loaderThread;
     @Getter @Setter private Loop loop = Loop.OFF;
 
     // sus nightcore stuff,..,.,.
@@ -54,13 +54,9 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     public void loadSong (Path location) {
-        if (loaderThread != null) {
-            bot.chat().tellraw(Component.translatable("Already loading a song", NamedTextColor.RED));
-            return;
-        }
-
         try {
-            final SongLoaderThread _loaderThread = new SongLoaderThread(location, bot);
+            final SongLoaderRunnable runnable = new SongLoaderRunnable(location, bot);
+
             bot.chat().tellraw(
                     Component
                             .translatable(
@@ -69,8 +65,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
                             )
                             .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
             );
-            _loaderThread.start();
-            loaderThread = _loaderThread;
+
+            bot.executorService().submit(runnable);
         } catch (SongLoaderException e) {
             e.printStackTrace();
             bot.chat().tellraw(Component.translatable("Failed to load song: %s", e.message()).color(NamedTextColor.RED));
@@ -79,13 +75,9 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     public void loadSong (URL location) {
-        if (loaderThread != null) {
-            bot.chat().tellraw(Component.translatable("Already loading a song", NamedTextColor.RED));
-            return;
-        }
-
         try {
-            final SongLoaderThread _loaderThread = new SongLoaderThread(location, bot);
+            final SongLoaderRunnable runnable = new SongLoaderRunnable(location, bot);
+
             bot.chat().tellraw(
                     Component
                             .translatable(
@@ -94,8 +86,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
                             )
                             .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
             );
-            _loaderThread.start();
-            loaderThread = _loaderThread;
+
+            bot.executorService().submit(runnable);
         } catch (SongLoaderException e) {
             bot.chat().tellraw(Component.translatable("Failed to load song: %s", e.message()).color(NamedTextColor.RED));
             loaderThread = null;
@@ -106,23 +98,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
         bot.tick().addListener(new TickPlugin.Listener() {
             @Override
             public void onTick() {
-                if (loaderThread != null && !loaderThread.isAlive()) {
-                    if (loaderThread.exception != null) {
-                        bot.chat().tellraw(Component.translatable("Failed to load song: %s", loaderThread.exception.message()).color(NamedTextColor.RED));
-                    } else {
-                        songQueue.add(loaderThread.song);
-                        bot.chat().tellraw(
-                                Component.translatable(
-                                        "Added %s to the song queue",
-                                        Component.empty().append(loaderThread.song.name).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
-                                ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
-                        );
-                    }
-                    loaderThread = null;
-                }
-
                 if (currentSong == null) {
-                    if (songQueue.size() == 0) return;
+                    if (songQueue.size() == 0) return; // this line
 
                     addBossBar();
 

@@ -50,15 +50,13 @@ public class GrepLogCommand implements Command {
         boolean regex = false;
 
         if (_args[0].equals("stop")) {
-            if (bot.grepLog().thread() == null) return Component.text("No query is running").color(NamedTextColor.RED);
-
-            bot.grepLog().thread().interrupt();
-            bot.grepLog().thread(null);
+            bot.grepLog().future().cancel(true);
+            bot.grepLog().future(null);
 
             return Component.text("Log query stopped");
         }
 
-        if (bot.grepLog().thread() != null) return Component.text("Another query is already running").color(NamedTextColor.RED);
+        if (bot.grepLog().future() != null) return Component.text("Another query is already running").color(NamedTextColor.RED);
 
         // this is a mess
         if (_args[0].equals("-ignorecase")) {

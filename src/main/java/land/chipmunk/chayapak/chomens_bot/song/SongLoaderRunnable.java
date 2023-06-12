@@ -2,16 +2,20 @@ package land.chipmunk.chayapak.chomens_bot.song;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.plugins.MusicPlayerPlugin;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.DownloadUtilities;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-// Author: _ChipMC_ or hhhzzzsss?
-public class SongLoaderThread extends Thread {
+// Author: _ChipMC_ or hhhzzzsss? also i modified it to use runnable
+// because thread = bad !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+public class SongLoaderRunnable implements Runnable {
   public String fileName;
 
   private File songPath;
@@ -23,7 +27,7 @@ public class SongLoaderThread extends Thread {
 
   private final boolean isUrl;
 
-  public SongLoaderThread (URL location, Bot bot) throws SongLoaderException {
+  public SongLoaderRunnable(URL location, Bot bot) throws SongLoaderException {
     this.bot = bot;
     isUrl = true;
     songUrl = location;
@@ -31,7 +35,7 @@ public class SongLoaderThread extends Thread {
     fileName = location.getFile();
   }
 
-  public SongLoaderThread (Path location, Bot bot) throws SongLoaderException {
+  public SongLoaderRunnable(Path location, Bot bot) throws SongLoaderException {
     this.bot = bot;
     isUrl = false;
     songPath = location.toFile();
@@ -52,24 +56,10 @@ public class SongLoaderThread extends Thread {
       }
     } catch (Exception e) {
       e.printStackTrace();
-      exception = new SongLoaderException(Component.text(e.getMessage()), e);
+
+      showFailedMessage();
+
       return;
-    }
-
-    try {
-      if (name.endsWith(".mid") || name.endsWith(".midi")) {
-        song = MidiConverter.getSongFromBytes(bytes, name, bot);
-        return;
-      }
-
-      if (name.endsWith(".nbs")) {
-        song = NBSConverter.getSongFromBytes(bytes, name, bot);
-        return;
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-
-      exception = new SongLoaderException(Component.translatable("Invalid format"));
     }
 
     try {
@@ -88,7 +78,21 @@ public class SongLoaderThread extends Thread {
 
     if (song == null) {
       exception = new SongLoaderException(Component.translatable("Invalid format"));
+
+      showFailedMessage();
+    } else {
+      bot.music().songQueue().add(song);
+      bot.chat().tellraw(
+              Component.translatable(
+                      "Added %s to the song queue",
+                      Component.empty().append(song.name).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
+              ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+      );
     }
+  }
+
+  private void showFailedMessage () {
+    bot.chat().tellraw(Component.translatable("Failed to load song: %s", exception.message()).color(NamedTextColor.RED));
   }
 
   private File getSongFile (String name) {

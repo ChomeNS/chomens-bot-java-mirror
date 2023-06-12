@@ -2,6 +2,7 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Configuration;
+import land.chipmunk.chayapak.chomens_bot.Main;
 import land.chipmunk.chayapak.chomens_bot.command.ConsoleCommandContext;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import lombok.Getter;
@@ -46,7 +47,7 @@ public class ConsolePlugin {
 
         final String prompt = "> ";
 
-        new Thread(() -> {
+        Main.executorService.submit(() -> {
             while (true) {
                 String line = null;
                 try {
@@ -57,7 +58,7 @@ public class ConsolePlugin {
 
                 handleLine(line);
             }
-        }).start();
+        });
 
         for (Listener listener : listeners) { listener.ready(); }
     }

@@ -1,8 +1,8 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.util.LoggerUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
+import land.chipmunk.chayapak.chomens_bot.util.LoggerUtilities;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -13,25 +13,26 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 public class GrepLogPlugin {
     private final Bot bot;
 
-    @Getter @Setter private GrepLogThread thread = null;
+    @Getter @Setter private Future<?> future = null;
 
     public GrepLogPlugin (Bot bot) {
         this.bot = bot;
     }
 
     public void query (String query, boolean regex, boolean ignoreCase) {
-        thread = new GrepLogThread(query, regex, ignoreCase);
-        thread.start();
+        final Runnable runnable = new GrepLogRunnable(query, regex, ignoreCase);
+        future = bot.executorService().submit(runnable);
     }
 
     // should i move this to another file or keep it here
-    public class GrepLogThread extends Thread {
+    public class GrepLogRunnable implements Runnable {
         private String query;
         private final boolean regex;
         private final boolean ignoreCase;
@@ -43,7 +44,7 @@ public class GrepLogPlugin {
         private int matches = 0;
         private final StringBuilder results = new StringBuilder();
 
-        public GrepLogThread(String query, boolean regex, boolean ignoreCase) {
+        public GrepLogRunnable(String query, boolean regex, boolean ignoreCase) {
             this.regex = regex;
             this.ignoreCase = ignoreCase;
 
@@ -160,19 +161,20 @@ public class GrepLogPlugin {
         }
 
         private void finish () {
-            thread = null;
-
             if (results.toString().split("\n").length < 100) { // ig lazy fix for removing \n lol
                 bot.chat().tellraw(
                         Component.empty()
-                                .append(Component.text("Log query output:"))
+                                .append(Component.text("Log query output for \""))
+                                .append(Component.text(query))
+                                .append(Component.text("\":"))
                                 .append(Component.newline())
                                 .append(Component.text(results.toString()))
                 );
             } else if (bot.config().discord().enabled()) {
                 bot.chat().tellraw(
                         Component.translatable(
-                                "Log query finished, found %s matches. Results were sent in Discord",
+                                "Log query for \"%s\" finished, found %s matches. Results were sent in Discord",
+                                Component.text(query).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())),
                                 Component.text(matches).color(ColorUtilities.getColorByString(bot.config().colorPalette().number()))
                         )
                 );
