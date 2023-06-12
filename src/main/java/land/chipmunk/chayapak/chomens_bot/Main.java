@@ -70,7 +70,7 @@ public class Main {
             } catch (InterruptedException ignored) {
                 System.exit(1);
             }
-            jda.getPresence().setPresence(Activity.playing(config.discord().statusMessage()), false); // what does `b` do? kinda sus,..,
+            jda.getPresence().setPresence(Activity.playing(config.discord().statusMessage()), false);
         }
 
         for (Configuration.BotOption botOption : botsOptions) {
