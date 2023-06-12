@@ -38,7 +38,9 @@ public class MidiConverter {
 
     ArrayList<MidiEvent> tempoEvents = new ArrayList<>();
     for (Track track : sequence.getTracks()) {
-      for (int i = 0; i < track.size(); i++) {
+      final int trackSize = track.size();
+
+      for (int i = 0; i < trackSize; i++) {
         MidiEvent event = track.get(i);
         MidiMessage message = event.getMessage();
         if (message instanceof MetaMessage mm) {
@@ -52,14 +54,15 @@ public class MidiConverter {
     tempoEvents.sort(Comparator.comparingLong(MidiEvent::getTick));
     
     for (Track track : sequence.getTracks()) {
-
       long microTime = 0;
       int[] ids = new int[16];
       int mpq = 500000;
       int tempoEventIdx = 0;
       long prevTick = 0;
-      
-      for (int i = 0; i < track.size(); i++) {
+
+      final int trackSize = track.size();
+
+      for (int i = 0; i < trackSize; i++) {
         MidiEvent event = track.get(i);
         MidiMessage message = event.getMessage();
         

@@ -188,7 +188,10 @@ public class CommandHandlerPlugin {
     private int getLongestUsageIndex(List<String> usages) {
         int longestIndex = 0;
         int maxLength = 0;
-        for (int i = 0; i < usages.size(); i++) {
+
+        final int usagesSize = usages.size();
+
+        for (int i = 0; i < usagesSize; i++) {
             String[] args = usages.get(i).split("\\s+");
             if (args.length > maxLength) {
                 longestIndex = i;
@@ -201,7 +204,10 @@ public class CommandHandlerPlugin {
     private int getShortestUsageIndex(List<String> usages) {
         int shortestIndex = 0;
         int minLength = Integer.MAX_VALUE;
-        for (int i = 0; i < usages.size(); i++) {
+
+        final int usagesSize = usages.size();
+
+        for (int i = 0; i < usagesSize; i++) {
             String[] args = usages.get(i).split("\\s+");
             if (args.length < minLength) {
                 shortestIndex = i;
@@ -213,7 +219,10 @@ public class CommandHandlerPlugin {
 
     private int getMinimumArgs(String usage, boolean inGame, TrustLevel trustLevel) {
         int count = 0;
-        for (int i = 0; i < usage.length(); i++) {
+
+        final int usageLength = usage.length();
+
+        for (int i = 0; i < usageLength; i++) {
             if (usage.charAt(i) == '<') {
                 count++;
             }
@@ -225,7 +234,10 @@ public class CommandHandlerPlugin {
 
     private int getMaximumArgs(String usage, boolean inGame, TrustLevel trustLevel) {
         int count = 0;
-        for (int i = 0; i < usage.length(); i++) {
+
+        final int usageLength = usage.length();
+
+        for (int i = 0; i < usageLength; i++) {
             if (usage.charAt(i) == '<' || usage.charAt(i) == '[') {
                 count++;
             }
