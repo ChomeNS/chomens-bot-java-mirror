@@ -113,26 +113,8 @@ public class PlayersPlugin extends Bot.Listener {
 
         final MutablePlayerListEntry target = new MutablePlayerListEntry(newEntry);
 
-        list.add(target);
-        // loginNames.put(target, target.profile().getIdAsString());
-
         if (duplicate == null) for (Listener listener : listeners) { listener.playerJoined(target); }
-        /* else {
-            for (Map.Entry<MutablePlayerListEntry, String> entry : loginNames.entrySet()) {
-                if (
-                        !entry.getValue().equals(newEntry.getProfile().getIdAsString()) ||
-                                entry.getKey().profile().getName().equals(newEntry.getProfile().getName())
-                ) continue;
-
-                loginNames.remove(entry.getKey(), entry.getValue());
-
-                for (PlayerListener listener : listeners) { listener.playerUserNameChanged(entry.getKey()); }
-
-                return;
-            }
-         */
         else for (Listener listener : listeners) { listener.playerUnVanished(target); }
-        // }
     }
 
     private void updateGamemode (PlayerListEntry newEntry) {
