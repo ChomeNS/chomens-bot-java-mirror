@@ -4,6 +4,7 @@ import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundCu
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundCustomPayloadPacket;
 import com.github.steveice10.packetlib.Session;
+import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.packet.Packet;
 import io.netty.buffer.Unpooled;
 import land.chipmunk.chayapak.chomens_bot.Bot;
@@ -68,15 +69,10 @@ public class VoiceChatPlugin extends Bot.Listener {
         System.out.println(new String(_packet.getData()));
         */
         if (_packet.getChannel().equals("voicechat:secret")) {
-            System.out.println("got the secret packet");
-
             final byte[] bytes = _packet.getData();
             final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
 
             final SecretPacket secretPacket = new SecretPacket().fromBytes(buf);
-
-            System.out.println(secretPacket.secret());
-            System.out.println(secretPacket.serverPort());
 
             initializationData = new InitializationData(bot.options().host(), secretPacket);
 
@@ -87,8 +83,6 @@ public class VoiceChatPlugin extends Bot.Listener {
                 throw new RuntimeException(e);
             }
 
-            System.out.println("address " + address.getHostName());
-
             socket = new ClientVoiceChatSocket();
             try {
                 socket.open();
@@ -96,14 +90,12 @@ public class VoiceChatPlugin extends Bot.Listener {
                 e.printStackTrace();
             }
 
-            bot.executorService().submit(() -> {
+            bot.executorService().execute(() -> {
                 while (true) {
                     try {
                         if (socket.isClosed()) continue;
 
-                        System.out.println("reading packet");
                         final NetworkMessage message = NetworkMessage.readPacket(socket.read(), initializationData);
-                        System.out.println("DONE reading packet, this message will; prob nto woshow");
 
                         if (message == null) continue;
 
@@ -137,6 +129,7 @@ public class VoiceChatPlugin extends Bot.Listener {
         private final byte[] BUFFER = new byte[4096];
 
         public RawUdpPacket read (DatagramSocket socket) {
+            if (socket.isClosed()) return null;
             try {
                 DatagramPacket packet = new DatagramPacket(BUFFER, BUFFER.length);
 
@@ -159,6 +152,11 @@ public class VoiceChatPlugin extends Bot.Listener {
             return null;
         }
 
+    }
+
+    @Override
+    public void disconnected(DisconnectedEvent event) {
+        socket.close();
     }
 
     private static class ClientVoiceChatSocket extends VoiceChatSocketBase {
@@ -185,6 +183,7 @@ public class VoiceChatPlugin extends Bot.Listener {
         public void close() {
             if (socket != null) {
                 socket.close();
+                socket = null;
             }
         }
 

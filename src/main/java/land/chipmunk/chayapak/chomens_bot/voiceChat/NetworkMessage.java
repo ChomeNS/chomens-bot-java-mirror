@@ -57,6 +57,8 @@ public class NetworkMessage {
     }
 
     public static NetworkMessage readPacket (RawUdpPacket packet, InitializationData initializationData) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+        if (packet == null) return null;
+
         final byte[] data = packet.data();
         final FriendlyByteBuf b = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
 
