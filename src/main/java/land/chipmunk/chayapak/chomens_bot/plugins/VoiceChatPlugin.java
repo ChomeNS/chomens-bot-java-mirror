@@ -7,36 +7,31 @@ import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.packet.Packet;
 import io.netty.buffer.Unpooled;
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.util.AES;
+import land.chipmunk.chayapak.chomens_bot.data.voiceChat.RawUdpPacket;
 import land.chipmunk.chayapak.chomens_bot.util.FriendlyByteBuf;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import land.chipmunk.chayapak.chomens_bot.voiceChat.InitializationData;
+import land.chipmunk.chayapak.chomens_bot.voiceChat.NetworkMessage;
+import land.chipmunk.chayapak.chomens_bot.voiceChat.packets.KeepAlivePacket;
+import land.chipmunk.chayapak.chomens_bot.voiceChat.packets.PingPacket;
+import land.chipmunk.chayapak.chomens_bot.voiceChat.packets.SecretPacket;
+import land.chipmunk.chayapak.chomens_bot.voiceChat.packets.AuthenticatePacket;
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.SocketAddress;
-import java.net.SocketException;
-import java.util.Arrays;
+import java.net.*;
 
 // exists for some reason, still wip and will be finished in the next 69 years
 // and i prob implemented it in a wrong way lol
 // at least when you do `/voicechat test (bot username)` it will show `Client not connected`
 // instead of `(bot username) does not have Simple Voice Chat installed`
 public class VoiceChatPlugin extends Bot.Listener {
-    public static final byte MAGIC_BYTE = (byte) 0b11111111;
-
     private final Bot bot;
 
-    private final ClientVoiceChatSocket socket;
+    private InitializationData initializationData;
+    private ClientVoiceChatSocket socket;
+    private InetAddress address;
+    private InetSocketAddress socketAddress;
 
     public VoiceChatPlugin(Bot bot) {
         this.bot = bot;
-        this.socket = new ClientVoiceChatSocket();
-        try {
-            socket.open();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         bot.addListener(this);
     }
@@ -56,34 +51,86 @@ public class VoiceChatPlugin extends Bot.Listener {
 
         bot.session().send(new ServerboundCustomPayloadPacket(
                 "voicechat:request_secret",
-                new byte[] { 0, 0, 0, 17 } // what are these bytes?
+                new FriendlyByteBuf(Unpooled.buffer()).writeInt(17).array()
+        ));
+
+        bot.session().send(new ServerboundCustomPayloadPacket(
+                "voicechat:update_state",
+                new FriendlyByteBuf(Unpooled.buffer()).writeBoolean(false).array()
         ));
     }
 
     public void packetReceived(ClientboundCustomPayloadPacket _packet) {
         // sus
         /*
-        System.out.println(_packet.getChannel());
+        System.out.println("\"" + _packet.getChannel() + "\"");
         System.out.println(Arrays.toString(_packet.getData()));
         System.out.println(new String(_packet.getData()));
         */
-        // for some reason this entire part is not running
         if (_packet.getChannel().equals("voicechat:secret")) {
+            System.out.println("got the secret packet");
+
+            final byte[] bytes = _packet.getData();
+            final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
+
+            final SecretPacket secretPacket = new SecretPacket().fromBytes(buf);
+
+            System.out.println(secretPacket.secret());
+            System.out.println(secretPacket.serverPort());
+
+            initializationData = new InitializationData(bot.options().host(), secretPacket);
+
+            try {
+                address = InetAddress.getByName(bot.options().host());
+                socketAddress = new InetSocketAddress(address, initializationData.serverPort());
+            } catch (UnknownHostException e) {
+                throw new RuntimeException(e);
+            }
+
+            System.out.println("address " + address.getHostName());
+
+            socket = new ClientVoiceChatSocket();
+            try {
+                socket.open();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             bot.executorService().submit(() -> {
                 while (true) {
-                    final RawUdpPacket packet = socket.read();
+                    try {
+                        if (socket.isClosed()) continue;
 
-                    if (packet == null) return;
+                        System.out.println("reading packet");
+                        final NetworkMessage message = NetworkMessage.readPacket(socket.read(), initializationData);
+                        System.out.println("DONE reading packet, this message will; prob nto woshow");
 
-                    byte[] data = packet.data();
-                    FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(data));
+                        if (message == null) continue;
 
-                    if (buf.readByte() != MAGIC_BYTE) return;
-
-                    // AES.decrypt(secret, payload) ?
+                        if (message.packet() instanceof AuthenticatePacket) {
+                            System.out.println("SERVER AUTHENTICATED FINALLYYYYYYYYYYYYYYYY");
+                        } else if (message.packet() instanceof PingPacket pingPacket) {
+                            System.out.println("got ping packet");
+                            sendToServer(new NetworkMessage(pingPacket));
+                        } else if (message.packet() instanceof KeepAlivePacket) {
+                            System.out.println("got keep alive packet");
+                            sendToServer(new NetworkMessage(new KeepAlivePacket()));
+                        } else {
+                            System.out.println("got " + message.packet().getClass().getName());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         }
+    }
+
+    public void sendToServer (NetworkMessage message) throws Exception {
+        socket.send(
+                message.writeClient(initializationData),
+                socketAddress
+        );
     }
 
     private static class VoiceChatSocketBase {
@@ -92,7 +139,14 @@ public class VoiceChatPlugin extends Bot.Listener {
         public RawUdpPacket read (DatagramSocket socket) {
             try {
                 DatagramPacket packet = new DatagramPacket(BUFFER, BUFFER.length);
+
+                System.out.println("receiving packet");
+
+                // the problem is this next line, just this 1 line. it makes the entire thing froze
                 socket.receive(packet);
+
+                System.out.println("FINALLY DONE RECEIVING AAAAHHHHHHHHHHHHHHHHHHH");
+
                 // Setting the timestamp after receiving the packet
                 long timestamp = System.currentTimeMillis();
                 byte[] data = new byte[packet.getLength()];
@@ -137,12 +191,5 @@ public class VoiceChatPlugin extends Bot.Listener {
         public boolean isClosed() {
             return socket == null;
         }
-    }
-
-    @AllArgsConstructor
-    private static class RawUdpPacket {
-        @Getter private final byte[] data;
-        @Getter private final SocketAddress socketAddress;
-        @Getter private final long timestamp;
     }
 }
