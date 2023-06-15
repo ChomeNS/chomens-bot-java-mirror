@@ -4,7 +4,7 @@ import io.netty.buffer.Unpooled;
 import land.chipmunk.chayapak.chomens_bot.data.voiceChat.RawUdpPacket;
 import land.chipmunk.chayapak.chomens_bot.util.AES;
 import land.chipmunk.chayapak.chomens_bot.util.FriendlyByteBuf;
-import land.chipmunk.chayapak.chomens_bot.voiceChat.packets.AuthenticatePacket;
+import land.chipmunk.chayapak.chomens_bot.voiceChat.packets.*;
 import lombok.Getter;
 
 import javax.crypto.BadPaddingException;
@@ -49,11 +49,11 @@ public class NetworkMessage {
 //        packetRegistry.put((byte) 0x3, GroupSoundPacket.class);
 //        packetRegistry.put((byte) 0x4, LocationSoundPacket.class);
         packetRegistry.put((byte) 0x5, AuthenticatePacket.class);
-//        packetRegistry.put((byte) 0x6, AuthenticateAckPacket.class);
-//        packetRegistry.put((byte) 0x7, PingPacket.class);
-//        packetRegistry.put((byte) 0x8, KeepAlivePacket.class);
-//        packetRegistry.put((byte) 0x9, ConnectionCheckPacket.class);
-//        packetRegistry.put((byte) 0xA, ConnectionCheckAckPacket.class);
+        packetRegistry.put((byte) 0x6, AuthenticateAckPacket.class);
+        packetRegistry.put((byte) 0x7, PingPacket.class);
+        packetRegistry.put((byte) 0x8, KeepAlivePacket.class);
+        packetRegistry.put((byte) 0x9, ConnectionCheckPacket.class);
+        packetRegistry.put((byte) 0xA, ConnectionAckPacket.class);
     }
 
     public static NetworkMessage readPacket (RawUdpPacket packet, InitializationData initializationData) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
@@ -79,10 +79,7 @@ public class NetworkMessage {
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.wrappedBuffer(decrypt));
         byte packetType = buffer.readByte();
         final Class<? extends Packet<?>> packetClass = packetRegistry.get(packetType);
-        if (packetClass == null) {
-            System.out.println("packet type is null " + packetType);
-            return null;
-        }
+        if (packetClass == null) return null;
         Packet<?> p = packetClass.getDeclaredConstructor().newInstance();
 
         NetworkMessage message = new NetworkMessage(timestamp);

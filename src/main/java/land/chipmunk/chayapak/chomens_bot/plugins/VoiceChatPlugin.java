@@ -12,17 +12,12 @@ import land.chipmunk.chayapak.chomens_bot.data.voiceChat.RawUdpPacket;
 import land.chipmunk.chayapak.chomens_bot.util.FriendlyByteBuf;
 import land.chipmunk.chayapak.chomens_bot.voiceChat.InitializationData;
 import land.chipmunk.chayapak.chomens_bot.voiceChat.NetworkMessage;
-import land.chipmunk.chayapak.chomens_bot.voiceChat.packets.KeepAlivePacket;
-import land.chipmunk.chayapak.chomens_bot.voiceChat.packets.PingPacket;
-import land.chipmunk.chayapak.chomens_bot.voiceChat.packets.SecretPacket;
-import land.chipmunk.chayapak.chomens_bot.voiceChat.packets.AuthenticatePacket;
+import land.chipmunk.chayapak.chomens_bot.voiceChat.packets.*;
 
 import java.net.*;
 
-// exists for some reason, still wip and will be finished in the next 69 years
-// and i prob implemented it in a wrong way lol
-// at least when you do `/voicechat test (bot username)` it will show `Client not connected`
-// instead of `(bot username) does not have Simple Voice Chat installed`
+// most of these codes are from the simple voice chat mod itself including the other voicechat classes
+// i didn't implement mic yet because my goal is to make `/voicechat test` work with the bot
 public class VoiceChatPlugin extends Bot.Listener {
     private final Bot bot;
 
@@ -30,6 +25,8 @@ public class VoiceChatPlugin extends Bot.Listener {
     private ClientVoiceChatSocket socket;
     private InetAddress address;
     private InetSocketAddress socketAddress;
+
+    private boolean running = false;
 
     public VoiceChatPlugin(Bot bot) {
         this.bot = bot;
@@ -59,16 +56,12 @@ public class VoiceChatPlugin extends Bot.Listener {
                 "voicechat:update_state",
                 new FriendlyByteBuf(Unpooled.buffer()).writeBoolean(false).array()
         ));
+
+        running = true;
     }
 
     public void packetReceived(ClientboundCustomPayloadPacket _packet) {
-        // sus
-        /*
-        System.out.println("\"" + _packet.getChannel() + "\"");
-        System.out.println(Arrays.toString(_packet.getData()));
-        System.out.println(new String(_packet.getData()));
-        */
-        if (_packet.getChannel().equals("voicechat:secret")) {
+        if (_packet.getChannel().equals("voicechat:secret")) { // fard
             final byte[] bytes = _packet.getData();
             final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
 
@@ -91,41 +84,38 @@ public class VoiceChatPlugin extends Bot.Listener {
             }
 
             bot.executorService().execute(() -> {
-                while (true) {
-                    try {
-                        if (socket.isClosed()) continue;
+                sendToServer(new NetworkMessage(new AuthenticatePacket(initializationData.playerUUID(), initializationData.secret())));
 
+                while (running) {
+                    try {
                         final NetworkMessage message = NetworkMessage.readPacket(socket.read(), initializationData);
 
                         if (message == null) continue;
 
-                        if (message.packet() instanceof AuthenticatePacket) {
-                            System.out.println("SERVER AUTHENTICATED FINALLYYYYYYYYYYYYYYYY");
-                        } else if (message.packet() instanceof PingPacket pingPacket) {
-                            System.out.println("got ping packet");
-                            sendToServer(new NetworkMessage(pingPacket));
-                        } else if (message.packet() instanceof KeepAlivePacket) {
-                            System.out.println("got keep alive packet");
-                            sendToServer(new NetworkMessage(new KeepAlivePacket()));
-                        } else {
-                            System.out.println("got " + message.packet().getClass().getName());
-                        }
+                        if (message.packet() instanceof PingPacket pingPacket) sendToServer(new NetworkMessage(pingPacket));
+                        else if (message.packet() instanceof KeepAlivePacket) sendToServer(new NetworkMessage(new KeepAlivePacket()));
+                        else if (message.packet() instanceof AuthenticateAckPacket) sendToServer(new NetworkMessage(new ConnectionCheckPacket()));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        if (running) e.printStackTrace();
+                        else break; // is this neccessary?
                     }
                 }
             });
         }
     }
 
-    public void sendToServer (NetworkMessage message) throws Exception {
-        socket.send(
-                message.writeClient(initializationData),
-                socketAddress
-        );
+    public void sendToServer (NetworkMessage message) {
+        try {
+            socket.send(
+                    message.writeClient(initializationData),
+                    socketAddress
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private static class VoiceChatSocketBase {
+    private class VoiceChatSocketBase {
         private final byte[] BUFFER = new byte[4096];
 
         public RawUdpPacket read (DatagramSocket socket) {
@@ -133,12 +123,7 @@ public class VoiceChatPlugin extends Bot.Listener {
             try {
                 DatagramPacket packet = new DatagramPacket(BUFFER, BUFFER.length);
 
-                System.out.println("receiving packet");
-
-                // the problem is this next line, just this 1 line. it makes the entire thing froze
                 socket.receive(packet);
-
-                System.out.println("FINALLY DONE RECEIVING AAAAHHHHHHHHHHHHHHHHHHH");
 
                 // Setting the timestamp after receiving the packet
                 long timestamp = System.currentTimeMillis();
@@ -157,9 +142,11 @@ public class VoiceChatPlugin extends Bot.Listener {
     @Override
     public void disconnected(DisconnectedEvent event) {
         socket.close();
+
+        running = false;
     }
 
-    private static class ClientVoiceChatSocket extends VoiceChatSocketBase {
+    private class ClientVoiceChatSocket extends VoiceChatSocketBase {
         private DatagramSocket socket;
 
         public void open() throws SocketException {
