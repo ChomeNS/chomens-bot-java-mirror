@@ -113,6 +113,8 @@ public class PlayersPlugin extends Bot.Listener {
 
         final MutablePlayerListEntry target = new MutablePlayerListEntry(newEntry);
 
+        list.add(target);
+
         if (duplicate == null) for (Listener listener : listeners) { listener.playerJoined(target); }
         else for (Listener listener : listeners) { listener.playerUnVanished(target); }
     }
