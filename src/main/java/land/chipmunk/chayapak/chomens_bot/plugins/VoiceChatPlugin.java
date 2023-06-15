@@ -83,7 +83,7 @@ public class VoiceChatPlugin extends Bot.Listener {
                 e.printStackTrace();
             }
 
-            bot.executorService().execute(() -> {
+            new Thread(() -> {
                 sendToServer(new NetworkMessage(new AuthenticatePacket(initializationData.playerUUID(), initializationData.secret())));
 
                 while (running) {
@@ -100,7 +100,7 @@ public class VoiceChatPlugin extends Bot.Listener {
                         else break; // is this neccessary?
                     }
                 }
-            });
+            }).start();
         }
     }
 
