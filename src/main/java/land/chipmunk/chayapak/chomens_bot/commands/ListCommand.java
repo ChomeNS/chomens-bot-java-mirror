@@ -51,17 +51,19 @@ public class ListCommand implements Command {
             playersComponent.add(
                     Component.translatable(
                             "%s › %s",
-                            Component
-                                    .text(entry.profile().getName())
+                            entry.displayName()
                                     .hoverEvent(
                                             HoverEvent.showText(
-                                                    Component.text("Click here to copy the username to your clipboard").color(NamedTextColor.GREEN)
+                                                    Component
+                                                            .text(entry.profile().getName())
+                                                            .append(Component.newline())
+                                                            .append(Component.text("Click here to copy the username to your clipboard").color(NamedTextColor.GREEN))
                                             )
                                     )
                                     .clickEvent(
                                             ClickEvent.copyToClipboard(entry.profile().getName())
                                     )
-                                    .color(ColorUtilities.getColorByString(bot.config().colorPalette().username())),
+                                    .color(NamedTextColor.WHITE),
                             Component
                                     .text(entry.profile().getIdAsString())
                                     .hoverEvent(
