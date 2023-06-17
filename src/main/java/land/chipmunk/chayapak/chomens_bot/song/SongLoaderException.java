@@ -11,9 +11,4 @@ public class SongLoaderException extends Exception {
     super();
     this.message = message;
   }
-
-  public SongLoaderException (Component message, Throwable cause) {
-    super(null, cause);
-    this.message = message;
-  }
 }

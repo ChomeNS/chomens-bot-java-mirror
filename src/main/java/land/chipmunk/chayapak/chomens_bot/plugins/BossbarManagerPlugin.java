@@ -55,7 +55,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
             }
 
             // is there any way instead of using random?
-            bot.core().run("minecraft:data modify entity @e[tag=" + textDisplayPrefix + name + ",limit=1,sort=random] text set value '" + stringifiedComponent.replace("'", "\\\'") + "'");
+            bot.core().run("minecraft:data modify entity @e[tag=" + textDisplayPrefix + name + ",limit=1,sort=random] text set value '" + stringifiedComponent.replace("'", "\\'") + "'");
         }
     }
 

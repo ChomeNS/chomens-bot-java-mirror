@@ -30,15 +30,4 @@ public class InitializationData {
         this.groupsEnabled = secretPacket.groupsEnabled();
         this.allowRecording = secretPacket.allowRecording();
     }
-
-    private static class HostData {
-        private final String ip;
-        private final int port;
-
-        public HostData(String ip, int port) {
-            this.ip = ip;
-            this.port = port;
-        }
-    }
-
 }

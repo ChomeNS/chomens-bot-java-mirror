@@ -38,7 +38,7 @@ public class Instrument {
     return new Instrument(-1, null, 0, sound);
   }
 
-  private static Instrument[] values = {HARP, BASEDRUM, SNARE, HAT, BASS, FLUTE, BELL, GUITAR, CHIME, XYLOPHONE, IRON_XYLOPHONE, COW_BELL, DIDGERIDOO, BIT, BANJO, PLING};
+  private static final Instrument[] values = {HARP, BASEDRUM, SNARE, HAT, BASS, FLUTE, BELL, GUITAR, CHIME, XYLOPHONE, IRON_XYLOPHONE, COW_BELL, DIDGERIDOO, BIT, BANJO, PLING};
   public static Instrument fromId (int id) {
     return values[id];
   }

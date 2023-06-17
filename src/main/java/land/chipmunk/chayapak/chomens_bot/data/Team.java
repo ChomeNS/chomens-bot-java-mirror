@@ -3,13 +3,10 @@ package land.chipmunk.chayapak.chomens_bot.data;
 import com.github.steveice10.mc.protocol.data.game.scoreboard.CollisionRule;
 import com.github.steveice10.mc.protocol.data.game.scoreboard.NameTagVisibility;
 import com.github.steveice10.mc.protocol.data.game.scoreboard.TeamColor;
-import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
-
-import java.util.List;
 
 @AllArgsConstructor
 public class Team {

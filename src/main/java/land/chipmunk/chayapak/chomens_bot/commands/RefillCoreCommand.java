@@ -13,7 +13,7 @@ public class RefillCoreCommand implements Command {
     public String name() { return "refillcore"; }
 
     public String description() {
-        return "Refills and resets the bot's command core";
+        return "Refills and resets the bots command core";
     }
 
     public List<String> usage() {

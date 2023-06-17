@@ -23,7 +23,6 @@ public class VoiceChatPlugin extends Bot.Listener {
 
     private InitializationData initializationData;
     private ClientVoiceChatSocket socket;
-    private InetAddress address;
     private InetSocketAddress socketAddress;
 
     private boolean running = false;
@@ -70,7 +69,7 @@ public class VoiceChatPlugin extends Bot.Listener {
             initializationData = new InitializationData(bot.options().host(), secretPacket);
 
             try {
-                address = InetAddress.getByName(bot.options().host());
+                final InetAddress address = InetAddress.getByName(bot.options().host());
                 socketAddress = new InetSocketAddress(address, initializationData.serverPort());
             } catch (UnknownHostException e) {
                 throw new RuntimeException(e);
@@ -115,7 +114,7 @@ public class VoiceChatPlugin extends Bot.Listener {
         }
     }
 
-    private class VoiceChatSocketBase {
+    private static class VoiceChatSocketBase {
         private final byte[] BUFFER = new byte[4096];
 
         public RawUdpPacket read (DatagramSocket socket) {
@@ -146,7 +145,7 @@ public class VoiceChatPlugin extends Bot.Listener {
         running = false;
     }
 
-    private class ClientVoiceChatSocket extends VoiceChatSocketBase {
+    private static class ClientVoiceChatSocket extends VoiceChatSocketBase {
         private DatagramSocket socket;
 
         public void open() throws SocketException {
@@ -172,10 +171,6 @@ public class VoiceChatPlugin extends Bot.Listener {
                 socket.close();
                 socket = null;
             }
-        }
-
-        public boolean isClosed() {
-            return socket == null;
         }
     }
 }

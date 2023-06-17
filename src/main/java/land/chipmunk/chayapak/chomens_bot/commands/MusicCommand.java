@@ -28,7 +28,7 @@ public class MusicCommand implements Command {
     public String name() { return "music"; }
 
     public String description() {
-        return "Plays music";
+        return "Play musics";
     }
 
     public List<String> usage() {
@@ -118,6 +118,8 @@ public class MusicCommand implements Command {
                     player.loadSong(Path.of(realPath.toString(), file));
                 } else {
                     final String[] songs = root.toFile().list();
+
+                    if (songs == null) return null;
 
                     final String file = Arrays.stream(songs)
                             .filter(song -> song.toLowerCase().contains(_path.toLowerCase()))

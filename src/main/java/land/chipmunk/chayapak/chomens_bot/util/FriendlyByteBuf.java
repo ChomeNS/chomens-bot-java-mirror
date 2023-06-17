@@ -29,14 +29,9 @@ public class FriendlyByteBuf extends ByteBuf {
         this(Unpooled.buffer());
     }
 
-    public ByteBuf getUnderlyingByteBuf() {
-        return buf;
-    }
-
-    public FriendlyByteBuf writeByteArray(byte[] bs) {
+    public void writeByteArray(byte[] bs) {
         writeVarInt(bs.length);
         writeBytes(bs);
-        return this;
     }
 
     public byte[] readByteArray() {
@@ -70,24 +65,22 @@ public class FriendlyByteBuf extends ByteBuf {
         return i;
     }
 
-    public FriendlyByteBuf writeUUID(UUID uUID) {
+    public void writeUUID(UUID uUID) {
         writeLong(uUID.getMostSignificantBits());
         writeLong(uUID.getLeastSignificantBits());
-        return this;
     }
 
     public UUID readUUID() {
         return new UUID(readLong(), readLong());
     }
 
-    public FriendlyByteBuf writeVarInt(int i) {
+    public void writeVarInt(int i) {
         while ((i & -128) != 0) {
             writeByte(i & 127 | 128);
             i >>>= 7;
         }
 
         writeByte(i);
-        return this;
     }
 
     public String readUtf(int i) {
@@ -107,14 +100,13 @@ public class FriendlyByteBuf extends ByteBuf {
         }
     }
 
-    public FriendlyByteBuf writeUtf(String string, int i) {
+    public void writeUtf(String string, int i) {
         byte[] bs = string.getBytes(StandardCharsets.UTF_8);
         if (bs.length > i) {
             throw new EncoderException("String too big (was " + bs.length + " bytes encoded, max " + i + ')');
         } else {
             writeVarInt(bs.length);
             writeBytes(bs);
-            return this;
         }
     }
 
@@ -122,8 +114,8 @@ public class FriendlyByteBuf extends ByteBuf {
         return readUtf(32767);
     }
 
-    public FriendlyByteBuf writeUtf(String string) {
-        return writeUtf(string, 32767);
+    public void writeUtf(String string) {
+        writeUtf(string, 32767);
     }
 
     @Override

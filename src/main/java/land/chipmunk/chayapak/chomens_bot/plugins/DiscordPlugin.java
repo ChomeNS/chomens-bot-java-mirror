@@ -311,6 +311,12 @@ public class DiscordPlugin {
     public void sendMessageInstantly (String message, String channelId) {
         if (jda == null) return;
         final TextChannel logChannel = jda.getTextChannelById(channelId);
+
+        if (logChannel == null) {
+            System.out.println("Log channel for " + channelId + " is null");
+            return;
+        }
+
         logChannel.sendMessage(message).queue(
                 (msg) -> doneSendingInLogs.put(channelId, true),
                 (err) -> doneSendingInLogs.put(channelId, false)

@@ -16,16 +16,6 @@ public class MidiConverter {
   public static final int NOTE_ON = 0x90;
   public static final int NOTE_OFF = 0x80;
 
-//  public static Song getSongFromUrl(URL url) throws IOException, InvalidMidiDataException, URISyntaxException, NoSuchAlgorithmException, KeyManagementException {
-//    Sequence sequence = MidiSystem.getSequence(DownloadUtilities.DownloadToInputStream(url, 5*1024*1024));
-//    return getSong(sequence, Paths.get(url.toURI().getPath()).getFileName().toString());
-//  }
-//
-//  public static Song getSongFromFile(File file) throws InvalidMidiDataException, IOException {
-//    Sequence sequence = MidiSystem.getSequence(file);
-//    return getSong(sequence, file.getName());
-//  }
-
   public static Song getSongFromBytes(byte[] bytes, String name, Bot bot) throws InvalidMidiDataException, IOException {
     Sequence sequence = MidiSystem.getSequence(new ByteArrayInputStream(bytes));
     return getSong(sequence, name, bot);

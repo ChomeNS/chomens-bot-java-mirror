@@ -8,6 +8,7 @@ import land.chipmunk.chayapak.chomens_bot.commands.*;
 import land.chipmunk.chayapak.chomens_bot.util.ExceptionUtilities;
 import lombok.Getter;
 import lombok.Setter;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.kyori.adventure.text.Component;
@@ -118,7 +119,11 @@ public class CommandHandlerPlugin {
 
         if (command.trustLevel() != TrustLevel.PUBLIC && !console) {
             if (discord) {
-                final List<Role> roles = event.getMember().getRoles();
+                final Member member = event.getMember();
+
+                if (member == null) return null;
+
+                final List<Role> roles = member.getRoles();
 
                 final String trustedRoleName = bot.config().discord().trustedRoleName();
                 final String adminRoleName = bot.config().discord().adminRoleName();

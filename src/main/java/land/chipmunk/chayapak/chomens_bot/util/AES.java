@@ -25,13 +25,6 @@ public class AES {
         return buffer.array();
     }
 
-    public static UUID getUUIDFromBytes(byte[] bytes) {
-        ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
-        long most = byteBuffer.getLong();
-        long least = byteBuffer.getLong();
-        return new UUID(most, least);
-    }
-
     private static byte[] generateIV() {
         byte[] iv = new byte[16];
         RANDOM.nextBytes(iv);

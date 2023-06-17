@@ -106,11 +106,6 @@ public class LoggerUtilities {
         out.close();
     }
 
-    public static synchronized BufferedReader getLogReader(File file) throws IOException {
-        GZIPInputStream in = new GZIPInputStream(new FileInputStream(file));
-        return new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-    }
-
     public static synchronized String getLogDate(File file) throws IOException {
         InputStreamReader isr = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
         BufferedReader reader = new BufferedReader(isr);

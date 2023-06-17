@@ -11,9 +11,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.Style;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class KaboomChatParser implements ChatParser {
@@ -46,8 +44,6 @@ public class KaboomChatParser implements ChatParser {
         List<Component> children = message.children();
 
         if (!message.content().equals("") || !message.style().equals(empty) || children.size() < 3) return null;
-
-        final Map<String, Component> parameters = new HashMap<>();
 
         final Component prefix = children.get(0);
         Component displayName = Component.empty();

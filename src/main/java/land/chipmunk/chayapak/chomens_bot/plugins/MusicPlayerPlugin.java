@@ -27,9 +27,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
     public static final String SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic]";
     public static File SONG_DIR = new File("songs");
     static {
-        if (!SONG_DIR.exists()) {
-            SONG_DIR.mkdir();
-        }
+        if (!SONG_DIR.exists()) SONG_DIR.mkdir();
     }
 
     @Getter @Setter private Song currentSong;

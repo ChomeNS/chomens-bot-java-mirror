@@ -94,8 +94,4 @@ public class SongLoaderRunnable implements Runnable {
   private void showFailedMessage () {
     bot.chat().tellraw(Component.translatable("Failed to load song: %s", exception.message()).color(NamedTextColor.RED));
   }
-
-  private File getSongFile (String name) {
-    return new File(MusicPlayerPlugin.SONG_DIR, name);
-  }
 }

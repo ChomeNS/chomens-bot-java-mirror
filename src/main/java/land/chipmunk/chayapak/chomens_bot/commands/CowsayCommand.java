@@ -7,7 +7,6 @@ import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import net.kyori.adventure.text.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class CowsayCommand implements Command {

@@ -17,7 +17,7 @@ public class UptimeCommand implements Command {
     public String name() { return "uptime"; }
 
     public String description() {
-        return "Shows the bot's uptime";
+        return "Shows the bots uptime";
     }
 
     public List<String> usage() {

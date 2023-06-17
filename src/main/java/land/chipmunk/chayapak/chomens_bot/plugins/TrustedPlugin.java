@@ -53,10 +53,6 @@ public class TrustedPlugin extends PlayersPlugin.Listener {
 
     public void broadcast (Component message) { broadcast(message, null); }
 
-    // these can be used in servereval
-    public void broadcast (String message) { broadcast(Component.text(message), null); }
-    public void broadcast (String message, UUID exceptTarget) { broadcast(Component.text(message), exceptTarget); }
-
     @Override
     public void playerJoined (MutablePlayerListEntry target) {
         if (!list.contains(target.profile().getName())) return;

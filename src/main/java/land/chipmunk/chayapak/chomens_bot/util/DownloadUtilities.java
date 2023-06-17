@@ -55,8 +55,4 @@ public class DownloadUtilities {
         }
         // Closing a ByteArrayInputStream has no effect, so I do not close it.
     }
-
-    public static InputStream DownloadToInputStream(URL url, int maxSize) throws KeyManagementException, NoSuchAlgorithmException, IOException {
-        return new ByteArrayInputStream(DownloadToByteArray(url, maxSize));
-    }
 }

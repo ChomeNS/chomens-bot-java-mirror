@@ -74,8 +74,4 @@ public class TeamPlugin extends Bot.Listener {
             }
         } catch (Exception e) { e.printStackTrace(); }
     }
-
-    public Team getTeamByUsername (String username) {
-        return teamsByPlayer.get(username);
-    }
 }

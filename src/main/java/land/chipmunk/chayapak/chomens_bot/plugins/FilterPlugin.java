@@ -43,6 +43,8 @@ public class FilterPlugin extends PlayersPlugin.Listener {
                     }
                 }
 
+                if (pattern == null) break;
+
                 if (pattern.matcher(name).find()) {
                     filteredPlayer = _filteredPlayer;
                     break;

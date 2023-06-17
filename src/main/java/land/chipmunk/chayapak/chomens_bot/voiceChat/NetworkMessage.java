@@ -26,11 +26,6 @@ public class NetworkMessage {
     @Getter private Packet<? extends Packet<?>> packet;
     @Getter private SocketAddress address;
 
-    public NetworkMessage(long timestamp, Packet<?> packet) {
-        this(timestamp);
-        this.packet = packet;
-    }
-
     public NetworkMessage(Packet<?> packet) {
         this(System.currentTimeMillis());
         this.packet = packet;

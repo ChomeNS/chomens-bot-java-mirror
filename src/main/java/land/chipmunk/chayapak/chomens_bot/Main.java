@@ -31,6 +31,9 @@ public class Main {
         if (!file.exists()) {
             // creates config file from default-config.yml
             InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("default-config.yml");
+
+            if (is == null) System.exit(1);
+
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             StringBuilder stringBuilder = new StringBuilder();
             while (reader.ready()) {
