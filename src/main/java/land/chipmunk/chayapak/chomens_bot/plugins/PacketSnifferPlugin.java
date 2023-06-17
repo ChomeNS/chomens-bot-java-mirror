@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 
+// normally unused in the main instance of the bot
 public class PacketSnifferPlugin extends Bot.Listener {
     @Getter @Setter private boolean enabled = false;
 
@@ -20,7 +21,16 @@ public class PacketSnifferPlugin extends Bot.Listener {
         if (!enabled) return;
 
         try {
-            writer = new OutputStreamWriter(new FileOutputStream("packets.log"), StandardCharsets.UTF_8);
+            writer = new OutputStreamWriter(
+                    new FileOutputStream(
+                            String.format(
+                                    "packets-%s-%s.log",
+                                    bot.options().host(),
+                                    bot.options().port()
+                            )
+                    ),
+                    StandardCharsets.UTF_8
+            );
         } catch (IOException e) {
             e.printStackTrace();
         }
