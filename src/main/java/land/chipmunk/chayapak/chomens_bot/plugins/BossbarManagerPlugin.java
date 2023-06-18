@@ -139,9 +139,12 @@ public class BossbarManagerPlugin extends Bot.Listener {
     }
 
     public void remove (String name) {
-        for (Map.Entry<UUID, BotBossBar> bossBar : bossBars.entrySet()) {
+        final Map<UUID, BotBossBar> mapCopy = new HashMap<>(bossBars);
+
+        for (Map.Entry<UUID, BotBossBar> bossBar : mapCopy.entrySet()) {
             if (bossBar.getValue().id.equals(bossBarPrefix + name)) bossBars.remove(bossBar.getValue().uuid);
         }
+
         bot.core().run("minecraft:bossbar remove " + bossBarPrefix + name);
     }
 
