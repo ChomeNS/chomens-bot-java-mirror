@@ -64,7 +64,6 @@ public class HelpCommand implements Command {
         return Component.empty()
                         .append(Component.text("Commands ").color(NamedTextColor.GRAY))
                         .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
-                        .append(Component.text("Length: ").color(NamedTextColor.GRAY))
                         .append(Component.text(list.size()).color(NamedTextColor.GREEN))
                         .append(Component.text(") ").color(NamedTextColor.DARK_GRAY))
                         .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
