@@ -35,8 +35,8 @@ public class ConsolePlugin {
         reader.option(LineReader.Option.DISABLE_EVENT_EXPANSION, true);
 
         for (Bot bot : allBots) {
-            prefix = bot.config().consolePrefixes().get("normalCommandsPrefix");
-            consoleServerPrefix = bot.config().consolePrefixes().get("consoleServerPrefix");
+            prefix = bot.config().consolePrefixes().normalCommandsPrefix();
+            consoleServerPrefix = bot.config().consolePrefixes().consoleServerPrefix();
 
             bot.console(this);
 

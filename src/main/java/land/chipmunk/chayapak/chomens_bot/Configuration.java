@@ -12,7 +12,7 @@ public class Configuration {
     @Getter public List<String> prefixes;
     @Getter public List<String> commandSpyPrefixes;
 
-    @Getter public Map<String, String> consolePrefixes;
+    @Getter public ConsolePrefixes consolePrefixes = new ConsolePrefixes();
 
     @Getter public Keys keys = new Keys();
 
@@ -28,6 +28,11 @@ public class Configuration {
     @Getter public List<String> trusted = new ArrayList<>();
     @Getter public SelfCare selfCare = new SelfCare();
     @Getter public BotOption[] bots = new BotOption[]{};
+
+    public static class ConsolePrefixes {
+        @Getter public String normalCommandsPrefix;
+        @Getter public String consoleServerPrefix;
+    }
 
     public static class Keys {
         @Getter public String normalKey;
