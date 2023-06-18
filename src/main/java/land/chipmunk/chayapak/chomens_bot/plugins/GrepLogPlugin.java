@@ -13,26 +13,24 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 public class GrepLogPlugin {
     private final Bot bot;
 
-    @Getter @Setter private Future<?> future = null;
+    @Getter @Setter private Thread thread = null;
 
     public GrepLogPlugin (Bot bot) {
         this.bot = bot;
     }
 
     public void query (String query, boolean regex, boolean ignoreCase) {
-        final Runnable runnable = new GrepLogRunnable(query, regex, ignoreCase);
-        future = bot.executorService().submit(runnable);
+        thread = new GrepLogThread(query, regex, ignoreCase);
     }
 
     // should i move this to another file or keep it here
-    public class GrepLogRunnable implements Runnable {
+    public class GrepLogThread extends Thread {
         private String query;
         private final boolean regex;
         private final boolean ignoreCase;
@@ -44,7 +42,7 @@ public class GrepLogPlugin {
         private int matches = 0;
         private final StringBuilder results = new StringBuilder();
 
-        public GrepLogRunnable(String query, boolean regex, boolean ignoreCase) {
+        public GrepLogThread(String query, boolean regex, boolean ignoreCase) {
             this.regex = regex;
             this.ignoreCase = ignoreCase;
 
@@ -181,8 +179,13 @@ public class GrepLogPlugin {
 
                 final String channelId = bot.discord().servers.get(bot.host() + ":" + bot.port());
                 final TextChannel logChannel = bot.discord().jda().getTextChannelById(channelId);
+
+                if (logChannel == null) return;
+
                 logChannel.sendMessage("Log query output").addFile(results.toString().getBytes(), "report.txt").queue();
             }
+
+            thread = null;
         }
     }
 }
