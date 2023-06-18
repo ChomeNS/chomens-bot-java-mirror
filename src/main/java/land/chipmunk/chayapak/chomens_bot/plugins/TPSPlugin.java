@@ -1,13 +1,14 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
+import com.github.steveice10.mc.protocol.data.game.BossBarColor;
+import com.github.steveice10.mc.protocol.data.game.BossBarDivision;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundSetTimePacket;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.BossBar;
-import land.chipmunk.chayapak.chomens_bot.data.BossBarColor;
-import land.chipmunk.chayapak.chomens_bot.data.BossBarStyle;
+import land.chipmunk.chayapak.chomens_bot.data.BotBossBar;
 import land.chipmunk.chayapak.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -49,15 +50,19 @@ public class TPSPlugin extends Bot.Listener {
 
     public void on () {
         enabled = true;
-        bot.bossbar().add(bossbarName, new BossBar(
+
+        final BotBossBar bossBar = new BotBossBar(
                 Component.empty(),
-                BossBarColor.WHITE,
+                "@a",
+                getBossBarColor(getTickRate()),
+                BossBarDivision.NOTCHES_20,
+                true,
+                20,
                 0,
-                "",
-                BossBarStyle.PROGRESS,
-                0,
-                false
-        ));
+                bot
+        );
+
+        bot.bossbar().add(bossbarName, bossBar);
     }
 
     public void off () {
@@ -79,15 +84,13 @@ public class TPSPlugin extends Bot.Listener {
                     Component.text(formatter.format(tickRate)).color(getColor(tickRate))
             ).color(NamedTextColor.DARK_GRAY);
 
-            final BossBar bossBar = bot.bossbar().get(bossbarName);
+            final BotBossBar bossBar = bot.bossbar().get(bossbarName);
 
-            bossBar.players("@a");
-            bossBar.name(component);
-            bossBar.color(getBossBarColor(tickRate));
-            bossBar.visible(true);
-            bossBar.style(BossBarStyle.NOTCHED_20);
-            bossBar.value((int) Math.round(tickRate));
-            bossBar.max(20);
+            if (bossBar == null) return;
+
+            bossBar.setTitle(component);
+            bossBar.setColor(getBossBarColor(tickRate));
+            bossBar.setValue((int) Math.round(tickRate));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -100,8 +103,8 @@ public class TPSPlugin extends Bot.Listener {
         else return NamedTextColor.DARK_RED;
     }
 
-    private String getBossBarColor (double tickRate) {
-        if (tickRate > 15) return BossBarColor.GREEN;
+    private BossBarColor getBossBarColor (double tickRate) {
+        if (tickRate > 15) return BossBarColor.LIME;
         else if (tickRate == 15) return BossBarColor.YELLOW;
         else if (tickRate < 15 && tickRate > 10) return BossBarColor.RED;
         else return BossBarColor.PURPLE;

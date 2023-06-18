@@ -11,6 +11,7 @@ import net.kyori.adventure.text.SelectorComponent;
 import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -22,6 +23,11 @@ import java.util.regex.Pattern;
 
 // totallynotskidded™ from chipmunkbot and added colors (ignore the ohio code please,..,.)
 public class ComponentUtilities {
+    // is this the best way to check?
+    public static boolean isEqual (Component component1, Component component2) {
+        return component1.toString().equals(component2.toString());
+    }
+
     private static final Map<String, String> language = loadJsonStringMap("language.json");
     private static final Map<String, String> keybinds = loadJsonStringMap("keybinds.json");
 

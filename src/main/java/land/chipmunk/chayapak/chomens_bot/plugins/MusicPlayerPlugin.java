@@ -1,10 +1,10 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
+import com.github.steveice10.mc.protocol.data.game.BossBarColor;
+import com.github.steveice10.mc.protocol.data.game.BossBarDivision;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.data.BossBar;
-import land.chipmunk.chayapak.chomens_bot.data.BossBarColor;
-import land.chipmunk.chayapak.chomens_bot.data.BossBarStyle;
+import land.chipmunk.chayapak.chomens_bot.data.BotBossBar;
 import land.chipmunk.chayapak.chomens_bot.song.*;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.MathUtilities;
@@ -114,17 +114,13 @@ public class MusicPlayerPlugin extends Bot.Listener {
                 if (currentSong.paused && ticksUntilPausedBossbar-- < 0) return;
                 else ticksUntilPausedBossbar = 20;
 
-                BossBar bossBar = bot.bossbar().get(bossbarName);
+                BotBossBar bossBar = bot.bossbar().get(bossbarName);
 
                 if (bossBar == null) bossBar = addBossBar();
 
-                bossBar.players(SELECTOR);
-                bossBar.name(generateBossbar());
-                bossBar.color(pitch > 0 ? BossBarColor.PURPLE : BossBarColor.YELLOW);
-                bossBar.visible(true);
-                bossBar.style(BossBarStyle.PROGRESS);
-                bossBar.value((int) Math.floor(currentSong.time * speed));
-                bossBar.max(currentSong.length);
+                bossBar.setTitle(generateBossbar());
+                bossBar.setColor(pitch > 0 ? BossBarColor.PURPLE : BossBarColor.YELLOW);
+                bossBar.setValue((int) Math.floor(currentSong.time * speed));
 
                 if (currentSong.paused) return;
 
@@ -185,15 +181,18 @@ public class MusicPlayerPlugin extends Bot.Listener {
         currentSong.play();
     }
 
-    public BossBar addBossBar () {
-        final BossBar bossBar = new BossBar(
+    public BotBossBar addBossBar () {
+        if (currentSong == null) return null;
+
+        final BotBossBar bossBar = new BotBossBar(
                 Component.empty(),
+                SELECTOR,
                 BossBarColor.WHITE,
+                BossBarDivision.NONE,
+                true,
+                (int) currentSong.length,
                 0,
-                "",
-                BossBarStyle.PROGRESS,
-                0,
-                false
+                bot
         );
 
         bot.bossbar().add(bossbarName, bossBar);
