@@ -37,6 +37,8 @@ public class FilterCommand implements Command {
     public List<String> alias() {
         final List<String> aliases = new ArrayList<>();
         aliases.add("filterplayer");
+        aliases.add("ban");
+        aliases.add("blacklist");
 
         return aliases;
     }
