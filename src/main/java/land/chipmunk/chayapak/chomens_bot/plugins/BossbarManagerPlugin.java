@@ -70,9 +70,9 @@ public class BossbarManagerPlugin extends Bot.Listener {
                 final BotBossBar botBossBar = get(bossBar.title);
 
                 if (botBossBar != null && botBossBar.color != packet.getColor()) {
-                    botBossBar.setColor(bossBar.color, true);
+                    botBossBar.setColor(botBossBar.color, true);
                 } else if (botBossBar != null && botBossBar.division != packet.getDivision()) {
-                    botBossBar.setDivision(bossBar.division, true);
+                    botBossBar.setDivision(botBossBar.division, true);
                 }
 
                 bossBar.color = packet.getColor();
