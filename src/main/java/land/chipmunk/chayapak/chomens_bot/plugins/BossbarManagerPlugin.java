@@ -10,7 +10,6 @@ import land.chipmunk.chayapak.chomens_bot.data.BotBossBar;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import lombok.Getter;
 import lombok.Setter;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.util.HashMap;
@@ -42,21 +41,50 @@ public class BossbarManagerPlugin extends Bot.Listener {
 
     public void packetReceived(ClientboundBossEventPacket packet) {
         switch (packet.getAction()) {
-            case ADD -> serverBossBars.put(
-                    packet.getUuid(),
-                    new BossBar(
-                            packet.getUuid(),
-                            packet.getTitle(),
-                            packet.getColor(),
-                            packet.getDivision(),
-                            packet.getHealth()
-                    )
-            );
+            case ADD -> {
+                final Map<UUID, BotBossBar> mapCopy = new HashMap<>(bossBars);
+
+                for (Map.Entry<UUID, BotBossBar> _bossBar : mapCopy.entrySet()) {
+                    final BotBossBar bossBar = _bossBar.getValue();
+
+                    if (ComponentUtilities.isEqual(bossBar.secret, packet.getTitle())) {
+                        bossBars.remove(_bossBar.getKey());
+
+                        bossBars.put(
+                                packet.getUuid(),
+                                new BotBossBar(
+                                        bossBar.title,
+                                        bossBar.players,
+                                        bossBar.color,
+                                        bossBar.division,
+                                        bossBar.visible,
+                                        bossBar.max,
+                                        bossBar.value,
+                                        bot
+                                )
+                        );
+
+                        bossBars.get(packet.getUuid()).id = bossBar.id;
+                        bossBars.get(packet.getUuid()).uuid = packet.getUuid();
+                    }
+                }
+
+                serverBossBars.put(
+                        packet.getUuid(),
+                        new BossBar(
+                                packet.getUuid(),
+                                packet.getTitle(),
+                                packet.getColor(),
+                                packet.getDivision(),
+                                packet.getHealth()
+                        )
+                );
+            }
             case REMOVE -> {
                 for (Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
                     final BotBossBar bossBar = _bossBar.getValue();
 
-                    if (ComponentUtilities.isEqual(bossBar.title, serverBossBars.get(packet.getUuid()).title)) {
+                    if (bossBar.uuid.equals(packet.getUuid())) {
                         addBossBar(bossBar.id, bossBar);
                         break;
                     }
@@ -67,7 +95,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
             case UPDATE_STYLE -> {
                 final BossBar bossBar = serverBossBars.get(packet.getUuid());
 
-                final BotBossBar botBossBar = get(bossBar.title);
+                final BotBossBar botBossBar = get(bossBar.uuid);
 
                 if (botBossBar != null && botBossBar.color != packet.getColor()) {
                     botBossBar.setColor(botBossBar.color, true);
@@ -81,9 +109,9 @@ public class BossbarManagerPlugin extends Bot.Listener {
             case UPDATE_TITLE -> {
                 final BossBar bossBar = serverBossBars.get(packet.getUuid());
 
-                final BotBossBar botBossBar = get(bossBar.title);
+                final BotBossBar botBossBar = get(bossBar.uuid);
 
-                if (!ComponentUtilities.isEqual(packet.getTitle(), bossBar.title) && botBossBar != null) {
+                if (botBossBar != null && !ComponentUtilities.isEqual(botBossBar.title, packet.getTitle())) {
                     botBossBar.setTitle(bossBar.title, true);
                 }
 
@@ -92,9 +120,12 @@ public class BossbarManagerPlugin extends Bot.Listener {
             case UPDATE_HEALTH -> {
                 final BossBar bossBar = serverBossBars.get(packet.getUuid());
 
-                final BotBossBar botBossBar = get(bossBar.title);
+                final BotBossBar botBossBar = get(bossBar.uuid);
 
-                if (botBossBar != null && botBossBar.value != packet.getHealth() * botBossBar.max) {
+                if (
+                        botBossBar != null &&
+                                botBossBar.value != packet.getHealth() * botBossBar.max
+                ) {
                     botBossBar.setValue(botBossBar.value, true);
                     botBossBar.setMax(botBossBar.max, true);
                 }
@@ -109,15 +140,18 @@ public class BossbarManagerPlugin extends Bot.Listener {
 
         bossBar.id = bossBarPrefix + name;
 
-        addBossBar(bossBar.id, bossBar);
-
         bossBars.put(bossBar.uuid, bossBar);
+
+        addBossBar(bossBar.id, bossBar, true);
     }
 
     private void addBossBar (String name, BotBossBar bossBar) {
+        addBossBar(name, bossBar, false);
+    }
+    private void addBossBar (String name, BotBossBar bossBar, boolean secret) {
         final String prefix = "minecraft:bossbar set " + name + " ";
 
-        final String stringifiedName = GsonComponentSerializer.gson().serialize(bossBar.title);
+        final String stringifiedName = GsonComponentSerializer.gson().serialize(secret ? bossBar.secret : bossBar.title);
 
         String division = null;
 
@@ -152,17 +186,15 @@ public class BossbarManagerPlugin extends Bot.Listener {
         for (Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
             final BotBossBar bossBar = _bossBar.getValue();
 
-            if (bossBar.id.equals(bossBarPrefix + name)) return bossBars.get(bossBar.uuid);
+            if (bossBar.id != null && bossBar.id.equals(bossBarPrefix + name)) return bossBars.get(bossBar.uuid);
         }
 
         return null;
     }
 
-    public BotBossBar get (Component component) {
+    public BotBossBar get (UUID uuid) {
         for (Map.Entry<UUID, BotBossBar> bossBar : bossBars.entrySet()) {
-            if (ComponentUtilities.isEqual(component, bossBar.getValue().title)) {
-                return bossBar.getValue();
-            }
+            if (bossBar.getValue().uuid == uuid) return bossBar.getValue();
         }
 
         return null;

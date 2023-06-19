@@ -10,7 +10,9 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import java.util.UUID;
 
 public class BotBossBar extends BossBar {
-    public final UUID uuid = UUID.randomUUID();
+    public UUID uuid = UUID.randomUUID(); // the random uuid will be temporary
+
+    public Component secret = Component.text(Math.random() * 69420);
 
     private final Bot bot;
 
@@ -26,7 +28,7 @@ public class BotBossBar extends BossBar {
             BossBarColor color,
             BossBarDivision division,
             boolean visible,
-            int max,
+            long max,
             int value,
             Bot bot
     ) {
