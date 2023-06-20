@@ -215,7 +215,7 @@ public class Bot {
             }
         });
 
-        session.connect();
+        session.connect(false);
     }
 
     public void addListener (Listener listener) {
