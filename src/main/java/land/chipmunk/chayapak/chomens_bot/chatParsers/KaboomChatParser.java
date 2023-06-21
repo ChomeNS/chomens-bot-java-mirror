@@ -9,7 +9,6 @@ import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerMessage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
-import net.kyori.adventure.text.format.Style;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,10 +20,6 @@ public class KaboomChatParser implements ChatParser {
         this.bot = bot;
     }
 
-    private static final Style empty = Style.empty();
-    private static final Component SEPARATOR_COLON = Component.text(":");
-    private static final Component SEPARATOR_SPACE = Component.space();
-
     @Override
     public PlayerMessage parse (Component message) {
         if (message instanceof TextComponent) return parse((TextComponent) message);
@@ -35,7 +30,7 @@ public class KaboomChatParser implements ChatParser {
     public PlayerMessage parse (TranslatableComponent message) {
         if (message.key().equals("%s")) {
             message.args();
-            if (message.args().size() == 1 && message.style().equals(empty)) return parse(message.args().get(0));
+            if (message.args().size() == 1 && message.style().isEmpty()) return parse(message.args().get(0));
         }
         return null;
     }
@@ -43,7 +38,7 @@ public class KaboomChatParser implements ChatParser {
     public PlayerMessage parse (TextComponent message) {
         List<Component> children = message.children();
 
-        if (!message.content().equals("") || !message.style().equals(empty) || children.size() < 3) return null;
+        if (!message.content().equals("") || !message.style().isEmpty() || children.size() < 3) return null;
 
         final Component prefix = children.get(0);
         Component displayName = Component.empty();
@@ -66,6 +61,9 @@ public class KaboomChatParser implements ChatParser {
     }
 
     private boolean isSeperatorAt (List<Component> children, int start) {
-        return children.get(start).equals(SEPARATOR_COLON) && children.get(start + 1).equals(SEPARATOR_SPACE);
+        return (
+                children.get(start).equals(Component.text(":")) ||
+                        children.get(start).equals(Component.text("§f:"))
+        ) && children.get(start + 1).equals(Component.space());
     }
 }
