@@ -86,8 +86,7 @@ public class ChatPlugin extends Bot.Listener {
             if (playerMessage != null) break;
         }
 
-        PlayerMessage commandSpyMessage;
-        commandSpyMessage = commandSpyParser.parse(component);
+        final PlayerMessage commandSpyMessage = commandSpyParser.parse(component);
 
         for (Listener listener : listeners) {
             listener.systemMessageReceived(component);
