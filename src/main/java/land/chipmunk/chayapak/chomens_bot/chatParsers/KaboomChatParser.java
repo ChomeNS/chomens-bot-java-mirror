@@ -8,7 +8,6 @@ import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerMessage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.TranslatableComponent;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,15 +22,6 @@ public class KaboomChatParser implements ChatParser {
     @Override
     public PlayerMessage parse (Component message) {
         if (message instanceof TextComponent) return parse((TextComponent) message);
-        if (message instanceof TranslatableComponent) return parse((TranslatableComponent) message);
-        return null;
-    }
-
-    public PlayerMessage parse (TranslatableComponent message) {
-        if (message.key().equals("%s")) {
-            message.args();
-            if (message.args().size() == 1 && message.style().isEmpty()) return parse(message.args().get(0));
-        }
         return null;
     }
 
