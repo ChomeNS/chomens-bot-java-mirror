@@ -9,22 +9,18 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class MinecraftChatParser implements ChatParser {
     private final Bot bot;
 
-    // ? Is such a mapping necessary?
-    private static final Map<String, String> typeMap = new HashMap<>();
+    private static final List<String> keys = new ArrayList<>();
     static {
-        typeMap.put("chat.type.text", "minecraft:chat");
-        typeMap.put("chat.type.announcement", "minecraft:say_command");
-        typeMap.put("commands.message.display.incoming", "minecraft:msg_command");
-        typeMap.put("chat.type.team.text", "minecraft:team_msg_command");
-        typeMap.put("chat.type.emote", "minecraft:emote_command");
+        keys.add("chat.type.text");
+        keys.add("chat.type.announcement");
+        keys.add("commands.message.display.incoming");
+        keys.add("chat.type.team.text");
+        keys.add("chat.type.emote");
     }
 
     public MinecraftChatParser (Bot bot) {
@@ -40,7 +36,7 @@ public class MinecraftChatParser implements ChatParser {
     public PlayerMessage parse (TranslatableComponent message) {
         final List<Component> args = message.args();
         final String key = message.key();
-        if (args.size() < 2 || !typeMap.containsKey(key)) return null;
+        if (args.size() < 2 || !keys.contains(key)) return null;
 
         final Component senderComponent = args.get(0);
         final Component contents = args.get(1);

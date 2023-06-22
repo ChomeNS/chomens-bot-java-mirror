@@ -12,12 +12,11 @@ import net.kyori.adventure.text.event.HoverEvent;
 import java.util.List;
 import java.util.UUID;
 
-// Might be a confusing name, but I mean the [Chat] chayapak custom chat thing or any other
-// custom chat that uses the `[%s] %s › %s` translation or %s %s › %s
-public class ChomeNSCustomChatParser implements ChatParser {
+// parses `[%s] %s › %s` translation or `%s %s › %s`
+public class U203aChatParser implements ChatParser {
     private final Bot bot;
 
-    public ChomeNSCustomChatParser (Bot bot) {
+    public U203aChatParser(Bot bot) {
         this.bot = bot;
     }
 
