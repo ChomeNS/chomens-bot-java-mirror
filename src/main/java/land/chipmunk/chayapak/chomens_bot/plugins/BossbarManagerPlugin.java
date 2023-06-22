@@ -7,6 +7,7 @@ import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.BossBar;
 import land.chipmunk.chayapak.chomens_bot.data.BotBossBar;
+import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,6 +33,13 @@ public class BossbarManagerPlugin extends Bot.Listener {
         this.bot = bot;
 
         bot.addListener(this);
+
+        bot.players().addListener(new PlayersPlugin.Listener() {
+            @Override
+            public void playerJoined(MutablePlayerListEntry target) {
+                BossbarManagerPlugin.this.playerJoined();
+            }
+        });
     }
 
     @Override
@@ -40,98 +48,110 @@ public class BossbarManagerPlugin extends Bot.Listener {
     }
 
     public void packetReceived(ClientboundBossEventPacket packet) {
-        switch (packet.getAction()) {
-            case ADD -> {
-                final Map<UUID, BotBossBar> mapCopy = new HashMap<>(bossBars);
+        try {
+            switch (packet.getAction()) {
+                case ADD -> {
+                    final Map<UUID, BotBossBar> mapCopy = new HashMap<>(bossBars);
 
-                for (Map.Entry<UUID, BotBossBar> _bossBar : mapCopy.entrySet()) {
-                    final BotBossBar bossBar = _bossBar.getValue();
+                    for (Map.Entry<UUID, BotBossBar> _bossBar : mapCopy.entrySet()) {
+                        final BotBossBar bossBar = _bossBar.getValue();
 
-                    if (ComponentUtilities.isEqual(bossBar.secret, packet.getTitle())) {
-                        bossBars.remove(_bossBar.getKey());
+                        if (ComponentUtilities.isEqual(bossBar.secret, packet.getTitle())) {
+                            bossBars.remove(_bossBar.getKey());
 
-                        bossBars.put(
-                                packet.getUuid(),
-                                new BotBossBar(
-                                        bossBar.title,
-                                        bossBar.players,
-                                        bossBar.color,
-                                        bossBar.division,
-                                        bossBar.visible,
-                                        bossBar.max,
-                                        bossBar.value,
-                                        bot
-                                )
-                        );
+                            bossBars.put(
+                                    packet.getUuid(),
+                                    new BotBossBar(
+                                            bossBar.title,
+                                            bossBar.players,
+                                            bossBar.color,
+                                            bossBar.division,
+                                            bossBar.visible,
+                                            bossBar.max,
+                                            bossBar.value,
+                                            bot
+                                    )
+                            );
 
-                        bossBars.get(packet.getUuid()).id = bossBar.id;
-                        bossBars.get(packet.getUuid()).uuid = packet.getUuid();
+                            bossBars.get(packet.getUuid()).id = bossBar.id;
+                            bossBars.get(packet.getUuid()).uuid = packet.getUuid();
+                        }
                     }
+
+                    serverBossBars.put(
+                            packet.getUuid(),
+                            new BossBar(
+                                    packet.getUuid(),
+                                    packet.getTitle(),
+                                    packet.getColor(),
+                                    packet.getDivision(),
+                                    packet.getHealth()
+                            )
+                    );
                 }
+                case REMOVE -> {
+                    for (Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
+                        final BotBossBar bossBar = _bossBar.getValue();
 
-                serverBossBars.put(
-                        packet.getUuid(),
-                        new BossBar(
-                                packet.getUuid(),
-                                packet.getTitle(),
-                                packet.getColor(),
-                                packet.getDivision(),
-                                packet.getHealth()
-                        )
-                );
-            }
-            case REMOVE -> {
-                for (Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
-                    final BotBossBar bossBar = _bossBar.getValue();
-
-                    if (bossBar.uuid.equals(packet.getUuid())) {
-                        addBossBar(bossBar.id, bossBar);
-                        break;
+                        if (bossBar.uuid.equals(packet.getUuid())) {
+                            addBossBar(bossBar.id, bossBar);
+                            break;
+                        }
                     }
+
+                    serverBossBars.remove(packet.getUuid());
                 }
+                case UPDATE_STYLE -> {
+                    final BossBar bossBar = serverBossBars.get(packet.getUuid());
 
-                serverBossBars.remove(packet.getUuid());
-            }
-            case UPDATE_STYLE -> {
-                final BossBar bossBar = serverBossBars.get(packet.getUuid());
+                    final BotBossBar botBossBar = get(bossBar.uuid);
 
-                final BotBossBar botBossBar = get(bossBar.uuid);
+                    if (botBossBar != null && botBossBar.color != packet.getColor()) {
+                        botBossBar.setColor(botBossBar.color, true);
+                    } else if (botBossBar != null && botBossBar.division != packet.getDivision()) {
+                        botBossBar.setDivision(botBossBar.division, true);
+                    }
 
-                if (botBossBar != null && botBossBar.color != packet.getColor()) {
-                    botBossBar.setColor(botBossBar.color, true);
-                } else if (botBossBar != null && botBossBar.division != packet.getDivision()) {
-                    botBossBar.setDivision(botBossBar.division, true);
+                    bossBar.color = packet.getColor();
+                    bossBar.division = packet.getDivision();
                 }
+                case UPDATE_TITLE -> {
+                    final BossBar bossBar = serverBossBars.get(packet.getUuid());
 
-                bossBar.color = packet.getColor();
-                bossBar.division = packet.getDivision();
-            }
-            case UPDATE_TITLE -> {
-                final BossBar bossBar = serverBossBars.get(packet.getUuid());
+                    final BotBossBar botBossBar = get(bossBar.uuid);
 
-                final BotBossBar botBossBar = get(bossBar.uuid);
+                    if (botBossBar != null && !ComponentUtilities.isEqual(botBossBar.title, packet.getTitle())) {
+                        botBossBar.setTitle(bossBar.title, true);
+                    }
 
-                if (botBossBar != null && !ComponentUtilities.isEqual(botBossBar.title, packet.getTitle())) {
-                    botBossBar.setTitle(bossBar.title, true);
+                    bossBar.title = packet.getTitle();
                 }
+                case UPDATE_HEALTH -> {
+                    final BossBar bossBar = serverBossBars.get(packet.getUuid());
 
-                bossBar.title = packet.getTitle();
-            }
-            case UPDATE_HEALTH -> {
-                final BossBar bossBar = serverBossBars.get(packet.getUuid());
+                    final BotBossBar botBossBar = get(bossBar.uuid);
 
-                final BotBossBar botBossBar = get(bossBar.uuid);
+                    if (
+                            botBossBar != null &&
+                                    botBossBar.value != packet.getHealth() * botBossBar.max
+                    ) {
+                        botBossBar.setValue(botBossBar.value, true);
+                        botBossBar.setMax(botBossBar.max, true);
+                    }
 
-                if (
-                        botBossBar != null &&
-                                botBossBar.value != packet.getHealth() * botBossBar.max
-                ) {
-                    botBossBar.setValue(botBossBar.value, true);
-                    botBossBar.setMax(botBossBar.max, true);
+                    bossBar.health = packet.getHealth();
                 }
-
-                bossBar.health = packet.getHealth();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void playerJoined () {
+        for (Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
+            final BotBossBar bossBar = _bossBar.getValue();
+
+            bossBar.setPlayers(bossBar.players);
         }
     }
 
