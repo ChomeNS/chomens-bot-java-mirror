@@ -81,7 +81,7 @@ public class PlayersPlugin extends Bot.Listener {
 
     public final MutablePlayerListEntry getEntry (String username) {
         for (MutablePlayerListEntry candidate : list) {
-            if (candidate.profile().getName().equals(username)) {
+            if (getName(candidate).equals(username)) {
                 return candidate;
             }
         }
@@ -119,6 +119,10 @@ public class PlayersPlugin extends Bot.Listener {
         target.listed(newEntry.isListed());
     }
 
+    private String getName(MutablePlayerListEntry target) {
+        return bot.options().creayun() ? target.profile().getName().replaceAll("§.", "") : target.profile().getName();
+    }
+
     private void addPlayer (PlayerListEntry newEntry) {
         final MutablePlayerListEntry duplicate = getEntry(newEntry);
         if (duplicate != null) list.remove(duplicate);
@@ -131,13 +135,13 @@ public class PlayersPlugin extends Bot.Listener {
             for (Listener listener : listeners) { listener.playerJoined(target); }
 
             // should this be here?
-            if (playersObject.has(target.profile().getName())) return;
+            if (playersObject.has(getName(target))) return;
 
             final JsonObject object = new JsonObject();
             object.addProperty("uuid", target.profile().getIdAsString());
             object.add("lastSeen", new JsonObject());
 
-            playersObject.add(bot.options().creayun() ? target.profile().getName().replaceAll("§.", "") : target.profile().getName(), object);
+            playersObject.add(getName(target), object);
 
             PersistentDataUtilities.put("players", playersObject);
         } else for (Listener listener : listeners) { listener.playerUnVanished(target); }
@@ -197,9 +201,9 @@ public class PlayersPlugin extends Bot.Listener {
             for (Listener listener : listeners) { listener.playerLeft(target); }
 
             // should this be here?
-            if (!playersObject.has(target.profile().getName())) return packet;
+            if (!playersObject.has(getName(target))) return packet;
 
-            final JsonObject player = playersObject.get(target.profile().getName()).getAsJsonObject();
+            final JsonObject player = playersObject.get(getName(target)).getAsJsonObject();
 
             if (player.has("lastSeen")) player.remove("lastSeen");
 
