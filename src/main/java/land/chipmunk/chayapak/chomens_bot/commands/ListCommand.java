@@ -51,7 +51,9 @@ public class ListCommand implements Command {
             playersComponent.add(
                     Component.translatable(
                             "%s › %s",
-                            entry.displayName()
+                            entry.displayName() == null ?
+                                    Component.text(entry.profile().getName()).color(ColorUtilities.getColorByString(bot.config().colorPalette().username())) :
+                                    entry.displayName()
                                     .hoverEvent(
                                             HoverEvent.showText(
                                                     Component
