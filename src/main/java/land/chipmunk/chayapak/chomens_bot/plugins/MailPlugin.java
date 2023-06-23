@@ -1,9 +1,13 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.Mail;
 import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
+import land.chipmunk.chayapak.chomens_bot.util.PersistentDataUtilities;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -14,8 +18,15 @@ import java.util.List;
 public class MailPlugin extends PlayersPlugin.Listener {
     private final Bot bot;
 
-    // TODO: make this persistent
-    @Getter private static final List<Mail> mails = new ArrayList<>();
+    @Getter private static JsonArray mails = new JsonArray();
+
+    private final Gson gson = new Gson();
+
+    static {
+        if (PersistentDataUtilities.jsonObject.has("mails")) {
+            mails = PersistentDataUtilities.jsonObject.get("mails").getAsJsonArray();
+        }
+    }
 
     public MailPlugin (Bot bot) {
         this.bot = bot;
@@ -29,10 +40,16 @@ public class MailPlugin extends PlayersPlugin.Listener {
 
         final List<String> sendTos = new ArrayList<>(); // confusing name,.,.
 
-        for (Mail mail : mails) sendTos.add(mail.sentTo());
+        for (JsonElement mailElement : mails) {
+            final Mail mail = gson.fromJson(mailElement, Mail.class);
+
+            sendTos.add(mail.sentTo());
+        }
 
         boolean shouldSend = false;
-        for (Mail mail : mails) {
+        for (JsonElement mailElement : mails) {
+            final Mail mail = gson.fromJson(mailElement, Mail.class);
+
             if (mail.sentTo().equals(name)) {
                 shouldSend = true;
                 break;
@@ -54,6 +71,8 @@ public class MailPlugin extends PlayersPlugin.Listener {
     }
 
     public void send (Mail mail) {
-        mails.add(mail);
+        mails.add(gson.fromJson(gson.toJson(mail), JsonElement.class)); // is this the best way?
+
+        PersistentDataUtilities.put("mails", mails);
     }
 }

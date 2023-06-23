@@ -10,11 +10,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 // totallynotskidded™ from HBot
-public class LoggerUtilities {
+public class FileLoggerUtilities {
     public static File logDir = new File("logs");
     public static File logFile = new File(logDir, "log.txt");
     public static OutputStreamWriter logWriter;

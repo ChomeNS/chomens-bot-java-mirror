@@ -1,10 +1,13 @@
 package land.chipmunk.chayapak.chomens_bot.commands;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.data.FilteredPlayer;
+import land.chipmunk.chayapak.chomens_bot.plugins.FilterPlugin;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
@@ -73,6 +76,8 @@ public class FilterCommand implements Command {
             args = Arrays.copyOfRange(_args, 2, _args.length);
         }
 
+        final Gson gson = new Gson();
+
         switch (args[0]) {
             case "add" -> {
                 final String player = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
@@ -105,7 +110,9 @@ public class FilterCommand implements Command {
                 final List<Component> filtersComponents = new ArrayList<>();
 
                 int index = 0;
-                for (FilteredPlayer player : bot.filter().filteredPlayers()) {
+                for (JsonElement playerElement : FilterPlugin.filteredPlayers()) {
+                    final FilteredPlayer player = gson.fromJson(playerElement, FilteredPlayer.class);
+
                     filtersComponents.add(
                             Component.translatable(
                                     "%s › %s",
@@ -120,7 +127,7 @@ public class FilterCommand implements Command {
                 return Component.empty()
                         .append(Component.text("Filtered players ").color(NamedTextColor.GREEN))
                         .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
-                        .append(Component.text(bot.filter().filteredPlayers().size()).color(NamedTextColor.GRAY))
+                        .append(Component.text(FilterPlugin.filteredPlayers().size()).color(NamedTextColor.GRAY))
                         .append(Component.text(")").color(NamedTextColor.DARK_GRAY))
                         .append(Component.newline())
                         .append(

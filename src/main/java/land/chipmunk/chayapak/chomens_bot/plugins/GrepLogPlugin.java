@@ -2,7 +2,7 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
-import land.chipmunk.chayapak.chomens_bot.util.LoggerUtilities;
+import land.chipmunk.chayapak.chomens_bot.util.FileLoggerUtilities;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -75,7 +75,7 @@ public class GrepLogPlugin {
                     ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
             );
 
-            final File[] fileList = LoggerUtilities.logDir.listFiles();
+            final File[] fileList = FileLoggerUtilities.logDir.listFiles();
 
             Arrays.sort(fileList, Comparator.comparing(File::getName)); // VERY IMPORTANT
 

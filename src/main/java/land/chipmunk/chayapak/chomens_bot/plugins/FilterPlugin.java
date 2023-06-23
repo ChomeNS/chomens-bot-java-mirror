@@ -1,23 +1,33 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.data.FilteredPlayer;
+import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerMessage;
+import land.chipmunk.chayapak.chomens_bot.util.PersistentDataUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.UUIDUtilities;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class FilterPlugin extends PlayersPlugin.Listener {
     private final Bot bot;
 
-    @Getter private final List<FilteredPlayer> filteredPlayers = new ArrayList<>();
+    @Getter private static JsonArray filteredPlayers = new JsonArray();
+
+    private final Gson gson = new Gson();
+
+    static {
+        if (PersistentDataUtilities.jsonObject.has("filters")) {
+            filteredPlayers = PersistentDataUtilities.jsonObject.get("filters").getAsJsonArray();
+        }
+    }
 
     public FilterPlugin (Bot bot) {
         this.bot = bot;
@@ -43,7 +53,9 @@ public class FilterPlugin extends PlayersPlugin.Listener {
         // mess
         // also regex and ignorecase codes from greplog plugin
         FilteredPlayer filteredPlayer = null;
-        for (FilteredPlayer _filteredPlayer : filteredPlayers) {
+        for (JsonElement filteredPlayerElement : filteredPlayers) {
+            final FilteredPlayer _filteredPlayer = gson.fromJson(filteredPlayerElement, FilteredPlayer.class);
+
             if (_filteredPlayer.regex) {
                 Pattern pattern = null;
                 if (_filteredPlayer.ignoreCase) {
@@ -128,7 +140,9 @@ public class FilterPlugin extends PlayersPlugin.Listener {
     }
 
     public void add (String playerName, boolean regex, boolean ignoreCase) {
-        filteredPlayers.add(new FilteredPlayer(playerName, regex, ignoreCase));
+        filteredPlayers.add(gson.fromJson(gson.toJson(new FilteredPlayer(playerName, regex, ignoreCase)), JsonElement.class));
+
+        PersistentDataUtilities.put("filters", filteredPlayers);
 
         final MutablePlayerListEntry target = bot.players().getEntry(playerName); // fix not working for regex and ignorecase
 
@@ -139,10 +153,18 @@ public class FilterPlugin extends PlayersPlugin.Listener {
     }
 
     public FilteredPlayer remove (int index) {
-        return filteredPlayers.remove(index);
+        final JsonElement element = filteredPlayers.remove(index);
+
+        PersistentDataUtilities.put("filters", filteredPlayers);
+
+        return gson.fromJson(element, FilteredPlayer.class);
     }
 
     public void clear () {
-        filteredPlayers.clear();
+        for (int i = 0; i <= filteredPlayers.size(); i++) {
+            filteredPlayers.remove(i);
+        }
+
+        PersistentDataUtilities.put("filters", filteredPlayers);
     }
 }

@@ -8,11 +8,14 @@ import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundPl
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.packet.Packet;
+import com.google.gson.JsonObject;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.util.PersistentDataUtilities;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -24,8 +27,17 @@ public class PlayersPlugin extends Bot.Listener {
 
     private final List<Listener> listeners = new ArrayList<>();
 
+    @Getter private static JsonObject playersObject = new JsonObject();
+
+    static {
+        if (PersistentDataUtilities.jsonObject.has("players")) {
+            playersObject = PersistentDataUtilities.jsonObject.get("players").getAsJsonObject();
+        }
+    }
+
     public PlayersPlugin (Bot bot) {
         this.bot = bot;
+
         bot.addListener(this);
     }
 
@@ -115,8 +127,20 @@ public class PlayersPlugin extends Bot.Listener {
 
         list.add(target);
 
-        if (duplicate == null) for (Listener listener : listeners) { listener.playerJoined(target); }
-        else for (Listener listener : listeners) { listener.playerUnVanished(target); }
+        if (duplicate == null) {
+            for (Listener listener : listeners) { listener.playerJoined(target); }
+
+            // should this be here?
+            if (playersObject.has(target.profile().getName())) return;
+
+            final JsonObject object = new JsonObject();
+            object.addProperty("uuid", target.profile().getIdAsString());
+            object.add("lastSeen", new JsonObject());
+
+            playersObject.add(target.profile().getName(), object);
+
+            PersistentDataUtilities.put("players", playersObject);
+        } else for (Listener listener : listeners) { listener.playerUnVanished(target); }
     }
 
     private void updateGamemode (PlayerListEntry newEntry) {
@@ -171,6 +195,21 @@ public class PlayersPlugin extends Bot.Listener {
             list.remove(target);
 
             for (Listener listener : listeners) { listener.playerLeft(target); }
+
+            // should this be here?
+            if (!playersObject.has(target.profile().getName())) return packet;
+
+            final JsonObject player = playersObject.get(target.profile().getName()).getAsJsonObject();
+
+            if (player.has("lastSeen")) player.remove("lastSeen");
+
+            final JsonObject object = new JsonObject();
+            object.addProperty("time", Instant.now().toEpochMilli());
+            object.addProperty("server", bot.host() + ":" + bot.port());
+
+            player.add("lastSeen", object);
+
+            PersistentDataUtilities.put("players", playersObject);
 
             return packet;
         });

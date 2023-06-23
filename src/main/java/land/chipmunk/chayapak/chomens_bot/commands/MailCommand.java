@@ -2,6 +2,8 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 
 import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
 import com.github.steveice10.opennbt.tag.builtin.StringTag;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
@@ -11,6 +13,7 @@ import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.plugins.MailPlugin;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
+import land.chipmunk.chayapak.chomens_bot.util.PersistentDataUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
@@ -18,10 +21,10 @@ import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,12 +62,16 @@ public class MailCommand implements Command {
 
         final MutablePlayerListEntry sender = context.sender();
 
+        final Gson gson = new Gson();
+
         // kinda messy ngl
 
         switch (args[0]) {
             case "send" -> {
                 int senderMailsSentTotal = 0;
-                for (Mail mail : MailPlugin.mails()) {
+                for (JsonElement mailElement : MailPlugin.mails()) {
+                    final Mail mail = gson.fromJson(mailElement, Mail.class);
+
                     if (mail.sentBy() == null) continue;
 
                     if (!mail.sentBy().equals(sender.profile().getName())) continue;
@@ -77,7 +84,7 @@ public class MailCommand implements Command {
                         new Mail(
                                 sender.profile().getName(),
                                 args[1],
-                                DateTime.now(),
+                                Instant.now().toEpochMilli(),
                                 bot.host() + ":" + bot.port(),
                                 String.join(" ", Arrays.copyOfRange(args, 2, args.length))
                         )
@@ -87,7 +94,9 @@ public class MailCommand implements Command {
             }
             case "sendselecteditem" -> {
                 int senderMailsSentTotal = 0;
-                for (Mail mail : MailPlugin.mails()) {
+                for (JsonElement mailElement : MailPlugin.mails()) {
+                    final Mail mail = gson.fromJson(mailElement, Mail.class);
+
                     if (!mail.sentTo().equals(sender.profile().getName())) continue;
                     senderMailsSentTotal++;
                 }
@@ -130,7 +139,7 @@ public class MailCommand implements Command {
                             new Mail(
                                     sender.profile().getName(),
                                     args[1],
-                                    DateTime.now(),
+                                    Instant.now().toEpochMilli(),
                                     bot.host() + ":" + bot.port(),
                                     value.substring(1).substring(0, value.length() - 2)
                             )
@@ -149,7 +158,9 @@ public class MailCommand implements Command {
                 // TODO: use less for loops?
 
                 int senderMailSize = 0;
-                for (Mail mail : MailPlugin.mails()) {
+                for (JsonElement mailElement : MailPlugin.mails()) {
+                    final Mail mail = gson.fromJson(mailElement, Mail.class);
+
                     if (!mail.sentTo().equals(sender.profile().getName())) continue;
                     senderMailSize++;
                 }
@@ -159,7 +170,9 @@ public class MailCommand implements Command {
                 final List<Component> mailsComponent = new ArrayList<>();
 
                 int i = 1;
-                for (Mail mail : MailPlugin.mails()) {
+                for (JsonElement mailElement : MailPlugin.mails()) {
+                    final Mail mail = gson.fromJson(mailElement, Mail.class);
+
                     if (!mail.sentTo().equals(sender.profile().getName())) continue;
 
                     final DateTimeFormatter formatter = DateTimeFormat.forPattern("MMMM d, YYYY, hh:mm:ss a Z");
@@ -213,8 +226,13 @@ public class MailCommand implements Command {
                     context.sendOutput(component);
                 }
 
-                // thanks https://www.baeldung.com/java-concurrentmodificationexception#3-using-removeif:~:text=3.3.%20Using%20removeIf()
-                MailPlugin.mails().removeIf(mail -> mail.sentTo().equals(sender.profile().getName()));
+                for (JsonElement mailElement : MailPlugin.mails().deepCopy()) {
+                    final Mail mail = gson.fromJson(mailElement, Mail.class);
+
+                    if (mail.sentTo().equals(sender.profile().getName())) MailPlugin.mails().remove(mailElement);
+                }
+
+                PersistentDataUtilities.put("mails", MailPlugin.mails());
 
                 return null;
             }

@@ -6,9 +6,9 @@ import org.joda.time.DateTime;
 
 @AllArgsConstructor
 public class Mail {
-    @Getter private final String sentBy;
-    @Getter private final String sentTo;
-    @Getter private final DateTime timeSent;
-    @Getter private final String server;
-    @Getter private final String contents;
+    @Getter private String sentBy;
+    @Getter private String sentTo;
+    @Getter private long timeSent;
+    @Getter private String server;
+    @Getter private String contents;
 }
