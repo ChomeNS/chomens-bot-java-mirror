@@ -58,6 +58,8 @@ public class MailCommand implements Command {
     }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+        if (args.length < 1) return Component.text("Not enough arguments").color(NamedTextColor.RED);
+
         final Bot bot = context.bot();
 
         final MutablePlayerListEntry sender = context.sender();

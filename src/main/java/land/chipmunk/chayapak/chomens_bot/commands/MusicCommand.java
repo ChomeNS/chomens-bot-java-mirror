@@ -62,6 +62,8 @@ public class MusicCommand implements Command {
     }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+        if (args.length < 1) return Component.text("Not enough arguments").color(NamedTextColor.RED);
+
         root = Path.of(MusicPlayerPlugin.SONG_DIR.getPath());
         return switch (args[0]) {
             case "play", "playurl", "playnbs", "playnbsurl" -> play(context, args);
