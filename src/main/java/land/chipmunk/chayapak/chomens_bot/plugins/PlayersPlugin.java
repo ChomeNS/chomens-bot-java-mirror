@@ -137,7 +137,7 @@ public class PlayersPlugin extends Bot.Listener {
             object.addProperty("uuid", target.profile().getIdAsString());
             object.add("lastSeen", new JsonObject());
 
-            playersObject.add(target.profile().getName(), object);
+            playersObject.add(bot.options().creayun() ? target.profile().getName().replaceAll("§.", "") : target.profile().getName(), object);
 
             PersistentDataUtilities.put("players", playersObject);
         } else for (Listener listener : listeners) { listener.playerUnVanished(target); }

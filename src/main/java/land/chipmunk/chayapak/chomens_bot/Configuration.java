@@ -114,6 +114,7 @@ public class Configuration {
         @Getter public int port;
         @Getter public String username;
         @Getter public boolean kaboom = false;
+        @Getter public boolean creayun = false;
         @Getter public String serverName;
         @Getter @Setter public boolean useCore = true;
         @Getter @Setter public boolean useChat = false;

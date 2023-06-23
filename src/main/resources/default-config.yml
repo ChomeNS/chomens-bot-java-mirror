@@ -83,7 +83,8 @@ selfCare:
   username: true # MIGHT cause problem(s) if set to false (not tested,.,.)
 bots:
   # username - optional, if not specified it will just use a random username
-  # kaboom - defaults to false mabe
+  # kaboom - defaults to false
+  # creayun - same as kaboom
   # serverName - name it whatever you like, it will be used as server name in trusted broadcast and in console
   # useCore - if enabled it just sends the command using chat instead of using core. recommended to enable useChat too when this is enabled
   # useChat - when the bot tellraws it will chat instead of using the core to run tellraw
@@ -94,6 +95,7 @@ bots:
     port: 25565
     username: 'ChomeNS_Bot'
     kaboom: false
+    creayun: false
     serverName: 'Localhost'
     useCore: true
     useChat: false

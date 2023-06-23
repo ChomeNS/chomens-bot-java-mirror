@@ -29,7 +29,7 @@ public class CreayunChatParser implements ChatParser {
     public PlayerMessage parse (Component message) {
         final String stringified = ComponentUtilities.stringify(message);
 
-        if (stringified.length() > 512) return null; // will this fix the fard problem?
+        if (bot.options().creayun()) return null;
 
         final Matcher matcher = PATTERN.matcher(stringified);
 
