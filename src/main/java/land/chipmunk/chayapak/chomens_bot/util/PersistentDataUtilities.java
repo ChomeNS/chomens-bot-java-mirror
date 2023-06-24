@@ -37,7 +37,7 @@ public class PersistentDataUtilities {
         }
     }
 
-    public static void put (String property, JsonElement value) {
+    public static synchronized void put (String property, JsonElement value) {
         if (jsonObject.has(property)) jsonObject.remove(property);
         jsonObject.add(property, value);
 
@@ -51,7 +51,7 @@ public class PersistentDataUtilities {
         }
     }
 
-    public static void put (String property, String value) {
+    public static synchronized void put (String property, String value) {
         if (jsonObject.has(property)) jsonObject.remove(property);
         jsonObject.addProperty(property, value);
 
@@ -65,7 +65,7 @@ public class PersistentDataUtilities {
         }
     }
 
-    public static void put (String property, boolean value) {
+    public static synchronized void put (String property, boolean value) {
         if (jsonObject.has(property)) jsonObject.remove(property);
         jsonObject.addProperty(property, value);
 
@@ -79,7 +79,7 @@ public class PersistentDataUtilities {
         }
     }
 
-    public static void put (String property, int value) {
+    public static synchronized void put (String property, int value) {
         if (jsonObject.has(property)) jsonObject.remove(property);
         jsonObject.addProperty(property, value);
 
@@ -93,7 +93,7 @@ public class PersistentDataUtilities {
         }
     }
 
-    public static void put (String property, char value) {
+    public static synchronized void put (String property, char value) {
         if (jsonObject.has(property)) jsonObject.remove(property);
         jsonObject.addProperty(property, value);
 
