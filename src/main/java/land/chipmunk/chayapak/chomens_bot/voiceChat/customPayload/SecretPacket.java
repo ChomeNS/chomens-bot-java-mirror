@@ -1,4 +1,4 @@
-package land.chipmunk.chayapak.chomens_bot.voiceChat.packets;
+package land.chipmunk.chayapak.chomens_bot.voiceChat.customPayload;
 
 import land.chipmunk.chayapak.chomens_bot.data.voiceChat.Codec;
 import land.chipmunk.chayapak.chomens_bot.util.FriendlyByteBuf;

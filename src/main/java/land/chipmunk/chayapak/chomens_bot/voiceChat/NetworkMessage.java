@@ -39,7 +39,7 @@ public class NetworkMessage {
 
     static {
         packetRegistry = new HashMap<>();
-//        packetRegistry.put((byte) 0x1, MicPacket.class);
+        packetRegistry.put((byte) 0x1, MicPacket.class);
 //        packetRegistry.put((byte) 0x2, PlayerSoundPacket.class);
 //        packetRegistry.put((byte) 0x3, GroupSoundPacket.class);
 //        packetRegistry.put((byte) 0x4, LocationSoundPacket.class);

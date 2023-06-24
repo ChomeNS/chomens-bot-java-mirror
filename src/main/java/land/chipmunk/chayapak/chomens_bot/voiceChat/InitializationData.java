@@ -1,7 +1,7 @@
 package land.chipmunk.chayapak.chomens_bot.voiceChat;
 
 import land.chipmunk.chayapak.chomens_bot.data.voiceChat.Codec;
-import land.chipmunk.chayapak.chomens_bot.voiceChat.packets.SecretPacket;
+import land.chipmunk.chayapak.chomens_bot.voiceChat.customPayload.SecretPacket;
 import lombok.Getter;
 
 import java.util.UUID;

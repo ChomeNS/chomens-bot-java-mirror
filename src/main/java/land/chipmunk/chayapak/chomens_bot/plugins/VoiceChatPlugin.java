@@ -8,16 +8,22 @@ import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.packet.Packet;
 import io.netty.buffer.Unpooled;
 import land.chipmunk.chayapak.chomens_bot.Bot;
+import land.chipmunk.chayapak.chomens_bot.data.voiceChat.ClientGroup;
 import land.chipmunk.chayapak.chomens_bot.data.voiceChat.RawUdpPacket;
 import land.chipmunk.chayapak.chomens_bot.util.FriendlyByteBuf;
 import land.chipmunk.chayapak.chomens_bot.voiceChat.InitializationData;
 import land.chipmunk.chayapak.chomens_bot.voiceChat.NetworkMessage;
+import land.chipmunk.chayapak.chomens_bot.voiceChat.customPayload.JoinGroupPacket;
+import land.chipmunk.chayapak.chomens_bot.voiceChat.customPayload.SecretPacket;
 import land.chipmunk.chayapak.chomens_bot.voiceChat.packets.*;
+import lombok.Getter;
 
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
 
-// most of these codes are from the simple voice chat mod itself including the other voicechat classes
-// i didn't implement mic yet because my goal is to make `/voicechat test` work with the bot
+// ALMOST ALL of these codes are from the simple voice chat mod itself including the other voicechat classes
+// mic packet exists but is never sent because i am too lazy to implement the player + evilbot already has a voicechat music player
 public class VoiceChatPlugin extends Bot.Listener {
     private final Bot bot;
 
@@ -26,6 +32,8 @@ public class VoiceChatPlugin extends Bot.Listener {
     private InetSocketAddress socketAddress;
 
     private boolean running = false;
+
+    @Getter private List<ClientGroup> groups = new ArrayList<>();
 
     public VoiceChatPlugin(Bot bot) {
         this.bot = bot;
@@ -100,7 +108,34 @@ public class VoiceChatPlugin extends Bot.Listener {
                     }
                 }
             }).start();
+        } else if (_packet.getChannel().equals("voicechat:add_group")) {
+            final byte[] bytes = _packet.getData();
+            final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
+
+            final ClientGroup group = ClientGroup.fromBytes(buf);
+
+            groups.add(group);
         }
+    }
+
+    public void joinGroup (String group, String password) {
+        final ClientGroup[] clientGroups = groups
+                .stream()
+                .filter(eachGroup -> eachGroup.name().equals(group))
+                .toArray(ClientGroup[]::new);
+
+        if (clientGroups.length == 0) throw new RuntimeException("Group " + group + " doesn't exist");
+
+        final ClientGroup clientGroup = clientGroups[0];
+
+        final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+
+        new JoinGroupPacket(clientGroup.id(), password).toBytes(buf);
+
+        bot.session().send(new ServerboundCustomPayloadPacket(
+                "voicechat:set_group",
+                buf.array()
+        ));
     }
 
     public void sendToServer (NetworkMessage message) {
@@ -143,6 +178,8 @@ public class VoiceChatPlugin extends Bot.Listener {
     @Override
     public void disconnected(DisconnectedEvent event) {
         socket.close();
+
+        groups.clear();
 
         running = false;
     }
