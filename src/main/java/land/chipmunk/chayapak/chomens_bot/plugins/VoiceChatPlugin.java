@@ -66,10 +66,10 @@ public class VoiceChatPlugin extends Bot.Listener {
 
             final SecretPacket secretPacket = new SecretPacket().fromBytes(buf);
 
-            initializationData = new InitializationData(bot.options().host(), secretPacket);
+            initializationData = new InitializationData(bot.session().getHost(), secretPacket);
 
             try {
-                final InetAddress address = InetAddress.getByName(bot.options().host());
+                final InetAddress address = InetAddress.getByName(bot.session().getHost());
                 socketAddress = new InetSocketAddress(address, initializationData.serverPort());
             } catch (UnknownHostException e) {
                 throw new RuntimeException(e);
