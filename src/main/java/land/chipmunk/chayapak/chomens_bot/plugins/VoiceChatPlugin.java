@@ -114,7 +114,7 @@ public class VoiceChatPlugin extends Bot.Listener {
         }
     }
 
-    private static class VoiceChatSocketBase {
+    private class VoiceChatSocketBase {
         private final byte[] BUFFER = new byte[4096];
 
         public RawUdpPacket read (DatagramSocket socket) {
@@ -130,6 +130,8 @@ public class VoiceChatPlugin extends Bot.Listener {
                 System.arraycopy(packet.getData(), packet.getOffset(), data, 0, packet.getLength());
                 return new RawUdpPacket(data, packet.getSocketAddress(), timestamp);
             } catch (Exception e) {
+                if (!running) return null;
+
                 e.printStackTrace();
             }
 
@@ -145,7 +147,7 @@ public class VoiceChatPlugin extends Bot.Listener {
         running = false;
     }
 
-    private static class ClientVoiceChatSocket extends VoiceChatSocketBase {
+    private class ClientVoiceChatSocket extends VoiceChatSocketBase {
         private DatagramSocket socket;
 
         public void open() throws SocketException {
