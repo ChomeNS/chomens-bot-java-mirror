@@ -28,7 +28,9 @@ public class ComponentUtilities {
         return component1.toString().equals(component2.toString());
     }
 
+    // component parsing
     private static final Map<String, String> language = loadJsonStringMap("language.json");
+    private static final Map<String, String> voiceChatLanguage = loadJsonStringMap("voiceChatLanguage.json");
     private static final Map<String, String> keybinds = loadJsonStringMap("keybinds.json");
 
     public static final Pattern ARG_PATTERN = Pattern.compile("%(?:(\\d+)\\$)?([s%])");
@@ -84,7 +86,12 @@ public class ComponentUtilities {
     }
 
     private static String getOrReturnKey (String key) {
-        return ComponentUtilities.language.getOrDefault(key, key);
+        final String minecraftKey = language.get(key);
+        final String voiceChatKey = voiceChatLanguage.get(key);
+
+        if (minecraftKey != null) return minecraftKey;
+        else if (voiceChatKey != null) return voiceChatKey;
+        else return key;
     }
 
     public static String stringify (Component message) { return stringify(message, null); }
