@@ -62,7 +62,6 @@ public class Bot {
     @Getter private MusicPlayerPlugin music;
     @Getter private TPSPlugin tps;
     @Getter private EvalRunnerPlugin eval;
-    @Getter private ClearChatUsernamePlugin clearChatUsername;
     @Getter private TrustedPlugin trusted;
     @Getter private BruhifyPlugin bruhify;
     @Getter private GrepLogPlugin grepLog;
@@ -109,7 +108,6 @@ public class Bot {
         this.music = new MusicPlayerPlugin(this);
         this.tps = new TPSPlugin(this);
         this.eval = new EvalRunnerPlugin(this);
-        this.clearChatUsername = new ClearChatUsernamePlugin(this);
         this.trusted = new TrustedPlugin(this);
         this.bruhify = new BruhifyPlugin(this);
         this.grepLog = new GrepLogPlugin(this);
