@@ -17,6 +17,7 @@ import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
     @Getter @Setter private float speed = 1;
 
     private int ticksUntilPausedBossbar = 20;
+
+    private long nextBossBarUpdate = Instant.now().toEpochMilli();
 
     private final String bossbarName = "music";
 
@@ -118,9 +121,15 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                 if (bossBar == null) bossBar = addBossBar();
 
-                bossBar.setTitle(generateBossbar());
-                bossBar.setColor(pitch > 0 ? BossBarColor.PURPLE : BossBarColor.YELLOW);
-                bossBar.setValue((int) Math.floor(currentSong.time * speed));
+                final long currentTime = Instant.now().toEpochMilli();
+
+                if (currentTime >= nextBossBarUpdate) {
+                    bossBar.setTitle(generateBossbar());
+                    bossBar.setColor(pitch > 0 ? BossBarColor.PURPLE : BossBarColor.YELLOW);
+                    bossBar.setValue((int) Math.floor(currentSong.time * speed));
+
+                    nextBossBarUpdate = currentTime + 500;
+                }
 
                 if (currentSong.paused) return;
 
