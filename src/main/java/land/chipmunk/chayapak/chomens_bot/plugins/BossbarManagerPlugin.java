@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-// TODO: players can make the bossbar with the same exact component and fard the bossbar manager so mabe fix it
 // yes this has been rewritten to be not spammy
 public class BossbarManagerPlugin extends Bot.Listener {
     private final Bot bot;

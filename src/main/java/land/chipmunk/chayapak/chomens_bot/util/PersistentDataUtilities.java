@@ -3,8 +3,11 @@ package land.chipmunk.chayapak.chomens_bot.util;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import land.chipmunk.chayapak.chomens_bot.Main;
 
 import java.io.*;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class PersistentDataUtilities {
     public static File file = new File("persistent.json");
@@ -12,6 +15,8 @@ public class PersistentDataUtilities {
     private static FileWriter writer;
 
     public static JsonObject jsonObject = new JsonObject();
+
+    private static final ScheduledExecutorService executor = Main.executor;
 
     static {
         init();
@@ -35,75 +40,43 @@ public class PersistentDataUtilities {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        executor.scheduleAtFixedRate(PersistentDataUtilities::write, 0, 100, TimeUnit.MILLISECONDS);
+    }
+
+    private static void write () {
+        try {
+            writer = new FileWriter(file, false);
+
+            writer.write(jsonObject.toString());
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static synchronized void put (String property, JsonElement value) {
         if (jsonObject.has(property)) jsonObject.remove(property);
         jsonObject.add(property, value);
-
-        try {
-            writer = new FileWriter(file, false);
-
-            writer.write(jsonObject.toString());
-            writer.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public static synchronized void put (String property, String value) {
         if (jsonObject.has(property)) jsonObject.remove(property);
         jsonObject.addProperty(property, value);
-
-        try {
-            writer = new FileWriter(file, false);
-
-            writer.write(jsonObject.toString());
-            writer.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public static synchronized void put (String property, boolean value) {
         if (jsonObject.has(property)) jsonObject.remove(property);
         jsonObject.addProperty(property, value);
-
-        try {
-            writer = new FileWriter(file, false);
-
-            writer.write(jsonObject.toString());
-            writer.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public static synchronized void put (String property, int value) {
         if (jsonObject.has(property)) jsonObject.remove(property);
         jsonObject.addProperty(property, value);
-
-        try {
-            writer = new FileWriter(file, false);
-
-            writer.write(jsonObject.toString());
-            writer.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public static synchronized void put (String property, char value) {
         if (jsonObject.has(property)) jsonObject.remove(property);
         jsonObject.addProperty(property, value);
-
-        try {
-            writer = new FileWriter(file, false);
-
-            writer.write(jsonObject.toString());
-            writer.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
