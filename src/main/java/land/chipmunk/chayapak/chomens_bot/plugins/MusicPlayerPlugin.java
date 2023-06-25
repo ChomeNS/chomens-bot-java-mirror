@@ -113,12 +113,6 @@ public class MusicPlayerPlugin extends Bot.Listener {
                     currentSong.play();
                 }
 
-                if (
-                        bot.options().coreRateLimit().limit() != 0 &&
-                        bot.core().commandsPerSecond() > bot.options().coreRateLimit().limit()
-                ) currentSong.pause();
-                else currentSong.play();
-
                 if (currentSong.paused && ticksUntilPausedBossbar-- < 0) return;
                 else ticksUntilPausedBossbar = 20 - (((int) bot.tps().getTickRate()) - 20);
 
@@ -136,7 +130,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                     nextBossBarUpdate = currentTime + 500;
                 }
 
-                if (currentSong.paused) return;
+                if (currentSong.paused || bot.core().commandsPerSecond() > bot.options().coreRateLimit().limit()) return;
 
                 handlePlaying();
 
