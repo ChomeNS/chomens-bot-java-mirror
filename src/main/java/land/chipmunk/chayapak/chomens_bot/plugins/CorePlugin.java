@@ -6,7 +6,6 @@ import com.github.steveice10.mc.protocol.data.game.entity.player.Hand;
 import com.github.steveice10.mc.protocol.data.game.entity.player.PlayerAction;
 import com.github.steveice10.mc.protocol.data.game.level.block.BlockChangeEntry;
 import com.github.steveice10.mc.protocol.data.game.level.block.CommandBlockMode;
-import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundCommandsPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundBlockUpdatePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundLevelChunkWithLightPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundSectionBlocksUpdatePacket;
@@ -56,7 +55,7 @@ public class CorePlugin extends PositionPlugin.Listener {
 
     private final boolean kaboom;
 
-    @Getter private final List<String> queue = new ArrayList<>();
+    @Getter private int commandsPerSecond = 0;
 
     public CorePlugin (Bot bot) {
         this.bot = bot;
@@ -77,14 +76,14 @@ public class CorePlugin extends PositionPlugin.Listener {
 
         bot.position().addListener(this);
 
-        bot.tick().addListener(new TickPlugin.Listener() {
-            @Override
-            public void onTick() {
-                CorePlugin.this.onTick();
-            }
-        });
-
-        bot.executor().scheduleAtFixedRate(() -> commandsPerSecond = 0, 0, 1, TimeUnit.SECONDS);
+        if (bot.options().coreRateLimit().limit() != 0 && bot.options().coreRateLimit().reset() != 0) {
+            bot.executor().scheduleAtFixedRate(
+                    () -> commandsPerSecond = 0,
+                    0,
+                    bot.options().coreRateLimit().reset(),
+                    TimeUnit.MILLISECONDS
+            );
+        }
 
         bot.addListener(new Bot.Listener() {
             @Override
@@ -106,16 +105,6 @@ public class CorePlugin extends PositionPlugin.Listener {
         });
     }
 
-    private int commandsPerSecond = 0;
-
-    private void onTick () {
-        if (queue.isEmpty()) return;
-
-        forceRun(queue.get(0));
-
-        queue.remove(0);
-    }
-
     private void forceRun (String command) {
         bot.session().send(new ServerboundSetCommandBlockPacket(
                 absoluteCorePosition(),
@@ -133,8 +122,10 @@ public class CorePlugin extends PositionPlugin.Listener {
         if (!ready) return;
 
         if (bot.options().useCore()) {
-            if (commandsPerSecond >= 100) queue.add(command);
-            else forceRun(command);
+            if (bot.options().coreRateLimit().limit() != 0 && commandsPerSecond > bot.options().coreRateLimit().limit()) return;
+
+            forceRun(command);
+            commandsPerSecond++;
         } else if (command.length() < 256) {
             bot.chat().send("/" + command);
         }

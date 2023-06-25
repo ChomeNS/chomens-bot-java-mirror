@@ -210,16 +210,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
             if (bossBar.id != null && bossBar.id.equals(bossBarPrefix + name)) return bossBars.get(bossBar.uuid);
         }
 
-        return new BotBossBar(
-                Component.empty(),
-                "@a",
-                BossBarColor.WHITE,
-                BossBarDivision.NONE,
-                false,
-                0,
-                0,
-                bot
-        );
+        return null;
     }
 
     public BotBossBar get (UUID uuid) {
@@ -227,15 +218,6 @@ public class BossbarManagerPlugin extends Bot.Listener {
             if (bossBar.getValue().uuid == uuid) return bossBar.getValue();
         }
 
-        return new BotBossBar(
-                Component.empty(),
-                "@a",
-                BossBarColor.WHITE,
-                BossBarDivision.NONE,
-                false,
-                0,
-                0,
-                bot
-        );
+        return null;
     }
 }

@@ -7,6 +7,7 @@ import land.chipmunk.chayapak.chomens_bot.Main;
 
 import java.io.*;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class PersistentDataUtilities {
@@ -17,6 +18,8 @@ public class PersistentDataUtilities {
     public static JsonObject jsonObject = new JsonObject();
 
     private static final ScheduledExecutorService executor = Main.executor;
+
+    private static ScheduledFuture<?> future = null;
 
     static {
         init();
@@ -41,11 +44,21 @@ public class PersistentDataUtilities {
             e.printStackTrace();
         }
 
-        executor.scheduleAtFixedRate(PersistentDataUtilities::write, 0, 100, TimeUnit.MILLISECONDS);
+        future = executor.scheduleAtFixedRate(PersistentDataUtilities::write, 0, 100, TimeUnit.MILLISECONDS);
+
+        Runtime.getRuntime().addShutdownHook(
+                new Thread(() -> {
+                    future.cancel(true);
+
+                    write();
+                })
+        );
     }
 
     private static void write () {
         try {
+            writer.close();
+
             writer = new FileWriter(file, false);
 
             writer.write(jsonObject.toString());

@@ -90,6 +90,7 @@ bots:
   # useChat - when the bot tellraws it will chat instead of using the core to run tellraw
   # hasEssentials - if the server has essentials plugin just set it to true!! ! !!31
   # removeNamespaces - when the bot sends a command it will remove like `minecraft:` for example if set to true
+  # coreRateLimit - will ignore commands if reached the ratelimit
 
   - host: 'localhost'
     port: 25565
@@ -103,6 +104,9 @@ bots:
     reconnectDelay: 2000
     removeNamespaces: false
     chatQueueDelay: 125
+    coreRateLimit:
+      limit: 10
+      reset: 1000 # in milliseconds
   # or without the optional ones:
   # - host: 'localhost'
   #   port: 25565

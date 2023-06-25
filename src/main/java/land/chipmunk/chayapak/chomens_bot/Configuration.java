@@ -43,7 +43,7 @@ public class Configuration {
         @Getter public Position start = new Position();
         @Getter public Position end = new Position();
         @Getter public int refillInterval = (60 * 5) * 1000; // 5 minutes
-        @Getter public String customName = "[{\"text\":\"ChomeNS \",\"color\":\"yellow\"},{\"text\":\"Core\",\"color\":\"green\"},{\"text\":\"™\",\"color\":\"gold\"}]";
+        @Getter public String customName = "{\"text\":\"@\"}";
     }
 
     public static class Position {
@@ -122,5 +122,11 @@ public class Configuration {
         @Getter public int reconnectDelay = 2000;
         @Getter public boolean removeNamespaces = false;
         @Getter public int chatQueueDelay = 125;
+        @Getter public CoreRateLimit coreRateLimit = new CoreRateLimit();
+
+        public static class CoreRateLimit {
+            @Getter public int limit = 0;
+            @Getter public int reset = 0;
+        }
     }
 }
