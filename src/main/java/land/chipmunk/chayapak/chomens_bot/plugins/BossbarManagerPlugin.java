@@ -1,6 +1,7 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import com.github.steveice10.mc.protocol.data.game.BossBarColor;
+import com.github.steveice10.mc.protocol.data.game.BossBarDivision;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundBossEventPacket;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.packet.Packet;
@@ -11,6 +12,7 @@ import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.util.HashMap;
@@ -209,7 +211,16 @@ public class BossbarManagerPlugin extends Bot.Listener {
             if (bossBar.id != null && bossBar.id.equals(bossBarPrefix + name)) return bossBars.get(bossBar.uuid);
         }
 
-        return null;
+        return new BotBossBar(
+                Component.empty(),
+                "@a",
+                BossBarColor.WHITE,
+                BossBarDivision.NONE,
+                false,
+                0,
+                0,
+                bot
+        );
     }
 
     public BotBossBar get (UUID uuid) {
@@ -217,6 +228,15 @@ public class BossbarManagerPlugin extends Bot.Listener {
             if (bossBar.getValue().uuid == uuid) return bossBar.getValue();
         }
 
-        return null;
+        return new BotBossBar(
+                Component.empty(),
+                "@a",
+                BossBarColor.WHITE,
+                BossBarDivision.NONE,
+                false,
+                0,
+                0,
+                bot
+        );
     }
 }
