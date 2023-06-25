@@ -48,6 +48,8 @@ public class GenerateMazeCommand implements Command {
             final int width = Integer.parseInt(args[3]);
             final int height = Integer.parseInt(args[4]);
 
+            if (width > 100 || height > 100) return Component.text("Size is too big").color(NamedTextColor.RED);
+
             final MazeGenerator generator = new MazeGenerator(width, height);
 
             generator.generateMaze();
