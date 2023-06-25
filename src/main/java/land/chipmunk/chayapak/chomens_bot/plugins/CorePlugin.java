@@ -225,7 +225,7 @@ public class CorePlugin extends PositionPlugin.Listener {
     }
 
     public void packetReceived (ClientboundLevelChunkWithLightPacket packet) {
-        final Vector3i position = Vector3i.from(packet.getX() * 16, 0, packet.getZ() * 16); // mabe
+        final Vector3i position = Vector3i.from(packet.getX() * 16, coreStart.getY(), packet.getZ() * 16); // mabe
 
         if (isCore(position)) refill();
     }
