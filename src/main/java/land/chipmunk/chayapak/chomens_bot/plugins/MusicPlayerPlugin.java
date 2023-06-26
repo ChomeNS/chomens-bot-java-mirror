@@ -16,7 +16,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
-import java.time.Instant;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,8 +40,6 @@ public class MusicPlayerPlugin extends Bot.Listener {
     @Getter @Setter private float speed = 1;
 
     private int ticksUntilPausedBossbar = 20;
-
-    private long nextBossBarUpdate = Instant.now().toEpochMilli();
 
     private final String bossbarName = "music";
 
@@ -120,17 +118,13 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                 if (bossBar == null && bot.bossbar().enabled()) bossBar = addBossBar();
 
-                final long currentTime = Instant.now().toEpochMilli();
-
-                if (currentTime >= nextBossBarUpdate && bossBar != null) {
+                if (bot.bossbar().enabled()) {
                     bossBar.setTitle(generateBossbar());
                     bossBar.setColor(pitch > 0 ? BossBarColor.PURPLE : BossBarColor.YELLOW);
-                    bossBar.setValue((int) Math.floor(currentSong.time * speed));
-
-                    nextBossBarUpdate = currentTime + 500;
+                    bossBar.setValue((int) Math.floor(((double) currentSong.time / 1000) * speed));
                 }
 
-                if (currentSong.paused || bot.core().commandsPerSecond() > bot.options().coreRateLimit().limit()) return;
+                if (currentSong.paused || bot.core().isRateLimited()) return;
 
                 handlePlaying();
 
@@ -198,7 +192,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                 BossBarColor.WHITE,
                 BossBarDivision.NONE,
                 true,
-                (int) currentSong.length,
+                (int) currentSong.length / 1000,
                 0,
                 bot
         );
@@ -216,7 +210,26 @@ public class MusicPlayerPlugin extends Bot.Listener {
         Component component = Component.empty()
                 .append(Component.empty().append(currentSong.name).color(pitch > 0 ? NamedTextColor.LIGHT_PURPLE : NamedTextColor.GREEN))
                 .append(Component.text(" | ").color(NamedTextColor.DARK_GRAY))
-                .append(Component.translatable("%s / %s", formatTime((long) (currentSong.time * speed)).color(NamedTextColor.GRAY), formatTime(currentSong.length).color(NamedTextColor.GRAY)).color(NamedTextColor.DARK_GRAY));
+                .append(
+                        Component
+                                .translatable("%s / %s",
+                                        formatTime((long) (currentSong.time * speed)).color(NamedTextColor.GRAY),
+                                        formatTime(currentSong.length).color(NamedTextColor.GRAY)).color(NamedTextColor.DARK_GRAY)
+                );
+
+        if (!bot.core().hasRateLimit()) {
+            final DecimalFormat formatter = new DecimalFormat("#,###");
+
+            component = component
+                    .append(Component.text(" | ").color(NamedTextColor.DARK_GRAY))
+                    .append(
+                            Component.translatable(
+                                    "%s / %s",
+                                    Component.text(formatter.format(currentSong.position), NamedTextColor.GRAY),
+                                    Component.text(formatter.format(currentSong.size()), NamedTextColor.GRAY)
+                            ).color(NamedTextColor.DARK_GRAY)
+                    );
+        }
 
         if (currentSong.paused) {
             return component

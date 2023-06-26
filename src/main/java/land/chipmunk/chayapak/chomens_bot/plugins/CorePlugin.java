@@ -76,7 +76,7 @@ public class CorePlugin extends PositionPlugin.Listener {
 
         bot.position().addListener(this);
 
-        if (bot.options().coreRateLimit().limit() != 0 && bot.options().coreRateLimit().reset() != 0) {
+        if (hasRateLimit() && hasReset()) {
             bot.executor().scheduleAtFixedRate(
                     () -> commandsPerSecond = 0,
                     0,
@@ -105,6 +105,18 @@ public class CorePlugin extends PositionPlugin.Listener {
         });
     }
 
+    public boolean hasRateLimit () {
+        return bot.options().coreRateLimit().limit() > 0;
+    }
+
+    public boolean hasReset () {
+        return bot.options().coreRateLimit().reset() > 0;
+    }
+
+    public boolean isRateLimited () {
+        return commandsPerSecond > bot.options().coreRateLimit().limit();
+    }
+
     private void forceRun (String command) {
         bot.session().send(new ServerboundSetCommandBlockPacket(
                 absoluteCorePosition(),
@@ -122,10 +134,11 @@ public class CorePlugin extends PositionPlugin.Listener {
         if (!ready) return;
 
         if (bot.options().useCore()) {
-            if (bot.options().coreRateLimit().limit() != 0 && commandsPerSecond > bot.options().coreRateLimit().limit()) return;
+            if (isRateLimited() && hasRateLimit()) return;
 
             forceRun(command);
-            commandsPerSecond++;
+
+            if (hasRateLimit()) commandsPerSecond++;
         } else if (command.length() < 256) {
             bot.chat().send("/" + command);
         }
