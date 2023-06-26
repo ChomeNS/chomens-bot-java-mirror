@@ -5,6 +5,7 @@ import com.github.steveice10.mc.protocol.data.game.entity.object.Direction;
 import com.github.steveice10.mc.protocol.data.game.entity.player.Hand;
 import com.github.steveice10.mc.protocol.data.game.entity.player.PlayerAction;
 import com.github.steveice10.mc.protocol.data.game.level.block.BlockChangeEntry;
+import com.github.steveice10.mc.protocol.data.game.level.block.BlockEntityInfo;
 import com.github.steveice10.mc.protocol.data.game.level.block.CommandBlockMode;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundBlockUpdatePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundLevelChunkWithLightPacket;
@@ -193,7 +194,7 @@ public class CorePlugin extends PositionPlugin.Listener {
     public void packetReceived (ClientboundBlockUpdatePacket packet) {
         final BlockChangeEntry entry = packet.getEntry();
 
-        if (isCommandBlock(entry.getBlock())) return;
+        if (isCommandBlockUpdate(entry.getBlock())) return;
 
         final Vector3i position = entry.getPosition();
 
@@ -208,7 +209,7 @@ public class CorePlugin extends PositionPlugin.Listener {
         for (BlockChangeEntry entry : entries) {
             final Vector3i position = entry.getPosition();
 
-            if (isCommandBlock(entry.getBlock())) return;
+            if (isCommandBlockUpdate(entry.getBlock())) continue;
 
             if (isCore(position)) willRefill = true;
         }
@@ -216,7 +217,7 @@ public class CorePlugin extends PositionPlugin.Listener {
         if (willRefill) refill();
     }
 
-    private boolean isCommandBlock (int blockState) {
+    private boolean isCommandBlockUpdate(int blockState) {
         return
                 // command block
                 (
@@ -238,9 +239,19 @@ public class CorePlugin extends PositionPlugin.Listener {
     }
 
     public void packetReceived (ClientboundLevelChunkWithLightPacket packet) {
-        final Vector3i position = Vector3i.from(packet.getX() * 16, coreStart.getY(), packet.getZ() * 16); // mabe
+        boolean hasCoreY = false;
+        for (BlockEntityInfo info : packet.getBlockEntities()) {
+            if (info.getY() >= coreStart.getY() && info.getY() <= coreEnd.getY()) {
+                hasCoreY = true;
+                break;
+            }
+        }
 
-        if (isCore(position)) refill();
+        if (
+                absoluteCorePosition().getX() / 16 == packet.getX() &&
+                        absoluteCorePosition().getZ() / 16 == packet.getZ() &&
+                        hasCoreY
+        ) refill();
     }
 
     public Vector3i absoluteCorePosition () {
