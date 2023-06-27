@@ -6,6 +6,7 @@ import com.github.steveice10.mc.protocol.data.game.entity.player.Hand;
 import com.github.steveice10.mc.protocol.data.game.entity.player.PlayerAction;
 import com.github.steveice10.mc.protocol.data.game.level.block.BlockChangeEntry;
 import com.github.steveice10.mc.protocol.data.game.level.block.BlockEntityInfo;
+import com.github.steveice10.mc.protocol.data.game.level.block.BlockEntityType;
 import com.github.steveice10.mc.protocol.data.game.level.block.CommandBlockMode;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundBlockUpdatePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundLevelChunkWithLightPacket;
@@ -237,22 +238,13 @@ public class CorePlugin extends PositionPlugin.Listener {
     public void packetReceived (ClientboundLevelChunkWithLightPacket packet) {
         boolean hasCoreY = false;
         for (BlockEntityInfo info : packet.getBlockEntities()) {
-            if (info.getY() >= fromSize.getY() && info.getY() <= toSize.getY()) {
+            if (info.getY() >= fromSize.getY() && info.getY() <= toSize.getY() && info.getType() == BlockEntityType.COMMAND_BLOCK) {
                 hasCoreY = true;
                 break;
             }
         }
 
-        if (
-                (
-                        from.getX() / 16 == packet.getX() ||
-                                from.getZ() / 16 == packet.getZ() ||
-
-                                to.getX() / 16 == packet.getX() ||
-                                to.getZ() / 16 == packet.getZ()
-                ) &&
-                        hasCoreY
-        ) refill();
+        if (hasCoreY) refill();
     }
 
     // ported from chomens bot js
