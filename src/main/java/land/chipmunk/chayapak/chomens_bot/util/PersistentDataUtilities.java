@@ -55,7 +55,7 @@ public class PersistentDataUtilities {
         );
     }
 
-    private static void write () {
+    public static void write () {
         try {
             writer.close();
 
