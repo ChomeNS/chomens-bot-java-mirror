@@ -43,13 +43,13 @@ public class CorePlugin extends PositionPlugin.Listener {
 
     private ScheduledFuture<?> refillTask;
 
-    public final Vector3i coreStart;
-    public final Vector3i coreEnd;
+    public final Vector3i fromSize;
+    public final Vector3i toSize;
 
-    public Vector3i origin;
-    public Vector3i originEnd;
+    public Vector3i from;
+    public Vector3i to;
 
-    public Vector3i relativeCorePosition;
+    public Vector3i block = null;
 
     private int nextTransactionId = 0;
     private final Map<Integer, CompletableFuture<CompoundTag>> transactions = new HashMap<>();
@@ -62,18 +62,16 @@ public class CorePlugin extends PositionPlugin.Listener {
         this.bot = bot;
         this.kaboom = bot.options().kaboom();
 
-        this.coreStart = Vector3i.from(
+        this.fromSize = Vector3i.from(
                 bot.config().core().start().x(),
                 bot.config().core().start().y(),
                 bot.config().core().start().z()
         );
-        this.coreEnd = Vector3i.from(
+        this.toSize = Vector3i.from(
                 bot.config().core().end().x(),
                 bot.config().core().end().y(),
                 bot.config().core().end().z()
         );
-
-        this.relativeCorePosition = Vector3i.from(coreStart);
 
         bot.position().addListener(this);
 
@@ -120,7 +118,7 @@ public class CorePlugin extends PositionPlugin.Listener {
 
     private void forceRun (String command) {
         bot.session().send(new ServerboundSetCommandBlockPacket(
-                absoluteCorePosition(),
+                block,
                 command,
                 kaboom ? CommandBlockMode.AUTO : CommandBlockMode.REDSTONE,
                 true,
@@ -146,8 +144,6 @@ public class CorePlugin extends PositionPlugin.Listener {
     }
 
     public CompletableFuture<CompoundTag> runTracked (String command) {
-        final Vector3i position = absoluteCorePosition();
-
         run(command);
 
         if (!bot.options().useCore()) return null;
@@ -158,7 +154,7 @@ public class CorePlugin extends PositionPlugin.Listener {
         final CompletableFuture<CompoundTag> future = new CompletableFuture<>();
         transactions.put(transactionId, future);
 
-        final Runnable afterTick = () -> bot.session().send(new ServerboundBlockEntityTagQuery(transactionId, position));
+        final Runnable afterTick = () -> bot.session().send(new ServerboundBlockEntityTagQuery(transactionId, block));
 
         bot.executor().schedule(afterTick, 50, TimeUnit.MILLISECONDS);
 
@@ -241,83 +237,70 @@ public class CorePlugin extends PositionPlugin.Listener {
     public void packetReceived (ClientboundLevelChunkWithLightPacket packet) {
         boolean hasCoreY = false;
         for (BlockEntityInfo info : packet.getBlockEntities()) {
-            if (info.getY() >= coreStart.getY() && info.getY() <= coreEnd.getY()) {
+            if (info.getY() >= fromSize.getY() && info.getY() <= toSize.getY()) {
                 hasCoreY = true;
                 break;
             }
         }
 
         if (
-                absoluteCorePosition().getX() / 16 == packet.getX() &&
-                        absoluteCorePosition().getZ() / 16 == packet.getZ() &&
+                (
+                        from.getX() / 16 == packet.getX() ||
+                        from.getZ() / 16 == packet.getZ()
+                ) &&
                         hasCoreY
         ) refill();
-    }
-
-    public Vector3i absoluteCorePosition () {
-        return relativeCorePosition.add(origin);
     }
 
     // ported from chomens bot js
     private boolean isCore (Vector3i position) {
         return
-                position.getX() >= origin.getX() && position.getX() <= originEnd.getX() &&
-                        position.getY() >= origin.getY() && position.getY() <= originEnd.getY() &&
-                        position.getZ() >= origin.getZ() && position.getZ() <= originEnd.getZ();
+                position.getX() >= from.getX() && position.getX() <= to.getX() &&
+                        position.getY() >= from.getY() && position.getY() <= to.getY() &&
+                        position.getZ() >= from.getZ() && position.getZ() <= to.getZ();
     }
 
     private void incrementBlock () {
-        int x = relativeCorePosition.getX();
-        int y = relativeCorePosition.getY();
-        int z = relativeCorePosition.getZ();
+        int x = block.getX();
+        int y = block.getY();
+        int z = block.getZ();
 
         x++;
 
-        if (x > coreEnd.getX()) {
-            x = coreStart.getX();
+        if (x > to.getX()) {
+            x = from.getX();
             z++;
         }
 
-        if (z > coreEnd.getZ()) {
-            z = coreStart.getZ();
+        if (z > to.getZ()) {
+            z = from.getZ();
             y++;
         }
 
-        if (y > coreEnd.getY()) {
-            x = coreStart.getX();
-            y = coreStart.getY();
-            z = coreStart.getZ();
+        if (y > to.getY()) {
+            x = from.getX();
+            y = from.getY();
+            z = from.getZ();
         }
 
-        relativeCorePosition = Vector3i.from(x, y, z);
+        block = Vector3i.from(x, y, z);
     }
 
     @Override
     public void positionChange (Vector3i position) {
-        // hm?
-        if (
-                coreStart.getX() == 0 &&
-                        coreStart.getY() == 0 &&
-                        coreStart.getZ() == 0 &&
+        from = Vector3i.from(
+                fromSize.getX() + bot.position().position().getX(),
+                fromSize.getY(),
+                fromSize.getZ() + bot.position().position().getZ()
+        );
 
-                        coreEnd.getX() == 15 &&
-                        coreEnd.getY() == 2 &&
-                        coreEnd.getZ() == 15
-        ) {
-            origin = Vector3i.from(
-                    Math.floor((double) bot.position().position().getX() / 16) * 16,
-                    0,
-                    Math.floor((double) bot.position().position().getZ() / 16) * 16
-            );
-        } else {
-            origin = Vector3i.from(
-                    bot.position().position().getX(),
-                    0,
-                    bot.position().position().getZ()
-            );
-        }
-        originEnd = origin.add(coreEnd);
+        to = Vector3i.from(
+                toSize.getX() + bot.position().position().getX(),
+                toSize.getY(),
+                toSize.getZ() + bot.position().position().getZ()
+        );
 
+        reset();
         refill();
 
         if (!ready) {
@@ -329,7 +312,7 @@ public class CorePlugin extends PositionPlugin.Listener {
     }
 
     public void reset () {
-        relativeCorePosition = Vector3i.from(coreStart);
+        block = Vector3i.from(from);
     }
 
     public void refill () {
@@ -338,13 +321,13 @@ public class CorePlugin extends PositionPlugin.Listener {
         final String command = String.format(
                 "minecraft:fill %s %s %s %s %s %s minecraft:command_block{CustomName:'%s'}",
 
-                coreStart.getX() + origin.getX(),
-                coreStart.getY(),
-                coreStart.getZ() + origin.getZ(),
+                from.getX(),
+                from.getY(),
+                from.getZ(),
 
-                coreEnd.getX() + origin.getX(),
-                coreEnd.getY(),
-                coreEnd.getZ() + origin.getZ(),
+                to.getX(),
+                to.getY(),
+                to.getZ(),
 
                 bot.config().core().customName()
         );
