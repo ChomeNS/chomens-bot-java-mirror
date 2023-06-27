@@ -246,7 +246,10 @@ public class CorePlugin extends PositionPlugin.Listener {
         if (
                 (
                         from.getX() / 16 == packet.getX() ||
-                        from.getZ() / 16 == packet.getZ()
+                                from.getZ() / 16 == packet.getZ() ||
+
+                                to.getX() / 16 == packet.getX() ||
+                                to.getZ() / 16 == packet.getZ()
                 ) &&
                         hasCoreY
         ) refill();
