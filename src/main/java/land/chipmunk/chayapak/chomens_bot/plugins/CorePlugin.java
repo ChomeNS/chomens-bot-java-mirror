@@ -238,7 +238,7 @@ public class CorePlugin extends PositionPlugin.Listener {
     public void packetReceived (ClientboundLevelChunkWithLightPacket packet) {
         boolean hasCoreY = false;
         for (BlockEntityInfo info : packet.getBlockEntities()) {
-            if (info.getY() >= fromSize.getY() && info.getY() <= toSize.getY() && info.getType() == BlockEntityType.COMMAND_BLOCK) {
+            if (info.getY() >= fromSize.getY() && info.getY() <= toSize.getY()) {
                 hasCoreY = true;
                 break;
             }
