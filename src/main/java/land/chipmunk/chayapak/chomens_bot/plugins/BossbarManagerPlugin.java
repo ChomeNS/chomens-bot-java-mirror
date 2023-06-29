@@ -1,7 +1,6 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import com.github.steveice10.mc.protocol.data.game.BossBarColor;
-import com.github.steveice10.mc.protocol.data.game.BossBarDivision;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundBossEventPacket;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.packet.Packet;
@@ -12,7 +11,6 @@ import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import lombok.Getter;
 import lombok.Setter;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.util.HashMap;
@@ -122,7 +120,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
                     final BotBossBar botBossBar = get(bossBar.uuid);
 
                     if (botBossBar != null && !ComponentUtilities.isEqual(botBossBar.title, packet.getTitle())) {
-                        botBossBar.setTitle(bossBar.title, true);
+                        botBossBar.setTitle(botBossBar.title, true);
                     }
 
                     bossBar.title = packet.getTitle();
