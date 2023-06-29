@@ -44,17 +44,19 @@ public class PersistentDataUtilities {
             e.printStackTrace();
         }
 
-        future = executor.scheduleAtFixedRate(PersistentDataUtilities::write, 0, 100, TimeUnit.MILLISECONDS);
+        future = executor.scheduleAtFixedRate(PersistentDataUtilities::write, 0, 10, TimeUnit.SECONDS);
 
         Runtime.getRuntime().addShutdownHook(
                 new Thread(() -> {
-                    future.cancel(true);
+                    future.cancel(false);
 
                     write();
                 })
         );
     }
 
+    // ? how do i clear the file contents without making a completely new FileWriter
+    //   or is this the only way?
     public static void write () {
         try {
             writer.close();
