@@ -154,57 +154,61 @@ public class ChatPlugin extends Bot.Listener {
     }
 
     public void packetReceived (ClientboundDisguisedChatPacket packet) {
-        final String translation = getTranslationByChatType(packet.getChatType());
+        try {
+            final String translation = getTranslationByChatType(packet.getChatType());
 
-        final Component component = packet.getMessage();
+            final Component component = packet.getMessage();
 
-        PlayerMessage parsedFromMessage = null;
-
-        for (ChatParser parser : chatParsers) {
-            parsedFromMessage = parser.parse(component);
-            if (parsedFromMessage != null) break;
-        }
-
-        if (translation != null && parsedFromMessage == null) {
-            final Component name = packet.getName();
-            final Component content = packet.getMessage();
-
-            TranslatableComponent translatableComponent = Component.translatable(translation);
-
-            if (translation.equals("chat.type.team.text") || translation.equals("chat.type.team.sent")) { // ohio
-                translatableComponent = translatableComponent.args(
-                        Component.empty(), // TODO: fix team name.,.,
-                        name,
-                        content
-                );
-            } else {
-                translatableComponent = translatableComponent.args(name, content);
-            }
-
-            for (Listener listener : listeners) {
-                listener.systemMessageReceived(translatableComponent);
-            }
+            PlayerMessage parsedFromMessage = null;
 
             for (ChatParser parser : chatParsers) {
-                final PlayerMessage parsed = parser.parse(translatableComponent);
+                parsedFromMessage = parser.parse(component);
+                if (parsedFromMessage != null) break;
+            }
 
-                if (parsed == null) continue;
+            if (translation != null && parsedFromMessage == null) {
+                final Component name = packet.getName();
+                final Component content = packet.getMessage();
 
-                final PlayerMessage playerMessage = new PlayerMessage(parsed.sender(), packet.getName(), parsed.contents());
+                TranslatableComponent translatableComponent = Component.translatable(translation);
+
+                if (translation.equals("chat.type.team.text") || translation.equals("chat.type.team.sent")) { // ohio
+                    translatableComponent = translatableComponent.args(
+                            Component.empty(), // TODO: fix team name.,.,
+                            name,
+                            content
+                    );
+                } else {
+                    translatableComponent = translatableComponent.args(name, content);
+                }
+
+                for (Listener listener : listeners) {
+                    listener.systemMessageReceived(translatableComponent);
+                }
+
+                for (ChatParser parser : chatParsers) {
+                    final PlayerMessage parsed = parser.parse(translatableComponent);
+
+                    if (parsed == null) continue;
+
+                    final PlayerMessage playerMessage = new PlayerMessage(parsed.sender(), packet.getName(), parsed.contents());
+
+                    for (Listener listener : listeners) {
+                        listener.playerMessageReceived(playerMessage);
+                    }
+                }
+            } else {
+                if (parsedFromMessage == null) return;
+
+                final PlayerMessage playerMessage = new PlayerMessage(parsedFromMessage.sender(), packet.getName(), parsedFromMessage.contents());
 
                 for (Listener listener : listeners) {
                     listener.playerMessageReceived(playerMessage);
+                    listener.systemMessageReceived(component);
                 }
             }
-        } else {
-            if (parsedFromMessage == null) return;
-
-            final PlayerMessage playerMessage = new PlayerMessage(parsedFromMessage.sender(), packet.getName(), parsedFromMessage.contents());
-
-            for (Listener listener : listeners) {
-                listener.playerMessageReceived(playerMessage);
-                listener.systemMessageReceived(component);
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

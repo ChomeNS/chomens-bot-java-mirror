@@ -113,6 +113,8 @@ public class FilterPlugin extends PlayersPlugin.Listener {
     }
 
     public void playerMessageReceived (PlayerMessage message) {
+        if (message.sender().profile().getName() == null) return;
+
         final FilteredPlayer player = getPlayer(message.sender().profile().getName());
 
         if (player == null) return;
