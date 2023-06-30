@@ -194,6 +194,8 @@ public class BossbarManagerPlugin extends Bot.Listener {
     }
 
     public void remove (String name) {
+        if (!enabled || !bot.options().useCore()) return;
+
         final Map<UUID, BotBossBar> mapCopy = new HashMap<>(bossBars);
 
         for (Map.Entry<UUID, BotBossBar> bossBar : mapCopy.entrySet()) {
