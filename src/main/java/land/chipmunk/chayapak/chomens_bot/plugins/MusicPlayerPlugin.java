@@ -25,7 +25,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
     private final Bot bot;
 
     public static final String SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic]";
-    public static File SONG_DIR = new File("songs");
+    public static final File SONG_DIR = new File("songs");
     static {
         if (!SONG_DIR.exists()) SONG_DIR.mkdir();
     }
@@ -52,44 +52,33 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     public void loadSong (Path location) {
-        try {
-            final SongLoaderRunnable runnable = new SongLoaderRunnable(location, bot);
+        final SongLoaderRunnable runnable = new SongLoaderRunnable(location, bot);
 
-            bot.chat().tellraw(
-                    Component
-                            .translatable(
-                                    "Loading %s",
-                                    Component.text(location.getFileName().toString(), ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
-                            )
-                            .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
-            );
+        bot.chat().tellraw(
+                Component
+                        .translatable(
+                                "Loading %s",
+                                Component.text(location.getFileName().toString(), ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
+                        )
+                        .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+        );
 
-            bot.executorService().submit(runnable);
-        } catch (SongLoaderException e) {
-            e.printStackTrace();
-            bot.chat().tellraw(Component.translatable("Failed to load song: %s", e.message()).color(NamedTextColor.RED));
-            loaderThread = null;
-        }
+        bot.executorService().submit(runnable);
     }
 
     public void loadSong (URL location) {
-        try {
-            final SongLoaderRunnable runnable = new SongLoaderRunnable(location, bot);
+        final SongLoaderRunnable runnable = new SongLoaderRunnable(location, bot);
 
-            bot.chat().tellraw(
-                    Component
-                            .translatable(
-                                    "Loading %s",
-                                    Component.text(location.toString(), ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
-                            )
-                            .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
-            );
+        bot.chat().tellraw(
+                Component
+                        .translatable(
+                                "Loading %s",
+                                Component.text(location.toString(), ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
+                        )
+                        .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+        );
 
-            bot.executorService().submit(runnable);
-        } catch (SongLoaderException e) {
-            bot.chat().tellraw(Component.translatable("Failed to load song: %s", e.message()).color(NamedTextColor.RED));
-            loaderThread = null;
-        }
+        bot.executorService().submit(runnable);
     }
 
     public void coreReady () {

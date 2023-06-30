@@ -42,7 +42,7 @@ public class CommandBlockCommand implements Command {
         return TrustLevel.PUBLIC;
     }
 
-    public Component execute(CommandContext context, String[] args, String[] fullArgs) throws ExecutionException, InterruptedException {
+    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();
 
         final CompletableFuture<CompoundTag> future = bot.core().runTracked(String.join(" ", args));

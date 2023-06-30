@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 // Author: hhhzzzsss
 public class NBSConverter {
-  public static Instrument[] instrumentIndex = new Instrument[] {
+  public static final Instrument[] instrumentIndex = new Instrument[] {
     Instrument.HARP,
     Instrument.BASS,
     Instrument.BASEDRUM,

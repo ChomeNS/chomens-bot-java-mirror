@@ -12,7 +12,7 @@ import java.util.UUID;
 public class BotBossBar extends BossBar {
     public UUID uuid = UUID.randomUUID(); // the random uuid will be temporary
 
-    public Component secret = Component.text(Math.random() * 69420);
+    public final Component secret = Component.text(Math.random() * 69420);
 
     private final Bot bot;
 

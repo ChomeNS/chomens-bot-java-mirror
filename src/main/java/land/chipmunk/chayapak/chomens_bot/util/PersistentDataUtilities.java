@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import java.io.*;
 
 public class PersistentDataUtilities {
-    public static File file = new File("persistent.json");
+    public static final File file = new File("persistent.json");
 
     private static FileWriter writer;
 

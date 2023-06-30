@@ -14,8 +14,8 @@ import java.util.zip.GZIPOutputStream;
 
 // totallynotskidded™ from HBot
 public class FileLoggerUtilities {
-    public static File logDir = new File("logs");
-    public static File logFile = new File(logDir, "log.txt");
+    public static final File logDir = new File("logs");
+    public static final File logFile = new File(logDir, "log.txt");
     public static OutputStreamWriter logWriter;
 
     public static LocalDate currentLogDate;
@@ -24,7 +24,7 @@ public class FileLoggerUtilities {
     public static String prevEntry = "";
     public static int duplicateCounter = 1;
 
-    public static ScheduledExecutorService executor = Main.executor;
+    public static final ScheduledExecutorService executor = Main.executor;
     public static int spamLevel = 0;
     public static long freezeTime = 0;
 

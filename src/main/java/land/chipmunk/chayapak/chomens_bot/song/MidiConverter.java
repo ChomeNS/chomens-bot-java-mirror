@@ -150,7 +150,7 @@ public class MidiConverter {
     return null;
   }
 
-  public static HashMap<Integer, Instrument[]> instrumentMap = new HashMap<>();
+  public static final HashMap<Integer, Instrument[]> instrumentMap = new HashMap<>();
   static {
     // Piano (HARP BASS BELL)
     instrumentMap.put(0, new Instrument[]{Instrument.HARP, Instrument.BASS, Instrument.BELL}); // Acoustic Grand Piano
@@ -303,7 +303,7 @@ public class MidiConverter {
     instrumentMap.put(119, new Instrument[]{Instrument.IRON_XYLOPHONE, Instrument.BASS, Instrument.XYLOPHONE});
   }
 
-  public static HashMap<Integer, Integer> percussionMap = new HashMap<>();
+  public static final HashMap<Integer, Integer> percussionMap = new HashMap<>();
   static {
     percussionMap.put(35, 10 + 25*Instrument.BASEDRUM.id);
     percussionMap.put(36, 6  + 25*Instrument.BASEDRUM.id);

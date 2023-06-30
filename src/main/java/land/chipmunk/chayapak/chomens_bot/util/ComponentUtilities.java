@@ -11,7 +11,6 @@ import net.kyori.adventure.text.SelectorComponent;
 import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -176,23 +175,20 @@ public class ComponentUtilities {
         } else if (ansi) {
             String ansiCode = ansiMap.get(code);
             if (ansiCode == null) {
-                // will using string builders use less memory or does nothing?
-                final StringBuilder builder = new StringBuilder();
-                builder.append("\u001b[38;2;");
-                builder.append(color.red());
-                builder.append(";");
-                builder.append(color.green());
-                builder.append(";");
-                builder.append(color.blue());
-                builder.append("m");
-
-                ansiCode = builder.toString();
+                ansiCode = "\u001b[38;2;" +
+                        color.red() +
+                        ";" +
+                        color.green() +
+                        ";" +
+                        color.blue() +
+                        "m";
             }
 
             return ansiCode;
         } else return null;
     }
 
+    @SuppressWarnings("UnnecessaryUnicodeEscape")
     public static PartiallyStringifiedOutput stringifyPartially (TextComponent message, boolean motd, boolean ansi, String lastColor) {
         if (motd || ansi) {
             final String color = getColor(message.color(), motd, ansi);

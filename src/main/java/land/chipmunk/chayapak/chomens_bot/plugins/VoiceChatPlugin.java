@@ -33,7 +33,7 @@ public class VoiceChatPlugin extends Bot.Listener {
 
     private boolean running = false;
 
-    @Getter private List<ClientGroup> groups = new ArrayList<>();
+    @Getter private final List<ClientGroup> groups = new ArrayList<>();
 
     public VoiceChatPlugin(Bot bot) {
         this.bot = bot;

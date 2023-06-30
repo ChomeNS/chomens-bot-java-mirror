@@ -2,7 +2,6 @@ package land.chipmunk.chayapak.chomens_bot.data;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.joda.time.DateTime;
 
 @AllArgsConstructor
 public class Mail {

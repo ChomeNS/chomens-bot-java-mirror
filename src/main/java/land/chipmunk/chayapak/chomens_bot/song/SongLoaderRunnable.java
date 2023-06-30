@@ -1,7 +1,6 @@
 package land.chipmunk.chayapak.chomens_bot.song;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.plugins.MusicPlayerPlugin;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.DownloadUtilities;
 import net.kyori.adventure.text.Component;
@@ -16,7 +15,7 @@ import java.nio.file.Paths;
 // Author: _ChipMC_ or hhhzzzsss? also i modified it to use runnable
 // because thread = bad !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 public class SongLoaderRunnable implements Runnable {
-  public String fileName;
+  public final String fileName;
 
   private File songPath;
   private URL songUrl;
@@ -27,7 +26,7 @@ public class SongLoaderRunnable implements Runnable {
 
   private final boolean isUrl;
 
-  public SongLoaderRunnable(URL location, Bot bot) throws SongLoaderException {
+  public SongLoaderRunnable(URL location, Bot bot) {
     this.bot = bot;
     isUrl = true;
     songUrl = location;
@@ -35,7 +34,7 @@ public class SongLoaderRunnable implements Runnable {
     fileName = location.getFile();
   }
 
-  public SongLoaderRunnable(Path location, Bot bot) throws SongLoaderException {
+  public SongLoaderRunnable(Path location, Bot bot) {
     this.bot = bot;
     isUrl = false;
     songPath = location.toFile();
@@ -55,9 +54,9 @@ public class SongLoaderRunnable implements Runnable {
         name = songPath.getName();
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      exception = new SongLoaderException(Component.text(e.getMessage()));
 
-      showFailedMessage();
+      failed();
 
       return;
     }
@@ -79,7 +78,7 @@ public class SongLoaderRunnable implements Runnable {
     if (song == null) {
       exception = new SongLoaderException(Component.translatable("Invalid format"));
 
-      showFailedMessage();
+      failed();
     } else {
       bot.music().songQueue().add(song);
       bot.chat().tellraw(
@@ -91,7 +90,9 @@ public class SongLoaderRunnable implements Runnable {
     }
   }
 
-  private void showFailedMessage () {
+  private void failed() {
+    exception.printStackTrace();
     bot.chat().tellraw(Component.translatable("Failed to load song: %s", exception.message()).color(NamedTextColor.RED));
+    bot.music().loaderThread(null);
   }
 }

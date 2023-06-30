@@ -7,8 +7,8 @@ import java.util.Collections;
 
 // Author: hhhzzzsss & _ChipMC_ but i changed most of the stuff
 public class Song {
-  public ArrayList<Note> notes = new ArrayList<>();
-  public Component name;
+  public final ArrayList<Note> notes = new ArrayList<>();
+  public final Component name;
   public int position = 0; // Current note index
   public boolean paused = true;
   public long startTime = 0; // Start time in millis since unix epoch
@@ -16,12 +16,12 @@ public class Song {
   public long time = 0; // Time since start of song
   public long loopPosition = 200; // Milliseconds into the song to start looping
 
-  public String songName;
-  public String songAuthor;
-  public String songOriginalAuthor;
-  public String songDescription;
+  public final String songName;
+  public final String songAuthor;
+  public final String songOriginalAuthor;
+  public final String songDescription;
 
-  public boolean nbs;
+  public final boolean nbs;
 
 //  public int loopCount = 0; // Number of times to loop
 //  public int currentLoop = 0; // Number of loops so far
