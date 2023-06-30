@@ -47,6 +47,8 @@ public class BossbarManagerPlugin extends Bot.Listener {
     }
 
     public void packetReceived(ClientboundBossEventPacket packet) {
+        if (!enabled || !bot.options().useCore()) return;
+
         try {
             switch (packet.getAction()) {
                 case ADD -> {
