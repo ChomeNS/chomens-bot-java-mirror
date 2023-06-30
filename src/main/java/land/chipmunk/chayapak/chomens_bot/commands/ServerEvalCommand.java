@@ -34,7 +34,7 @@ public class ServerEvalCommand implements Command {
     }
 
     public TrustLevel trustLevel() {
-        return TrustLevel.OWNER;
+        return TrustLevel.ADMIN;
     }
 
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {

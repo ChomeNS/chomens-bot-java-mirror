@@ -136,7 +136,7 @@ public class CommandHandlerPlugin {
                 ) return Component.text("You're not in the trusted role!").color(NamedTextColor.RED);
 
                 if (
-                        command.trustLevel() == TrustLevel.OWNER &&
+                        command.trustLevel() == TrustLevel.ADMIN &&
                                 roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase(adminRoleName))
                 ) return Component.text("You're not in the admin role!").color(NamedTextColor.RED);
             } else {
@@ -147,7 +147,7 @@ public class CommandHandlerPlugin {
                 ) return Component.text("Invalid hash").color(NamedTextColor.RED);
 
                 if (
-                        command.trustLevel() == TrustLevel.OWNER &&
+                        command.trustLevel() == TrustLevel.ADMIN &&
                                 !userHash.equals(bot.hashing().ownerHash())
                 ) return Component.text("Invalid OwnerHash").color(NamedTextColor.RED);
             }
