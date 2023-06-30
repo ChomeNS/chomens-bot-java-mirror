@@ -3,12 +3,8 @@ package land.chipmunk.chayapak.chomens_bot.util;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import land.chipmunk.chayapak.chomens_bot.Main;
 
 import java.io.*;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 public class PersistentDataUtilities {
     public static File file = new File("persistent.json");
@@ -16,10 +12,6 @@ public class PersistentDataUtilities {
     private static FileWriter writer;
 
     public static JsonObject jsonObject = new JsonObject();
-
-    private static final ScheduledExecutorService executor = Main.executor;
-
-    private static ScheduledFuture<?> future = null;
 
     static {
         init();
@@ -43,16 +35,6 @@ public class PersistentDataUtilities {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        future = executor.scheduleAtFixedRate(PersistentDataUtilities::write, 0, 10, TimeUnit.SECONDS);
-
-        Runtime.getRuntime().addShutdownHook(
-                new Thread(() -> {
-                    future.cancel(false);
-
-                    write();
-                })
-        );
     }
 
     // ? how do i clear the file contents without making a completely new FileWriter
@@ -70,28 +52,38 @@ public class PersistentDataUtilities {
         }
     }
 
-    public static synchronized void put (String property, JsonElement value) {
+    public static void put (String property, JsonElement value) {
         if (jsonObject.has(property)) jsonObject.remove(property);
         jsonObject.add(property, value);
+        
+        write();
     }
 
-    public static synchronized void put (String property, String value) {
+    public static void put (String property, String value) {
         if (jsonObject.has(property)) jsonObject.remove(property);
         jsonObject.addProperty(property, value);
+
+        write();
     }
 
-    public static synchronized void put (String property, boolean value) {
+    public static void put (String property, boolean value) {
         if (jsonObject.has(property)) jsonObject.remove(property);
         jsonObject.addProperty(property, value);
+
+        write();
     }
 
-    public static synchronized void put (String property, int value) {
+    public static void put (String property, int value) {
         if (jsonObject.has(property)) jsonObject.remove(property);
         jsonObject.addProperty(property, value);
+
+        write();
     }
 
-    public static synchronized void put (String property, char value) {
+    public static void put (String property, char value) {
         if (jsonObject.has(property)) jsonObject.remove(property);
         jsonObject.addProperty(property, value);
+
+        write();
     }
 }
