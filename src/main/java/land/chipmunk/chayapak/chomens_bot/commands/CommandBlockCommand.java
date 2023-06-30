@@ -13,7 +13,6 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class CommandBlockCommand implements Command {
     public String name() { return "cb"; }

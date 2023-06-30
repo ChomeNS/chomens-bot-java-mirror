@@ -155,7 +155,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
     }
 
     public void add (String name, BotBossBar bossBar) {
-        if (!enabled) return;
+        if (!enabled || !bot.options().useCore()) return;
 
         bossBar.id = bossBarPrefix + name;
 
