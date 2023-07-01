@@ -130,7 +130,7 @@ public class CorePlugin extends PositionPlugin.Listener {
     }
 
     public void run (String command) {
-        if (!ready) return;
+        if (!ready || command.length() > 32767) return;
 
         if (bot.options().useCore()) {
             if (isRateLimited() && hasRateLimit()) return;
