@@ -235,15 +235,7 @@ public class CorePlugin extends PositionPlugin.Listener {
     }
 
     public void packetReceived (ClientboundLevelChunkWithLightPacket packet) {
-        boolean hasCoreY = false;
-        for (BlockEntityInfo info : packet.getBlockEntities()) {
-            if (info.getY() >= fromSize.getY() && info.getY() <= toSize.getY()) {
-                hasCoreY = true;
-                break;
-            }
-        }
-
-        if (hasCoreY) refill();
+        refill(); // TODO: improve, this is probably the worst way to check
     }
 
     // ported from chomens bot js
