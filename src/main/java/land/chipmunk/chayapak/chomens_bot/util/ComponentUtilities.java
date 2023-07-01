@@ -10,7 +10,9 @@ import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.SelectorComponent;
 import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -141,6 +143,27 @@ public class ComponentUtilities {
         return new PartiallyStringifiedOutput("", null);
     }
 
+    public static String getStyle (Style style) {
+        if (style == null) return null;
+
+        StringBuilder ansiStyle = new StringBuilder();
+
+        for (Map.Entry<TextDecoration, TextDecoration.State> decorationEntry : style.decorations().entrySet()) {
+            final TextDecoration decoration = decorationEntry.getKey();
+            final TextDecoration.State state = decorationEntry.getValue();
+
+            if (state == TextDecoration.State.NOT_SET || state == TextDecoration.State.FALSE) continue;
+
+            if (decoration == TextDecoration.BOLD) ansiStyle.append(ansiMap.get("l"));
+            else if (decoration == TextDecoration.ITALIC) ansiStyle.append(ansiMap.get("o"));
+            else if (decoration == TextDecoration.OBFUSCATED) ansiStyle.append(ansiMap.get("k"));
+            else if (decoration == TextDecoration.UNDERLINED) ansiStyle.append(ansiMap.get("n"));
+            else if (decoration == TextDecoration.STRIKETHROUGH) ansiStyle.append(ansiMap.get("m"));
+        }
+
+        return ansiStyle.toString();
+    }
+
     public static String getColor (TextColor color, boolean motd, boolean ansi) {
         if (color == null) return null;
 
@@ -188,10 +211,10 @@ public class ComponentUtilities {
         } else return null;
     }
 
-    @SuppressWarnings("UnnecessaryUnicodeEscape")
     public static PartiallyStringifiedOutput stringifyPartially (TextComponent message, boolean motd, boolean ansi, String lastColor) {
         if (motd || ansi) {
             final String color = getColor(message.color(), motd, ansi);
+            final String style = getStyle(message.style());
 
             String replacedContent = message.content();
             // seems very mabe mabe
@@ -199,14 +222,14 @@ public class ComponentUtilities {
                 // is try-catch a great idea?
                 try {
                     replacedContent = Pattern
-                            .compile("(\u00a7.)")
+                            .compile("(§.)")
                             .matcher(message.content())
                             .replaceAll(m -> ansiMap.get(m.group(0).substring(1)));
                 } catch (Exception ignored) {}
             }
 
             // messy af
-            return new PartiallyStringifiedOutput((lastColor != null ? lastColor : "") + (color != null ? color : "") + replacedContent + (ansi ? ansiMap.get("r") : ""), color);
+            return new PartiallyStringifiedOutput((lastColor != null ? lastColor : "") + (style != null ? style : "") + (color != null ? color : "") + replacedContent + (ansi ? ansiMap.get("r") : ""), color);
         }
 
         return new PartiallyStringifiedOutput(message.content(), null);
@@ -219,6 +242,7 @@ public class ComponentUtilities {
         Matcher matcher = ARG_PATTERN.matcher(format);
         StringBuilder sb = new StringBuilder();
 
+        final String style = getStyle(message.style());
         final String _color = getColor(message.color(), motd, ansi);
         String color;
         if (_color == null) color = "";
@@ -251,15 +275,16 @@ public class ComponentUtilities {
         }
         matcher.appendTail(sb);
 
-        return new PartiallyStringifiedOutput((lastColor != null ? lastColor : "") + color + sb + (ansi ? ansiMap.get("r") : ""), _color);
+        return new PartiallyStringifiedOutput((lastColor != null ? lastColor : "") + (style != null && ansi ? style : "") + color + sb + (ansi ? ansiMap.get("r") : ""), _color);
     }
 
     public static PartiallyStringifiedOutput stringifyPartially (SelectorComponent message, boolean motd, boolean ansi, String lastColor) {
+        final String style = getStyle(message.style());
         final String _color = getColor(message.color(), motd, ansi);
         String color;
         if (_color == null) color = "";
         else color = _color;
-        return new PartiallyStringifiedOutput((lastColor != null ? lastColor : "") + color + message.pattern(), _color); // * Client-side selector components are equivalent to text ones, and do NOT list entities.
+        return new PartiallyStringifiedOutput((lastColor != null ? lastColor : "") + (style != null && ansi ? style : "") + color + message.pattern(), _color); // * Client-side selector components are equivalent to text ones, and do NOT list entities.
     }
 
     public static PartiallyStringifiedOutput stringifyPartially (KeybindComponent message, boolean motd, boolean ansi, String lastColor) {
