@@ -8,35 +8,18 @@ import land.chipmunk.chayapak.chomens_bot.util.MazeGenerator;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class GenerateMazeCommand implements Command {
-    public String name() { return "generatemaze"; }
-
-    public String description() {
-        return "Generates a maze";
+public class GenerateMazeCommand extends Command {
+    public GenerateMazeCommand () {
+        super(
+                "generatemaze",
+                "Generates a maze",
+                new String[] { "<x> <y> <z> <width> <long>" },
+                new String[] { "genmaze", "mazegen" },
+                TrustLevel.PUBLIC
+        );
     }
 
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("<x> <y> <z> <width> <long>");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("genmaze");
-        aliases.add("mazegen");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.PUBLIC;
-    }
-
+    @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();
 

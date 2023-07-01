@@ -11,43 +11,30 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class HelpCommand implements Command {
-    public String name() { return "help"; }
-
-    public String description() {
-        return "Shows the help";
-    }
-
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("[command]");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("heko");
-        aliases.add("cmds");
-        aliases.add("commands");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.PUBLIC;
+public class HelpCommand extends Command {
+    public HelpCommand () {
+        super(
+                "help",
+                "Shows a command list or usage for a command",
+                new String[] { "[command]" },
+                new String[] { "heko", "cmds", "commands" },
+                TrustLevel.PUBLIC
+        );
     }
 
     private Bot bot;
 
     private CommandContext context;
 
+    @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         this.bot = context.bot();
         this.context = context;
+
         if (args.length == 0) {
             return sendCommandList();
         } else {
@@ -117,7 +104,7 @@ public class HelpCommand implements Command {
         final String prefix = context.prefix();
 
         for (Command command : bot.commandHandler().commands()) {
-            if (!command.name().equals(args[0]) && !command.alias().contains(args[0])) continue;
+            if (!command.name().equals(args[0]) && !Arrays.stream(command.aliases()).toList().contains(args[0])) continue;
 
             final String commandName = command.name();
             final List<Component> usages = new ArrayList<>();
@@ -126,8 +113,8 @@ public class HelpCommand implements Command {
                     Component.empty()
                             .append(Component.text(prefix + commandName).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary())))
                             .append(Component.text(
-                                    (command.alias().size() > 0 && !command.alias().get(0).equals("")) ?
-                                            " (" + String.join(", ", command.alias()) + ")" :
+                                    (command.aliases().length > 0 && !command.aliases()[0].equals("")) ?
+                                            " (" + String.join(", ", command.aliases()) + ")" :
                                             ""
                             ))
                             .append(Component.text(" - " + command.description()).color(NamedTextColor.GRAY))
@@ -139,7 +126,7 @@ public class HelpCommand implements Command {
                             .append(Component.text(command.trustLevel().name()).color(NamedTextColor.YELLOW))
             );
 
-            for (String usage : command.usage()) {
+            for (String usage : command.usages()) {
                 usages.add(
                         Component.empty()
                                 .append(Component.text(prefix + commandName).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary())))

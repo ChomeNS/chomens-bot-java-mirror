@@ -10,34 +10,18 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class BotUserCommand implements Command {
-    public String name() { return "botuser"; }
-
-    public String description() {
-        return "Shows the bot's username and UUID";
+public class BotUserCommand extends Command {
+    public BotUserCommand () {
+        super(
+                "botuser",
+                "Shows the bot's username and UUID",
+                new String[] {},
+                new String[] {},
+                TrustLevel.PUBLIC
+        );
     }
 
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.PUBLIC;
-    }
-
+    @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();
 

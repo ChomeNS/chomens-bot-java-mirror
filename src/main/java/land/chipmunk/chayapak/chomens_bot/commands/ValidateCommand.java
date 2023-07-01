@@ -6,34 +6,18 @@ import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ValidateCommand implements Command {
-    public String name() { return "validate"; }
-
-    public String description() {
-        return "Validates a hash";
+public class ValidateCommand extends Command {
+    public ValidateCommand () {
+        super(
+                "validate",
+                "Validates a hash",
+                new String[] { "<hash|ownerHash>" },
+                new String[] { "checkhash" },
+                TrustLevel.TRUSTED
+        );
     }
 
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("<hash|ownerHash>");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("checkhash");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.TRUSTED;
-    }
-
+    @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final String hash = fullArgs[0];
 

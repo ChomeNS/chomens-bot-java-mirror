@@ -17,36 +17,21 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
-public class ServerInfoCommand implements Command {
-    public String name() { return "serverinfo"; }
-
-    public String description() {
-        return "Shows the info about the server that is hosting the bot";
+public class ServerInfoCommand extends Command {
+    public ServerInfoCommand () {
+        super(
+                "serverinfo",
+                "Shows the info about the server that is hosting the bot",
+                new String[] {},
+                new String[] {},
+                TrustLevel.PUBLIC
+        );
     }
 
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.PUBLIC;
-    }
-
+    @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) throws UnknownHostException {
         final Bot bot = context.bot();
 

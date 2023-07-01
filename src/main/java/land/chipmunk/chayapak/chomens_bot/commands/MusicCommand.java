@@ -22,45 +22,34 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MusicCommand implements Command {
+public class MusicCommand extends Command {
     private Path root;
 
-    public String name() { return "music"; }
-
-    public String description() {
-        return "Play musics";
+    public MusicCommand () {
+        super(
+                "music",
+                "Play musics",
+                new String[] {
+                        "play <{song|URL}>",
+                        "stop",
+                        "loop <current|all|off>",
+                        "list [{directory}]",
+                        "skip",
+                        "nowplaying",
+                        "queue",
+                        "goto <timestamp>",
+                        "pitch <pitch>",
+                        "speed <speed>",
+                        "pause",
+                        "resume",
+                        "info"
+                },
+                new String[] { "song" },
+                TrustLevel.PUBLIC
+        );
     }
 
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("play <{song|URL}>");
-        usages.add("stop");
-        usages.add("loop <current|all|off>");
-        usages.add("list [{directory}]");
-        usages.add("skip");
-        usages.add("nowplaying");
-        usages.add("queue");
-        usages.add("goto <timestamp>");
-        usages.add("pitch <pitch>");
-        usages.add("speed <speed>");
-        usages.add("pause");
-        usages.add("resume");
-        usages.add("info");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("song");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.PUBLIC;
-    }
-
+    @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         if (args.length < 1) return Component.text("Not enough arguments").color(NamedTextColor.RED);
 

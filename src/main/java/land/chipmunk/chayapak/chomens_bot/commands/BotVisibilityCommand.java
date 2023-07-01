@@ -8,38 +8,18 @@ import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class BotVisibilityCommand implements Command {
-    public String name() { return "botvisibility"; }
-
-    public String description() {
-        return "Changes the bot's visibility";
+public class BotVisibilityCommand extends Command {
+    public BotVisibilityCommand () {
+        super(
+                "botvisibilty",
+                "Changes the bot's visibility",
+                new String[] { "<hash> <true|false>", "<hash> <on|off>", "<hash>" },
+                new String[] { "botvis", "togglevis", "togglevisibility" },
+                TrustLevel.TRUSTED
+        );
     }
 
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("<hash> <true|false>");
-        usages.add("<hash> <on|off>");
-        usages.add("<hash>");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("botvis");
-        aliases.add("togglevis");
-        aliases.add("togglevisibility");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.TRUSTED;
-    }
-
+    @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();
 

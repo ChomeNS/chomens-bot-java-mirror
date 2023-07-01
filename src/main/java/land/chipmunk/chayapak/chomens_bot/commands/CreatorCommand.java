@@ -10,31 +10,18 @@ import net.kyori.adventure.text.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreatorCommand implements Command {
-    public String name() { return "creator"; }
-
-    public String description() {
-        return "Shows the bots creator";
+public class CreatorCommand extends Command {
+    public CreatorCommand () {
+        super(
+                "creator",
+                "Shows the bots creator",
+                new String[] {},
+                new String[] {},
+                TrustLevel.PUBLIC
+        );
     }
 
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.PUBLIC;
-    }
-
+    @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();
 

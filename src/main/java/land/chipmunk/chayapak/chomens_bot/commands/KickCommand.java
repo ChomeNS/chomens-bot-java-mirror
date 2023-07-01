@@ -1,43 +1,28 @@
 package land.chipmunk.chayapak.chomens_bot.commands;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
-import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
+import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
-public class KickCommand implements Command {
-    public String name() { return "kick"; }
-
-    public String description() {
-        return "Kicks a player using the complex NBT exploit (from KittyCorpBot)";
+public class KickCommand extends Command {
+    public KickCommand () {
+        super(
+                "kick",
+                "Kicks a player",
+                new String[] { "<hash> <{player}>" },
+                new String[] {},
+                TrustLevel.TRUSTED
+        );
     }
 
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("<hash> <{player}>");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.TRUSTED;
-    }
-
+    @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();
 

@@ -17,37 +17,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FilterCommand implements Command {
-    public String name() { return "filter"; }
-
-    public String description() {
-        return "Filter players";
-    }
-
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("<hash> add <{player}>");
-        usages.add("<hash> -ignorecase add <{player}>");
-        usages.add("<hash> -regex add <{player}>");
-        usages.add("<hash> -ignorecase -regex add <{player}>");
-        usages.add("<hash> remove <index>");
-        usages.add("<hash> clear");
-        usages.add("<hash> list");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("filterplayer");
-        aliases.add("ban");
-        aliases.add("blacklist");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.TRUSTED;
+public class FilterCommand extends Command {
+    public FilterCommand () {
+        super(
+                "filter",
+                "Filter players",
+                new String[] {
+                        "<hash> add <{player}>",
+                        "<hash> -ignorecase add <{player}>",
+                        "<hash> -regex add <{player}>",
+                        "<hash> -ignorecase -regex add <{player}>",
+                        "<hash> remove <index>",
+                        "<hash> clear",
+                        "<hash> list"
+                },
+                new String[] { "filterplayer", "ban", "blacklist" },
+                TrustLevel.TRUSTED
+        );
     }
 
     // most of these codes are from cloop and greplog

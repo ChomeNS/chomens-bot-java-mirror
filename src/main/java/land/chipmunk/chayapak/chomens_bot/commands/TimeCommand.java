@@ -12,35 +12,18 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class TimeCommand implements Command {
-    public String name() { return "time"; }
-
-    public String description() {
-        return "Shows the date and time for the specified timezone";
+public class TimeCommand extends Command {
+    public TimeCommand () {
+        super(
+                "time",
+                "Shows the date and time for the specified timezone",
+                new String[] { "<timezone>" },
+                new String[] { "dateandtime", "date" },
+                TrustLevel.PUBLIC
+        );
     }
 
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("<timezone>");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("dateandtime");
-        aliases.add("date");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.PUBLIC;
-    }
-
+    @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();
 

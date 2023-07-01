@@ -18,32 +18,16 @@ import net.kyori.adventure.text.format.TextDecoration;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 
-public class UrbanCommand implements Command {
-    public String name() { return "urban"; }
-
-    public String description() {
-        return "Urban Dictionary in Minecraft";
-    }
-
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("<{term}>");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.PUBLIC;
+public class UrbanCommand extends Command {
+    public UrbanCommand () {
+        super(
+                "urban",
+                "Urban Dictionary in Minecraft",
+                new String[] { "<{term}>" },
+                new String[] {},
+                TrustLevel.PUBLIC
+        );
     }
 
     public Component execute (CommandContext context, String[] args, String[] fullArgs) {

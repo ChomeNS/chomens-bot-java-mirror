@@ -101,10 +101,10 @@ public class CommandHandlerPlugin {
         final String[] fullArgs = Arrays.copyOfRange(splitInput, 1, splitInput.length);
 
         // TODO: improve these minimum args and maximum args stuff, the current one really sucks.,.,
-        final int shortestUsageIndex = getShortestUsageIndex(command.usage());
-        final int longestUsageIndex = getLongestUsageIndex(command.usage());
-        final String shortestUsage = command.usage().get(shortestUsageIndex);
-        final String longestUsage = command.usage().get(longestUsageIndex);
+        final int shortestUsageIndex = getShortestUsageIndex(command.usages());
+        final int longestUsageIndex = getLongestUsageIndex(command.usages());
+        final String shortestUsage = command.usages()[shortestUsageIndex];
+        final String longestUsage = command.usages()[longestUsageIndex];
 
         final int minimumArgs = getMinimumArgs(shortestUsage, inGame, command.trustLevel());
         final int maximumArgs = getMaximumArgs(longestUsage, inGame, command.trustLevel());
@@ -181,7 +181,7 @@ public class CommandHandlerPlugin {
             if (
                     (
                             command.name().equals(searchTerm.toLowerCase()) ||
-                                    command.alias().contains(searchTerm.toLowerCase())
+                                    Arrays.stream(command.aliases()).toList().contains(searchTerm.toLowerCase())
                     ) &&
                             !searchTerm.equals("") // ig yup
             ) {
@@ -191,14 +191,14 @@ public class CommandHandlerPlugin {
         return null;
     }
 
-    private int getLongestUsageIndex(List<String> usages) {
+    private int getLongestUsageIndex(String[] usages) {
         int longestIndex = 0;
         int maxLength = 0;
 
-        final int usagesSize = usages.size();
+        final int usagesSize = usages.length;
 
         for (int i = 0; i < usagesSize; i++) {
-            String[] args = usages.get(i).split("\\s+");
+            String[] args = usages[i].split("\\s+");
             if (args.length > maxLength) {
                 longestIndex = i;
                 maxLength = args.length;
@@ -207,14 +207,14 @@ public class CommandHandlerPlugin {
         return longestIndex;
     }
 
-    private int getShortestUsageIndex(List<String> usages) {
+    private int getShortestUsageIndex(String[] usages) {
         int shortestIndex = 0;
         int minLength = Integer.MAX_VALUE;
 
-        final int usagesSize = usages.size();
+        final int usagesSize = usages.length;
 
         for (int i = 0; i < usagesSize; i++) {
-            String[] args = usages.get(i).split("\\s+");
+            String[] args = usages[i].split("\\s+");
             if (args.length < minLength) {
                 shortestIndex = i;
                 minLength = args.length;

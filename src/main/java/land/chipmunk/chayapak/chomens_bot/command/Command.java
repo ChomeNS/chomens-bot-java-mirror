@@ -1,15 +1,28 @@
 package land.chipmunk.chayapak.chomens_bot.command;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
-import java.util.List;
+public abstract class Command {
+    @Getter private final String name;
+    @Getter private final String description;
+    @Getter private final String[] usages;
+    @Getter private final String[] aliases;
+    @Getter private final TrustLevel trustLevel;
 
-public interface Command {
-    String name();
-    String description();
-    List<String> usage();
-    List<String> alias();
-    TrustLevel trustLevel();
+    public Command (
+            String name,
+            String description,
+            String[] usages,
+            String[] aliases,
+            TrustLevel trustLevel
+    ) {
+        this.name = name;
+        this.description = description;
+        this.usages = usages;
+        this.aliases = aliases;
+        this.trustLevel = trustLevel;
+    }
 
-    Component execute(CommandContext context, String[] args, String[] fullArgs) throws Exception;
+    public abstract Component execute (CommandContext context, String[] args, String[] fullArgs) throws Exception;
 }

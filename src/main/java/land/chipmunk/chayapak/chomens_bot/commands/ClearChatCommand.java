@@ -12,31 +12,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class ClearChatCommand implements Command {
-    public String name() { return "clearchat"; }
-
-    public String description() {
-        return "Clears the chat";
+public class ClearChatCommand extends Command {
+    public ClearChatCommand () {
+        super(
+                "clearchat",
+                "Clears the chat",
+                new String[] { "[player]" },
+                new String[] { "cc" },
+                TrustLevel.PUBLIC
+        );
     }
 
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("[player]");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("cc");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.PUBLIC;
-    }
-
+    @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();
 

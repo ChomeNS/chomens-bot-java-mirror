@@ -10,37 +10,21 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class CommandBlockCommand implements Command {
-    public String name() { return "cb"; }
-
-    public String description() {
-        return "Executes a command in the command core and return it's output";
+public class CommandBlockCommand extends Command {
+    public CommandBlockCommand () {
+        super(
+                "cb",
+                "Executes a command in the command core and return its output",
+                new String[] { "<command>" },
+                new String[] { "cmd", "commandblock", "run" },
+                TrustLevel.PUBLIC
+        );
     }
 
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("<{command}>");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("cmd");
-        aliases.add("commandblock");
-        aliases.add("run");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.PUBLIC;
-    }
-
+    @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();
 

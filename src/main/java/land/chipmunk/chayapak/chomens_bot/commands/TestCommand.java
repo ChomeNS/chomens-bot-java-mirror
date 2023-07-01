@@ -6,34 +6,18 @@ import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class TestCommand implements Command {
-    public String name() { return "test"; }
-
-    public String description() {
-        return "Tests if the bot is working";
+public class TestCommand extends Command {
+    public TestCommand () {
+        super(
+                "test",
+                "Tests if the bot is working",
+                new String[] { "[{args}]" },
+                new String[] {},
+                TrustLevel.PUBLIC
+        );
     }
 
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("[{args}]");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.PUBLIC;
-    }
-
+    @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         return Component.translatable(
                 "Hello, World! Username: %s, Sender UUID: %s, Prefix: %s, Args: %s",

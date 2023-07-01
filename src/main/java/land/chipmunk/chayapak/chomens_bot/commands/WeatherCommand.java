@@ -18,32 +18,16 @@ import org.joda.time.format.DateTimeFormatter;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 
-public class WeatherCommand implements Command {
-    public String name() { return "weather"; }
-
-    public String description() {
-        return "Shows the weather in a place";
-    }
-
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("<{location}>");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.PUBLIC;
+public class WeatherCommand extends Command {
+    public WeatherCommand () {
+        super(
+                "weather",
+                "Shows the weather in a place",
+                new String[] { "<{location}>" },
+                new String[] {},
+                TrustLevel.TRUSTED
+        );
     }
 
     public Component execute (CommandContext context, String[] args, String[] fullArgs) {

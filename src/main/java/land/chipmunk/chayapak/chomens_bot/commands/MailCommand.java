@@ -30,33 +30,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class MailCommand implements Command {
-    public String name() { return "mail"; }
-
-    public String description() {
-        return "Sends a mail";
+public class MailCommand extends Command {
+    public MailCommand () {
+        super(
+                "mail",
+                "Sends a mail",
+                new String[] { "send <player> <{message}>", "sendselecteditem <player>", "read" },
+                new String[] {},
+                TrustLevel.PUBLIC
+        );
     }
 
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("send <player> <{message}>");
-        usages.add("sendselecteditem <player>");
-        usages.add("read");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.PUBLIC;
-    }
-
+    @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         if (args.length < 1) return Component.text("Not enough arguments").color(NamedTextColor.RED);
 

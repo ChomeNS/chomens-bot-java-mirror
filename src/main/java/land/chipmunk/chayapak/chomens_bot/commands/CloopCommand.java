@@ -14,34 +14,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CloopCommand implements Command {
-    public String name() { return "cloop"; }
-
-    public String description() {
-        return "Loop commands";
+public class CloopCommand extends Command {
+    public CloopCommand () {
+        super(
+                "cloop",
+                "Loop commands",
+                new String[] { "<hash> add <interval> <{command}>", "<hash> remove <index>", "<hash> clear", "<hash> list" },
+                new String[] { "commandloop" },
+                TrustLevel.TRUSTED
+        );
     }
 
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("<hash> add <interval> <{command}>");
-        usages.add("<hash> remove <index>");
-        usages.add("<hash> clear");
-        usages.add("<hash> list");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("commandloop");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.TRUSTED;
-    }
-
+    @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();
 

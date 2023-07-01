@@ -15,31 +15,18 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListCommand implements Command {
-    public String name() { return "list"; }
-
-    public String description() {
-        return "Lists all players in the server (including vanished)";
+public class ListCommand extends Command {
+    public ListCommand () {
+        super(
+                "list",
+                "Lists all players in the server (including vanished)",
+                new String[] {},
+                new String[] {},
+                TrustLevel.PUBLIC
+        );
     }
 
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.PUBLIC;
-    }
-
+    @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();
 

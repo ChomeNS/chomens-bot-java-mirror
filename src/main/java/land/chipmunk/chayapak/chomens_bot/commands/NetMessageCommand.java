@@ -9,35 +9,20 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class NetMessageCommand implements Command {
-    public String name() { return "netmsg"; }
-
-    public String description() {
-        return "Broadcasts a message to all of the servers that the bot is connected";
+public class NetMessageCommand extends Command {
+    public NetMessageCommand () {
+        super(
+                "netmsg",
+                "Broadcasts a message to all of the servers that the bot is connected",
+                new String[] { "<{message}>" },
+                new String[] { "networkmessage", "irc" },
+                TrustLevel.PUBLIC
+        );
     }
 
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("<{message}>");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("networkmessage");
-        aliases.add("irc");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.PUBLIC;
-    }
-
+    @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();
         final List<Bot> bots = bot.bots();

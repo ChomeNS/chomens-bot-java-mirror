@@ -7,40 +7,26 @@ import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-public class GrepLogCommand implements Command {
-    public String name() { return "greplog"; }
-
-    public String description() {
-        return "Queries the bot's log files";
+public class GrepLogCommand extends Command {
+    public GrepLogCommand () {
+        super(
+                "greplog",
+                "Queries the bots log files",
+                new String[] {
+                        "<{input}>",
+                        "-ignorecase <{input}>",
+                        "-regex <{input}>",
+                        "-ignorecase -regex <{input}>",
+                        "stop"
+                },
+                new String[] { "logquery", "greplogs" },
+                TrustLevel.PUBLIC
+        );
     }
 
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("<{input}>");
-        usages.add("-ignorecase <{input}>");
-        usages.add("-regex <{input}>");
-        usages.add("-ignorecase -regex <{input}>");
-        usages.add("stop");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("logquery");
-        aliases.add("greplogs");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.PUBLIC;
-    }
-
+    @Override
     public Component execute(CommandContext context, String[] _args, String[] fullArgs) {
         final Bot bot = context.bot();
 

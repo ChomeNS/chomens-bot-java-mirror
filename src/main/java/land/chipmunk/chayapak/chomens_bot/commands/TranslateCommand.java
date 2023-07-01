@@ -15,35 +15,20 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-public class TranslateCommand implements Command {
-    public String name() { return "translate"; }
-
-    public String description() {
-        return "Translate a message using Google Translate";
+public class TranslateCommand extends Command {
+    public TranslateCommand () {
+        super(
+                "translate",
+                "Translates a message using Google Translate",
+                new String[] { "<fromLanguage> <toLanguage> <{message}>" },
+                new String[] {},
+                TrustLevel.PUBLIC
+        );
     }
 
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("<from> <to> <{message}>");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.PUBLIC;
-    }
-
+    @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot();
 
