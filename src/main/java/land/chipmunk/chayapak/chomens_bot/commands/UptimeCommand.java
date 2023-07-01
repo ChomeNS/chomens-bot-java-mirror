@@ -16,7 +16,7 @@ public class UptimeCommand extends Command {
         super(
                 "uptime",
                 "Shows the bots uptime",
-                new String[] { "<fromLanguage> <toLanguage> <{message}>" },
+                new String[] {},
                 new String[] {},
                 TrustLevel.PUBLIC
         );
