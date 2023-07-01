@@ -23,7 +23,7 @@ public class EvalPlugin {
 
     public EvalPlugin (Bot bot) {
         try {
-            socket = IO.socket("ws://localhost:3069");
+            socket = IO.socket(bot.config().eval().address());
         } catch (Exception e) {
             e.printStackTrace();
         }

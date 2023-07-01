@@ -81,6 +81,10 @@ selfCare:
     enabled: true
     prefix: '&8[&eChomeNS Bot&8]'
   username: true # MIGHT cause problem(s) if set to false (not tested,.,.)
+
+eval:
+  address: 'ws://localhost:3069'
+
 bots:
   # username - optional, if not specified it will just use a random username
   # kaboom - defaults to false

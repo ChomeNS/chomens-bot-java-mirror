@@ -27,6 +27,8 @@ public class Configuration {
     
     @Getter public List<String> trusted = new ArrayList<>();
     @Getter public SelfCare selfCare = new SelfCare();
+    @Getter public Eval eval = new Eval();
+
     @Getter public BotOption[] bots = new BotOption[]{};
 
     public static class ConsolePrefixes {
@@ -107,6 +109,10 @@ public class Configuration {
         }
 
         @Getter public boolean username = true;
+    }
+
+    public static class Eval {
+        @Getter public String address = "ws://localhost:3069";
     }
 
     public static class BotOption {
