@@ -25,6 +25,8 @@ public class EvalCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+        if (args.length < 1) return Component.text("Not enough arguments").color(NamedTextColor.RED);
+
         final Bot bot = context.bot();
 
         if (!bot.eval().connected()) return Component.text("Eval server is not online").color(NamedTextColor.RED);
