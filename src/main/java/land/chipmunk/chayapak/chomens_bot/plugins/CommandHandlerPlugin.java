@@ -67,6 +67,7 @@ public class CommandHandlerPlugin {
         registerCommand(new UptimeCommand());
         registerCommand(new MailCommand());
         registerCommand(new SeenCommand());
+        registerCommand(new EvalCommand());
     }
 
     public void registerCommand (Command command) {

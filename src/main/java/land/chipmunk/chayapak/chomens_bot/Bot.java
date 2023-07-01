@@ -61,7 +61,7 @@ public class Bot {
     @Getter private BossbarManagerPlugin bossbar;
     @Getter private MusicPlayerPlugin music;
     @Getter private TPSPlugin tps;
-    @Getter private EvalRunnerPlugin eval;
+    @Getter private EvalPlugin eval;
     @Getter private TrustedPlugin trusted;
     @Getter private BruhifyPlugin bruhify;
     @Getter private GrepLogPlugin grepLog;
@@ -107,7 +107,7 @@ public class Bot {
         this.bossbar = new BossbarManagerPlugin(this);
         this.music = new MusicPlayerPlugin(this);
         this.tps = new TPSPlugin(this);
-        this.eval = new EvalRunnerPlugin(this);
+        this.eval = new EvalPlugin(this);
         this.trusted = new TrustedPlugin(this);
         this.bruhify = new BruhifyPlugin(this);
         this.grepLog = new GrepLogPlugin(this);
