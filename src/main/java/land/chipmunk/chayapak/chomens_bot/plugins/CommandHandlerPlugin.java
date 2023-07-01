@@ -103,13 +103,13 @@ public class CommandHandlerPlugin {
         // TODO: improve these minimum args and maximum args stuff, the current one really sucks.,.,
         final int shortestUsageIndex = getShortestUsageIndex(command.usages());
         final int longestUsageIndex = getLongestUsageIndex(command.usages());
-        final String shortestUsage = command.usages()[shortestUsageIndex];
-        final String longestUsage = command.usages()[longestUsageIndex];
+        final String shortestUsage = shortestUsageIndex == 0 && command.usages().length == 0 ? "" : command.usages()[shortestUsageIndex];
+        final String longestUsage = longestUsageIndex == 0 && command.usages().length == 0 ? "" : command.usages()[longestUsageIndex];
 
         final int minimumArgs = getMinimumArgs(shortestUsage, inGame, command.trustLevel());
         final int maximumArgs = getMaximumArgs(longestUsage, inGame, command.trustLevel());
         if (fullArgs.length < minimumArgs) return Component.text("Excepted minimum of " + minimumArgs + " argument(s), got " + fullArgs.length).color(NamedTextColor.RED);
-        if (fullArgs.length > maximumArgs && !longestUsage.contains("{")) return Component.text("Too much arguments, expected " + maximumArgs + " max").color(NamedTextColor.RED);
+        if (fullArgs.length > maximumArgs && !longestUsage.contains("{")) return Component.text("Too many arguments, expected " + maximumArgs + " max").color(NamedTextColor.RED);
 
         if (trustLevel != TrustLevel.PUBLIC && splitInput.length < 2 && inGame) return Component.text("Please provide a hash").color(NamedTextColor.RED);
 
@@ -220,6 +220,7 @@ public class CommandHandlerPlugin {
                 minLength = args.length;
             }
         }
+
         return shortestIndex;
     }
 

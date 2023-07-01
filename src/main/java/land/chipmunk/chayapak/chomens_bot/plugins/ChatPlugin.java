@@ -28,8 +28,13 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ChatPlugin extends Bot.Listener {
+    public static final Pattern CHAT_SPLIT_PATTERN = Pattern.compile("\\G\\s*([^\\r\\n]{1,254}(?=\\s|$)|[^\\r\\n]{254})"); // thanks HBot for the regex <3
+    public static final Pattern COLOR_CODE_PATTERN = Pattern.compile("(&[a-f0-9rlonmk])");
+
     private final Bot bot;
 
     private final List<ChatParser> chatParsers;
@@ -256,15 +261,31 @@ public class ChatPlugin extends Bot.Listener {
     public void clearQueue () { queue.clear(); }
 
     public void send (String message) {
-        final String[] splitted = message.split("(?<=\\G.{255})|\\n");
+        final Matcher splitMatcher = CHAT_SPLIT_PATTERN.matcher(message);
 
-        for (String subMessage : splitted) {
+        String lastColor = "";
+
+        boolean isFirst = true;
+
+        // kinda broken but whatever
+        while (splitMatcher.find()) {
+            final String eachMessage = splitMatcher.group(1);
+
             if (
-                    subMessage.trim().equals("") ||
-                            IllegalCharactersUtilities.containsIllegalCharacters(subMessage)
+                    eachMessage.trim().isEmpty() ||
+                            IllegalCharactersUtilities.containsIllegalCharacters(eachMessage)
             ) continue;
 
-            queue.add(subMessage);
+            if (!isFirst) {
+                final Matcher colorCodeMatcher = COLOR_CODE_PATTERN.matcher(message);
+                while (colorCodeMatcher.find()) lastColor = colorCodeMatcher.group();
+            }
+
+            queue.add(
+                    lastColor + eachMessage // the regex has 254 (comes from 256 - 2 (color code length)) so we can do this here
+            );
+
+            isFirst = false;
         }
     }
 
