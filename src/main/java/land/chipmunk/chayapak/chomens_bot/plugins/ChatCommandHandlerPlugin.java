@@ -33,7 +33,7 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.Listener {
 
     private void listener (PlayerMessage message, boolean cspy) {
         try {
-            if (message.sender().profile().getName().equals(bot.username())) return;
+            if (message.sender().profile().getId().equals(bot.profile().getId())) return;
         } catch (Exception ignored) {} // kinda sus ngl
 
         final Component displayNameComponent = message.displayName();
