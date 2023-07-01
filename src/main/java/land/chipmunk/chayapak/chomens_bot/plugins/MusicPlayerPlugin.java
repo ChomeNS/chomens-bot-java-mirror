@@ -85,73 +85,77 @@ public class MusicPlayerPlugin extends Bot.Listener {
         bot.tick().addListener(new TickPlugin.Listener() {
             @Override
             public void onTick() {
-                if (currentSong == null) {
-                    if (songQueue.size() == 0) return; // this line
+                try {
+                    if (currentSong == null) {
+                        if (songQueue.size() == 0) return; // this line
 
-                    addBossBar();
+                        addBossBar();
 
-                    currentSong = songQueue.get(0); // songQueue.poll();
-                    bot.chat().tellraw(
-                            Component.translatable(
-                                    "Now playing %s",
-                                    Component.empty().append(currentSong.name).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
-                            ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
-                    );
-                    currentSong.play();
-                }
-
-                if (currentSong.paused && ticksUntilPausedBossbar-- < 0) return;
-                else ticksUntilPausedBossbar = 20 - (((int) bot.tps().getTickRate()) - 20);
-
-                BotBossBar bossBar = bot.bossbar().get(bossbarName);
-
-                if (bossBar == null && bot.bossbar().enabled()) bossBar = addBossBar();
-
-                if (bot.bossbar().enabled() && bot.options().useCore()) {
-                    bossBar.setTitle(generateBossbar());
-                    bossBar.setColor(pitch > 0 ? BossBarColor.PURPLE : BossBarColor.YELLOW);
-                    bossBar.setValue((int) Math.floor(((double) currentSong.time / 1000) * speed));
-                }
-
-                if (currentSong.paused || bot.core().isRateLimited()) return;
-
-                handlePlaying();
-
-                if (currentSong.finished()) {
-                    if (loop == Loop.CURRENT) {
-                        currentSong.setTime(0);
-                        return;
-                    }
-
-                    bot.chat().tellraw(
-                            Component.translatable(
-                                    "Finished playing %s",
-                                    Component.empty().append(currentSong.name).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
-                            ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
-                    );
-
-                    if (loop == Loop.ALL) {
-                        skip();
-                        return;
-                    }
-
-                    songQueue.remove(0);
-
-                    if (songQueue.size() == 0) {
-                        stopPlaying();
-                        removeBossBar();
+                        currentSong = songQueue.get(0); // songQueue.poll();
                         bot.chat().tellraw(
-                                Component
-                                        .text("Finished playing every song in the queue")
-                                        .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+                                Component.translatable(
+                                        "Now playing %s",
+                                        Component.empty().append(currentSong.name).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
+                                ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
                         );
-                        return;
-                    }
-                    if (currentSong.size() > 0) {
-                        currentSong = songQueue.get(0);
-                        currentSong.setTime(0);
                         currentSong.play();
                     }
+
+                    if (currentSong.paused && ticksUntilPausedBossbar-- < 0) return;
+                    else ticksUntilPausedBossbar = 20 - (((int) bot.tps().getTickRate()) - 20);
+
+                    BotBossBar bossBar = bot.bossbar().get(bossbarName);
+
+                    if (bossBar == null && bot.bossbar().enabled()) bossBar = addBossBar();
+
+                    if (bot.bossbar().enabled() && bot.options().useCore()) {
+                        bossBar.setTitle(generateBossbar());
+                        bossBar.setColor(pitch > 0 ? BossBarColor.PURPLE : BossBarColor.YELLOW);
+                        bossBar.setValue((int) Math.floor(((double) currentSong.time / 1000) * speed));
+                    }
+
+                    if (currentSong.paused || bot.core().isRateLimited()) return;
+
+                    handlePlaying();
+
+                    if (currentSong.finished()) {
+                        if (loop == Loop.CURRENT) {
+                            currentSong.setTime(0);
+                            return;
+                        }
+
+                        bot.chat().tellraw(
+                                Component.translatable(
+                                        "Finished playing %s",
+                                        Component.empty().append(currentSong.name).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
+                                ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+                        );
+
+                        if (loop == Loop.ALL) {
+                            skip();
+                            return;
+                        }
+
+                        songQueue.remove(0);
+
+                        if (songQueue.size() == 0) {
+                            stopPlaying();
+                            removeBossBar();
+                            bot.chat().tellraw(
+                                    Component
+                                            .text("Finished playing every song in the queue")
+                                            .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+                            );
+                            return;
+                        }
+                        if (currentSong.size() > 0) {
+                            currentSong = songQueue.get(0);
+                            currentSong.setTime(0);
+                            currentSong.play();
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
