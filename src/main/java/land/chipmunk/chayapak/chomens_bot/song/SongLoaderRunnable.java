@@ -106,12 +106,20 @@ public class SongLoaderRunnable implements Runnable {
   }
 
   private void showAddedToQueue () {
-    bot.chat.tellraw(
-            Component.translatable(
-                    "Added %s to the song queue",
-                    Component.empty().append(song.name).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
-            ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
-    );
+    if (isFolder) {
+      bot.chat.tellraw(
+              Component.text(
+                      "Added folder to the song queue"
+              ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
+      );
+    } else {
+      bot.chat.tellraw(
+              Component.translatable(
+                      "Added %s to the song queue",
+                      Component.empty().append(song.name).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+              ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
+      );
+    }
   }
 
   private void failed() {
