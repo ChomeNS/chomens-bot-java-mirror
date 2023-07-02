@@ -26,6 +26,8 @@ public class SongLoaderRunnable implements Runnable {
 
   private final boolean isUrl;
 
+  private boolean isFolder = false;
+
   public SongLoaderRunnable(URL location, Bot bot) {
     this.bot = bot;
     isUrl = true;
@@ -39,10 +41,27 @@ public class SongLoaderRunnable implements Runnable {
     isUrl = false;
     songPath = location.toFile();
 
+    isFolder = songPath.isDirectory();
+
     fileName = location.getFileName().toString();
   }
 
   public void run () {
+    if (isFolder && !isUrl) {
+      final File[] files = songPath.listFiles();
+
+      if (files != null) {
+        for (File file : files) {
+          songPath = file;
+          processFile();
+        }
+
+        showAddedToQueue();
+      }
+    } else processFile();
+  }
+
+  private void processFile () {
     byte[] bytes;
     String name;
     try {
@@ -81,13 +100,18 @@ public class SongLoaderRunnable implements Runnable {
       failed();
     } else {
       bot.music.songQueue.add(song);
-      bot.chat.tellraw(
-              Component.translatable(
-                      "Added %s to the song queue",
-                      Component.empty().append(song.name).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
-              ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
-      );
+
+      if (!isFolder) showAddedToQueue();
     }
+  }
+
+  private void showAddedToQueue () {
+    bot.chat.tellraw(
+            Component.translatable(
+                    "Added %s to the song queue",
+                    Component.empty().append(song.name).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+            ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
+    );
   }
 
   private void failed() {
