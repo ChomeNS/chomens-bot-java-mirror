@@ -116,7 +116,7 @@ public class HelpCommand extends Command {
                                     (command.aliases.length > 0 && !command.aliases[0].equals("")) ?
                                             " (" + String.join(", ", command.aliases) + ")" :
                                             ""
-                            ))
+                            ).color(NamedTextColor.WHITE))
                             .append(Component.text(" - " + command.description)).color(NamedTextColor.GRAY)
             );
 
