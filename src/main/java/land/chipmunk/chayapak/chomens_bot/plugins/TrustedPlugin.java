@@ -3,7 +3,6 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.joda.time.DateTime;
@@ -16,37 +15,37 @@ import java.util.UUID;
 public class TrustedPlugin extends PlayersPlugin.Listener {
     private final Bot bot;
 
-    @Getter private final List<String> list;
+    public final List<String> list;
 
     public TrustedPlugin (Bot bot) {
         this.bot = bot;
 
-        this.list = bot.config().trusted();
+        this.list = bot.config.trusted;
 
-        bot.players().addListener(this);
+        bot.players.addListener(this);
     }
 
     public void broadcast (Component message, UUID exceptTarget) {
-        for (Bot bot : bot.bots()) {
-            if (!bot.loggedIn()) continue;
+        for (Bot bot : bot.bots) {
+            if (!bot.loggedIn) continue;
 
             final Component component = Component.translatable(
                     "[%s] [%s] %s",
-                    Component.text("ChomeNS Bot").color(ColorUtilities.getColorByString(bot.config().colorPalette().primary())),
-                    Component.text(this.bot.options().serverName()).color(NamedTextColor.GRAY),
+                    Component.text("ChomeNS Bot").color(ColorUtilities.getColorByString(bot.config.colorPalette.primary)),
+                    Component.text(this.bot.options.serverName).color(NamedTextColor.GRAY),
                     message.color(NamedTextColor.WHITE)
             ).color(NamedTextColor.DARK_GRAY);
 
-            bot.logger().custom(Component.text("Trusted Broadcast").color(NamedTextColor.AQUA), component);
+            bot.logger.custom(Component.text("Trusted Broadcast").color(NamedTextColor.AQUA), component);
 
             for (String player : list) {
-                final MutablePlayerListEntry entry = bot.players().getEntry(player);
+                final MutablePlayerListEntry entry = bot.players.getEntry(player);
 
                 if (entry == null) continue;
 
-                if (entry.profile().getId() == exceptTarget) continue;
+                if (entry.profile.getId() == exceptTarget) continue;
 
-                bot.chat().tellraw(component, player);
+                bot.chat.tellraw(component, player);
             }
         }
     }
@@ -55,14 +54,14 @@ public class TrustedPlugin extends PlayersPlugin.Listener {
 
     @Override
     public void playerJoined (MutablePlayerListEntry target) {
-        if (!list.contains(target.profile().getName())) return;
+        if (!list.contains(target.profile.getName())) return;
 
         // based (VERY)
         Component component;
-        if (!target.profile().getName().equals(bot.config().ownerName())) {
+        if (!target.profile.getName().equals(bot.config.ownerName)) {
             component = Component.translatable(
                     "Hello, %s!",
-                    Component.text(target.profile().getName()).color(ColorUtilities.getColorByString(bot.config().colorPalette().username()))
+                    Component.text(target.profile.getName()).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
             ).color(NamedTextColor.GREEN);
         } else {
             final DateTime now = DateTime.now();
@@ -75,35 +74,35 @@ public class TrustedPlugin extends PlayersPlugin.Listener {
                             Hello, %s!
                             Time: %s
                             Online players: %s""",
-                    Component.text(target.profile().getName()).color(ColorUtilities.getColorByString(bot.config().colorPalette().username())),
-                    Component.text(formattedTime).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())),
-                    Component.text(bot.players().list().size()).color(ColorUtilities.getColorByString(bot.config().colorPalette().number()))
+                    Component.text(target.profile.getName()).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)),
+                    Component.text(formattedTime).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                    Component.text(bot.players.list.size()).color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
             ).color(NamedTextColor.GREEN);
         }
 
-        bot.chat().tellraw(
+        bot.chat.tellraw(
                 component,
-                target.profile().getId()
+                target.profile.getId()
         );
 
         broadcast(
                 Component.translatable(
                         "Trusted player %s is now online",
-                        Component.text(target.profile().getName()).color(ColorUtilities.getColorByString(bot.config().colorPalette().username()))
-                ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor())),
-                target.profile().getId()
+                        Component.text(target.profile.getName()).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
+                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)),
+                target.profile.getId()
         );
     }
 
     @Override
     public void playerLeft (MutablePlayerListEntry target) {
-        if (!list.contains(target.profile().getName())) return;
+        if (!list.contains(target.profile.getName())) return;
 
         broadcast(
                 Component.translatable(
                         "Trusted player %s is now offline",
-                        Component.text(target.profile().getName()).color(ColorUtilities.getColorByString(bot.config().colorPalette().username()))
-                ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+                        Component.text(target.profile.getName()).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
+                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
         );
     }
 }

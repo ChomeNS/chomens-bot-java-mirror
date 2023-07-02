@@ -25,16 +25,16 @@ public class ClearChatCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
         if (args.length > 0) {
-            final MutablePlayerListEntry entry = bot.players().getEntry(String.join(" ", args));
+            final MutablePlayerListEntry entry = bot.players.getEntry(String.join(" ", args));
 
             if (entry == null) return Component.text("Invalid player name").color(NamedTextColor.RED);
 
-            final UUID uuid = entry.profile().getId();
+            final UUID uuid = entry.profile.getId();
 
-            bot.chat().tellraw(
+            bot.chat.tellraw(
                     Component.empty()
                             .append(Component.text("\n".repeat(1000)))
                             .append(
@@ -46,7 +46,7 @@ public class ClearChatCommand extends Command {
                     uuid
             );
         } else {
-            bot.chat().tellraw(
+            bot.chat.tellraw(
                     Component.empty()
                             .append(Component.text("\n".repeat(1000)))
                             .append(Component.text("The chat has been cleared").color(NamedTextColor.DARK_GREEN))

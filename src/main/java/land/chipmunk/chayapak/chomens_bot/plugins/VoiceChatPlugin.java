@@ -16,7 +16,6 @@ import land.chipmunk.chayapak.chomens_bot.voiceChat.NetworkMessage;
 import land.chipmunk.chayapak.chomens_bot.voiceChat.customPayload.JoinGroupPacket;
 import land.chipmunk.chayapak.chomens_bot.voiceChat.customPayload.SecretPacket;
 import land.chipmunk.chayapak.chomens_bot.voiceChat.packets.*;
-import lombok.Getter;
 
 import java.net.*;
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class VoiceChatPlugin extends Bot.Listener {
 
     private boolean running = false;
 
-    @Getter private final List<ClientGroup> groups = new ArrayList<>();
+    public final List<ClientGroup> groups = new ArrayList<>();
 
     public VoiceChatPlugin(Bot bot) {
         this.bot = bot;
@@ -49,17 +48,17 @@ public class VoiceChatPlugin extends Bot.Listener {
 
     public void packetReceived(ClientboundLoginPacket ignored) {
         // totally didn't use a real minecraft client with voicechat mod to get this
-        bot.session().send(new ServerboundCustomPayloadPacket(
+        bot.session.send(new ServerboundCustomPayloadPacket(
                 "minecraft:brand",
                 "\u0006fabric".getBytes() // should i use fabric here?
         ));
 
-        bot.session().send(new ServerboundCustomPayloadPacket(
+        bot.session.send(new ServerboundCustomPayloadPacket(
                 "voicechat:request_secret",
                 new FriendlyByteBuf(Unpooled.buffer()).writeInt(17).array()
         ));
 
-        bot.session().send(new ServerboundCustomPayloadPacket(
+        bot.session.send(new ServerboundCustomPayloadPacket(
                 "voicechat:update_state",
                 new FriendlyByteBuf(Unpooled.buffer()).writeBoolean(false).array()
         ));
@@ -74,11 +73,11 @@ public class VoiceChatPlugin extends Bot.Listener {
 
             final SecretPacket secretPacket = new SecretPacket().fromBytes(buf);
 
-            initializationData = new InitializationData(bot.session().getHost(), secretPacket);
+            initializationData = new InitializationData(bot.session.getHost(), secretPacket);
 
             try {
-                final InetAddress address = InetAddress.getByName(bot.session().getHost());
-                socketAddress = new InetSocketAddress(address, initializationData.serverPort());
+                final InetAddress address = InetAddress.getByName(bot.session.getHost());
+                socketAddress = new InetSocketAddress(address, initializationData.serverPort);
             } catch (UnknownHostException e) {
                 throw new RuntimeException(e);
             }
@@ -91,7 +90,7 @@ public class VoiceChatPlugin extends Bot.Listener {
             }
 
             new Thread(() -> {
-                sendToServer(new NetworkMessage(new AuthenticatePacket(initializationData.playerUUID(), initializationData.secret())));
+                sendToServer(new NetworkMessage(new AuthenticatePacket(initializationData.playerUUID, initializationData.secret)));
 
                 while (running) {
                     try {
@@ -99,9 +98,9 @@ public class VoiceChatPlugin extends Bot.Listener {
 
                         if (message == null) continue;
 
-                        if (message.packet() instanceof PingPacket pingPacket) sendToServer(new NetworkMessage(pingPacket));
-                        else if (message.packet() instanceof KeepAlivePacket) sendToServer(new NetworkMessage(new KeepAlivePacket()));
-                        else if (message.packet() instanceof AuthenticateAckPacket) sendToServer(new NetworkMessage(new ConnectionCheckPacket()));
+                        if (message.packet instanceof PingPacket pingPacket) sendToServer(new NetworkMessage(pingPacket));
+                        else if (message.packet instanceof KeepAlivePacket) sendToServer(new NetworkMessage(new KeepAlivePacket()));
+                        else if (message.packet instanceof AuthenticateAckPacket) sendToServer(new NetworkMessage(new ConnectionCheckPacket()));
                     } catch (Exception e) {
                         if (running) e.printStackTrace();
                         else break; // is this neccessary?
@@ -132,7 +131,7 @@ public class VoiceChatPlugin extends Bot.Listener {
 
         new JoinGroupPacket(clientGroup.id(), password).toBytes(buf);
 
-        bot.session().send(new ServerboundCustomPayloadPacket(
+        bot.session.send(new ServerboundCustomPayloadPacket(
                 "voicechat:set_group",
                 buf.array()
         ));

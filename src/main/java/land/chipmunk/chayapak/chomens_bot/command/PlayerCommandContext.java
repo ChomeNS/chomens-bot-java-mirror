@@ -1,14 +1,13 @@
 package land.chipmunk.chayapak.chomens_bot.command;
 
 import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
-import lombok.Getter;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import net.kyori.adventure.text.Component;
 
 public class PlayerCommandContext extends CommandContext {
-    @Getter private final String playerName;
+    public final String playerName;
 
-    @Getter private final String selector;
+    public final String selector;
 
     private final Bot bot;
 
@@ -21,11 +20,11 @@ public class PlayerCommandContext extends CommandContext {
 
     @Override
     public void sendOutput (Component message) {
-        bot.chat().tellraw(message, selector);
+        bot.chat.tellraw(message, selector);
     }
 
     @Override
     public Component displayName () {
-        return sender().displayName();
+        return sender.displayName;
     }
 }

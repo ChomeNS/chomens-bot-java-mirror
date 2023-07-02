@@ -22,11 +22,11 @@ public class DiscordCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
-        final String link = bot.config().discord().inviteLink();
+        final String link = bot.config.discord.inviteLink;
         return Component.empty()
-                .append(Component.text("The Discord invite is ").color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor())))
+                .append(Component.text("The Discord invite is ").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)))
                 .append(
                         Component
                                 .text(link)

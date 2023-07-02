@@ -28,9 +28,9 @@ public class ListCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
-        final List<MutablePlayerListEntry> list = bot.players().list();
+        final List<MutablePlayerListEntry> list = bot.players.list;
 
         final List<Component> playersComponent = new ArrayList<>();
 
@@ -38,32 +38,32 @@ public class ListCommand extends Command {
             playersComponent.add(
                     Component.translatable(
                             "%s › %s",
-                            entry.displayName() == null ?
-                                    Component.text(entry.profile().getName()).color(ColorUtilities.getColorByString(bot.config().colorPalette().username())) :
-                                    entry.displayName()
+                            entry.displayName == null ?
+                                    Component.text(entry.profile.getName()).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)) :
+                                    entry.displayName
                                     .hoverEvent(
                                             HoverEvent.showText(
                                                     Component
-                                                            .text(entry.profile().getName())
+                                                            .text(entry.profile.getName())
                                                             .append(Component.newline())
                                                             .append(Component.text("Click here to copy the username to your clipboard").color(NamedTextColor.GREEN))
                                             )
                                     )
                                     .clickEvent(
-                                            ClickEvent.copyToClipboard(entry.profile().getName())
+                                            ClickEvent.copyToClipboard(entry.profile.getName())
                                     )
                                     .color(NamedTextColor.WHITE),
                             Component
-                                    .text(entry.profile().getIdAsString())
+                                    .text(entry.profile.getIdAsString())
                                     .hoverEvent(
                                             HoverEvent.showText(
                                                     Component.text("Click here to copy the UUID to your clipboard").color(NamedTextColor.GREEN)
                                             )
                                     )
                                     .clickEvent(
-                                            ClickEvent.copyToClipboard(entry.profile().getIdAsString())
+                                            ClickEvent.copyToClipboard(entry.profile.getIdAsString())
                                     )
-                                    .color(ColorUtilities.getColorByString(bot.config().colorPalette().uuid()))
+                                    .color(ColorUtilities.getColorByString(bot.config.colorPalette.uuid))
                     ).color(NamedTextColor.DARK_GRAY)
             );
         }

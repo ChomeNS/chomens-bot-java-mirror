@@ -3,8 +3,6 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 
 // normally unused in the main instance of the bot
 public class PacketSnifferPlugin extends Bot.Listener {
-    @Getter @Setter private boolean enabled = false;
+    public boolean enabled = false;
 
     private OutputStreamWriter writer;
 
@@ -25,8 +23,8 @@ public class PacketSnifferPlugin extends Bot.Listener {
                     new FileOutputStream(
                             String.format(
                                     "packets-%s-%s.log",
-                                    bot.options().host(),
-                                    bot.options().port()
+                                    bot.options.host,
+                                    bot.options.port
                             )
                     ),
                     StandardCharsets.UTF_8

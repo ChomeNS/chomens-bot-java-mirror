@@ -30,7 +30,7 @@ public class TranslateCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
         final String from = args[0];
         final String to = args[1];
@@ -39,7 +39,7 @@ public class TranslateCommand extends Command {
 
         final Gson gson = new Gson();
 
-        bot.executorService().submit(() -> {
+        bot.executorService.submit(() -> {
             try {
                 final URL url = new URL("https://translate.google.com/translate_a/single?client=at&dt=t&dt=rm&dj=1");
 
@@ -71,7 +71,7 @@ public class TranslateCommand extends Command {
                                     "Result: %s",
                                     Component.text(output).color(NamedTextColor.GREEN)
                             )
-                            .color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
+                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
                 );
             } catch (Exception e) {
                 context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));

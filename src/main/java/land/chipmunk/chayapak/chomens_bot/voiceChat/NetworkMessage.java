@@ -5,7 +5,6 @@ import land.chipmunk.chayapak.chomens_bot.data.voiceChat.RawUdpPacket;
 import land.chipmunk.chayapak.chomens_bot.util.AES;
 import land.chipmunk.chayapak.chomens_bot.util.FriendlyByteBuf;
 import land.chipmunk.chayapak.chomens_bot.voiceChat.packets.*;
-import lombok.Getter;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -22,9 +21,9 @@ import java.util.UUID;
 public class NetworkMessage {
     public static final byte MAGIC_BYTE = (byte) 0b11111111;
 
-    @Getter private final long timestamp;
-    @Getter private Packet<? extends Packet<?>> packet;
-    @Getter private SocketAddress address;
+    public final long timestamp;
+    public Packet<? extends Packet<?>> packet;
+    public SocketAddress address;
 
     public NetworkMessage(Packet<?> packet) {
         this(System.currentTimeMillis());
@@ -59,7 +58,7 @@ public class NetworkMessage {
 
         if (b.readByte() != MAGIC_BYTE) return null;
 
-        return readFromBytes(packet.socketAddress(), initializationData.secret(), b.readByteArray(), System.currentTimeMillis());
+        return readFromBytes(packet.socketAddress(), initializationData.secret, b.readByteArray(), System.currentTimeMillis());
     }
 
     private static NetworkMessage readFromBytes(SocketAddress socketAddress, UUID secret, byte[] encryptedPayload, long timestamp) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
@@ -94,10 +93,10 @@ public class NetworkMessage {
     }
 
     public byte[] writeClient(InitializationData data) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        byte[] payload = write(data.secret());
+        byte[] payload = write(data.secret);
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer(1 + 16 + payload.length));
         buffer.writeByte(MAGIC_BYTE);
-        buffer.writeUUID(data.playerUUID());
+        buffer.writeUUID(data.playerUUID);
         buffer.writeByteArray(payload);
 
         byte[] bytes = new byte[buffer.readableBytes()];

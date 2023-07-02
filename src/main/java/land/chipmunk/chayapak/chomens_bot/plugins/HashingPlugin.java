@@ -2,22 +2,21 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import com.google.common.hash.Hashing;
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import lombok.Getter;
 
 import java.nio.charset.StandardCharsets;
 
 public class HashingPlugin {
     private final Bot bot;
 
-    @Getter private String hash;
-    @Getter private String ownerHash;
+    public String hash;
+    public String ownerHash;
 
     private long lastTime;
 
     public HashingPlugin (Bot bot) {
         this.bot = bot;
 
-        bot.tick().addListener(new TickPlugin.Listener() {
+        bot.tick.addListener(new TickPlugin.Listener() {
             @Override
             public void onTick() {
                 update();
@@ -32,8 +31,8 @@ public class HashingPlugin {
         if (time == lastTime) return;
         lastTime = time;
 
-        final String normalHashKey = bot.config().keys().normalKey();
-        final String ownerHashKey = bot.config().keys().ownerKey();
+        final String normalHashKey = bot.config.keys.normalKey;
+        final String ownerHashKey = bot.config.keys.ownerKey;
 
         final String hashValue = time + normalHashKey;
         hash = Hashing.sha256()

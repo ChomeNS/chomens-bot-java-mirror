@@ -33,10 +33,10 @@ public class TPSPlugin extends Bot.Listener {
 
         bot.addListener(this);
 
-        bot.core().addListener(new CorePlugin.Listener() {
+        bot.core.addListener(new CorePlugin.Listener() {
                @Override
                public void ready() {
-                   bot.tick().addListener(new TickPlugin.Listener() {
+                   bot.tick.addListener(new TickPlugin.Listener() {
                        @Override
                        public void onTick() {
                            updateTPSBar();
@@ -61,12 +61,12 @@ public class TPSPlugin extends Bot.Listener {
                 bot
         );
 
-        bot.bossbar().add(bossbarName, bossBar);
+        bot.bossbar.add(bossbarName, bossBar);
     }
 
     public void off () {
         enabled = false;
-        bot.bossbar().remove(bossbarName);
+        bot.bossbar.remove(bossbarName);
     }
 
     private void updateTPSBar () {
@@ -83,7 +83,7 @@ public class TPSPlugin extends Bot.Listener {
                     Component.text(formatter.format(tickRate)).color(getColor(tickRate))
             ).color(NamedTextColor.DARK_GRAY);
 
-            final BotBossBar bossBar = bot.bossbar().get(bossbarName);
+            final BotBossBar bossBar = bot.bossbar.get(bossbarName);
 
             if (bossBar == null) return;
 

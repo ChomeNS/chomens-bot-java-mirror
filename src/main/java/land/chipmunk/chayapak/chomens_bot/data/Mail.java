@@ -1,13 +1,23 @@
 package land.chipmunk.chayapak.chomens_bot.data;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@AllArgsConstructor
 public class Mail {
-    @Getter private String sentBy;
-    @Getter private String sentTo;
-    @Getter private long timeSent;
-    @Getter private String server;
-    @Getter private String contents;
+     public String sentBy;
+     public String sentTo;
+     public long timeSent;
+     public String server;
+     public String contents;
+    
+    public Mail (
+            String sentBy,
+            String sentTo,
+            long timeSent,
+            String server,
+            String contents
+    ) {
+        this.sentBy = sentBy;
+        this.sentTo = sentTo;
+        this.timeSent = timeSent;
+        this.server = server;
+        this.contents = contents;
+    }
 }

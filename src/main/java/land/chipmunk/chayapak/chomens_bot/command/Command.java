@@ -1,14 +1,13 @@
 package land.chipmunk.chayapak.chomens_bot.command;
 
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
 public abstract class Command {
-    @Getter private final String name;
-    @Getter private final String description;
-    @Getter private final String[] usages;
-    @Getter private final String[] aliases;
-    @Getter private final TrustLevel trustLevel;
+    public final String name;
+    public final String description;
+    public final String[] usages;
+    public final String[] aliases;
+    public final TrustLevel trustLevel;
 
     public Command (
             String name,

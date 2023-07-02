@@ -5,7 +5,6 @@ import com.github.steveice10.mc.protocol.data.game.entity.object.Direction;
 import com.github.steveice10.mc.protocol.data.game.entity.player.Hand;
 import com.github.steveice10.mc.protocol.data.game.entity.player.PlayerAction;
 import com.github.steveice10.mc.protocol.data.game.level.block.BlockChangeEntry;
-import com.github.steveice10.mc.protocol.data.game.level.block.BlockEntityInfo;
 import com.github.steveice10.mc.protocol.data.game.level.block.CommandBlockMode;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundBlockUpdatePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundLevelChunkWithLightPacket;
@@ -23,7 +22,6 @@ import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import lombok.Getter;
 import org.cloudburstmc.math.vector.Vector3i;
 
 import java.util.ArrayList;
@@ -37,9 +35,9 @@ import java.util.concurrent.TimeUnit;
 public class CorePlugin extends PositionPlugin.Listener {
     private final Bot bot;
 
-    @Getter private final List<Listener> listeners = new ArrayList<>();
+    private final List<Listener> listeners = new ArrayList<>();
 
-    @Getter private boolean ready = false;
+    public boolean ready = false;
 
     private ScheduledFuture<?> refillTask;
 
@@ -56,30 +54,30 @@ public class CorePlugin extends PositionPlugin.Listener {
 
     private final boolean kaboom;
 
-    @Getter private int commandsPerSecond = 0;
+    private int commandsPerSecond = 0;
 
     public CorePlugin (Bot bot) {
         this.bot = bot;
-        this.kaboom = bot.options().kaboom();
+        this.kaboom = bot.options.kaboom;
 
         this.fromSize = Vector3i.from(
-                bot.config().core().start().x(),
-                bot.config().core().start().y(),
-                bot.config().core().start().z()
+                bot.config.core.start.x,
+                bot.config.core.start.y,
+                bot.config.core.start.z
         );
         this.toSize = Vector3i.from(
-                bot.config().core().end().x(),
-                bot.config().core().end().y(),
-                bot.config().core().end().z()
+                bot.config.core.end.x,
+                bot.config.core.end.y,
+                bot.config.core.end.z
         );
 
-        bot.position().addListener(this);
+        bot.position.addListener(this);
 
         if (hasRateLimit() && hasReset()) {
-            bot.executor().scheduleAtFixedRate(
+            bot.executor.scheduleAtFixedRate(
                     () -> commandsPerSecond = 0,
                     0,
-                    bot.options().coreRateLimit().reset(),
+                    bot.options.coreRateLimit.reset,
                     TimeUnit.MILLISECONDS
             );
         }
@@ -105,19 +103,19 @@ public class CorePlugin extends PositionPlugin.Listener {
     }
 
     public boolean hasRateLimit () {
-        return bot.options().coreRateLimit().limit() > 0;
+        return bot.options.coreRateLimit.limit > 0;
     }
 
     public boolean hasReset () {
-        return bot.options().coreRateLimit().reset() > 0;
+        return bot.options.coreRateLimit.reset > 0;
     }
 
     public boolean isRateLimited () {
-        return commandsPerSecond > bot.options().coreRateLimit().limit();
+        return commandsPerSecond > bot.options.coreRateLimit.limit;
     }
 
     private void forceRun (String command) {
-        bot.session().send(new ServerboundSetCommandBlockPacket(
+        bot.session.send(new ServerboundSetCommandBlockPacket(
                 block,
                 command,
                 kaboom ? CommandBlockMode.AUTO : CommandBlockMode.REDSTONE,
@@ -132,21 +130,21 @@ public class CorePlugin extends PositionPlugin.Listener {
     public void run (String command) {
         if (!ready || command.length() > 32767) return;
 
-        if (bot.options().useCore()) {
+        if (bot.options.useCore) {
             if (isRateLimited() && hasRateLimit()) return;
 
             forceRun(command);
 
             if (hasRateLimit()) commandsPerSecond++;
         } else if (command.length() < 256) {
-            bot.chat().send("/" + command);
+            bot.chat.send("/" + command);
         }
     }
 
     public CompletableFuture<CompoundTag> runTracked (String command) {
         run(command);
 
-        if (!bot.options().useCore()) return null;
+        if (!bot.options.useCore) return null;
 
         final int transactionId = nextTransactionId++;
 
@@ -154,15 +152,15 @@ public class CorePlugin extends PositionPlugin.Listener {
         final CompletableFuture<CompoundTag> future = new CompletableFuture<>();
         transactions.put(transactionId, future);
 
-        final Runnable afterTick = () -> bot.session().send(new ServerboundBlockEntityTagQuery(transactionId, block));
+        final Runnable afterTick = () -> bot.session.send(new ServerboundBlockEntityTagQuery(transactionId, block));
 
-        bot.executor().schedule(afterTick, 50, TimeUnit.MILLISECONDS);
+        bot.executor.schedule(afterTick, 50, TimeUnit.MILLISECONDS);
 
         return future;
     }
 
     public void runPlaceBlock (String command) {
-        if (!ready || !bot.options().useCore()) return;
+        if (!ready || !bot.options.useCore) return;
 
         final CompoundTag tag = new CompoundTag("");
         final CompoundTag blockEntityTag = new CompoundTag("BlockEntityTag");
@@ -172,12 +170,12 @@ public class CorePlugin extends PositionPlugin.Listener {
         tag.put(blockEntityTag);
 
         final Vector3i temporaryBlockPosition = Vector3i.from(
-                bot.position().position().getX(),
-                bot.position().position().getY() - 1,
-                bot.position().position().getZ()
+                bot.position.position.getX(),
+                bot.position.position.getY() - 1,
+                bot.position.position.getZ()
         );
 
-        final Session session = bot.session();
+        final Session session = bot.session;
         session.send(new ServerboundSetCreativeModeSlotPacket(36, new ItemStack(kaboom ? 492 /* repeating command block id */ : 373 /* command block id */, 64, tag)));
         session.send(new ServerboundPlayerActionPacket(PlayerAction.START_DIGGING, temporaryBlockPosition, Direction.NORTH, 0));
         session.send(new ServerboundUseItemOnPacket(temporaryBlockPosition, Direction.UP, Hand.MAIN_HAND, 0.5f, 0.5f, 0.5f, false, 1));
@@ -275,15 +273,15 @@ public class CorePlugin extends PositionPlugin.Listener {
     @Override
     public void positionChange (Vector3i position) {
         from = Vector3i.from(
-                fromSize.getX() + bot.position().position().getX(),
+                fromSize.getX() + bot.position.position.getX(),
                 fromSize.getY(),
-                fromSize.getZ() + bot.position().position().getZ()
+                fromSize.getZ() + bot.position.position.getZ()
         );
 
         to = Vector3i.from(
-                toSize.getX() + bot.position().position().getX(),
+                toSize.getX() + bot.position.position.getX(),
                 toSize.getY(),
-                toSize.getZ() + bot.position().position().getZ()
+                toSize.getZ() + bot.position.position.getZ()
         );
 
         reset();
@@ -292,7 +290,7 @@ public class CorePlugin extends PositionPlugin.Listener {
         if (!ready) {
             ready = true;
 
-            refillTask = bot.executor().scheduleAtFixedRate(this::refill, 0, bot.config().core().refillInterval(), TimeUnit.MILLISECONDS);
+            refillTask = bot.executor.scheduleAtFixedRate(this::refill, 0, bot.config.core.refillInterval, TimeUnit.MILLISECONDS);
             for (Listener listener : listeners) listener.ready();
         }
     }
@@ -315,10 +313,10 @@ public class CorePlugin extends PositionPlugin.Listener {
                 to.getY(),
                 to.getZ(),
 
-                bot.config().core().customName()
+                bot.config.core.customName
         );
 
-//        bot.chat().send(command);
+//        bot.chat.send(command);
 
         runPlaceBlock(command);
     }

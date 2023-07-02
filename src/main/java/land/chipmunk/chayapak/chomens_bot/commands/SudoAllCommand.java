@@ -21,10 +21,10 @@ public class SudoAllCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
-        for (MutablePlayerListEntry entry : bot.players().list()) {
-            bot.core().run("essentials:sudo " + entry.profile().getName() + " " + String.join(" ", args));
+        for (MutablePlayerListEntry entry : bot.players.list) {
+            bot.core.run("essentials:sudo " + entry.profile.getName() + " " + String.join(" ", args));
         }
 
         return null;

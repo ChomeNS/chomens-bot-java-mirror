@@ -21,36 +21,36 @@ public class BotVisibilityCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
         if (args.length == 0) {
-            final boolean visibility = bot.selfCare().visibility();
-            bot.selfCare().visibility(!visibility);
+            final boolean visibility = bot.selfCare.visibility;
+            bot.selfCare.visibility = !visibility;
 
-            final NamedTextColor greenOrGold = bot.selfCare().visibility() ? NamedTextColor.GREEN : NamedTextColor.GOLD;
-            final String visibleOrInvisible = bot.selfCare().visibility() ? "visible" : "invisible";
-            final String disableOrEnable = bot.selfCare().visibility() ? "disable" : "enable";
-            bot.chat().send("/essentials:vanish " + disableOrEnable);
+            final NamedTextColor greenOrGold = bot.selfCare.visibility ? NamedTextColor.GREEN : NamedTextColor.GOLD;
+            final String visibleOrInvisible = bot.selfCare.visibility ? "visible" : "invisible";
+            final String disableOrEnable = bot.selfCare.visibility ? "disable" : "enable";
+            bot.chat.send("/essentials:vanish " + disableOrEnable);
             return Component.empty()
                     .append(Component.text("The bot's visibility is now "))
                     .append(Component.text(visibleOrInvisible).color(greenOrGold));
         } else {
             switch (args[0]) {
                 case "on", "true" -> {
-                    bot.selfCare().visibility(true);
-                    bot.chat().send("/essentials:vanish disable");
+                    bot.selfCare.visibility = true;
+                    bot.chat.send("/essentials:vanish disable");
                     return Component.empty()
                             .append(Component.text("The bot's visibility is now "))
                             .append(Component.text("visible").color(NamedTextColor.GREEN))
-                            .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
+                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
                 }
                 case "off", "false" -> {
-                    bot.selfCare().visibility(false);
-                    bot.chat().send("/essentials:vanish enable");
+                    bot.selfCare.visibility = false;
+                    bot.chat.send("/essentials:vanish enable");
                     return Component.empty()
                             .append(Component.text("The bot's visibility is now "))
                             .append(Component.text("invisible").color(NamedTextColor.GOLD))
-                            .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
+                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
                 }
                 default -> {
                     return Component.text("Invalid argument").color(NamedTextColor.RED);

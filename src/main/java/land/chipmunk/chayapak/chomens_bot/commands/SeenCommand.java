@@ -15,9 +15,6 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SeenCommand extends Command {
     public SeenCommand () {
         super(
@@ -31,19 +28,19 @@ public class SeenCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
         final String player = String.join(" ", args);
 
-        for (Bot eachBot : bot.bots()) {
-            if (eachBot.players().getEntry(player) != null) return Component.empty()
+        for (Bot eachBot : bot.bots) {
+            if (eachBot.players.getEntry(player) != null) return Component.empty()
                     .append(Component.text(player))
                     .append(Component.text(" is currently online on "))
-                    .append(Component.text(eachBot.host() + ":" + eachBot.port()))
+                    .append(Component.text(eachBot.host + ":" + eachBot.port))
                     .color(NamedTextColor.RED);
         }
 
-        final JsonElement playerElement = PlayersPlugin.playersObject().get(player);
+        final JsonElement playerElement = PlayersPlugin.playersObject.get(player);
         if (playerElement == null) return Component.translatable(
                 "%s was never seen",
                 Component.text(player)
@@ -60,9 +57,9 @@ public class SeenCommand extends Command {
 
         return Component.translatable(
                 "%s was last seen at %s on %s",
-                Component.text(player).color(ColorUtilities.getColorByString(bot.config().colorPalette().username())),
-                Component.text(formattedTime).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())),
-                Component.text(server).color(ColorUtilities.getColorByString(bot.config().colorPalette().string()))
-        ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
+                Component.text(player).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)),
+                Component.text(formattedTime).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                Component.text(server).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+        ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }
 }

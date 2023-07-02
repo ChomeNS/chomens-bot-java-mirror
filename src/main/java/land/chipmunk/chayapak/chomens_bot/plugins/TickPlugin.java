@@ -24,7 +24,7 @@ public class TickPlugin extends Bot.Listener {
 
     @Override
     public void connected(ConnectedEvent event) {
-        tickTask = bot.executor().scheduleAtFixedRate(this::tick, 0, 50, TimeUnit.MILLISECONDS);
+        tickTask = bot.executor.scheduleAtFixedRate(this::tick, 0, 50, TimeUnit.MILLISECONDS);
     }
 
     private void tick () {

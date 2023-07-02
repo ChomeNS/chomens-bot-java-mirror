@@ -33,7 +33,7 @@ public class ServerInfoCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) throws UnknownHostException {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
         // totallynotskidded™ from extras' serverinfo
         final Component component;
@@ -65,7 +65,7 @@ public class ServerInfoCommand extends Command {
             file.close();
         } catch (IOException ignored) {}
 
-        final TextColor color = ColorUtilities.getColorByString(bot.config().colorPalette().string());
+        final TextColor color = ColorUtilities.getColorByString(bot.config.colorPalette.string);
 
         final String[] lines = builder.toString().split("\n");
         final Optional<String> modelName = Arrays.stream(lines)
@@ -98,7 +98,7 @@ public class ServerInfoCommand extends Command {
                                 Component.text(heapUsage.getUsed() / 1024L / 1024L),
                                 Component.text(heapUsage.getMax() / 1024L / 1024L)
                         ).color(color)
-        ).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary()));
+        ).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary));
 
         return component;
     }

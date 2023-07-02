@@ -24,10 +24,10 @@ public class NetMessageCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
-        final List<Bot> bots = bot.bots();
+        final Bot bot = context.bot;
+        final List<Bot> bots = bot.bots;
 
-        final String hostAndPort = bot.host() + ":" + bot.port();
+        final String hostAndPort = bot.host + ":" + bot.port;
 
         final Component component = Component.translatable(
                 "[%s]%s%s%s› %s",
@@ -44,14 +44,14 @@ public class NetMessageCommand extends Command {
                                 )
                         ),
                 Component.text(" "),
-                context.sender().displayName().color(NamedTextColor.GRAY),
+                context.sender.displayName == null ? Component.text(context.sender.profile.getName()) : context.sender.displayName.color(NamedTextColor.GRAY),
                 Component.text(" "),
                 Component.text(String.join(" ", args)).color(NamedTextColor.GRAY)
         ).color(NamedTextColor.DARK_GRAY);
 
         for (Bot eachBot : bots) {
-            if (!eachBot.loggedIn()) continue;
-            eachBot.chat().tellraw(component);
+            if (!eachBot.loggedIn) continue;
+            eachBot.chat.tellraw(component);
         }
 
         return null;

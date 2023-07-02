@@ -26,9 +26,9 @@ public class CommandBlockCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
-        final CompletableFuture<CompoundTag> future = bot.core().runTracked(String.join(" ", args));
+        final CompletableFuture<CompoundTag> future = bot.core.runTracked(String.join(" ", args));
 
         if (future == null) return null;
 

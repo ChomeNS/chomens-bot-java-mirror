@@ -24,20 +24,20 @@ public class KickCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
-        final MutablePlayerListEntry entry = bot.players().getEntry(String.join(" ", args));
+        final MutablePlayerListEntry entry = bot.players.getEntry(String.join(" ", args));
 
         if (entry == null) return Component.text("Invalid player name").color(NamedTextColor.RED);
 
-        final String name = entry.profile().getName();
-        final UUID uuid = entry.profile().getId();
+        final String name = entry.profile.getName();
+        final UUID uuid = entry.profile.getId();
 
-        bot.exploits().kick(uuid);
+        bot.exploits.kick(uuid);
 
         return Component.empty()
                 .append(Component.text("Kicking player "))
-                .append(Component.text(name).color(ColorUtilities.getColorByString(bot.config().colorPalette().username())))
-                .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
+                .append(Component.text(name).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)))
+                .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }
 }

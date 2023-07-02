@@ -21,8 +21,8 @@ public class ValidateCommand extends Command {
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final String hash = fullArgs[0];
 
-        if (hash.equals(context.hash())) return Component.text("Valid hash").color(NamedTextColor.GREEN);
-        else if (hash.equals(context.ownerHash())) return Component.text("Valid OwnerHash").color(NamedTextColor.GREEN);
+        if (hash.equals(context.hash)) return Component.text("Valid hash").color(NamedTextColor.GREEN);
+        else if (hash.equals(context.ownerHash)) return Component.text("Valid OwnerHash").color(NamedTextColor.GREEN);
 
         return null;
     }

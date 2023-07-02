@@ -32,7 +32,7 @@ public class HelpCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        this.bot = context.bot();
+        this.bot = context.bot;
         this.context = context;
 
         if (args.length == 0) {
@@ -66,10 +66,10 @@ public class HelpCommand extends Command {
 
         List<String> commandNames = new ArrayList<>();
 
-        for (Command command : bot.commandHandler().commands()) {
-            if (command.trustLevel() != trustLevel) continue;
+        for (Command command : bot.commandHandler.commands) {
+            if (command.trustLevel != trustLevel) continue;
 
-            commandNames.add(command.name());
+            commandNames.add(command.name);
         }
 
         Collections.sort(commandNames);
@@ -99,39 +99,39 @@ public class HelpCommand extends Command {
     }
 
     public Component sendUsages (CommandContext context, String[] args) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
-        final String prefix = context.prefix();
+        final String prefix = context.prefix;
 
-        for (Command command : bot.commandHandler().commands()) {
-            if (!command.name().equals(args[0]) && !Arrays.stream(command.aliases()).toList().contains(args[0])) continue;
+        for (Command command : bot.commandHandler.commands) {
+            if (!command.name.equals(args[0]) && !Arrays.stream(command.aliases).toList().contains(args[0])) continue;
 
-            final String commandName = command.name();
+            final String commandName = command.name;
             final List<Component> usages = new ArrayList<>();
 
             usages.add(
                     Component.empty()
-                            .append(Component.text(prefix + commandName).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary())))
+                            .append(Component.text(prefix + commandName).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
                             .append(Component.text(
-                                    (command.aliases().length > 0 && !command.aliases()[0].equals("")) ?
-                                            " (" + String.join(", ", command.aliases()) + ")" :
+                                    (command.aliases.length > 0 && !command.aliases[0].equals("")) ?
+                                            " (" + String.join(", ", command.aliases) + ")" :
                                             ""
                             ))
-                            .append(Component.text(" - " + command.description()).color(NamedTextColor.GRAY))
+                            .append(Component.text(" - " + command.description)).color(NamedTextColor.GRAY)
             );
 
             usages.add(
                     Component.empty()
                             .append(Component.text("Trust level: ").color(NamedTextColor.GREEN))
-                            .append(Component.text(command.trustLevel().name()).color(NamedTextColor.YELLOW))
+                            .append(Component.text(command.trustLevel.name()).color(NamedTextColor.YELLOW))
             );
 
-            for (String usage : command.usages()) {
+            for (String usage : command.usages) {
                 usages.add(
                         Component.empty()
-                                .append(Component.text(prefix + commandName).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary())))
+                                .append(Component.text(prefix + commandName).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
                                 .append(Component.text(" "))
-                                .append(Component.text(usage).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())))
+                                .append(Component.text(usage).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)))
                 );
             }
 

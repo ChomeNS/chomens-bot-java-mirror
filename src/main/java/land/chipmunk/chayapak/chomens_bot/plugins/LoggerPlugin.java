@@ -5,8 +5,6 @@ import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.util.FileLoggerUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
-import lombok.Getter;
-import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -18,7 +16,7 @@ public class LoggerPlugin extends ChatPlugin.Listener {
 
     private boolean addedListener = false;
 
-    @Getter @Setter private boolean logToConsole = true;
+    public boolean logToConsole = true;
 
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
@@ -31,8 +29,8 @@ public class LoggerPlugin extends ChatPlugin.Listener {
                 log(
                         String.format(
                                 "Connecting to: %s:%s",
-                                bot.host(),
-                                bot.port()
+                                bot.host,
+                                bot.port
                         )
                 );
             }
@@ -42,20 +40,20 @@ public class LoggerPlugin extends ChatPlugin.Listener {
                 log(
                         String.format(
                                 "Successfully connected to: %s:%s",
-                                bot.host(),
-                                bot.port()
+                                bot.host,
+                                bot.port
                         )
                 );
 
                 if (addedListener) return;
-                bot.chat().addListener(LoggerPlugin.this);
+                bot.chat.addListener(LoggerPlugin.this);
                 addedListener = true;
             }
 
             @Override
             public void disconnected (DisconnectedEvent event) {
                 final String reason = ComponentUtilities.stringifyAnsi(event.getReason());
-                log("Disconnected from " + bot.host() + ":" + bot.port() + ", reason: " + reason);
+                log("Disconnected from " + bot.host + ":" + bot.port + ", reason: " + reason);
             }
         });
     }
@@ -68,7 +66,7 @@ public class LoggerPlugin extends ChatPlugin.Listener {
                 "[%s %s] [%s] %s",
                 Component.text(dateTime.format(dateTimeFormatter)).color(NamedTextColor.GRAY),
                 prefix,
-                Component.text(bot.options().serverName()).color(NamedTextColor.GRAY),
+                Component.text(bot.options.serverName).color(NamedTextColor.GRAY),
                 Component.text(_message).color(NamedTextColor.WHITE)
         ).color(NamedTextColor.DARK_GRAY);
 
@@ -78,12 +76,12 @@ public class LoggerPlugin extends ChatPlugin.Listener {
     public void log (String _message) {
         final String message = prefix(Component.text("Log").color(NamedTextColor.GOLD), _message);
 
-        if (logToConsole) bot.console().reader().printAbove(message);
+        if (logToConsole) bot.console.reader.printAbove(message);
 
 
         final String formattedMessage = String.format(
                 "[%s] %s",
-                bot.host() + ":" + bot.port(),
+                bot.host + ":" + bot.port,
                 _message
         );
 
@@ -98,13 +96,13 @@ public class LoggerPlugin extends ChatPlugin.Listener {
     public void info (String _message) {
         final String message = prefix(Component.text("Info").color(NamedTextColor.GREEN), _message);
 
-        if (logToConsole) bot.console().reader().printAbove(message);
+        if (logToConsole) bot.console.reader.printAbove(message);
     }
 
     public void custom (Component prefix, Component _message) {
         final String message = prefix(prefix, ComponentUtilities.stringifyAnsi(_message));
 
-        if (logToConsole) bot.console().reader().printAbove(message);
+        if (logToConsole) bot.console.reader.printAbove(message);
     }
 
     @Override

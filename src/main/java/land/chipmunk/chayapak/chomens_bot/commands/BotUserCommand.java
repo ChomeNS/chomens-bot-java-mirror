@@ -23,10 +23,10 @@ public class BotUserCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
-        final String username = bot.username();
-        final String uuid = bot.profile().getIdAsString();
+        final String username = bot.username;
+        final String uuid = bot.profile.getIdAsString();
 
         return Component.translatable(
                 "The bot's username is: %s and the UUID is: %s",
@@ -42,7 +42,7 @@ public class BotUserCommand extends Command {
                         .clickEvent(
                                 ClickEvent.copyToClipboard(username)
                         )
-                        .color(ColorUtilities.getColorByString(bot.config().colorPalette().username())),
+                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.username)),
                 Component
                         .text(uuid)
                         .hoverEvent(
@@ -55,7 +55,7 @@ public class BotUserCommand extends Command {
                         .clickEvent(
                                 ClickEvent.copyToClipboard(uuid)
                         )
-                        .color(ColorUtilities.getColorByString(bot.config().colorPalette().uuid()))
-        ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
+                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.uuid))
+        ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }
 }

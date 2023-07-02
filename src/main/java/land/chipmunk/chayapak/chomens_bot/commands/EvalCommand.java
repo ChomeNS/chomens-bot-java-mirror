@@ -27,15 +27,15 @@ public class EvalCommand extends Command {
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         if (args.length < 1) return Component.text("Not enough arguments").color(NamedTextColor.RED);
 
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
-        if (!bot.eval().connected()) return Component.text("Eval server is not online").color(NamedTextColor.RED);
+        if (!bot.eval.connected) return Component.text("Eval server is not online").color(NamedTextColor.RED);
 
         switch (args[0]) {
             case "run" -> {
                 final String command = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 
-                final CompletableFuture<EvalOutput> future = bot.eval().run(command);
+                final CompletableFuture<EvalOutput> future = bot.eval.run(command);
 
                 future.thenApply((output) -> {
                     if (output.isError()) context.sendOutput(Component.text(output.output()).color(NamedTextColor.RED));
@@ -45,9 +45,9 @@ public class EvalCommand extends Command {
                 });
             }
             case "reset" -> {
-                bot.eval().reset();
+                bot.eval.reset();
 
-                return Component.text("Reset the eval context").color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
+                return Component.text("Reset the eval context").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             default -> {
                 return Component.text("Invalid argument").color(NamedTextColor.RED);

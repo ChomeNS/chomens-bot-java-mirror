@@ -86,16 +86,16 @@ public class Song {
   }
 
   public void advanceTime () {
-    time = (long) ((System.currentTimeMillis() - startTime) * bot.music().speed());
+    time = (long) ((System.currentTimeMillis() - startTime) * bot.music.speed);
   }
 
   public boolean reachedNextNote () {
     if (position < notes.size()) {
-      return notes.get(position).time <= time * bot.music().speed();
+      return notes.get(position).time <= time * bot.music.speed;
     } else {
-      if (finished() && bot.music().loop() != Loop.OFF) {
+      if (finished() && bot.music.loop != Loop.OFF) {
         if (position < notes.size()) {
-          return notes.get(position).time <= time * bot.music().speed();
+          return notes.get(position).time <= time * bot.music.speed;
         } else {
           return false;
         }
@@ -107,7 +107,7 @@ public class Song {
 
   public Note getNextNote () {
     if (position >= notes.size()) {
-      if (bot.music().loop() == Loop.OFF) return null;
+      if (bot.music.loop == Loop.OFF) return null;
     }
     return notes.get(position++);
   }

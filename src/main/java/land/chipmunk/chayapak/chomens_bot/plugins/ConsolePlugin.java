@@ -5,7 +5,6 @@ import land.chipmunk.chayapak.chomens_bot.Configuration;
 import land.chipmunk.chayapak.chomens_bot.Main;
 import land.chipmunk.chayapak.chomens_bot.command.ConsoleCommandContext;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
-import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -19,12 +18,12 @@ import java.util.List;
 public class ConsolePlugin {
     private final List<Bot> allBots;
 
-    @Getter public final LineReader reader;
+    public final LineReader reader;
 
-    @Getter private String consoleServer = "all";
+    public String consoleServer = "all";
 
-    @Getter private String prefix;
-    @Getter private String consoleServerPrefix;
+    public String prefix;
+    public String consoleServerPrefix;
 
     private static final List<Listener> listeners = new ArrayList<>();
 
@@ -35,12 +34,12 @@ public class ConsolePlugin {
         reader.option(LineReader.Option.DISABLE_EVENT_EXPANSION, true);
 
         for (Bot bot : allBots) {
-            prefix = bot.config().consolePrefixes().normalCommandsPrefix();
-            consoleServerPrefix = bot.config().consolePrefixes().consoleServerPrefix();
+            prefix = bot.config.consolePrefixes.normalCommandsPrefix;
+            consoleServerPrefix = bot.config.consolePrefixes.consoleServerPrefix;
 
-            bot.console(this);
+            bot.console = this;
 
-            bot.logger(new LoggerPlugin(bot));
+            bot.logger = new LoggerPlugin(bot);
         }
 
         new DiscordPlugin(discordConfig, jda);
@@ -77,18 +76,18 @@ public class ConsolePlugin {
                 final List<String> servers = new ArrayList<>();
 
                 for (Bot bot : allBots) {
-                    servers.add(bot.host() + ":" + bot.port());
+                    servers.add(bot.host + ":" + bot.port);
                 }
 
                 for (Bot bot : allBots) {
                     if (args.length == 0) {
-                        bot.logger().info("No server specified");
+                        bot.logger.info("No server specified");
                         return;
                     }
 
                     if (String.join(" ", args).equalsIgnoreCase("all")) {
                         consoleServer = "all";
-                        bot.logger().info("Set the console server to all servers");
+                        bot.logger.info("Set the console server to all servers");
                         return;
                     }
                     try {
@@ -97,9 +96,9 @@ public class ConsolePlugin {
                                 .filter(server -> server.toLowerCase().contains(String.join(" ", args)))
                                 .toArray(String[]::new)[0];
 
-                        bot.logger().info("Set the console server to " + String.join(", ", consoleServer));
+                        bot.logger.info("Set the console server to " + String.join(", ", consoleServer));
                     } catch (ArrayIndexOutOfBoundsException e) {
-                        bot.logger().info("Invalid server: " + String.join(" ", args));
+                        bot.logger.info("Invalid server: " + String.join(" ", args));
                     }
                 }
             }
@@ -108,14 +107,14 @@ public class ConsolePlugin {
         }
 
         for (Bot bot : allBots) {
-            final String hostAndPort = bot.host() + ":" + bot.port();
+            final String hostAndPort = bot.host + ":" + bot.port;
 
             if (!hostAndPort.equals(consoleServer) && !consoleServer.equals("all")) continue;
 
             if (line.startsWith(prefix)) {
                 final ConsoleCommandContext context = new ConsoleCommandContext(bot, prefix);
 
-                final Component output = bot.commandHandler().executeCommand(line.substring(prefix.length()), context, false, false, true, null);
+                final Component output = bot.commandHandler.executeCommand(line.substring(prefix.length()), context, false, false, true, null);
 
                 if (output != null) {
                     context.sendOutput(output);
@@ -124,11 +123,11 @@ public class ConsolePlugin {
                 continue;
             }
 
-            bot.chat().tellraw(
+            bot.chat.tellraw(
                     Component.translatable(
                             "[%s] %s › %s",
-                            Component.text(bot.username() + " Console").color(NamedTextColor.GRAY),
-                            Component.text(bot.config().ownerName()).color(ColorUtilities.getColorByString(bot.config().colorPalette().ownerName())),
+                            Component.text(bot.username + " Console").color(NamedTextColor.GRAY),
+                            Component.text(bot.config.ownerName).color(ColorUtilities.getColorByString(bot.config.colorPalette.ownerName)),
                             Component.text(line).color(NamedTextColor.GRAY)
                     ).color(NamedTextColor.DARK_GRAY)
             );

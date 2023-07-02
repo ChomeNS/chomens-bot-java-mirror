@@ -19,10 +19,10 @@ public class RefillCoreCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
-        bot.core().reset();
-        bot.core().refill();
+        bot.core.reset();
+        bot.core.refill();
 
         return null;
     }

@@ -27,13 +27,13 @@ public class WikipediaCommand extends Command {
     }
 
     public Component execute (CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
         final String page = String.join(" ", args);
 
         final Gson gson = new Gson();
 
-        bot.executorService().submit(() -> {
+        bot.executorService.submit(() -> {
             try {
                 final URL url = new URL(
                         "https://en.wikipedia.org/api/rest_v1/page/summary/" +

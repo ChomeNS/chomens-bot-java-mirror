@@ -23,11 +23,11 @@ public class CreatorCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
         return Component.empty()
-                .append(Component.text("ChomeNS Bot ").color(ColorUtilities.getColorByString(bot.config().colorPalette().primary())))
-                .append(Component.text("is created by ").color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor())))
-                .append(Component.text("chayapak").color(ColorUtilities.getColorByString(bot.config().colorPalette().ownerName())));
+                .append(Component.text("ChomeNS Bot ").color(ColorUtilities.getColorByString(bot.config.colorPalette.primary)))
+                .append(Component.text("is created by ").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)))
+                .append(Component.text("chayapak").color(ColorUtilities.getColorByString(bot.config.colorPalette.ownerName)));
     }
 }

@@ -40,7 +40,7 @@ public class CommandSpyParser implements ChatParser {
         final Component command = children.get(1);
 
         final String stringUsername = ComponentUtilities.stringify(username);
-        MutablePlayerListEntry sender = bot.players().getEntry(stringUsername);
+        MutablePlayerListEntry sender = bot.players.getEntry(stringUsername);
 
         if (sender == null) return null;
 

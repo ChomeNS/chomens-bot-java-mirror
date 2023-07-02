@@ -31,13 +31,13 @@ public class UrbanCommand extends Command {
     }
 
     public Component execute (CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
         final String term = String.join(" ", args);
 
         final Gson gson = new Gson();
 
-        bot.executorService().submit(() -> {
+        bot.executorService.submit(() -> {
             try {
                 final URL url = new URL(
                         "https://api.urbandictionary.com/v0/define?term=" +
@@ -80,8 +80,8 @@ public class UrbanCommand extends Command {
                                             .clickEvent(
                                                     ClickEvent
                                                             .suggestCommand(
-                                                                    context.prefix() +
-                                                                            name() +
+                                                                    context.prefix +
+                                                                            name +
                                                                             " " +
                                                                             splittedDefinition[i]
                                                             )

@@ -47,7 +47,7 @@ public class BotBossBar extends BossBar {
 
         this.title = title;
 
-        bot.core().run("minecraft:bossbar set " + id + " name " + GsonComponentSerializer.gson().serialize(title));
+        bot.core.run("minecraft:bossbar set " + id + " name " + GsonComponentSerializer.gson().serialize(title));
     }
 
     public void setColor (BossBarColor color) {
@@ -58,7 +58,7 @@ public class BotBossBar extends BossBar {
 
         this.color = color;
 
-        bot.core().run("minecraft:bossbar set " + id + " color " + (color == BossBarColor.LIME ? "green" : color.name().toLowerCase()));
+        bot.core.run("minecraft:bossbar set " + id + " color " + (color == BossBarColor.LIME ? "green" : color.name().toLowerCase()));
     }
 
     public void setPlayers (String players) {
@@ -66,7 +66,7 @@ public class BotBossBar extends BossBar {
 
         this.players = players;
 
-        bot.core().run("minecraft:bossbar set " + id + " players " + players);
+        bot.core.run("minecraft:bossbar set " + id + " players " + players);
     }
 
     public void setDivision (BossBarDivision division) {
@@ -87,7 +87,7 @@ public class BotBossBar extends BossBar {
             case NOTCHES_10 -> division = "notched_10";
         }
 
-        bot.core().run("minecraft:bossbar set " + id + " style " + division);
+        bot.core.run("minecraft:bossbar set " + id + " style " + division);
     }
 
     public void setValue (int value) {
@@ -98,7 +98,7 @@ public class BotBossBar extends BossBar {
 
         this.value = value;
 
-        bot.core().run("minecraft:bossbar set " + id + " value " + value);
+        bot.core.run("minecraft:bossbar set " + id + " value " + value);
     }
 
     public void setVisible (boolean visible) {
@@ -106,7 +106,7 @@ public class BotBossBar extends BossBar {
 
         this.visible = visible;
 
-        bot.core().run("minecraft:bossbar set " + id + " visible " + visible);
+        bot.core.run("minecraft:bossbar set " + id + " visible " + visible);
     }
 
     public void setMax (long max) {
@@ -117,6 +117,6 @@ public class BotBossBar extends BossBar {
 
         this.max = max;
 
-        bot.core().run("minecraft:bossbar set " + id + " max " + max);
+        bot.core.run("minecraft:bossbar set " + id + " max " + max);
     }
 }

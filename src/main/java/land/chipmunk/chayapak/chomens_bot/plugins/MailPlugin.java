@@ -8,7 +8,6 @@ import land.chipmunk.chayapak.chomens_bot.data.Mail;
 import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.PersistentDataUtilities;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -18,7 +17,7 @@ import java.util.List;
 public class MailPlugin extends PlayersPlugin.Listener {
     private final Bot bot;
 
-    @Getter private static JsonArray mails = new JsonArray();
+    public static JsonArray mails = new JsonArray();
 
     private final Gson gson = new Gson();
 
@@ -31,26 +30,26 @@ public class MailPlugin extends PlayersPlugin.Listener {
     public MailPlugin (Bot bot) {
         this.bot = bot;
 
-        bot.players().addListener(this);
+        bot.players.addListener(this);
     }
 
     @Override
     public void playerJoined(MutablePlayerListEntry target) {
-        final String name = target.profile().getName();
+        final String name = target.profile.getName();
 
         final List<String> sendTos = new ArrayList<>(); // confusing name,.,.
 
         for (JsonElement mailElement : mails) {
             final Mail mail = gson.fromJson(mailElement, Mail.class);
 
-            sendTos.add(mail.sentTo());
+            sendTos.add(mail.sentTo);
         }
 
         boolean shouldSend = false;
         for (JsonElement mailElement : mails) {
             final Mail mail = gson.fromJson(mailElement, Mail.class);
 
-            if (mail.sentTo().equals(name)) {
+            if (mail.sentTo.equals(name)) {
                 shouldSend = true;
                 break;
             }
@@ -62,11 +61,11 @@ public class MailPlugin extends PlayersPlugin.Listener {
                             "Do %s or %s to read",
                     Component.text(sendTos.size()).color(NamedTextColor.GREEN),
                     Component.text((sendTos.size() > 1) ? "s" : ""),
-                    Component.text(bot.config().commandSpyPrefixes().get(0) + "mail read").color(ColorUtilities.getColorByString(bot.config().colorPalette().primary())),
-                    Component.text(bot.config().prefixes().get(0) + "mail read").color(ColorUtilities.getColorByString(bot.config().colorPalette().primary()))
+                    Component.text(bot.config.commandSpyPrefixes.get(0) + "mail read").color(ColorUtilities.getColorByString(bot.config.colorPalette.primary)),
+                    Component.text(bot.config.prefixes.get(0) + "mail read").color(ColorUtilities.getColorByString(bot.config.colorPalette.primary))
             ).color(NamedTextColor.GOLD);
 
-            bot.chat().tellraw(component, target.profile().getId());
+            bot.chat.tellraw(component, target.profile.getId());
         }
     }
 

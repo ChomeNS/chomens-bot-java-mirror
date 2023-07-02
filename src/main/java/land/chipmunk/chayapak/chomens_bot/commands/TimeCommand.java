@@ -25,7 +25,7 @@ public class TimeCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
         final String timezone = args[0];
 
@@ -43,8 +43,8 @@ public class TimeCommand extends Command {
 
         return Component.translatable(
                 "The current time for %s is: %s",
-                Component.text(timezone).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())),
+                Component.text(timezone).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
                 Component.text(formattedTime).color(NamedTextColor.GREEN)
-        ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
+        ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }
 }

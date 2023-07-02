@@ -1,138 +1,135 @@
 package land.chipmunk.chayapak.chomens_bot;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Configuration {
-    @Getter public List<String> prefixes;
-    @Getter public List<String> commandSpyPrefixes;
+    public List<String> prefixes;
+    public List<String> commandSpyPrefixes;
 
-    @Getter public ConsolePrefixes consolePrefixes = new ConsolePrefixes();
+    public ConsolePrefixes consolePrefixes = new ConsolePrefixes();
 
-    @Getter public Keys keys = new Keys();
+    public Keys keys = new Keys();
 
-    @Getter public String weatherApiKey;
+    public String weatherApiKey;
 
-    @Getter public Core core = new Core();
-    @Getter public Discord discord = new Discord();
+    public Core core = new Core();
+    public Discord discord = new Discord();
 
-    @Getter public ColorPalette colorPalette = new ColorPalette();
+    public ColorPalette colorPalette = new ColorPalette();
     
-    @Getter public String ownerName = "chayapak"; // mabe mabe
+    public String ownerName = "chayapak"; // mabe mabe
     
-    @Getter public List<String> trusted = new ArrayList<>();
-    @Getter public SelfCare selfCare = new SelfCare();
-    @Getter public Eval eval = new Eval();
+    public List<String> trusted = new ArrayList<>();
+    public SelfCare selfCare = new SelfCare();
+    public Eval eval = new Eval();
 
-    @Getter public BotOption[] bots = new BotOption[]{};
+    public BotOption[] bots = new BotOption[]{};
 
     public static class ConsolePrefixes {
-        @Getter public String normalCommandsPrefix;
-        @Getter public String consoleServerPrefix;
+        public String normalCommandsPrefix;
+        public String consoleServerPrefix;
     }
 
     public static class Keys {
-        @Getter public String normalKey;
-        @Getter public String ownerKey;
+        public String normalKey;
+        public String ownerKey;
     }
 
     public static class Core {
-        @Getter public Position start = new Position();
-        @Getter public Position end = new Position();
-        @Getter public int refillInterval = (60 * 5) * 1000; // 5 minutes
-        @Getter public String customName = "{\"text\":\"@\"}";
+        public Position start = new Position();
+        public Position end = new Position();
+        public int refillInterval = (60 * 5) * 1000; // 5 minutes
+        public String customName = "{\"text\":\"@\"}";
     }
 
     public static class Position {
-        @Getter public int x = 0;
-        @Getter public int y = 0;
-        @Getter public int z = 0;
+        public int x = 0;
+        public int y = 0;
+        public int z = 0;
     }
 
     public static class ColorPalette {
-        @Getter public String primary = "yellow";
-        @Getter public String secondary = "gold";
-        @Getter public String defaultColor = "white";
-        @Getter public String username = "gold";
-        @Getter public String uuid = "aqua";
-        @Getter public String string = "aqua";
-        @Getter public String number = "gold";
-        @Getter public String ownerName = "green";
+        public String primary = "yellow";
+        public String secondary = "gold";
+        public String defaultColor = "white";
+        public String username = "gold";
+        public String uuid = "aqua";
+        public String string = "aqua";
+        public String number = "gold";
+        public String ownerName = "green";
     }
 
     public static class Discord {
-        @Getter public boolean enabled = true;
-        @Getter public String prefix = "default!";
-        @Getter public String token;
-        @Getter public Map<String, String> servers = new HashMap<>();
-        @Getter public EmbedColors embedColors = new EmbedColors();
-        @Getter public String trustedRoleName = "Trusted";
-        @Getter public String adminRoleName = "Admin";
-        @Getter public String statusMessage = "Gay Sex";
-        @Getter public String inviteLink = "https://discord.gg/xdgCkUyaA4";
+        public boolean enabled = true;
+        public String prefix = "default!";
+        public String token;
+        public Map<String, String> servers = new HashMap<>();
+        public EmbedColors embedColors = new EmbedColors();
+        public String trustedRoleName = "Trusted";
+        public String adminRoleName = "Admin";
+        public String statusMessage = "Gay Sex";
+        public String inviteLink = "https://discord.gg/xdgCkUyaA4";
     }
 
     public static class EmbedColors {
-        @Getter public String normal = "#FFFF00";
-        @Getter public String error = "#FF0000";
+        public String normal = "#FFFF00";
+        public String error = "#FF0000";
     }
 
     public static class SelfCare {
-        @Getter public boolean op = true;
-        @Getter public boolean gamemode = true;
-        @Getter public boolean endCredits = true;
+        public boolean op = true;
+        public boolean gamemode = true;
+        public boolean endCredits = true;
 
-        @Getter public boolean vanish = true;
-        @Getter public boolean nickname = true;
-        @Getter public boolean socialspy = true;
-        @Getter public boolean mute = true;
+        public boolean vanish = true;
+        public boolean nickname = true;
+        public boolean socialspy = true;
+        public boolean mute = true;
 
-        @Getter public boolean cspy = true;
+        public boolean cspy = true;
 
-        @Getter public Icu icu = new Icu();
+        public Icu icu = new Icu();
 
         public static class Icu {
-            @Getter public boolean enabled = true;
-            @Getter public int positionPacketsPerSecond = 10;
+            public boolean enabled = true;
+            public int positionPacketsPerSecond = 10;
         }
 
-        @Getter public Prefix prefix = new Prefix();
+        public Prefix prefix = new Prefix();
 
         public static class Prefix {
-            @Getter public boolean enabled = true;
-            @Getter public String prefix = "&8[&eChomeNS Bot&8]";
+            public boolean enabled = true;
+            public String prefix = "&8[&eChomeNS Bot&8]";
         }
 
-        @Getter public boolean username = true;
+        public boolean username = true;
     }
 
     public static class Eval {
-        @Getter public String address = "ws://localhost:3069";
+        public String address = "ws://localhost:3069";
     }
 
     public static class BotOption {
-        @Getter public String host;
-        @Getter public int port;
-        @Getter public String username;
-        @Getter public boolean kaboom = false;
-        @Getter public boolean creayun = false;
-        @Getter public String serverName;
-        @Getter @Setter public boolean useCore = true;
-        @Getter @Setter public boolean useChat = false;
-        @Getter public boolean hasEssentials = true;
-        @Getter public int reconnectDelay = 2000;
-        @Getter public boolean removeNamespaces = false;
-        @Getter public int chatQueueDelay = 125;
-        @Getter public CoreRateLimit coreRateLimit = new CoreRateLimit();
+        public String host;
+        public int port;
+        public String username;
+        public boolean kaboom = false;
+        public boolean creayun = false;
+        public String serverName;
+        public boolean useCore = true;
+        public boolean useChat = false;
+        public boolean hasEssentials = true;
+        public int reconnectDelay = 2000;
+        public boolean removeNamespaces = false;
+        public int chatQueueDelay = 125;
+        public CoreRateLimit coreRateLimit = new CoreRateLimit();
 
         public static class CoreRateLimit {
-            @Getter public int limit = 0;
-            @Getter public int reset = 0;
+            public int limit = 0;
+            public int reset = 0;
         }
     }
 }

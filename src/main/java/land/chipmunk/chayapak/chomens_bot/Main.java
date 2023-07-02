@@ -57,12 +57,12 @@ public class Main {
 
         final Configuration config = _config;
 
-        Configuration.BotOption[] botsOptions = config.bots();
+        Configuration.BotOption[] botsOptions = config.bots;
 
         // idk if these should be here lol, but it is just the discord stuff
         JDA jda = null;
-        if (config.discord().enabled()) {
-            JDABuilder builder = JDABuilder.createDefault(config.discord().token());
+        if (config.discord.enabled) {
+            JDABuilder builder = JDABuilder.createDefault(config.discord.token);
             try {
                 jda = builder.build();
                 jda.awaitReady();
@@ -73,7 +73,7 @@ public class Main {
             } catch (InterruptedException ignored) {
                 System.exit(1);
             }
-            jda.getPresence().setPresence(Activity.playing(config.discord().statusMessage()), false);
+            jda.getPresence().setPresence(Activity.playing(config.discord.statusMessage), false);
         }
 
         for (Configuration.BotOption botOption : botsOptions) {

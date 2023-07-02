@@ -21,7 +21,7 @@ public class GenerateMazeCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
         try {
             final int x = Integer.parseInt(args[0]);
@@ -37,7 +37,7 @@ public class GenerateMazeCommand extends Command {
 
             generator.generateMaze();
 
-            bot.maze().generate(generator, x, y, z);
+            bot.maze.generate(generator, x, y, z);
         } catch (NumberFormatException e) {
             return Component.text("Invalid position/size").color(NamedTextColor.RED);
         }

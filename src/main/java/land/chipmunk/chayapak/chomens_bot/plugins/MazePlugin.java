@@ -16,16 +16,16 @@ public class MazePlugin {
 
     // also totally didn't ask chatgpt for this too (but modified a bit)
     public void generate (MazeGenerator generator, int startX, int startY, int startZ) {
-        bot.chat().tellraw(
+        bot.chat.tellraw(
                 Component.translatable(
                         "Generating maze at %s %s %s...",
-                        Component.text(startX).color(ColorUtilities.getColorByString(bot.config().colorPalette().number())),
-                        Component.text(startY).color(ColorUtilities.getColorByString(bot.config().colorPalette().number())),
-                        Component.text(startZ).color(ColorUtilities.getColorByString(bot.config().colorPalette().number()))
-                ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+                        Component.text(startX).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
+                        Component.text(startY).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
+                        Component.text(startZ).color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
+                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
         );
 
-        final int[][] maze = generator.maze();
+        final int[][] maze = generator.maze;
 
         int x = startX;
         int z = startZ;
@@ -53,25 +53,25 @@ public class MazePlugin {
         final String command = "minecraft:fill %s %s %s %s %s %s %s";
 
         // fill the floor
-        bot.core().run(
+        bot.core.run(
                 String.format(
                         command,
                         x,
                         startY - 1,
                         z,
-                        x + generator.width(),
+                        x + generator.width,
                         startY - 1,
-                        z + generator.height(),
+                        z + generator.height,
                         "minecraft:stone_bricks replace minecraft:air"
                 )
         );
 
         // actually build the maze
-        for (int row = 0; row < generator.height(); row++) {
-            for (int col = 0; col < generator.width(); col++) {
+        for (int row = 0; row < generator.height; row++) {
+            for (int col = 0; col < generator.width; col++) {
                 if (maze[row][col] == 1) {
                     // makes the wall
-                    bot.core().run(
+                    bot.core.run(
                             String.format(
                                     command,
                                     x,
@@ -85,7 +85,7 @@ public class MazePlugin {
                     );
                 } else if ((row == startRow && col == startCol)) {
                     // Set a marker block for the start position
-                    bot.core().run(
+                    bot.core.run(
                             String.format(
                                     command,
                                     x,
@@ -99,7 +99,7 @@ public class MazePlugin {
                     );
                 } else if ((row == endRow && col == endCol)) {
                     // Set a marker block for the end position
-                    bot.core().run(
+                    bot.core.run(
                             String.format(
                                     command,
                                     x,
@@ -125,33 +125,33 @@ public class MazePlugin {
         }
 
         // lazy fix for the sus border issue
-        bot.core().run(
+        bot.core.run(
                 String.format(
                         command,
-                        x + generator.width(),
+                        x + generator.width,
                         startY,
                         z,
-                        x + generator.width(),
+                        x + generator.width,
                         startY + 3,
-                        z + generator.height(),
+                        z + generator.height,
                         "minecraft:stone"
                 )
         );
 
-        bot.core().run(
+        bot.core.run(
                 String.format(
                         command,
                         x,
                         startY,
-                        z + generator.height(),
-                        x + generator.width(),
+                        z + generator.height,
+                        x + generator.width,
                         startY + 3,
-                        z + generator.height(),
+                        z + generator.height,
                         "minecraft:stone"
                 )
         );
 
-        bot.chat().tellraw(
+        bot.chat.tellraw(
                 Component.empty()
                         .append(Component.text("Done generating maze. "))
                         .append(
@@ -169,7 +169,7 @@ public class MazePlugin {
                                                 )
                                         )
                         )
-                        .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
         );
     }
 }

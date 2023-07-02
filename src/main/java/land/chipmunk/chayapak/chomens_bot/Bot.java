@@ -11,8 +11,6 @@ import com.github.steveice10.packetlib.tcp.TcpClientSession;
 import land.chipmunk.chayapak.chomens_bot.plugins.*;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.RandomStringUtilities;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,56 +21,56 @@ import java.util.concurrent.TimeUnit;
 public class Bot {
     private final ArrayList<Listener> listeners = new ArrayList<>();
 
-    @Getter private final String host;
-    @Getter private final int port;
+    public final String host;
+    public final int port;
 
-    @Getter private final Configuration.BotOption options;
+    public final Configuration.BotOption options;
 
-    @Getter private final Configuration config;
+    public final Configuration config;
 
-    @Getter private List<Bot> bots;
+    public final List<Bot> bots;
 
-    @Getter private String username;
+    public String username;
 
-    @Getter private GameProfile profile;
+    public GameProfile profile;
 
-    @Getter public Session session;
+    public Session session;
 
-    @Getter private boolean loggedIn = false;
+    public boolean loggedIn = false;
 
-    @Getter private final ExecutorService executorService = Main.executorService;
-    @Getter private final ScheduledExecutorService executor = Main.executor;
+    public final ExecutorService executorService = Main.executorService;
+    public final ScheduledExecutorService executor = Main.executor;
 
-    @Getter @Setter private ConsolePlugin console;
-    @Getter @Setter private LoggerPlugin logger; // in ConsolePlugin
-    @Getter @Setter private DiscordPlugin discord; // same for this one too
+    public ConsolePlugin console;
+    public LoggerPlugin logger; // in ConsolePlugin
+    public DiscordPlugin discord; // same for this one too
 
-    @Getter private TickPlugin tick;
-    @Getter private ChatPlugin chat;
-    @Getter private PositionPlugin position;
-    @Getter private SelfCarePlugin selfCare;
-    @Getter private CorePlugin core;
-    @Getter private TeamPlugin team;
-    @Getter private PlayersPlugin players;
-    @Getter private TabCompletePlugin tabComplete;
-    @Getter private CommandHandlerPlugin commandHandler;
-    @Getter private ChatCommandHandlerPlugin chatCommandHandler;
-    @Getter private HashingPlugin hashing;
-    @Getter private BossbarManagerPlugin bossbar;
-    @Getter private MusicPlayerPlugin music;
-    @Getter private TPSPlugin tps;
-    @Getter private EvalPlugin eval;
-    @Getter private TrustedPlugin trusted;
-    @Getter private BruhifyPlugin bruhify;
-    @Getter private GrepLogPlugin grepLog;
-    @Getter private CloopPlugin cloop;
-    @Getter private MazePlugin maze;
-    @Getter private ExploitsPlugin exploits;
-    @Getter private FilterPlugin filter;
-    @Getter private CommandSuggestionPlugin commandSuggestion;
-    @Getter private MailPlugin mail;
-    @Getter private PacketSnifferPlugin packetSniffer;
-    @Getter private VoiceChatPlugin voiceChat;
+    public TickPlugin tick;
+    public ChatPlugin chat;
+    public PositionPlugin position;
+    public SelfCarePlugin selfCare;
+    public CorePlugin core;
+    public TeamPlugin team;
+    public PlayersPlugin players;
+    public TabCompletePlugin tabComplete;
+    public CommandHandlerPlugin commandHandler;
+    public ChatCommandHandlerPlugin chatCommandHandler;
+    public HashingPlugin hashing;
+    public BossbarManagerPlugin bossbar;
+    public MusicPlayerPlugin music;
+    public TPSPlugin tps;
+    public EvalPlugin eval;
+    public TrustedPlugin trusted;
+    public BruhifyPlugin bruhify;
+    public GrepLogPlugin grepLog;
+    public CloopPlugin cloop;
+    public MazePlugin maze;
+    public ExploitsPlugin exploits;
+    public FilterPlugin filter;
+    public CommandSuggestionPlugin commandSuggestion;
+    public MailPlugin mail;
+    public PacketSnifferPlugin packetSniffer;
+    public VoiceChatPlugin voiceChat;
 
     public Bot (Configuration.BotOption botOption, List<Bot> bots, Configuration config) {
         this.host = botOption.host;
@@ -132,7 +130,7 @@ public class Bot {
             listener.connecting();
         }
 
-        final String _username = options.username();
+        final String _username = options.username;
 
         if (_username == null) username = RandomStringUtilities.generate(8);
         else username = _username;
@@ -195,7 +193,7 @@ public class Bot {
             public void disconnected(DisconnectedEvent disconnectedEvent) {
                 loggedIn = false;
 
-                int reconnectDelay = options.reconnectDelay();
+                int reconnectDelay = options.reconnectDelay;
 
                 final String stringMessage = ComponentUtilities.stringify(disconnectedEvent.getReason());
 

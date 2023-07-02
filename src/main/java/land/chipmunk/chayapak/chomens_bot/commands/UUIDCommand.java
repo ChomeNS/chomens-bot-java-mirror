@@ -24,15 +24,15 @@ public class UUIDCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
         if (args.length > 0) {
-            final MutablePlayerListEntry entry = bot.players().getEntry(String.join(" ", args));
+            final MutablePlayerListEntry entry = bot.players.getEntry(String.join(" ", args));
 
             if (entry == null) return Component.text("Invalid player name").color(NamedTextColor.RED);
 
-            final String name = entry.profile().getName();
-            final String uuid = entry.profile().getIdAsString();
+            final String name = entry.profile.getName();
+            final String uuid = entry.profile.getIdAsString();
 
             return Component.translatable(
                     "%s's UUID: %s",
@@ -47,12 +47,12 @@ public class UUIDCommand extends Command {
                             .clickEvent(
                                     ClickEvent.copyToClipboard(uuid)
                             )
-                            .color(ColorUtilities.getColorByString(bot.config().colorPalette().uuid()))
+                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.uuid))
             ).color(NamedTextColor.GREEN);
         } else {
-            final MutablePlayerListEntry entry = context.sender();
+            final MutablePlayerListEntry entry = context.sender;
 
-            final String uuid = entry.profile().getIdAsString();
+            final String uuid = entry.profile.getIdAsString();
 
             return Component.translatable(
                     "Your UUID: %s",
@@ -66,7 +66,7 @@ public class UUIDCommand extends Command {
                             .clickEvent(
                                     ClickEvent.copyToClipboard(uuid)
                             )
-                            .color(ColorUtilities.getColorByString(bot.config().colorPalette().uuid()))
+                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.uuid))
             ).color(NamedTextColor.GREEN);
         }
     }

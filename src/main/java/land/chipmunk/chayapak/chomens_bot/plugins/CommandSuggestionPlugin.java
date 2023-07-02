@@ -2,8 +2,6 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
-import lombok.Getter;
-import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
@@ -14,11 +12,11 @@ import java.util.List;
 public class CommandSuggestionPlugin extends ChatPlugin.Listener {
     private final Bot bot;
 
-    @Getter @Setter private String id = "chomens_bot_command_suggestion";
+    public String id = "chomens_bot_command_suggestion";
 
     public CommandSuggestionPlugin (Bot bot) {
         this.bot = bot;
-        bot.chat().addListener(this);
+        bot.chat.addListener(this);
     }
 
     @Override
@@ -47,13 +45,13 @@ public class CommandSuggestionPlugin extends ChatPlugin.Listener {
             output.add(Component.text(id));
             output.add(Component.text(transactionId));
 
-            for (Command command : bot.commandHandler().commands()) {
-                if (!command.name().startsWith(input)) continue;
+            for (Command command : bot.commandHandler.commands) {
+                if (!command.name.startsWith(input)) continue;
 
-                output.add(Component.text(command.name()));
+                output.add(Component.text(command.name));
             }
 
-            bot.chat().tellraw(Component.join(JoinConfiguration.noSeparators(), output), player);
+            bot.chat.tellraw(Component.join(JoinConfiguration.noSeparators(), output), player);
         } catch (Exception ignored) {}
     }
 }

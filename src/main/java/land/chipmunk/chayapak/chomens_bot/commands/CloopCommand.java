@@ -27,7 +27,7 @@ public class CloopCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
         switch (args[0]) {
             case "add" -> {
@@ -42,42 +42,42 @@ public class CloopCommand extends Command {
 
                 final String command = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
 
-                bot.cloop().add(interval, command);
+                bot.cloop.add(interval, command);
 
                 return Component.translatable(
                         "Added %s with interval %s to the cloops",
-                        Component.text(command).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())),
-                        Component.text(interval).color(ColorUtilities.getColorByString(bot.config().colorPalette().number()))
-                ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
+                        Component.text(command).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                        Component.text(interval).color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
+                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "remove" -> {
                 try {
                     final int index = Integer.parseInt(args[1]);
-                    bot.cloop().remove(index);
+                    bot.cloop.remove(index);
 
                     return Component.translatable(
                             "Removed cloop %s",
-                            Component.text(index).color(ColorUtilities.getColorByString(bot.config().colorPalette().number()))
-                    ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
+                            Component.text(index).color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
+                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
                 } catch (IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
                     return Component.text("Invalid index").color(NamedTextColor.RED);
                 }
             }
             case "clear" -> {
-                bot.cloop().clear();
-                return Component.text("Cleared all cloops").color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
+                bot.cloop.clear();
+                return Component.text("Cleared all cloops").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "list" -> {
                 final List<Component> cloopsComponent = new ArrayList<>();
 
                 int index = 0;
-                for (CommandLoop command : bot.cloop().loops()) {
+                for (CommandLoop command : bot.cloop.loops) {
                     cloopsComponent.add(
                             Component.translatable(
                                     "%s › %s (%s)",
-                                    Component.text(index).color(ColorUtilities.getColorByString(bot.config().colorPalette().number())),
-                                    Component.text(command.command()).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())),
-                                    Component.text(command.interval()).color(ColorUtilities.getColorByString(bot.config().colorPalette().number()))
+                                    Component.text(index).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
+                                    Component.text(command.command()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                                    Component.text(command.interval()).color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
                             ).color(NamedTextColor.DARK_GRAY)
                     );
                     index++;
@@ -86,7 +86,7 @@ public class CloopCommand extends Command {
                 return Component.empty()
                         .append(Component.text("Cloops ").color(NamedTextColor.GREEN))
                         .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
-                        .append(Component.text(bot.cloop().loops().size()).color(NamedTextColor.GRAY))
+                        .append(Component.text(bot.cloop.loops.size()).color(NamedTextColor.GRAY))
                         .append(Component.text(")").color(NamedTextColor.DARK_GRAY))
                         .append(Component.newline())
                         .append(

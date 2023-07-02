@@ -8,8 +8,6 @@ import land.chipmunk.chayapak.chomens_bot.data.BotBossBar;
 import land.chipmunk.chayapak.chomens_bot.song.*;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.MathUtilities;
-import lombok.Getter;
-import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -30,14 +28,14 @@ public class MusicPlayerPlugin extends Bot.Listener {
         if (!SONG_DIR.exists()) SONG_DIR.mkdir();
     }
 
-    @Getter @Setter private Song currentSong;
-    @Getter @Setter private List<Song> songQueue = new ArrayList<>();
-    @Getter @Setter private SongLoaderRunnable loaderThread;
-    @Getter @Setter private Loop loop = Loop.OFF;
+    public Song currentSong;
+    public List<Song> songQueue = new ArrayList<>();
+    public SongLoaderRunnable loaderThread;
+    public Loop loop = Loop.OFF;
 
     // sus nightcore stuff,..,.,.
-    @Getter @Setter private float pitch = 0;
-    @Getter @Setter private float speed = 1;
+    public float pitch = 0;
+    public float speed = 1;
 
     private int ticksUntilPausedBossbar = 20;
 
@@ -46,7 +44,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
     public MusicPlayerPlugin (Bot bot) {
         this.bot = bot;
         bot.addListener(this);
-        bot.core().addListener(new CorePlugin.Listener() {
+        bot.core.addListener(new CorePlugin.Listener() {
             public void ready () { coreReady(); }
         });
     }
@@ -54,35 +52,35 @@ public class MusicPlayerPlugin extends Bot.Listener {
     public void loadSong (Path location) {
         final SongLoaderRunnable runnable = new SongLoaderRunnable(location, bot);
 
-        bot.chat().tellraw(
+        bot.chat.tellraw(
                 Component
                         .translatable(
                                 "Loading %s",
-                                Component.text(location.getFileName().toString(), ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
+                                Component.text(location.getFileName().toString(), ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
                         )
-                        .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
         );
 
-        bot.executorService().submit(runnable);
+        bot.executorService.submit(runnable);
     }
 
     public void loadSong (URL location) {
         final SongLoaderRunnable runnable = new SongLoaderRunnable(location, bot);
 
-        bot.chat().tellraw(
+        bot.chat.tellraw(
                 Component
                         .translatable(
                                 "Loading %s",
-                                Component.text(location.toString(), ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
+                                Component.text(location.toString(), ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
                         )
-                        .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
         );
 
-        bot.executorService().submit(runnable);
+        bot.executorService.submit(runnable);
     }
 
     public void coreReady () {
-        bot.tick().addListener(new TickPlugin.Listener() {
+        bot.tick.addListener(new TickPlugin.Listener() {
             @Override
             public void onTick() {
                 try {
@@ -92,29 +90,29 @@ public class MusicPlayerPlugin extends Bot.Listener {
                         addBossBar();
 
                         currentSong = songQueue.get(0); // songQueue.poll();
-                        bot.chat().tellraw(
+                        bot.chat.tellraw(
                                 Component.translatable(
                                         "Now playing %s",
-                                        Component.empty().append(currentSong.name).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
-                                ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+                                        Component.empty().append(currentSong.name).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
                         );
                         currentSong.play();
                     }
 
                     if (currentSong.paused && ticksUntilPausedBossbar-- < 0) return;
-                    else ticksUntilPausedBossbar = 20 - (((int) bot.tps().getTickRate()) - 20);
+                    else ticksUntilPausedBossbar = 20 - (((int) bot.tps.getTickRate()) - 20);
 
-                    BotBossBar bossBar = bot.bossbar().get(bossbarName);
+                    BotBossBar bossBar = bot.bossbar.get(bossbarName);
 
-                    if (bossBar == null && bot.bossbar().enabled()) bossBar = addBossBar();
+                    if (bossBar == null && bot.bossbar.enabled) bossBar = addBossBar();
 
-                    if (bot.bossbar().enabled() && bot.options().useCore()) {
+                    if (bot.bossbar.enabled && bot.options.useCore) {
                         bossBar.setTitle(generateBossbar());
                         bossBar.setColor(pitch > 0 ? BossBarColor.PURPLE : BossBarColor.YELLOW);
                         bossBar.setValue((int) Math.floor(((double) currentSong.time / 1000) * speed));
                     }
 
-                    if (currentSong.paused || bot.core().isRateLimited()) return;
+                    if (currentSong.paused || bot.core.isRateLimited()) return;
 
                     handlePlaying();
 
@@ -124,11 +122,11 @@ public class MusicPlayerPlugin extends Bot.Listener {
                             return;
                         }
 
-                        bot.chat().tellraw(
+                        bot.chat.tellraw(
                                 Component.translatable(
                                         "Finished playing %s",
-                                        Component.empty().append(currentSong.name).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
-                                ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+                                        Component.empty().append(currentSong.name).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
                         );
 
                         if (loop == Loop.ALL) {
@@ -141,10 +139,10 @@ public class MusicPlayerPlugin extends Bot.Listener {
                         if (songQueue.size() == 0) {
                             stopPlaying();
                             removeBossBar();
-                            bot.chat().tellraw(
+                            bot.chat.tellraw(
                                     Component
                                             .text("Finished playing every song in the queue")
-                                            .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+                                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
                             );
                             return;
                         }
@@ -190,13 +188,13 @@ public class MusicPlayerPlugin extends Bot.Listener {
                 bot
         );
 
-        bot.bossbar().add(bossbarName, bossBar);
+        bot.bossbar.add(bossbarName, bossBar);
 
         return bossBar;
     }
 
     public void removeBossBar() {
-        bot.bossbar().remove(bossbarName);
+        bot.bossbar.remove(bossbarName);
     }
 
     public Component generateBossbar () {
@@ -210,7 +208,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                                         formatTime(currentSong.length).color(NamedTextColor.GRAY)).color(NamedTextColor.DARK_GRAY)
                 );
 
-        if (!bot.core().hasRateLimit()) {
+        if (!bot.core.hasRateLimit()) {
             final DecimalFormat formatter = new DecimalFormat("#,###");
 
             component = component
@@ -282,7 +280,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                 if (s < 100) blockPosition = ((s - 100) * -1) / 100;
             }
 
-            bot.core().run(
+            bot.core.run(
                     "minecraft:execute as " +
                             SELECTOR +
                             " at @s run playsound " +

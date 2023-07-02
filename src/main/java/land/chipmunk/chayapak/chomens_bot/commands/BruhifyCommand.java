@@ -22,12 +22,12 @@ public class BruhifyCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
         if (args.length == 0) {
-            bot.bruhify().bruhifyText("");
+            bot.bruhify.bruhifyText = "";
         } else {
-            bot.bruhify().bruhifyText(String.join(" ", args));
+            bot.bruhify.bruhifyText = String.join(" ", args);
         }
 
         return null;

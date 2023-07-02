@@ -3,21 +3,20 @@ package land.chipmunk.chayapak.chomens_bot.voiceChat.customPayload;
 import land.chipmunk.chayapak.chomens_bot.data.voiceChat.Codec;
 import land.chipmunk.chayapak.chomens_bot.util.FriendlyByteBuf;
 import land.chipmunk.chayapak.chomens_bot.voiceChat.Packet;
-import lombok.Getter;
 
 import java.util.UUID;
 
 public class SecretPacket implements Packet<SecretPacket> {
-    @Getter private UUID secret;
-    @Getter private int serverPort;
-    @Getter private UUID playerUUID;
-    @Getter private Codec codec;
-    @Getter private int mtuSize;
-    @Getter private double voiceChatDistance;
-    @Getter private int keepAlive;
-    @Getter private boolean groupsEnabled;
-    @Getter private String voiceHost;
-    @Getter private boolean allowRecording;
+    public UUID secret;
+    public int serverPort;
+    public UUID playerUUID;
+    public Codec codec;
+    public int mtuSize;
+    public double voiceChatDistance;
+    public int keepAlive;
+    public boolean groupsEnabled;
+    public String voiceHost;
+    public boolean allowRecording;
 
     @Override
     public SecretPacket fromBytes(FriendlyByteBuf buf) {

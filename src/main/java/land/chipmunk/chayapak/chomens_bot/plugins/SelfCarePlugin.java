@@ -15,13 +15,11 @@ import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.packet.PacketProtocol;
-import org.cloudburstmc.math.vector.Vector3i;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Configuration;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
-import lombok.Getter;
-import lombok.Setter;
 import net.kyori.adventure.text.Component;
+import org.cloudburstmc.math.vector.Vector3i;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -31,7 +29,7 @@ public class SelfCarePlugin extends Bot.Listener {
 
     private ScheduledFuture<?> checkTask;
 
-    @Getter @Setter boolean visibility = false;
+    public boolean visibility = false;
 
     private int entityId;
     private GameMode gamemode;
@@ -50,7 +48,7 @@ public class SelfCarePlugin extends Bot.Listener {
 
         bot.addListener(this);
 
-        bot.chat().addListener(new ChatPlugin.Listener() {
+        bot.chat.addListener(new ChatPlugin.Listener() {
             @Override
             public void systemMessageReceived(Component component) {
                 final String message = ComponentUtilities.stringify(component);
@@ -58,29 +56,29 @@ public class SelfCarePlugin extends Bot.Listener {
                 if (message.equals("Successfully enabled CommandSpy")) cspy = true;
                 else if (message.equals("Successfully disabled CommandSpy")) cspy = false;
 
-                else if (message.equals("Vanish for " + bot.username() + ": enabled")) vanish = true;
+                else if (message.equals("Vanish for " + bot.username + ": enabled")) vanish = true;
                 else if (message.equals("You are now completely invisible to normal users, and hidden from in-game commands.")) vanish = true;
-                else if (message.equals("Vanish for " + bot.username() + ": disabled")) vanish = false;
+                else if (message.equals("Vanish for " + bot.username + ": disabled")) vanish = false;
 
                 else if (message.equals("You no longer have a nickname.")) nickname = true;
                 else if (message.startsWith("Your nickname is now ")) nickname = false;
 
-                else if (message.equals("SocialSpy for " + bot.username() + ": enabled")) socialspy = true;
-                else if (message.equals("SocialSpy for " + bot.username() + ": disabled")) socialspy = false;
+                else if (message.equals("SocialSpy for " + bot.username + ": enabled")) socialspy = true;
+                else if (message.equals("SocialSpy for " + bot.username + ": disabled")) socialspy = false;
 
                 else if (message.startsWith("You have been muted")) muted = true;
                 else if (message.equals("You have been unmuted.")) muted = false;
 
-                else if (message.equals("You now have the tag: " + bot.config().selfCare().prefix().prefix())) prefix = true;
+                else if (message.equals("You now have the tag: " + bot.config.selfCare.prefix.prefix)) prefix = true;
                 else if (message.startsWith("You no longer have a tag")) prefix = false;
                 else if (message.startsWith("You now have the tag: ")) prefix = false;
 
-                else if (message.equals("Successfully set your username to \"" + bot.username() + "\"")) username = true;
+                else if (message.equals("Successfully set your username to \"" + bot.username + "\"")) username = true;
                 else if (message.startsWith("Successfully set your username to \"")) username = false;
             }
         });
 
-        bot.position().addListener(new PositionPlugin.Listener() {
+        bot.position.addListener(new PositionPlugin.Listener() {
             @Override
             public void positionChange(Vector3i position) {
                 SelfCarePlugin.this.positionChange();
@@ -89,32 +87,32 @@ public class SelfCarePlugin extends Bot.Listener {
     }
 
     public void check () {
-        final Configuration.SelfCare selfCares = bot.config().selfCare();
+        final Configuration.SelfCare selfCares = bot.config.selfCare;
 
         // chat only
-        if (selfCares.op() && permissionLevel < 2) bot.chat().send("/minecraft:op @s[type=player]");
-        else if (selfCares.gamemode() && gamemode != GameMode.CREATIVE) bot.chat().send("/minecraft:gamemode creative @s[type=player]");
-        else if (selfCares.cspy() && !cspy && bot.options().kaboom()) bot.chat().send("/commandspy:commandspy on");
-        else if (selfCares.prefix().enabled() && !prefix && bot.options().kaboom()) bot.chat().send("/extras:prefix " + bot.config().selfCare().prefix().prefix());
-        else if (selfCares.username() && !username && bot.options().kaboom()) bot.chat().send("/extras:username " + bot.username());
+        if (selfCares.op && permissionLevel < 2) bot.chat.send("/minecraft:op @s[type=player]");
+        else if (selfCares.gamemode && gamemode != GameMode.CREATIVE) bot.chat.send("/minecraft:gamemode creative @s[type=player]");
+        else if (selfCares.cspy && !cspy && bot.options.kaboom) bot.chat.send("/commandspy:commandspy on");
+        else if (selfCares.prefix.enabled && !prefix && bot.options.kaboom) bot.chat.send("/extras:prefix " + bot.config.selfCare.prefix.prefix);
+        else if (selfCares.username && !username && bot.options.kaboom) bot.chat.send("/extras:username " + bot.username);
 
         // core
-        else if (selfCares.icu().enabled() && positionPacketsPerSecond > selfCares.icu().positionPacketsPerSecond()) bot.core().run("essentials:sudo * icu stop");
-        else if (selfCares.vanish() && !vanish && !visibility && bot.options().hasEssentials()) {
-            if (bot.options().useChat()) bot.chat().send("/essentials:vanish enable");
-            else bot.core().run("essentials:vanish " + bot.username() + " enable");
+        else if (selfCares.icu.enabled && positionPacketsPerSecond > selfCares.icu.positionPacketsPerSecond) bot.core.run("essentials:sudo * icu stop");
+        else if (selfCares.vanish && !vanish && !visibility && bot.options.hasEssentials) {
+            if (bot.options.useChat) bot.chat.send("/essentials:vanish enable");
+            else bot.core.run("essentials:vanish " + bot.username + " enable");
         }
-        else if (selfCares.nickname() && !nickname && bot.options().hasEssentials()) {
-            if (bot.options().useChat()) bot.chat().send("/essentials:nick off");
-            else bot.core().run("essentials:nickname " + bot.username() + " off");
+        else if (selfCares.nickname && !nickname && bot.options.hasEssentials) {
+            if (bot.options.useChat) bot.chat.send("/essentials:nick off");
+            else bot.core.run("essentials:nickname " + bot.username + " off");
         }
-        else if (selfCares.socialspy() && !socialspy && bot.options().hasEssentials()) {
-            if (bot.options().useChat()) bot.chat().send("/essentials:socialspy enable");
-            else bot.core().run("essentials:socialspy " + bot.username() + " enable");
+        else if (selfCares.socialspy && !socialspy && bot.options.hasEssentials) {
+            if (bot.options.useChat) bot.chat.send("/essentials:socialspy enable");
+            else bot.core.run("essentials:socialspy " + bot.username + " enable");
         }
-        else if (selfCares.mute() && muted && bot.options().hasEssentials()) {
-            if (bot.options().useChat()) bot.chat().send("/essentials:mute " + bot.profile().getIdAsString());
-            else bot.core().run("essentials:mute " + bot.profile().getIdAsString());
+        else if (selfCares.mute && muted && bot.options.hasEssentials) {
+            if (bot.options.useChat) bot.chat.send("/essentials:mute " + bot.profile.getIdAsString());
+            else bot.core.run("essentials:mute " + bot.profile.getIdAsString());
 
             muted = false; // too lazy fix and probably the worst fix?
         }
@@ -140,7 +138,7 @@ public class SelfCarePlugin extends Bot.Listener {
         positionPacketsPerSecond = 0;
 
         final Runnable task = () -> {
-            final Session session = bot.session();
+            final Session session = bot.session;
             final PacketProtocol protocol = session.getPacketProtocol();
             if (
                     !session.isConnected() ||
@@ -153,7 +151,7 @@ public class SelfCarePlugin extends Bot.Listener {
             check();
         };
 
-        checkTask = bot.executor().scheduleAtFixedRate(task, 0, bot.options().chatQueueDelay() + 75, TimeUnit.MILLISECONDS);
+        checkTask = bot.executor.scheduleAtFixedRate(task, 0, bot.options.chatQueueDelay + 75, TimeUnit.MILLISECONDS);
     }
 
     public void packetReceived (ClientboundGameEventPacket packet) {
@@ -161,7 +159,7 @@ public class SelfCarePlugin extends Bot.Listener {
         final GameEventValue value = packet.getValue();
 
         if (notification == GameEvent.ENTER_CREDITS) {
-            bot.session().send(new ServerboundClientCommandPacket(ClientCommand.RESPAWN));
+            bot.session.send(new ServerboundClientCommandPacket(ClientCommand.RESPAWN));
             return;
         }
 
@@ -185,7 +183,7 @@ public class SelfCarePlugin extends Bot.Listener {
     public void positionChange () {
         positionPacketsPerSecond++;
 
-        bot.executor().schedule(() -> positionPacketsPerSecond--, 1, TimeUnit.SECONDS);
+        bot.executor.schedule(() -> positionPacketsPerSecond--, 1, TimeUnit.SECONDS);
     }
 
     @Override

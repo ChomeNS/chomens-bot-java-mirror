@@ -19,9 +19,9 @@ public class EchoCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
-        bot.chat().send(String.join(" ", args));
+        bot.chat.send(String.join(" ", args));
 
         return null;
     }

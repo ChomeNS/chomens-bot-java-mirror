@@ -24,7 +24,7 @@ public class UptimeCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
         final long uptime = ManagementFactory.getRuntimeMXBean().getUptime() / 1000;
 
@@ -42,6 +42,6 @@ public class UptimeCommand extends Command {
                         Component.text(minutes),
                         Component.text(seconds)
                 ).color(NamedTextColor.GREEN)
-        ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
+        ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }
 }

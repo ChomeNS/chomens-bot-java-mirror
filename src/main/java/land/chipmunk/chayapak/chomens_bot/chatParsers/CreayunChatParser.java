@@ -29,7 +29,7 @@ public class CreayunChatParser implements ChatParser {
     public PlayerMessage parse (Component message) {
         final String stringified = ComponentUtilities.stringify(message);
 
-        if (bot.options().creayun()) return null;
+        if (bot.options.creayun) return null;
 
         final Matcher matcher = PATTERN.matcher(stringified);
 
@@ -37,7 +37,7 @@ public class CreayunChatParser implements ChatParser {
             final String displayName = matcher.group(1);
             final String contents = matcher.group(2);
 
-            MutablePlayerListEntry sender = bot.players().getEntry(displayName);
+            MutablePlayerListEntry sender = bot.players.getEntry(displayName);
             if (sender == null) sender = new MutablePlayerListEntry(new GameProfile(new UUID(0L, 0L), displayName), GameMode.SURVIVAL, 0, Component.text(displayName), 0L, null, new byte[0], true);
 
             return new PlayerMessage(sender, Component.text(displayName), Component.text(contents));

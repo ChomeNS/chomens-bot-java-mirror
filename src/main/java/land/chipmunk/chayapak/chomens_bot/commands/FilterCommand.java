@@ -38,7 +38,7 @@ public class FilterCommand extends Command {
 
     // most of these codes are from cloop and greplog
     public Component execute(CommandContext context, String[] _args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
         boolean ignoreCase = false;
         boolean regex = false;
@@ -68,42 +68,42 @@ public class FilterCommand extends Command {
             case "add" -> {
                 final String player = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 
-                bot.filter().add(player, regex, ignoreCase);
+                bot.filter.add(player, regex, ignoreCase);
                 return Component.translatable(
                         "Added %s to the filters",
-                        Component.text(player).color(ColorUtilities.getColorByString(bot.config().colorPalette().username()))
-                ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
+                        Component.text(player).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
+                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "remove" -> {
                 try {
                     final int index = Integer.parseInt(args[1]);
 
-                    final FilteredPlayer removed = bot.filter().remove(index);
+                    final FilteredPlayer removed = bot.filter.remove(index);
 
                     return Component.translatable(
                             "Removed %s from the filters",
-                            Component.text(removed.playerName).color(ColorUtilities.getColorByString(bot.config().colorPalette().username()))
-                    ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
+                            Component.text(removed.playerName).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
+                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
                 } catch (IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
                     return Component.text("Invalid index").color(NamedTextColor.RED);
                 }
             }
             case "clear" -> {
-                bot.filter().clear();
-                return Component.text("Cleared the filter").color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
+                bot.filter.clear();
+                return Component.text("Cleared the filter").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "list" -> {
                 final List<Component> filtersComponents = new ArrayList<>();
 
                 int index = 0;
-                for (JsonElement playerElement : FilterPlugin.filteredPlayers()) {
+                for (JsonElement playerElement : FilterPlugin.filteredPlayers) {
                     final FilteredPlayer player = gson.fromJson(playerElement, FilteredPlayer.class);
 
                     filtersComponents.add(
                             Component.translatable(
                                     "%s › %s",
-                                    Component.text(index).color(ColorUtilities.getColorByString(bot.config().colorPalette().number())),
-                                    Component.text(player.playerName).color(ColorUtilities.getColorByString(bot.config().colorPalette().username()))
+                                    Component.text(index).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
+                                    Component.text(player.playerName).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
                             ).color(NamedTextColor.DARK_GRAY)
                     );
 
@@ -113,7 +113,7 @@ public class FilterCommand extends Command {
                 return Component.empty()
                         .append(Component.text("Filtered players ").color(NamedTextColor.GREEN))
                         .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
-                        .append(Component.text(FilterPlugin.filteredPlayers().size()).color(NamedTextColor.GRAY))
+                        .append(Component.text(FilterPlugin.filteredPlayers.size()).color(NamedTextColor.GRAY))
                         .append(Component.text(")").color(NamedTextColor.DARK_GRAY))
                         .append(Component.newline())
                         .append(

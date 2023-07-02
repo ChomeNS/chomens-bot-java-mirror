@@ -1,13 +1,19 @@
 package land.chipmunk.chayapak.chomens_bot.data.chat;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import net.kyori.adventure.text.Component;
 
-@Data
-@AllArgsConstructor
 public class PlayerMessage {
-    private MutablePlayerListEntry sender;
-    private Component displayName;
-    private Component contents;
+    public final MutablePlayerListEntry sender;
+    public final Component displayName;
+    public final Component contents;
+
+    public PlayerMessage (
+            MutablePlayerListEntry sender,
+            Component displayName,
+            Component contents
+    ) {
+        this.sender = sender;
+        this.displayName = displayName;
+        this.contents = contents;
+    }
 }

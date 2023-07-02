@@ -9,8 +9,6 @@ import land.chipmunk.chayapak.chomens_bot.data.BossBar;
 import land.chipmunk.chayapak.chomens_bot.data.BotBossBar;
 import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
-import lombok.Getter;
-import lombok.Setter;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.util.HashMap;
@@ -21,19 +19,19 @@ import java.util.UUID;
 public class BossbarManagerPlugin extends Bot.Listener {
     private final Bot bot;
 
-    @Getter private final Map<UUID, BossBar> serverBossBars = new HashMap<>();
+    public final Map<UUID, BossBar> serverBossBars = new HashMap<>();
     private final Map<UUID, BotBossBar> bossBars = new HashMap<>();
 
-    @Getter @Setter private boolean enabled = true;
+    public boolean enabled = true;
 
-    @Getter @Setter private String bossBarPrefix = "chomens_bot:";
+    public String bossBarPrefix = "chomens_bot:";
 
     public BossbarManagerPlugin (Bot bot) {
         this.bot = bot;
 
         bot.addListener(this);
 
-        bot.players().addListener(new PlayersPlugin.Listener() {
+        bot.players.addListener(new PlayersPlugin.Listener() {
             @Override
             public void playerJoined(MutablePlayerListEntry target) {
                 BossbarManagerPlugin.this.playerJoined();
@@ -47,7 +45,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
     }
 
     public void packetReceived(ClientboundBossEventPacket packet) {
-        if (!enabled || !bot.options().useCore()) return;
+        if (!enabled || !bot.options.useCore) return;
 
         try {
             switch (packet.getAction()) {
@@ -157,7 +155,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
     }
 
     public void add (String name, BotBossBar bossBar) {
-        if (!enabled || !bot.options().useCore()) return;
+        if (!enabled || !bot.options.useCore) return;
 
         bossBar.id = bossBarPrefix + name;
 
@@ -184,17 +182,17 @@ public class BossbarManagerPlugin extends Bot.Listener {
             case NOTCHES_10 -> division = "notched_10";
         }
 
-        bot.core().run("minecraft:bossbar add " + name + " " + stringifiedName);
-        bot.core().run(prefix + "players " + bossBar.players);
-        bot.core().run(prefix + "color " + (bossBar.color == BossBarColor.LIME ? "green" : bossBar.color.name().toLowerCase()));
-        bot.core().run(prefix + "visible " + bossBar.visible);
-        bot.core().run(prefix + "style " + division);
-        bot.core().run(prefix + "max " + bossBar.max);
-        bot.core().run(prefix + "value " + bossBar.value);
+        bot.core.run("minecraft:bossbar add " + name + " " + stringifiedName);
+        bot.core.run(prefix + "players " + bossBar.players);
+        bot.core.run(prefix + "color " + (bossBar.color == BossBarColor.LIME ? "green" : bossBar.color.name().toLowerCase()));
+        bot.core.run(prefix + "visible " + bossBar.visible);
+        bot.core.run(prefix + "style " + division);
+        bot.core.run(prefix + "max " + bossBar.max);
+        bot.core.run(prefix + "value " + bossBar.value);
     }
 
     public void remove (String name) {
-        if (!enabled || !bot.options().useCore()) return;
+        if (!enabled || !bot.options.useCore) return;
 
         final Map<UUID, BotBossBar> mapCopy = new HashMap<>(bossBars);
 
@@ -202,7 +200,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
             if (bossBar.getValue().id.equals(bossBarPrefix + name)) bossBars.remove(bossBar.getValue().uuid);
         }
 
-        bot.core().run("minecraft:bossbar remove " + bossBarPrefix + name);
+        bot.core.run("minecraft:bossbar remove " + bossBarPrefix + name);
     }
 
     public BotBossBar get (String name) {

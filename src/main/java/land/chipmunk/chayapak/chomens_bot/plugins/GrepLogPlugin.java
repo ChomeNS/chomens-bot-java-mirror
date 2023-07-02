@@ -3,8 +3,6 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.FileLoggerUtilities;
-import lombok.Getter;
-import lombok.Setter;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -19,7 +17,7 @@ import java.util.zip.GZIPInputStream;
 public class GrepLogPlugin {
     private final Bot bot;
 
-    @Getter @Setter private Thread thread = null;
+    public Thread thread = null;
 
     public GrepLogPlugin (Bot bot) {
         this.bot = bot;
@@ -56,7 +54,7 @@ public class GrepLogPlugin {
                     try {
                         pattern = Pattern.compile(query);
                     } catch (Exception e) {
-                        bot.chat().tellraw(Component.text(e.toString()).color(NamedTextColor.RED));
+                        bot.chat.tellraw(Component.text(e.toString()).color(NamedTextColor.RED));
                     }
                 }
             } else {
@@ -68,11 +66,11 @@ public class GrepLogPlugin {
 
         @Override
         public void run() {
-            bot.chat().tellraw(
+            bot.chat.tellraw(
                     Component.translatable(
                             "Collecting %s in logs...",
-                            Component.text(query).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
-                    ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+                            Component.text(query).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
             );
 
             final File[] fileList = FileLoggerUtilities.logDir.listFiles();
@@ -160,7 +158,7 @@ public class GrepLogPlugin {
 
         private void finish () {
             if (results.toString().split("\n").length < 100) { // ig lazy fix for removing \n lol
-                bot.chat().tellraw(
+                bot.chat.tellraw(
                         Component.empty()
                                 .append(Component.text("Log query output for \""))
                                 .append(Component.text(query))
@@ -168,17 +166,17 @@ public class GrepLogPlugin {
                                 .append(Component.newline())
                                 .append(Component.text(results.toString()))
                 );
-            } else if (bot.config().discord().enabled()) {
-                bot.chat().tellraw(
+            } else if (bot.config.discord.enabled) {
+                bot.chat.tellraw(
                         Component.translatable(
                                 "Log query for \"%s\" finished, found %s matches. Results were sent in Discord",
-                                Component.text(query).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())),
-                                Component.text(matches).color(ColorUtilities.getColorByString(bot.config().colorPalette().number()))
+                                Component.text(query).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                                Component.text(matches).color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
                         )
                 );
 
-                final String channelId = bot.discord().servers.get(bot.host() + ":" + bot.port());
-                final TextChannel logChannel = bot.discord().jda().getTextChannelById(channelId);
+                final String channelId = bot.discord.servers.get(bot.host + ":" + bot.port);
+                final TextChannel logChannel = bot.discord.jda.getTextChannelById(channelId);
 
                 if (logChannel == null) return;
 

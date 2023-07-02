@@ -2,20 +2,18 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
-import lombok.Getter;
-import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 import java.util.concurrent.TimeUnit;
 
 public class BruhifyPlugin {
-    @Getter @Setter private String bruhifyText = "";
+    public String bruhifyText = "";
 
     private int startHue = 0;
 
     public BruhifyPlugin (Bot bot) {
-        bot.executor().scheduleAtFixedRate(() -> {
+        bot.executor.scheduleAtFixedRate(() -> {
             if (bruhifyText.equals("")) return;
 
             int hue = startHue;
@@ -30,7 +28,7 @@ public class BruhifyPlugin {
                 hue = (hue + increment) % 360;
             }
 
-            bot.chat().actionBar(component);
+            bot.chat.actionBar(component);
 
             startHue = (startHue + increment) % 360;
         }, 50, 100, TimeUnit.MILLISECONDS);

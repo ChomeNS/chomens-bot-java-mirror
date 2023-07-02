@@ -49,7 +49,7 @@ public class DiscordCommandContext extends CommandContext {
         final String output = ComponentUtilities.stringifyAnsi(component);
         final EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("Output");
-        builder.setColor(Color.decode(bot.config().discord().embedColors().normal()));
+        builder.setColor(Color.decode(bot.config.discord.embedColors.normal));
         builder.setDescription("```ansi\n" + CodeBlockUtilities.escape(output.replace("\u001b[9", "\u001b[3")) + "\n```");
 
         final MessageEmbed embed = builder.build();

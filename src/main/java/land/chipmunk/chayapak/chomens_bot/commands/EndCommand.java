@@ -19,9 +19,9 @@ public class EndCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
-        bot.session().disconnect("End command");
+        bot.session.disconnect("End command");
 
         return null;
     }

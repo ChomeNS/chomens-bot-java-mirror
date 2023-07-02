@@ -28,7 +28,7 @@ public class GrepLogCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] _args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
         String[] args = _args;
 
@@ -36,13 +36,13 @@ public class GrepLogCommand extends Command {
         boolean regex = false;
 
         if (_args[0].equals("stop")) {
-            bot.grepLog().thread().interrupt();
-            bot.grepLog().thread(null);
+            bot.grepLog.thread.interrupt();
+            bot.grepLog.thread = null;
 
             return Component.text("Log query stopped");
         }
 
-        if (bot.grepLog().thread() != null) return Component.text("Another query is already running").color(NamedTextColor.RED);
+        if (bot.grepLog.thread != null) return Component.text("Another query is already running").color(NamedTextColor.RED);
 
         // this is a mess
         if (_args[0].equals("-ignorecase")) {
@@ -61,7 +61,7 @@ public class GrepLogCommand extends Command {
             args = Arrays.copyOfRange(_args, 2, _args.length);
         }
 
-        bot.grepLog().query(String.join(" ", args), regex, ignoreCase);
+        bot.grepLog.query(String.join(" ", args), regex, ignoreCase);
 
         return null;
     }

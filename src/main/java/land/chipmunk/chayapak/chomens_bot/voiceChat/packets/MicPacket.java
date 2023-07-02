@@ -2,16 +2,23 @@ package land.chipmunk.chayapak.chomens_bot.voiceChat.packets;
 
 import land.chipmunk.chayapak.chomens_bot.util.FriendlyByteBuf;
 import land.chipmunk.chayapak.chomens_bot.voiceChat.Packet;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
-@AllArgsConstructor
 public class MicPacket implements Packet<MicPacket> {
-    @Getter private byte[] data;
-    @Getter private boolean whispering;
-    @Getter private long sequenceNumber;
+    public byte[] data;
+    public boolean whispering;
+    public long sequenceNumber;
 
     public MicPacket() {}
+
+    public MicPacket (
+            byte[] data,
+            boolean whispering,
+            long sequenceNumber
+    ) {
+        this.data = data;
+        this.whispering = whispering;
+        this.sequenceNumber = sequenceNumber;
+    }
 
     @Override
     public MicPacket fromBytes(FriendlyByteBuf buf) {

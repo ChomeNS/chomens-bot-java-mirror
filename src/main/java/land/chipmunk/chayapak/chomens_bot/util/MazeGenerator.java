@@ -1,14 +1,12 @@
 package land.chipmunk.chayapak.chomens_bot.util;
 
-import lombok.Getter;
-
 import java.util.*;
 
 // totally didn't ask chatgpt for this lmao
 public class MazeGenerator {
-    @Getter private final int width;
-    @Getter private final int height;
-    @Getter private final int[][] maze;
+    public final int width;
+    public final int height;
+    public final int[][] maze;
     private final Random rand;
 
     public MazeGenerator(int width, int height) {

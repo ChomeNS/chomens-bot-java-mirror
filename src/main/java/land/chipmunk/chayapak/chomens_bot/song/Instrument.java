@@ -1,9 +1,6 @@
 package land.chipmunk.chayapak.chomens_bot.song;
 
-import lombok.AllArgsConstructor;
-
 // Author: hhhzzzsss
-@AllArgsConstructor
 public class Instrument {
   public static final Instrument HARP = new Instrument(0, "harp", 54);
   public static final Instrument BASEDRUM = new Instrument(1, "basedrum", 0);
@@ -32,6 +29,13 @@ public class Instrument {
     this.name = name;
     this.offset = offset;
     this.sound = "minecraft:block.note_block." + name;
+  }
+
+  public Instrument (int id, String name, int offset, String sound) {
+    this.id = id;
+    this.name = name;
+    this.offset = offset;
+    this.sound = sound;
   }
 
   public static Instrument of (String sound) {

@@ -21,22 +21,22 @@ public class TPSBarCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
         switch (args[0]) {
             case "on" -> {
-                bot.tps().on();
+                bot.tps.on();
                 return Component.empty()
                         .append(Component.text("TPSBar is now "))
                         .append(Component.text("enabled").color(NamedTextColor.GREEN))
-                        .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
+                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "off" -> {
-                bot.tps().off();
+                bot.tps.off();
                 return Component.empty()
                         .append(Component.text("TPSBar is now "))
                         .append(Component.text("disabled").color(NamedTextColor.RED))
-                        .color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
+                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             default -> {
                 return Component.text("Invalid argument").color(NamedTextColor.RED);

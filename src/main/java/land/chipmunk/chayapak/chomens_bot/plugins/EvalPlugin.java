@@ -4,7 +4,6 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.EvalOutput;
-import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
 public class EvalPlugin {
     public static final String BRIDGE_PREFIX = "function:";
 
-    @Getter private boolean connected = false;
+    public boolean connected = false;
 
     private Socket socket = null;
 
@@ -23,7 +22,7 @@ public class EvalPlugin {
 
     public EvalPlugin (Bot bot) {
         try {
-            socket = IO.socket(bot.config().eval().address());
+            socket = IO.socket(bot.config.eval.address);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -45,13 +44,13 @@ public class EvalPlugin {
         socket.on(BRIDGE_PREFIX + "chat", (args) -> {
             final String message = (String) args[0];
 
-            bot.chat().send(message);
+            bot.chat.send(message);
         });
 
         socket.on(BRIDGE_PREFIX + "core", (args) -> {
             final String command = (String) args[0];
 
-            bot.core().run(command);
+            bot.core.run(command);
         });
 
         socket.connect();

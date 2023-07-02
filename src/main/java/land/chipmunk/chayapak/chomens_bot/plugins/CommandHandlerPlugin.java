@@ -6,8 +6,6 @@ import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.commands.*;
 import land.chipmunk.chayapak.chomens_bot.util.ExceptionUtilities;
-import lombok.Getter;
-import lombok.Setter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -22,9 +20,9 @@ import java.util.List;
 public class CommandHandlerPlugin {
     private final Bot bot;
 
-    @Getter private final List<Command> commands = new ArrayList<>();
+    public final List<Command> commands = new ArrayList<>();
 
-    @Getter @Setter private boolean disabled = false;
+    public boolean disabled = false;
 
     public CommandHandlerPlugin (Bot bot) {
         this.bot = bot;
@@ -97,18 +95,18 @@ public class CommandHandlerPlugin {
         if (command == null && !inGame) return Component.text("Unknown command: " + commandName).color(NamedTextColor.RED);
         else if (command == null) return null;
 
-        final TrustLevel trustLevel = command.trustLevel();
+        final TrustLevel trustLevel = command.trustLevel;
 
         final String[] fullArgs = Arrays.copyOfRange(splitInput, 1, splitInput.length);
 
         // TODO: improve these minimum args and maximum args stuff, the current one really sucks.,.,
-        final int shortestUsageIndex = getShortestUsageIndex(command.usages());
-        final int longestUsageIndex = getLongestUsageIndex(command.usages());
-        final String shortestUsage = shortestUsageIndex == 0 && command.usages().length == 0 ? "" : command.usages()[shortestUsageIndex];
-        final String longestUsage = longestUsageIndex == 0 && command.usages().length == 0 ? "" : command.usages()[longestUsageIndex];
+        final int shortestUsageIndex = getShortestUsageIndex(command.usages);
+        final int longestUsageIndex = getLongestUsageIndex(command.usages);
+        final String shortestUsage = shortestUsageIndex == 0 && command.usages.length == 0 ? "" : command.usages[shortestUsageIndex];
+        final String longestUsage = longestUsageIndex == 0 && command.usages.length == 0 ? "" : command.usages[longestUsageIndex];
 
-        final int minimumArgs = getMinimumArgs(shortestUsage, inGame, command.trustLevel());
-        final int maximumArgs = getMaximumArgs(longestUsage, inGame, command.trustLevel());
+        final int minimumArgs = getMinimumArgs(shortestUsage, inGame, command.trustLevel);
+        final int maximumArgs = getMaximumArgs(longestUsage, inGame, command.trustLevel);
         if (fullArgs.length < minimumArgs) return Component.text("Excepted minimum of " + minimumArgs + " argument(s), got " + fullArgs.length).color(NamedTextColor.RED);
         if (fullArgs.length > maximumArgs && !longestUsage.contains("{")) return Component.text("Too many arguments, expected " + maximumArgs + " max").color(NamedTextColor.RED);
 
@@ -119,7 +117,7 @@ public class CommandHandlerPlugin {
 
         final String[] args = Arrays.copyOfRange(splitInput, (trustLevel != TrustLevel.PUBLIC && inGame) ? 2 : 1, splitInput.length);
 
-        if (command.trustLevel() != TrustLevel.PUBLIC && !console) {
+        if (command.trustLevel != TrustLevel.PUBLIC && !console) {
             if (discord) {
                 final Member member = event.getMember();
 
@@ -127,29 +125,29 @@ public class CommandHandlerPlugin {
 
                 final List<Role> roles = member.getRoles();
 
-                final String trustedRoleName = bot.config().discord().trustedRoleName();
-                final String adminRoleName = bot.config().discord().adminRoleName();
+                final String trustedRoleName = bot.config.discord.trustedRoleName;
+                final String adminRoleName = bot.config.discord.adminRoleName;
 
                 if (
-                        command.trustLevel() == TrustLevel.TRUSTED &&
+                        command.trustLevel == TrustLevel.TRUSTED &&
                                 roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase(trustedRoleName)) &&
                                 roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase(adminRoleName))
                 ) return Component.text("You're not in the trusted role!").color(NamedTextColor.RED);
 
                 if (
-                        command.trustLevel() == TrustLevel.OWNER &&
+                        command.trustLevel == TrustLevel.OWNER &&
                                 roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase(adminRoleName))
                 ) return Component.text("You're not in the admin role!").color(NamedTextColor.RED);
             } else {
                 if (
-                        command.trustLevel() == TrustLevel.TRUSTED &&
-                                !userHash.equals(bot.hashing().hash()) &&
-                                !userHash.equals(bot.hashing().ownerHash())
+                        command.trustLevel == TrustLevel.TRUSTED &&
+                                !userHash.equals(bot.hashing.hash) &&
+                                !userHash.equals(bot.hashing.ownerHash)
                 ) return Component.text("Invalid hash").color(NamedTextColor.RED);
 
                 if (
-                        command.trustLevel() == TrustLevel.OWNER &&
-                                !userHash.equals(bot.hashing().ownerHash())
+                        command.trustLevel == TrustLevel.OWNER &&
+                                !userHash.equals(bot.hashing.ownerHash)
                 ) return Component.text("Invalid OwnerHash").color(NamedTextColor.RED);
             }
         }
@@ -161,7 +159,7 @@ public class CommandHandlerPlugin {
 
             final String stackTrace = ExceptionUtilities.getStacktrace(e);
             if (inGame) {
-                if (bot.options().useChat() || !bot.options().useCore()) return Component.text(e.toString()).color(NamedTextColor.RED);
+                if (bot.options.useChat || !bot.options.useCore) return Component.text(e.toString()).color(NamedTextColor.RED);
                 return Component
                         .text("An error occurred while trying to execute the command, hover here for stacktrace", NamedTextColor.RED)
                         .hoverEvent(
@@ -181,8 +179,8 @@ public class CommandHandlerPlugin {
         for (Command command : commands) {
             if (
                     (
-                            command.name().equals(searchTerm.toLowerCase()) ||
-                                    Arrays.stream(command.aliases()).toList().contains(searchTerm.toLowerCase())
+                            command.name.equals(searchTerm.toLowerCase()) ||
+                                    Arrays.stream(command.aliases).toList().contains(searchTerm.toLowerCase())
                     ) &&
                             !searchTerm.equals("") // ig yup
             ) {

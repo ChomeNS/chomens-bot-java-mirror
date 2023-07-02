@@ -25,7 +25,7 @@ public class ServerEvalCommand extends Command {
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         try {
-            final Bot bot = context.bot();
+            final Bot bot = context.bot;
 
             final Globals globals = JsePlatform.standardGlobals();
 

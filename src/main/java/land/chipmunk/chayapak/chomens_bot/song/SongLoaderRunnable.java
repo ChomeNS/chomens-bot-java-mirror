@@ -80,19 +80,19 @@ public class SongLoaderRunnable implements Runnable {
 
       failed();
     } else {
-      bot.music().songQueue().add(song);
-      bot.chat().tellraw(
+      bot.music.songQueue.add(song);
+      bot.chat.tellraw(
               Component.translatable(
                       "Added %s to the song queue",
-                      Component.empty().append(song.name).color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary()))
-              ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()))
+                      Component.empty().append(song.name).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+              ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
       );
     }
   }
 
   private void failed() {
     exception.printStackTrace();
-    bot.chat().tellraw(Component.translatable("Failed to load song: %s", exception.message()).color(NamedTextColor.RED));
-    bot.music().loaderThread(null);
+    bot.chat.tellraw(Component.translatable("Failed to load song: %s", exception.message).color(NamedTextColor.RED));
+    bot.music.loaderThread = null;
   }
 }

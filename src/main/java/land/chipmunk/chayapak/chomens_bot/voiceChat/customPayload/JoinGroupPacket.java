@@ -2,17 +2,19 @@ package land.chipmunk.chayapak.chomens_bot.voiceChat.customPayload;
 
 import land.chipmunk.chayapak.chomens_bot.util.FriendlyByteBuf;
 import land.chipmunk.chayapak.chomens_bot.voiceChat.Packet;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 import java.util.UUID;
 
-@AllArgsConstructor
 public class JoinGroupPacket implements Packet<JoinGroupPacket> {
-    @Getter private UUID group;
-    @Getter private String password;
+    public UUID group;
+    public String password;
 
     public JoinGroupPacket () {}
+
+    public JoinGroupPacket (UUID group, String password) {
+        this.group = group;
+        this.password = password;
+    }
 
     @Override
     public JoinGroupPacket fromBytes(FriendlyByteBuf buf) {

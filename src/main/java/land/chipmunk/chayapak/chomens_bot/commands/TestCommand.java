@@ -21,9 +21,9 @@ public class TestCommand extends Command {
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         return Component.translatable(
                 "Hello, World! Username: %s, Sender UUID: %s, Prefix: %s, Args: %s",
-                Component.text(context.sender().profile().getName()),
-                Component.text(context.sender().profile().getIdAsString()),
-                Component.text(context.prefix()),
+                Component.text(context.sender.profile.getName()),
+                Component.text(context.sender.profile.getIdAsString()),
+                Component.text(context.prefix),
                 Component.text(String.join(", ", args))
         ).color(NamedTextColor.GREEN);
     }

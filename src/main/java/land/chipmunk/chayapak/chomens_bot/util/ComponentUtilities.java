@@ -3,7 +3,6 @@ package land.chipmunk.chayapak.chomens_bot.util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import lombok.AllArgsConstructor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -63,11 +62,10 @@ public class ComponentUtilities {
         ansiMap.put("r", "\u001b[0m");
     }
 
-    @AllArgsConstructor
-    private static class PartiallyStringifiedOutput {
-        public String output;
-        public String lastColor;
-    }
+    private static record PartiallyStringifiedOutput (
+        String output,
+        String lastColor
+    ) {}
 
     private ComponentUtilities () {
     }

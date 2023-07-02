@@ -46,9 +46,9 @@ public class ClearChatQueueCommand extends Command {
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
-        bot.chat().clearQueue();
+        bot.chat.clearQueue();
 
         return null;
     }

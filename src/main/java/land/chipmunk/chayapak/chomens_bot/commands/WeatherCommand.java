@@ -31,7 +31,7 @@ public class WeatherCommand extends Command {
     }
 
     public Component execute (CommandContext context, String[] args, String[] fullArgs) {
-        final Bot bot = context.bot();
+        final Bot bot = context.bot;
 
         final String location = String.join(" ", args);
 
@@ -39,7 +39,7 @@ public class WeatherCommand extends Command {
 
         try {
             final URL url = new URL(
-                    "https://api.weatherapi.com/v1/current.json?key=" + bot.config().weatherApiKey() + "&q=" +
+                    "https://api.weatherapi.com/v1/current.json?key=" + bot.config.weatherApiKey + "&q=" +
                             URLEncoder.encode(
                                 location,
                                     StandardCharsets.UTF_8
@@ -61,12 +61,12 @@ public class WeatherCommand extends Command {
 
             return Component.translatable(
                     "Weather forecast for %s, %s:\n%s, feels like %s\nTime: %s",
-                    Component.text(jsonObject.get("location").getAsJsonObject().get("name").getAsString()).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())),
-                    Component.text(jsonObject.get("location").getAsJsonObject().get("country").getAsString()).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())),
-                    Component.text(jsonObject.get("current").getAsJsonObject().get("temp_c").getAsString() + "°C").color(ColorUtilities.getColorByString(bot.config().colorPalette().secondary())),
+                    Component.text(jsonObject.get("location").getAsJsonObject().get("name").getAsString()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                    Component.text(jsonObject.get("location").getAsJsonObject().get("country").getAsString()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                    Component.text(jsonObject.get("current").getAsJsonObject().get("temp_c").getAsString() + "°C").color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)),
                     Component.text(jsonObject.get("current").getAsJsonObject().get("feelslike_c").getAsString() + "°C").color(NamedTextColor.GREEN),
-                    Component.text(time).color(ColorUtilities.getColorByString(bot.config().colorPalette().string()))
-            ).color(ColorUtilities.getColorByString(bot.config().colorPalette().defaultColor()));
+                    Component.text(time).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+            ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
         } catch (Exception e) {
             return Component.text("Location \"" + location + "\" not found").color(NamedTextColor.RED);
         }

@@ -9,7 +9,6 @@ import land.chipmunk.chayapak.chomens_bot.command.DiscordCommandContext;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.CodeBlockUtilities;
-import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -30,34 +29,34 @@ import java.util.List;
 // please ignore my ohio code
 // also this is one of the classes which has >100 lines or actually >300 LMAO
 public class DiscordPlugin {
-    @Getter private JDA jda;
+    public JDA jda;
 
     public final Map<String, String> servers;
 
     public final String prefix;
 
     public DiscordPlugin (Configuration config, JDA jda) {
-        final Configuration.Discord options = config.discord();
-        this.prefix = options.prefix();
-        this.servers = options.servers();
+        final Configuration.Discord options = config.discord;
+        this.prefix = options.prefix;
+        this.servers = options.servers;
         this.jda = jda;
 
         if (jda == null) return;
 
         for (Bot bot : Main.bots) {
-            final String channelId = servers.get(bot.host() + ":" + bot.port());
+            final String channelId = servers.get(bot.host + ":" + bot.port);
 
             bot.addListener(new Bot.Listener() {
                 @Override
                 public void loadedPlugins() {
-                    bot.tick().addListener(new TickPlugin.Listener() {
+                    bot.tick.addListener(new TickPlugin.Listener() {
                         @Override
                         public void onTick() {
                             onDiscordTick(channelId);
                         }
                     });
 
-                    bot.chat().addListener(new ChatPlugin.Listener() {
+                    bot.chat.addListener(new ChatPlugin.Listener() {
                         @Override
                         public void systemMessageReceived (Component component) {
                             final String content = ComponentUtilities.stringifyAnsi(component);
@@ -71,8 +70,8 @@ public class DiscordPlugin {
                     sendMessageInstantly(
                             String.format(
                                     "Connecting to: `%s:%s`",
-                                    bot.host(),
-                                    bot.port()
+                                    bot.host,
+                                    bot.port
                             ),
                             channelId
                     );
@@ -83,8 +82,8 @@ public class DiscordPlugin {
                     sendMessageInstantly(
                             String.format(
                                     "Successfully connected to: `%s:%s`",
-                                    bot.host(),
-                                    bot.port()
+                                    bot.host,
+                                    bot.port
                             ),
                             channelId
                     );
@@ -110,7 +109,7 @@ public class DiscordPlugin {
                     if (
                             !event.getChannel().getId().equals(channelId) ||
                                     event.getAuthor().getId().equals(jda.getSelfUser().getId()) ||
-                                    !bot.loggedIn()
+                                    !bot.loggedIn
                     ) return;
 
                     final Message messageEvent = event.getMessage();
@@ -119,7 +118,7 @@ public class DiscordPlugin {
                     if (message.startsWith(prefix)) {
                         final DiscordCommandContext context = new DiscordCommandContext(bot, prefix, event, null, null);
 
-                        final Component output = bot.commandHandler().executeCommand(message.substring(prefix.length()), context, false, true, false, event);
+                        final Component output = bot.commandHandler.executeCommand(message.substring(prefix.length()), context, false, true, false, event);
 
                         if (output != null) {
                             context.sendOutput(output);
@@ -155,7 +154,7 @@ public class DiscordPlugin {
                                             %s""",
                                     embed.getTitle() == null ?
                                             Component.text("No title").color(NamedTextColor.GRAY) :
-                                            Component.text(embed.getTitle()).color(ColorUtilities.getColorByString(bot.config().colorPalette().string())),
+                                            Component.text(embed.getTitle()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
                                     embed.getDescription() == null ?
                                             Component.text("No description").color(NamedTextColor.GRAY) :
                                             Component.text(embed.getDescription()).color(NamedTextColor.WHITE)
@@ -250,7 +249,7 @@ public class DiscordPlugin {
 
                     if (nameComponent.color() == null) nameComponent = nameComponent.color(NamedTextColor.RED);
 
-                    final String discordUrl = config.discord().inviteLink();
+                    final String discordUrl = config.discord.inviteLink;
 
                     final Component discordComponent = Component.empty()
                             .append(Component.text("ChomeNS ").color(NamedTextColor.YELLOW))
@@ -280,11 +279,11 @@ public class DiscordPlugin {
                             messageComponent
                     ).color(NamedTextColor.DARK_GRAY);
 
-                    bot.chat().tellraw(component);
+                    bot.chat.tellraw(component);
                 }
             });
 
-            bot.discord(this);
+            bot.discord = this;
         }
     }
 

@@ -19,8 +19,6 @@ import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerMessage;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.IllegalCharactersUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.UUIDUtilities;
-import lombok.Getter;
-import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -43,14 +41,14 @@ public class ChatPlugin extends Bot.Listener {
 
     private final List<String> queue = new ArrayList<>();
 
-    @Getter @Setter private int queueDelay;
+    public int queueDelay;
 
     private final List<Listener> listeners = new ArrayList<>();
 
     public ChatPlugin (Bot bot) {
         this.bot = bot;
 
-        queueDelay = bot.options().chatQueueDelay();
+        queueDelay = bot.options.chatQueueDelay;
 
         this.commandSpyParser = new CommandSpyParser(bot);
 
@@ -62,7 +60,7 @@ public class ChatPlugin extends Bot.Listener {
         chatParsers.add(new U203aChatParser(bot));
         chatParsers.add(new CreayunChatParser(bot));
 
-        bot.executor().scheduleAtFixedRate(this::sendChatTick, 0, queueDelay, TimeUnit.MILLISECONDS);
+        bot.executor.scheduleAtFixedRate(this::sendChatTick, 0, queueDelay, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -121,7 +119,7 @@ public class ChatPlugin extends Bot.Listener {
     public void packetReceived (ClientboundPlayerChatPacket packet) {
         final UUID senderUUID = packet.getSender();
 
-        final MutablePlayerListEntry entry = bot.players().getEntry(senderUUID);
+        final MutablePlayerListEntry entry = bot.players.getEntry(senderUUID);
 
         if (entry == null) return;
 
@@ -144,11 +142,11 @@ public class ChatPlugin extends Bot.Listener {
                 if (translation.equals("chat.type.team.text") || translation.equals("chat.type.team.sent")) { // ohio
                     component = component.args(
                             Component.empty(), // TODO: fix team name.,.,
-                            playerMessage.displayName(),
-                            playerMessage.contents()
+                            playerMessage.displayName,
+                            playerMessage.contents
                     );
                 } else {
-                    component = component.args(playerMessage.displayName(), playerMessage.contents());
+                    component = component.args(playerMessage.displayName, playerMessage.contents);
                 }
 
                 listener.systemMessageReceived(component);
@@ -196,7 +194,7 @@ public class ChatPlugin extends Bot.Listener {
 
                     if (parsed == null) continue;
 
-                    final PlayerMessage playerMessage = new PlayerMessage(parsed.sender(), packet.getName(), parsed.contents());
+                    final PlayerMessage playerMessage = new PlayerMessage(parsed.sender, packet.getName(), parsed.contents);
 
                     for (Listener listener : listeners) {
                         listener.playerMessageReceived(playerMessage);
@@ -205,7 +203,7 @@ public class ChatPlugin extends Bot.Listener {
             } else {
                 if (parsedFromMessage == null) return;
 
-                final PlayerMessage playerMessage = new PlayerMessage(parsedFromMessage.sender(), packet.getName(), parsedFromMessage.contents());
+                final PlayerMessage playerMessage = new PlayerMessage(parsedFromMessage.sender, packet.getName(), parsedFromMessage.contents);
 
                 for (Listener listener : listeners) {
                     listener.playerMessageReceived(playerMessage);
@@ -227,7 +225,7 @@ public class ChatPlugin extends Bot.Listener {
 
             final String[] splittedSpace = removedMessage.split("\\s+"); // [minecraft:test, arg1, arg2, ...]
             final String[] splittedColon = splittedSpace[0].split(":"); // [minecraft, test]
-            if (bot.options().removeNamespaces() && splittedColon.length >= 2) {
+            if (bot.options.removeNamespaces && splittedColon.length >= 2) {
                 removedMessage = String.join(":", Arrays.copyOfRange(splittedColon, 1, splittedColon.length));
 
                 if (splittedSpace.length > 1) {
@@ -236,7 +234,7 @@ public class ChatPlugin extends Bot.Listener {
                 }
             }
 
-            bot.session().send(new ServerboundChatCommandPacket(
+            bot.session.send(new ServerboundChatCommandPacket(
                     removedMessage,
                     Instant.now().toEpochMilli(),
                     0L,
@@ -245,7 +243,7 @@ public class ChatPlugin extends Bot.Listener {
                     new BitSet()
             ));
         } else {
-            bot.session().send(new ServerboundChatPacket(
+            bot.session.send(new ServerboundChatPacket(
                     message,
                     Instant.now().toEpochMilli(),
                     0L,
@@ -290,13 +288,13 @@ public class ChatPlugin extends Bot.Listener {
     }
 
     public void tellraw (Component component, String targets) {
-        if (bot.options().useChat()) {
+        if (bot.options.useChat) {
             if (!targets.equals("@a")) return; // worst fix of all time!1!
 
             final String stringified = ComponentUtilities.stringifyMotd(component).replace("§", "&");
             send(stringified);
         } else {
-            bot.core().run("minecraft:tellraw " + targets + " " + GsonComponentSerializer.gson().serialize(component));
+            bot.core.run("minecraft:tellraw " + targets + " " + GsonComponentSerializer.gson().serialize(component));
         }
     }
 
@@ -305,8 +303,8 @@ public class ChatPlugin extends Bot.Listener {
     public void tellraw (Component component) { tellraw(component, "@a"); }
 
     public void actionBar (Component component, String targets) {
-        if (bot.options().useChat()) return;
-        bot.core().run("minecraft:title " + targets + " actionbar " + GsonComponentSerializer.gson().serialize(component));
+        if (bot.options.useChat) return;
+        bot.core.run("minecraft:title " + targets + " actionbar " + GsonComponentSerializer.gson().serialize(component));
     }
 
     public void actionBar (Component component, UUID uuid) { actionBar(component, UUIDUtilities.selector(uuid)); }

@@ -12,7 +12,6 @@ import com.google.gson.JsonObject;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.util.PersistentDataUtilities;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
 import java.time.Instant;
@@ -23,11 +22,12 @@ import java.util.UUID;
 
 public class PlayersPlugin extends Bot.Listener {
     private final Bot bot;
-    @Getter private final List<MutablePlayerListEntry> list = new ArrayList<>();
+
+    public final List<MutablePlayerListEntry> list = new ArrayList<>();
 
     private final List<Listener> listeners = new ArrayList<>();
 
-    @Getter private static JsonObject playersObject = new JsonObject();
+    public static JsonObject playersObject = new JsonObject();
 
     static {
         if (PersistentDataUtilities.jsonObject.has("players")) {
@@ -71,7 +71,7 @@ public class PlayersPlugin extends Bot.Listener {
 
     public final MutablePlayerListEntry getEntry (UUID uuid) {
         for (MutablePlayerListEntry candidate : list) {
-            if (candidate.profile().getId().equals(uuid)) {
+            if (candidate.profile.getId().equals(uuid)) {
                 return candidate;
             }
         }
@@ -91,7 +91,7 @@ public class PlayersPlugin extends Bot.Listener {
 
     public final MutablePlayerListEntry getEntry (Component displayName) {
         for (MutablePlayerListEntry candidate : list) {
-            if (candidate.displayName() != null && candidate.displayName().equals(displayName)) {
+            if (candidate.displayName != null && candidate.displayName.equals(displayName)) {
                 return candidate;
             }
         }
@@ -99,7 +99,7 @@ public class PlayersPlugin extends Bot.Listener {
         return null;
     }
 
-    public MutablePlayerListEntry getBotEntry () { return getEntry(bot.username()); }
+    public MutablePlayerListEntry getBotEntry () { return getEntry(bot.username); }
 
     private MutablePlayerListEntry getEntry (PlayerListEntry other) {
         return getEntry(other.getProfile().getId());
@@ -109,18 +109,18 @@ public class PlayersPlugin extends Bot.Listener {
         final MutablePlayerListEntry target = getEntry(newEntry);
         if (target == null) return;
 
-        target.publicKey(newEntry.getPublicKey());
+        target.publicKey = newEntry.getPublicKey();
     }
 
     private void updateListed (PlayerListEntry newEntry) {
         final MutablePlayerListEntry target = getEntry(newEntry);
         if (target == null) return;
 
-        target.listed(newEntry.isListed());
+        target.listed = newEntry.isListed();
     }
 
     private String getName(MutablePlayerListEntry target) {
-        return bot.options().creayun() ? target.profile().getName().replaceAll("§.", "") : target.profile().getName();
+        return bot.options.creayun ? target.profile.getName().replaceAll("§.", "") : target.profile.getName();
     }
 
     private void addPlayer (PlayerListEntry newEntry) {
@@ -138,7 +138,7 @@ public class PlayersPlugin extends Bot.Listener {
             if (playersObject.has(getName(target))) return;
 
             final JsonObject object = new JsonObject();
-            object.addProperty("uuid", target.profile().getIdAsString());
+            object.addProperty("uuid", target.profile.getIdAsString());
             object.add("lastSeen", new JsonObject());
 
             playersObject.add(getName(target), object);
@@ -153,7 +153,7 @@ public class PlayersPlugin extends Bot.Listener {
 
         final GameMode gameMode = newEntry.getGameMode();
 
-        target.gamemode(gameMode);
+        target.gamemode = gameMode;
 
         for (Listener listener : listeners) { listener.playerGameModeUpdated(target, gameMode); }
     }
@@ -164,7 +164,7 @@ public class PlayersPlugin extends Bot.Listener {
 
         final int ping = newEntry.getLatency();
 
-        target.latency(ping);
+        target.latency = ping;
 
         for (Listener listener : listeners) { listener.playerLatencyUpdated(target, ping); }
     }
@@ -175,7 +175,7 @@ public class PlayersPlugin extends Bot.Listener {
 
         final Component displayName = newEntry.getDisplayName();
 
-        target.displayName(displayName);
+        target.displayName = displayName;
 
         for (Listener listener : listeners) { listener.playerDisplayNameUpdated(target, displayName); }
     }
@@ -184,14 +184,14 @@ public class PlayersPlugin extends Bot.Listener {
         final MutablePlayerListEntry target = getEntry(uuid);
         if (target == null) return;
 
-        bot.tabComplete().tabComplete("/minecraft:scoreboard players add ").thenApply(packet -> {
+        bot.tabComplete.tabComplete("/minecraft:scoreboard players add ").thenApply(packet -> {
             final String[] matches = packet.getMatches();
             final Component[] tooltips = packet.getTooltips();
-            final String username = target.profile().getName();
+            final String username = target.profile.getName();
 
             for (int i = 0; i < matches.length; i++) {
                 if (tooltips[i] != null || !matches[i].equals(username)) continue;
-                target.listed(false);
+                target.listed = false;
                 for (Listener listener : listeners) { listener.playerVanished(target); }
                 return packet;
             }
@@ -209,7 +209,7 @@ public class PlayersPlugin extends Bot.Listener {
 
             final JsonObject object = new JsonObject();
             object.addProperty("time", Instant.now().toEpochMilli());
-            object.addProperty("server", bot.host() + ":" + bot.port());
+            object.addProperty("server", bot.host + ":" + bot.port);
 
             player.add("lastSeen", object);
 

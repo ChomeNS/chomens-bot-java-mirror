@@ -39,10 +39,10 @@ public class U203aChatParser implements ChatParser {
         if (hoverEvent != null && hoverEvent.action().equals(HoverEvent.Action.SHOW_ENTITY)) {
             HoverEvent.ShowEntity entityInfo = (HoverEvent.ShowEntity) hoverEvent.value();
             final UUID senderUUID = entityInfo.id();
-            sender = bot.players().getEntry(senderUUID);
+            sender = bot.players.getEntry(senderUUID);
         } else {
             final String stringUsername = ComponentUtilities.stringify(senderComponent);
-            sender = bot.players().getEntry(stringUsername);
+            sender = bot.players.getEntry(stringUsername);
         }
 
         if (sender == null) return null;

@@ -2,13 +2,12 @@ package land.chipmunk.chayapak.chomens_bot.voiceChat.packets;
 
 import land.chipmunk.chayapak.chomens_bot.util.FriendlyByteBuf;
 import land.chipmunk.chayapak.chomens_bot.voiceChat.Packet;
-import lombok.Getter;
 
 import java.util.UUID;
 
 public class PingPacket implements Packet<PingPacket> {
-    @Getter private UUID id;
-    @Getter private long timestamp;
+    public UUID id;
+    public long timestamp;
 
     @Override
     public PingPacket fromBytes(FriendlyByteBuf buf) {
