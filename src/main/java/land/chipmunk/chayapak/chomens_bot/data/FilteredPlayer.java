@@ -1,9 +1,9 @@
 package land.chipmunk.chayapak.chomens_bot.data;
 
 public class FilteredPlayer {
-    public String playerName;
-    public boolean regex;
-    public boolean ignoreCase;
+    public final String playerName;
+    public final boolean regex;
+    public final boolean ignoreCase;
 
     public FilteredPlayer (
             String playerName,

@@ -8,8 +8,6 @@ import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class ClearChatCommand extends Command {

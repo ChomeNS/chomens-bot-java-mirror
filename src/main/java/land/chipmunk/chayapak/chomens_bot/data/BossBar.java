@@ -7,7 +7,7 @@ import net.kyori.adventure.text.Component;
 import java.util.UUID;
 
 public class BossBar {
-    public UUID uuid;
+    public final UUID uuid;
 
     public Component title;
     public BossBarColor color;

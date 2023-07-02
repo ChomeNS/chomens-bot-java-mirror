@@ -7,9 +7,6 @@ import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class CreatorCommand extends Command {
     public CreatorCommand () {
         super(

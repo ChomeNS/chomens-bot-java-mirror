@@ -8,13 +8,13 @@ import net.kyori.adventure.text.Component;
 import java.security.PublicKey;
 
 public class MutablePlayerListEntry {
-    public GameProfile profile;
+    public final GameProfile profile;
     public GameMode gamemode;
     public int latency;
     public Component displayName;
-    public long expiresAt;
+    public final long expiresAt;
     public PublicKey publicKey;
-    public byte[] keySignature;
+    public final byte[] keySignature;
     public boolean listed;
 
     public MutablePlayerListEntry (

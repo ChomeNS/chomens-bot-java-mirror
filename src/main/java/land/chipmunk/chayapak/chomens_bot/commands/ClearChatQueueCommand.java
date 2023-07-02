@@ -20,30 +20,6 @@ public class ClearChatQueueCommand extends Command {
         );
     }
 
-    public String name() { return "clearchatqueue"; }
-
-    public String description() {
-        return "Clears the bot's chat queue";
-    }
-
-    public List<String> usage() {
-        final List<String> usages = new ArrayList<>();
-        usages.add("");
-
-        return usages;
-    }
-
-    public List<String> alias() {
-        final List<String> aliases = new ArrayList<>();
-        aliases.add("ccq");
-
-        return aliases;
-    }
-
-    public TrustLevel trustLevel() {
-        return TrustLevel.PUBLIC;
-    }
-
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot;

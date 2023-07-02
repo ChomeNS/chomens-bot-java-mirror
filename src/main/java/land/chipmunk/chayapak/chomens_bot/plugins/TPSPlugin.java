@@ -70,9 +70,9 @@ public class TPSPlugin extends Bot.Listener {
     }
 
     private void updateTPSBar () {
-        try {
-            if (!enabled) return;
+        if (!enabled) return;
 
+        try {
             final double tickRate = getTickRate();
 
             final DecimalFormat formatter = new DecimalFormat("##.##");

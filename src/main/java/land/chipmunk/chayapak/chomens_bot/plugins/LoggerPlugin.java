@@ -16,7 +16,7 @@ public class LoggerPlugin extends ChatPlugin.Listener {
 
     private boolean addedListener = false;
 
-    public boolean logToConsole = true;
+    public final boolean logToConsole = true;
 
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 

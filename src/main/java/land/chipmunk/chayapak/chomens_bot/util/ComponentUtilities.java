@@ -62,7 +62,7 @@ public class ComponentUtilities {
         ansiMap.put("r", "\u001b[0m");
     }
 
-    private static record PartiallyStringifiedOutput (
+    private record PartiallyStringifiedOutput (
         String output,
         String lastColor
     ) {}

@@ -12,7 +12,7 @@ import java.util.List;
 public class CommandSuggestionPlugin extends ChatPlugin.Listener {
     private final Bot bot;
 
-    public String id = "chomens_bot_command_suggestion";
+    public final String id = "chomens_bot_command_suggestion";
 
     public CommandSuggestionPlugin (Bot bot) {
         this.bot = bot;

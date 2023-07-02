@@ -2,12 +2,12 @@ package land.chipmunk.chayapak.chomens_bot.song;
 
 // Author: hhhzzzsss
 public class Note implements Comparable<Note> {
-  public Instrument instrument;
-  public int pitch;
-  public float volume;
-  public long time;
-  public int panning;
-  public int stereo;
+  public final Instrument instrument;
+  public final int pitch;
+  public final float volume;
+  public final long time;
+  public final int panning;
+  public final int stereo;
 
   public Note (
           Instrument instrument,

@@ -29,7 +29,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     public Song currentSong;
-    public List<Song> songQueue = new ArrayList<>();
+    public final List<Song> songQueue = new ArrayList<>();
     public SongLoaderRunnable loaderThread;
     public Loop loop = Loop.OFF;
 

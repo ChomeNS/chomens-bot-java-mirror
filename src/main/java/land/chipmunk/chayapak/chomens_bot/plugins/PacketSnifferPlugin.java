@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 
 // normally unused in the main instance of the bot
 public class PacketSnifferPlugin extends Bot.Listener {
-    public boolean enabled = false;
+    public final boolean enabled = false;
 
     private OutputStreamWriter writer;
 

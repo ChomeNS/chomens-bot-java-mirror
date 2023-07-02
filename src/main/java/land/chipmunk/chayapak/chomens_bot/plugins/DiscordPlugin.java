@@ -29,7 +29,7 @@ import java.util.List;
 // please ignore my ohio code
 // also this is one of the classes which has >100 lines or actually >300 LMAO
 public class DiscordPlugin {
-    public JDA jda;
+    public final JDA jda;
 
     public final Map<String, String> servers;
 

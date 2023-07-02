@@ -41,7 +41,7 @@ public class ChatPlugin extends Bot.Listener {
 
     private final List<String> queue = new ArrayList<>();
 
-    public int queueDelay;
+    public final int queueDelay;
 
     private final List<Listener> listeners = new ArrayList<>();
 

@@ -1,11 +1,11 @@
 package land.chipmunk.chayapak.chomens_bot.data;
 
 public class Mail {
-     public String sentBy;
-     public String sentTo;
-     public long timeSent;
-     public String server;
-     public String contents;
+     public final String sentBy;
+     public final String sentTo;
+     public final long timeSent;
+     public final String server;
+     public final String contents;
     
     public Mail (
             String sentBy,

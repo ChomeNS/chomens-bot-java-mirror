@@ -22,9 +22,9 @@ public class BossbarManagerPlugin extends Bot.Listener {
     public final Map<UUID, BossBar> serverBossBars = new HashMap<>();
     private final Map<UUID, BotBossBar> bossBars = new HashMap<>();
 
-    public boolean enabled = true;
+    public final boolean enabled = true;
 
-    public String bossBarPrefix = "chomens_bot:";
+    public final String bossBarPrefix = "chomens_bot:";
 
     public BossbarManagerPlugin (Bot bot) {
         this.bot = bot;
