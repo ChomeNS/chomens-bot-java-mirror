@@ -4,9 +4,11 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.EvalOutput;
+import land.chipmunk.chayapak.chomens_bot.evalFunctions.ChatFunction;
+import land.chipmunk.chayapak.chomens_bot.evalFunctions.CoreFunction;
+import land.chipmunk.chayapak.chomens_bot.evalFunctions.EvalFunction;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class EvalPlugin {
@@ -20,16 +22,27 @@ public class EvalPlugin {
 
     private final Map<Integer, CompletableFuture<EvalOutput>> futures = new HashMap<>();
 
+    public final List<EvalFunction> functions = new ArrayList<>();
+
     public EvalPlugin (Bot bot) {
+        functions.add(new CoreFunction(bot));
+        functions.add(new ChatFunction(bot));
+
         try {
             socket = IO.socket(bot.config.eval.address);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        socket.on(Socket.EVENT_CONNECT, (args) -> connected = true);
+        socket.on(Socket.EVENT_CONNECT, (args) -> {
+            connected = true;
+
+            socket.emit("setFunctions", "chat", "core");
+        });
         socket.on(Socket.EVENT_DISCONNECT, (args) -> connected = false);
         socket.on(Socket.EVENT_CONNECT_ERROR, (args) -> connected = false);
+
+        for (EvalFunction function : functions) socket.on(BRIDGE_PREFIX + function.name, function::execute);
 
         socket.on("codeOutput", (args) -> {
             final int id = (int) args[0];
@@ -39,18 +52,6 @@ public class EvalPlugin {
             final CompletableFuture<EvalOutput> future = futures.get(id);
 
             future.complete(new EvalOutput(isError, output));
-        });
-
-        socket.on(BRIDGE_PREFIX + "chat", (args) -> {
-            final String message = (String) args[0];
-
-            bot.chat.send(message);
-        });
-
-        socket.on(BRIDGE_PREFIX + "core", (args) -> {
-            final String command = (String) args[0];
-
-            bot.core.run(command);
         });
 
         socket.connect();
