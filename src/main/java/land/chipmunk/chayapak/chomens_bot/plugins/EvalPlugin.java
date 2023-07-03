@@ -1,5 +1,7 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import land.chipmunk.chayapak.chomens_bot.Bot;
@@ -24,6 +26,8 @@ public class EvalPlugin {
 
     public final List<EvalFunction> functions = new ArrayList<>();
 
+    private final Gson gson = new Gson();
+
     public EvalPlugin (Bot bot) {
         functions.add(new CoreFunction(bot));
         functions.add(new ChatFunction(bot));
@@ -37,7 +41,14 @@ public class EvalPlugin {
         socket.on(Socket.EVENT_CONNECT, (args) -> {
             connected = true;
 
-            socket.emit("setFunctions", "chat", "core");
+            final JsonArray array = new JsonArray();
+
+            for (EvalFunction function : functions) array.add(function.name);
+
+            socket.emit(
+                    "setFunctions",
+                    gson.toJson(array)
+            );
         });
         socket.on(Socket.EVENT_DISCONNECT, (args) -> connected = false);
         socket.on(Socket.EVENT_CONNECT_ERROR, (args) -> connected = false);

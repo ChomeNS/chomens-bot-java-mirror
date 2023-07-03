@@ -28,7 +28,7 @@ public class HashingPlugin {
         final long time = System.currentTimeMillis() / 5_000;
 
         // mabe this will optimize it?
-        if (time == lastTime) return;
+        if (time <= lastTime) return;
         lastTime = time;
 
         final String normalHashKey = bot.config.keys.normalKey;
@@ -40,7 +40,7 @@ public class HashingPlugin {
                 .toString()
                 .substring(0, 16);
 
-        final String ownerHashValue = (System.currentTimeMillis() / 5_000) + ownerHashKey;
+        final String ownerHashValue = time + ownerHashKey;
         ownerHash = Hashing.sha256()
                 .hashString(ownerHashValue, StandardCharsets.UTF_8)
                 .toString()
