@@ -22,7 +22,7 @@ public class CommandHandlerPlugin {
 
     public final List<Command> commands = new ArrayList<>();
 
-    public boolean disabled = false;
+    public final boolean disabled = false;
 
     public CommandHandlerPlugin (Bot bot) {
         this.bot = bot;
