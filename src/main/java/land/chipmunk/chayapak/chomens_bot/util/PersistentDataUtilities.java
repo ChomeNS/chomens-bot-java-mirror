@@ -39,7 +39,7 @@ public class PersistentDataUtilities {
 
     // ? how do i clear the file contents without making a completely new FileWriter
     //   or is this the only way?
-    public static void write () {
+    public static synchronized void write () {
         try {
             writer.close();
 
