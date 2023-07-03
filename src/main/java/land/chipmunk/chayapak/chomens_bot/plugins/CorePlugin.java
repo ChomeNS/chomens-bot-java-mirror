@@ -56,6 +56,8 @@ public class CorePlugin extends PositionPlugin.Listener {
 
     private int commandsPerSecond = 0;
 
+    private boolean shouldRefill = false;
+
     public CorePlugin (Bot bot) {
         this.bot = bot;
         this.kaboom = bot.options.kaboom;
@@ -81,6 +83,13 @@ public class CorePlugin extends PositionPlugin.Listener {
                     TimeUnit.MILLISECONDS
             );
         }
+
+        bot.executor.scheduleAtFixedRate(() -> {
+            if (!shouldRefill) return;
+
+            refill();
+            shouldRefill = false;
+        }, 0, 1, TimeUnit.SECONDS);
 
         bot.addListener(new Bot.Listener() {
             @Override
@@ -194,7 +203,7 @@ public class CorePlugin extends PositionPlugin.Listener {
 
         final Vector3i position = entry.getPosition();
 
-        if (isCore(position)) refill();
+        if (isCore(position)) shouldRefill = true;
     }
 
     public void packetReceived (ClientboundSectionBlocksUpdatePacket packet) {
@@ -210,7 +219,7 @@ public class CorePlugin extends PositionPlugin.Listener {
             if (isCore(position)) willRefill = true;
         }
 
-        if (willRefill) refill();
+        if (willRefill) shouldRefill = true;
     }
 
     private boolean isCommandBlockUpdate(int blockState) {
@@ -235,7 +244,7 @@ public class CorePlugin extends PositionPlugin.Listener {
     }
 
     public void packetReceived (ClientboundLevelChunkWithLightPacket packet) {
-        refill(); // TODO: improve, this is probably the worst way to check
+        shouldRefill = true; // TODO: improve, this is probably the worst way to check
     }
 
     // ported from chomens bot js
