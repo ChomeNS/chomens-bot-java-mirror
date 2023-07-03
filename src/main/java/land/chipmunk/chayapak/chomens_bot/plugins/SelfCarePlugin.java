@@ -1,7 +1,5 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
-import com.github.steveice10.mc.protocol.MinecraftProtocol;
-import com.github.steveice10.mc.protocol.data.ProtocolState;
 import com.github.steveice10.mc.protocol.data.game.ClientCommand;
 import com.github.steveice10.mc.protocol.data.game.entity.EntityEvent;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
@@ -14,7 +12,6 @@ import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundCl
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.packet.Packet;
-import com.github.steveice10.packetlib.packet.PacketProtocol;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Configuration;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
@@ -138,15 +135,7 @@ public class SelfCarePlugin extends Bot.Listener {
         positionPacketsPerSecond = 0;
 
         final Runnable task = () -> {
-            final Session session = bot.session;
-            final PacketProtocol protocol = session.getPacketProtocol();
-            if (
-                    !session.isConnected() ||
-                            (
-                                    protocol instanceof MinecraftProtocol &&
-                                            ((MinecraftProtocol) protocol).getState() != ProtocolState.GAME
-                            )
-            ) return;
+            if (!bot.loggedIn) return;
 
             check();
         };
