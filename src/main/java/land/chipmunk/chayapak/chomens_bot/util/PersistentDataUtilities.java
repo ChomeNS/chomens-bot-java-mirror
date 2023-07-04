@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.*;
+import java.util.ConcurrentModificationException;
 
 public class PersistentDataUtilities {
     public static final File file = new File("persistent.json");
@@ -37,17 +38,17 @@ public class PersistentDataUtilities {
         }
     }
 
-    // ? how do i clear the file contents without making a completely new FileWriter
-    //   or is this the only way?
     public static synchronized void write () {
         try {
             writer.close();
 
+            // ? how do i clear the file contents without making a completely new FileWriter
+            //   or is this the only way?
             writer = new FileWriter(file, false);
 
             writer.write(jsonObject.toString());
             writer.flush();
-        } catch (IOException e) {
+        } catch (IOException | ConcurrentModificationException e) {
             e.printStackTrace();
         }
     }
