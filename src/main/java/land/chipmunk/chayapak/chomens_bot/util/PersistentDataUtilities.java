@@ -14,6 +14,8 @@ public class PersistentDataUtilities {
 
     public static JsonObject jsonObject = new JsonObject();
 
+    private static boolean isWriting = false;
+
     static {
         init();
     }
@@ -40,6 +42,10 @@ public class PersistentDataUtilities {
 
     public static synchronized void write () {
         try {
+            if (isWriting) return;
+
+            isWriting = true;
+
             writer.close();
 
             // ? how do i clear the file contents without making a completely new FileWriter
@@ -48,6 +54,8 @@ public class PersistentDataUtilities {
 
             writer.write(jsonObject.toString());
             writer.flush();
+
+            isWriting = false;
         } catch (IOException | ConcurrentModificationException e) {
             e.printStackTrace();
         }
