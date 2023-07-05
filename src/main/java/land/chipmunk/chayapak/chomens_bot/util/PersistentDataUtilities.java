@@ -48,7 +48,7 @@ public class PersistentDataUtilities {
                 write(queue.get(0));
 
                 queue.remove(0);
-            }, 0, 50, TimeUnit.MILLISECONDS);
+            }, 0, 1, TimeUnit.SECONDS);
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 while (true) {
@@ -60,7 +60,7 @@ public class PersistentDataUtilities {
         }
     }
 
-    private static void write (String object) {
+    private static synchronized void write (String object) {
         try {
             writer.close();
 
