@@ -3,9 +3,13 @@ package land.chipmunk.chayapak.chomens_bot.util;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import land.chipmunk.chayapak.chomens_bot.Main;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class PersistentDataUtilities {
     public static final File file = new File("persistent.json");
@@ -14,7 +18,7 @@ public class PersistentDataUtilities {
 
     public static JsonObject jsonObject = new JsonObject();
 
-    private static boolean isWriting = false;
+    private static final List<String> queue = new ArrayList<>();
 
     static {
         init();
@@ -35,27 +39,37 @@ public class PersistentDataUtilities {
             }
 
             writer = new FileWriter(file, false);
+
+            Main.executor.scheduleAtFixedRate(() -> {
+                if (queue.isEmpty()) return;
+
+                if (queue.size() > 50) queue.clear();
+
+                write(queue.get(0));
+
+                queue.remove(0);
+            }, 0, 50, TimeUnit.MILLISECONDS);
+
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                while (true) {
+                    if (queue.isEmpty()) break;
+                }
+            }));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static synchronized void write () {
+    private static void write (String object) {
         try {
-            if (isWriting) return;
-
-            isWriting = true;
-
             writer.close();
 
             // ? how do i clear the file contents without making a completely new FileWriter
             //   or is this the only way?
             writer = new FileWriter(file, false);
 
-            writer.write(jsonObject.toString());
+            writer.write(object);
             writer.flush();
-
-            isWriting = false;
         } catch (IOException | ConcurrentModificationException e) {
             e.printStackTrace();
         }
@@ -65,34 +79,34 @@ public class PersistentDataUtilities {
         if (jsonObject.has(property)) jsonObject.remove(property);
         jsonObject.add(property, value);
         
-        write();
+        queue.add(jsonObject.toString());
     }
 
     public static void put (String property, String value) {
         if (jsonObject.has(property)) jsonObject.remove(property);
         jsonObject.addProperty(property, value);
 
-        write();
+        queue.add(jsonObject.toString());
     }
 
     public static void put (String property, boolean value) {
         if (jsonObject.has(property)) jsonObject.remove(property);
         jsonObject.addProperty(property, value);
 
-        write();
+        queue.add(jsonObject.toString());
     }
 
     public static void put (String property, int value) {
         if (jsonObject.has(property)) jsonObject.remove(property);
         jsonObject.addProperty(property, value);
 
-        write();
+        queue.add(jsonObject.toString());
     }
 
     public static void put (String property, char value) {
         if (jsonObject.has(property)) jsonObject.remove(property);
         jsonObject.addProperty(property, value);
 
-        write();
+        queue.add(jsonObject.toString());
     }
 }

@@ -216,7 +216,7 @@ public class ChatPlugin extends Bot.Listener {
     }
 
     private void sendChatTick () {
-        if (queue.size() == 0) return;
+        if (queue.isEmpty()) return;
 
         final String message = queue.get(0);
 

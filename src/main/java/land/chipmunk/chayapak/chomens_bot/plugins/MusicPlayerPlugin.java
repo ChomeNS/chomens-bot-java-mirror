@@ -85,7 +85,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
             public void onTick() {
                 try {
                     if (currentSong == null) {
-                        if (songQueue.size() == 0) return; // this line
+                        if (songQueue.isEmpty()) return; // this line
 
                         addBossBar();
 
@@ -136,7 +136,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                         songQueue.remove(0);
 
-                        if (songQueue.size() == 0) {
+                        if (songQueue.isEmpty()) {
                             stopPlaying();
                             removeBossBar();
                             bot.chat.tellraw(
@@ -168,7 +168,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
             songQueue.remove(0);
             stopPlaying();
         }
-        if (songQueue.size() == 0) return;
+        if (songQueue.isEmpty()) return;
         currentSong = songQueue.get(0);
         currentSong.setTime(0);
         currentSong.play();

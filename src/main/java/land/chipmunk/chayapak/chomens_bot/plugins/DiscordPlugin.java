@@ -146,7 +146,7 @@ public class DiscordPlugin {
 
                     Component embedsComponent = Component.empty();
                     if (messageEvent.getEmbeds().size() > 0) {
-                        if (messageEvent.getAttachments().size() == 0) embedsComponent = embedsComponent.append(Component.space());
+                        if (messageEvent.getAttachments().isEmpty()) embedsComponent = embedsComponent.append(Component.space());
                         for (MessageEmbed embed : messageEvent.getEmbeds()) {
                             final Component hoverEvent = Component.translatable(
                                     """

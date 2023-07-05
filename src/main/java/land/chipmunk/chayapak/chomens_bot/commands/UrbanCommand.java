@@ -50,7 +50,7 @@ public class UrbanCommand extends Command {
 
                 final JsonArray list = jsonObject.getAsJsonArray("list");
 
-                if (list.size() == 0) context.sendOutput(Component.text("No results found").color(NamedTextColor.RED));
+                if (list.isEmpty()) context.sendOutput(Component.text("No results found").color(NamedTextColor.RED));
 
                 for (JsonElement element : list) {
                     final JsonObject definitionObject = element.getAsJsonObject();
