@@ -26,7 +26,7 @@ public class WeatherCommand extends Command {
                 "Shows the weather in a place",
                 new String[] { "<{location}>" },
                 new String[] {},
-                TrustLevel.TRUSTED
+                TrustLevel.PUBLIC
         );
     }
 
@@ -60,11 +60,49 @@ public class WeatherCommand extends Command {
             final String time = formatter.print(dateTime);
 
             return Component.translatable(
-                    "Weather forecast for %s, %s:\n%s, feels like %s\nTime: %s",
+                    "Weather forecast for %s, %s:\n%s (%s), feels like %s (%s)\nTime: %s",
                     Component.text(jsonObject.get("location").getAsJsonObject().get("name").getAsString()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
                     Component.text(jsonObject.get("location").getAsJsonObject().get("country").getAsString()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
-                    Component.text(jsonObject.get("current").getAsJsonObject().get("temp_c").getAsString() + "°C").color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)),
-                    Component.text(jsonObject.get("current").getAsJsonObject().get("feelslike_c").getAsString() + "°C").color(NamedTextColor.GREEN),
+                    Component
+                            .empty()
+                            .append(
+                                    Component
+                                            .text(
+                                                    jsonObject
+                                                            .get("current")
+                                                            .getAsJsonObject()
+                                                            .get("temp_c")
+                                                            .getAsString() + "°C"
+                                            )
+                                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                            ),
+                    Component
+                            .text(
+                                    jsonObject
+                                            .get("current")
+                                            .getAsJsonObject()
+                                            .get("temp_f")
+                                            .getAsString() + "°F"
+                            )
+                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)),
+                    Component
+                            .text(
+                                    jsonObject
+                                            .get("current")
+                                            .getAsJsonObject()
+                                            .get("feelslike_c")
+                                            .getAsString() + "°C"
+                            )
+                            .color(NamedTextColor.GREEN),
+                    Component
+                            .text(
+                                    jsonObject
+                                            .get("current")
+                                            .getAsJsonObject()
+                                            .get("feelslike_f")
+                                            .getAsString() + "°F"
+                            )
+                            .color(NamedTextColor.GREEN),
                     Component.text(time).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
             ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
         } catch (Exception e) {
