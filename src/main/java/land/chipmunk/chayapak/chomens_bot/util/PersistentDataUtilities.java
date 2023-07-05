@@ -40,6 +40,7 @@ public class PersistentDataUtilities {
 
             writer = new FileWriter(file, false);
 
+            // i already use ExecutorService so is a queue optional?
             Main.executor.scheduleAtFixedRate(() -> {
                 if (queue.isEmpty()) return;
 
@@ -75,38 +76,48 @@ public class PersistentDataUtilities {
         }
     }
 
-    public static void put (String property, JsonElement value) {
-        if (jsonObject.has(property)) jsonObject.remove(property);
-        jsonObject.add(property, value);
-        
-        queue.add(jsonObject.toString());
+    public static synchronized void put (String property, JsonElement value) {
+        Main.executorService.submit(() -> {
+            if (jsonObject.has(property)) jsonObject.remove(property);
+            jsonObject.add(property, value);
+
+            queue.add(jsonObject.toString());
+        });
     }
 
-    public static void put (String property, String value) {
-        if (jsonObject.has(property)) jsonObject.remove(property);
-        jsonObject.addProperty(property, value);
+    public static synchronized void put (String property, String value) {
+        Main.executorService.submit(() -> {
+            if (jsonObject.has(property)) jsonObject.remove(property);
+            jsonObject.addProperty(property, value);
 
-        queue.add(jsonObject.toString());
+            queue.add(jsonObject.toString());
+        });
     }
 
-    public static void put (String property, boolean value) {
-        if (jsonObject.has(property)) jsonObject.remove(property);
-        jsonObject.addProperty(property, value);
+    public static synchronized void put (String property, boolean value) {
+        Main.executorService.submit(() -> {
+            if (jsonObject.has(property)) jsonObject.remove(property);
+            jsonObject.addProperty(property, value);
 
-        queue.add(jsonObject.toString());
+            queue.add(jsonObject.toString());
+        });
     }
 
-    public static void put (String property, int value) {
-        if (jsonObject.has(property)) jsonObject.remove(property);
-        jsonObject.addProperty(property, value);
+    public static synchronized void put (String property, int value) {
+        Main.executorService.submit(() -> {
+            if (jsonObject.has(property)) jsonObject.remove(property);
+            jsonObject.addProperty(property, value);
 
-        queue.add(jsonObject.toString());
+            queue.add(jsonObject.toString());
+        });
     }
 
-    public static void put (String property, char value) {
-        if (jsonObject.has(property)) jsonObject.remove(property);
-        jsonObject.addProperty(property, value);
+    public static synchronized void put (String property, char value) {
+        Main.executorService.submit(() -> {
+            if (jsonObject.has(property)) jsonObject.remove(property);
+            jsonObject.addProperty(property, value);
 
-        queue.add(jsonObject.toString());
+            queue.add(jsonObject.toString());
+        });
     }
 }
