@@ -50,7 +50,6 @@ public class CommandHandlerPlugin {
         registerCommand(new UUIDCommand());
         registerCommand(new TimeCommand());
         registerCommand(new BruhifyCommand());
-        registerCommand(new GrepLogCommand());
         registerCommand(new SudoAllCommand());
         registerCommand(new EndCommand());
         registerCommand(new CloopCommand());
