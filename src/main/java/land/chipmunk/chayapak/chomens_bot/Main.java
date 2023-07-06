@@ -10,11 +10,15 @@ import org.yaml.snakeyaml.constructor.Constructor;
 
 import javax.security.auth.login.LoginException;
 import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static final List<Bot> bots = new ArrayList<>();
@@ -22,11 +26,12 @@ public class Main {
     public static final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     public static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
 
+    private static Configuration config;
+
     public static void main(String[] args) throws IOException {
         final File file = new File("config.yml");
         final Constructor constructor = new Constructor(Configuration.class, new LoaderOptions());
         final Yaml yaml = new Yaml(constructor);
-        Configuration _config;
 
         if (!file.exists()) {
             // creates config file from default-config.yml
@@ -53,9 +58,15 @@ public class Main {
         InputStream opt = new FileInputStream(file);
         BufferedReader reader = new BufferedReader(new InputStreamReader(opt));
 
-        _config = yaml.load(reader);
+        config = yaml.load(reader);
 
-        final Configuration config = _config;
+        executor.scheduleAtFixedRate(() -> {
+            try {
+                checkInternet();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }, 0, 1, TimeUnit.MINUTES);
 
         Configuration.BotOption[] botsOptions = config.bots;
 
@@ -83,5 +94,27 @@ public class Main {
 
         // fard
         new ConsolePlugin(bots, config, jda);
+    }
+
+    private static void checkInternet () throws IOException {
+        if (!config.internetCheck.enabled) return;
+
+        boolean reachable = false;
+
+        try {
+            final URL url = new URL(config.internetCheck.address);
+
+            final URLConnection connection = url.openConnection();
+
+            connection.connect();
+
+            reachable = true;
+        } catch (UnknownHostException ignored) {}
+
+        if (!reachable) {
+            System.err.println("No internet, exiting");
+
+            System.exit(1);
+        }
     }
 }

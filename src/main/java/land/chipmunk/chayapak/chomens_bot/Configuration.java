@@ -13,6 +13,8 @@ public class Configuration {
 
     public Keys keys = new Keys();
 
+    public InternetCheck internetCheck = new InternetCheck();
+
     public String weatherApiKey;
 
     public Core core = new Core();
@@ -27,6 +29,11 @@ public class Configuration {
     public Eval eval = new Eval();
 
     public BotOption[] bots = new BotOption[]{};
+
+    public static class InternetCheck {
+        public boolean enabled = true;
+        public String address = "https://sus.red";
+    }
 
     public static class ConsolePrefixes {
         public String normalCommandsPrefix;

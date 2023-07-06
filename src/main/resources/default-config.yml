@@ -11,6 +11,10 @@ consolePrefixes:
   normalCommandsPrefix: '.'
   consoleServerPrefix: '/'
 
+internetCheck:
+  enabled: true
+  url: 'https://sus.red'
+
 discord:
   enabled: false
   prefix: 'default!'
