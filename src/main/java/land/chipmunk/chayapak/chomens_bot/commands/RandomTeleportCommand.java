@@ -27,9 +27,9 @@ public class RandomTeleportCommand extends Command {
 
         final MutablePlayerListEntry sender = context.sender;
 
-        final int positionX = MathUtilities.between(1_000, 1_000_000);
-        final int positionZ = MathUtilities.between(1_000, 1_000_000);
-        final String stringPosition = positionX + " 100 " + positionZ; // very 100 y
+        final int positionX = MathUtilities.between(-1_000_000, 1_000_000);
+        final int positionZ = MathUtilities.between(-1_000_000, 1_000_000);
+        final String stringPosition = positionX + " 100 " + positionZ; // is harding the y to 100 a great idea?
 
         bot.core.run("essentials:teleport " + sender.profile.getIdAsString() + " " + stringPosition);
 

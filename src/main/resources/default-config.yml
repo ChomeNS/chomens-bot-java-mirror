@@ -13,7 +13,7 @@ consolePrefixes:
 
 internetCheck:
   enabled: true
-  url: 'https://sus.red'
+  address: 'https://sus.red'
 
 discord:
   enabled: false
