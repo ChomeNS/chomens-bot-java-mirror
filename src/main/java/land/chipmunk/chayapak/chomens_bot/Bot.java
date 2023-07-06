@@ -47,6 +47,7 @@ public class Bot {
 
     public TickPlugin tick;
     public ChatPlugin chat;
+    public CommandSpyPlugin commandSpy;
     public PositionPlugin position;
     public SelfCarePlugin selfCare;
     public CorePlugin core;
@@ -92,6 +93,7 @@ public class Bot {
     public void ready () {
         this.tick = new TickPlugin(this);
         this.chat = new ChatPlugin(this);
+        this.commandSpy = new CommandSpyPlugin(this);
         this.position = new PositionPlugin(this);
         this.selfCare = new SelfCarePlugin(this);
         this.core = new CorePlugin(this);

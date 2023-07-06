@@ -12,7 +12,6 @@ import land.chipmunk.chayapak.chomens_bot.chatParsers.CreayunChatParser;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.KaboomChatParser;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.MinecraftChatParser;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.U203aChatParser;
-import land.chipmunk.chayapak.chomens_bot.chatParsers.commandSpy.CommandSpyParser;
 import land.chipmunk.chayapak.chomens_bot.data.chat.ChatParser;
 import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerMessage;
@@ -37,8 +36,6 @@ public class ChatPlugin extends Bot.Listener {
 
     private final List<ChatParser> chatParsers;
 
-    private final CommandSpyParser commandSpyParser;
-
     private final List<String> queue = new ArrayList<>();
 
     public final int queueDelay;
@@ -49,8 +46,6 @@ public class ChatPlugin extends Bot.Listener {
         this.bot = bot;
 
         queueDelay = bot.options.chatQueueDelay;
-
-        this.commandSpyParser = new CommandSpyParser(bot);
 
         bot.addListener(this);
 
@@ -89,12 +84,9 @@ public class ChatPlugin extends Bot.Listener {
             if (playerMessage != null) break;
         }
 
-        final PlayerMessage commandSpyMessage = commandSpyParser.parse(component);
-
         for (Listener listener : listeners) {
             listener.systemMessageReceived(component);
             if (playerMessage != null) listener.playerMessageReceived(playerMessage);
-            if (commandSpyMessage != null) listener.commandSpyMessageReceived(commandSpyMessage);
         }
     }
 
@@ -315,7 +307,6 @@ public class ChatPlugin extends Bot.Listener {
 
     public static class Listener {
         public void playerMessageReceived (PlayerMessage message) {}
-        public void commandSpyMessageReceived (PlayerMessage message) {}
         public void systemMessageReceived (Component component) {}
     }
 }

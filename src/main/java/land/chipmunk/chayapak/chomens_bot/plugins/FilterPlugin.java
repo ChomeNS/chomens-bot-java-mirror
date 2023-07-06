@@ -35,13 +35,15 @@ public class FilterPlugin extends PlayersPlugin.Listener {
 
         bot.chat.addListener(new ChatPlugin.Listener() {
             @Override
-            public void commandSpyMessageReceived(PlayerMessage message) {
-                FilterPlugin.this.commandSpyMessageReceived(message);
-            }
-
-            @Override
             public void playerMessageReceived(PlayerMessage message) {
                 FilterPlugin.this.playerMessageReceived(message);
+            }
+        });
+
+        bot.commandSpy.addListener(new CommandSpyPlugin.Listener() {
+            @Override
+            public void commandReceived(MutablePlayerListEntry sender, String command) {
+                FilterPlugin.this.commandSpyMessageReceived(sender);
             }
         });
 
@@ -103,12 +105,12 @@ public class FilterPlugin extends PlayersPlugin.Listener {
         bot.exploits.kick(target.profile.getId());
     }
 
-    public void commandSpyMessageReceived (PlayerMessage message) {
-        final FilteredPlayer player = getPlayer(message.sender.profile.getName());
+    public void commandSpyMessageReceived (MutablePlayerListEntry sender) {
+        final FilteredPlayer player = getPlayer(sender.profile.getName());
 
         if (player == null) return;
 
-        deOp(message.sender);
+        deOp(sender);
     }
 
     public void playerMessageReceived (PlayerMessage message) {

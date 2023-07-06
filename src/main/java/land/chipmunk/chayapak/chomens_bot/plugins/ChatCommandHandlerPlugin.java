@@ -1,6 +1,7 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
+import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
 import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerMessage;
 import land.chipmunk.chayapak.chomens_bot.command.PlayerCommandContext;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
@@ -22,15 +23,17 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.Listener {
         this.commandSpyPrefixes = bot.config.commandSpyPrefixes;
 
         bot.chat.addListener(this);
+
+        bot.commandSpy.addListener(new CommandSpyPlugin.Listener() {
+            @Override
+            public void commandReceived(MutablePlayerListEntry sender, String command) {
+                ChatCommandHandlerPlugin.this.commandSpyMessageReceived(sender, command);
+            }
+        });
     }
 
     @Override
-    public void playerMessageReceived (PlayerMessage message) { listener(message, false); }
-
-    @Override
-    public void commandSpyMessageReceived (PlayerMessage message) { listener(message, true); }
-
-    private void listener (PlayerMessage message, boolean cspy) {
+    public void playerMessageReceived (PlayerMessage message) {
         try {
             if (message.sender.profile.getId().equals(bot.profile.getId())) return;
         } catch (Exception ignored) {} // kinda sus ngl
@@ -44,7 +47,7 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.Listener {
 
         String prefix = null;
 
-        for (String eachPrefix : (cspy ? commandSpyPrefixes : prefixes)) {
+        for (String eachPrefix : prefixes) {
             if (!contents.startsWith(eachPrefix)) continue;
             prefix = eachPrefix;
         }
@@ -53,14 +56,42 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.Listener {
 
         final String commandString = contents.substring(prefix.length());
 
-        final String selector = cspy ? UUIDUtilities.selector(message.sender.profile.getId()) : "@a";
-
-        final PlayerCommandContext context = new PlayerCommandContext(bot, displayName, prefix, selector, message.sender, bot.hashing.hash, bot.hashing.ownerHash);
+        final PlayerCommandContext context = new PlayerCommandContext(bot, displayName, prefix, "@a", message.sender, bot.hashing.hash, bot.hashing.ownerHash);
 
         final Component output = bot.commandHandler.executeCommand(commandString, context, true, false, false, null);
 
-        if (output != null) {
-            context.sendOutput(output);
+        if (output != null) context.sendOutput(output);
+    }
+
+    public void commandSpyMessageReceived (MutablePlayerListEntry sender, String command) {
+        try {
+            if (sender.profile.getId().equals(bot.profile.getId())) return;
+        } catch (Exception ignored) {
+        } // kinda sus ngl
+
+        final Component displayNameComponent = Component.text(sender.profile.getName());
+        final Component messageComponent = Component.text(command);
+
+        final String displayName = ComponentUtilities.stringify(displayNameComponent);
+        final String contents = ComponentUtilities.stringify(messageComponent);
+
+        String prefix = null;
+
+        for (String eachPrefix : commandSpyPrefixes) {
+            if (!contents.startsWith(eachPrefix)) continue;
+            prefix = eachPrefix;
         }
+
+        if (prefix == null) return;
+
+        final String commandString = contents.substring(prefix.length());
+
+        final String selector = UUIDUtilities.selector(sender.profile.getId());
+
+        final PlayerCommandContext context = new PlayerCommandContext(bot, displayName, prefix, selector, sender, bot.hashing.hash, bot.hashing.ownerHash);
+
+        final Component output = bot.commandHandler.executeCommand(commandString, context, true, false, false, null);
+
+        if (output != null) context.sendOutput(output);
     }
 }
