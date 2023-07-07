@@ -61,6 +61,8 @@ core:
   customName: '[{"text":"ChomeNS ","color":"yellow"},{"text":"Core","color":"green"},{"text":"™","color":"gold"}]'
 
 selfCare:
+  delay: 225 # NOTE: self care does NOT use chat queue
+
   # vanilla
   op: true
   gamemode: true

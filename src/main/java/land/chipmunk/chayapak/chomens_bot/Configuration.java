@@ -87,6 +87,8 @@ public class Configuration {
     }
 
     public static class SelfCare {
+        public int delay = 225;
+
         public boolean op = true;
         public boolean gamemode = true;
         public boolean endCredits = true;

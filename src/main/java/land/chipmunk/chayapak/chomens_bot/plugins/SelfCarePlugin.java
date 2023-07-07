@@ -94,21 +94,22 @@ public class SelfCarePlugin extends Bot.Listener {
         else if (selfCares.username && !username && bot.options.kaboom) bot.chat.send("/extras:username " + bot.username);
 
         // core
+        // TODO: improve lol
         else if (selfCares.icu.enabled && positionPacketsPerSecond > selfCares.icu.positionPacketsPerSecond) bot.core.run("essentials:sudo * icu stop");
         else if (selfCares.vanish && !vanish && !visibility && bot.options.hasEssentials) {
-            if (bot.options.useChat) bot.chat.send("/essentials:vanish enable");
+            if (bot.options.useChat) bot.chat.sendCommandInstantly("essentials:vanish enable");
             else bot.core.run("essentials:vanish " + bot.username + " enable");
         }
         else if (selfCares.nickname && !nickname && bot.options.hasEssentials) {
-            if (bot.options.useChat) bot.chat.send("/essentials:nick off");
+            if (bot.options.useChat) bot.chat.sendCommandInstantly("essentials:nick off");
             else bot.core.run("essentials:nickname " + bot.username + " off");
         }
         else if (selfCares.socialspy && !socialspy && bot.options.hasEssentials) {
-            if (bot.options.useChat) bot.chat.send("/essentials:socialspy enable");
+            if (bot.options.useChat) bot.chat.sendCommandInstantly("essentials:socialspy enable");
             else bot.core.run("essentials:socialspy " + bot.username + " enable");
         }
         else if (selfCares.mute && muted && bot.options.hasEssentials) {
-            if (bot.options.useChat) bot.chat.send("/essentials:mute " + bot.profile.getIdAsString());
+            if (bot.options.useChat) bot.chat.sendCommandInstantly("essentials:mute " + bot.profile.getIdAsString());
             else bot.core.run("essentials:mute " + bot.profile.getIdAsString());
 
             muted = false; // too lazy fix and probably the worst fix?
@@ -140,7 +141,7 @@ public class SelfCarePlugin extends Bot.Listener {
             check();
         };
 
-        checkTask = bot.executor.scheduleAtFixedRate(task, 0, bot.options.chatQueueDelay + 75, TimeUnit.MILLISECONDS);
+        checkTask = bot.executor.scheduleAtFixedRate(task, 0, bot.config.selfCare.delay, TimeUnit.MILLISECONDS);
     }
 
     public void packetReceived (ClientboundGameEventPacket packet) {

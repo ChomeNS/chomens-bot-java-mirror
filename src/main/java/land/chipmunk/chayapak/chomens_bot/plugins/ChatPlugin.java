@@ -226,26 +226,34 @@ public class ChatPlugin extends Bot.Listener {
                 }
             }
 
-            bot.session.send(new ServerboundChatCommandPacket(
-                    removedMessage,
-                    Instant.now().toEpochMilli(),
-                    0L,
-                    Collections.emptyList(),
-                    0,
-                    new BitSet()
-            ));
+            sendCommandInstantly(removedMessage);
         } else {
-            bot.session.send(new ServerboundChatPacket(
-                    message,
-                    Instant.now().toEpochMilli(),
-                    0L,
-                    null,
-                    0,
-                    new BitSet()
-            ));
+            sendChatInstantly(message);
         }
 
         queue.remove(0);
+    }
+
+    public void sendCommandInstantly (String command) {
+        bot.session.send(new ServerboundChatCommandPacket(
+                command,
+                Instant.now().toEpochMilli(),
+                0L,
+                Collections.emptyList(),
+                0,
+                new BitSet()
+        ));
+    }
+
+    public void sendChatInstantly (String message) {
+        bot.session.send(new ServerboundChatPacket(
+                message,
+                Instant.now().toEpochMilli(),
+                0L,
+                null,
+                0,
+                new BitSet()
+        ));
     }
 
     public void clearQueue () { queue.clear(); }
