@@ -23,33 +23,33 @@ public class CommandSpyPlugin extends ChatPlugin.Listener {
 
     @Override
     public void systemMessageReceived(Component component) {
-        TextComponent textComponent = null;
+        TextComponent textComponent;
 
         try {
             textComponent = (TextComponent) component;
-        } catch (ClassCastException e) {
-            return;
-        }
 
-        final List<Component> children = textComponent.children();
+            final List<Component> children = textComponent.children();
 
-        if (
-                (
-                        textComponent.color() != NamedTextColor.AQUA ||
-                                textComponent.color() != NamedTextColor.YELLOW ||
-                                textComponent.style().isEmpty()
-                ) &&
-                        children.size() < 2
-        ) return;
+            if (
+                    (
+                            textComponent.color() != NamedTextColor.AQUA ||
+                                    textComponent.color() != NamedTextColor.YELLOW ||
+                                    textComponent.style().isEmpty()
+                    ) &&
+                            children.size() < 2
+            ) return;
 
-        final String username = textComponent.content();
-        final String command = ComponentUtilities.stringify(children.get(1));
+            if (!((TextComponent) children.get(0)).content().equals(": ")) return;
 
-        final MutablePlayerListEntry sender = bot.players.getEntry(username);
+            final String username = textComponent.content();
+            final String command = ComponentUtilities.stringify(children.get(1));
 
-        if (sender == null) return;
+            final MutablePlayerListEntry sender = bot.players.getEntry(username);
 
-        for (Listener listener : listeners) listener.commandReceived(sender, command);
+            if (sender == null) return;
+
+            for (Listener listener : listeners) listener.commandReceived(sender, command);
+        } catch (ClassCastException ignored) {}
     }
 
     public void addListener (Listener listener) { listeners.add(listener); }
