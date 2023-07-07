@@ -6,10 +6,7 @@ import com.google.gson.JsonObject;
 import land.chipmunk.chayapak.chomens_bot.Main;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class PersistentDataUtilities {
     public static final File file = new File("persistent.json");
@@ -17,8 +14,6 @@ public class PersistentDataUtilities {
     private static FileWriter writer;
 
     public static JsonObject jsonObject = new JsonObject();
-
-    private static final List<String> queue = new ArrayList<>();
 
     static {
         init();
@@ -39,41 +34,24 @@ public class PersistentDataUtilities {
             }
 
             writer = new FileWriter(file, false);
-
-            // i already use ExecutorService so is a queue optional?
-            Main.executor.scheduleAtFixedRate(() -> {
-                if (queue.isEmpty()) return;
-
-                if (queue.size() > 50) queue.clear();
-
-                write(queue.get(0));
-
-                queue.remove(0);
-            }, 0, 1, TimeUnit.SECONDS);
-
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                while (true) {
-                    if (queue.isEmpty()) break;
-                }
-            }));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static synchronized void write (String object) {
+    private static synchronized void write () {
         try {
+            final String stringifiedJsonObject = jsonObject.toString();
+
             writer.close();
 
             // ? how do i clear the file contents without making a completely new FileWriter
             //   or is this the only way?
             writer = new FileWriter(file, false);
 
-            writer.write(object);
+            writer.write(stringifiedJsonObject);
             writer.flush();
-        } catch (IOException | ConcurrentModificationException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException | ConcurrentModificationException ignored) {}
     }
 
     public static synchronized void put (String property, JsonElement value) {
@@ -81,7 +59,7 @@ public class PersistentDataUtilities {
             if (jsonObject.has(property)) jsonObject.remove(property);
             jsonObject.add(property, value);
 
-            queue.add(jsonObject.toString());
+            write();
         });
     }
 
@@ -90,7 +68,7 @@ public class PersistentDataUtilities {
             if (jsonObject.has(property)) jsonObject.remove(property);
             jsonObject.addProperty(property, value);
 
-            queue.add(jsonObject.toString());
+            write();
         });
     }
 
@@ -99,7 +77,7 @@ public class PersistentDataUtilities {
             if (jsonObject.has(property)) jsonObject.remove(property);
             jsonObject.addProperty(property, value);
 
-            queue.add(jsonObject.toString());
+            write();
         });
     }
 
@@ -108,7 +86,7 @@ public class PersistentDataUtilities {
             if (jsonObject.has(property)) jsonObject.remove(property);
             jsonObject.addProperty(property, value);
 
-            queue.add(jsonObject.toString());
+            write();
         });
     }
 
@@ -117,7 +95,7 @@ public class PersistentDataUtilities {
             if (jsonObject.has(property)) jsonObject.remove(property);
             jsonObject.addProperty(property, value);
 
-            queue.add(jsonObject.toString());
+            write();
         });
     }
 }
