@@ -30,7 +30,6 @@ public class CommandHandlerPlugin {
         registerCommand(new CommandBlockCommand());
         registerCommand(new CowsayCommand());
         registerCommand(new EchoCommand());
-        registerCommand(new CreatorCommand());
         registerCommand(new DiscordCommand());
         registerCommand(new HelpCommand());
         registerCommand(new TestCommand());
@@ -54,17 +53,15 @@ public class CommandHandlerPlugin {
         registerCommand(new EndCommand());
         registerCommand(new CloopCommand());
         registerCommand(new WeatherCommand());
-        registerCommand(new ServerInfoCommand());
-        registerCommand(new BotUserCommand());
         registerCommand(new GenerateMazeCommand());
         registerCommand(new TranslateCommand());
         registerCommand(new KickCommand());
         registerCommand(new ClearChatQueueCommand());
         registerCommand(new FilterCommand());
-        registerCommand(new UptimeCommand());
         registerCommand(new MailCommand());
         registerCommand(new SeenCommand());
         registerCommand(new EvalCommand());
+        registerCommand(new InfoCommand());
     }
 
     public void registerCommand (Command command) {
