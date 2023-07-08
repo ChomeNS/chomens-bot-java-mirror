@@ -33,7 +33,6 @@ public class CommandHandlerPlugin {
         registerCommand(new DiscordCommand());
         registerCommand(new HelpCommand());
         registerCommand(new TestCommand());
-        registerCommand(new ThrowCommand());
         registerCommand(new ValidateCommand());
         registerCommand(new MusicCommand());
         registerCommand(new RandomTeleportCommand());
@@ -49,7 +48,6 @@ public class CommandHandlerPlugin {
         registerCommand(new UUIDCommand());
         registerCommand(new TimeCommand());
         registerCommand(new BruhifyCommand());
-        registerCommand(new SudoAllCommand());
         registerCommand(new EndCommand());
         registerCommand(new CloopCommand());
         registerCommand(new WeatherCommand());
