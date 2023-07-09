@@ -52,14 +52,6 @@ jar {
     }
 }
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from(components.java)
-        }
-    }
-}
-
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
