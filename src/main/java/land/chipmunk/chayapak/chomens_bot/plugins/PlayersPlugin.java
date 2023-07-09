@@ -10,7 +10,7 @@ import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.google.gson.JsonObject;
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.util.PersistentDataUtilities;
 import net.kyori.adventure.text.Component;
 
@@ -23,7 +23,7 @@ import java.util.UUID;
 public class PlayersPlugin extends Bot.Listener {
     private final Bot bot;
 
-    public final List<MutablePlayerListEntry> list = new ArrayList<>();
+    public final List<PlayerEntry> list = new ArrayList<>();
 
     private final List<Listener> listeners = new ArrayList<>();
 
@@ -69,8 +69,8 @@ public class PlayersPlugin extends Bot.Listener {
         }
     }
 
-    public final MutablePlayerListEntry getEntry (UUID uuid) {
-        for (MutablePlayerListEntry candidate : list) {
+    public final PlayerEntry getEntry (UUID uuid) {
+        for (PlayerEntry candidate : list) {
             if (candidate.profile.getId().equals(uuid)) {
                 return candidate;
             }
@@ -79,8 +79,8 @@ public class PlayersPlugin extends Bot.Listener {
         return null;
     }
 
-    public final MutablePlayerListEntry getEntry (String username) {
-        for (MutablePlayerListEntry candidate : list) {
+    public final PlayerEntry getEntry (String username) {
+        for (PlayerEntry candidate : list) {
             if (getName(candidate).equals(username)) {
                 return candidate;
             }
@@ -89,8 +89,8 @@ public class PlayersPlugin extends Bot.Listener {
         return null;
     }
 
-    public final MutablePlayerListEntry getEntry (Component displayName) {
-        for (MutablePlayerListEntry candidate : list) {
+    public final PlayerEntry getEntry (Component displayName) {
+        for (PlayerEntry candidate : list) {
             if (candidate.displayName != null && candidate.displayName.equals(displayName)) {
                 return candidate;
             }
@@ -99,35 +99,35 @@ public class PlayersPlugin extends Bot.Listener {
         return null;
     }
 
-    public MutablePlayerListEntry getBotEntry () { return getEntry(bot.username); }
+    public PlayerEntry getBotEntry () { return getEntry(bot.username); }
 
-    private MutablePlayerListEntry getEntry (PlayerListEntry other) {
+    private PlayerEntry getEntry (PlayerListEntry other) {
         return getEntry(other.getProfile().getId());
     }
 
     private void initializeChat (PlayerListEntry newEntry) {
-        final MutablePlayerListEntry target = getEntry(newEntry);
+        final PlayerEntry target = getEntry(newEntry);
         if (target == null) return;
 
         target.publicKey = newEntry.getPublicKey();
     }
 
     private void updateListed (PlayerListEntry newEntry) {
-        final MutablePlayerListEntry target = getEntry(newEntry);
+        final PlayerEntry target = getEntry(newEntry);
         if (target == null) return;
 
         target.listed = newEntry.isListed();
     }
 
-    private String getName(MutablePlayerListEntry target) {
+    private String getName(PlayerEntry target) {
         return bot.options.creayun ? target.profile.getName().replaceAll("§.", "") : target.profile.getName();
     }
 
     private void addPlayer (PlayerListEntry newEntry) {
-        final MutablePlayerListEntry duplicate = getEntry(newEntry);
+        final PlayerEntry duplicate = getEntry(newEntry);
         if (duplicate != null) list.remove(duplicate);
 
-        final MutablePlayerListEntry target = new MutablePlayerListEntry(newEntry);
+        final PlayerEntry target = new PlayerEntry(newEntry);
 
         list.add(target);
 
@@ -148,7 +148,7 @@ public class PlayersPlugin extends Bot.Listener {
     }
 
     private void updateGamemode (PlayerListEntry newEntry) {
-        final MutablePlayerListEntry target = getEntry(newEntry);
+        final PlayerEntry target = getEntry(newEntry);
         if (target == null) return;
 
         final GameMode gameMode = newEntry.getGameMode();
@@ -159,7 +159,7 @@ public class PlayersPlugin extends Bot.Listener {
     }
 
     private void updateLatency (PlayerListEntry newEntry) {
-        final MutablePlayerListEntry target = getEntry(newEntry);
+        final PlayerEntry target = getEntry(newEntry);
         if (target == null) return;
 
         final int ping = newEntry.getLatency();
@@ -170,7 +170,7 @@ public class PlayersPlugin extends Bot.Listener {
     }
 
     private void updateDisplayName (PlayerListEntry newEntry) {
-        final MutablePlayerListEntry target = getEntry(newEntry);
+        final PlayerEntry target = getEntry(newEntry);
         if (target == null) return;
 
         final Component displayName = newEntry.getDisplayName();
@@ -181,7 +181,7 @@ public class PlayersPlugin extends Bot.Listener {
     }
 
     private void removePlayer (UUID uuid) {
-        final MutablePlayerListEntry target = getEntry(uuid);
+        final PlayerEntry target = getEntry(uuid);
         if (target == null) return;
 
         bot.tabComplete.tabComplete("/minecraft:scoreboard players add ").thenApply(packet -> {
@@ -227,12 +227,12 @@ public class PlayersPlugin extends Bot.Listener {
     public void addListener (Listener listener) { listeners.add(listener); }
 
     public static class Listener {
-        public void playerJoined (MutablePlayerListEntry target) {}
-        public void playerUnVanished (MutablePlayerListEntry target) {}
-        public void playerGameModeUpdated (MutablePlayerListEntry target, GameMode gameMode) {}
-        public void playerLatencyUpdated (MutablePlayerListEntry target, int ping) {}
-        public void playerDisplayNameUpdated (MutablePlayerListEntry target, Component displayName) {}
-        public void playerLeft (MutablePlayerListEntry target) {}
-        public void playerVanished (MutablePlayerListEntry target) {}
+        public void playerJoined (PlayerEntry target) {}
+        public void playerUnVanished (PlayerEntry target) {}
+        public void playerGameModeUpdated (PlayerEntry target, GameMode gameMode) {}
+        public void playerLatencyUpdated (PlayerEntry target, int ping) {}
+        public void playerDisplayNameUpdated (PlayerEntry target, Component displayName) {}
+        public void playerLeft (PlayerEntry target) {}
+        public void playerVanished (PlayerEntry target) {}
     }
 }

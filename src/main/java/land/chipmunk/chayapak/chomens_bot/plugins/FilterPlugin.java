@@ -5,7 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.FilteredPlayer;
-import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerMessage;
 import land.chipmunk.chayapak.chomens_bot.util.PersistentDataUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.UUIDUtilities;
@@ -42,7 +42,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
 
         bot.commandSpy.addListener(new CommandSpyPlugin.Listener() {
             @Override
-            public void commandReceived(MutablePlayerListEntry sender, String command) {
+            public void commandReceived(PlayerEntry sender, String command) {
                 FilterPlugin.this.commandSpyMessageReceived(sender);
             }
         });
@@ -94,7 +94,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
     }
 
     @Override
-    public void playerJoined (MutablePlayerListEntry target) {
+    public void playerJoined (PlayerEntry target) {
         final FilteredPlayer player = getPlayer(target.profile.getName());
 
         if (player == null) return;
@@ -105,7 +105,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
         bot.exploits.kick(target.profile.getId());
     }
 
-    public void commandSpyMessageReceived (MutablePlayerListEntry sender) {
+    public void commandSpyMessageReceived (PlayerEntry sender) {
         final FilteredPlayer player = getPlayer(sender.profile.getName());
 
         if (player == null) return;
@@ -124,16 +124,16 @@ public class FilterPlugin extends PlayersPlugin.Listener {
         mute(message.sender);
     }
 
-    private void mute (MutablePlayerListEntry target) {
+    private void mute (PlayerEntry target) {
         bot.core.run("essentials:mute " + target.profile.getIdAsString() + " 10y");
     }
 
-    private void deOp (MutablePlayerListEntry target) {
+    private void deOp (PlayerEntry target) {
         bot.core.run("minecraft:execute run deop " + UUIDUtilities.selector(target.profile.getId()));
     }
 
     public void kick () {
-        for (MutablePlayerListEntry target : bot.players.list) {
+        for (PlayerEntry target : bot.players.list) {
             final FilteredPlayer player = getPlayer(target.profile.getName());
 
             if (player == null) continue;
@@ -147,7 +147,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
 
         PersistentDataUtilities.put("filters", filteredPlayers);
 
-        final MutablePlayerListEntry target = bot.players.getEntry(playerName); // fix not working for regex and ignorecase
+        final PlayerEntry target = bot.players.getEntry(playerName); // fix not working for regex and ignorecase
 
         if (target == null) return;
 

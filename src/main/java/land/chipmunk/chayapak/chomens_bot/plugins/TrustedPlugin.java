@@ -1,7 +1,7 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -39,7 +39,7 @@ public class TrustedPlugin extends PlayersPlugin.Listener {
             bot.logger.custom(Component.text("Trusted Broadcast").color(NamedTextColor.AQUA), component);
 
             for (String player : list) {
-                final MutablePlayerListEntry entry = bot.players.getEntry(player);
+                final PlayerEntry entry = bot.players.getEntry(player);
 
                 if (entry == null) continue;
 
@@ -53,7 +53,7 @@ public class TrustedPlugin extends PlayersPlugin.Listener {
     public void broadcast (Component message) { broadcast(message, null); }
 
     @Override
-    public void playerJoined (MutablePlayerListEntry target) {
+    public void playerJoined (PlayerEntry target) {
         if (!list.contains(target.profile.getName())) return;
 
         // based (VERY)
@@ -95,7 +95,7 @@ public class TrustedPlugin extends PlayersPlugin.Listener {
     }
 
     @Override
-    public void playerLeft (MutablePlayerListEntry target) {
+    public void playerLeft (PlayerEntry target) {
         if (!list.contains(target.profile.getName())) return;
 
         broadcast(

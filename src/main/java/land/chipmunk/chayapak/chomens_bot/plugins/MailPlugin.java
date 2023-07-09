@@ -5,7 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.Mail;
-import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.PersistentDataUtilities;
 import net.kyori.adventure.text.Component;
@@ -34,7 +34,7 @@ public class MailPlugin extends PlayersPlugin.Listener {
     }
 
     @Override
-    public void playerJoined(MutablePlayerListEntry target) {
+    public void playerJoined(PlayerEntry target) {
         final String name = target.profile.getName();
 
         final List<String> sendTos = new ArrayList<>(); // confusing name,.,.

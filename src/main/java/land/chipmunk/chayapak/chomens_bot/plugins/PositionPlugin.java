@@ -11,7 +11,7 @@ import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.Rotation;
-import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import org.cloudburstmc.math.vector.Vector3f;
 import org.cloudburstmc.math.vector.Vector3i;
 
@@ -28,7 +28,7 @@ public class PositionPlugin extends Bot.Listener {
 
     public Vector3i position = Vector3i.from(0, 0, 0);
 
-    private final Map<Integer, MutablePlayerListEntry> entityIdMap = new HashMap<>();
+    private final Map<Integer, PlayerEntry> entityIdMap = new HashMap<>();
     private final Map<Integer, Vector3f> positionMap = new HashMap<>();
     private final Map<Integer, Rotation> rotationMap = new HashMap<>();
 
@@ -55,7 +55,7 @@ public class PositionPlugin extends Bot.Listener {
     }
 
     public void packetReceived (ClientboundAddPlayerPacket packet) {
-        final MutablePlayerListEntry entry = bot.players.getEntry(packet.getUuid());
+        final PlayerEntry entry = bot.players.getEntry(packet.getUuid());
 
         if (entry == null) return;
 
@@ -79,7 +79,7 @@ public class PositionPlugin extends Bot.Listener {
     }
 
     public void packetReceived (ClientboundMoveEntityRotPacket packet) {
-        final MutablePlayerListEntry player = entityIdMap.get(packet.getEntityId());
+        final PlayerEntry player = entityIdMap.get(packet.getEntityId());
 
         if (player == null) return;
 
@@ -91,7 +91,7 @@ public class PositionPlugin extends Bot.Listener {
     }
 
     public void packetReceived (ClientboundMoveEntityPosPacket packet) {
-        final MutablePlayerListEntry player = entityIdMap.get(packet.getEntityId());
+        final PlayerEntry player = entityIdMap.get(packet.getEntityId());
 
         if (player == null) return;
 
@@ -111,7 +111,7 @@ public class PositionPlugin extends Bot.Listener {
     }
 
     public void packetReceived (ClientboundMoveEntityPosRotPacket packet) {
-        final MutablePlayerListEntry player = entityIdMap.get(packet.getEntityId());
+        final PlayerEntry player = entityIdMap.get(packet.getEntityId());
 
         if (player == null) return;
 
@@ -136,7 +136,7 @@ public class PositionPlugin extends Bot.Listener {
 
     public Vector3f getPlayerPosition (String playerName) {
         int entityId = -1;
-        for (Map.Entry<Integer, MutablePlayerListEntry> entry : entityIdMap.entrySet()) {
+        for (Map.Entry<Integer, PlayerEntry> entry : entityIdMap.entrySet()) {
             if (entry.getValue().profile.getName().equals(playerName)) entityId = entry.getKey();
         }
 
@@ -151,7 +151,7 @@ public class PositionPlugin extends Bot.Listener {
 
     public Rotation getPlayerRotation (String playerName) {
         int entityId = -1;
-        for (Map.Entry<Integer, MutablePlayerListEntry> entry : entityIdMap.entrySet()) {
+        for (Map.Entry<Integer, PlayerEntry> entry : entityIdMap.entrySet()) {
             if (entry.getValue().profile.getName().equals(playerName)) entityId = entry.getKey();
         }
 
@@ -168,6 +168,6 @@ public class PositionPlugin extends Bot.Listener {
 
     public static class Listener {
         public void positionChange (Vector3i position) {}
-        public void playerMoved (MutablePlayerListEntry player, Vector3f position, Rotation rotation) {}
+        public void playerMoved (PlayerEntry player, Vector3f position, Rotation rotation) {}
     }
 }

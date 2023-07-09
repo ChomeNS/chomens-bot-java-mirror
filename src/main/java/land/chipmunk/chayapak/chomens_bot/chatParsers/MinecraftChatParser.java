@@ -2,7 +2,7 @@ package land.chipmunk.chayapak.chomens_bot.chatParsers;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.chat.ChatParser;
-import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerMessage;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import net.kyori.adventure.text.Component;
@@ -41,7 +41,7 @@ public class MinecraftChatParser implements ChatParser {
         final Component senderComponent = args.get(0);
         final Component contents = args.get(1);
 
-        MutablePlayerListEntry sender;
+        PlayerEntry sender;
 
         final HoverEvent<?> hoverEvent = senderComponent.hoverEvent();
         if (hoverEvent != null && hoverEvent.action().equals(HoverEvent.Action.SHOW_ENTITY)) {

@@ -7,7 +7,7 @@ import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.BossBar;
 import land.chipmunk.chayapak.chomens_bot.data.BotBossBar;
-import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
@@ -33,7 +33,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
 
         bot.players.addListener(new PlayersPlugin.Listener() {
             @Override
-            public void playerJoined(MutablePlayerListEntry target) {
+            public void playerJoined(PlayerEntry target) {
                 BossbarManagerPlugin.this.playerJoined();
             }
         });

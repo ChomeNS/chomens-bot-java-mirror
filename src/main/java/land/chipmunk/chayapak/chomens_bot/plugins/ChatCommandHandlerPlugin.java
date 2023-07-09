@@ -1,7 +1,7 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerMessage;
 import land.chipmunk.chayapak.chomens_bot.command.PlayerCommandContext;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
@@ -26,7 +26,7 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.Listener {
 
         bot.commandSpy.addListener(new CommandSpyPlugin.Listener() {
             @Override
-            public void commandReceived(MutablePlayerListEntry sender, String command) {
+            public void commandReceived(PlayerEntry sender, String command) {
                 ChatCommandHandlerPlugin.this.commandSpyMessageReceived(sender, command);
             }
         });
@@ -63,7 +63,7 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.Listener {
         if (output != null) context.sendOutput(output);
     }
 
-    public void commandSpyMessageReceived (MutablePlayerListEntry sender, String command) {
+    public void commandSpyMessageReceived (PlayerEntry sender, String command) {
         try {
             if (sender.profile.getId().equals(bot.profile.getId())) return;
         } catch (Exception ignored) {

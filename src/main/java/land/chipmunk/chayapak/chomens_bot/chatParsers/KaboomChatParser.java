@@ -4,7 +4,7 @@ import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.chat.ChatParser;
-import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerMessage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -43,9 +43,9 @@ public class KaboomChatParser implements ChatParser {
             return null;
         }
 
-        MutablePlayerListEntry sender = bot.players.getEntry(Component.empty().append(prefix).append(displayName));
+        PlayerEntry sender = bot.players.getEntry(Component.empty().append(prefix).append(displayName));
         if (sender == null) sender = bot.players.getEntry(prefix.append(displayName)); // old
-        if (sender == null) sender = new MutablePlayerListEntry(new GameProfile(new UUID(0L, 0L), null), GameMode.SURVIVAL, 0, displayName, 0L, null, new byte[0], true); // new and currently using
+        if (sender == null) sender = new PlayerEntry(new GameProfile(new UUID(0L, 0L), null), GameMode.SURVIVAL, 0, displayName, 0L, null, new byte[0], true); // new and currently using
 
         return new PlayerMessage(sender, displayName, contents);
     }

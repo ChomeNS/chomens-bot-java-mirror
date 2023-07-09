@@ -2,7 +2,7 @@ package land.chipmunk.chayapak.chomens_bot.command;
 
 import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
-import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.util.CodeBlockUtilities;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
@@ -23,7 +23,7 @@ public class DiscordCommandContext extends CommandContext {
         super(
                 bot,
                 prefix,
-                new MutablePlayerListEntry(
+                new PlayerEntry(
                         new GameProfile(
                                 UUID.nameUUIDFromBytes(("OfflinePlayer:" + event.getAuthor().getName()).getBytes()),
                                 event.getAuthor().getName()

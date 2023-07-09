@@ -7,7 +7,7 @@ import net.kyori.adventure.text.Component;
 
 import java.security.PublicKey;
 
-public class MutablePlayerListEntry {
+public class PlayerEntry {
     public final GameProfile profile;
     public GameMode gamemode;
     public int latency;
@@ -17,7 +17,7 @@ public class MutablePlayerListEntry {
     public final byte[] keySignature;
     public boolean listed;
 
-    public MutablePlayerListEntry (
+    public PlayerEntry(
             GameProfile profile,
             GameMode gamemode,
             int latency,
@@ -37,7 +37,7 @@ public class MutablePlayerListEntry {
         this.listed = listed;
     }
 
-    public MutablePlayerListEntry (PlayerListEntry entry) {
+    public PlayerEntry(PlayerListEntry entry) {
         this(entry.getProfile(), entry.getGameMode(), entry.getLatency(), entry.getDisplayName(), entry.getExpiresAt(), entry.getPublicKey(), entry.getKeySignature(), entry.isListed());
     }
 }

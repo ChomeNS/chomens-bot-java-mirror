@@ -9,7 +9,7 @@ import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.data.Mail;
-import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.plugins.MailPlugin;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
@@ -47,7 +47,7 @@ public class MailCommand extends Command {
 
         final Bot bot = context.bot;
 
-        final MutablePlayerListEntry sender = context.sender;
+        final PlayerEntry sender = context.sender;
 
         final Gson gson = new Gson();
 

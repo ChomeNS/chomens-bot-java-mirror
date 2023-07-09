@@ -2,7 +2,7 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
-import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
@@ -30,11 +30,11 @@ public class ListCommand extends Command {
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot;
 
-        final List<MutablePlayerListEntry> list = bot.players.list;
+        final List<PlayerEntry> list = bot.players.list;
 
         final List<Component> playersComponent = new ArrayList<>();
 
-        for (MutablePlayerListEntry entry : list) {
+        for (PlayerEntry entry : list) {
             playersComponent.add(
                     Component.translatable(
                             "%s › %s",

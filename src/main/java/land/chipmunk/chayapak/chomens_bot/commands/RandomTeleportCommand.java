@@ -4,7 +4,7 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
-import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
@@ -25,7 +25,7 @@ public class RandomTeleportCommand extends Command {
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot;
 
-        final MutablePlayerListEntry sender = context.sender;
+        final PlayerEntry sender = context.sender;
 
         final int positionX = MathUtilities.between(-1_000_000, 1_000_000);
         final int positionZ = MathUtilities.between(-1_000_000, 1_000_000);

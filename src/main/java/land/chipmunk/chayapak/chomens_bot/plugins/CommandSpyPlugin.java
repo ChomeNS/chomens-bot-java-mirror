@@ -1,7 +1,7 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.data.chat.MutablePlayerListEntry;
+import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -44,7 +44,7 @@ public class CommandSpyPlugin extends ChatPlugin.Listener {
             final String username = textComponent.content();
             final String command = ComponentUtilities.stringify(children.get(1));
 
-            final MutablePlayerListEntry sender = bot.players.getEntry(username);
+            final PlayerEntry sender = bot.players.getEntry(username);
 
             if (sender == null) return;
 
@@ -55,6 +55,6 @@ public class CommandSpyPlugin extends ChatPlugin.Listener {
     public void addListener (Listener listener) { listeners.add(listener); }
 
     public static class Listener {
-        public void commandReceived (MutablePlayerListEntry sender, String command) {}
+        public void commandReceived (PlayerEntry sender, String command) {}
     }
 }
