@@ -51,7 +51,6 @@ public class CommandHandlerPlugin {
         registerCommand(new EndCommand());
         registerCommand(new CloopCommand());
         registerCommand(new WeatherCommand());
-        registerCommand(new GenerateMazeCommand());
         registerCommand(new TranslateCommand());
         registerCommand(new KickCommand());
         registerCommand(new ClearChatQueueCommand());

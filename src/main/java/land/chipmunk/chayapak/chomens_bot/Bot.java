@@ -64,7 +64,6 @@ public class Bot {
     public TrustedPlugin trusted;
     public BruhifyPlugin bruhify;
     public CloopPlugin cloop;
-    public MazePlugin maze;
     public ExploitsPlugin exploits;
     public FilterPlugin filter;
     public CommandSuggestionPlugin commandSuggestion;
@@ -110,7 +109,6 @@ public class Bot {
         this.trusted = new TrustedPlugin(this);
         this.bruhify = new BruhifyPlugin(this);
         this.cloop = new CloopPlugin(this);
-        this.maze = new MazePlugin(this);
         this.exploits = new ExploitsPlugin(this);
         this.filter = new FilterPlugin(this);
         this.commandSuggestion = new CommandSuggestionPlugin(this);
