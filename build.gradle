@@ -18,11 +18,11 @@ repositories {
     mavenCentral()
 
     maven {
-        url = uri('https://repo.opencollab.dev/maven-releases/')
+        url = uri('https://repo.opencollab.dev/maven-snapshots/')
     }
 
     maven {
-        url = uri('https://repo.opencollab.dev/maven-snapshots/')
+        url = uri('https://repo.opencollab.dev/maven-releases/')
     }
 
     maven {
@@ -36,6 +36,7 @@ repositories {
 
 dependencies {
     implementation 'com.github.steveice10:mcprotocollib:1.20-1-SNAPSHOT'
+    implementation 'com.github.steveice10:mcauthlib:1.5-SNAPSHOT'
     implementation 'net.kyori:adventure-text-serializer-ansi:4.14.0'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.google.guava:guava:31.1-jre'
