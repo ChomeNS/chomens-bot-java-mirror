@@ -12,7 +12,7 @@ import java.util.List;
 public class CommandSuggestionPlugin extends ChatPlugin.Listener {
     private final Bot bot;
 
-    public final String id = "chomens_bot_command_suggestion";
+    public final String id = "chomens_bot_request_command_suggestion";
 
     public CommandSuggestionPlugin (Bot bot) {
         this.bot = bot;
@@ -28,26 +28,14 @@ public class CommandSuggestionPlugin extends ChatPlugin.Listener {
 
             final List<Component> children = component.children();
 
-            if (children.size() < 2) return;
+            if (children.size() != 1) return;
 
-            final int transactionId = Integer.parseInt(((TextComponent) children.get(0)).content());
-            final String player = ((TextComponent) children.get(1)).content();
-
-            Component inputComponent;
-            try {
-                inputComponent = children.get(2);
-            } catch (IndexOutOfBoundsException e) {
-                inputComponent = Component.text("");
-            }
-            final String input = ((TextComponent) inputComponent).content();
+            final String player = ((TextComponent) children.get(0)).content();
 
             final List<Component> output = new ArrayList<>();
             output.add(Component.text(id));
-            output.add(Component.text(transactionId));
 
             for (Command command : bot.commandHandler.commands) {
-                if (!command.name.startsWith(input)) continue;
-
                 output.add(Component.text(command.name));
             }
 
