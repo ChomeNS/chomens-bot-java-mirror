@@ -8,6 +8,7 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.EvalOutput;
 import land.chipmunk.chayapak.chomens_bot.evalFunctions.ChatFunction;
 import land.chipmunk.chayapak.chomens_bot.evalFunctions.CoreFunction;
+import land.chipmunk.chayapak.chomens_bot.evalFunctions.CorePlaceBlockFunction;
 import land.chipmunk.chayapak.chomens_bot.evalFunctions.EvalFunction;
 
 import java.util.*;
@@ -30,6 +31,7 @@ public class EvalPlugin {
 
     public EvalPlugin (Bot bot) {
         functions.add(new CoreFunction(bot));
+        functions.add(new CorePlaceBlockFunction(bot));
         functions.add(new ChatFunction(bot));
 
         try {
