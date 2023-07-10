@@ -45,6 +45,12 @@ public class BotBossBar extends BossBar {
     public void setTitle (Component title, boolean force) {
         if (ComponentUtilities.isEqual(this.title, title) && !force) return;
 
+        if (bot.bossbar.actionBar) {
+            bot.chat.actionBar(title, players);
+
+            return;
+        }
+
         this.title = title;
 
         bot.core.run("minecraft:bossbar set " + id + " name " + GsonComponentSerializer.gson().serialize(title));
@@ -58,6 +64,8 @@ public class BotBossBar extends BossBar {
 
         this.color = color;
 
+        if (bot.bossbar.actionBar) return;
+
         bot.core.run("minecraft:bossbar set " + id + " color " + (color == BossBarColor.LIME ? "green" : color.name().toLowerCase()));
     }
 
@@ -65,6 +73,8 @@ public class BotBossBar extends BossBar {
         if (this.players.equals(players)) return;
 
         this.players = players;
+
+        if (bot.bossbar.actionBar) return;
 
         bot.core.run("minecraft:bossbar set " + id + " players " + players);
     }
@@ -87,6 +97,8 @@ public class BotBossBar extends BossBar {
             case NOTCHES_10 -> division = "notched_10";
         }
 
+        if (bot.bossbar.actionBar) return;
+
         bot.core.run("minecraft:bossbar set " + id + " style " + division);
     }
 
@@ -98,6 +110,8 @@ public class BotBossBar extends BossBar {
 
         this.value = value;
 
+        if (bot.bossbar.actionBar) return;
+
         bot.core.run("minecraft:bossbar set " + id + " value " + value);
     }
 
@@ -105,6 +119,8 @@ public class BotBossBar extends BossBar {
         if (this.visible == visible) return;
 
         this.visible = visible;
+
+        if (bot.bossbar.actionBar) return;
 
         bot.core.run("minecraft:bossbar set " + id + " visible " + visible);
     }
@@ -116,6 +132,8 @@ public class BotBossBar extends BossBar {
         if (this.max == max && !force) return;
 
         this.max = max;
+
+        if (bot.bossbar.actionBar) return;
 
         bot.core.run("minecraft:bossbar set " + id + " max " + max);
     }

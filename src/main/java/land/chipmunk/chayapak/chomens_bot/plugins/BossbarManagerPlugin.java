@@ -23,6 +23,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
     private final Map<UUID, BotBossBar> bossBars = new HashMap<>();
 
     public boolean enabled = true;
+    public boolean actionBar = false;
 
     public final String bossBarPrefix = "chomens_bot:";
 
@@ -45,7 +46,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
     }
 
     public void packetReceived(ClientboundBossEventPacket packet) {
-        if (!enabled || !bot.options.useCore) return;
+        if (!enabled || actionBar || !bot.options.useCore) return;
 
         try {
             switch (packet.getAction()) {
@@ -147,6 +148,8 @@ public class BossbarManagerPlugin extends Bot.Listener {
     }
 
     private void playerJoined () {
+        if (!enabled || actionBar || !bot.options.useCore) return;
+
         for (Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
             final BotBossBar bossBar = _bossBar.getValue();
 
@@ -168,6 +171,8 @@ public class BossbarManagerPlugin extends Bot.Listener {
         addBossBar(name, bossBar, false);
     }
     private void addBossBar (String name, BotBossBar bossBar, boolean secret) {
+        if (actionBar) return;
+
         final String prefix = "minecraft:bossbar set " + name + " ";
 
         final String stringifiedName = GsonComponentSerializer.gson().serialize(secret ? bossBar.secret : bossBar.title);
@@ -192,7 +197,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
     }
 
     public void remove (String name) {
-        if (!enabled || !bot.options.useCore) return;
+        if (!enabled || actionBar || !bot.options.useCore) return;
 
         final Map<UUID, BotBossBar> mapCopy = new HashMap<>(bossBars);
 
