@@ -62,13 +62,13 @@ public class BossbarManagerPlugin extends Bot.Listener {
                             bossBars.put(
                                     packet.getUuid(),
                                     new BotBossBar(
-                                            bossBar.title,
-                                            bossBar.players,
+                                            bossBar.title(),
+                                            bossBar.players(),
                                             bossBar.color,
                                             bossBar.division,
-                                            bossBar.visible,
-                                            bossBar.max,
-                                            bossBar.value,
+                                            bossBar.visible(),
+                                            bossBar.max(),
+                                            bossBar.value(),
                                             bot
                                     )
                             );
@@ -120,7 +120,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
 
                     final BotBossBar botBossBar = get(bossBar.uuid);
 
-                    if (botBossBar != null && !ComponentUtilities.isEqual(botBossBar.title, packet.getTitle())) {
+                    if (botBossBar != null && !ComponentUtilities.isEqual(botBossBar.title(), packet.getTitle())) {
                         botBossBar.setTitle(botBossBar.title, true);
                     }
 
@@ -133,10 +133,10 @@ public class BossbarManagerPlugin extends Bot.Listener {
 
                     if (
                             botBossBar != null &&
-                                    botBossBar.value != packet.getHealth() * botBossBar.max
+                                    botBossBar.value() != packet.getHealth() * botBossBar.max()
                     ) {
-                        botBossBar.setValue(botBossBar.value, true);
-                        botBossBar.setMax(botBossBar.max, true);
+                        botBossBar.setValue(botBossBar.value(), true);
+                        botBossBar.setMax(botBossBar.max(), true);
                     }
 
                     bossBar.health = packet.getHealth();
@@ -153,7 +153,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
         for (Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
             final BotBossBar bossBar = _bossBar.getValue();
 
-            bossBar.setPlayers(bossBar.players);
+            bossBar.setPlayers(bossBar.players());
         }
     }
 
@@ -188,12 +188,12 @@ public class BossbarManagerPlugin extends Bot.Listener {
         }
 
         bot.core.run("minecraft:bossbar add " + name + " " + stringifiedName);
-        bot.core.run(prefix + "players " + bossBar.players);
+        bot.core.run(prefix + "players " + bossBar.players());
         bot.core.run(prefix + "color " + (bossBar.color == BossBarColor.LIME ? "green" : bossBar.color.name().toLowerCase()));
-        bot.core.run(prefix + "visible " + bossBar.visible);
+        bot.core.run(prefix + "visible " + bossBar.visible());
         bot.core.run(prefix + "style " + division);
-        bot.core.run(prefix + "max " + bossBar.max);
-        bot.core.run(prefix + "value " + bossBar.value);
+        bot.core.run(prefix + "max " + bossBar.max());
+        bot.core.run(prefix + "value " + bossBar.value());
     }
 
     public void remove (String name) {

@@ -17,10 +17,11 @@ public class BotBossBar extends BossBar {
     private final Bot bot;
 
     public String id;
-    public String players;
-    public boolean visible;
-    public long max;
-    public int value;
+
+    private String players;
+    private boolean visible;
+    private long max;
+    private int value;
 
     public BotBossBar(
             Component title,
@@ -39,10 +40,15 @@ public class BotBossBar extends BossBar {
         this.bot = bot;
     }
 
-    public void setTitle (Component title) {
+    public Component title() {
+        return title;
+    }
+
+    public void setTitle(Component title) {
         setTitle(title, false);
     }
-    public void setTitle (Component title, boolean force) {
+
+    public void setTitle(Component title, boolean force) {
         if (ComponentUtilities.isEqual(this.title, title) && !force) return;
 
         if (bot.bossbar.actionBar) {
@@ -56,10 +62,15 @@ public class BotBossBar extends BossBar {
         bot.core.run("minecraft:bossbar set " + id + " name " + GsonComponentSerializer.gson().serialize(title));
     }
 
-    public void setColor (BossBarColor color) {
+    public BossBarColor color(BossBarColor color) {
+        return color;
+    }
+
+    public void setColor(BossBarColor color) {
         setColor(color, false);
     }
-    public void setColor (BossBarColor color, boolean force) {
+
+    public void setColor(BossBarColor color, boolean force) {
         if (this.color == color && !force) return;
 
         this.color = color;
@@ -69,7 +80,11 @@ public class BotBossBar extends BossBar {
         bot.core.run("minecraft:bossbar set " + id + " color " + (color == BossBarColor.LIME ? "green" : color.name().toLowerCase()));
     }
 
-    public void setPlayers (String players) {
+    public String players() {
+        return players;
+    }
+
+    public void setPlayers(String players) {
         if (this.players.equals(players)) return;
 
         this.players = players;
@@ -79,6 +94,7 @@ public class BotBossBar extends BossBar {
         bot.core.run("minecraft:bossbar set " + id + " players " + players);
     }
 
+    public BossBarDivision division () { return division; }
     public void setDivision (BossBarDivision division) {
         setDivision(division, false);
     }
@@ -102,6 +118,7 @@ public class BotBossBar extends BossBar {
         bot.core.run("minecraft:bossbar set " + id + " style " + division);
     }
 
+    public int value () { return value; }
     public void setValue (int value) {
         setValue(value, false);
     }
@@ -115,6 +132,7 @@ public class BotBossBar extends BossBar {
         bot.core.run("minecraft:bossbar set " + id + " value " + value);
     }
 
+    public boolean visible () { return visible; }
     public void setVisible (boolean visible) {
         if (this.visible == visible) return;
 
@@ -125,6 +143,7 @@ public class BotBossBar extends BossBar {
         bot.core.run("minecraft:bossbar set " + id + " visible " + visible);
     }
 
+    public long max () { return max; }
     public void setMax (long max) {
         setMax(max, false);
     }
