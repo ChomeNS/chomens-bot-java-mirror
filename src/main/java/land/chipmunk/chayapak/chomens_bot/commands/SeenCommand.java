@@ -48,6 +48,8 @@ public class SeenCommand extends Command {
 
         final JsonObject lastSeen = playerElement.getAsJsonObject().get("lastSeen").getAsJsonObject();
 
+        if (lastSeen == null) return null;
+
         final DateTime dateTime = new DateTime(lastSeen.get("time").getAsLong(), DateTimeZone.UTC);
 
         final DateTimeFormatter formatter = DateTimeFormat.forPattern("EEEE, MMMM d, YYYY, hh:mm:ss a z");
