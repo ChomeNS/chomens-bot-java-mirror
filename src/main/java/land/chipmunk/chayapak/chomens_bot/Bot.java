@@ -70,6 +70,7 @@ public class Bot {
     public MailPlugin mail;
     public PacketSnifferPlugin packetSniffer;
     public VoiceChatPlugin voiceChat;
+    public TagPlugin tag;
 
     public Bot (Configuration.BotOption botOption, List<Bot> bots, Configuration config) {
         this.host = botOption.host;
@@ -115,6 +116,7 @@ public class Bot {
         this.mail = new MailPlugin(this);
         this.packetSniffer = new PacketSnifferPlugin(this);
         this.voiceChat = new VoiceChatPlugin(this);
+        this.tag = new TagPlugin(this);
 
         for (Listener listener : listeners) listener.loadedPlugins();
 

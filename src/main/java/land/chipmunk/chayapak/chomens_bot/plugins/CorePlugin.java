@@ -330,10 +330,13 @@ public class CorePlugin extends PositionPlugin.Listener {
 //        bot.chat.send(command);
 
         runPlaceBlock(command);
+
+        for (Listener listener : listeners) listener.refilled();
     }
 
     public static class Listener {
         public void ready () {}
+        public void refilled () {}
     }
 
     public void addListener (Listener listener) { listeners.add(listener); }
