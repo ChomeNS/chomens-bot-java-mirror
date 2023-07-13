@@ -19,6 +19,7 @@ import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.IllegalCharactersUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
@@ -84,8 +85,17 @@ public class ChatPlugin extends Bot.Listener {
             if (playerMessage != null) break;
         }
 
+        boolean isCommandSuggestions = false;
+        try {
+            final String id = ((TextComponent) component).content();
+
+            if (id.equals(bot.commandSuggestion.id)) isCommandSuggestions = true;
+        } catch (Exception ignored) {}
+
         for (Listener listener : listeners) {
-            listener.systemMessageReceived(component);
+            if (!isCommandSuggestions) listener.systemMessageReceived(component);
+            listener.systemMessageReceived(component, isCommandSuggestions);
+
             if (playerMessage != null) listener.playerMessageReceived(playerMessage);
         }
     }
@@ -316,5 +326,6 @@ public class ChatPlugin extends Bot.Listener {
     public static class Listener {
         public void playerMessageReceived (PlayerMessage message) {}
         public void systemMessageReceived (Component component) {}
+        public void systemMessageReceived (Component component, boolean isCommandSuggestions) {}
     }
 }

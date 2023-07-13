@@ -20,12 +20,10 @@ public class CommandSuggestionPlugin extends ChatPlugin.Listener {
     }
 
     @Override
-    public void systemMessageReceived(Component component) {
+    public void systemMessageReceived(Component component, boolean isCommandSuggestions) {
+        if (!isCommandSuggestions) return;
+
         try {
-            final String tag = ((TextComponent) component).content();
-
-            if (!tag.equals(id)) return;
-
             final List<Component> children = component.children();
 
             if (children.size() != 1) return;
@@ -36,7 +34,11 @@ public class CommandSuggestionPlugin extends ChatPlugin.Listener {
             output.add(Component.text(id));
 
             for (Command command : bot.commandHandler.commands) {
-                output.add(Component.text(command.name));
+                output.add(
+                        Component
+                                .text(command.name)
+                                .append(Component.text(command.trustLevel.name()))
+                );
             }
 
             bot.chat.tellraw(Component.join(JoinConfiguration.noSeparators(), output), player);
