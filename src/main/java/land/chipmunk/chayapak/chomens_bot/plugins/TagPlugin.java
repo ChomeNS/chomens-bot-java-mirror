@@ -18,7 +18,7 @@ public class TagPlugin extends CorePlugin.Listener {
     @Override
     public void ready () { // might not be the best idea but whatever
         final String command = "minecraft:tag " + UUIDUtilities.selector(bot.profile.getId()) + " add " + tag;
-        System.out.println(command);
+
         bot.core.run(command);
     }
 }

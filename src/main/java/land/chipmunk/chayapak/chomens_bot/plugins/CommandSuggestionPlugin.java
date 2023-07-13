@@ -7,6 +7,7 @@ import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CommandSuggestionPlugin extends ChatPlugin.Listener {
@@ -37,6 +38,14 @@ public class CommandSuggestionPlugin extends ChatPlugin.Listener {
                 output.add(
                         Component
                                 .text(command.name)
+                                .append(
+                                        Component.join(
+                                                JoinConfiguration.noSeparators(),
+                                                Arrays.stream(command.aliases)
+                                                        .map(Component::text)
+                                                        .toList()
+                                        )
+                                )
                                 .append(Component.text(command.trustLevel.name()))
                 );
             }
