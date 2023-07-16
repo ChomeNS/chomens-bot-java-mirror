@@ -9,7 +9,7 @@ public class ConsoleCommandContext extends CommandContext {
     private final Bot bot;
 
     public ConsoleCommandContext (Bot bot, String prefix) {
-        super(bot, prefix, bot.players.getBotEntry() /* real */, null, null, false);
+        super(bot, prefix, bot.players.getBotEntry() /* real */, false);
         this.bot = bot;
     }
 

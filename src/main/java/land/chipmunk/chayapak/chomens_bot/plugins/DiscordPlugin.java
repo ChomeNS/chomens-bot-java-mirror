@@ -117,7 +117,7 @@ public class DiscordPlugin {
                     final String message = messageEvent.getContentRaw();
 
                     if (message.startsWith(prefix)) {
-                        final DiscordCommandContext context = new DiscordCommandContext(bot, prefix, event, null, null);
+                        final DiscordCommandContext context = new DiscordCommandContext(bot, prefix, event);
 
                         final Component output = bot.commandHandler.executeCommand(message.substring(prefix.length()), context, false, true, false, event);
 

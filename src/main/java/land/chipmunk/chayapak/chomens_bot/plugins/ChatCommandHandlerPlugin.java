@@ -56,7 +56,7 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.Listener {
 
         final String commandString = contents.substring(prefix.length());
 
-        final PlayerCommandContext context = new PlayerCommandContext(bot, displayName, prefix, "@a", message.sender, bot.hashing.hash, bot.hashing.ownerHash);
+        final PlayerCommandContext context = new PlayerCommandContext(bot, displayName, prefix, "@a", message.sender);
 
         final Component output = bot.commandHandler.executeCommand(commandString, context, true, false, false, null);
 
@@ -88,7 +88,7 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.Listener {
 
         final String selector = UUIDUtilities.selector(sender.profile.getId());
 
-        final PlayerCommandContext context = new PlayerCommandContext(bot, displayName, prefix, selector, sender, bot.hashing.hash, bot.hashing.ownerHash);
+        final PlayerCommandContext context = new PlayerCommandContext(bot, displayName, prefix, selector, sender);
 
         final Component output = bot.commandHandler.executeCommand(commandString, context, true, false, false, null);
 

@@ -11,8 +11,8 @@ public class PlayerCommandContext extends CommandContext {
 
     private final Bot bot;
 
-    public PlayerCommandContext (Bot bot, String playerName, String prefix, String selector, PlayerEntry sender, String hash, String ownerHash) {
-        super(bot, prefix, sender, hash, ownerHash, true);
+    public PlayerCommandContext (Bot bot, String playerName, String prefix, String selector, PlayerEntry sender) {
+        super(bot, prefix, sender, true);
         this.bot = bot;
         this.playerName = playerName;
         this.selector = selector;

@@ -19,7 +19,7 @@ public class DiscordCommandContext extends CommandContext {
 
     private final Bot bot;
 
-    public DiscordCommandContext(Bot bot, String prefix, MessageReceivedEvent event, String hash, String ownerHash) {
+    public DiscordCommandContext(Bot bot, String prefix, MessageReceivedEvent event) {
         super(
                 bot,
                 prefix,
@@ -36,8 +36,6 @@ public class DiscordCommandContext extends CommandContext {
                         new byte[0],
                         true
                 ),
-                hash,
-                ownerHash,
                 false
         );
         this.bot = bot;

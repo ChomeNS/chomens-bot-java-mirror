@@ -11,17 +11,14 @@ public class CommandContext {
 
     public final PlayerEntry sender;
 
-    public final String hash;
-    public final String ownerHash;
-
     public final boolean inGame;
 
-    public CommandContext(Bot bot, String prefix, PlayerEntry sender, String hash, String ownerHash, boolean inGame) {
+    public String[] splitInput;
+
+    public CommandContext(Bot bot, String prefix, PlayerEntry sender, boolean inGame) {
         this.bot = bot;
         this.prefix = prefix;
         this.sender = sender;
-        this.hash = hash;
-        this.ownerHash = ownerHash;
         this.inGame = inGame;
     }
 
