@@ -2,6 +2,7 @@ package land.chipmunk.chayapak.chomens_bot;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import land.chipmunk.chayapak.chomens_bot.plugins.ConsolePlugin;
+import land.chipmunk.chayapak.chomens_bot.util.LoggerUtilities;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -59,7 +60,7 @@ public class Main {
             configWriter.write(defaultConfig);
             configWriter.close();
 
-            System.out.println("config.yml file not found, so the default one was created");
+            LoggerUtilities.info("config.yml file not found, so the default one was created");
         }
 
         InputStream opt = new FileInputStream(file);
@@ -85,7 +86,7 @@ public class Main {
                 jda = builder.build();
                 jda.awaitReady();
             } catch (LoginException e) {
-                System.err.println("Failed to login to Discord, stacktrace:");
+                LoggerUtilities.error("Failed to login to Discord, stacktrace:");
                 e.printStackTrace();
                 System.exit(1);
             } catch (InterruptedException ignored) {
@@ -119,7 +120,7 @@ public class Main {
         } catch (UnknownHostException ignored) {}
 
         if (!reachable) {
-            System.err.println("No internet, exiting");
+            LoggerUtilities.error("No internet, exiting");
 
             System.exit(1);
         }

@@ -2,7 +2,7 @@ package land.chipmunk.chayapak.chomens_bot.voiceChat;
 
 import io.netty.buffer.Unpooled;
 import land.chipmunk.chayapak.chomens_bot.data.voiceChat.RawUdpPacket;
-import land.chipmunk.chayapak.chomens_bot.util.AES;
+import land.chipmunk.chayapak.chomens_bot.util.AESUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.FriendlyByteBuf;
 import land.chipmunk.chayapak.chomens_bot.voiceChat.packets.*;
 
@@ -64,7 +64,7 @@ public class NetworkMessage {
     private static NetworkMessage readFromBytes(SocketAddress socketAddress, UUID secret, byte[] encryptedPayload, long timestamp) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         byte[] decrypt;
         try {
-            decrypt = AES.decrypt(secret, encryptedPayload);
+            decrypt = AESUtilities.decrypt(secret, encryptedPayload);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -117,6 +117,6 @@ public class NetworkMessage {
 
         byte[] bytes = new byte[buffer.readableBytes()];
         buffer.readBytes(bytes);
-        return AES.encrypt(secret, bytes);
+        return AESUtilities.encrypt(secret, bytes);
     }
 }

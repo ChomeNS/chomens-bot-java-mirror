@@ -9,6 +9,7 @@ import land.chipmunk.chayapak.chomens_bot.command.DiscordCommandContext;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.CodeBlockUtilities;
+import land.chipmunk.chayapak.chomens_bot.util.LoggerUtilities;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -312,7 +313,7 @@ public class DiscordPlugin {
         final TextChannel logChannel = jda.getTextChannelById(channelId);
 
         if (logChannel == null) {
-            System.out.println("Log channel for " + channelId + " is null");
+            LoggerUtilities.error("Log channel for " + channelId + " is null");
             return;
         }
 

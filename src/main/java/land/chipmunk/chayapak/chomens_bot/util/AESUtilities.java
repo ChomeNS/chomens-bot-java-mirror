@@ -13,7 +13,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.UUID;
 
-public class AES {
+public class AESUtilities {
 
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final String CIPHER = "AES/CBC/PKCS5Padding";

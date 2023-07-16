@@ -3,13 +3,9 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 import com.github.steveice10.packetlib.event.session.ConnectedEvent;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.util.FileLoggerUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
+import land.chipmunk.chayapak.chomens_bot.util.LoggerUtilities;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class LoggerPlugin extends ChatPlugin.Listener {
     private final Bot bot;
@@ -17,8 +13,6 @@ public class LoggerPlugin extends ChatPlugin.Listener {
     private boolean addedListener = false;
 
     public boolean logToConsole = true;
-
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
     public LoggerPlugin(Bot bot) {
         this.bot = bot;
@@ -58,48 +52,23 @@ public class LoggerPlugin extends ChatPlugin.Listener {
         });
     }
 
-    // ported from chomens bot js
-    private String prefix (Component prefix, String _message) {
-        LocalDateTime dateTime = LocalDateTime.now();
-
-        final Component message = Component.translatable(
-                "[%s %s] [%s] [%s] %s",
-                Component.text(dateTime.format(dateTimeFormatter)).color(NamedTextColor.GRAY),
-                prefix,
-                Component.text(Thread.currentThread().getName()).color(NamedTextColor.GRAY),
-                Component.text(bot.options.serverName).color(NamedTextColor.GRAY),
-                Component.text(_message).color(NamedTextColor.WHITE)
-        ).color(NamedTextColor.DARK_GRAY);
-
-        return ComponentUtilities.stringifyAnsi(message);
+    public void log (String message) {
+        LoggerUtilities.log(bot, message, true, logToConsole);
+    }
+    public void log (String message, boolean logToFile, boolean logToConsole) {
+        LoggerUtilities.log(bot, message, logToFile, logToConsole);
     }
 
-    public void log (String message) { log(message, true, logToConsole); }
-    public void log (String _message, boolean logToFile, boolean logToConsole) {
-        final String message = prefix(Component.text("Log").color(NamedTextColor.GOLD), _message);
+    public void info (String message) {
+        if (!logToConsole) return;
 
-        if (logToConsole) bot.console.reader.printAbove(message);
-        else if (logToFile) {
-            final String formattedMessage = String.format(
-                    "[%s] %s",
-                    bot.host + ":" + bot.port,
-                    _message
-            );
-
-            FileLoggerUtilities.log(formattedMessage);
-        }
+        LoggerUtilities.info(bot, message);
     }
 
-    public void info (String _message) {
-        final String message = prefix(Component.text("Info").color(NamedTextColor.GREEN), _message);
+    public void custom (Component prefix, Component message) {
+        if (!logToConsole) return;
 
-        if (logToConsole) bot.console.reader.printAbove(message);
-    }
-
-    public void custom (Component prefix, Component _message) {
-        final String message = prefix(prefix, ComponentUtilities.stringifyAnsi(_message));
-
-        if (logToConsole) bot.console.reader.printAbove(message);
+        LoggerUtilities.custom(bot, prefix, message);
     }
 
     @Override
