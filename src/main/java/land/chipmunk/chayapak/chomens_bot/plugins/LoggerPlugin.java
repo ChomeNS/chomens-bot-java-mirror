@@ -63,9 +63,10 @@ public class LoggerPlugin extends ChatPlugin.Listener {
         LocalDateTime dateTime = LocalDateTime.now();
 
         final Component message = Component.translatable(
-                "[%s %s] [%s] %s",
+                "[%s %s] [%s] [%s] %s",
                 Component.text(dateTime.format(dateTimeFormatter)).color(NamedTextColor.GRAY),
                 prefix,
+                Component.text(Thread.currentThread().getName()).color(NamedTextColor.GRAY),
                 Component.text(bot.options.serverName).color(NamedTextColor.GRAY),
                 Component.text(_message).color(NamedTextColor.WHITE)
         ).color(NamedTextColor.DARK_GRAY);

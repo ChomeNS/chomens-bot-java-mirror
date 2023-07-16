@@ -89,7 +89,7 @@ public class VoiceChatPlugin extends Bot.Listener {
                 e.printStackTrace();
             }
 
-            new Thread(() -> {
+            final Thread thread = new Thread(() -> {
                 sendToServer(new NetworkMessage(new AuthenticatePacket(initializationData.playerUUID, initializationData.secret)));
 
                 while (running) {
@@ -106,7 +106,10 @@ public class VoiceChatPlugin extends Bot.Listener {
                         else break; // is this neccessary?
                     }
                 }
-            }).start();
+            });
+
+            thread.setName("Simple Voice Chat Thread");
+            thread.start();
         } else if (_packet.getChannel().equals("voicechat:add_group")) {
             final byte[] bytes = _packet.getData();
             final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
