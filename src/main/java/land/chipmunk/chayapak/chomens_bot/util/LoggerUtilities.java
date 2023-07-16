@@ -70,7 +70,7 @@ public class LoggerUtilities {
         final String component = prefix(bot, Component.text("Error").color(NamedTextColor.RED), message);
 
         if (bot != null) bot.console.reader.printAbove(component);
-        else System.out.println(component);
+        else System.err.println(component);
     }
 
     public static void custom (Component prefix, Component message) { custom(null, prefix, message); }

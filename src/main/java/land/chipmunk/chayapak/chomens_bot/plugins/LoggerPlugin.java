@@ -65,6 +65,12 @@ public class LoggerPlugin extends ChatPlugin.Listener {
         LoggerUtilities.info(bot, message);
     }
 
+    public void error (String message) {
+        if (!logToConsole) return;
+
+        LoggerUtilities.info(bot, message);
+    }
+
     public void custom (Component prefix, Component message) {
         if (!logToConsole) return;
 
