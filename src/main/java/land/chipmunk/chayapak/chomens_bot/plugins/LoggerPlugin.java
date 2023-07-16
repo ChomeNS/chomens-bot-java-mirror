@@ -74,24 +74,20 @@ public class LoggerPlugin extends ChatPlugin.Listener {
         return ComponentUtilities.stringifyAnsi(message);
     }
 
-    public void log (String _message) {
+    public void log (String message) { log(message, true, logToConsole); }
+    public void log (String _message, boolean logToFile, boolean logToConsole) {
         final String message = prefix(Component.text("Log").color(NamedTextColor.GOLD), _message);
 
         if (logToConsole) bot.console.reader.printAbove(message);
+        else if (logToFile) {
+            final String formattedMessage = String.format(
+                    "[%s] %s",
+                    bot.host + ":" + bot.port,
+                    _message
+            );
 
-
-        final String formattedMessage = String.format(
-                "[%s] %s",
-                bot.host + ":" + bot.port,
-                _message
-        );
-
-        FileLoggerUtilities.log(
-                formattedMessage.replaceAll( // use replaceAll for regexes, use replace for normal string
-                        "\u001B\\[[;\\d]*[ -/]*[@-~]",
-                        ""
-                )
-        );
+            FileLoggerUtilities.log(formattedMessage);
+        }
     }
 
     public void info (String _message) {
@@ -108,7 +104,10 @@ public class LoggerPlugin extends ChatPlugin.Listener {
 
     @Override
     public void systemMessageReceived(Component component) {
+        final String stringMessage = ComponentUtilities.stringify(component);
         final String ansiMessage = ComponentUtilities.stringifyAnsi(component);
-        log(ansiMessage);
+
+        log(ansiMessage, false, true);
+        log(stringMessage, true, false);
     }
 }
