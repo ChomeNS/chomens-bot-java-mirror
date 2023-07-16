@@ -7,6 +7,7 @@ import com.github.steveice10.mc.protocol.packet.ingame.clientbound.entity.Client
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.entity.player.ClientboundPlayerPositionPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.entity.spawn.ClientboundAddPlayerPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.level.ServerboundAcceptTeleportationPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.serverbound.player.ServerboundMovePlayerPosPacket;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 // some part of the code used to be in a test plugin but i thought it would be useful in the future so i moved it here
 public class PositionPlugin extends Bot.Listener {
@@ -34,7 +36,16 @@ public class PositionPlugin extends Bot.Listener {
 
     public PositionPlugin (Bot bot) {
         this.bot = bot;
+
         bot.addListener(this);
+
+        // notchian clients also does this, sends the position packet every second
+        bot.executor.scheduleAtFixedRate(() -> bot.session.send(new ServerboundMovePlayerPosPacket(
+                false,
+                position.getX(),
+                position.getY(),
+                position.getZ()
+        )), 0, 1, TimeUnit.SECONDS);
     }
 
     @Override
