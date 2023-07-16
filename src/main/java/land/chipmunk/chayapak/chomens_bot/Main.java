@@ -1,5 +1,6 @@
 package land.chipmunk.chayapak.chomens_bot;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import land.chipmunk.chayapak.chomens_bot.plugins.ConsolePlugin;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -23,8 +24,14 @@ import java.util.concurrent.TimeUnit;
 public class Main {
     public static final List<Bot> bots = new ArrayList<>();
 
-    public static final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-    public static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+    public static final ExecutorService executorService = Executors.newFixedThreadPool(
+            Runtime.getRuntime().availableProcessors(),
+            new ThreadFactoryBuilder().setNameFormat("ExecutorService #%d").build()
+    );
+    public static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(
+            Runtime.getRuntime().availableProcessors(),
+            new ThreadFactoryBuilder().setNameFormat("ScheduledExecutorService #%d").build()
+    );
 
     private static Configuration config;
 
