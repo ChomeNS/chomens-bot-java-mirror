@@ -33,7 +33,7 @@ public class CommandSuggestionPlugin extends ChatPlugin.Listener {
             final List<Component> output = new ArrayList<>();
             output.add(Component.text(id));
 
-            for (Command command : bot.commandHandler.commands) {
+            for (Command command : CommandHandlerPlugin.commands) {
                 output.add(
                         Component
                                 .text(command.name)

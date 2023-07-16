@@ -20,13 +20,11 @@ import java.util.List;
 public class CommandHandlerPlugin {
     private final Bot bot;
 
-    public final List<Command> commands = new ArrayList<>();
+    public static final List<Command> commands = new ArrayList<>();
 
     public boolean disabled = false;
 
-    public CommandHandlerPlugin (Bot bot) {
-        this.bot = bot;
-
+    static {
         registerCommand(new CommandBlockCommand());
         registerCommand(new CowsayCommand());
         registerCommand(new EchoCommand());
@@ -61,8 +59,12 @@ public class CommandHandlerPlugin {
         registerCommand(new InfoCommand());
     }
 
-    public void registerCommand (Command command) {
+    public static void registerCommand (Command command) {
         commands.add(command);
+    }
+
+    public CommandHandlerPlugin (Bot bot) {
+        this.bot = bot;
     }
 
     // literally the same quality as the js chomens bot

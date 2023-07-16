@@ -4,6 +4,7 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
+import land.chipmunk.chayapak.chomens_bot.plugins.CommandHandlerPlugin;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
@@ -66,7 +67,7 @@ public class HelpCommand extends Command {
 
         List<String> commandNames = new ArrayList<>();
 
-        for (Command command : bot.commandHandler.commands) {
+        for (Command command : CommandHandlerPlugin.commands) {
             if (command.trustLevel != trustLevel) continue;
 
             commandNames.add(command.name);
@@ -103,7 +104,7 @@ public class HelpCommand extends Command {
 
         final String prefix = context.prefix;
 
-        for (Command command : bot.commandHandler.commands) {
+        for (Command command : CommandHandlerPlugin.commands) {
             if (!command.name.equals(args[0]) && !Arrays.stream(command.aliases).toList().contains(args[0])) continue;
 
             final String commandName = command.name;
