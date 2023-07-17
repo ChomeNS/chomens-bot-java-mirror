@@ -82,7 +82,7 @@ public class LoggerPlugin extends ChatPlugin.Listener {
         final String stringMessage = ComponentUtilities.stringify(component);
         final String ansiMessage = ComponentUtilities.stringifyAnsi(component);
 
-        log(ansiMessage, false, true);
-        log(stringMessage, true, false);
+        log(ansiMessage, false, logToConsole);
+        log(stringMessage, true, logToConsole);
     }
 }
