@@ -83,6 +83,6 @@ public class LoggerPlugin extends ChatPlugin.Listener {
         final String ansiMessage = ComponentUtilities.stringifyAnsi(component);
 
         log(ansiMessage, false, logToConsole);
-        log(stringMessage, true, logToConsole);
+        log(stringMessage, true, false);
     }
 }
