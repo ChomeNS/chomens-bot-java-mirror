@@ -154,7 +154,11 @@ public class MailCommand extends Command {
                         senderMailSize++;
                     }
 
-                    if (senderMailSize == 0) context.sendOutput(Component.text("You have no new mails").color(NamedTextColor.RED));
+                    if (senderMailSize == 0) {
+                        context.sendOutput(Component.text("You have no new mails").color(NamedTextColor.RED));
+
+                        return;
+                    }
 
                     final List<Component> mailsComponent = new ArrayList<>();
 
