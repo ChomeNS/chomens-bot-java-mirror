@@ -62,7 +62,7 @@ public class ComponentUtilities {
         ansiMap.put("r", "\u001b[0m");
     }
 
-    private record PartiallyStringifiedOutput (
+    private record PartiallyStringified(
         String output,
         String lastColor
     ) {}
@@ -95,50 +95,62 @@ public class ComponentUtilities {
 
     public static String stringify (Component message) { return stringify(message, null); }
     private static String stringify (Component message, String lastColor) {
-        final StringBuilder builder = new StringBuilder();
+        try {
+            final StringBuilder builder = new StringBuilder();
 
-        final PartiallyStringifiedOutput output = stringifyPartially(message, false, false, lastColor);
+            final PartiallyStringified output = stringifyPartially(message, false, false, lastColor);
 
-        builder.append(output.output);
+            builder.append(output.output);
 
-        for (Component child : message.children()) builder.append(stringify(child, output.lastColor));
+            for (Component child : message.children()) builder.append(stringify(child, output.lastColor));
 
-        return builder.toString();
+            return builder.toString();
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     public static String stringifyMotd (Component message) { return stringifyMotd(message, null); }
     private static String stringifyMotd (Component message, String lastColor) {
-        final StringBuilder builder = new StringBuilder();
+        try {
+            final StringBuilder builder = new StringBuilder();
 
-        final PartiallyStringifiedOutput output = stringifyPartially(message, true, false, lastColor);
+            final PartiallyStringified output = stringifyPartially(message, true, false, lastColor);
 
-        builder.append(output.output);
+            builder.append(output.output);
 
-        for (Component child : message.children()) builder.append(stringifyMotd(child, output.lastColor));
+            for (Component child : message.children()) builder.append(stringifyMotd(child, output.lastColor));
 
-        return builder.toString();
+            return builder.toString();
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     public static String stringifyAnsi (Component message) { return stringifyAnsi(message, null); }
     private static String stringifyAnsi (Component message, String lastColor) {
-        final StringBuilder builder = new StringBuilder();
+        try {
+            final StringBuilder builder = new StringBuilder();
 
-        final PartiallyStringifiedOutput output = stringifyPartially(message, false, true, lastColor);
+            final PartiallyStringified output = stringifyPartially(message, false, true, lastColor);
 
-        builder.append(output.output);
+            builder.append(output.output);
 
-        for (Component child : message.children()) builder.append(stringifyAnsi(child, output.lastColor));
+            for (Component child : message.children()) builder.append(stringifyAnsi(child, output.lastColor));
 
-        return builder.toString();
+            return builder.toString();
+        } catch (Exception e) {
+            return "";
+        }
     }
 
-    public static PartiallyStringifiedOutput stringifyPartially (Component message, boolean motd, boolean ansi, String lastColor) {
+    public static PartiallyStringified stringifyPartially (Component message, boolean motd, boolean ansi, String lastColor) {
         if (message instanceof TextComponent) return stringifyPartially((TextComponent) message, motd, ansi, lastColor);
         if (message instanceof TranslatableComponent) return stringifyPartially((TranslatableComponent) message, motd, ansi, lastColor);
         if (message instanceof SelectorComponent) return stringifyPartially((SelectorComponent) message, motd, ansi, lastColor);
         if (message instanceof KeybindComponent) return stringifyPartially((KeybindComponent) message, motd, ansi, lastColor);
 
-        return new PartiallyStringifiedOutput("", null);
+        return new PartiallyStringified("", null);
     }
 
     public static String getStyle (Style style) {
@@ -209,14 +221,14 @@ public class ComponentUtilities {
         } else return null;
     }
 
-    public static PartiallyStringifiedOutput stringifyPartially (TextComponent message, boolean motd, boolean ansi, String lastColor) {
+    public static PartiallyStringified stringifyPartially (TextComponent message, boolean motd, boolean ansi, String lastColor) {
         if (motd || ansi) {
             final String color = getColor(message.color(), motd, ansi);
             final String style = getStyle(message.style());
 
             String replacedContent = message.content();
             // seems very mabe mabe
-            if (ansi) {
+            if (ansi && replacedContent.length() < 4269) {
                 // is try-catch a great idea?
                 try {
                     replacedContent = Pattern
@@ -227,13 +239,13 @@ public class ComponentUtilities {
             }
 
             // messy af
-            return new PartiallyStringifiedOutput((lastColor != null ? lastColor : "") + (style != null ? style : "") + (color != null ? color : "") + replacedContent + (ansi ? ansiMap.get("r") : ""), color);
+            return new PartiallyStringified((lastColor != null ? lastColor : "") + (style != null ? style : "") + (color != null ? color : "") + replacedContent + (ansi ? ansiMap.get("r") : ""), color);
         }
 
-        return new PartiallyStringifiedOutput(message.content(), null);
+        return new PartiallyStringified(message.content(), null);
     }
 
-    public static PartiallyStringifiedOutput stringifyPartially (TranslatableComponent message, boolean motd, boolean ansi, String lastColor) {
+    public static PartiallyStringified stringifyPartially (TranslatableComponent message, boolean motd, boolean ansi, String lastColor) {
         String format = getOrReturnKey(message.key());
 
         // totallynotskidded™️ from HBot (and changed a bit)
@@ -273,19 +285,19 @@ public class ComponentUtilities {
         }
         matcher.appendTail(sb);
 
-        return new PartiallyStringifiedOutput((lastColor != null ? lastColor : "") + (style != null && ansi ? style : "") + color + sb + (ansi ? ansiMap.get("r") : ""), _color);
+        return new PartiallyStringified((lastColor != null ? lastColor : "") + (style != null && ansi ? style : "") + color + sb + (ansi ? ansiMap.get("r") : ""), _color);
     }
 
-    public static PartiallyStringifiedOutput stringifyPartially (SelectorComponent message, boolean motd, boolean ansi, String lastColor) {
+    public static PartiallyStringified stringifyPartially (SelectorComponent message, boolean motd, boolean ansi, String lastColor) {
         final String style = getStyle(message.style());
         final String _color = getColor(message.color(), motd, ansi);
         String color;
         if (_color == null) color = "";
         else color = _color;
-        return new PartiallyStringifiedOutput((lastColor != null ? lastColor : "") + (style != null && ansi ? style : "") + color + message.pattern(), _color); // * Client-side selector components are equivalent to text ones, and do NOT list entities.
+        return new PartiallyStringified((lastColor != null ? lastColor : "") + (style != null && ansi ? style : "") + color + message.pattern(), _color); // * Client-side selector components are equivalent to text ones, and do NOT list entities.
     }
 
-    public static PartiallyStringifiedOutput stringifyPartially (KeybindComponent message, boolean motd, boolean ansi, String lastColor) {
+    public static PartiallyStringified stringifyPartially (KeybindComponent message, boolean motd, boolean ansi, String lastColor) {
         String keybind = message.keybind();
         Component component = keybinds.containsKey(keybind) ? Component.translatable(keybind) : Component.text(keybind); // TODO: Fix some keys like `key.keyboard.a`
         return stringifyPartially(component, motd, ansi, lastColor);
