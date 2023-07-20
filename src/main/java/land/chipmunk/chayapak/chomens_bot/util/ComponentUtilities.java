@@ -146,9 +146,9 @@ public class ComponentUtilities {
 
     public static PartiallyStringified stringifyPartially (Component message, boolean motd, boolean ansi, String lastColor) {
         if (message instanceof TextComponent) return stringifyPartially((TextComponent) message, motd, ansi, lastColor);
-        if (message instanceof TranslatableComponent) return stringifyPartially((TranslatableComponent) message, motd, ansi, lastColor);
-        if (message instanceof SelectorComponent) return stringifyPartially((SelectorComponent) message, motd, ansi, lastColor);
-        if (message instanceof KeybindComponent) return stringifyPartially((KeybindComponent) message, motd, ansi, lastColor);
+        else if (message instanceof TranslatableComponent) return stringifyPartially((TranslatableComponent) message, motd, ansi, lastColor);
+        else if (message instanceof SelectorComponent) return stringifyPartially((SelectorComponent) message, motd, ansi, lastColor);
+        else if (message instanceof KeybindComponent) return stringifyPartially((KeybindComponent) message, motd, ansi, lastColor);
 
         return new PartiallyStringified("", null);
     }
@@ -222,13 +222,13 @@ public class ComponentUtilities {
     }
 
     public static PartiallyStringified stringifyPartially (TextComponent message, boolean motd, boolean ansi, String lastColor) {
-        if (motd || ansi) {
+        if ((motd || ansi) && /* don't color big messages -> */ message.content().length() < 25_000) {
             final String color = getColor(message.color(), motd, ansi);
             final String style = getStyle(message.style());
 
             String replacedContent = message.content();
             // seems very mabe mabe
-            if (ansi && replacedContent.length() < 4269) {
+            if (ansi && replacedContent.contains("§")) {
                 // is try-catch a great idea?
                 try {
                     replacedContent = Pattern
