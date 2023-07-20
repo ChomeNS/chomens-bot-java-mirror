@@ -66,7 +66,11 @@ public class MailCommand extends Command {
                         senderMailsSentTotal++;
                     }
 
-                    if (senderMailsSentTotal > 256) context.sendOutput(Component.text("You are sending too many mails!").color(NamedTextColor.RED));
+                    if (senderMailsSentTotal > 256) {
+                        context.sendOutput(Component.text("You are sending too many mails!").color(NamedTextColor.RED));
+
+                        return;
+                    }
 
                     bot.mail.send(
                             new Mail(
@@ -89,7 +93,11 @@ public class MailCommand extends Command {
                         senderMailsSentTotal++;
                     }
 
-                    if (senderMailsSentTotal > 256) context.sendOutput(Component.text("You are sending too many mails!").color(NamedTextColor.RED));
+                    if (senderMailsSentTotal > 256) {
+                        context.sendOutput(Component.text("You are sending too many mails!").color(NamedTextColor.RED));
+
+                        return;
+                    }
 
                     final CompletableFuture<CompoundTag> future = bot.core.runTracked(
                             "minecraft:data get entity " +
@@ -99,6 +107,7 @@ public class MailCommand extends Command {
 
                     if (future == null) {
                         context.sendOutput(Component.text("There was an error while sending your mail").color(NamedTextColor.RED));
+
                         return;
                     }
 
