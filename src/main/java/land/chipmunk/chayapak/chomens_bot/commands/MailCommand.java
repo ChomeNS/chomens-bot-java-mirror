@@ -236,7 +236,7 @@ public class MailCommand extends Command {
 
                     PersistentDataUtilities.put("mails", MailPlugin.mails);
                 }
-                default -> context.sendOutput(Component.text("Invalid argument").color(NamedTextColor.RED));
+                default -> context.sendOutput(Component.text("Invalid action").color(NamedTextColor.RED));
             }
         });
 

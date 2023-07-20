@@ -53,7 +53,7 @@ public class BotVisibilityCommand extends Command {
                             .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
                 }
                 default -> {
-                    return Component.text("Invalid argument").color(NamedTextColor.RED);
+                    return Component.text("Invalid action").color(NamedTextColor.RED);
                 }
             }
         }

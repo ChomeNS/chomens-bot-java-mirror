@@ -50,7 +50,7 @@ public class EvalCommand extends Command {
                 return Component.text("Reset the eval context").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             default -> {
-                return Component.text("Invalid argument").color(NamedTextColor.RED);
+                return Component.text("Invalid action").color(NamedTextColor.RED);
             }
         }
 

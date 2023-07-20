@@ -67,7 +67,7 @@ public class MusicCommand extends Command {
             case "speed" -> speed(context, args);
             case "pause", "resume" -> pause(context);
             case "info" -> info(context);
-            default -> Component.text("Invalid argument").color(NamedTextColor.RED);
+            default -> Component.text("Invalid action").color(NamedTextColor.RED);
         };
     }
 
@@ -141,7 +141,7 @@ public class MusicCommand extends Command {
     public Component loop (CommandContext context, String[] args) {
         final Bot bot = context.bot;
 
-        if (args.length < 2) return Component.text("Invalid argument").color(NamedTextColor.RED);
+        if (args.length < 2) return Component.text("Invalid loop").color(NamedTextColor.RED);
 
         Loop loop;
         switch (args[1]) {
@@ -168,7 +168,7 @@ public class MusicCommand extends Command {
                 context.sendOutput(Component.text("Now looping every song").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)));
             }
             default -> {
-                return Component.text("Invalid argument").color(NamedTextColor.RED);
+                return Component.text("Invalid action").color(NamedTextColor.RED);
             }
         }
 
