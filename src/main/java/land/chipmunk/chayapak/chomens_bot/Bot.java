@@ -2,7 +2,11 @@ package land.chipmunk.chayapak.chomens_bot;
 
 import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
+import com.github.steveice10.mc.protocol.data.game.entity.player.HandPreference;
+import com.github.steveice10.mc.protocol.data.game.setting.ChatVisibility;
+import com.github.steveice10.mc.protocol.data.game.setting.SkinPart;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundClientInformationPacket;
 import com.github.steveice10.mc.protocol.packet.login.clientbound.ClientboundGameProfilePacket;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.*;
@@ -153,6 +157,28 @@ public class Bot {
                         loggedIn = true;
                         listener.connected(new ConnectedEvent(session));
                     }
+
+                    final List<SkinPart> skinParts = new ArrayList<>();
+                    skinParts.add(SkinPart.CAPE);
+                    skinParts.add(SkinPart.JACKET);
+                    skinParts.add(SkinPart.LEFT_SLEEVE);
+                    skinParts.add(SkinPart.RIGHT_SLEEVE);
+                    skinParts.add(SkinPart.LEFT_PANTS_LEG);
+                    skinParts.add(SkinPart.RIGHT_PANTS_LEG);
+                    skinParts.add(SkinPart.HAT);
+
+                    session.send(
+                            new ServerboundClientInformationPacket(
+                                    "en-us",
+                                    16,
+                                    ChatVisibility.FULL,
+                                    true,
+                                    skinParts,
+                                    HandPreference.RIGHT_HAND,
+                                    false,
+                                    true
+                            )
+                    );
                 } else if (packet instanceof ClientboundGameProfilePacket) packetReceived((ClientboundGameProfilePacket) packet);
             }
 
