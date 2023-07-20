@@ -14,7 +14,6 @@ import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Configuration;
-import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import net.kyori.adventure.text.Component;
 import org.cloudburstmc.math.vector.Vector3i;
 
@@ -47,31 +46,29 @@ public class SelfCarePlugin extends Bot.Listener {
 
         bot.chat.addListener(new ChatPlugin.Listener() {
             @Override
-            public void systemMessageReceived(Component component) {
-                final String message = ComponentUtilities.stringify(component);
+            public void systemMessageReceived(Component component, String string, String ansi) {
+                if (string.equals("Successfully enabled CommandSpy")) cspy = true;
+                else if (string.equals("Successfully disabled CommandSpy")) cspy = false;
 
-                if (message.equals("Successfully enabled CommandSpy")) cspy = true;
-                else if (message.equals("Successfully disabled CommandSpy")) cspy = false;
+                else if (string.equals("Vanish for " + bot.username + ": enabled")) vanish = true;
+                else if (string.equals("You are now completely invisible to normal users, and hidden from in-game commands.")) vanish = true;
+                else if (string.equals("Vanish for " + bot.username + ": disabled")) vanish = false;
 
-                else if (message.equals("Vanish for " + bot.username + ": enabled")) vanish = true;
-                else if (message.equals("You are now completely invisible to normal users, and hidden from in-game commands.")) vanish = true;
-                else if (message.equals("Vanish for " + bot.username + ": disabled")) vanish = false;
+                else if (string.equals("You no longer have a nickname.")) nickname = true;
+                else if (string.startsWith("Your nickname is now ")) nickname = false;
 
-                else if (message.equals("You no longer have a nickname.")) nickname = true;
-                else if (message.startsWith("Your nickname is now ")) nickname = false;
+                else if (string.equals("SocialSpy for " + bot.username + ": enabled")) socialspy = true;
+                else if (string.equals("SocialSpy for " + bot.username + ": disabled")) socialspy = false;
 
-                else if (message.equals("SocialSpy for " + bot.username + ": enabled")) socialspy = true;
-                else if (message.equals("SocialSpy for " + bot.username + ": disabled")) socialspy = false;
+                else if (string.startsWith("You have been muted")) muted = true;
+                else if (string.equals("You have been unmuted.")) muted = false;
 
-                else if (message.startsWith("You have been muted")) muted = true;
-                else if (message.equals("You have been unmuted.")) muted = false;
+                else if (string.equals("You now have the tag: " + bot.config.selfCare.prefix.prefix)) prefix = true;
+                else if (string.startsWith("You no longer have a tag")) prefix = false;
+                else if (string.startsWith("You now have the tag: ")) prefix = false;
 
-                else if (message.equals("You now have the tag: " + bot.config.selfCare.prefix.prefix)) prefix = true;
-                else if (message.startsWith("You no longer have a tag")) prefix = false;
-                else if (message.startsWith("You now have the tag: ")) prefix = false;
-
-                else if (message.equals("Successfully set your username to \"" + bot.username + "\"")) username = true;
-                else if (message.startsWith("Successfully set your username to \"")) username = false;
+                else if (string.equals("Successfully set your username to \"" + bot.username + "\"")) username = true;
+                else if (string.startsWith("Successfully set your username to \"")) username = false;
             }
         });
 

@@ -59,9 +59,20 @@ public class DiscordPlugin {
 
                     bot.chat.addListener(new ChatPlugin.Listener() {
                         @Override
-                        public void systemMessageReceived (Component component) {
-                            final String content = ComponentUtilities.stringifyAnsi(component);
-                            sendMessage(CodeBlockUtilities.escape(content.replace("\u001b[9", "\u001b[3")), channelId);
+                        public void systemMessageReceived (Component component, String string, String ansi) {
+                            if (string.length() > 2048) {
+                                sendMessage(CodeBlockUtilities.escape(string), channelId);
+                            } else {
+                                sendMessage(
+                                        CodeBlockUtilities.escape(
+                                                ansi
+                                                        .replace(
+                                                                "\u001b[9", "\u001b[3"
+                                                        )
+                                        ),
+                                        channelId
+                                );
+                            }
                         }
                     });
                 }

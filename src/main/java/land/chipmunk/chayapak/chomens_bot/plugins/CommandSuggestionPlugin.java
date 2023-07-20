@@ -20,7 +20,7 @@ public class CommandSuggestionPlugin extends ChatPlugin.Listener {
     }
 
     @Override
-    public void systemMessageReceived(Component component, boolean isCommandSuggestions) {
+    public void systemMessageReceived(Component component, boolean isCommandSuggestions, String string, String ansi) {
         if (!isCommandSuggestions) return;
 
         try {
