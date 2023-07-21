@@ -16,7 +16,7 @@ public class ConsoleServerCommand extends Command {
         super(
                 "consoleserver",
                 "Changes the console server",
-                new String[] { "<{server}>" },
+                new String[] { "<ownerHash> <{server}>" },
                 new String[] { "csvr" },
                 TrustLevel.OWNER,
                 true
