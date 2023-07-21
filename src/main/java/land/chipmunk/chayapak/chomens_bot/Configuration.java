@@ -9,7 +9,7 @@ public class Configuration {
     public List<String> prefixes;
     public List<String> commandSpyPrefixes;
 
-    public ConsolePrefixes consolePrefixes = new ConsolePrefixes();
+    public String consoleCommandPrefix;
 
     public Keys keys = new Keys();
 
@@ -33,11 +33,6 @@ public class Configuration {
     public static class InternetCheck {
         public boolean enabled = true;
         public String address = "https://sus.red";
-    }
-
-    public static class ConsolePrefixes {
-        public String normalCommandsPrefix;
-        public String consoleServerPrefix;
     }
 
     public static class Keys {

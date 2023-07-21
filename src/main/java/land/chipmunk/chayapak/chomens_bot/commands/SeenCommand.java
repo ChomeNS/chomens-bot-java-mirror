@@ -22,7 +22,8 @@ public class SeenCommand extends Command {
                 "Shows the last seen of a player",
                 new String[] { "<{player}>" },
                 new String[] { "lastseen" },
-                TrustLevel.PUBLIC
+                TrustLevel.PUBLIC,
+false
         );
     }
 

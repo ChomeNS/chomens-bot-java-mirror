@@ -15,7 +15,8 @@ public class BotVisibilityCommand extends Command {
                 "Changes the bot's visibility",
                 new String[] { "<hash> <true|false>", "<hash> <on|off>", "<hash>" },
                 new String[] { "botvis", "togglevis", "togglevisibility" },
-                TrustLevel.TRUSTED
+                TrustLevel.TRUSTED,
+false
         );
     }
 

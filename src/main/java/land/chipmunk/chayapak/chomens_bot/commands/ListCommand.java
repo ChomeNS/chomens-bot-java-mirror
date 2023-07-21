@@ -22,7 +22,8 @@ public class ListCommand extends Command {
                 "Lists all players in the server (including vanished)",
                 new String[] {},
                 new String[] {},
-                TrustLevel.PUBLIC
+                TrustLevel.PUBLIC,
+false
         );
     }
 

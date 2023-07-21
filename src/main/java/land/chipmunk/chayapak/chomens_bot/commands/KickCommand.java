@@ -18,7 +18,8 @@ public class KickCommand extends Command {
                 "Kicks a player",
                 new String[] { "<hash> <{player}>" },
                 new String[] {},
-                TrustLevel.TRUSTED
+                TrustLevel.TRUSTED,
+false
         );
     }
 

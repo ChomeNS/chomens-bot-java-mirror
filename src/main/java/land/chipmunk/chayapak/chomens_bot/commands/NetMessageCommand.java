@@ -18,7 +18,8 @@ public class NetMessageCommand extends Command {
                 "Broadcasts a message to all of the servers that the bot is connected",
                 new String[] { "<{message}>" },
                 new String[] { "networkmessage", "irc" },
-                TrustLevel.PUBLIC
+                TrustLevel.PUBLIC,
+                false
         );
     }
 

@@ -13,7 +13,8 @@ public class EchoCommand extends Command {
                 "Makes the bot say a message",
                 new String[] { "<{message}>" },
                 new String[] { "say" },
-                TrustLevel.PUBLIC
+                TrustLevel.PUBLIC,
+false
         );
     }
 

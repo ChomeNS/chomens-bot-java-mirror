@@ -19,7 +19,8 @@ public class EvalCommand extends Command {
                 "Evaluate JavaScript codes",
                 new String[] { "run <{code}>", "reset" },
                 new String[] {},
-                TrustLevel.PUBLIC
+                TrustLevel.PUBLIC,
+false
         );
     }
 

@@ -12,7 +12,6 @@ import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ConsolePlugin {
@@ -23,7 +22,6 @@ public class ConsolePlugin {
     public String consoleServer = "all";
 
     public String prefix;
-    public String consoleServerPrefix;
 
     private static final List<Listener> listeners = new ArrayList<>();
 
@@ -34,8 +32,7 @@ public class ConsolePlugin {
         reader.option(LineReader.Option.DISABLE_EVENT_EXPANSION, true);
 
         for (Bot bot : allBots) {
-            prefix = bot.config.consolePrefixes.normalCommandsPrefix;
-            consoleServerPrefix = bot.config.consolePrefixes.consoleServerPrefix;
+            prefix = bot.config.consoleCommandPrefix;
 
             bot.console = this;
 
@@ -64,47 +61,6 @@ public class ConsolePlugin {
 
     public void handleLine (String line) {
         if (line == null) return;
-
-        if (line.startsWith(consoleServerPrefix)) {
-            final String substringLine = line.substring(consoleServerPrefix.length());
-            final String[] splitInput = substringLine.split("\\s+");
-
-            final String commandName = splitInput[0];
-            final String[] args = Arrays.copyOfRange(splitInput, 1, splitInput.length);
-
-            if (commandName.equals("csvr") || commandName.equals("consoleserver")) {
-                final List<String> servers = new ArrayList<>();
-
-                for (Bot bot : allBots) {
-                    servers.add(bot.host + ":" + bot.port);
-                }
-
-                for (Bot bot : allBots) {
-                    if (args.length == 0) {
-                        bot.logger.info("No server specified");
-                        return;
-                    }
-
-                    if (String.join(" ", args).equalsIgnoreCase("all")) {
-                        consoleServer = "all";
-                        bot.logger.info("Set the console server to all servers");
-                        return;
-                    }
-                    try {
-                        // servers.find(server => server.toLowerCase().includes(args.join(' '))) in js i guess
-                        consoleServer = servers.stream()
-                                .filter(server -> server.toLowerCase().contains(String.join(" ", args)))
-                                .toArray(String[]::new)[0];
-
-                        bot.logger.info("Set the console server to " + String.join(", ", consoleServer));
-                    } catch (ArrayIndexOutOfBoundsException e) {
-                        bot.logger.info("Invalid server: " + String.join(" ", args));
-                    }
-                }
-            }
-
-            return;
-        }
 
         for (Bot bot : allBots) {
             final String hostAndPort = bot.host + ":" + bot.port;

@@ -26,7 +26,8 @@ public class UrbanCommand extends Command {
                 "Urban Dictionary in Minecraft",
                 new String[] { "<{term}>" },
                 new String[] {},
-                TrustLevel.PUBLIC
+                TrustLevel.PUBLIC,
+false
         );
     }
 

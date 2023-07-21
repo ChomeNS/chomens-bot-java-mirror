@@ -16,7 +16,8 @@ public class ClearChatQueueCommand extends Command {
                 "Clears the bots chat queue",
                 new String[] {},
                 new String[] { "ccq" },
-                TrustLevel.PUBLIC
+                TrustLevel.PUBLIC,
+false
         );
     }
 

@@ -8,19 +8,22 @@ public abstract class Command {
     public final String[] usages;
     public final String[] aliases;
     public final TrustLevel trustLevel;
+    public final boolean consoleOnly;
 
     public Command (
             String name,
             String description,
             String[] usages,
             String[] aliases,
-            TrustLevel trustLevel
+            TrustLevel trustLevel,
+            boolean consoleOnly
     ) {
         this.name = name;
         this.description = description;
         this.usages = usages;
         this.aliases = aliases;
         this.trustLevel = trustLevel;
+        this.consoleOnly = consoleOnly;
     }
 
     public abstract Component execute (CommandContext context, String[] args, String[] fullArgs) throws Exception;

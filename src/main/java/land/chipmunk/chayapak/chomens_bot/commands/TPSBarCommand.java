@@ -15,7 +15,8 @@ public class TPSBarCommand extends Command {
                 "Shows the server's TPS using Minecraft Bossbar",
                 new String[] { "<on|off>" },
                 new String[] { "tps" },
-                TrustLevel.PUBLIC
+                TrustLevel.PUBLIC,
+false
         );
     }
 

@@ -13,7 +13,8 @@ public class EndCommand extends Command {
                 "End/Reconnects the bot",
                 new String[] { "<hash>" },
                 new String[] { "reconnect", "restart" },
-                TrustLevel.TRUSTED
+                TrustLevel.TRUSTED,
+false
         );
     }
 

@@ -18,7 +18,8 @@ public class ServerEvalCommand extends Command {
                 "Evaluate codes using LuaJ",
                 new String[] { "<ownerHash> <{code}>" },
                 new String[] {},
-                TrustLevel.OWNER
+                TrustLevel.OWNER,
+false
         );
     }
 

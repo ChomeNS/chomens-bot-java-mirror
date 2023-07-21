@@ -23,7 +23,8 @@ public class HelpCommand extends Command {
                 "Shows a command list or usage for a command",
                 new String[] { "[command]" },
                 new String[] { "heko", "cmds", "commands" },
-                TrustLevel.PUBLIC
+                TrustLevel.PUBLIC,
+false
         );
     }
 
@@ -68,7 +69,7 @@ public class HelpCommand extends Command {
         List<String> commandNames = new ArrayList<>();
 
         for (Command command : CommandHandlerPlugin.commands) {
-            if (command.trustLevel != trustLevel) continue;
+            if (command.trustLevel != trustLevel || command.consoleOnly) continue;
 
             commandNames.add(command.name);
         }

@@ -22,7 +22,8 @@ public class WikipediaCommand extends Command {
                 "Wikipedia in Minecraft",
                 new String[] { "<{page}>" },
                 new String[] { "wiki" },
-                TrustLevel.PUBLIC
+                TrustLevel.PUBLIC,
+false
         );
     }
 

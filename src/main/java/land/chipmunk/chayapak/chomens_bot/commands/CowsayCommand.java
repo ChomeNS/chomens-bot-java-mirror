@@ -13,7 +13,8 @@ public class CowsayCommand extends Command {
                 "Moo",
                 new String[] { "<{message}>" },
                 new String[] {},
-                TrustLevel.PUBLIC
+                TrustLevel.PUBLIC,
+false
         );
     }
 

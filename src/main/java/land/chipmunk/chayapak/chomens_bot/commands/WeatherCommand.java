@@ -26,7 +26,8 @@ public class WeatherCommand extends Command {
                 "Shows the weather in a place",
                 new String[] { "<{location}>" },
                 new String[] {},
-                TrustLevel.PUBLIC
+                TrustLevel.PUBLIC,
+false
         );
     }
 

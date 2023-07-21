@@ -16,7 +16,8 @@ public class DiscordCommand extends Command {
                 "Shows the Discord invite",
                 new String[] {},
                 new String[] {},
-                TrustLevel.PUBLIC
+                TrustLevel.PUBLIC,
+false
         );
     }
 

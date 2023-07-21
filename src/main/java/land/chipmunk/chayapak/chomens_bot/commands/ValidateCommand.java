@@ -14,7 +14,8 @@ public class ValidateCommand extends Command {
                 "Validates a hash",
                 new String[] { "<hash|ownerHash>" },
                 new String[] { "checkhash" },
-                TrustLevel.TRUSTED
+                TrustLevel.TRUSTED,
+false
         );
     }
 

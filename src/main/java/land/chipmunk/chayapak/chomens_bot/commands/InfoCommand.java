@@ -37,7 +37,8 @@ public class InfoCommand extends Command {
                         "<uptime>"
                 },
                 new String[] {},
-                TrustLevel.PUBLIC
+                TrustLevel.PUBLIC,
+false
         );
     }
 

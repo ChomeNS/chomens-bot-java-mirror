@@ -7,9 +7,7 @@ prefixes:
 commandSpyPrefixes:
   - '/defaultcbot '
 
-consolePrefixes:
-  normalCommandsPrefix: '.'
-  consoleServerPrefix: '/'
+consoleCommandPrefix: '.'
 
 internetCheck:
   enabled: true

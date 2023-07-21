@@ -20,7 +20,8 @@ public class CommandBlockCommand extends Command {
                 "Executes a command in the command core and return its output",
                 new String[] { "<{command}>" },
                 new String[] { "cmd", "commandblock", "run" },
-                TrustLevel.PUBLIC
+                TrustLevel.PUBLIC,
+false
         );
     }
 

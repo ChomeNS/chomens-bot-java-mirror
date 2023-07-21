@@ -13,7 +13,8 @@ public class BruhifyCommand extends Command {
                 "RecycleBots bruhify but actionbar",
                 new String[] { "[{message}]" },
                 new String[] {},
-                TrustLevel.PUBLIC
+                TrustLevel.PUBLIC,
+false
         );
     }
 

@@ -57,6 +57,7 @@ public class CommandHandlerPlugin {
         registerCommand(new SeenCommand());
         registerCommand(new EvalCommand());
         registerCommand(new InfoCommand());
+        registerCommand(new ConsoleServerCommand());
     }
 
     public static void registerCommand (Command command) {
@@ -146,6 +147,8 @@ public class CommandHandlerPlugin {
                 ) return Component.text("Invalid OwnerHash").color(NamedTextColor.RED);
             }
         }
+
+        if (!console && command.consoleOnly) return Component.text("This command can only be ran via console").color(NamedTextColor.RED);
 
         context.splitInput = splitInput;
 

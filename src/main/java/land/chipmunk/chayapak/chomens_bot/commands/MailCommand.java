@@ -37,7 +37,8 @@ public class MailCommand extends Command {
                 "Sends a mail",
                 new String[] { "send <player> <{message}>", "sendselecteditem <player>", "read" },
                 new String[] {},
-                TrustLevel.PUBLIC
+                TrustLevel.PUBLIC,
+false
         );
     }
 
