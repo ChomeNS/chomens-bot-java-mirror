@@ -6,15 +6,24 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import land.chipmunk.chayapak.chomens_bot.Main;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 public class PersistentDataUtilities {
-    public static final File file = new File("persistent.json");
+    public static final Path path = Path.of("persistent.json");
 
-    private static FileWriter writer;
+    public static Stream<?> file;
+
+    private static BufferedWriter writer;
 
     public static JsonObject jsonObject = new JsonObject();
 
@@ -56,19 +65,18 @@ public class PersistentDataUtilities {
 
     private static void init () {
         try {
-            if (!file.exists()) file.createNewFile();
+            if (!Files.exists(path)) Files.createFile(path);
 
             // loads the persistent data from the last session
             else {
-                final InputStream opt = new FileInputStream(file);
-                final BufferedReader reader = new BufferedReader(new InputStreamReader(opt));
+                final BufferedReader reader = Files.newBufferedReader(path);
 
                 final Gson gson = new Gson();
 
                 jsonObject = gson.fromJson(reader, JsonObject.class);
             }
 
-            writer = new FileWriter(file, false);
+            writer = Files.newBufferedWriter(path, StandardOpenOption.WRITE);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -78,9 +86,9 @@ public class PersistentDataUtilities {
         try {
             writer.close();
 
-            // ? how do i clear the file contents without making a completely new FileWriter
+            // ? how do i clear the file contents without making a completely new writer?
             //   or is this the only way?
-            writer = new FileWriter(file, false);
+            writer = Files.newBufferedWriter(path, StandardOpenOption.WRITE);
 
             writer.write(string);
             writer.flush();
