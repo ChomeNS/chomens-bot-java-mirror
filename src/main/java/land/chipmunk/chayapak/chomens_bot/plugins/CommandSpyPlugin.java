@@ -22,7 +22,7 @@ public class CommandSpyPlugin extends ChatPlugin.Listener {
     }
 
     @Override
-    public void systemMessageReceived(Component component, String string, String ansi) {
+    public void systemMessageReceived(Component component) {
         TextComponent textComponent;
 
         try {

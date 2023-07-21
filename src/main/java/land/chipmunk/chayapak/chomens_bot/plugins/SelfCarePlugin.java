@@ -14,6 +14,7 @@ import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Configuration;
+import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import net.kyori.adventure.text.Component;
 import org.cloudburstmc.math.vector.Vector3i;
 
@@ -46,7 +47,9 @@ public class SelfCarePlugin extends Bot.Listener {
 
         bot.chat.addListener(new ChatPlugin.Listener() {
             @Override
-            public void systemMessageReceived(Component component, String string, String ansi) {
+            public void systemMessageReceived(Component component) {
+                final String string = ComponentUtilities.stringify(component);
+
                 if (string.equals("Successfully enabled CommandSpy")) cspy = true;
                 else if (string.equals("Successfully disabled CommandSpy")) cspy = false;
 

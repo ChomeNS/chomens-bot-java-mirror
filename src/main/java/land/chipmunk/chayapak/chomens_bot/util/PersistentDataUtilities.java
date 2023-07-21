@@ -3,10 +3,13 @@ package land.chipmunk.chayapak.chomens_bot.util;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import land.chipmunk.chayapak.chomens_bot.Main;
 
 import java.io.*;
-import java.util.ConcurrentModificationException;
+import java.util.*;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class PersistentDataUtilities {
     public static final File file = new File("persistent.json");
@@ -15,8 +18,35 @@ public class PersistentDataUtilities {
 
     public static JsonObject jsonObject = new JsonObject();
 
+    private static final Map<String, JsonElement> queue = new LinkedHashMap<>();
+
+    private static final ScheduledFuture<?> future;
+
     static {
         init();
+
+        future = Main.executor.scheduleAtFixedRate(() -> {
+            if (queue.size() == 0) return;
+
+            final Map.Entry<String, JsonElement> entry = queue.entrySet().iterator().next(); // is this the best way to get the first item of the map?
+
+            final String property = entry.getKey();
+            final JsonElement value = entry.getValue();
+
+            if (jsonObject.has(property)) jsonObject.remove(property);
+            jsonObject.add(property, value);
+
+            write(jsonObject.toString());
+
+            queue.remove(property);
+        }, 0, 100, TimeUnit.MILLISECONDS);
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                future.cancel(false);
+            }
+        });
     }
 
     private static void init () {
@@ -39,63 +69,36 @@ public class PersistentDataUtilities {
         }
     }
 
-    private static synchronized void write () {
+    private static synchronized void write (String string) {
         try {
-            final String stringifiedJsonObject = jsonObject.toString();
-
             writer.close();
 
             // ? how do i clear the file contents without making a completely new FileWriter
             //   or is this the only way?
             writer = new FileWriter(file, false);
 
-            writer.write(stringifiedJsonObject);
+            writer.write(string);
             writer.flush();
-        } catch (IOException | ConcurrentModificationException ignored) {}
+        } catch (IOException ignored) {}
     }
 
-    public static synchronized void put (String property, JsonElement value) {
-        Main.executorService.submit(() -> {
-            if (jsonObject.has(property)) jsonObject.remove(property);
-            jsonObject.add(property, value);
-
-            write();
-        });
+    public static void put (String property, JsonElement value) {
+        queue.put(property, value);
     }
 
-    public static synchronized void put (String property, String value) {
-        Main.executorService.submit(() -> {
-            if (jsonObject.has(property)) jsonObject.remove(property);
-            jsonObject.addProperty(property, value);
-
-            write();
-        });
+    public static void put (String property, String value) {
+        queue.put(property, new JsonPrimitive(value));
     }
 
-    public static synchronized void put (String property, boolean value) {
-        Main.executorService.submit(() -> {
-            if (jsonObject.has(property)) jsonObject.remove(property);
-            jsonObject.addProperty(property, value);
-
-            write();
-        });
+    public static void put (String property, boolean value) {
+        queue.put(property, new JsonPrimitive(value));
     }
 
-    public static synchronized void put (String property, int value) {
-        Main.executorService.submit(() -> {
-            if (jsonObject.has(property)) jsonObject.remove(property);
-            jsonObject.addProperty(property, value);
-
-            write();
-        });
+    public static void put (String property, int value) {
+        queue.put(property, new JsonPrimitive(value));
     }
 
-    public static synchronized void put (String property, char value) {
-        Main.executorService.submit(() -> {
-            if (jsonObject.has(property)) jsonObject.remove(property);
-            jsonObject.addProperty(property, value);
-
-            write();
-        });
+    public static void put (String property, char value) {
+        queue.put(property, new JsonPrimitive(value));
     }
 }

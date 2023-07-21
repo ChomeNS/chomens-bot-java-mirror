@@ -69,14 +69,19 @@ public class ChatPlugin extends Bot.Listener {
     public void packetReceived (ClientboundSystemChatPacket packet) {
         final Component component = packet.getContent();
 
-        try {
-            final String key = ((TranslatableComponent) component).key();
+        if (
+                component instanceof TextComponent t_component &&
+                        t_component.content().length() > 15_000
+        ) return;
+
+        if (component instanceof TranslatableComponent t_component) {
+            final String key = t_component.key();
 
             if (
                     key.equals("advMode.setCommand.success") ||
                             key.equals("advMode.notAllowed")
             ) return;
-        } catch (ClassCastException ignored) {}
+        }
 
         PlayerMessage playerMessage = null;
 
@@ -86,20 +91,15 @@ public class ChatPlugin extends Bot.Listener {
         }
 
         boolean isCommandSuggestions = false;
-        try {
-            final String id = ((TextComponent) component).content();
+        if (component instanceof TextComponent t_component) {
+            final String id = t_component.content();
 
             if (id.equals(bot.commandSuggestion.id)) isCommandSuggestions = true;
-        } catch (Exception ignored) {}
-
-        final String string = ComponentUtilities.stringify(component);
-        final String ansi = ComponentUtilities.stringifyAnsi(component);
+        }
 
         for (Listener listener : listeners) {
-            if (string.length() < 25_000) {
-                if (!isCommandSuggestions) listener.systemMessageReceived(component, string, ansi);
-                listener.systemMessageReceived(component, isCommandSuggestions, string, ansi);
-            }
+            if (!isCommandSuggestions) listener.systemMessageReceived(component);
+            listener.systemMessageReceived(component, isCommandSuggestions);
 
             if (playerMessage != null) listener.playerMessageReceived(playerMessage);
         }
@@ -140,13 +140,6 @@ public class ChatPlugin extends Bot.Listener {
 
         final String translation = getTranslationByChatType(packet.getChatType());
 
-        String string = null;
-        String ansi = null;
-        if (translation != null && unsignedContent != null) {
-            string = ComponentUtilities.stringify(unsignedContent);
-            ansi = ComponentUtilities.stringifyAnsi(unsignedContent);
-        }
-
         for (Listener listener : listeners) {
             listener.playerMessageReceived(playerMessage);
 
@@ -163,13 +156,9 @@ public class ChatPlugin extends Bot.Listener {
                     component = component.args(playerMessage.displayName, playerMessage.contents);
                 }
 
-                if (string.length() > 25_000) continue;
-
-                listener.systemMessageReceived(component, string, ansi);
+                listener.systemMessageReceived(component);
             } else {
-                if (string.length() > 25_000) continue;
-
-                listener.systemMessageReceived(unsignedContent, string, ansi);
+                listener.systemMessageReceived(unsignedContent);
             }
         }
     }
@@ -203,10 +192,8 @@ public class ChatPlugin extends Bot.Listener {
                     translatableComponent = translatableComponent.args(name, content);
                 }
 
-                final String string = ComponentUtilities.stringify(component);
-                final String ansi = ComponentUtilities.stringifyAnsi(component);
                 for (Listener listener : listeners) {
-                    listener.systemMessageReceived(translatableComponent, string, ansi);
+                    listener.systemMessageReceived(translatableComponent);
                 }
 
                 for (ChatParser parser : chatParsers) {
@@ -225,15 +212,10 @@ public class ChatPlugin extends Bot.Listener {
 
                 final PlayerMessage playerMessage = new PlayerMessage(parsedFromMessage.sender, packet.getName(), parsedFromMessage.contents);
 
-                final String string = ComponentUtilities.stringify(component);
-                final String ansi = ComponentUtilities.stringifyAnsi(component);
-
                 for (Listener listener : listeners) {
                     listener.playerMessageReceived(playerMessage);
 
-                    if (string.length() > 25_000) continue;
-
-                    listener.systemMessageReceived(component, string, ansi);
+                    listener.systemMessageReceived(component);
                 }
             }
         } catch (Exception e) {
@@ -349,7 +331,7 @@ public class ChatPlugin extends Bot.Listener {
 
     public static class Listener {
         public void playerMessageReceived (PlayerMessage message) {}
-        public void systemMessageReceived (Component component, String string, String ansi) {}
-        public void systemMessageReceived (Component component, boolean isCommandSuggestions, String string, String ansi) {}
+        public void systemMessageReceived (Component component) {}
+        public void systemMessageReceived (Component component, boolean isCommandSuggestions) {}
     }
 }
