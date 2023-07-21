@@ -36,7 +36,10 @@ public class ConsoleServerCommand extends Command {
         for (Bot eachBot : bot.bots) {
             if (String.join(" ", args).equalsIgnoreCase("all")) {
                 eachBot.console.consoleServer = "all";
+
                 context.sendOutput(Component.text("Set the console server to all servers").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)));
+
+                continue;
             }
 
             try {
