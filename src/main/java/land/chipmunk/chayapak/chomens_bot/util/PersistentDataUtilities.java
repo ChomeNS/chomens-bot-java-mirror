@@ -26,19 +26,24 @@ public class PersistentDataUtilities {
         init();
 
         future = Main.executor.scheduleAtFixedRate(() -> {
-            if (queue.size() == 0) return;
+            // TODO: thread-safe
+            try {
+                if (queue.size() == 0) return;
 
-            final Map.Entry<String, JsonElement> entry = queue.entrySet().iterator().next(); // is this the best way to get the first item of the map?
+                final Map.Entry<String, JsonElement> entry = queue.entrySet().iterator().next(); // is this the best way to get the first item of the map?
 
-            final String property = entry.getKey();
-            final JsonElement value = entry.getValue();
+                final String property = entry.getKey();
+                final JsonElement value = entry.getValue();
 
-            if (jsonObject.has(property)) jsonObject.remove(property);
-            jsonObject.add(property, value);
+                if (jsonObject.has(property)) jsonObject.remove(property);
+                jsonObject.add(property, value);
 
-            write(jsonObject.toString());
+                write(jsonObject.toString());
 
-            queue.remove(property);
+                queue.remove(property);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }, 0, 100, TimeUnit.MILLISECONDS);
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -69,7 +74,7 @@ public class PersistentDataUtilities {
         }
     }
 
-    private static synchronized void write (String string) {
+    private static void write (String string) {
         try {
             writer.close();
 
@@ -82,23 +87,23 @@ public class PersistentDataUtilities {
         } catch (IOException ignored) {}
     }
 
-    public static void put (String property, JsonElement value) {
+    public static synchronized void put (String property, JsonElement value) {
         queue.put(property, value);
     }
 
-    public static void put (String property, String value) {
+    public static synchronized void put (String property, String value) {
         queue.put(property, new JsonPrimitive(value));
     }
 
-    public static void put (String property, boolean value) {
+    public static synchronized void put (String property, boolean value) {
         queue.put(property, new JsonPrimitive(value));
     }
 
-    public static void put (String property, int value) {
+    public static synchronized void put (String property, int value) {
         queue.put(property, new JsonPrimitive(value));
     }
 
-    public static void put (String property, char value) {
+    public static synchronized void put (String property, char value) {
         queue.put(property, new JsonPrimitive(value));
     }
 }
