@@ -81,7 +81,7 @@ public class FileLoggerUtilities {
     public static void makeNewLogFile() throws IOException {
         currentLogDate = LocalDate.now();
 
-        Files.createFile(logPath);
+        if (!Files.exists(logPath)) Files.createFile(logPath);
 
         logWriter = Files.newBufferedWriter(logPath, StandardOpenOption.APPEND);
         logWriter.write(currentLogDate.toString() + '\n');
