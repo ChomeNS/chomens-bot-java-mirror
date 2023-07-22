@@ -20,6 +20,7 @@ import land.chipmunk.chayapak.chomens_bot.voiceChat.packets.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 // ALMOST ALL of these codes are from the simple voice chat mod itself including the other voicechat classes
 // mic packet exists but is never sent because i am too lazy to implement the player + evilbot already has a voicechat music player
@@ -117,6 +118,13 @@ public class VoiceChatPlugin extends Bot.Listener {
             final ClientGroup group = ClientGroup.fromBytes(buf);
 
             groups.add(group);
+        } else if (_packet.getChannel().equals("voicechat:remove_group")) {
+            final byte[] bytes = _packet.getData();
+            final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
+
+            final UUID id = buf.readUUID();
+
+            groups.removeIf((group) -> group.id().equals(id));
         }
     }
 
