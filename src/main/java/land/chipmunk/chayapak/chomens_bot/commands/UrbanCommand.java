@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.DiscordCommandContext;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.util.HttpUtilities;
 import net.kyori.adventure.text.Component;
@@ -34,6 +35,8 @@ false
     public Component execute (CommandContext context, String[] args, String[] fullArgs) {
         final Bot bot = context.bot;
 
+        final boolean discord = context instanceof DiscordCommandContext;
+
         final String term = String.join(" ", args);
 
         final Gson gson = new Gson();
@@ -53,7 +56,12 @@ false
 
                 if (list.isEmpty()) context.sendOutput(Component.text("No results found").color(NamedTextColor.RED));
 
+                Component discordComponent = Component.text("*Showing only 3 results because Discord*");
+
+                int count = 0;
                 for (JsonElement element : list) {
+                    if (count >= 3) break;
+
                     final JsonObject definitionObject = element.getAsJsonObject();
 
                     final String word = definitionObject.get("word").getAsString();
@@ -92,15 +100,31 @@ false
                         }
                     }
 
-                    final Component component = Component.translatable(
-                            "[%s] %s - %s",
-                            Component.text("Urban").color(NamedTextColor.RED),
-                            Component.text(word).color(NamedTextColor.GRAY),
-                            definitionComponent
-                    ).color(NamedTextColor.DARK_GRAY);
+                    if (discord) {
+                        discordComponent = discordComponent
+                                .append(
+                                    Component.translatable(
+                                            "%s - %s",
+                                            Component.text(word).color(NamedTextColor.GRAY),
+                                            definitionComponent
+                                    ).color(NamedTextColor.DARK_GRAY)
+                                )
+                                .append(Component.newline());
 
-                    context.sendOutput(component);
+                        count++;
+                    } else {
+                        final Component component = Component.translatable(
+                                "[%s] %s - %s",
+                                Component.text("Urban").color(NamedTextColor.RED),
+                                Component.text(word).color(NamedTextColor.GRAY),
+                                definitionComponent
+                        ).color(NamedTextColor.DARK_GRAY);
+
+                        context.sendOutput(component);
+                    }
                 }
+
+                if (discord) context.sendOutput(discordComponent);
             } catch (Exception e) {
                 e.printStackTrace();
                 context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
