@@ -1,9 +1,7 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.command.Command;
-import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
-import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
+import land.chipmunk.chayapak.chomens_bot.command.*;
 import land.chipmunk.chayapak.chomens_bot.commands.*;
 import land.chipmunk.chayapak.chomens_bot.util.ExceptionUtilities;
 import net.dv8tion.jda.api.entities.Member;
@@ -73,12 +71,13 @@ public class CommandHandlerPlugin {
     public Component executeCommand (
             String input,
             CommandContext context,
-            boolean inGame,
-            boolean discord,
-            boolean console,
             MessageReceivedEvent event
     ) {
         if (disabled) return null;
+
+        final boolean inGame = context instanceof PlayerCommandContext;
+        final boolean discord = context instanceof DiscordCommandContext;
+        final boolean console = context instanceof ConsoleCommandContext;
 
         final String[] splitInput = input.trim().split("\\s+");
 
