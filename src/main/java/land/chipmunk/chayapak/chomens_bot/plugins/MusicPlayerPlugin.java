@@ -110,6 +110,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                         bossBar.setTitle(generateBossbar());
                         bossBar.setColor(pitch > 0 ? BossBarColor.PURPLE : BossBarColor.YELLOW);
                         bossBar.setValue((int) Math.floor(((double) currentSong.time / 1000) * speed));
+                        bossBar.setMax((long) ((currentSong.length / 1000) * speed));
                     }
 
                     if (currentSong.paused || bot.core.isRateLimited()) return;
