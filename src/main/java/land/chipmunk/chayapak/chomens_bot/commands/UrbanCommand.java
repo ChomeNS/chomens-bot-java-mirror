@@ -56,7 +56,7 @@ false
 
                 if (list.isEmpty()) context.sendOutput(Component.text("No results found").color(NamedTextColor.RED));
 
-                Component discordComponent = Component.text("*Showing only 3 results because Discord*");
+                Component discordComponent = Component.text("*Showing only 3 results because Discord*").append(Component.newline());
 
                 int count = 0;
                 for (JsonElement element : list) {
