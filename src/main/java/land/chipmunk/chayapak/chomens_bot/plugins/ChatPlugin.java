@@ -226,6 +226,8 @@ public class ChatPlugin extends Bot.Listener {
     private void sendChatTick () {
         if (queue.isEmpty()) return;
 
+        if (queue.size() > 50) queue.clear(); // detects spam, like spamming *echo for example
+
         final String message = queue.get(0);
 
         if (message.startsWith("/")) {
