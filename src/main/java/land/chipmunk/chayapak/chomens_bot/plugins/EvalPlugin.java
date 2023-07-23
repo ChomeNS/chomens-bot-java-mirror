@@ -6,12 +6,12 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.EvalOutput;
-import land.chipmunk.chayapak.chomens_bot.evalFunctions.ChatFunction;
-import land.chipmunk.chayapak.chomens_bot.evalFunctions.CoreFunction;
-import land.chipmunk.chayapak.chomens_bot.evalFunctions.CorePlaceBlockFunction;
-import land.chipmunk.chayapak.chomens_bot.evalFunctions.EvalFunction;
+import land.chipmunk.chayapak.chomens_bot.evalFunctions.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class EvalPlugin {
@@ -33,6 +33,7 @@ public class EvalPlugin {
         functions.add(new CoreFunction(bot));
         functions.add(new CorePlaceBlockFunction(bot));
         functions.add(new ChatFunction(bot));
+        functions.add(new GetPlayerListFunction(bot));
 
         try {
             socket = IO.socket(bot.config.eval.address);
@@ -55,7 +56,13 @@ public class EvalPlugin {
         socket.on(Socket.EVENT_DISCONNECT, (args) -> connected = false);
         socket.on(Socket.EVENT_CONNECT_ERROR, (args) -> connected = false);
 
-        for (EvalFunction function : functions) socket.on(BRIDGE_PREFIX + function.name, function::execute);
+        for (EvalFunction function : functions) {
+            socket.on(BRIDGE_PREFIX + function.name, args -> {
+                final EvalFunction.Output output = function.execute(args);
+
+                socket.emit("functionOutput:" + function.name, output.message, output.parseJSON);
+            });
+        }
 
         socket.on("codeOutput", (args) -> {
             final int id = (int) args[0];

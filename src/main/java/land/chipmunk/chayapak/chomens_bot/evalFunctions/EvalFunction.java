@@ -1,7 +1,6 @@
 package land.chipmunk.chayapak.chomens_bot.evalFunctions;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.data.EvalOutput;
 
 public class EvalFunction {
     public final String name;
@@ -16,5 +15,15 @@ public class EvalFunction {
         this.bot = bot;
     }
 
-    public void execute (Object ...args) {}
+    public Output execute (Object ...args) { return null; }
+
+    public static class Output {
+        public final String message;
+        public final boolean parseJSON;
+
+        public Output (String message, boolean parseJSON) {
+            this.message = message;
+            this.parseJSON = parseJSON;
+        }
+    }
 }

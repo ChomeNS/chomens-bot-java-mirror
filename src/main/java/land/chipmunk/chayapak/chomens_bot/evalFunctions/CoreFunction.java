@@ -8,9 +8,11 @@ public class CoreFunction extends EvalFunction {
     }
 
     @Override
-    public void execute(Object... args) {
+    public Output execute(Object... args) {
         final String command = (String) args[0];
 
         bot.core.run(command);
+
+        return null;
     }
 }

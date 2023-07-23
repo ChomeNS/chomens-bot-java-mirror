@@ -8,9 +8,11 @@ public class CorePlaceBlockFunction extends EvalFunction {
     }
 
     @Override
-    public void execute(Object... args) {
+    public Output execute(Object... args) {
         final String command = (String) args[0];
 
         bot.core.runPlaceBlock(command);
+
+        return null;
     }
 }
