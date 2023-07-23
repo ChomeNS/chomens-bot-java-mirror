@@ -60,6 +60,8 @@ public class EvalPlugin {
             socket.on(BRIDGE_PREFIX + function.name, args -> {
                 final EvalFunction.Output output = function.execute(args);
 
+                if (output == null) return;
+
                 socket.emit("functionOutput:" + function.name, output.message, output.parseJSON);
             });
         }
