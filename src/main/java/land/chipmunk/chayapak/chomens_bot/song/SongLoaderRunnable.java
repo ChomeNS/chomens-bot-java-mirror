@@ -6,18 +6,19 @@ import land.chipmunk.chayapak.chomens_bot.util.DownloadUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.io.File;
+import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Path;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.stream.Stream;
 
 // Author: _ChipMC_ or hhhzzzsss? also i modified it to use runnable
 // because thread = bad !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 public class SongLoaderRunnable implements Runnable {
   public final String fileName;
 
-  private File songPath;
+  private Path songPath;
   private URL songUrl;
   public SongLoaderException exception;
   public Song song;
@@ -39,24 +40,26 @@ public class SongLoaderRunnable implements Runnable {
   public SongLoaderRunnable(Path location, Bot bot) {
     this.bot = bot;
     isUrl = false;
-    songPath = location.toFile();
+    songPath = location;
 
-    isFolder = songPath.isDirectory();
+    isFolder = Files.isDirectory(songPath);
 
     fileName = location.getFileName().toString();
   }
 
   public void run () {
     if (isFolder && !isUrl) {
-      final File[] files = songPath.listFiles();
+      try (Stream<Path> files = Files.list(songPath)) {
+        if (files != null) {
+          files.forEach((file) -> {
+            songPath = file;
+            processFile();
+          });
 
-      if (files != null) {
-        for (File file : files) {
-          songPath = file;
-          processFile();
+          showAddedToQueue();
         }
-
-        showAddedToQueue();
+      } catch (IOException e) {
+        e.printStackTrace();
       }
     } else processFile();
   }
@@ -69,8 +72,8 @@ public class SongLoaderRunnable implements Runnable {
         bytes = DownloadUtilities.DownloadToByteArray(songUrl, 10*1024*1024);
         name = Paths.get(songUrl.toURI().getPath()).getFileName().toString();
       } else {
-        bytes = Files.readAllBytes(songPath.toPath());
-        name = songPath.getName();
+        bytes = Files.readAllBytes(songPath);
+        name = fileName;
       }
     } catch (Exception e) {
       exception = new SongLoaderException(Component.text(e.getMessage()));

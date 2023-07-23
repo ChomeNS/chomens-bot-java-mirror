@@ -16,6 +16,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ false
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         if (args.length < 1) return Component.text("Not enough arguments").color(NamedTextColor.RED);
 
-        root = Path.of(MusicPlayerPlugin.SONG_DIR.getPath());
+        root = MusicPlayerPlugin.SONG_DIR;
         return switch (args[0]) {
             case "play", "playurl", "playnbs", "playnbsurl" -> play(context, args);
             case "stop" -> stop(context);
@@ -202,8 +203,7 @@ false
         final List<Component> fullList = new ArrayList<>();
         int i = 0;
         for (String filename : filenames) {
-            final String pathString = path.toString();
-            final File file = new File(Paths.get(pathString, filename).toUri());
+            final boolean isDirectory = Files.isDirectory(path);
 
             Path location;
             try {
@@ -219,7 +219,7 @@ false
                                     ClickEvent.suggestCommand(
                                             prefix +
                                                     name +
-                                                    (file.isFile() ? " play " : " list ") +
+                                                    (isDirectory ? " list " : " play ") +
                                                     joinedPath
                                     )
                             )

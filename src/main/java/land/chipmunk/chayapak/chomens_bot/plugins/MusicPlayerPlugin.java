@@ -14,8 +14,9 @@ import land.chipmunk.chayapak.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -26,9 +27,13 @@ public class MusicPlayerPlugin extends Bot.Listener {
     private final Bot bot;
 
     public static final String SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic]";
-    public static final File SONG_DIR = new File("songs");
+    public static final Path SONG_DIR = Path.of("songs");
     static {
-        if (!SONG_DIR.exists()) SONG_DIR.mkdir();
+        try {
+            if (!Files.exists(SONG_DIR)) Files.createDirectory(SONG_DIR);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Song currentSong;

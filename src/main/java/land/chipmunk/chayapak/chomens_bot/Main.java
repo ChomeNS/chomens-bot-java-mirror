@@ -15,6 +15,8 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -37,11 +39,12 @@ public class Main {
     private static Configuration config;
 
     public static void main(String[] args) throws IOException {
-        final File file = new File("config.yml");
+        final Path configPath = Path.of("config.yml");
+
         final Constructor constructor = new Constructor(Configuration.class, new LoaderOptions());
         final Yaml yaml = new Yaml(constructor);
 
-        if (!file.exists()) {
+        if (!Files.exists(configPath)) {
             // creates config file from default-config.yml
             InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("default-config.yml");
 
@@ -56,14 +59,14 @@ public class Main {
             String defaultConfig = stringBuilder.toString();
 
             // writes it
-            BufferedWriter configWriter = new BufferedWriter(new FileWriter(file));
+            BufferedWriter configWriter = Files.newBufferedWriter(configPath);
             configWriter.write(defaultConfig);
             configWriter.close();
 
             LoggerUtilities.info("config.yml file not found, so the default one was created");
         }
 
-        InputStream opt = new FileInputStream(file);
+        InputStream opt = Files.newInputStream(configPath);
         BufferedReader reader = new BufferedReader(new InputStreamReader(opt));
 
         config = yaml.load(reader);
