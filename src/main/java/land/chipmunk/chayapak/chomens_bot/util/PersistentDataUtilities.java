@@ -12,22 +12,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 
 public class PersistentDataUtilities {
     public static final Path path = Path.of("persistent.json");
-
-    public static Stream<?> file;
 
     private static BufferedWriter writer;
 
     public static JsonObject jsonObject = new JsonObject();
 
-    private static final Map<String, JsonElement> queue = new LinkedHashMap<>();
+    private static final Map<String, JsonElement> queue = new ConcurrentHashMap<>();
 
     private static final ScheduledFuture<?> future;
 
