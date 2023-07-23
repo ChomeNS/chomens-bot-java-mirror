@@ -124,7 +124,7 @@ false
                     }
                 }
 
-                if (discord) context.sendOutput(discordComponent);
+                if (discord && !list.isEmpty()) context.sendOutput(discordComponent);
             } catch (Exception e) {
                 e.printStackTrace();
                 context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
