@@ -52,8 +52,6 @@ public class CorePlugin extends PositionPlugin.Listener {
     private int nextTransactionId = 0;
     private final Map<Integer, CompletableFuture<CompoundTag>> transactions = new HashMap<>();
 
-    private final List<Runnable> afterTicks = new ArrayList<>();
-
     private final boolean kaboom;
 
     private int commandsPerSecond = 0;
@@ -165,7 +163,9 @@ public class CorePlugin extends PositionPlugin.Listener {
         final CompletableFuture<CompoundTag> future = new CompletableFuture<>();
         transactions.put(transactionId, future);
 
-        afterTicks.add(() -> bot.session.send(new ServerboundBlockEntityTagQuery(transactionId, beforeBlock)));
+        final Runnable afterTick = () -> bot.session.send(new ServerboundBlockEntityTagQuery(transactionId, beforeBlock));
+
+        bot.executor.schedule(afterTick, 50, TimeUnit.MILLISECONDS);
 
         return future;
     }
@@ -198,16 +198,6 @@ public class CorePlugin extends PositionPlugin.Listener {
 
     public void packetReceived (ClientboundBlockUpdatePacket packet) {
         final BlockChangeEntry entry = packet.getEntry();
-
-        if (isCommandBlockUpdate(entry.getBlock())) {
-            for (Runnable runnable : afterTicks) {
-                runnable.run();
-            }
-
-            afterTicks.clear();
-
-            return;
-        }
 
         final Vector3i position = entry.getPosition();
 
