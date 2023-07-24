@@ -6,11 +6,11 @@ import land.chipmunk.chayapak.chomens_bot.util.LoggerUtilities;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
-import javax.security.auth.login.LoginException;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
@@ -85,13 +85,10 @@ public class Main {
         JDA jda = null;
         if (config.discord.enabled) {
             JDABuilder builder = JDABuilder.createDefault(config.discord.token);
+            builder.enableIntents(GatewayIntent.MESSAGE_CONTENT);
             try {
                 jda = builder.build();
                 jda.awaitReady();
-            } catch (LoginException e) {
-                LoggerUtilities.error("Failed to login to Discord, stacktrace:");
-                e.printStackTrace();
-                System.exit(1);
             } catch (InterruptedException ignored) {
                 System.exit(1);
             }

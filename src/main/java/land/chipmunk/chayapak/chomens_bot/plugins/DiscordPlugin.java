@@ -6,12 +6,16 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Configuration;
 import land.chipmunk.chayapak.chomens_bot.Main;
 import land.chipmunk.chayapak.chomens_bot.command.DiscordCommandContext;
+import land.chipmunk.chayapak.chomens_bot.util.CodeBlockUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
-import land.chipmunk.chayapak.chomens_bot.util.CodeBlockUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.LoggerUtilities;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
@@ -24,8 +28,8 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 // please ignore my ohio code
 // also this is one of the classes which has >100 lines or actually >300 LMAO
@@ -120,7 +124,7 @@ public class DiscordPlugin {
             jda.addEventListener(new ListenerAdapter() {
                 @Override
                 public void onMessageReceived(@NotNull MessageReceivedEvent event) {
-                    // TODO: IMPROVE this code because why make 174 lines just for a fucking single discord message
+                    // TODO: IMPROVE this code
                     if (
                             !event.getChannel().getId().equals(channelId) ||
                                     event.getAuthor().getId().equals(jda.getSelfUser().getId()) ||
@@ -128,7 +132,7 @@ public class DiscordPlugin {
                     ) return;
 
                     final Message messageEvent = event.getMessage();
-                    final String message = messageEvent.getContentRaw();
+                    final String message = messageEvent.getContentDisplay();
 
                     if (message.startsWith(prefix)) {
                         final DiscordCommandContext context = new DiscordCommandContext(bot, prefix, event);
@@ -187,11 +191,9 @@ public class DiscordPlugin {
                     }
 
                     final Member member = event.getMember();
-                    final String tag = member == null ? "0000" : member.getUser().getDiscriminator();
 
-                    String name = member == null ? null : member.getNickname();
                     final String fallbackName = event.getAuthor().getName();
-                    if (name == null) name = fallbackName;
+                    String name = member == null ? fallbackName : member.getEffectiveName();
 
                     final List<Role> roles = member == null ? Collections.emptyList() : member.getRoles();
 
@@ -228,17 +230,16 @@ public class DiscordPlugin {
 
                     Component nameComponent = Component
                             .text(name)
-                            .clickEvent(ClickEvent.copyToClipboard(fallbackName + "#" + tag))
+                            .clickEvent(ClickEvent.copyToClipboard(fallbackName))
                             .hoverEvent(
                                     HoverEvent.showText(
                                             Component.translatable(
                                                     """
-                                                            %s#%s
+                                                            %s
                                                             %s
                                                             
                                                             %s""",
                                                     Component.text(fallbackName).color(NamedTextColor.WHITE),
-                                                    Component.text(tag).color(NamedTextColor.GRAY),
                                                     rolesComponent,
                                                     Component.text("Click here to copy the tag to your clipboard").color(NamedTextColor.GREEN)
                                             ).color(NamedTextColor.DARK_GRAY)
@@ -324,6 +325,7 @@ public class DiscordPlugin {
 
     public void sendMessageInstantly (String message, String channelId) {
         if (jda == null) return;
+
         final TextChannel logChannel = jda.getTextChannelById(channelId);
 
         if (logChannel == null) {
@@ -333,7 +335,11 @@ public class DiscordPlugin {
 
         logChannel.sendMessage(message).queue(
                 (msg) -> doneSendingInLogs.put(channelId, true),
-                (err) -> doneSendingInLogs.put(channelId, false)
+                (err) -> {
+                    err.printStackTrace();
+
+                    doneSendingInLogs.put(channelId, false);
+                }
         );
     }
 

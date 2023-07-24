@@ -21,7 +21,7 @@ public class CommandBlockCommand extends Command {
                 new String[] { "<{command}>" },
                 new String[] { "cmd", "commandblock", "run" },
                 TrustLevel.PUBLIC,
-false
+                false
         );
     }
 

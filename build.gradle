@@ -26,10 +26,6 @@ repositories {
     }
 
     maven {
-        url = uri('https://m2.dv8tion.net/releases')
-    }
-
-    maven {
         url = uri('https://repo.maven.apache.org/maven2/')
     }
 
@@ -45,7 +41,7 @@ dependencies {
     implementation 'com.github.ricksbrown:cowsay:1.1.0'
     implementation 'org.yaml:snakeyaml:2.0'
     implementation 'org.luaj:luaj-jse:3.0.1'
-    implementation 'net.dv8tion:JDA:4.4.0_350'
+    implementation 'net.dv8tion:JDA:5.0.0-beta.12'
     implementation 'joda-time:joda-time:2.12.4'
     implementation 'net.kyori:adventure-text-serializer-legacy:4.13.1'
     implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.20.0'
