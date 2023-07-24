@@ -364,6 +364,9 @@ public class DiscordPlugin {
                 }
                 logMessage.setLength(0);
             }
+
+            if (message.trim().isBlank()) return;
+
             sendMessageInstantly("```ansi\n" + message + "\n```", channelId);
         }
     }
