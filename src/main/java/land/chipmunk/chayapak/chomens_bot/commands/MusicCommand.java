@@ -14,11 +14,10 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -184,62 +183,75 @@ false
 
         final String prefix = context.prefix;
 
-        final Path _path = Path.of(root.toString(), String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
-        final Path path = (args.length < 2) ? root : _path;
+        final Path path = (args.length < 2) ?
+                root :
+                Path.of(
+                        root.toString(),
+                        String.join(" ", Arrays.copyOfRange(args, 1, args.length))
+                );
 
         if (!path.normalize().startsWith(root.toString())) return Component.text("no").color(NamedTextColor.RED);
 
-        final String[] filenames = path.toFile().list();
-        if (filenames == null) return Component.text("Directory doesn't exist").color(NamedTextColor.RED);
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
+            final List<Path> paths = new ArrayList<>();
+            for (Path eachPath : stream) paths.add(eachPath);
 
-        Arrays.sort(filenames, (s1, s2) -> {
-            int result = s1.compareToIgnoreCase(s2);
-            if (result == 0) {
-                return s2.compareTo(s1);
+            paths.sort((p1, p2) -> {
+                final String s1 = p1.getFileName().toString();
+                final String s2 = p2.getFileName().toString();
+
+                int result = s1.compareToIgnoreCase(s2);
+                if (result == 0) {
+                    return s2.compareTo(s1);
+                }
+                return result;
+            });
+
+            final List<Component> fullList = new ArrayList<>();
+            int i = 0;
+            for (Path eachPath : paths) {
+                final boolean isDirectory = Files.isDirectory(eachPath);
+
+                Path location;
+                try {
+                    location = path;
+                } catch (IllegalArgumentException e) {
+                    location = Paths.get(""); // wtf mabe
+                }
+
+                final String joinedPath = (args.length < 2) ? eachPath.getFileName().toString() : Paths.get(location.getFileName().toString(), eachPath.getFileName().toString()).toString();
+
+                fullList.add(
+                        Component
+                                .text(eachPath.getFileName().toString(), (i++ & 1) == 0 ? ColorUtilities.getColorByString(bot.config.colorPalette.primary) : ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                                .clickEvent(
+                                        ClickEvent.suggestCommand(
+                                                prefix +
+                                                        name +
+                                                        (isDirectory ? " list " : " play ") +
+                                                        joinedPath
+                                        )
+                                )
+                );
             }
-            return result;
-        });
 
-        final List<Component> fullList = new ArrayList<>();
-        int i = 0;
-        for (String filename : filenames) {
-            final boolean isDirectory = Files.isDirectory(path);
+            final int eachSize = 100;
 
-            Path location;
-            try {
-                location = path;
-            } catch (IllegalArgumentException e) {
-                location = Paths.get(""); // wtf mabe
+            int index = 0;
+
+            while (index <= fullList.size()) {
+                // we MUST make a new copy of the list else everything will fard..,.
+                List<Component> list = new ArrayList<>(fullList).subList(index, Math.min(index + eachSize, fullList.size()));
+
+                final Component component = Component.join(JoinConfiguration.separator(Component.space()), list);
+                context.sendOutput(component);
+
+                index += eachSize;
+                list.clear();
             }
-            final String joinedPath = (args.length < 2) ? filename : Paths.get(location.getFileName().toString(), filename).toString();
-            fullList.add(
-                    Component
-                            .text(filename, (i++ & 1) == 0 ? ColorUtilities.getColorByString(bot.config.colorPalette.primary) : ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
-                            .clickEvent(
-                                    ClickEvent.suggestCommand(
-                                            prefix +
-                                                    name +
-                                                    (isDirectory ? " list " : " play ") +
-                                                    joinedPath
-                                    )
-                            )
-            );
-        }
-
-        final int eachSize = 100;
-
-        int index = 0;
-
-        while (index <= fullList.size()) {
-            // we MUST make a new copy of the list else everything will fard..,.
-            List<Component> list = new ArrayList<>(fullList).subList(index, Math.min(index + eachSize, fullList.size()));
-
-            final Component component = Component.join(JoinConfiguration.separator(Component.space()), list);
-            context.sendOutput(component);
-
-            index += eachSize;
-            list.clear();
-        }
+        } catch (NotDirectoryException e) {
+            return Component.text("Directory doesn't exist").color(NamedTextColor.RED);
+        } catch (IOException ignored) {}
 
         return null;
     }

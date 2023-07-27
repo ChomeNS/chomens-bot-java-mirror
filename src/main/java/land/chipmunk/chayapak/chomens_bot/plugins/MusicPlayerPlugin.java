@@ -260,8 +260,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     public void stopPlaying () {
-        currentSong = null;
         removeBossBar();
+        currentSong = null;
     }
 
     @Override
