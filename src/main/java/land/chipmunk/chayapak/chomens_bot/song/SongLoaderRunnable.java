@@ -73,7 +73,7 @@ public class SongLoaderRunnable implements Runnable {
         name = Paths.get(songUrl.toURI().getPath()).getFileName().toString();
       } else {
         bytes = Files.readAllBytes(songPath);
-        name = fileName;
+        name = !isFolder ? fileName : songPath.getFileName().toString();
       }
     } catch (Exception e) {
       exception = new SongLoaderException(Component.text(e.getMessage()));
