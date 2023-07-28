@@ -3,18 +3,18 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Configuration;
 import land.chipmunk.chayapak.chomens_bot.Main;
+import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.ConsoleCommandContext;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.dv8tion.jda.api.JDA;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.jline.reader.LineReader;
-import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConsolePlugin {
+public class ConsolePlugin implements Completer {
     private final List<Bot> allBots;
 
     public final LineReader reader;
@@ -27,7 +27,10 @@ public class ConsolePlugin {
 
     public ConsolePlugin (List<Bot> allBots, Configuration discordConfig, JDA jda) {
         this.allBots = allBots;
-        this.reader = LineReaderBuilder.builder().build();
+        this.reader = LineReaderBuilder
+                .builder()
+                .completer(this)
+                .build();
 
         reader.option(LineReader.Option.DISABLE_EVENT_EXPANSION, true);
 
@@ -57,6 +60,25 @@ public class ConsolePlugin {
         });
 
         for (Listener listener : listeners) { listener.ready(); }
+    }
+
+    @Override
+    public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
+        if (!line.line().startsWith(".")) return;
+
+        final String command = line.line().substring(prefix.length());
+
+        final List<Command> commands = CommandHandlerPlugin.commands;
+
+        final List<String> commandNames = commands.stream().map((eachCommand) -> eachCommand.name).toList();
+
+        final List<Candidate> filteredCommands = commandNames
+                .stream()
+                .filter((eachCommand) -> eachCommand.startsWith(command))
+                .map((eachCommand) -> new Candidate(prefix + eachCommand))
+                .toList();
+
+        candidates.addAll(filteredCommands);
     }
 
     public void handleLine (String line) {
