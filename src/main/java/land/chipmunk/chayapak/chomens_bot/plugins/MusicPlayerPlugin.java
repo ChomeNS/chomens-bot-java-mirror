@@ -127,7 +127,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                     if (currentSong.finished()) {
                         if (loop == Loop.CURRENT) {
-                            currentSong.setTime(0);
+                            currentSong.loop();
                             return;
                         }
 

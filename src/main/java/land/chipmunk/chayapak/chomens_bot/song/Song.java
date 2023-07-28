@@ -105,6 +105,15 @@ public class Song {
     }
   }
 
+  public void loop () {
+    position = 0;
+    startTime += length - loopPosition;
+    time -= length - loopPosition;
+    while (position < notes.size() && notes.get(position).time < loopPosition) {
+      position++;
+    }
+  }
+
   public Note getNextNote () {
     if (position >= notes.size()) {
       if (bot.music.loop == Loop.OFF) return null;
