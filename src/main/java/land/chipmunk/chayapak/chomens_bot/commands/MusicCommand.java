@@ -122,7 +122,7 @@ false
             }
         } catch (MalformedURLException e) {
             return Component.text("Invalid URL").color(NamedTextColor.RED);
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             return Component.text("Song not found").color(NamedTextColor.RED);
         } catch (Exception e) {
             return Component.text(e.toString()).color(NamedTextColor.RED);
