@@ -169,7 +169,7 @@ public class Bot {
 
                     session.send(
                             new ServerboundClientInformationPacket(
-                                    "en-us",
+                                    ComponentUtilities.language.getOrDefault("language.code", "en-us"),
                                     16,
                                     ChatVisibility.FULL,
                                     true,

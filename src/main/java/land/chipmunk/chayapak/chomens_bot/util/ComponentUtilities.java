@@ -29,7 +29,7 @@ public class ComponentUtilities {
     }
 
     // component parsing
-    private static final Map<String, String> language = loadJsonStringMap("language.json");
+    public static final Map<String, String> language = loadJsonStringMap("language.json");
     private static final Map<String, String> voiceChatLanguage = loadJsonStringMap("voiceChatLanguage.json");
     private static final Map<String, String> keybinds = loadJsonStringMap("keybinds.json");
 
