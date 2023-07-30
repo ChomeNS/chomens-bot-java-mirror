@@ -83,7 +83,7 @@ public class FileLoggerUtilities {
 
         if (!Files.exists(logPath)) Files.createFile(logPath);
 
-        logWriter = Files.newBufferedWriter(logPath, StandardOpenOption.WRITE);
+        logWriter = Files.newBufferedWriter(logPath, StandardOpenOption.TRUNCATE_EXISTING);
         logWriter.write(currentLogDate.toString() + '\n');
         logWriter.flush();
     }

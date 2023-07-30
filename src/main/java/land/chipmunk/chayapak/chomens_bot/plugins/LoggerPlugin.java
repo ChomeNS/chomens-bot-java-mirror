@@ -46,8 +46,18 @@ public class LoggerPlugin extends ChatPlugin.Listener {
 
             @Override
             public void disconnected (DisconnectedEvent event) {
-                final String reason = ComponentUtilities.stringifyAnsi(event.getReason());
-                log("Disconnected from " + bot.host + ":" + bot.port + ", reason: " + reason);
+                final Component reason = event.getReason();
+
+                final String message = "Disconnected from " + bot.host + ":" + bot.port + ", reason: ";
+
+                final String string = ComponentUtilities.stringify(reason);
+
+                if (logToConsole) {
+                    final String ansi = ComponentUtilities.stringifyAnsi(reason);
+
+                    log(message + ansi, false, true);
+                }
+                log(message + string, true, false);
             }
         });
     }
