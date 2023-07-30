@@ -15,6 +15,8 @@ public class Configuration {
 
     public InternetCheck internetCheck = new InternetCheck();
 
+    public Backup backup = new Backup();
+
     public String weatherApiKey;
 
     public Core core = new Core();
@@ -33,6 +35,11 @@ public class Configuration {
     public static class InternetCheck {
         public boolean enabled = true;
         public String address = "https://sus.red";
+    }
+
+    public static class Backup {
+        public boolean enabled = false;
+        public String address = "http://fard.sex/check";
     }
 
     public static class Keys {

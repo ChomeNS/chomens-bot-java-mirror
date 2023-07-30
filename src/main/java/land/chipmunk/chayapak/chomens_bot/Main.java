@@ -12,6 +12,7 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
@@ -37,6 +38,8 @@ public class Main {
     );
 
     private static Configuration config;
+
+    private static boolean alreadyStarted = false;
 
     public static void main(String[] args) throws IOException {
         final Path configPath = Path.of("config.yml");
@@ -78,6 +81,33 @@ public class Main {
                 e.printStackTrace();
             }
         }, 0, 1, TimeUnit.MINUTES);
+
+        if (!config.backup.enabled) {
+            initializeBots();
+            return;
+        }
+
+        executor.scheduleAtFixedRate(() -> {
+            boolean reachable;
+
+            try {
+                reachable = InetAddress.getByName(config.backup.address).isReachable(5000);
+            } catch (IOException e) {
+                reachable = false;
+            }
+
+            if (!reachable) {
+                LoggerUtilities.info("Main instance is down! Starting backup instance");
+
+                initializeBots();
+            } else if (alreadyStarted) {
+                System.exit(1);
+            }
+        }, 0, 1, TimeUnit.MINUTES);
+    }
+
+    public static void initializeBots() {
+        alreadyStarted = true;
 
         Configuration.BotOption[] botsOptions = config.bots;
 
