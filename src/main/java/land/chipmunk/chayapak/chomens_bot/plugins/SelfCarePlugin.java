@@ -71,6 +71,7 @@ public class SelfCarePlugin extends Bot.Listener {
                 else if (string.startsWith("You now have the tag: ")) prefix = false;
 
                 else if (string.equals("Successfully set your username to \"" + bot.username + "\"")) username = true;
+                else if (string.startsWith("You already have the username \"")) username = true;
                 else if (string.startsWith("Successfully set your username to \"")) username = false;
             }
         });
