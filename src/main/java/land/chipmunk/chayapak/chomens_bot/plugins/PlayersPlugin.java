@@ -205,8 +205,6 @@ public class PlayersPlugin extends Bot.Listener {
 
             final JsonObject player = playersObject.get(getName(target)).getAsJsonObject();
 
-            if (player.has("lastSeen")) player.remove("lastSeen");
-
             final JsonObject object = new JsonObject();
             object.addProperty("time", Instant.now().toEpochMilli());
             object.addProperty("server", bot.host + ":" + bot.port);

@@ -41,7 +41,6 @@ public class PersistentDataUtilities {
                 final String property = entry.getKey();
                 final JsonElement value = entry.getValue();
 
-                if (jsonObject.has(property)) jsonObject.remove(property);
                 jsonObject.add(property, value);
 
                 write(jsonObject.toString());
