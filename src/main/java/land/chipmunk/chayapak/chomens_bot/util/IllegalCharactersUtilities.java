@@ -1,14 +1,22 @@
 package land.chipmunk.chayapak.chomens_bot.util;
 
-// Original code made by _ChipMC_ IIRC and I ported it to Java
 public class IllegalCharactersUtilities {
-    public static boolean isAllowedCharacter (char character) {
-        return character != '§' && character != '\u007f';
-    }
+    public static String stripIllegalCharacters(String string) {
+        final StringBuilder replaced = new StringBuilder();
 
-    public static boolean containsIllegalCharacters (String string) {
-        for (int i = 0; i < string.length(); i++) if (!isAllowedCharacter(string.charAt(i))) return true;
+        for (char character : string.toCharArray()) {
+            if (
+                    character == '§' ||
+                            character == '\u007f' ||
 
-        return false;
+                            // check if character is a control code, also space is the first character after
+                            // the control characters so this is why we can do `character < ' '`
+                            character < ' '
+            ) continue;
+
+            replaced.append(character);
+        }
+
+        return replaced.toString();
     }
 }

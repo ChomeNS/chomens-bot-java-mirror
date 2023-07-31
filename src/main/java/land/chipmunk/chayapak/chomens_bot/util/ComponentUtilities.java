@@ -166,25 +166,37 @@ public class ComponentUtilities {
         return new PartiallyStringified("", null);
     }
 
-    public static String getStyle (Style style) {
-        if (style == null) return null;
+    public static String getStyle (Style textStyle, boolean motd) {
+        if (textStyle == null) return null;
 
-        StringBuilder ansiStyle = new StringBuilder();
+        StringBuilder style = new StringBuilder();
 
-        for (Map.Entry<TextDecoration, TextDecoration.State> decorationEntry : style.decorations().entrySet()) {
+        for (Map.Entry<TextDecoration, TextDecoration.State> decorationEntry : textStyle.decorations().entrySet()) {
             final TextDecoration decoration = decorationEntry.getKey();
             final TextDecoration.State state = decorationEntry.getValue();
 
             if (state == TextDecoration.State.NOT_SET || state == TextDecoration.State.FALSE) continue;
 
-            if (decoration == TextDecoration.BOLD) ansiStyle.append(ansiMap.get("l"));
-            else if (decoration == TextDecoration.ITALIC) ansiStyle.append(ansiMap.get("o"));
-            else if (decoration == TextDecoration.OBFUSCATED) ansiStyle.append(ansiMap.get("k"));
-            else if (decoration == TextDecoration.UNDERLINED) ansiStyle.append(ansiMap.get("n"));
-            else if (decoration == TextDecoration.STRIKETHROUGH) ansiStyle.append(ansiMap.get("m"));
+            if (!motd) {
+                switch (decoration) {
+                    case BOLD -> style.append(ansiMap.get("l"));
+                    case ITALIC -> style.append(ansiMap.get("o"));
+                    case OBFUSCATED -> style.append(ansiMap.get("k"));
+                    case UNDERLINED -> style.append(ansiMap.get("n"));
+                    case STRIKETHROUGH -> style.append(ansiMap.get("m"));
+                }
+            } else {
+                switch (decoration) {
+                    case BOLD -> style.append("§l");
+                    case ITALIC -> style.append("§o");
+                    case OBFUSCATED -> style.append("§k");
+                    case UNDERLINED -> style.append("§n");
+                    case STRIKETHROUGH -> style.append("§m");
+                }
+            }
         }
 
-        return ansiStyle.toString();
+        return style.toString();
     }
 
     public static String getColor (TextColor color, boolean motd, boolean ansi) {
@@ -237,7 +249,7 @@ public class ComponentUtilities {
     public static PartiallyStringified stringifyPartially (TextComponent message, boolean motd, boolean ansi, String lastColor) {
         if ((motd || ansi) && /* don't color big messages -> */ message.content().length() < 25_000) {
             final String color = getColor(message.color(), motd, ansi);
-            final String style = getStyle(message.style());
+            final String style = getStyle(message.style(), motd);
 
             String replacedContent = message.content();
             // seems very mabe mabe
@@ -252,7 +264,7 @@ public class ComponentUtilities {
             }
 
             // messy af
-            return new PartiallyStringified((lastColor != null ? lastColor : "") + (style != null ? style : "") + (color != null ? color : "") + replacedContent + (ansi ? ansiMap.get("r") : ""), color);
+            return new PartiallyStringified((lastColor != null ? lastColor : "") + (color != null ? color : "") + (style != null ? style : "") + replacedContent + (ansi ? ansiMap.get("r") : ""), color);
         }
 
         return new PartiallyStringified(message.content(), null);
@@ -265,7 +277,7 @@ public class ComponentUtilities {
         Matcher matcher = ARG_PATTERN.matcher(format);
         StringBuilder sb = new StringBuilder();
 
-        final String style = getStyle(message.style());
+        final String style = getStyle(message.style(), motd);
         final String _color = getColor(message.color(), motd, ansi);
         String color;
         if (_color == null) color = "";
@@ -298,16 +310,16 @@ public class ComponentUtilities {
         }
         matcher.appendTail(sb);
 
-        return new PartiallyStringified((lastColor != null ? lastColor : "") + (style != null && ansi ? style : "") + color + sb + (ansi ? ansiMap.get("r") : ""), _color);
+        return new PartiallyStringified((lastColor != null ? lastColor : "") + color + (style != null && ansi ? style : "") + sb + (ansi ? ansiMap.get("r") : ""), _color);
     }
 
     public static PartiallyStringified stringifyPartially (SelectorComponent message, boolean motd, boolean ansi, String lastColor) {
-        final String style = getStyle(message.style());
+        final String style = getStyle(message.style(), motd);
         final String _color = getColor(message.color(), motd, ansi);
         String color;
         if (_color == null) color = "";
         else color = _color;
-        return new PartiallyStringified((lastColor != null ? lastColor : "") + (style != null && ansi ? style : "") + color + message.pattern(), _color); // * Client-side selector components are equivalent to text ones, and do NOT list entities.
+        return new PartiallyStringified((lastColor != null ? lastColor : "") + color + (style != null && ansi ? style : "") + message.pattern(), _color); // * Client-side selector components are equivalent to text ones, and do NOT list entities.
     }
 
     public static PartiallyStringified stringifyPartially (KeybindComponent message, boolean motd, boolean ansi, String lastColor) {

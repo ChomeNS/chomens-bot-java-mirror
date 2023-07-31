@@ -31,7 +31,8 @@ import java.util.regex.Pattern;
 
 public class ChatPlugin extends Bot.Listener {
     public static final Pattern CHAT_SPLIT_PATTERN = Pattern.compile("\\G\\s*([^\\r\\n]{1,254}(?=\\s|$)|[^\\r\\n]{254})"); // thanks HBot for the regex <3
-    public static final Pattern COLOR_CODE_PATTERN = Pattern.compile("(&[a-f0-9rlonmk])");
+    public static final Pattern COLOR_CODE_PATTERN = Pattern.compile("(&[a-f0-9rlonmk])", Pattern.MULTILINE);
+    public static final Pattern COLOR_CODE_END_PATTERN = Pattern.compile("^.*&[a-f0-9rlonmk]$", Pattern.MULTILINE);
 
     private final Bot bot;
 
@@ -224,7 +225,7 @@ public class ChatPlugin extends Bot.Listener {
     }
 
     private void sendChatTick () {
-        if (queue.size() > 50) queue.clear(); // detects spam, like spamming *echo for example
+        if (queue.size() > 100) queue.clear(); // detects spam, like spamming *echo for example
 
         if (queue.isEmpty()) return;
 
@@ -287,21 +288,34 @@ public class ChatPlugin extends Bot.Listener {
         while (splitMatcher.find()) {
             final String eachMessage = splitMatcher.group(1);
 
-            if (
-                    eachMessage.trim().isEmpty() ||
-                            IllegalCharactersUtilities.containsIllegalCharacters(eachMessage)
-            ) continue;
+            final Matcher eachMessageMatcher = CHAT_SPLIT_PATTERN.matcher(eachMessage);
 
-            if (!isFirst) {
-                final Matcher colorCodeMatcher = COLOR_CODE_PATTERN.matcher(message);
-                while (colorCodeMatcher.find()) lastColor = colorCodeMatcher.group();
+            while (eachMessageMatcher.find()) {
+                String strippedMessage = IllegalCharactersUtilities.stripIllegalCharacters(eachMessageMatcher.group(1));
+
+                if (strippedMessage.trim().isEmpty()) continue;
+
+                final Matcher colorCodeEndMatcher = COLOR_CODE_END_PATTERN.matcher(strippedMessage);
+
+                if (colorCodeEndMatcher.find()) strippedMessage = strippedMessage.substring(0, strippedMessage.length() - 2);
+
+                if (!isFirst) {
+                    final Matcher colorCodeEndMatcher2 = COLOR_CODE_END_PATTERN.matcher(message);
+
+                    Matcher colorCodeMatcher;
+
+                    if (!colorCodeEndMatcher2.find()) colorCodeMatcher = COLOR_CODE_PATTERN.matcher(message);
+                    else colorCodeMatcher = COLOR_CODE_PATTERN.matcher(message.substring(0, message.length() - 2));
+
+                    while (colorCodeMatcher.find()) lastColor = colorCodeMatcher.group();
+                }
+
+                queue.add(
+                        lastColor + strippedMessage // the regex has 254 (comes from 256 - 2 (color code length)) so we can do this here
+                );
+
+                isFirst = false;
             }
-
-            queue.add(
-                    lastColor + eachMessage // the regex has 254 (comes from 256 - 2 (color code length)) so we can do this here
-            );
-
-            isFirst = false;
         }
     }
 
