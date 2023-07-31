@@ -32,9 +32,9 @@ public class ComponentUtilities {
     public static final Pattern ARG_PATTERN = Pattern.compile("%(?:(\\d+)\\$)?([s%])");
 
     // is having each map for each type a great idea?
-    private static final Map<Component, String> stringCache = new HashMap<>();
-    private static final Map<Component, String> motdCache = new HashMap<>();
-    private static final Map<Component, String> ansiCache = new HashMap<>();
+    public static final Map<Component, String> stringCache = new HashMap<>();
+    public static final Map<Component, String> motdCache = new HashMap<>();
+    public static final Map<Component, String> ansiCache = new HashMap<>();
 
     public static final Map<String, String> ansiMap = new HashMap<>();
     static {
