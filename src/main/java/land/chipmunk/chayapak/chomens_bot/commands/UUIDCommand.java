@@ -19,7 +19,7 @@ public class UUIDCommand extends Command {
                 new String[] { "[{username}]" },
                 new String[] {},
                 TrustLevel.PUBLIC,
-false
+                false
         );
     }
 

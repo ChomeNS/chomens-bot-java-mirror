@@ -23,7 +23,7 @@ public class WikipediaCommand extends Command {
                 new String[] { "<{page}>" },
                 new String[] { "wiki" },
                 TrustLevel.PUBLIC,
-false
+                false
         );
     }
 

@@ -14,7 +14,7 @@ public class TestCommand extends Command {
                 new String[] { "[{args}]" },
                 new String[] {},
                 TrustLevel.PUBLIC,
-false
+                false
         );
     }
 

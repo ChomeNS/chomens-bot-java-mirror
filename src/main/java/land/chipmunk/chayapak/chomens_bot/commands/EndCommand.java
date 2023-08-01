@@ -14,7 +14,7 @@ public class EndCommand extends Command {
                 new String[] { "<hash>" },
                 new String[] { "reconnect", "restart" },
                 TrustLevel.TRUSTED,
-false
+                false
         );
     }
 

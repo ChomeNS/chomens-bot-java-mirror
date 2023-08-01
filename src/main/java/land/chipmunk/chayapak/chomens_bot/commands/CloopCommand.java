@@ -22,7 +22,7 @@ public class CloopCommand extends Command {
                 new String[] { "<hash> add <interval> <{command}>", "<hash> remove <index>", "<hash> clear", "<hash> list" },
                 new String[] { "commandloop" },
                 TrustLevel.TRUSTED,
-false
+                false
         );
     }
 

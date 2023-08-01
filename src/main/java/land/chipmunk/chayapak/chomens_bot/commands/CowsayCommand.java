@@ -14,7 +14,7 @@ public class CowsayCommand extends Command {
                 new String[] { "<{message}>" },
                 new String[] {},
                 TrustLevel.PUBLIC,
-false
+                false
         );
     }
 

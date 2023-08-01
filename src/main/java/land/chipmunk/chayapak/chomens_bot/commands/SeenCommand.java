@@ -23,7 +23,7 @@ public class SeenCommand extends Command {
                 new String[] { "<{player}>" },
                 new String[] { "lastseen" },
                 TrustLevel.PUBLIC,
-false
+                false
         );
     }
 

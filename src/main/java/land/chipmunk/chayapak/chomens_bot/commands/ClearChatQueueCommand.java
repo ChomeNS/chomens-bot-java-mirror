@@ -17,7 +17,7 @@ public class ClearChatQueueCommand extends Command {
                 new String[] {},
                 new String[] { "ccq" },
                 TrustLevel.PUBLIC,
-false
+                false
         );
     }
 

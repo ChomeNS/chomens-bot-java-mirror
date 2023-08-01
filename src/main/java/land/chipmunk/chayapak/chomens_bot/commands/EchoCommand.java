@@ -14,7 +14,7 @@ public class EchoCommand extends Command {
                 new String[] { "<{message}>" },
                 new String[] { "say" },
                 TrustLevel.PUBLIC,
-false
+                false
         );
     }
 

@@ -16,7 +16,7 @@ public class BotVisibilityCommand extends Command {
                 new String[] { "<hash> <true|false>", "<hash> <on|off>", "<hash>" },
                 new String[] { "botvis", "togglevis", "togglevisibility" },
                 TrustLevel.TRUSTED,
-false
+                false
         );
     }
 

@@ -18,7 +18,7 @@ public class RandomTeleportCommand extends Command {
                 new String[] {},
                 new String[] { "randomteleport" },
                 TrustLevel.PUBLIC,
-false
+                false
         );
     }
 

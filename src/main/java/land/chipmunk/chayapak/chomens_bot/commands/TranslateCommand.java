@@ -25,7 +25,7 @@ public class TranslateCommand extends Command {
                 new String[] { "<fromLanguage> <toLanguage> <{message}>" },
                 new String[] {},
                 TrustLevel.PUBLIC,
-false
+                false
         );
     }
 

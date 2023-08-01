@@ -20,7 +20,7 @@ public class EvalCommand extends Command {
                 new String[] { "run <{code}>", "reset" },
                 new String[] {},
                 TrustLevel.PUBLIC,
-false
+                false
         );
     }
 

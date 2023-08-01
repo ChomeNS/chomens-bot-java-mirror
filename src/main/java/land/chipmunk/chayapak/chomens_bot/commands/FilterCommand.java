@@ -33,7 +33,7 @@ public class FilterCommand extends Command {
                 },
                 new String[] { "filterplayer", "ban", "blacklist" },
                 TrustLevel.TRUSTED,
-false
+                false
         );
     }
 

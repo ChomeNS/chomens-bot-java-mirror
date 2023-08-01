@@ -20,7 +20,7 @@ public class TimeCommand extends Command {
                 new String[] { "<timezone>" },
                 new String[] { "dateandtime", "date" },
                 TrustLevel.PUBLIC,
-false
+                false
         );
     }
 

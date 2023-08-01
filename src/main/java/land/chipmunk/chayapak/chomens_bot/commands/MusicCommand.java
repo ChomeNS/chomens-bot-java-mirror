@@ -46,7 +46,7 @@ public class MusicCommand extends Command {
                 },
                 new String[] { "song" },
                 TrustLevel.PUBLIC,
-false
+                false
         );
     }
 

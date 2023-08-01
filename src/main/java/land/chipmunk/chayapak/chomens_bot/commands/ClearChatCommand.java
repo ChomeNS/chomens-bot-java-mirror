@@ -18,7 +18,7 @@ public class ClearChatCommand extends Command {
                 new String[] { "[player]" },
                 new String[] { "cc" },
                 TrustLevel.PUBLIC,
-false
+                false
         );
     }
 

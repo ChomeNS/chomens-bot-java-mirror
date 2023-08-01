@@ -19,7 +19,7 @@ public class KickCommand extends Command {
                 new String[] { "<hash> <{player}>" },
                 new String[] {},
                 TrustLevel.TRUSTED,
-false
+                false
         );
     }
 

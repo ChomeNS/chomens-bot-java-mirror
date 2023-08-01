@@ -19,7 +19,7 @@ public class ServerEvalCommand extends Command {
                 new String[] { "<ownerHash> <{code}>" },
                 new String[] {},
                 TrustLevel.OWNER,
-false
+                false
         );
     }
 

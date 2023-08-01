@@ -38,7 +38,7 @@ public class InfoCommand extends Command {
                 },
                 new String[] {},
                 TrustLevel.PUBLIC,
-false
+                false
         );
     }
 

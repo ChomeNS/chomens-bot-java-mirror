@@ -17,7 +17,7 @@ public class DiscordCommand extends Command {
                 new String[] {},
                 new String[] {},
                 TrustLevel.PUBLIC,
-false
+                false
         );
     }
 

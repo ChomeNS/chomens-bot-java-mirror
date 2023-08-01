@@ -24,7 +24,7 @@ public class HelpCommand extends Command {
                 new String[] { "[command]" },
                 new String[] { "heko", "cmds", "commands" },
                 TrustLevel.PUBLIC,
-false
+                false
         );
     }
 

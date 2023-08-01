@@ -14,7 +14,7 @@ public class RefillCoreCommand extends Command {
                 new String[] {},
                 new String[] { "rc" },
                 TrustLevel.PUBLIC,
-false
+                false
         );
     }
 

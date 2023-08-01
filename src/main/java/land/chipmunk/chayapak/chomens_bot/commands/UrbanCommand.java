@@ -28,7 +28,7 @@ public class UrbanCommand extends Command {
                 new String[] { "<{term}>" },
                 new String[] {},
                 TrustLevel.PUBLIC,
-false
+                false
         );
     }
 

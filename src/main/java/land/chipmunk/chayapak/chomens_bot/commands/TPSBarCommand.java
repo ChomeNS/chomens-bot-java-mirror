@@ -16,7 +16,7 @@ public class TPSBarCommand extends Command {
                 new String[] { "<on|off>" },
                 new String[] { "tps" },
                 TrustLevel.PUBLIC,
-false
+                false
         );
     }
 
