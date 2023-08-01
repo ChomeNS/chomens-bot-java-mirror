@@ -201,7 +201,7 @@ public class CorePlugin extends PositionPlugin.Listener {
 
         final Vector3i position = entry.getPosition();
 
-        if (isCore(position)) shouldRefill = true;
+        if (isCore(position) && !isCommandBlockUpdate(entry.getBlock())) shouldRefill = true;
     }
 
     public void packetReceived (ClientboundSectionBlocksUpdatePacket packet) {
@@ -212,12 +212,14 @@ public class CorePlugin extends PositionPlugin.Listener {
         for (BlockChangeEntry entry : entries) {
             final Vector3i position = entry.getPosition();
 
-            if (isCommandBlockUpdate(entry.getBlock())) continue;
-
-            if (isCore(position)) willRefill = true;
+            if (isCore(position) && !isCommandBlockUpdate(entry.getBlock())) willRefill = true;
         }
 
         if (willRefill) shouldRefill = true;
+    }
+
+    public void packetReceived (ClientboundLevelChunkWithLightPacket packet) {
+        shouldRefill = true; // worst fix
     }
 
     private boolean isCommandBlockUpdate(int blockState) {
@@ -239,10 +241,6 @@ public class CorePlugin extends PositionPlugin.Listener {
                                 blockState >= 12359 &&
                                         blockState <= 12370
                         );
-    }
-
-    public void packetReceived (ClientboundLevelChunkWithLightPacket packet) {
-        shouldRefill = true; // TODO: improve, this is probably the worst way to check
     }
 
     // ported from chomens bot js
