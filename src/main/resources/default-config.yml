@@ -17,10 +17,11 @@ internetCheck:
 # if the address is reachable it will not start the bot
 # if the address is not reachable then it will start the bot
 #
-# if the bot has already been started and address is back up it will stop the bot (using System.exit(1))
+# if the bot has already been started and the address is back up it
+# will stop the bot (using System.exit(1))
 backup:
   enabled: false
-  address: '192.168.1.169'
+  address: 'https://fard.sex/check'
 
 discord:
   enabled: false

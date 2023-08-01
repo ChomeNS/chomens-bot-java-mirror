@@ -2,6 +2,7 @@ package land.chipmunk.chayapak.chomens_bot;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import land.chipmunk.chayapak.chomens_bot.plugins.ConsolePlugin;
+import land.chipmunk.chayapak.chomens_bot.util.HttpUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.LoggerUtilities;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -12,7 +13,6 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.io.*;
-import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
@@ -91,16 +91,18 @@ public class Main {
             boolean reachable;
 
             try {
-                reachable = InetAddress.getByName(config.backup.address).isReachable(5000);
-            } catch (IOException e) {
+                HttpUtilities.getRequest(new URL(config.backup.address));
+
+                reachable = true;
+            } catch (Exception e) {
                 reachable = false;
             }
 
-            if (!reachable) {
+            if (!reachable && !alreadyStarted) {
                 LoggerUtilities.info("Main instance is down! Starting backup instance");
 
                 initializeBots();
-            } else if (alreadyStarted) {
+            } else if (reachable && alreadyStarted) {
                 System.exit(1);
             }
         }, 0, 1, TimeUnit.MINUTES);
