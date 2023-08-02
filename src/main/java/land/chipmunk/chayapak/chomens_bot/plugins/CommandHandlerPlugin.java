@@ -14,6 +14,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class CommandHandlerPlugin {
     private final Bot bot;
@@ -58,12 +59,16 @@ public class CommandHandlerPlugin {
         registerCommand(new ConsoleServerCommand());
     }
 
+    private int commandPerSecond = 0;
+
     public static void registerCommand (Command command) {
         commands.add(command);
     }
 
     public CommandHandlerPlugin (Bot bot) {
         this.bot = bot;
+
+        bot.executor.scheduleAtFixedRate(() -> commandPerSecond = 0, 0, 1, TimeUnit.SECONDS);
     }
 
     // literally the same quality as the js chomens bot
@@ -73,7 +78,9 @@ public class CommandHandlerPlugin {
             CommandContext context,
             MessageReceivedEvent event
     ) {
-        if (disabled) return null;
+        if (disabled || commandPerSecond > 100) return null;
+
+        commandPerSecond++;
 
         final boolean inGame = context instanceof PlayerCommandContext;
         final boolean discord = context instanceof DiscordCommandContext;
