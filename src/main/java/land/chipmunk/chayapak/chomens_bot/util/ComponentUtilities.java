@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import land.chipmunk.chayapak.chomens_bot.Main;
 import net.kyori.adventure.text.*;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -14,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,6 +37,16 @@ public class ComponentUtilities {
     public static final Map<Component, String> stringCache = new HashMap<>();
     public static final Map<Component, String> motdCache = new HashMap<>();
     public static final Map<Component, String> ansiCache = new HashMap<>();
+
+    static {
+        Main.executor.scheduleAtFixedRate(() -> {
+            final int maxSize = 1024;
+
+            if (stringCache.size() > maxSize) stringCache.clear();
+            else if (motdCache.size() > maxSize) motdCache.clear();
+            else if (ansiCache.size() > maxSize) ansiCache.clear();
+        }, 0, 1, TimeUnit.SECONDS);
+    }
 
     public static final Map<String, String> ansiMap = new HashMap<>();
     static {
