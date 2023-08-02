@@ -98,9 +98,12 @@ public class ChatPlugin extends Bot.Listener {
             if (id.equals(bot.commandSuggestion.id)) isCommandSuggestions = true;
         }
 
+        final String string = ComponentUtilities.stringify(component);
+        final String ansi = ComponentUtilities.stringifyAnsi(component);
+
         for (Listener listener : listeners) {
-            if (!isCommandSuggestions) listener.systemMessageReceived(component);
-            listener.systemMessageReceived(component, isCommandSuggestions);
+            if (!isCommandSuggestions) listener.systemMessageReceived(component, string, ansi);
+            listener.systemMessageReceived(component, isCommandSuggestions, string, ansi);
 
             if (playerMessage != null) listener.playerMessageReceived(playerMessage);
         }
@@ -157,9 +160,15 @@ public class ChatPlugin extends Bot.Listener {
                     component = component.args(playerMessage.displayName, playerMessage.contents);
                 }
 
-                listener.systemMessageReceived(component);
+                final String string = ComponentUtilities.stringify(component);
+                final String ansi = ComponentUtilities.stringifyAnsi(component);
+
+                listener.systemMessageReceived(component, string, ansi);
             } else {
-                listener.systemMessageReceived(unsignedContent);
+                final String string = ComponentUtilities.stringify(unsignedContent);
+                final String ansi = ComponentUtilities.stringifyAnsi(unsignedContent);
+
+                listener.systemMessageReceived(unsignedContent, string, ansi);
             }
         }
     }
@@ -193,8 +202,11 @@ public class ChatPlugin extends Bot.Listener {
                     translatableComponent = translatableComponent.args(name, content);
                 }
 
+                final String string = ComponentUtilities.stringify(translatableComponent);
+                final String ansi = ComponentUtilities.stringifyAnsi(translatableComponent);
+
                 for (Listener listener : listeners) {
-                    listener.systemMessageReceived(translatableComponent);
+                    listener.systemMessageReceived(translatableComponent, string, ansi);
                 }
 
                 for (ChatParser parser : chatParsers) {
@@ -213,10 +225,13 @@ public class ChatPlugin extends Bot.Listener {
 
                 final PlayerMessage playerMessage = new PlayerMessage(parsedFromMessage.sender, packet.getName(), parsedFromMessage.contents);
 
+                final String string = ComponentUtilities.stringify(component);
+                final String ansi = ComponentUtilities.stringifyAnsi(component);
+
                 for (Listener listener : listeners) {
                     listener.playerMessageReceived(playerMessage);
 
-                    listener.systemMessageReceived(component);
+                    listener.systemMessageReceived(component, string, ansi);
                 }
             }
         } catch (Exception e) {
@@ -347,7 +362,7 @@ public class ChatPlugin extends Bot.Listener {
 
     public static class Listener {
         public void playerMessageReceived (PlayerMessage message) {}
-        public void systemMessageReceived (Component component) {}
-        public void systemMessageReceived (Component component, boolean isCommandSuggestions) {}
+        public void systemMessageReceived (Component component, String string, String ansi) {}
+        public void systemMessageReceived (Component component, boolean isCommandSuggestions, String string, String ansi) {}
     }
 }

@@ -88,14 +88,11 @@ public class LoggerPlugin extends ChatPlugin.Listener {
     }
 
     @Override
-    public void systemMessageReceived(Component component) {
-        final String string = ComponentUtilities.stringify(component);
-
+    public void systemMessageReceived(Component component, String string, String ansi) {
         if (logToConsole) {
-            final String ansi = ComponentUtilities.stringifyAnsi(component);
-
             log(ansi, false, true);
         }
+
         log(string, true, false);
     }
 }

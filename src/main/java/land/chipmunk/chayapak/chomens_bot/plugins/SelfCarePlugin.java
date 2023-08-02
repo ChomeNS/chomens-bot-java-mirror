@@ -47,9 +47,7 @@ public class SelfCarePlugin extends Bot.Listener {
 
         bot.chat.addListener(new ChatPlugin.Listener() {
             @Override
-            public void systemMessageReceived(Component component) {
-                final String string = ComponentUtilities.stringify(component);
-
+            public void systemMessageReceived(Component component, String string, String ansi) {
                 if (string.equals("Successfully enabled CommandSpy")) cspy = true;
                 else if (string.equals("Successfully disabled CommandSpy")) cspy = false;
 
