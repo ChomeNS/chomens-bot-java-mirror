@@ -71,6 +71,8 @@ public class SongLoaderRunnable implements Runnable {
       if (isUrl) {
         bytes = DownloadUtilities.DownloadToByteArray(songUrl, 10*1024*1024);
         name = Paths.get(songUrl.toURI().getPath()).getFileName().toString();
+
+        bot.music.loadings--;
       } else {
         bytes = Files.readAllBytes(songPath);
         name = !isFolder ? fileName : songPath.getFileName().toString();
@@ -119,7 +121,7 @@ public class SongLoaderRunnable implements Runnable {
       bot.chat.tellraw(
               Component.translatable(
                       "Added %s to the song queue",
-                      Component.empty().append(song.name).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                      Component.empty().append(Component.text(song.name)).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
               ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
       );
     }

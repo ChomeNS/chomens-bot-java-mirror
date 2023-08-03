@@ -1,6 +1,7 @@
 package land.chipmunk.chayapak.chomens_bot.commands;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
+import land.chipmunk.chayapak.chomens_bot.Main;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
@@ -21,9 +22,12 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class MusicCommand extends Command {
     private Path root;
+
+    private int ratelimit = 0;
 
     public MusicCommand () {
         super(
@@ -48,11 +52,17 @@ public class MusicCommand extends Command {
                 TrustLevel.PUBLIC,
                 false
         );
+
+        Main.executor.scheduleAtFixedRate(() -> ratelimit = 0, 0, 5, TimeUnit.SECONDS);
     }
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
         if (args.length < 1) return Component.text("Not enough arguments").color(NamedTextColor.RED);
+
+        ratelimit++;
+
+        if (ratelimit > 15) return null;
 
         root = MusicPlayerPlugin.SONG_DIR;
         return switch (args[0]) {
@@ -87,7 +97,7 @@ public class MusicCommand extends Command {
                 if (!path.normalize().startsWith(root.toString())) return Component.text("no").color(NamedTextColor.RED);
 
                 // ignore my ohio code for autocomplete
-                final String separator = File.separator;
+                final String separator = File.separator; // how do i do this with the new Files?
 
                 if (_path.contains(separator) && !_path.equals("")) {
                     final String[] pathSplitted = _path.split(separator);
@@ -160,7 +170,7 @@ public class MusicCommand extends Command {
                 context.sendOutput(
                         Component.empty()
                                 .append(Component.text("Now looping "))
-                                .append(bot.music.currentSong.name.color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
+                                .append(Component.text(bot.music.currentSong.name).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
                                 .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
                 );
             }
@@ -264,7 +274,7 @@ public class MusicCommand extends Command {
         context.sendOutput(
                 Component.empty()
                     .append(Component.text("Skipping "))
-                    .append(music.currentSong.name.color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
+                    .append(Component.text(music.currentSong.name).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
                     .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
         );
 
@@ -280,7 +290,7 @@ public class MusicCommand extends Command {
 
         return Component.empty()
                 .append(Component.text("Now playing "))
-                .append(song.name.color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
+                .append(Component.text(song.name).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
                 .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }
 
@@ -292,7 +302,7 @@ public class MusicCommand extends Command {
         int i = 0;
         for (Song song : queue) {
             queueWithNames.add(
-                    song.name.color((i++ & 1) == 0 ? ColorUtilities.getColorByString(bot.config.colorPalette.primary) : ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                    Component.text(song.name).color((i++ & 1) == 0 ? ColorUtilities.getColorByString(bot.config.colorPalette.primary) : ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
             );
         }
 
@@ -379,7 +389,7 @@ public class MusicCommand extends Command {
         if (currentSong == null) return Component.text("No song is currently playing").color(NamedTextColor.RED);
 
         // ig very code yup
-        final Component title = currentSong.name;
+        final String title = currentSong.name;
         final String songAuthor = currentSong.songAuthor == null || currentSong.songAuthor.equals("") ? "N/A" : currentSong.songAuthor;
         final String songOriginalAuthor = currentSong.songOriginalAuthor == null || currentSong.songOriginalAuthor.equals("") ? "N/A" : currentSong.songOriginalAuthor;
         final String songDescription = currentSong.songDescription == null || currentSong.songDescription.equals("") ? "N/A" : currentSong.songDescription;
@@ -390,7 +400,7 @@ public class MusicCommand extends Command {
                         Author: %s
                         Original author: %s
                         Description: %s""",
-                title.color(NamedTextColor.AQUA),
+                Component.text(title).color(NamedTextColor.AQUA),
                 Component.text(songAuthor).color(NamedTextColor.AQUA),
                 Component.text(songOriginalAuthor).color(NamedTextColor.AQUA),
                 Component.text(songDescription).color(NamedTextColor.AQUA)

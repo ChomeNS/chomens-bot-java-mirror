@@ -219,6 +219,13 @@ public class Bot {
             public void disconnected(DisconnectedEvent disconnectedEvent) {
                 loggedIn = false;
 
+                final Throwable cause = disconnectedEvent.getCause();
+
+                if (cause != null) {
+                    // lazy fix (#69420)
+                    if (cause instanceof OutOfMemoryError) System.exit(1);
+                }
+
                 int reconnectDelay = options.reconnectDelay;
 
                 final String stringMessage = ComponentUtilities.stringify(disconnectedEvent.getReason());

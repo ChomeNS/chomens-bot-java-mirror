@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 // Author: _ChipMC_ & chayapak <3
 public class MusicPlayerPlugin extends Bot.Listener {
@@ -36,6 +37,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
         }
     }
 
+    public int loadings = 0;
+
     public Song currentSong;
     public final List<Song> songQueue = new ArrayList<>();
     public SongLoaderRunnable loaderThread;
@@ -47,6 +50,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
     private int ticksUntilPausedBossbar = 20;
 
+    private int notesPerSecond = 0;
+
     private final String bossbarName = "music";
 
     public MusicPlayerPlugin (Bot bot) {
@@ -55,6 +60,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
         bot.core.addListener(new CorePlugin.Listener() {
             public void ready () { coreReady(); }
         });
+        bot.executor.scheduleAtFixedRate(() -> notesPerSecond = 0, 0, 1, TimeUnit.SECONDS);
     }
 
     public void loadSong (Path location) {
@@ -73,6 +79,13 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     public void loadSong (URL location) {
+        if (loadings > 2) {
+            bot.chat.tellraw(Component.text("Too many songs loading at once").color(NamedTextColor.RED));
+            return;
+        }
+
+        loadings++;
+
         final SongLoaderRunnable runnable = new SongLoaderRunnable(location, bot);
 
         bot.chat.tellraw(
@@ -101,7 +114,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                         bot.chat.tellraw(
                                 Component.translatable(
                                         "Now playing %s",
-                                        Component.empty().append(currentSong.name).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                                        Component.empty().append(Component.text(currentSong.name)).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
                                 ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
                         );
                         currentSong.play();
@@ -134,7 +147,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                         bot.chat.tellraw(
                                 Component.translatable(
                                         "Finished playing %s",
-                                        Component.empty().append(currentSong.name).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                                        Component.empty().append(Component.text(currentSong.name)).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
                                 ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
                         );
 
@@ -208,7 +221,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
     public Component generateBossbar () {
         Component component = Component.empty()
-                .append(Component.empty().append(currentSong.name).color(pitch > 0 ? NamedTextColor.LIGHT_PURPLE : NamedTextColor.GREEN))
+                .append(Component.empty().append(Component.text(currentSong.name)).color(pitch > 0 ? NamedTextColor.LIGHT_PURPLE : NamedTextColor.GREEN))
                 .append(Component.text(" | ").color(NamedTextColor.DARK_GRAY))
                 .append(
                         Component
@@ -262,6 +275,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
     public void stopPlaying () {
         removeBossBar();
         currentSong = null;
+        notesPerSecond = 0;
     }
 
     @Override
@@ -273,6 +287,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
         currentSong.advanceTime();
         while (currentSong.reachedNextNote()) {
             final Note note = currentSong.getNextNote();
+
+            if (notesPerSecond > 1000) continue;
 
             float key = note.pitch;
 
@@ -299,6 +315,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
                             " " +
                             MathUtilities.clamp(floatingPitch, 0, 2)
             );
+
+            notesPerSecond++;
         }
     }
 }

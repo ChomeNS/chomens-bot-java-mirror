@@ -1,14 +1,14 @@
 package land.chipmunk.chayapak.chomens_bot.song;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import net.kyori.adventure.text.Component;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
 // Author: hhhzzzsss & _ChipMC_ but i changed most of the stuff
 public class Song {
   public final ArrayList<Note> notes = new ArrayList<>();
-  public final Component name;
+  public final String name;
   public int position = 0; // Current note index
   public boolean paused = true;
   public long startTime = 0; // Start time in millis since unix epoch
@@ -28,19 +28,14 @@ public class Song {
 
   private Bot bot;
 
-  public Song (Component name, Bot bot, String songName, String songAuthor, String songOriginalAuthor, String songDescription, boolean nbs) {
-    this.bot = bot;
+  public Song (String name, Bot bot, String songName, String songAuthor, String songOriginalAuthor, String songDescription, boolean nbs) {
     this.name = name;
+    this.bot = bot;
     this.songName = songName;
     this.songAuthor = songAuthor;
     this.songOriginalAuthor = songOriginalAuthor;
     this.songDescription = songDescription;
     this.nbs = nbs;
-  }
-
-  public Song (String name, Bot bot, String songName, String songAuthor, String songOriginalAuthor, String songDescription, boolean nbs) {
-    this(Component.text(name), bot, songName, songAuthor, songOriginalAuthor, songDescription, nbs);
-    this.bot = bot;
   }
 
   public Note get (int i) {
