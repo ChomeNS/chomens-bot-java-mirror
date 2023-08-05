@@ -53,7 +53,6 @@ public class CommandHandlerPlugin {
         registerCommand(new ClearChatQueueCommand());
         registerCommand(new FilterCommand());
         registerCommand(new MailCommand());
-        registerCommand(new SeenCommand());
         registerCommand(new EvalCommand());
         registerCommand(new InfoCommand());
         registerCommand(new ConsoleServerCommand());
