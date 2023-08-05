@@ -17,11 +17,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class CommandHandlerPlugin {
-    private final Bot bot;
-
     public static final List<Command> commands = new ArrayList<>();
-
-    public boolean disabled = false;
 
     static {
         registerCommand(new CommandBlockCommand());
@@ -58,16 +54,20 @@ public class CommandHandlerPlugin {
         registerCommand(new ConsoleServerCommand());
     }
 
-    private int commandPerSecond = 0;
+    public boolean disabled = false;
 
-    public static void registerCommand (Command command) {
-        commands.add(command);
-    }
+    private final Bot bot;
+
+    private int commandPerSecond = 0;
 
     public CommandHandlerPlugin (Bot bot) {
         this.bot = bot;
 
         bot.executor.scheduleAtFixedRate(() -> commandPerSecond = 0, 0, 1, TimeUnit.SECONDS);
+    }
+
+    public static void registerCommand (Command command) {
+        commands.add(command);
     }
 
     // literally the same quality as the js chomens bot
