@@ -189,8 +189,8 @@ public class DiscordPlugin {
 
                     final Member member = event.getMember();
 
-                    final String fallbackName = event.getAuthor().getName();
-                    String name = member == null ? fallbackName : member.getEffectiveName();
+                    final String username = event.getAuthor().getName();
+                    final String displayName = member == null ? username : member.getEffectiveName();
 
                     final List<Role> roles = member == null ? Collections.emptyList() : member.getRoles();
 
@@ -226,8 +226,8 @@ public class DiscordPlugin {
                     }
 
                     Component nameComponent = Component
-                            .text(name)
-                            .clickEvent(ClickEvent.copyToClipboard(fallbackName))
+                            .text(displayName)
+                            .clickEvent(ClickEvent.copyToClipboard(username))
                             .hoverEvent(
                                     HoverEvent.showText(
                                             Component.translatable(
@@ -236,7 +236,7 @@ public class DiscordPlugin {
                                                             %s
                                                             
                                                             %s""",
-                                                    Component.text(fallbackName).color(NamedTextColor.WHITE),
+                                                    Component.text(username).color(NamedTextColor.WHITE),
                                                     rolesComponent,
                                                     Component.text("Click here to copy the tag to your clipboard").color(NamedTextColor.GREEN)
                                             ).color(NamedTextColor.DARK_GRAY)
