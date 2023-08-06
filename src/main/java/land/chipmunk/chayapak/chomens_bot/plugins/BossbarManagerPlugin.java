@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 import com.github.steveice10.mc.protocol.data.game.BossBarColor;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundBossEventPacket;
 import com.github.steveice10.packetlib.Session;
+import com.github.steveice10.packetlib.event.session.ConnectedEvent;
 import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.BossBar;
@@ -144,6 +145,15 @@ public class BossbarManagerPlugin extends Bot.Listener {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void connected(ConnectedEvent event) {
+        for (Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
+            final BotBossBar bossBar = _bossBar.getValue();
+
+            addBossBar(bossBar.id, bossBar);
         }
     }
 
