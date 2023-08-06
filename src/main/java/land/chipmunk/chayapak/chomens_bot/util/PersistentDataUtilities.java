@@ -84,7 +84,7 @@ public class PersistentDataUtilities {
 
             // ? how do i clear the file contents without making a completely new writer?
             //   or is this the only way?
-            writer = Files.newBufferedWriter(path, StandardOpenOption.WRITE);
+            writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING);
 
             writer.write(string);
             writer.flush();
