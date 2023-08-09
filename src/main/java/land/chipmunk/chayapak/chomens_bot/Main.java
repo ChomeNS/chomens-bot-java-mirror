@@ -2,6 +2,7 @@ package land.chipmunk.chayapak.chomens_bot;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import land.chipmunk.chayapak.chomens_bot.plugins.ConsolePlugin;
+import land.chipmunk.chayapak.chomens_bot.util.ExceptionUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.HttpUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.LoggerUtilities;
 import net.dv8tion.jda.api.JDA;
@@ -81,6 +82,19 @@ public class Main {
                 e.printStackTrace();
             }
         }, 0, 1, TimeUnit.MINUTES);
+
+        Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> {
+            LoggerUtilities.error(
+                    String.format(
+                            "Caught an uncaught exception in thread %s!\n%s",
+
+                            thread.getName(),
+                            ExceptionUtilities.getStacktrace(throwable)
+                    )
+            );
+
+            if (throwable instanceof OutOfMemoryError) System.exit(1);
+        });
 
         if (!config.backup.enabled) {
             initializeBots();
