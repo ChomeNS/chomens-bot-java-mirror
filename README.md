@@ -14,11 +14,7 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import java.util.UUID;
 
 public class ExploitsPlugin {
-    private final Bot bot;
-
-    public ExploitsPlugin (Bot bot) {
-        this.bot = bot;
-    }
+    public ExploitsPlugin (Bot bot) {}
 
     public void kick (UUID uuid) {}
 }
