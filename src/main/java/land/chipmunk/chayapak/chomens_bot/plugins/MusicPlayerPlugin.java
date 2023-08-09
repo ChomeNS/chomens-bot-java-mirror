@@ -297,12 +297,20 @@ public class MusicPlayerPlugin extends Bot.Listener {
             // final double floatingPitch = 0.5 * (Math.pow(2, ((key + (pitch / 10)) / 12)));
 
             // totallynotskidded from opennbs
-            int blockPosition = 0;
+            float blockPosition = 0;
 
             if (currentSong.nbs) {
                 final int s = (note.stereo + note.panning) / 2; // Stereo values to X coordinates, calc'd from the average of both note and layer pan.
-                if (s > 100) blockPosition = (s - 100) / -100;
-                if (s < 100) blockPosition = ((s - 100) * -1) / 100;
+                if (s > 100) blockPosition = (float) (s - 100) / -100;
+                else if (s < 100) blockPosition = (float) ((s - 100) * -1) / 100;
+            } else {
+                // i wrote this part
+
+                // this uses the average of the pitch and the volume to calcuate the stereo
+                final float average = (note.pitch + note.volume) / 2;
+
+                if (average > 5) blockPosition = (average - 5) / -5;
+                else if (average < 3) blockPosition = ((average - 5) * -1) / 5;
             }
 
             bot.core.run(
