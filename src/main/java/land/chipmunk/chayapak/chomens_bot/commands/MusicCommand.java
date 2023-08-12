@@ -44,6 +44,7 @@ public class MusicCommand extends Command {
                         "goto <timestamp>",
                         "pitch <pitch>",
                         "speed <speed>",
+                        "noteinstrument <instrument>",
                         "pause",
                         "resume",
                         "info"
@@ -76,6 +77,7 @@ public class MusicCommand extends Command {
             case "goto" -> goTo(context, args);
             case "pitch" -> pitch(context, args);
             case "speed" -> speed(context, args);
+            case "noteinstrument" -> noteInstrument(context, args);
             case "pause", "resume" -> pause(context);
             case "info" -> info(context);
             default -> Component.text("Invalid action").color(NamedTextColor.RED);
@@ -365,6 +367,23 @@ public class MusicCommand extends Command {
                 .append(Component.text("Set the speed to "))
                 .append(Component.text(speed).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)))
                 .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+    }
+
+    public Component noteInstrument (CommandContext context, String[] args) {
+        final Bot bot = context.bot;
+
+        final String instrument = args[1];
+
+        bot.music.instrument = instrument;
+
+        if (!instrument.equals("off")) {
+            return Component.empty()
+                    .append(Component.text("Set the instrument for every note to "))
+                    .append(Component.text(instrument).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
+                    .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+        } else {
+            return Component.text("Every notes are now using its instrument").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+        }
     }
 
     public Component pause (CommandContext context) {

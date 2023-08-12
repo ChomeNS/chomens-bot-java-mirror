@@ -48,6 +48,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
     public float pitch = 0;
     public float speed = 1;
 
+    public String instrument = "off";
+
     private int ticksUntilPausedBossbar = 20;
 
     private int notesPerSecond = 0;
@@ -317,7 +319,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                     "minecraft:execute as " +
                             SELECTOR +
                             " at @s run playsound " +
-                            note.instrument.sound +
+                            (!instrument.equals("off") ? instrument : note.instrument.sound) +
                             " record @s ^" + blockPosition + " ^ ^ " +
                             note.volume +
                             " " +
