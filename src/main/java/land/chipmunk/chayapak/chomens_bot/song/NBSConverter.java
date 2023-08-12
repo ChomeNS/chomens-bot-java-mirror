@@ -167,7 +167,11 @@ public class NBSConverter {
         if (index >= customInstruments.size()) continue;
 
         NBSCustomInstrument customInstrument = customInstruments.get(index);
-        instrument = Instrument.of(customInstrument.name);
+
+        String name = customInstrument.file;
+        if (name.endsWith(".ogg")) name = name.substring(0, name.length() - ".ogg".length()); // bad but OK
+
+        instrument = Instrument.of(name);
         key += customInstrument.pitch;
       }
 
