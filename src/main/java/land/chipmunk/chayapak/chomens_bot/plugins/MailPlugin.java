@@ -11,9 +11,6 @@ import land.chipmunk.chayapak.chomens_bot.util.PersistentDataUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MailPlugin extends PlayersPlugin.Listener {
     private final Bot bot;
 
@@ -37,30 +34,25 @@ public class MailPlugin extends PlayersPlugin.Listener {
     public void playerJoined(PlayerEntry target) {
         final String name = target.profile.getName();
 
-        final List<String> sendTos = new ArrayList<>(); // confusing name,.,.
-
-        for (JsonElement mailElement : mails) {
-            final Mail mail = gson.fromJson(mailElement, Mail.class);
-
-            sendTos.add(mail.sentTo);
-        }
+        int sendToTargetSize = 0;
 
         boolean shouldSend = false;
         for (JsonElement mailElement : mails) {
             final Mail mail = gson.fromJson(mailElement, Mail.class);
 
-            if (mail.sentTo.equals(name)) {
-                shouldSend = true;
-                break;
-            }
+            if (!mail.sentTo.equals(name)) continue;
+
+            shouldSend = true;
+
+            sendToTargetSize++;
         }
 
         if (shouldSend) {
             final Component component = Component.translatable(
                     "You have %s new mail%s!\n" +
                             "Do %s or %s to read",
-                    Component.text(sendTos.size()).color(NamedTextColor.GREEN),
-                    Component.text((sendTos.size() > 1) ? "s" : ""),
+                    Component.text(sendToTargetSize).color(NamedTextColor.GREEN),
+                    Component.text((sendToTargetSize > 1) ? "s" : ""),
                     Component.text(bot.config.commandSpyPrefixes.get(0) + "mail read").color(ColorUtilities.getColorByString(bot.config.colorPalette.primary)),
                     Component.text(bot.config.prefixes.get(0) + "mail read").color(ColorUtilities.getColorByString(bot.config.colorPalette.primary))
             ).color(NamedTextColor.GOLD);
