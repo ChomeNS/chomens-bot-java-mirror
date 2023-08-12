@@ -121,10 +121,13 @@ public class MailCommand extends Command {
 
                         final List<Component> children = output.children();
 
-                        // too lazy to use translation,.,.,.
-                        final String parsed = ComponentUtilities.stringify(children.get(0));
-
-                        if (parsed.startsWith("Found no elements matching ")) {
+                        if (
+                                children.size() > 0 &&
+                                        children.get(0).children().size() > 0 &&
+                                        ((TranslatableComponent) children.get(0).children().get(0))
+                                                .key()
+                                                .equals("arguments.nbtpath.nothing_found")
+                        ) {
                             context.sendOutput(Component.text("Player has no `message` NBT tag in the selected item").color(NamedTextColor.RED));
                             return tags;
                         }
