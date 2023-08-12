@@ -7,14 +7,15 @@ import com.github.steveice10.mc.protocol.data.game.level.notify.GameEvent;
 import com.github.steveice10.mc.protocol.data.game.level.notify.GameEventValue;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.entity.ClientboundEntityEventPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.clientbound.inventory.ClientboundOpenScreenPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundGameEventPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundClientCommandPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.serverbound.inventory.ServerboundContainerClosePacket;
 import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Configuration;
-import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import net.kyori.adventure.text.Component;
 import org.cloudburstmc.math.vector.Vector3i;
 
@@ -120,6 +121,7 @@ public class SelfCarePlugin extends Bot.Listener {
         if (packet instanceof ClientboundLoginPacket) packetReceived((ClientboundLoginPacket) packet);
         else if (packet instanceof ClientboundGameEventPacket) packetReceived((ClientboundGameEventPacket) packet);
         else if (packet instanceof ClientboundEntityEventPacket) packetReceived((ClientboundEntityEventPacket) packet);
+        else if (packet instanceof ClientboundOpenScreenPacket) packetReceived((ClientboundOpenScreenPacket) packet);
     }
 
     public void packetReceived (ClientboundLoginPacket packet) {
@@ -166,6 +168,16 @@ public class SelfCarePlugin extends Bot.Listener {
         else if (event == EntityEvent.PLAYER_OP_PERMISSION_LEVEL_2) permissionLevel = 2;
         else if (event == EntityEvent.PLAYER_OP_PERMISSION_LEVEL_3) permissionLevel = 3;
         else if (event == EntityEvent.PLAYER_OP_PERMISSION_LEVEL_4) permissionLevel = 4;
+    }
+
+    public void packetReceived (ClientboundOpenScreenPacket packet) {
+        // instantly closes the window when received the packet
+        // also should this be in self care?
+        bot.session.send(
+                new ServerboundContainerClosePacket(
+                        packet.getContainerId()
+                )
+        );
     }
 
     // totallynotskidded™ from smp.,.,
