@@ -69,7 +69,7 @@ public class SongLoaderRunnable implements Runnable {
     String name;
     try {
       if (isUrl) {
-        bytes = DownloadUtilities.DownloadToByteArray(songUrl, 10*1024*1024);
+        bytes = DownloadUtilities.DownloadToByteArray(songUrl, 5 * 1024 * 1024);
         name = Paths.get(songUrl.toURI().getPath()).getFileName().toString();
 
         bot.music.loadings--;

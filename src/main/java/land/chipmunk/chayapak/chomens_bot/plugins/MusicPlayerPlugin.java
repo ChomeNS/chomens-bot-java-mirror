@@ -62,7 +62,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
         bot.core.addListener(new CorePlugin.Listener() {
             public void ready () { coreReady(); }
         });
-        bot.executor.scheduleAtFixedRate(() -> notesPerSecond = 0, 0, 1, TimeUnit.SECONDS);
+        bot.executor.scheduleAtFixedRate(() -> notesPerSecond = 0, 0, 10, TimeUnit.SECONDS);
     }
 
     public void loadSong (Path location) {
@@ -81,8 +81,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     public void loadSong (URL location) {
-        if (loadings > 2) {
-            bot.chat.tellraw(Component.text("Too many songs loading at once").color(NamedTextColor.RED));
+        if (loadings > 7) {
+            bot.chat.tellraw(Component.text("ohio").color(NamedTextColor.RED));
             return;
         }
 
