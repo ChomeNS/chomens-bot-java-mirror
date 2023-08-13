@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 public class UrbanCommand extends Command {
-    public int requestsPer500MS = 0;
+    public int requestsPerSecond = 0;
 
     public UrbanCommand () {
         super(
@@ -35,11 +35,11 @@ public class UrbanCommand extends Command {
                 false
         );
 
-        Main.executor.scheduleAtFixedRate(() -> requestsPer500MS = 0, 0, 500, TimeUnit.MILLISECONDS);
+        Main.executor.scheduleAtFixedRate(() -> requestsPerSecond = 0, 0, 1, TimeUnit.SECONDS);
     }
 
     public Component execute (CommandContext context, String[] args, String[] fullArgs) {
-        if (requestsPer500MS > 10) return Component.text("Too many requests").color(NamedTextColor.RED);
+        if (requestsPerSecond > 3) return Component.text("Too many requests").color(NamedTextColor.RED);
 
         final Bot bot = context.bot;
 
@@ -139,7 +139,7 @@ public class UrbanCommand extends Command {
             }
         });
 
-        requestsPer500MS++;
+        requestsPerSecond++;
 
         return null;
     }
