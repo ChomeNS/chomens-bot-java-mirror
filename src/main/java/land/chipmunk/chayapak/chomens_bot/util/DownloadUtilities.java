@@ -1,5 +1,7 @@
 package land.chipmunk.chayapak.chomens_bot.util;
 
+import land.chipmunk.chayapak.chomens_bot.Main;
+
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -10,6 +12,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.concurrent.TimeUnit;
 
 public class DownloadUtilities {
     public static class DefaultTrustManager implements X509TrustManager {
@@ -25,14 +28,24 @@ public class DownloadUtilities {
         }
     }
 
+    private static int limit = 0;
+
+    static {
+        Main.executor.scheduleAtFixedRate(() -> limit = 0, 0, 1, TimeUnit.SECONDS);
+    }
+
     public static byte[] DownloadToByteArray(URL url, int maxSize) throws IOException, KeyManagementException, NoSuchAlgorithmException {
+        if (limit > 3) throw new IOException("NO !!!!!!");
+
+        limit++;
+
         SSLContext ctx = SSLContext.getInstance("TLS");
         ctx.init(new KeyManager[0], new TrustManager[] {new DefaultTrustManager()}, new SecureRandom());
         SSLContext.setDefault(ctx);
 
         URLConnection conn = url.openConnection();
-        conn.setConnectTimeout(5000);
-        conn.setReadTimeout(10000);
+        conn.setConnectTimeout(1000);
+        conn.setReadTimeout(5000);
         // https://www.whatismybrowser.com/guides/the-latest-user-agent/windows
         conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36");
 
