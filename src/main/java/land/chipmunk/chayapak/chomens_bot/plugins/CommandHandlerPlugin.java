@@ -52,6 +52,7 @@ public class CommandHandlerPlugin {
         registerCommand(new EvalCommand());
         registerCommand(new InfoCommand());
         registerCommand(new ConsoleServerCommand());
+        registerCommand(new PCrashCommand());
     }
 
     public boolean disabled = false;

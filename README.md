@@ -17,6 +17,8 @@ public class ExploitsPlugin {
     public ExploitsPlugin (Bot bot) {}
 
     public void kick (UUID uuid) {}
+    
+    public void pcrash (UUID uuid) {}
 }
 ```
 
