@@ -131,5 +131,7 @@ public class SongLoaderRunnable implements Runnable {
     exception.printStackTrace();
     bot.chat.tellraw(Component.translatable("Failed to load song: %s", exception.message).color(NamedTextColor.RED));
     bot.music.loaderThread = null;
+
+    if (isUrl) bot.music.loadings--;
   }
 }
