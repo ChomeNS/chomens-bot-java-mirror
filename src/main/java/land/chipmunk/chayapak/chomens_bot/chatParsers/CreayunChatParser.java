@@ -29,7 +29,7 @@ public class CreayunChatParser implements ChatParser {
     public PlayerMessage parse (Component message) {
         final String stringified = ComponentUtilities.stringify(message);
 
-        if (bot.options.creayun) return null;
+        if (!bot.options.creayun) return null;
 
         final Matcher matcher = PATTERN.matcher(stringified);
 

@@ -12,6 +12,7 @@ import land.chipmunk.chayapak.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -118,7 +119,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
 
         final FilteredPlayer player = getPlayer(message.sender.profile.getName());
 
-        if (player == null) return;
+        if (player == null || message.sender.profile.getId().equals(new UUID(0L, 0L))) return;
 
         deOp(message.sender);
         mute(message.sender);
