@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import land.chipmunk.chayapak.chomens_bot.Bot;
+import land.chipmunk.chayapak.chomens_bot.Main;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import land.chipmunk.chayapak.chomens_bot.command.DiscordCommandContext;
@@ -19,8 +20,11 @@ import net.kyori.adventure.text.format.TextDecoration;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
 
 public class UrbanCommand extends Command {
+    public int requestsPer500MS = 0;
+
     public UrbanCommand () {
         super(
                 "urban",
@@ -30,9 +34,13 @@ public class UrbanCommand extends Command {
                 TrustLevel.PUBLIC,
                 false
         );
+
+        Main.executor.scheduleAtFixedRate(() -> requestsPer500MS = 0, 0, 500, TimeUnit.MILLISECONDS);
     }
 
     public Component execute (CommandContext context, String[] args, String[] fullArgs) {
+        if (requestsPer500MS > 10) return Component.text("Too many requests").color(NamedTextColor.RED);
+
         final Bot bot = context.bot;
 
         final boolean discord = context instanceof DiscordCommandContext;
@@ -130,6 +138,8 @@ public class UrbanCommand extends Command {
                 context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
             }
         });
+
+        requestsPer500MS++;
 
         return null;
     }
