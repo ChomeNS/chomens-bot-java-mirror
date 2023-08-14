@@ -5,6 +5,7 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 // Author: hhhzzzsss
@@ -168,7 +169,8 @@ public class NBSConverter {
 
         NBSCustomInstrument customInstrument = customInstruments.get(index);
 
-        String name = customInstrument.file;
+        final Path path = Path.of(customInstrument.file);
+        String name = path.getFileName().toString();
         if (name.endsWith(".ogg")) name = name.substring(0, name.length() - ".ogg".length()); // bad but OK
 
         instrument = Instrument.of(name);
