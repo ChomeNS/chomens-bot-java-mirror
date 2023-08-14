@@ -3,7 +3,6 @@ package land.chipmunk.chayapak.chomens_bot.util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import land.chipmunk.chayapak.chomens_bot.Main;
 import net.kyori.adventure.text.*;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -15,7 +14,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,21 +30,6 @@ public class ComponentUtilities {
     private static final Map<String, String> keybinds = loadJsonStringMap("keybinds.json");
 
     public static final Pattern ARG_PATTERN = Pattern.compile("%(?:(\\d+)\\$)?([s%])");
-
-    // is having each map for each type a great idea?
-    public static final Map<Component, String> stringCache = new HashMap<>();
-    public static final Map<Component, String> motdCache = new HashMap<>();
-    public static final Map<Component, String> ansiCache = new HashMap<>();
-
-    static {
-        Main.executor.scheduleAtFixedRate(() -> {
-            final int maxSize = 1024;
-
-            if (stringCache.size() > maxSize) stringCache.clear();
-            else if (motdCache.size() > maxSize) motdCache.clear();
-            else if (ansiCache.size() > maxSize) ansiCache.clear();
-        }, 0, 1, TimeUnit.SECONDS);
-    }
 
     public static final Map<String, String> ansiMap = new HashMap<>();
     static {
@@ -109,8 +92,6 @@ public class ComponentUtilities {
     public static String stringify (Component message) { return stringify(message, null); }
     private static String stringify (Component message, String lastColor) {
         try {
-            if (stringCache.containsKey(message)) return stringCache.get(message);
-
             final StringBuilder builder = new StringBuilder();
 
             final PartiallyStringified output = stringifyPartially(message, false, false, lastColor);
@@ -118,8 +99,6 @@ public class ComponentUtilities {
             builder.append(output.output);
 
             for (Component child : message.children()) builder.append(stringify(child, output.lastColor));
-
-            stringCache.put(message, builder.toString());
 
             return builder.toString();
         } catch (Exception e) {
@@ -130,8 +109,6 @@ public class ComponentUtilities {
     public static String stringifyMotd (Component message) { return stringifyMotd(message, null); }
     private static String stringifyMotd (Component message, String lastColor) {
         try {
-            if (motdCache.containsKey(message)) return motdCache.get(message);
-
             final StringBuilder builder = new StringBuilder();
 
             final PartiallyStringified output = stringifyPartially(message, true, false, lastColor);
@@ -139,8 +116,6 @@ public class ComponentUtilities {
             builder.append(output.output);
 
             for (Component child : message.children()) builder.append(stringifyMotd(child, output.lastColor));
-
-            motdCache.put(message, builder.toString());
 
             return builder.toString();
         } catch (Exception e) {
@@ -151,8 +126,6 @@ public class ComponentUtilities {
     public static String stringifyAnsi (Component message) { return stringifyAnsi(message, null); }
     private static String stringifyAnsi (Component message, String lastColor) {
         try {
-            if (ansiCache.containsKey(message)) return ansiCache.get(message);
-
             final StringBuilder builder = new StringBuilder();
 
             final PartiallyStringified output = stringifyPartially(message, false, true, lastColor);
@@ -160,8 +133,6 @@ public class ComponentUtilities {
             builder.append(output.output);
 
             for (Component child : message.children()) builder.append(stringifyAnsi(child, output.lastColor));
-
-            ansiCache.put(message, builder.toString());
 
             return builder.toString();
         } catch (Exception e) {

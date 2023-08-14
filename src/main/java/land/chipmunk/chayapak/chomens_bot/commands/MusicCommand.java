@@ -63,7 +63,7 @@ public class MusicCommand extends Command {
 
         ratelimit++;
 
-        if (ratelimit > 15) return null;
+        if (ratelimit > 10) return null;
 
         root = MusicPlayerPlugin.SONG_DIR;
         return switch (args[0]) {
