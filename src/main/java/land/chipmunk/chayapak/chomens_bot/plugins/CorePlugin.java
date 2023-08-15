@@ -124,14 +124,34 @@ public class CorePlugin extends PositionPlugin.Listener {
     }
 
     private void forceRun (String command) {
-        bot.session.send(new ServerboundSetCommandBlockPacket(
-                block,
-                command,
-                kaboom ? CommandBlockMode.AUTO : CommandBlockMode.REDSTONE,
-                true,
-                false,
-                true
-        ));
+        if (kaboom) {
+            bot.session.send(new ServerboundSetCommandBlockPacket(
+                    block,
+                    command,
+                    CommandBlockMode.AUTO,
+                    true,
+                    false,
+                    true
+            ));
+        } else {
+            bot.session.send(new ServerboundSetCommandBlockPacket(
+                    block,
+                    "",
+                    CommandBlockMode.REDSTONE,
+                    false,
+                    false,
+                    false
+            ));
+
+            bot.session.send(new ServerboundSetCommandBlockPacket(
+                    block,
+                    command,
+                    CommandBlockMode.REDSTONE,
+                    true,
+                    false,
+                    true
+            ));
+        }
 
         incrementBlock();
     }
