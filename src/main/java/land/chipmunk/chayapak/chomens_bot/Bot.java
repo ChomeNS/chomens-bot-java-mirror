@@ -75,6 +75,8 @@ public class Bot {
     public PacketSnifferPlugin packetSniffer;
     public VoiceChatPlugin voiceChat;
     public TagPlugin tag;
+    public ServerPluginsManagerPlugin serverPluginsManager;
+    public PluginCheckerPlugin pluginChecker;
 
     public Bot (Configuration.BotOption botOption, List<Bot> bots, Configuration config) {
         this.host = botOption.host;
@@ -121,6 +123,8 @@ public class Bot {
         this.packetSniffer = new PacketSnifferPlugin(this);
         this.voiceChat = new VoiceChatPlugin(this);
         this.tag = new TagPlugin(this);
+        this.serverPluginsManager = new ServerPluginsManagerPlugin(this);
+        this.pluginChecker = new PluginCheckerPlugin(this);
 
         for (Listener listener : listeners) listener.loadedPlugins();
 

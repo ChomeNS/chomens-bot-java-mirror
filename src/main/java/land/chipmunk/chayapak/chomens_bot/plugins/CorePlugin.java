@@ -52,15 +52,12 @@ public class CorePlugin extends PositionPlugin.Listener {
     private int nextTransactionId = 0;
     private final Map<Integer, CompletableFuture<CompoundTag>> transactions = new HashMap<>();
 
-    private final boolean kaboom;
-
     private int commandsPerSecond = 0;
 
     private boolean shouldRefill = false;
 
     public CorePlugin (Bot bot) {
         this.bot = bot;
-        this.kaboom = bot.options.kaboom;
 
         this.fromSize = Vector3i.from(
                 bot.config.core.start.x,
@@ -124,7 +121,7 @@ public class CorePlugin extends PositionPlugin.Listener {
     }
 
     private void forceRun (String command) {
-        if (kaboom) {
+        if (bot.pluginChecker.hasExtras) {
             bot.session.send(new ServerboundSetCommandBlockPacket(
                     block,
                     command,
@@ -207,7 +204,7 @@ public class CorePlugin extends PositionPlugin.Listener {
         );
 
         final Session session = bot.session;
-        session.send(new ServerboundSetCreativeModeSlotPacket(36, new ItemStack(kaboom ? 492 /* repeating command block id */ : 373 /* command block id */, 64, tag)));
+        session.send(new ServerboundSetCreativeModeSlotPacket(36, new ItemStack(bot.pluginChecker.hasExtras ? 492 /* repeating command block id */ : 373 /* command block id */, 64, tag)));
         session.send(new ServerboundPlayerActionPacket(PlayerAction.START_DIGGING, temporaryBlockPosition, Direction.NORTH, 0));
         session.send(new ServerboundUseItemOnPacket(temporaryBlockPosition, Direction.UP, Hand.MAIN_HAND, 0.5f, 0.5f, 0.5f, false, 1));
     }

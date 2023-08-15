@@ -86,29 +86,31 @@ public class SelfCarePlugin extends Bot.Listener {
     public void check () {
         final Configuration.SelfCare selfCares = bot.config.selfCare;
 
+        final boolean kaboom = bot.pluginChecker.hasExtras;
+
         // chat only
         if (selfCares.op && permissionLevel < 2) bot.chat.send("/minecraft:op @s[type=player]");
         else if (selfCares.gamemode && gamemode != GameMode.CREATIVE) bot.chat.send("/minecraft:gamemode creative @s[type=player]");
-        else if (selfCares.cspy && !cspy && bot.options.kaboom) bot.chat.send("/commandspy:commandspy on");
-        else if (selfCares.prefix.enabled && !prefix && bot.options.kaboom) bot.chat.send("/extras:prefix " + bot.config.selfCare.prefix.prefix);
-        else if (selfCares.username && !username && bot.options.kaboom) bot.chat.send("/extras:username " + bot.username);
+        else if (selfCares.cspy && !cspy && kaboom) bot.chat.send("/commandspy:commandspy on");
+        else if (selfCares.prefix.enabled && !prefix && kaboom) bot.chat.send("/extras:prefix " + bot.config.selfCare.prefix.prefix);
+        else if (selfCares.username && !username && kaboom) bot.chat.send("/extras:username " + bot.username);
 
         // core
-        // TODO: improve lol
+        // TODO: improve lol, this is ohio
         else if (selfCares.icu.enabled && positionPacketsPerSecond > selfCares.icu.positionPacketsPerSecond) bot.core.run("essentials:sudo * icu stop");
-        else if (selfCares.vanish && !vanish && !visibility && bot.options.hasEssentials) {
+        else if (selfCares.vanish && !vanish && !visibility && bot.pluginChecker.hasEssentials) {
             if (bot.options.useChat) bot.chat.sendCommandInstantly("essentials:vanish enable");
             else bot.core.run("essentials:vanish " + bot.username + " enable");
         }
-        else if (selfCares.nickname && !nickname && bot.options.hasEssentials) {
+        else if (selfCares.nickname && !nickname && bot.pluginChecker.hasEssentials) {
             if (bot.options.useChat) bot.chat.sendCommandInstantly("essentials:nick off");
             else bot.core.run("essentials:nickname " + bot.username + " off");
         }
-        else if (selfCares.socialspy && !socialspy && bot.options.hasEssentials) {
+        else if (selfCares.socialspy && !socialspy && bot.pluginChecker.hasEssentials) {
             if (bot.options.useChat) bot.chat.sendCommandInstantly("essentials:socialspy enable");
             else bot.core.run("essentials:socialspy " + bot.username + " enable");
         }
-        else if (selfCares.mute && muted && bot.options.hasEssentials) {
+        else if (selfCares.mute && muted && bot.pluginChecker.hasEssentials) {
             if (bot.options.useChat) bot.chat.sendCommandInstantly("essentials:mute " + bot.profile.getIdAsString());
             else bot.core.run("essentials:mute " + bot.profile.getIdAsString());
 

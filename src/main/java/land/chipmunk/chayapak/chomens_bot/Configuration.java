@@ -127,12 +127,10 @@ public class Configuration {
         public String host;
         public int port;
         public String username;
-        public boolean kaboom = false;
         public boolean creayun = false;
         public String serverName;
         public boolean useCore = true;
         public boolean useChat = false;
-        public boolean hasEssentials = true;
         public int reconnectDelay = 2000;
         public boolean removeNamespaces = false;
         public int chatQueueDelay = 125;
