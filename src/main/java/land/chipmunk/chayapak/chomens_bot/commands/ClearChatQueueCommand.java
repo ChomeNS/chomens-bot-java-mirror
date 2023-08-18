@@ -6,9 +6,6 @@ import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import net.kyori.adventure.text.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ClearChatQueueCommand extends Command {
     public ClearChatQueueCommand () {
         super(

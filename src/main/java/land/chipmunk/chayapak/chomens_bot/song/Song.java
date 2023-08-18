@@ -30,7 +30,7 @@ public class Song {
   private final Bot bot;
 
   public Song (String originalName, Bot bot, String songName, String songAuthor, String songOriginalAuthor, String songDescription, boolean nbs) {
-    String name = "";
+    String name;
 
     // real ohio code
     // TODO: clean this up

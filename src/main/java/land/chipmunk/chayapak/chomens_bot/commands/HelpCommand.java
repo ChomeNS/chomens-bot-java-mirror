@@ -28,13 +28,10 @@ public class HelpCommand extends Command {
         );
     }
 
-    private Bot bot;
-
     private CommandContext context;
 
     @Override
     public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        this.bot = context.bot;
         this.context = context;
 
         if (args.length == 0) {
