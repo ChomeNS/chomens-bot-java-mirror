@@ -408,7 +408,7 @@ public class MusicCommand extends Command {
         if (currentSong == null) return Component.text("No song is currently playing").color(NamedTextColor.RED);
 
         // ig very code yup
-        final String title = currentSong.name;
+        final String title = currentSong.originalName;
         final String songAuthor = currentSong.songAuthor == null || currentSong.songAuthor.equals("") ? "N/A" : currentSong.songAuthor;
         final String songOriginalAuthor = currentSong.songOriginalAuthor == null || currentSong.songOriginalAuthor.equals("") ? "N/A" : currentSong.songOriginalAuthor;
         final String songDescription = currentSong.songDescription == null || currentSong.songDescription.equals("") ? "N/A" : currentSong.songDescription;

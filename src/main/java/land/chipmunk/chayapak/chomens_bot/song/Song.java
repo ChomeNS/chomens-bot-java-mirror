@@ -8,6 +8,7 @@ import java.util.Collections;
 // Author: hhhzzzsss & _ChipMC_ but i changed most of the stuff
 public class Song {
   public final ArrayList<Note> notes = new ArrayList<>();
+  public final String originalName;
   public final String name;
   public int position = 0; // Current note index
   public boolean paused = true;
@@ -26,9 +27,32 @@ public class Song {
 //  public int loopCount = 0; // Number of times to loop
 //  public int currentLoop = 0; // Number of loops so far
 
-  private Bot bot;
+  private final Bot bot;
 
-  public Song (String name, Bot bot, String songName, String songAuthor, String songOriginalAuthor, String songDescription, boolean nbs) {
+  public Song (String originalName, Bot bot, String songName, String songAuthor, String songOriginalAuthor, String songDescription, boolean nbs) {
+    String name = "";
+
+    // real ohio code
+    // TODO: clean this up
+    if (isNotNullAndNotBlank(songOriginalAuthor) && !isNotNullAndNotBlank(songAuthor)) name = String.format(
+            "%s - %s",
+            songOriginalAuthor,
+            originalName
+    );
+    else if (!isNotNullAndNotBlank(songOriginalAuthor) && isNotNullAndNotBlank(songAuthor)) name = String.format(
+            "%s - %s",
+            songAuthor,
+            originalName
+    );
+    else if (isNotNullAndNotBlank(songOriginalAuthor) && isNotNullAndNotBlank(songAuthor)) name = String.format(
+            "%s/%s - %s",
+            songOriginalAuthor,
+            songAuthor,
+            originalName
+    );
+    else name = originalName;
+
+    this.originalName = originalName;
     this.name = name;
     this.bot = bot;
     this.songName = songName;
@@ -36,6 +60,11 @@ public class Song {
     this.songOriginalAuthor = songOriginalAuthor;
     this.songDescription = songDescription;
     this.nbs = nbs;
+  }
+
+  // should this be in idk, util?
+  private boolean isNotNullAndNotBlank (String text) {
+    return text != null && !text.isBlank();
   }
 
   public Note get (int i) {
