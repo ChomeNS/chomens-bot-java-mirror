@@ -48,7 +48,7 @@ public class EvalCommand extends Command {
             case "reset" -> {
                 bot.eval.reset();
 
-                return Component.text("Reset the eval context").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                return Component.text("Reset the eval worker").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             default -> {
                 return Component.text("Invalid action").color(NamedTextColor.RED);
