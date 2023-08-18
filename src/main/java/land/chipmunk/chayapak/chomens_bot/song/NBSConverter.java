@@ -177,12 +177,15 @@ public class NBSConverter {
         key += customInstrument.pitch;
       }
 
-      // if (key < 30 || key > 60) continue;
-
       byte layerVolume = 100;
       if (nbsLayers.size() > note.layer) {
         layerVolume = nbsLayers.get(note.layer).volume;
       }
+
+      // these 2 lines are totallynotskidded from https://github.com/OpenNBS/OpenNoteBlockStudio/blob/master/scripts/selection_transpose/selection_transpose.gml
+      // so huge thanks to them uwu
+      while (key < 33) key += 12;
+      while (key > 57) key -= 12;
 
       int pitch = key-33;
 
