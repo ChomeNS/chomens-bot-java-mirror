@@ -15,6 +15,7 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 // yes this has been rewritten to be not spammy
 public class BossbarManagerPlugin extends Bot.Listener {
@@ -39,6 +40,8 @@ public class BossbarManagerPlugin extends Bot.Listener {
                 BossbarManagerPlugin.this.playerJoined();
             }
         });
+
+        bot.executor.scheduleAtFixedRate(this::check, 0, 1, TimeUnit.SECONDS);
     }
 
     @Override
@@ -90,18 +93,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
                             )
                     );
                 }
-                case REMOVE -> {
-                    for (Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
-                        final BotBossBar bossBar = _bossBar.getValue();
-
-                        if (bossBar.uuid.equals(packet.getUuid())) {
-                            addBossBar(bossBar.id, bossBar, true);
-                            break;
-                        }
-                    }
-
-                    serverBossBars.remove(packet.getUuid());
-                }
+                case REMOVE -> serverBossBars.remove(packet.getUuid()); // self care is at the check function
                 case UPDATE_STYLE -> {
                     final BossBar bossBar = serverBossBars.get(packet.getUuid());
 
@@ -147,6 +139,15 @@ public class BossbarManagerPlugin extends Bot.Listener {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void check () {
+        for (Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
+            final UUID uuid = _bossBar.getKey();
+            final BotBossBar bossBar = _bossBar.getValue();
+
+            if (!serverBossBars.containsKey(uuid)) addBossBar(bossBar.id, bossBar, true);
         }
     }
 
