@@ -152,7 +152,7 @@ public class NBSConverter {
       }
     }
 
-    Song song = new Song(songName.trim().length() > 0 ? songName : fileName, bot, songName, songAuthor, songOriginalAuthor, songDescription, true);
+    Song song = new Song(!songName.isBlank() ? songName : fileName, bot, songName, songAuthor, songOriginalAuthor, songDescription, true);
     if (loop > 0) {
       song.loopPosition = getMilliTime(loopStartTick, tempo);
 //      song.loopCount = maxLoopCount;
