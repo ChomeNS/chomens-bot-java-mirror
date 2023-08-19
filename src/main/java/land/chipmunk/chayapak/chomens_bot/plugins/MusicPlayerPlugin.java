@@ -290,7 +290,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
         while (currentSong.reachedNextNote()) {
             final Note note = currentSong.getNextNote();
 
-            if (notesPerSecond > 2500) continue;
+            if (notesPerSecond > 5000 && bot.core.hasRateLimit()) continue;
 
             float key = note.pitch;
 
