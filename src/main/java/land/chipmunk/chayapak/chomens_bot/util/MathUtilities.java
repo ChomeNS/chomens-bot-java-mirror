@@ -7,6 +7,10 @@ public class MathUtilities {
         );
     }
 
+    public static int clamp (int value, int min, int max) {
+        return Math.max(Math.min(value, max), min);
+    }
+
     public static float clamp (float value, float min, float max) {
         return Math.max(Math.min(value, max), min);
     }

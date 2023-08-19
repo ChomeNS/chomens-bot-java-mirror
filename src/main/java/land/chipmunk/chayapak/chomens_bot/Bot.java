@@ -53,6 +53,8 @@ public class Bot {
     public ChatPlugin chat;
     public CommandSpyPlugin commandSpy;
     public PositionPlugin position;
+    public ServerPluginsManagerPlugin serverPluginsManager;
+    public PluginCheckerPlugin pluginChecker;
     public SelfCarePlugin selfCare;
     public CorePlugin core;
     public TeamPlugin team;
@@ -75,8 +77,7 @@ public class Bot {
     public PacketSnifferPlugin packetSniffer;
     public VoiceChatPlugin voiceChat;
     public TagPlugin tag;
-    public ServerPluginsManagerPlugin serverPluginsManager;
-    public PluginCheckerPlugin pluginChecker;
+    public WorldPlugin world;
 
     public Bot (Configuration.BotOption botOption, List<Bot> bots, Configuration config) {
         this.host = botOption.host;
@@ -101,6 +102,8 @@ public class Bot {
         this.chat = new ChatPlugin(this);
         this.commandSpy = new CommandSpyPlugin(this);
         this.position = new PositionPlugin(this);
+        this.serverPluginsManager = new ServerPluginsManagerPlugin(this);
+        this.pluginChecker = new PluginCheckerPlugin(this);
         this.selfCare = new SelfCarePlugin(this);
         this.core = new CorePlugin(this);
         this.team = new TeamPlugin(this);
@@ -123,8 +126,7 @@ public class Bot {
         this.packetSniffer = new PacketSnifferPlugin(this);
         this.voiceChat = new VoiceChatPlugin(this);
         this.tag = new TagPlugin(this);
-        this.serverPluginsManager = new ServerPluginsManagerPlugin(this);
-        this.pluginChecker = new PluginCheckerPlugin(this);
+        this.world = new WorldPlugin(this);
 
         for (Listener listener : listeners) listener.loadedPlugins();
 

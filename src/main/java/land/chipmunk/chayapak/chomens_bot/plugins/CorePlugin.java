@@ -22,6 +22,7 @@ import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
+import land.chipmunk.chayapak.chomens_bot.util.MathUtilities;
 import org.cloudburstmc.math.vector.Vector3i;
 
 import java.util.ArrayList;
@@ -330,11 +331,11 @@ public class CorePlugin extends PositionPlugin.Listener {
                 "minecraft:fill %s %s %s %s %s %s minecraft:command_block{CustomName:'%s'}",
 
                 from.getX(),
-                from.getY(),
+                MathUtilities.clamp(from.getY(), bot.world.minY, bot.world.maxY),
                 from.getZ(),
 
                 to.getX(),
-                to.getY(),
+                MathUtilities.clamp(to.getY(), bot.world.minY, bot.world.maxY),
                 to.getZ(),
 
                 bot.config.core.customName
