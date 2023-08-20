@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class ServerPluginsManagerPlugin extends Bot.Listener {
+    public static final String EXTRAS = "Extras";
+    public static final String ESSENTIALS = "Essentials";
+
     private final Bot bot;
 
     public List<String> plugins = new ArrayList<>();
@@ -33,4 +36,6 @@ public class ServerPluginsManagerPlugin extends Bot.Listener {
             return packet;
         });
     }
+
+    public boolean hasPlugin (String plugin) { return plugins.contains(plugin); }
 }

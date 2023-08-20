@@ -54,7 +54,6 @@ public class Bot {
     public CommandSpyPlugin commandSpy;
     public PositionPlugin position;
     public ServerPluginsManagerPlugin serverPluginsManager;
-    public PluginCheckerPlugin pluginChecker;
     public SelfCarePlugin selfCare;
     public CorePlugin core;
     public TeamPlugin team;
@@ -103,7 +102,6 @@ public class Bot {
         this.commandSpy = new CommandSpyPlugin(this);
         this.position = new PositionPlugin(this);
         this.serverPluginsManager = new ServerPluginsManagerPlugin(this);
-        this.pluginChecker = new PluginCheckerPlugin(this);
         this.selfCare = new SelfCarePlugin(this);
         this.core = new CorePlugin(this);
         this.team = new TeamPlugin(this);

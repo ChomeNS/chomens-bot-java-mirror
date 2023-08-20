@@ -122,7 +122,7 @@ public class CorePlugin extends PositionPlugin.Listener {
     }
 
     private void forceRun (String command) {
-        if (bot.pluginChecker.hasExtras) {
+        if (bot.serverPluginsManager.hasPlugin(ServerPluginsManagerPlugin.EXTRAS)) {
             bot.session.send(new ServerboundSetCommandBlockPacket(
                     block,
                     command,
@@ -205,7 +205,18 @@ public class CorePlugin extends PositionPlugin.Listener {
         );
 
         final Session session = bot.session;
-        session.send(new ServerboundSetCreativeModeSlotPacket(36, new ItemStack(bot.pluginChecker.hasExtras ? 492 /* repeating command block id */ : 373 /* command block id */, 64, tag)));
+        session.send(
+                new ServerboundSetCreativeModeSlotPacket(
+                        36,
+                        new ItemStack(
+                                bot.serverPluginsManager.hasPlugin(ServerPluginsManagerPlugin.EXTRAS) ?
+                                        492 /* repeating command block id */ :
+                                        373 /* command block id */,
+                                64,
+                                tag
+                        )
+                )
+        );
         session.send(new ServerboundPlayerActionPacket(PlayerAction.START_DIGGING, temporaryBlockPosition, Direction.NORTH, 0));
         session.send(new ServerboundUseItemOnPacket(temporaryBlockPosition, Direction.UP, Hand.MAIN_HAND, 0.5f, 0.5f, 0.5f, false, 1));
     }
