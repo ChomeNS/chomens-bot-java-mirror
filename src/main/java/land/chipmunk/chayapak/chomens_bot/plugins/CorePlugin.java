@@ -299,15 +299,18 @@ public class CorePlugin extends PositionPlugin.Listener {
     public void positionChange (Vector3i position) {
         from = Vector3i.from(
                 fromSize.getX() + bot.position.position.getX(),
-                fromSize.getY(),
+                MathUtilities.clamp(fromSize.getY(), bot.world.minY, bot.world.maxY),
                 fromSize.getZ() + bot.position.position.getZ()
         );
 
         to = Vector3i.from(
                 toSize.getX() + bot.position.position.getX(),
-                toSize.getY(),
+                MathUtilities.clamp(toSize.getY(), bot.world.minY, bot.world.maxY),
                 toSize.getZ() + bot.position.position.getZ()
         );
+
+        System.out.println(from);
+        System.out.println(to);
 
         reset();
         refill();
@@ -331,11 +334,11 @@ public class CorePlugin extends PositionPlugin.Listener {
                 "minecraft:fill %s %s %s %s %s %s minecraft:command_block{CustomName:'%s'}",
 
                 from.getX(),
-                MathUtilities.clamp(from.getY(), bot.world.minY, bot.world.maxY),
+                from.getY(),
                 from.getZ(),
 
                 to.getX(),
-                MathUtilities.clamp(to.getY(), bot.world.minY, bot.world.maxY),
+                to.getY(),
                 to.getZ(),
 
                 bot.config.core.customName
