@@ -312,7 +312,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                 final float average = (note.pitch + note.volume) / 2;
 
                 if (average > 5) blockPosition = (average - 5) / -5;
-                else if (average < 4) blockPosition = ((average - 4) * -1) / 4;
+                else if (average < 5) blockPosition = ((average - 5) * -1) / 5;
             }
 
             bot.core.run(
