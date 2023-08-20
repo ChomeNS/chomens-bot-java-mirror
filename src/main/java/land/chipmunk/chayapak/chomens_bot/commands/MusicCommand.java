@@ -91,6 +91,9 @@ public class MusicCommand extends Command {
         Path path;
         try {
             _path = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+
+            if (_path.isBlank()) return Component.text("No song specified").color(NamedTextColor.RED);
+
             path = Path.of(root.toString(), _path);
 
             if (path.toString().contains("http")) player.loadSong(new URL(_path));
