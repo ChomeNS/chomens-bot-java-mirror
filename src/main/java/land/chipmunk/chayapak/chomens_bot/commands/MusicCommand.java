@@ -9,6 +9,7 @@ import land.chipmunk.chayapak.chomens_bot.plugins.MusicPlayerPlugin;
 import land.chipmunk.chayapak.chomens_bot.song.Loop;
 import land.chipmunk.chayapak.chomens_bot.song.Song;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
+import land.chipmunk.chayapak.chomens_bot.util.TimestampUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -321,19 +322,20 @@ public class MusicCommand extends Command {
         final Bot bot = context.bot;
         final Song currentSong = bot.music.currentSong;
 
-        final long milliseconds;
-        try {
-            milliseconds = Long.parseLong(args[1]) * 1000;
-        } catch (NumberFormatException e) {
-            return Component.text("Invalid timestamp").color(NamedTextColor.RED);
-        }
+        final String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+
+        final long timestamp = TimestampUtilities.parseTimestamp(input);
 
         if (currentSong == null) return Component.text("No song is currently playing").color(NamedTextColor.RED);
-        if (milliseconds < 0 || milliseconds > currentSong.length) return Component.text("Invalid timestamp").color(NamedTextColor.RED);
 
-        currentSong.setTime(milliseconds);
+        if (timestamp < 0 || timestamp > currentSong.length) return Component.text("Invalid timestamp").color(NamedTextColor.RED);
 
-        return null;
+        currentSong.setTime(timestamp);
+
+        return Component
+                .text("Set the time to ")
+                .append(Component.text(input).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)))
+                .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }
 
     public Component pitch (CommandContext context, String[] args) {
@@ -356,6 +358,7 @@ public class MusicCommand extends Command {
 
     public Component speed (CommandContext context, String[] args) {
         final Bot bot = context.bot;
+        final Song currentSong = bot.music.currentSong;
 
         float speed;
         try {
@@ -364,7 +367,11 @@ public class MusicCommand extends Command {
             return Component.text("Invalid speed").color(NamedTextColor.RED);
         }
 
+        final long oldTime = currentSong.time;
+
         bot.music.speed = speed;
+
+        currentSong.setTime(oldTime);
 
         return Component.empty()
                 .append(Component.text("Set the speed to "))

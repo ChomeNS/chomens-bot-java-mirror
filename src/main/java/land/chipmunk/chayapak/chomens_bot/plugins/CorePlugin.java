@@ -309,9 +309,6 @@ public class CorePlugin extends PositionPlugin.Listener {
                 toSize.getZ() + bot.position.position.getZ()
         );
 
-        System.out.println(from);
-        System.out.println(to);
-
         reset();
         refill();
 
