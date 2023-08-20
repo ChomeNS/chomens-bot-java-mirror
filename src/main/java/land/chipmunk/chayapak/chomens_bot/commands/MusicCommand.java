@@ -6,7 +6,9 @@ import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.plugins.MusicPlayerPlugin;
+import land.chipmunk.chayapak.chomens_bot.song.Instrument;
 import land.chipmunk.chayapak.chomens_bot.song.Loop;
+import land.chipmunk.chayapak.chomens_bot.song.Note;
 import land.chipmunk.chayapak.chomens_bot.song.Song;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.TimestampUtilities;
@@ -81,6 +83,7 @@ public class MusicCommand extends Command {
             case "noteinstrument" -> noteInstrument(context, args);
             case "pause", "resume" -> pause(context);
             case "info" -> info(context);
+            case "testsong" -> testSong(context);
             default -> Component.text("Invalid action").color(NamedTextColor.RED);
         };
     }
@@ -434,5 +437,48 @@ public class MusicCommand extends Command {
                 Component.text(songOriginalAuthor).color(NamedTextColor.AQUA),
                 Component.text(songDescription).color(NamedTextColor.AQUA)
         ).color(NamedTextColor.GOLD);
+    }
+
+    public Component testSong (CommandContext context) {
+        final Bot bot = context.bot;
+
+        final Song song = new Song(
+                "test_song",
+                bot,
+                "Test Song",
+                "chayapak",
+                "hhhzzzsss",
+                "SongPlayer's test song ported to ChomeNS Bot",
+                false
+        );
+
+        int instrumentId = 0;
+        int j = 0;
+        for (int i = 0; i < 400; i++) {
+            j++;
+
+            song.add(
+                    new Note(
+                            Instrument.fromId(instrumentId),
+                            j,
+                            1,
+                            i * 50,
+                            -1,
+                            100
+                    )
+            );
+
+            if (j > 15) {
+                instrumentId++;
+                if (instrumentId > 15) instrumentId = 0;
+                j = 0;
+            }
+        }
+
+        song.length = 400 * 50;
+
+        bot.music.songQueue.add(song);
+
+        return Component.text("Test song has been added to the song queue").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }
 }

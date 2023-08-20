@@ -37,20 +37,20 @@ public class Song {
     if (isNotNullAndNotBlank(songOriginalAuthor) && !isNotNullAndNotBlank(songAuthor)) name = String.format(
             "%s - %s",
             songOriginalAuthor,
-            originalName
+            isNotNullAndNotBlank(songName) ? songName : originalName
     );
     else if (!isNotNullAndNotBlank(songOriginalAuthor) && isNotNullAndNotBlank(songAuthor)) name = String.format(
             "%s - %s",
             songAuthor,
-            originalName
+            isNotNullAndNotBlank(songName) ? songName : originalName
     );
     else if (isNotNullAndNotBlank(songOriginalAuthor) && isNotNullAndNotBlank(songAuthor)) name = String.format(
             "%s/%s - %s",
             songOriginalAuthor,
             songAuthor,
-            originalName
+            isNotNullAndNotBlank(songName) ? songName : originalName
     );
-    else name = originalName;
+    else name = isNotNullAndNotBlank(songName) ? songName : originalName;
 
     this.originalName = originalName;
     this.name = name;
