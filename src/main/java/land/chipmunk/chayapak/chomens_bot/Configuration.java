@@ -25,12 +25,20 @@ public class Configuration {
     public ColorPalette colorPalette = new ColorPalette();
     
     public String ownerName = "chayapak"; // mabe mabe
+
+    public OwnerAuthentication ownerAuthentication = new OwnerAuthentication();
     
     public List<String> trusted = new ArrayList<>();
     public SelfCare selfCare = new SelfCare();
     public Eval eval = new Eval();
 
     public BotOption[] bots = new BotOption[]{};
+
+    public static class OwnerAuthentication {
+        public boolean enabled = false;
+        public String key = "";
+        public int timeout = 6000;
+    }
 
     public static class InternetCheck {
         public boolean enabled = true;

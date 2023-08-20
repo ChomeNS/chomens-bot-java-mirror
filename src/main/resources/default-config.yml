@@ -46,6 +46,11 @@ colorPalette:
 
 ownerName: 'chayapak' # currently this is only used in the console
 
+ownerAuthentication:
+  enabled: false
+  key: ''
+  timeout: 6000
+
 trusted:
   - 'player name'
 

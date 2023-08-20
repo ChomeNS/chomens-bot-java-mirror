@@ -125,11 +125,12 @@ public class FilterPlugin extends PlayersPlugin.Listener {
         mute(message.sender);
     }
 
-    private void mute (PlayerEntry target) {
-        bot.core.run("essentials:mute " + target.profile.getIdAsString() + " 10y");
+    public void mute (PlayerEntry target) { mute(target, ""); }
+    public void mute (PlayerEntry target, String reason) {
+        bot.core.run("essentials:mute " + target.profile.getIdAsString() + " 10y " + reason);
     }
 
-    private void deOp (PlayerEntry target) {
+    public void deOp (PlayerEntry target) {
         bot.core.run("minecraft:execute run deop " + UUIDUtilities.selector(target.profile.getId()));
     }
 

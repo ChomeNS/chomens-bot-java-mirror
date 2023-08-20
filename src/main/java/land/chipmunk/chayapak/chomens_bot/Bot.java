@@ -77,6 +77,7 @@ public class Bot {
     public VoiceChatPlugin voiceChat;
     public TagPlugin tag;
     public WorldPlugin world;
+    public AuthPlugin auth;
 
     public Bot (Configuration.BotOption botOption, List<Bot> bots, Configuration config) {
         this.host = botOption.host;
@@ -125,6 +126,7 @@ public class Bot {
         this.voiceChat = new VoiceChatPlugin(this);
         this.tag = new TagPlugin(this);
         this.world = new WorldPlugin(this);
+        this.auth = new AuthPlugin(this);
 
         for (Listener listener : listeners) listener.loadedPlugins();
 
