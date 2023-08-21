@@ -91,19 +91,19 @@ public class ChatPlugin extends Bot.Listener {
             if (playerMessage != null) break;
         }
 
-        boolean isCommandSuggestions = false;
+        boolean ignore = false;
         if (component instanceof TextComponent t_component) {
             final String id = t_component.content();
 
-            if (id.equals(bot.commandSuggestion.id)) isCommandSuggestions = true;
+            if (id.equals(bot.commandSuggestion.id) || id.equals(bot.auth.id)) ignore = true;
         }
 
         final String string = ComponentUtilities.stringify(component);
         final String ansi = ComponentUtilities.stringifyAnsi(component);
 
         for (Listener listener : listeners) {
-            if (!isCommandSuggestions) listener.systemMessageReceived(component, string, ansi);
-            listener.systemMessageReceived(component, isCommandSuggestions, string, ansi);
+            if (!ignore) listener.systemMessageReceived(component, string, ansi);
+            listener.systemMessageReceived(component, ignore, string, ansi);
 
             if (playerMessage != null) listener.playerMessageReceived(playerMessage);
         }

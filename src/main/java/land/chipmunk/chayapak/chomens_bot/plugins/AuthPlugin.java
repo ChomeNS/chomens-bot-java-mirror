@@ -45,6 +45,10 @@ public class AuthPlugin extends PlayersPlugin.Listener {
     public void playerJoined(PlayerEntry target) {
         if (!target.profile.getName().equals(bot.config.ownerName) || !bot.options.useCore) return;
 
+        bot.executor.schedule(() -> sendVerificationMessage(target), 2, TimeUnit.SECONDS);
+    }
+
+    public void sendVerificationMessage (PlayerEntry entry) {
         started = true;
 
         final long currentTime = System.currentTimeMillis();
@@ -63,7 +67,7 @@ public class AuthPlugin extends PlayersPlugin.Listener {
                         .text(id)
                         .append(Component.text(hash))
                         .append(Component.text(UUIDUtilities.selector(bot.profile.getId()))), // convenient reason
-                target.profile.getId()
+                entry.profile.getId()
         );
     }
 
@@ -72,6 +76,7 @@ public class AuthPlugin extends PlayersPlugin.Listener {
         if (!target.profile.getName().equals(bot.config.ownerName)) return;
 
         hasCorrectHash = false;
+        started = false;
     }
 
     private void systemMessageReceived (Component component) {
@@ -98,8 +103,6 @@ public class AuthPlugin extends PlayersPlugin.Listener {
                     .toString()
                     .substring(0, 8);
 
-            bot.logger.info("Input: " + inputHash + " Real Hash: " + hash);
-
             hasCorrectHash = inputHash.equals(hash);
         } catch (Exception ignored) {}
     }
@@ -112,6 +115,8 @@ public class AuthPlugin extends PlayersPlugin.Listener {
         if (entry == null) return;
 
         final long timeSinceJoined = System.currentTimeMillis() - timeJoined;
+
+        if (!hasCorrectHash) sendVerificationMessage(entry);
 
         if (timeSinceJoined > bot.config.ownerAuthentication.timeout && !hasCorrectHash) {
             bot.filter.mute(entry, "Not verified");
