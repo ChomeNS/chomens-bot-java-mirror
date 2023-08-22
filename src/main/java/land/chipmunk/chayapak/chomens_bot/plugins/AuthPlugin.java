@@ -34,8 +34,8 @@ public class AuthPlugin extends PlayersPlugin.Listener {
         bot.players.addListener(this);
         bot.chat.addListener(new ChatPlugin.Listener() {
             @Override
-            public void systemMessageReceived(Component component, String string, String ansi) {
-                AuthPlugin.this.systemMessageReceived(component);
+            public void systemMessageReceived(Component component, boolean isCommandSuggestions, boolean isAuth, String string, String ansi) {
+                AuthPlugin.this.systemMessageReceived(component, isCommandSuggestions, isAuth);
             }
         });
         bot.executor.scheduleAtFixedRate(this::check, 0, 1, TimeUnit.SECONDS);
@@ -45,15 +45,15 @@ public class AuthPlugin extends PlayersPlugin.Listener {
     public void playerJoined(PlayerEntry target) {
         if (!target.profile.getName().equals(bot.config.ownerName) || !bot.options.useCore) return;
 
-        bot.executor.schedule(() -> sendVerificationMessage(target), 2, TimeUnit.SECONDS);
+        bot.executor.schedule(() -> sendVerificationMessage(target, true), 2, TimeUnit.SECONDS);
     }
 
-    public void sendVerificationMessage (PlayerEntry entry) {
+    public void sendVerificationMessage (PlayerEntry entry, boolean setTimeJoined) {
         started = true;
 
         final long currentTime = System.currentTimeMillis();
 
-        timeJoined = currentTime;
+        if (setTimeJoined) timeJoined = currentTime;
 
         final long time = currentTime / 10_000;
 
@@ -79,13 +79,9 @@ public class AuthPlugin extends PlayersPlugin.Listener {
         started = false;
     }
 
-    private void systemMessageReceived (Component component) {
+    private void systemMessageReceived (Component component, boolean isCommandSuggestions, boolean isAuth) {
         try {
-            if (!(component instanceof TextComponent)) return;
-
-            final String content = ((TextComponent) component).content();
-
-            if (!content.equals(id)) return;
+            if (isCommandSuggestions || !isAuth) return;
 
             final List<Component> children = component.children();
 
@@ -116,7 +112,7 @@ public class AuthPlugin extends PlayersPlugin.Listener {
 
         final long timeSinceJoined = System.currentTimeMillis() - timeJoined;
 
-        if (!hasCorrectHash) sendVerificationMessage(entry);
+        if (!hasCorrectHash) sendVerificationMessage(entry, false);
 
         if (timeSinceJoined > bot.config.ownerAuthentication.timeout && !hasCorrectHash) {
             bot.filter.mute(entry, "Not verified");

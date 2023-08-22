@@ -91,19 +91,21 @@ public class ChatPlugin extends Bot.Listener {
             if (playerMessage != null) break;
         }
 
-        boolean ignore = false;
+        boolean isCommandSuggestions = false;
+        boolean isAuth = false;
         if (component instanceof TextComponent t_component) {
             final String id = t_component.content();
 
-            if (id.equals(bot.commandSuggestion.id) || id.equals(bot.auth.id)) ignore = true;
+            if (id.equals(bot.commandSuggestion.id)) isCommandSuggestions = true;
+            else if (id.equals(bot.auth.id)) isAuth = true;
         }
 
         final String string = ComponentUtilities.stringify(component);
         final String ansi = ComponentUtilities.stringifyAnsi(component);
 
         for (Listener listener : listeners) {
-            if (!ignore) listener.systemMessageReceived(component, string, ansi);
-            listener.systemMessageReceived(component, ignore, string, ansi);
+            if (!isCommandSuggestions && !isAuth) listener.systemMessageReceived(component, string, ansi);
+            listener.systemMessageReceived(component, isCommandSuggestions, isAuth, string, ansi);
 
             if (playerMessage != null) listener.playerMessageReceived(playerMessage);
         }
@@ -363,6 +365,6 @@ public class ChatPlugin extends Bot.Listener {
     public static class Listener {
         public void playerMessageReceived (PlayerMessage message) {}
         public void systemMessageReceived (Component component, String string, String ansi) {}
-        public void systemMessageReceived (Component component, boolean isCommandSuggestions, String string, String ansi) {}
+        public void systemMessageReceived (Component component, boolean isCommandSuggestions, boolean isAuth, String string, String ansi) {}
     }
 }
