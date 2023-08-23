@@ -370,11 +370,15 @@ public class MusicCommand extends Command {
             return Component.text("Invalid speed").color(NamedTextColor.RED);
         }
 
-        final long oldTime = currentSong.time;
+        if (speed > 5) return Component.text("Too fast").color(NamedTextColor.RED);
+
+        long oldTime = -1;
+
+        if (currentSong != null) oldTime = currentSong.time;
 
         bot.music.speed = speed;
 
-        currentSong.setTime(oldTime);
+        if (currentSong != null) currentSong.setTime(oldTime);
 
         return Component.empty()
                 .append(Component.text("Set the speed to "))
