@@ -71,8 +71,6 @@ public class SongLoaderRunnable implements Runnable {
       if (isUrl) {
         bytes = DownloadUtilities.DownloadToByteArray(songUrl, 5 * 1024 * 1024);
         name = Paths.get(songUrl.toURI().getPath()).getFileName().toString();
-
-        bot.music.loadings--;
       } else {
         bytes = Files.readAllBytes(songPath);
         name = !isFolder ? fileName : songPath.getFileName().toString();
@@ -131,7 +129,5 @@ public class SongLoaderRunnable implements Runnable {
     exception.printStackTrace();
     bot.chat.tellraw(Component.translatable("Failed to load song: %s", exception.message).color(NamedTextColor.RED));
     bot.music.loaderThread = null;
-
-    if (isUrl) bot.music.loadings--;
   }
 }

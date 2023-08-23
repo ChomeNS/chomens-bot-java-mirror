@@ -21,6 +21,7 @@ public class Configuration {
 
     public Core core = new Core();
     public Discord discord = new Discord();
+    public Music music = new Music();
 
     public ColorPalette colorPalette = new ColorPalette();
     
@@ -89,6 +90,15 @@ public class Configuration {
         public String adminRoleName = "Admin";
         public String statusMessage = "Gay Sex";
         public String inviteLink = "https://discord.gg/xdgCkUyaA4";
+    }
+
+    public static class Music {
+        public URLRatelimit urlRatelimit = new URLRatelimit();
+
+        public static class URLRatelimit {
+            public int seconds = 15;
+            public int limit = 7;
+        }
     }
 
     public static class EmbedColors {
