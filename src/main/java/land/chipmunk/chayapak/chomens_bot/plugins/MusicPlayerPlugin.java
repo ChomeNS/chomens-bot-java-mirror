@@ -311,7 +311,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
             // i wrote this part
 
-            // this uses the average of the pitch and the volume to calcuate the stereo
+            // this uses the average of the pitch and the volume to calculate the stereo
             final float average = (note.pitch + note.volume) / 2;
 
             if (average > 5) blockPosition = (average - 5) / -5;
