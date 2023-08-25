@@ -120,6 +120,7 @@ public class InfoCommand extends Command {
                                 OS name: %s
                                 CPU cores: %s
                                 CPU model: %s
+                                Threads: %s
                                 Heap memory usage: %s""",
                         Component.text(localHost == null ? "N/A" : localHost.getHostName()).color(color),
                         Component.text(System.getProperty("user.dir")).color(color),
@@ -128,6 +129,7 @@ public class InfoCommand extends Command {
                         Component.text(os.getName()).color(color),
                         Component.text(String.valueOf(Runtime.getRuntime().availableProcessors())).color(color),
                         cpuModel,
+                        Component.text(String.valueOf(Thread.activeCount())).color(color),
                         Component
                                 .translatable(
                                         "%s MB / %s MB",

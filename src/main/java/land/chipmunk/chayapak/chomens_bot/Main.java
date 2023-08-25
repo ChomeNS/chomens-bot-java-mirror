@@ -2,7 +2,6 @@ package land.chipmunk.chayapak.chomens_bot;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import land.chipmunk.chayapak.chomens_bot.plugins.ConsolePlugin;
-import land.chipmunk.chayapak.chomens_bot.util.ExceptionUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.HttpUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.LoggerUtilities;
 import net.dv8tion.jda.api.JDA;
@@ -21,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -41,6 +41,8 @@ public class Main {
     private static Configuration config;
 
     private static boolean alreadyStarted = false;
+
+    private static final List<Thread> alreadyAddedThreads = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
         final Path configPath = Path.of("config.yml");
@@ -83,18 +85,21 @@ public class Main {
             }
         }, 0, 1, TimeUnit.MINUTES);
 
-        Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> {
-            LoggerUtilities.error(
-                    String.format(
-                            "Caught an uncaught exception in thread %s!\n%s",
+        executor.scheduleAtFixedRate(() -> {
+            final Set<Thread> threads = Thread.getAllStackTraces().keySet();
 
-                            thread.getName(),
-                            ExceptionUtilities.getStacktrace(throwable)
-                    )
-            );
+            for (Thread thread : threads) {
+                final Thread.UncaughtExceptionHandler oldHandler = thread.getUncaughtExceptionHandler();
 
-            if (throwable instanceof OutOfMemoryError) System.exit(1);
-        });
+                thread.setUncaughtExceptionHandler((_thread, throwable) -> {
+                    if (!alreadyAddedThreads.contains(thread) && throwable instanceof OutOfMemoryError) System.exit(1);
+
+                    alreadyAddedThreads.add(thread);
+
+                    oldHandler.uncaughtException(_thread, throwable);
+                });
+            }
+        }, 0, 30, TimeUnit.SECONDS);
 
         if (!config.backup.enabled) {
             initializeBots();
