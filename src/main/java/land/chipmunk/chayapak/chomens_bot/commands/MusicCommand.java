@@ -268,9 +268,11 @@ public class MusicCommand extends Command {
                 index += eachSize;
                 list.clear();
             }
-        } catch (NotDirectoryException e) {
+        } catch (NoSuchFileException e) {
             return Component.text("Directory doesn't exist").color(NamedTextColor.RED);
-        } catch (IOException ignored) {}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return null;
     }
