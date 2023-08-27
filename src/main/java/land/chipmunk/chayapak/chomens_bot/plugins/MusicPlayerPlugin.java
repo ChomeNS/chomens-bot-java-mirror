@@ -126,22 +126,22 @@ public class MusicPlayerPlugin extends Bot.Listener {
                     if (currentSong.paused && ticksUntilPausedBossbar-- < 0) return;
                     else ticksUntilPausedBossbar = 20 - (((int) bot.tps.getTickRate()) - 20);
 
-                    BotBossBar bossBar = bot.bossbar.get(bossbarName);
+                    if (!currentSong.finished()) {
+                        BotBossBar bossBar = bot.bossbar.get(bossbarName);
 
-                    if (bossBar == null && bot.bossbar.enabled) bossBar = addBossBar();
+                        if (bossBar == null && bot.bossbar.enabled) bossBar = addBossBar();
 
-                    if (bot.bossbar.enabled && bot.options.useCore) {
-                        bossBar.setTitle(generateBossbar());
-                        bossBar.setColor(pitch > 0 ? BossBarColor.PURPLE : BossBarColor.YELLOW);
-                        bossBar.setValue((int) Math.floor(((double) currentSong.time / 1000) * speed));
-                        bossBar.setMax((long) ((currentSong.length / 1000) * speed));
-                    }
+                        if (bot.bossbar.enabled && bot.options.useCore) {
+                            bossBar.setTitle(generateBossbar());
+                            bossBar.setColor(pitch > 0 ? BossBarColor.PURPLE : BossBarColor.YELLOW);
+                            bossBar.setValue((int) Math.floor(((double) currentSong.time / 1000) * speed));
+                            bossBar.setMax((long) ((currentSong.length / 1000) * speed));
+                        }
 
-                    if (currentSong.paused || bot.core.isRateLimited()) return;
+                        if (currentSong.paused || bot.core.isRateLimited()) return;
 
-                    handlePlaying();
-
-                    if (currentSong.finished()) {
+                        handlePlaying();
+                    } else {
                         if (loop == Loop.CURRENT) {
                             currentSong.loop();
                             return;
