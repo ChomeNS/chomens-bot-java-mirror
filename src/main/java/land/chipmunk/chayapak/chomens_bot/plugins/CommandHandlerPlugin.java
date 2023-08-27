@@ -143,13 +143,17 @@ public class CommandHandlerPlugin {
             } else {
                 if (
                         command.trustLevel == TrustLevel.TRUSTED &&
-                                !userHash.equals(bot.hashing.getHash(splitInput[0], context.sender)) &&
-                                !userHash.equals(bot.hashing.getOwnerHash(splitInput[0], context.sender))
+                                // mess?
+                                !userHash.equals(bot.hashing.getHash(splitInput[0], context.sender, true)) &&
+                                !userHash.equals(bot.hashing.getOwnerHash(splitInput[0], context.sender, true)) &&
+                                !userHash.equals(bot.hashing.getHash(splitInput[0], context.sender, false)) &&
+                                !userHash.equals(bot.hashing.getOwnerHash(splitInput[0], context.sender, false))
                 ) return Component.text("Invalid hash").color(NamedTextColor.RED);
 
                 if (
                         command.trustLevel == TrustLevel.OWNER &&
-                                !userHash.equals(bot.hashing.getOwnerHash(splitInput[0], context.sender))
+                                !userHash.equals(bot.hashing.getOwnerHash(splitInput[0], context.sender, false)) &&
+                                !userHash.equals(bot.hashing.getOwnerHash(splitInput[0], context.sender, true))
                 ) return Component.text("Invalid OwnerHash").color(NamedTextColor.RED);
             }
         }
