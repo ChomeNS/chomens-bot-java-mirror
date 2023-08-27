@@ -18,7 +18,7 @@ public class BruhifyPlugin {
 
             int hue = startHue;
             String displayName = bruhifyText;
-            int increment = (int)(360.0 / Math.max(displayName.length(), 20));
+            int increment = 360 / Math.max(displayName.length(), 20);
 
             Component component = Component.empty();
 
@@ -31,6 +31,6 @@ public class BruhifyPlugin {
             bot.chat.actionBar(component);
 
             startHue = (startHue + increment) % 360;
-        }, 50, 100, TimeUnit.MILLISECONDS);
+        }, 0, 50, TimeUnit.MILLISECONDS);
     }
 }
