@@ -55,4 +55,20 @@ public class HashingPlugin {
                 ) :
                 hash;
     }
+
+    public boolean isCorrectHash (String hash, String prefix, PlayerEntry sender) {
+        // removes reset section sign
+        if (hash.length() == (16 * 2 /* <-- don't forget, we have the section signs */) + 2 && hash.endsWith("§r")) hash = hash.substring(0, hash.length() - 2);
+
+        return hash.equals(getHash(prefix, sender, true)) ||
+                hash.equals(getHash(prefix, sender, false));
+    }
+
+    public boolean isCorrectOwnerHash (String hash, String prefix, PlayerEntry sender) {
+        // removes reset section sign
+        if (hash.length() == (16 * 2 /* <-- don't forget, we have the section signs */) + 2 && hash.endsWith("§r")) hash = hash.substring(0, hash.length() - 2);
+
+        return hash.equals(getOwnerHash(prefix, sender, true)) ||
+                hash.equals(getOwnerHash(prefix, sender, false));
+    }
 }

@@ -143,11 +143,8 @@ public class CommandHandlerPlugin {
             } else {
                 if (
                         command.trustLevel == TrustLevel.TRUSTED &&
-                                // mess?
-                                !userHash.equals(bot.hashing.getHash(splitInput[0], context.sender, true)) &&
-                                !userHash.equals(bot.hashing.getOwnerHash(splitInput[0], context.sender, true)) &&
-                                !userHash.equals(bot.hashing.getHash(splitInput[0], context.sender, false)) &&
-                                !userHash.equals(bot.hashing.getOwnerHash(splitInput[0], context.sender, false))
+                                !bot.hashing.isCorrectHash(userHash, splitInput[0], context.sender) &&
+                                !bot.hashing.isCorrectOwnerHash(userHash, splitInput[0], context.sender)
                 ) return Component.text("Invalid hash").color(NamedTextColor.RED);
 
                 if (
