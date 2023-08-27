@@ -51,7 +51,7 @@ public class CommandHandlerPlugin {
         registerCommand(new MailCommand());
         registerCommand(new EvalCommand());
         registerCommand(new InfoCommand());
-        registerCommand(new ConsoleServerCommand());
+        registerCommand(new ConsoleCommand());
         registerCommand(new PCrashCommand());
     }
 
