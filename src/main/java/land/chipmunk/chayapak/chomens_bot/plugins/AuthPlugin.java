@@ -43,7 +43,7 @@ public class AuthPlugin extends PlayersPlugin.Listener {
 
     @Override
     public void playerJoined(PlayerEntry target) {
-        if (!target.profile.getName().equals(bot.config.ownerName.replaceAll("§", "")) || !bot.options.useCore) return;
+        if (!target.profile.getName().equals(bot.config.ownerName.replaceAll("§[a-f0-9rlonmk]", "")) || !bot.options.useCore) return;
 
         bot.executor.schedule(() -> sendVerificationMessage(target, true), 2, TimeUnit.SECONDS);
     }
