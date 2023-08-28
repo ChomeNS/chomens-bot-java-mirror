@@ -130,29 +130,35 @@ public class Main {
     public static void initializeBots() {
         alreadyStarted = true;
 
-        Configuration.BotOption[] botsOptions = config.bots;
+        try {
+            Configuration.BotOption[] botsOptions = config.bots;
 
-        // idk if these should be here lol, but it is just the discord stuff
-        JDA jda = null;
-        if (config.discord.enabled) {
-            JDABuilder builder = JDABuilder.createDefault(config.discord.token);
-            builder.enableIntents(GatewayIntent.MESSAGE_CONTENT);
-            try {
-                jda = builder.build();
-                jda.awaitReady();
-            } catch (InterruptedException ignored) {
-                System.exit(1);
+            // idk if these should be here lol, but it is just the discord stuff
+            JDA jda = null;
+            if (config.discord.enabled) {
+                JDABuilder builder = JDABuilder.createDefault(config.discord.token);
+                builder.enableIntents(GatewayIntent.MESSAGE_CONTENT);
+                try {
+                    jda = builder.build();
+                    jda.awaitReady();
+                } catch (InterruptedException ignored) {
+                    System.exit(1);
+                }
+                jda.getPresence().setPresence(Activity.playing(config.discord.statusMessage), false);
             }
-            jda.getPresence().setPresence(Activity.playing(config.discord.statusMessage), false);
-        }
 
-        for (Configuration.BotOption botOption : botsOptions) {
-            final Bot bot = new Bot(botOption, bots, config);
-            bots.add(bot);
-        }
+            for (Configuration.BotOption botOption : botsOptions) {
+                final Bot bot = new Bot(botOption, bots, config);
+                bots.add(bot);
+            }
 
-        // fard
-        new ConsolePlugin(bots, config, jda);
+            // fard
+            new ConsolePlugin(bots, config, jda);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            System.exit(1);
+        }
     }
 
     private static void checkInternet () throws IOException {
