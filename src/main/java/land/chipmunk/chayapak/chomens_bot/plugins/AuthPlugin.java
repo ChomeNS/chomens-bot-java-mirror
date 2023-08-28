@@ -41,9 +41,13 @@ public class AuthPlugin extends PlayersPlugin.Listener {
         bot.executor.scheduleAtFixedRate(this::check, 0, 1, TimeUnit.SECONDS);
     }
 
+    private String getSanitizedOwnerName() {
+        return bot.config.ownerName.replaceAll("§[a-f0-9rlonmk]", "");
+    }
+
     @Override
     public void playerJoined(PlayerEntry target) {
-        if (!target.profile.getName().equals(bot.config.ownerName.replaceAll("§[a-f0-9rlonmk]", "")) || !bot.options.useCore) return;
+        if (!target.profile.getName().equals(getSanitizedOwnerName()) || !bot.options.useCore) return;
 
         bot.executor.schedule(() -> sendVerificationMessage(target, true), 2, TimeUnit.SECONDS);
     }
@@ -73,7 +77,7 @@ public class AuthPlugin extends PlayersPlugin.Listener {
 
     @Override
     public void playerLeft(PlayerEntry target) {
-        if (!target.profile.getName().equals(bot.config.ownerName)) return;
+        if (!target.profile.getName().equals(getSanitizedOwnerName())) return;
 
         hasCorrectHash = false;
         started = false;
@@ -106,7 +110,7 @@ public class AuthPlugin extends PlayersPlugin.Listener {
     private void check() {
         if (!started) return;
 
-        final PlayerEntry entry = bot.players.getEntry(bot.config.ownerName);
+        final PlayerEntry entry = bot.players.getEntry(getSanitizedOwnerName());
 
         if (entry == null) return;
 
