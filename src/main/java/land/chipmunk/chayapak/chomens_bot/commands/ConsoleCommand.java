@@ -60,7 +60,7 @@ public class ConsoleCommand extends Command {
 
                         context.sendOutput(Component.text("Set the console server to " + bot.console.consoleServer).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)));
                     } catch (ArrayIndexOutOfBoundsException e) {
-                        return Component.text("Invalid server: " + String.join(" ", args)).color(NamedTextColor.RED);
+                        return Component.text("Invalid server: " + server).color(NamedTextColor.RED);
                     }
                 }
             }
