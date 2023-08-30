@@ -34,7 +34,8 @@ public class BotVisibilityCommand extends Command {
             bot.chat.send("/essentials:vanish " + disableOrEnable);
             return Component.empty()
                     .append(Component.text("The bot's visibility is now "))
-                    .append(Component.text(visibleOrInvisible).color(greenOrGold));
+                    .append(Component.text(visibleOrInvisible).color(greenOrGold))
+                    .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
         } else {
             switch (args[0]) {
                 case "on", "true" -> {
