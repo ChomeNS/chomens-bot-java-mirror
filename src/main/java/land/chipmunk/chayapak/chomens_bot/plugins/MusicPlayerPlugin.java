@@ -301,21 +301,20 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
             float blockPosition = 0;
 
-            // imo with my stereo calculation it sounds better so rip calculation using stereo and panning
-//            // totallynotskidded from opennbs
-//            if (currentSong.nbs) {
-//                final int s = (note.stereo + note.panning) / 2; // Stereo values to X coordinates, calc'd from the average of both note and layer pan.
-//                if (s > 100) blockPosition = (float) (s - 100) / -100;
-//                else if (s < 100) blockPosition = (float) ((s - 100) * -1) / 100;
-//            } else {
+            // totallynotskidded from opennbs
+            if (currentSong.nbs) {
+                final int s = (note.stereo + note.panning) / 2; // Stereo values to X coordinates, calc'd from the average of both note and layer pan.
+                if (s > 100) blockPosition = (float) (s - 100) / -100;
+                else if (s < 100) blockPosition = (float) ((s - 100) * -1) / 100;
+            } else {
+                // i wrote this part
 
-            // i wrote this part
+                // this uses the average of the pitch and the volume to calculate the stereo
+                final float average = (note.pitch + note.volume) / 2;
 
-            // this uses the average of the pitch and the volume to calculate the stereo
-            final float average = (note.pitch + note.volume) / 2;
-
-            if (average > 5) blockPosition = (average - 5) / -5;
-            else if (average < 5) blockPosition = ((average - 5) * -1) / 5;
+                if (average > 5) blockPosition = (average - 5) / -5;
+                else if (average < 5) blockPosition = ((average - 5) * -1) / 5;
+            }
 
             bot.core.run(
                     "minecraft:execute as " +
