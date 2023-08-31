@@ -123,7 +123,7 @@ public class MusicCommand extends Command {
                     final String lowerCaseFile = pathSplitted[pathSplitted.length - 1].toLowerCase();
 
                     final String file = Arrays.stream(songs)
-                            .filter(song -> song.toLowerCase().contains(lowerCaseFile))
+                            .filter(song -> song.equalsIgnoreCase(lowerCaseFile) || song.toLowerCase().contains(lowerCaseFile))
                             .toArray(String[]::new)[0];
 
                     player.loadSong(Path.of(realPath.toString(), file));
@@ -133,7 +133,7 @@ public class MusicCommand extends Command {
                     if (songs == null) return null;
 
                     final String file = Arrays.stream(songs)
-                            .filter(song -> song.toLowerCase().contains(_path.toLowerCase()))
+                            .filter(song -> song.equalsIgnoreCase(_path) || song.toLowerCase().contains(_path.toLowerCase()))
                             .toArray(String[]::new)[0];
 
                     player.loadSong(Path.of(root.toString(), file));
