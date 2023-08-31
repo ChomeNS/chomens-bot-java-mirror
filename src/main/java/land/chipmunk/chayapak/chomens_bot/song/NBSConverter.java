@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 
 // Author: hhhzzzsss
-public class NBSConverter {
+public class NBSConverter implements Converter {
   public static final Instrument[] instrumentIndex = new Instrument[] {
     Instrument.HARP,
     Instrument.BASS,
@@ -53,7 +53,8 @@ public class NBSConverter {
     public boolean key = false;
   }
 
-  public static Song getSongFromBytes(byte[] bytes, String fileName, Bot bot) throws IOException {
+  @Override
+  public Song getSongFromBytes(byte[] bytes, String fileName, Bot bot) throws IOException {
     ByteBuffer buffer = ByteBuffer.wrap(bytes);
     buffer.order(ByteOrder.LITTLE_ENDIAN);
 

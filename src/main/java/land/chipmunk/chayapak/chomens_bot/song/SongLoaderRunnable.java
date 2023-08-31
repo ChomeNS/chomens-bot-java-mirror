@@ -11,11 +11,22 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 // Author: _ChipMC_ or hhhzzzsss? also i modified it to use runnable
 // because thread = bad !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 public class SongLoaderRunnable implements Runnable {
+  // should the converters be here?
+  public static final List<Converter> converters = new ArrayList<>();
+
+  static {
+    converters.add(new MidiConverter());
+    converters.add(new NBSConverter());
+    converters.add(new TextFileConverter());
+  }
+
   public final String fileName;
 
   private Path songPath;
@@ -83,18 +94,12 @@ public class SongLoaderRunnable implements Runnable {
       return;
     }
 
-    try {
-      song = MidiConverter.getSongFromBytes(bytes, name, bot);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    for (Converter converter : converters) {
+      if (song != null) break;
 
-    if (song == null) {
       try {
-        song = NBSConverter.getSongFromBytes(bytes, name, bot);
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+        song = converter.getSongFromBytes(bytes, name, bot);
+      } catch (Exception ignored) {}
     }
 
     if (song == null) {

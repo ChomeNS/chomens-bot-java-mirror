@@ -10,13 +10,14 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 // Author: hhhzzzsss
-public class MidiConverter {
+public class MidiConverter implements Converter {
   public static final int SET_INSTRUMENT = 0xC0;
   public static final int SET_TEMPO = 0x51;
   public static final int NOTE_ON = 0x90;
   public static final int NOTE_OFF = 0x80;
 
-  public static Song getSongFromBytes(byte[] bytes, String name, Bot bot) throws InvalidMidiDataException, IOException {
+  @Override
+  public Song getSongFromBytes(byte[] bytes, String name, Bot bot) throws InvalidMidiDataException, IOException {
     Sequence sequence = MidiSystem.getSequence(new ByteArrayInputStream(bytes));
     return getSong(sequence, name, bot);
   }

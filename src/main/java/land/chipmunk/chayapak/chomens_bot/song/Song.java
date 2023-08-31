@@ -17,10 +17,10 @@ public class Song {
   public long time = 0; // Time since start of song
   public long loopPosition = 200; // Milliseconds into the song to start looping
 
-  public final String songName;
-  public final String songAuthor;
-  public final String songOriginalAuthor;
-  public final String songDescription;
+  public String songName;
+  public String songAuthor;
+  public String songOriginalAuthor;
+  public String songDescription;
 
   public final boolean nbs;
 
