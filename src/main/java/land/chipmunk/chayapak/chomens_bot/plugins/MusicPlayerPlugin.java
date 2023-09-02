@@ -207,7 +207,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
         final BotBossBar bossBar = new BotBossBar(
                 Component.empty(),
-                SELECTOR,
+                BOTH_SELECTOR,
                 BossBarColor.WHITE,
                 BossBarDivision.NONE,
                 true,
