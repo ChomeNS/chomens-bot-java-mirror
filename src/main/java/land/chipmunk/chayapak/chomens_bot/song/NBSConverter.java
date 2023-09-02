@@ -183,11 +183,6 @@ public class NBSConverter implements Converter {
         layerVolume = nbsLayers.get(note.layer).volume;
       }
 
-      // these 2 lines are totallynotskidded from https://github.com/OpenNBS/OpenNoteBlockStudio/blob/master/scripts/selection_transpose/selection_transpose.gml
-      // so huge thanks to them uwu
-      while (key < 33) key += 12;
-      while (key > 57) key -= 12;
-
       int pitch = key-33;
 
       try {

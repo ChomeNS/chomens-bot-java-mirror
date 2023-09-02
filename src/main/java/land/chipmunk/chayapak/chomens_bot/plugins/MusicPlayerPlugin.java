@@ -27,7 +27,10 @@ import java.util.concurrent.TimeUnit;
 public class MusicPlayerPlugin extends Bot.Listener {
     private final Bot bot;
 
-    public static final String SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic]";
+    public static final String SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic,tag=!custompitch]";
+    public static final String CUSTOM_PITCH_SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic,tag=custompitch]";
+    public static final String BOTH_SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic]";
+
     public static final Path SONG_DIR = Path.of("songs");
     static {
         try {
@@ -287,47 +290,77 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     public void handlePlaying () {
-        currentSong.advanceTime();
-        while (currentSong.reachedNextNote()) {
-            final Note note = currentSong.getNextNote();
+        try {
+            currentSong.advanceTime();
+            while (currentSong.reachedNextNote()) {
+                final Note note = currentSong.getNextNote();
 
-            if (notesPerSecond > 1240) continue;
+                if (notesPerSecond > 1240) continue;
 
-            float key = note.pitch;
+                float key = note.pitch;
 
-            // totally didn't look at the minecraft code and found the note block pitch thingy so i totallydidnotskidded™ it
-            final double floatingPitch = Math.pow(2.0, ((key + (pitch / 10)) - 12) / 12.0);
-            // final double floatingPitch = 0.5 * (Math.pow(2, ((key + (pitch / 10)) / 12)));
+                // totally didn't look at the minecraft code and found the note block pitch thingy so i totallydidnotskidded™ it
+                double floatingPitch = Math.pow(2.0, ((key + (pitch / 10)) - 12) / 12.0);
+                // final double floatingPitch = 0.5 * (Math.pow(2, ((key + (pitch / 10)) / 12)));
 
-            float blockPosition = 0;
+                float blockPosition = 0;
 
-            // totallynotskidded from opennbs
-            if (currentSong.nbs) {
-                final int s = (note.stereo + note.panning) / 2; // Stereo values to X coordinates, calc'd from the average of both note and layer pan.
-                if (s > 100) blockPosition = (float) (s - 100) / -100;
-                else if (s < 100) blockPosition = (float) ((s - 100) * -1) / 100;
-            } else {
-                // i wrote this part
+                // totallynotskidded from opennbs
+                if (currentSong.nbs) {
+                    final int s = (note.stereo + note.panning) / 2; // Stereo values to X coordinates, calc'd from the average of both note and layer pan.
+                    if (s > 100) blockPosition = (float) (s - 100) / -100;
+                    else if (s < 100) blockPosition = (float) ((s - 100) * -1) / 100;
+                } else {
+                    // i wrote this part
 
-                // this uses the average of the pitch and the volume to calculate the stereo
-                final float average = (note.pitch + note.volume) / 2;
+                    // this uses the average of the pitch and the volume to calculate the stereo
+                    final float average = (note.pitch + note.volume) / 2;
 
-                if (average > 5) blockPosition = (average - 5) / -5;
-                else if (average < 5) blockPosition = ((average - 5) * -1) / 5;
+                    if (average > 5) blockPosition = (average - 5) / -5;
+                    else if (average < 5) blockPosition = ((average - 5) * -1) / 5;
+                }
+
+                key += 33;
+
+                final boolean isMoreOrLessOctave = key < 33 || key > 57;
+
+                if (isMoreOrLessOctave) {
+                    bot.core.run(
+                            "minecraft:execute as " +
+                                    CUSTOM_PITCH_SELECTOR +
+                                    " at @s run playsound " +
+                                    (!instrument.equals("off") ? instrument : note.instrument.sound) + ".pitch." + floatingPitch +
+                                    " record @s ^" + blockPosition + " ^ ^ " +
+                                    note.volume +
+                                    " " +
+                                    0
+                    );
+                }
+
+                // these 2 lines are totallynotskidded from https://github.com/OpenNBS/OpenNoteBlockStudio/blob/master/scripts/selection_transpose/selection_transpose.gml
+                // so huge thanks to them uwu
+                while (key < 33) key += 12;
+                while (key > 57) key -= 12;
+
+                key -= 33;
+
+                floatingPitch = Math.pow(2.0, ((key + (pitch / 10)) - 12) / 12.0);
+
+                bot.core.run(
+                        "minecraft:execute as " +
+                                (isMoreOrLessOctave ? SELECTOR : BOTH_SELECTOR) +
+                                " at @s run playsound " +
+                                (!instrument.equals("off") ? instrument : note.instrument.sound) +
+                                " record @s ^" + blockPosition + " ^ ^ " +
+                                note.volume +
+                                " " +
+                                MathUtilities.clamp(floatingPitch, 0, 2)
+                );
+
+                notesPerSecond++;
             }
-
-            bot.core.run(
-                    "minecraft:execute as " +
-                            SELECTOR +
-                            " at @s run playsound " +
-                            (!instrument.equals("off") ? instrument : note.instrument.sound) +
-                            " record @s ^" + blockPosition + " ^ ^ " +
-                            note.volume +
-                            " " +
-                            MathUtilities.clamp(floatingPitch, 0, 2)
-            );
-
-            notesPerSecond++;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

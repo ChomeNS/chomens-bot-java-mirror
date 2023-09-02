@@ -131,18 +131,12 @@ public class MidiConverter implements Converter {
       return null;
     }
 
-    int pitch = (midiPitch-instrument.offset) + /* lazy -> */ 33;
-
-    // these 2 lines are totallynotskidded from https://github.com/OpenNBS/OpenNoteBlockStudio/blob/master/scripts/selection_transpose/selection_transpose.gml
-    // so huge thanks to them uwu
-    // will this do anything if it's midi?
-    while (pitch < 33) pitch += 12;
-    while (pitch > 57) pitch -= 12;
+    int pitch = midiPitch-instrument.offset;
 
     float volume = (float) velocity / 127.0f;
     long time = microTime / 1000L;
 
-    return new Note(instrument, pitch - 33, volume, time, -1, 100);
+    return new Note(instrument, pitch, volume, time, -1, 100);
   }
 
   private static Note getMidiPercussionNote (int midiPitch, int velocity, long microTime) {
