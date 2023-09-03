@@ -177,6 +177,8 @@ public class NBSConverter implements Converter {
 
         instrument = Instrument.of(name);
         key += customInstrument.pitch;
+
+        key -= 45 + (note.pitch / 100);
       }
 
       byte layerVolume = 100;
