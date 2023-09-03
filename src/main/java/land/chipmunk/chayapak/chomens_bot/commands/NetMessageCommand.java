@@ -45,7 +45,7 @@ public class NetMessageCommand extends Command {
                                 )
                         ),
                 Component.text(" "),
-                context.sender.displayName == null ? Component.text(context.sender.profile.getName()) : context.sender.displayName.color(NamedTextColor.GRAY),
+                context.sender.displayName == null ? Component.text(context.sender.profile.getName()).color(NamedTextColor.GRAY) : context.sender.displayName.color(NamedTextColor.GRAY),
                 Component.text(" "),
                 Component.text(String.join(" ", args)).color(NamedTextColor.GRAY)
         ).color(NamedTextColor.DARK_GRAY);
