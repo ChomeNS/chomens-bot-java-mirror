@@ -173,6 +173,7 @@ public class NBSConverter implements Converter {
         final Path path = Path.of(customInstrument.file);
         String name = path.getFileName().toString();
         if (name.endsWith(".ogg")) name = name.substring(0, name.length() - ".ogg".length()); // bad but OK
+        if (name.contains("entity.firework.")) name = name.replace("entity.firework.", "entity.firework_rocket.");
 
         instrument = Instrument.of(name);
         key += customInstrument.pitch;
