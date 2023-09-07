@@ -22,6 +22,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
 
 public class UrbanCommand extends Command {
@@ -78,9 +79,11 @@ public class UrbanCommand extends Command {
                     final String word = definitionObject.get("word").getAsString();
                     final String _definition = definitionObject.get("definition").getAsString();
 
+                    final DecimalFormat formatter = new DecimalFormat("#,###");
+
                     final String author = definitionObject.get("author").getAsString();
-                    final int thumbsUp = definitionObject.get("thumbs_up").getAsInt();
-                    final int thumbsDown = definitionObject.get("thumbs_down").getAsInt();
+                    final String thumbsUp = formatter.format(definitionObject.get("thumbs_up").getAsInt());
+                    final String thumbsDown = formatter.format(definitionObject.get("thumbs_down").getAsInt());
                     final String example = definitionObject.get("example").getAsString();
 
                     // whats the best way to implement this?
