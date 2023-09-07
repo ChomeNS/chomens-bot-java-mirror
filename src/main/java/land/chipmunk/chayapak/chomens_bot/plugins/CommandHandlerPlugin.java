@@ -157,6 +157,7 @@ public class CommandHandlerPlugin {
         if (!console && command.consoleOnly) return Component.text("This command can only be ran via console").color(NamedTextColor.RED);
 
         context.splitInput = splitInput;
+        context.commandName = command.name;
 
         try {
             return command.execute(context, args, fullArgs);

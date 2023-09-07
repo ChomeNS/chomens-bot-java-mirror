@@ -20,7 +20,14 @@ public class PlayerCommandContext extends CommandContext {
 
     @Override
     public void sendOutput (Component message) {
-        bot.chat.tellraw(message, selector);
+        bot.chat.tellraw(
+                Component.translatable(
+                        "%s",
+                        message,
+                        Component.text("chomens_bot_command_output" + ((commandName != null) ? "_" + commandName : ""))
+                ),
+                selector
+        );
     }
 
     @Override

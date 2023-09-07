@@ -13,6 +13,8 @@ public class CommandContext {
 
     public final boolean inGame;
 
+    public String commandName = null;
+
     public String[] splitInput;
 
     public CommandContext(Bot bot, String prefix, PlayerEntry sender, boolean inGame) {
