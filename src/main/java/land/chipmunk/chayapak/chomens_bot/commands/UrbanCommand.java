@@ -10,9 +10,11 @@ import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import land.chipmunk.chayapak.chomens_bot.command.DiscordCommandContext;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
+import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.HttpUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -67,6 +69,7 @@ public class UrbanCommand extends Command {
                 Component discordComponent = Component.text("*Showing only 3 results because Discord*").append(Component.newline());
 
                 int count = 0;
+                int index = 1;
                 for (JsonElement element : list) {
                     if (count >= 3) break;
 
@@ -75,33 +78,69 @@ public class UrbanCommand extends Command {
                     final String word = definitionObject.get("word").getAsString();
                     final String _definition = definitionObject.get("definition").getAsString();
 
+                    final String author = definitionObject.get("author").getAsString();
+                    final int thumbsUp = definitionObject.get("thumbs_up").getAsInt();
+                    final int thumbsDown = definitionObject.get("thumbs_down").getAsInt();
+                    final String example = definitionObject.get("example").getAsString();
+
                     // whats the best way to implement this?
                     // also ohio code warning
                     Component definitionComponent = Component.empty();
 
-                    final String[] splittedDefinition = _definition.replaceAll("\r\n?", "\n").split("[\\[\\]]");
+                    final String definition = _definition.replaceAll("\r\n?", "\n");
+
+                    final String[] splittedDefinition = definition.split("[\\[\\]]");
                     for (int i = 0; i < splittedDefinition.length; i++) {
                         final boolean even = i % 2 == 0;
+
+                        final String wordWithDefinition = word + " - " + definition;
+
+                        final Component globalHoverEvent = Component.translatable(
+                                """
+                                        Written by %s
+                                        Thumbs up: %s
+                                        Thumbs down: %s
+                                        Example: %s""",
+                                Component.text(author).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                                Component.text(thumbsUp).color(NamedTextColor.GREEN),
+                                Component.text(thumbsDown).color(NamedTextColor.RED),
+                                Component.text(example.replaceAll("\r\n?", "\n")).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                        );
 
                         if (even) {
                             definitionComponent = definitionComponent.append(
                                     Component
                                             .text(splittedDefinition[i])
                                             .color(NamedTextColor.GRAY)
+                                            .hoverEvent(
+                                                    HoverEvent.showText(
+                                                            globalHoverEvent
+                                                                    .append(Component.newline())
+                                                                    .append(Component.text("Click here to copy the word and the definition to your clipboard").color(NamedTextColor.GREEN))
+                                                    )
+                                            )
+                                            .clickEvent(ClickEvent.copyToClipboard(wordWithDefinition))
                             );
                         } else {
+                            final String command = context.prefix +
+                                    name +
+                                    " " +
+                                    splittedDefinition[i];
+
                             definitionComponent = definitionComponent.append(
                                     Component
                                             .text(splittedDefinition[i])
                                             .style(Style.style(TextDecoration.UNDERLINED))
+                                            .hoverEvent(
+                                                    HoverEvent.showText(
+                                                            globalHoverEvent
+                                                                    .append(Component.newline())
+                                                                    .append(Component.text("Click here to run " + command).color(NamedTextColor.GREEN))
+                                                    )
+                                            )
                                             .clickEvent(
                                                     ClickEvent
-                                                            .suggestCommand(
-                                                                    context.prefix +
-                                                                            name +
-                                                                            " " +
-                                                                            splittedDefinition[i]
-                                                            )
+                                                            .suggestCommand(command)
                                             )
                                             .color(NamedTextColor.AQUA)
                             );
@@ -123,13 +162,15 @@ public class UrbanCommand extends Command {
                     } else {
                         final Component component = Component.translatable(
                                 "[%s] %s - %s",
-                                Component.text("Urban").color(NamedTextColor.RED),
+                                Component.text(index).color(NamedTextColor.GREEN),
                                 Component.text(word).color(NamedTextColor.GRAY),
                                 definitionComponent
                         ).color(NamedTextColor.DARK_GRAY);
 
                         context.sendOutput(component);
                     }
+
+                    index++;
                 }
 
                 if (discord && !list.isEmpty()) context.sendOutput(discordComponent);
