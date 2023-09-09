@@ -35,7 +35,7 @@ public class MusicCommand extends Command {
     public MusicCommand () {
         super(
                 "music",
-                "Play musics",
+                "Plays music",
                 new String[] {
                         "play <{song|URL}>",
                         "stop",
