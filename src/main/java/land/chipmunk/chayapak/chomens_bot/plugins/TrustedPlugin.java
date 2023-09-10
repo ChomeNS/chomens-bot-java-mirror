@@ -56,14 +56,9 @@ public class TrustedPlugin extends PlayersPlugin.Listener {
     public void playerJoined (PlayerEntry target) {
         if (!list.contains(target.profile.getName())) return;
 
-        boolean doesntHaveOwner = true;
-        for (String name : bot.config.ownerNames) {
-            if (target.profile.getName().equals(name)) doesntHaveOwner = false;
-        }
-
         // based (VERY)
         Component component;
-        if (doesntHaveOwner) {
+        if (!target.profile.getName().equals(bot.config.ownerName)) {
             component = Component.translatable(
                     "Hello, %s!",
                     Component.text(target.profile.getName()).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))

@@ -49,10 +49,7 @@ colorPalette:
   number: 'gold'
   ownerName: 'green'
 
-# currently this is only used in the console
-ownerNames:
-  # don't leave this array blank or it can cause errors
-  - 'chayapak'
+ownerName: 'chayapak' # currently this is only used in the console
 
 ownerAuthentication:
   enabled: false
