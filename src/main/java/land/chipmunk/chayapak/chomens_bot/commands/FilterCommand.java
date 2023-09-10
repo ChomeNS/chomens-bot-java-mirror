@@ -32,7 +32,7 @@ public class FilterCommand extends Command {
                         "<hash> list"
                 },
                 new String[] { "filterplayer", "ban", "blacklist" },
-                TrustLevel.TRUSTED,
+                TrustLevel.OWNER,
                 false
         );
     }
