@@ -105,7 +105,7 @@ public class ConsolePlugin implements Completer {
                     Component.translatable(
                             "[%s] %s › %s",
                             Component.text(bot.username + " Console").color(NamedTextColor.GRAY),
-                            Component.text(bot.config.ownerName).color(ColorUtilities.getColorByString(bot.config.colorPalette.ownerName)),
+                            Component.text(bot.config.ownerNames.get(0)).color(ColorUtilities.getColorByString(bot.config.colorPalette.ownerName)),
                             Component.text(line).color(NamedTextColor.GRAY)
                     ).color(NamedTextColor.DARK_GRAY)
             );

@@ -25,7 +25,7 @@ public class Configuration {
 
     public ColorPalette colorPalette = new ColorPalette();
     
-    public String ownerName = "chayapak"; // mabe mabe
+    public List<String> ownerNames = new ArrayList<>();
 
     public OwnerAuthentication ownerAuthentication = new OwnerAuthentication();
     

@@ -41,13 +41,20 @@ public class AuthPlugin extends PlayersPlugin.Listener {
         bot.executor.scheduleAtFixedRate(this::check, 0, 1, TimeUnit.SECONDS);
     }
 
-    private String getSanitizedOwnerName() {
-        return bot.config.ownerName.replaceAll("§[a-f0-9rlonmk]", "");
+    private List<String> getSanitizedOwnerName() {
+        return bot.config.ownerNames.stream().map(each -> each.replaceAll("§[a-f0-9rlonmk]", "")).toList();
     }
 
     @Override
     public void playerJoined(PlayerEntry target) {
-        if (!target.profile.getName().equals(getSanitizedOwnerName()) || !bot.options.useCore) return;
+        boolean has = false;
+        for (String name : getSanitizedOwnerName()) {
+            if (!target.profile.getName().equals(name) || !bot.options.useCore) continue;
+
+            has = true;
+        }
+
+        if (!has) return;
 
         bot.executor.schedule(() -> sendVerificationMessage(target, true), 2, TimeUnit.SECONDS);
     }
@@ -77,7 +84,14 @@ public class AuthPlugin extends PlayersPlugin.Listener {
 
     @Override
     public void playerLeft(PlayerEntry target) {
-        if (!target.profile.getName().equals(getSanitizedOwnerName())) return;
+        boolean has = false;
+        for (String name : getSanitizedOwnerName()) {
+            if (!target.profile.getName().equals(name) || !bot.options.useCore) continue;
+
+            has = true;
+        }
+
+        if (!has) return;
 
         hasCorrectHash = false;
         started = false;
@@ -110,17 +124,19 @@ public class AuthPlugin extends PlayersPlugin.Listener {
     private void check() {
         if (!started) return;
 
-        final PlayerEntry entry = bot.players.getEntry(getSanitizedOwnerName());
+        for (String name : getSanitizedOwnerName()) {
+            final PlayerEntry entry = bot.players.getEntry(name);
 
-        if (entry == null) return;
+            if (entry == null) return;
 
-        final long timeSinceJoined = System.currentTimeMillis() - timeJoined;
+            final long timeSinceJoined = System.currentTimeMillis() - timeJoined;
 
-        if (!hasCorrectHash) sendVerificationMessage(entry, false);
+            if (!hasCorrectHash) sendVerificationMessage(entry, false);
 
-        if (timeSinceJoined > bot.config.ownerAuthentication.timeout && !hasCorrectHash) {
-            bot.filter.mute(entry, "Not verified");
-            bot.filter.deOp(entry);
+            if (timeSinceJoined > bot.config.ownerAuthentication.timeout && !hasCorrectHash) {
+                bot.filter.mute(entry, "Not verified");
+                bot.filter.deOp(entry);
+            }
         }
     }
 }
