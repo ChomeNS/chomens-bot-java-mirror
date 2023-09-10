@@ -84,6 +84,7 @@ public class Song {
    */
   public void play () {
     if (paused) {
+      if (loopPosition != 200) bot.music.loop = Loop.CURRENT;
       paused = false;
       startTime = System.currentTimeMillis() - time;
     }

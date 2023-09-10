@@ -37,9 +37,9 @@ public class RandomTeleportCommand extends Command {
         return Component.empty()
                 .append(Component.text("Teleporting "))
                 .append(Component.text(sender.profile.getName()).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)))
-                .append(Component.text(" to ").color(NamedTextColor.WHITE))
+                .append(Component.text(" to "))
                 .append(Component.text(stringPosition).color(NamedTextColor.GREEN))
-                .append(Component.text("...").color(NamedTextColor.WHITE))
+                .append(Component.text("..."))
                 .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }
 }
