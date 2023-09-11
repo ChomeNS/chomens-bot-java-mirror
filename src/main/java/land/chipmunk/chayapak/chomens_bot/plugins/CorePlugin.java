@@ -309,15 +309,15 @@ public class CorePlugin extends PositionPlugin.Listener {
     @Override
     public void positionChange (Vector3i position) {
         from = Vector3i.from(
-                fromSize.getX() + bot.position.position.getX(),
+                (int) (fromSize.getX() + Math.floor((double) bot.position.position.getX() / 16) * 16),
                 MathUtilities.clamp(fromSize.getY(), bot.world.minY, bot.world.maxY),
-                fromSize.getZ() + bot.position.position.getZ()
+                (int) (fromSize.getZ() + Math.floor((double) bot.position.position.getZ() / 16) * 16)
         );
 
         to = Vector3i.from(
-                toSize.getX() + bot.position.position.getX(),
+                (int) (toSize.getX() + Math.floor((double) bot.position.position.getX() / 16) * 16),
                 MathUtilities.clamp(toSize.getY(), bot.world.minY, bot.world.maxY),
-                toSize.getZ() + bot.position.position.getZ()
+                (int) (toSize.getZ() + Math.floor((double) bot.position.position.getZ() / 16) * 16)
         );
 
         reset();
