@@ -1,12 +1,23 @@
 package land.chipmunk.chayapak.chomens_bot.song;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import land.chipmunk.chayapak.chomens_bot.Bot;
+import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
+import land.chipmunk.chayapak.chomens_bot.util.LevenshteinUtilities;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 // Author: hhhzzzsss
 public class NBSConverter implements Converter {
@@ -170,10 +181,48 @@ public class NBSConverter implements Converter {
 
         NBSCustomInstrument customInstrument = customInstruments.get(index);
 
-        final Path path = Path.of(customInstrument.file);
-        String name = path.getFileName().toString();
-        if (name.endsWith(".ogg")) name = name.substring(0, name.length() - ".ogg".length()); // bad but OK
-        if (name.contains("entity.firework.")) name = name.replace("entity.firework.", "entity.firework_rocket.");
+        String name = customInstrument.name.replace("entity.firework.", "entity.firework_rocket.");
+
+        String file = Path.of(customInstrument.file).getFileName().toString();
+        if (file.endsWith(".ogg")) file = file.substring(0, file.length() - ".ogg".length());
+        file = file.replace("entity.firework.", "entity.firework_rocket.");
+
+        boolean replaced = false;
+
+        if (name.toLowerCase().contains("glass break") || name.toLowerCase().contains("glass broken")) {
+          name = "block.glass.break";
+          replaced = true;
+        } else if (name.toLowerCase().contains("door close") || name.toLowerCase().contains("door open")) {
+          name = "block.wooden_door.open";
+          replaced = true;
+        }
+
+        if (!sounds.contains(name) && !sounds.contains(file) && !replaced) {
+          name = name
+                  .replaceAll("Eye.*Fill", "Eye of Ender attaches");
+
+          final List<String> outputTitles = LevenshteinUtilities.searchTitles(name, subtitles.values());
+
+          final String bestMatch = outputTitles.size() == 0 ? "" : outputTitles.get(0);
+
+          System.out.println("orig ins name: " + name);
+          System.out.println("best match: " + bestMatch);
+
+          for (Map.Entry<String, String> entry : subtitles.entrySet()) {
+            if (!entry.getValue().equals(bestMatch)) continue;
+
+            name = entry.getKey().substring("subtitles.".length());
+
+            break;
+          }
+        }
+
+//        final Path path = Path.of(customInstrument.file);
+//        String name = path.getFileName().toString();
+//        if (name.endsWith(".ogg")) name = name.substring(0, name.length() - ".ogg".length()); // bad but OK
+//        name = name.replace("entity.firework.", "entity.firework_rocket.");
+//
+//        System.out.println("after replaced " + name);
 
         instrument = Instrument.of(name);
         key += customInstrument.pitch;
@@ -212,5 +261,31 @@ public class NBSConverter implements Converter {
 
   private static int getMilliTime(int tick, int tempo) {
     return 1000 * tick * 100 / tempo;
+  }
+
+  private static final Map<String, String> subtitles = new HashMap<>();
+
+  static {
+    for (Map.Entry<String, String> entry : ComponentUtilities.englishLanguage.entrySet()) {
+      if (!entry.getKey().startsWith("subtitles.")) continue;
+
+      subtitles.put(entry.getKey(), entry.getValue());
+    }
+  }
+
+  private static List<String> sounds = loadJsonStringArray("sounds.json");
+
+  private static List<String> loadJsonStringArray (String name) {
+    List<String> list = new ArrayList<>();
+
+    InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(name);
+    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+    JsonArray json = JsonParser.parseReader(reader).getAsJsonArray();
+
+    for (JsonElement entry : json) {
+      list.add(entry.getAsString());
+    }
+
+    return list;
   }
 }
