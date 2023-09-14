@@ -205,9 +205,6 @@ public class NBSConverter implements Converter {
 
           final String bestMatch = outputTitles.size() == 0 ? "" : outputTitles.get(0);
 
-          System.out.println("orig ins name: " + name);
-          System.out.println("best match: " + bestMatch);
-
           for (Map.Entry<String, String> entry : subtitles.entrySet()) {
             if (!entry.getValue().equals(bestMatch)) continue;
 
@@ -216,13 +213,6 @@ public class NBSConverter implements Converter {
             break;
           }
         }
-
-//        final Path path = Path.of(customInstrument.file);
-//        String name = path.getFileName().toString();
-//        if (name.endsWith(".ogg")) name = name.substring(0, name.length() - ".ogg".length()); // bad but OK
-//        name = name.replace("entity.firework.", "entity.firework_rocket.");
-//
-//        System.out.println("after replaced " + name);
 
         instrument = Instrument.of(name);
         key += customInstrument.pitch;
