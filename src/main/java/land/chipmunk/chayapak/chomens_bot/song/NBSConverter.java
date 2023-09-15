@@ -214,6 +214,8 @@ public class NBSConverter implements Converter {
           }
         }
 
+        if (!sounds.contains(name) && sounds.contains(file)) name = file;
+
         instrument = Instrument.of(name);
         key += customInstrument.pitch;
 
