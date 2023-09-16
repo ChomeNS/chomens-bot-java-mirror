@@ -44,7 +44,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
         bot.commandSpy.addListener(new CommandSpyPlugin.Listener() {
             @Override
             public void commandReceived(PlayerEntry sender, String command) {
-                FilterPlugin.this.commandSpyMessageReceived(sender);
+                FilterPlugin.this.commandSpyMessageReceived(sender, command);
             }
         });
 
@@ -106,12 +106,21 @@ public class FilterPlugin extends PlayersPlugin.Listener {
         bot.exploits.kick(target.profile.getId());
     }
 
-    public void commandSpyMessageReceived (PlayerEntry sender) {
+    public void commandSpyMessageReceived (PlayerEntry sender, String command) {
         final FilteredPlayer player = getPlayer(sender.profile.getName());
 
         if (player == null) return;
 
         deOp(sender);
+
+        if (
+                command.startsWith("/op") ||
+                        command.startsWith("/minecraft:op") ||
+                        command.startsWith("/deop") ||
+                        command.startsWith("/minecraft:deop")
+        ) {
+            mute(sender);
+        }
     }
 
     public void playerMessageReceived (PlayerMessage message) {
