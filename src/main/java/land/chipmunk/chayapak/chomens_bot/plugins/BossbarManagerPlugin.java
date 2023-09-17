@@ -63,18 +63,22 @@ public class BossbarManagerPlugin extends Bot.Listener {
                         if (ComponentUtilities.isEqual(bossBar.secret, packet.getTitle())) {
                             bossBars.remove(_bossBar.getKey());
 
+                            final BotBossBar newBossBar = new BotBossBar(
+                                    bossBar.title(),
+                                    bossBar.players(),
+                                    bossBar.color,
+                                    bossBar.division,
+                                    bossBar.visible(),
+                                    bossBar.max(),
+                                    bossBar.value(),
+                                    bot
+                            );
+
+                            newBossBar.gotSecret = true;
+
                             bossBars.put(
                                     packet.getUuid(),
-                                    new BotBossBar(
-                                            bossBar.title(),
-                                            bossBar.players(),
-                                            bossBar.color,
-                                            bossBar.division,
-                                            bossBar.visible(),
-                                            bossBar.max(),
-                                            bossBar.value(),
-                                            bot
-                                    )
+                                    newBossBar
                             );
 
                             bossBars.get(packet.getUuid()).id = bossBar.id;
@@ -117,6 +121,8 @@ public class BossbarManagerPlugin extends Bot.Listener {
                         botBossBar.setTitle(botBossBar.title, true);
                     } else if (botBossBar != null && ComponentUtilities.isEqual(botBossBar.secret, packet.getTitle())) {
                         botBossBar.uuid = packet.getUuid();
+
+                        botBossBar.gotSecret = true;
                     }
 
                     bossBar.title = packet.getTitle();
@@ -147,7 +153,11 @@ public class BossbarManagerPlugin extends Bot.Listener {
             final UUID uuid = _bossBar.getKey();
             final BotBossBar bossBar = _bossBar.getValue();
 
-            if (!serverBossBars.containsKey(uuid)) addBossBar(bossBar.id, bossBar, true);
+            if (!serverBossBars.containsKey(uuid)) {
+                bossBar.gotSecret = false;
+
+                addBossBar(bossBar.id, bossBar, true);
+            }
         }
     }
 

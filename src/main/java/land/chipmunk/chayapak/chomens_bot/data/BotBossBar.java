@@ -14,6 +14,8 @@ public class BotBossBar extends BossBar {
 
     public final Component secret = Component.text(Math.random() * 69420);
 
+    public boolean gotSecret = false;
+
     private final Bot bot;
 
     public String id;
@@ -49,6 +51,8 @@ public class BotBossBar extends BossBar {
     }
 
     public void setTitle(Component title, boolean force) {
+        if (!gotSecret) return;
+
         if (ComponentUtilities.isEqual(this.title, title) && !force) return;
 
         if (bot.bossbar.actionBar) {
@@ -71,6 +75,8 @@ public class BotBossBar extends BossBar {
     }
 
     public void setColor(BossBarColor color, boolean force) {
+        if (!gotSecret) return;
+
         if (this.color == color && !force) return;
 
         this.color = color;
@@ -85,6 +91,8 @@ public class BotBossBar extends BossBar {
     }
 
     public void setPlayers(String players) {
+        if (!gotSecret) return;
+
         if (this.players.equals(players)) return;
 
         this.players = players;
@@ -99,6 +107,8 @@ public class BotBossBar extends BossBar {
         setDivision(division, false);
     }
     public void setDivision (BossBarDivision _division, boolean force) {
+        if (!gotSecret) return;
+
         if (this.division == _division && !force) return;
 
         this.division = _division;
@@ -123,6 +133,8 @@ public class BotBossBar extends BossBar {
         setValue(value, false);
     }
     public void setValue (int value, boolean force) {
+        if (!gotSecret) return;
+
         if (this.value == value && !force) return;
 
         this.value = value;
@@ -134,6 +146,8 @@ public class BotBossBar extends BossBar {
 
     public boolean visible () { return visible; }
     public void setVisible (boolean visible) {
+        if (!gotSecret) return;
+
         if (this.visible == visible) return;
 
         this.visible = visible;
@@ -148,6 +162,8 @@ public class BotBossBar extends BossBar {
         setMax(max, false);
     }
     public void setMax (long max, boolean force) {
+        if (!gotSecret) return;
+
         if (this.max == max && !force) return;
 
         this.max = max;
