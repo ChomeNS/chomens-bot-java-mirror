@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.CommandException;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
@@ -14,7 +15,7 @@ public class PCrashCommand extends Command {
         super(
                 "pcrash",
                 "Crashes a player using particle",
-                new String[] { "<hash> <{player}>" },
+                new String[] { "<hash> <player>" },
                 new String[] { "particlecrash" },
                 TrustLevel.TRUSTED,
                 false
@@ -22,14 +23,12 @@ public class PCrashCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        if (args.length == 0) return Component.text("Not enough arguments").color(NamedTextColor.RED);
-
+    public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        final PlayerEntry player = bot.players.getEntry(args[0]);
+        final PlayerEntry player = bot.players.getEntry(context.getString(true, true));
 
-        if (player == null) return Component.text("Invalid player name").color(NamedTextColor.RED);
+        if (player == null) throw new CommandException(Component.text("Invalid player name"));
 
         bot.exploits.pcrash(player.profile.getId());
 

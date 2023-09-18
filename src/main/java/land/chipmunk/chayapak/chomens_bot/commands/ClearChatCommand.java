@@ -1,10 +1,11 @@
 package land.chipmunk.chayapak.chomens_bot.commands;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
-import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.CommandException;
+import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
+import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -23,13 +24,15 @@ public class ClearChatCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+    public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        if (args.length > 0) {
-            final PlayerEntry entry = bot.players.getEntry(String.join(" ", args));
+        final String name = context.getString(true, false);
 
-            if (entry == null) return Component.text("Invalid player name").color(NamedTextColor.RED);
+        if (name.isEmpty()) {
+            final PlayerEntry entry = bot.players.getEntry(name);
+
+            if (entry == null) throw new CommandException(Component.text("Invalid player name"));
 
             final UUID uuid = entry.profile.getId();
 

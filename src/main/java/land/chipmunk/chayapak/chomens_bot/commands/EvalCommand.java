@@ -3,13 +3,13 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.CommandException;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.data.EvalOutput;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
 public class EvalCommand extends Command {
@@ -17,7 +17,7 @@ public class EvalCommand extends Command {
         super(
                 "eval",
                 "Evaluate JavaScript codes",
-                new String[] { "run <{code}>", "reset" },
+                new String[] { "run <code>", "reset" },
                 new String[] {},
                 TrustLevel.PUBLIC,
                 false
@@ -25,16 +25,16 @@ public class EvalCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        if (args.length < 1) return Component.text("Not enough arguments").color(NamedTextColor.RED);
-
+    public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        if (!bot.eval.connected) return Component.text("Eval server is not online").color(NamedTextColor.RED);
+        if (!bot.eval.connected) throw new CommandException(Component.text("Eval server is not online"));
 
-        switch (args[0]) {
+        final String action = context.getString(false, true);
+
+        switch (action) {
             case "run" -> {
-                final String command = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+                final String command = context.getString(true, true);
 
                 final CompletableFuture<EvalOutput> future = bot.eval.run(command);
 
@@ -51,7 +51,7 @@ public class EvalCommand extends Command {
                 return Component.text("Reset the eval worker").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             default -> {
-                return Component.text("Invalid action").color(NamedTextColor.RED);
+                throw new CommandException(Component.text("Invalid action"));
             }
         }
 

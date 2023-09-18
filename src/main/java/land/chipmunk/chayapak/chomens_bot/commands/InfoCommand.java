@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.CommandException;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
@@ -43,10 +44,12 @@ public class InfoCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+    public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        switch (args[0]) {
+        final String action = context.getString(false, true);
+
+        switch (action) {
             case "creator" -> {
                 return Component.empty()
                         .append(Component.text("ChomeNS Bot ").color(ColorUtilities.getColorByString(bot.config.colorPalette.primary)))
@@ -194,7 +197,7 @@ public class InfoCommand extends Command {
                 ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             default -> {
-                return Component.text("Invalid action").color(NamedTextColor.RED);
+                throw new CommandException(Component.text("Invalid action"));
             }
         }
     }

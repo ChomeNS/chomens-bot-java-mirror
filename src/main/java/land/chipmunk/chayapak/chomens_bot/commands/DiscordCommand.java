@@ -22,7 +22,7 @@ public class DiscordCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+    public Component execute(CommandContext context) {
         final Bot bot = context.bot;
 
         final String link = bot.config.discord.inviteLink;

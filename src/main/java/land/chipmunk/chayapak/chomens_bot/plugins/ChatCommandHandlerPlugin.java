@@ -58,9 +58,11 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.Listener {
 
         final PlayerCommandContext context = new PlayerCommandContext(bot, displayName, prefix, "@a", message.sender);
 
-        final Component output = bot.commandHandler.executeCommand(commandString, context, null);
+        bot.executorService.submit(() -> {
+            final Component output = bot.commandHandler.executeCommand(commandString, context, null);
 
-        if (output != null) context.sendOutput(output);
+            if (output != null) context.sendOutput(output);
+        });
     }
 
     public void commandSpyMessageReceived (PlayerEntry sender, String command) {
@@ -90,8 +92,10 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.Listener {
 
         final PlayerCommandContext context = new PlayerCommandContext(bot, displayName, prefix, selector, sender);
 
-        final Component output = bot.commandHandler.executeCommand(commandString, context, null);
+        bot.executorService.submit(() -> {
+            final Component output = bot.commandHandler.executeCommand(commandString, context, null);
 
-        if (output != null) context.sendOutput(output);
+            if (output != null) context.sendOutput(output);
+        });
     }
 }

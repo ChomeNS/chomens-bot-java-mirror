@@ -5,6 +5,7 @@ import com.github.steveice10.opennbt.tag.builtin.StringTag;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.CommandException;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
@@ -18,7 +19,7 @@ public class CommandBlockCommand extends Command {
         super(
                 "cb",
                 "Executes a command in the command core and return its output",
-                new String[] { "<{command}>" },
+                new String[] { "<command>" },
                 new String[] { "cmd", "commandblock", "run" },
                 TrustLevel.PUBLIC,
                 false
@@ -26,10 +27,10 @@ public class CommandBlockCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+    public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        final CompletableFuture<CompoundTag> future = bot.core.runTracked(String.join(" ", args));
+        final CompletableFuture<CompoundTag> future = bot.core.runTracked(context.getString(true, true));
 
         if (future == null) return null;
 

@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.CommandException;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -16,7 +17,7 @@ public class NetMessageCommand extends Command {
         super(
                 "netmsg",
                 "Broadcasts a message to all of the servers that the bot is connected",
-                new String[] { "<{message}>" },
+                new String[] { "<message>" },
                 new String[] { "networkmessage", "irc" },
                 TrustLevel.PUBLIC,
                 false
@@ -24,7 +25,7 @@ public class NetMessageCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+    public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
         final List<Bot> bots = bot.bots;
 
@@ -47,7 +48,7 @@ public class NetMessageCommand extends Command {
                 Component.text(" "),
                 context.sender.displayName == null ? Component.text(context.sender.profile.getName()).color(NamedTextColor.GRAY) : context.sender.displayName.color(NamedTextColor.GRAY),
                 Component.text(" "),
-                Component.text(String.join(" ", args)).color(NamedTextColor.GRAY)
+                Component.text(context.getString(true, true)).color(NamedTextColor.GRAY)
         ).color(NamedTextColor.DARK_GRAY);
 
         for (Bot eachBot : bots) {

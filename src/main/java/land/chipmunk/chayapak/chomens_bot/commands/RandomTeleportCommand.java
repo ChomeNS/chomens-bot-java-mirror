@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.CommandException;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
@@ -23,14 +24,14 @@ public class RandomTeleportCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+    public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         final PlayerEntry sender = context.sender;
 
         final int positionX = MathUtilities.between(-1_000_000, 1_000_000);
         final int positionZ = MathUtilities.between(-1_000_000, 1_000_000);
-        final String stringPosition = positionX + " 100 " + positionZ; // is harding the y to 100 a great idea?
+        final String stringPosition = positionX + " 100 " + positionZ; // is hardcoding the y to 100 a great idea?
 
         bot.core.run("essentials:teleport " + sender.profile.getIdAsString() + " " + stringPosition);
 

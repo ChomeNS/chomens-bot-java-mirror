@@ -4,6 +4,7 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Main;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.CommandException;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.plugins.MusicPlayerPlugin;
 import land.chipmunk.chayapak.chomens_bot.song.Instrument;
@@ -37,10 +38,10 @@ public class MusicCommand extends Command {
                 "music",
                 "Plays music",
                 new String[] {
-                        "play <{song|URL}>",
+                        "play <song|URL>",
                         "stop",
                         "loop <current|all|off>",
-                        "list [{directory}]",
+                        "list [directory]",
                         "skip",
                         "nowplaying",
                         "queue",
@@ -61,26 +62,26 @@ public class MusicCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        if (args.length < 1) return Component.text("Not enough arguments").color(NamedTextColor.RED);
-
+    public Component execute(CommandContext context) throws CommandException {
         ratelimit++;
 
         if (ratelimit > 10) return null;
 
+        final String action = context.getString(false, true);
+
         root = MusicPlayerPlugin.SONG_DIR;
-        return switch (args[0]) {
-            case "play", "playurl", "playnbs", "playnbsurl" -> play(context, args);
+        return switch (action) {
+            case "play", "playurl", "playnbs", "playnbsurl" -> play(context);
             case "stop" -> stop(context);
-            case "loop" -> loop(context, args);
-            case "list" -> list(context, args);
+            case "loop" -> loop(context);
+            case "list" -> list(context);
             case "skip" -> skip(context);
             case "nowplaying" -> nowplaying(context);
             case "queue" -> queue(context);
-            case "goto" -> goTo(context, args);
-            case "pitch" -> pitch(context, args);
-            case "speed" -> speed(context, args);
-            case "noteinstrument" -> noteInstrument(context, args);
+            case "goto" -> goTo(context);
+            case "pitch" -> pitch(context);
+            case "speed" -> speed(context);
+            case "noteinstrument" -> noteInstrument(context);
             case "pause", "resume" -> pause(context);
             case "info" -> info(context);
             case "testsong" -> testSong(context);
@@ -88,22 +89,22 @@ public class MusicCommand extends Command {
         };
     }
 
-    public Component play (CommandContext context, String[] args) {
+    public Component play (CommandContext context) throws CommandException {
         final MusicPlayerPlugin player = context.bot.music;
 
         String _path;
         Path path;
         try {
-            _path = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+            _path = context.getString(true, true);
 
-            if (_path.isBlank()) return Component.text("No song specified").color(NamedTextColor.RED);
+//            if (_path.isBlank()) throw new CommandException(Component.text("No song specified"));
 
             path = Path.of(root.toString(), _path);
 
             if (path.toString().contains("http")) player.loadSong(new URL(_path));
             else {
                 // among us protection!!!11
-                if (!path.normalize().startsWith(root.toString())) return Component.text("no").color(NamedTextColor.RED);
+                if (!path.normalize().startsWith(root.toString())) throw new CommandException(Component.text("no"));
 
                 // ignore my ohio code for autocomplete
                 final String separator = File.separator; // how do i do this with the new Files?
@@ -118,7 +119,7 @@ public class MusicCommand extends Command {
 
                     final String[] songs = realPath.toFile().list();
 
-                    if (songs == null) return Component.text("Directory does not exist").color(NamedTextColor.RED);
+                    if (songs == null) throw new CommandException(Component.text("Directory does not exist"));
 
                     final String lowerCaseFile = pathSplitted[pathSplitted.length - 1].toLowerCase();
 
@@ -140,11 +141,11 @@ public class MusicCommand extends Command {
                 }
             }
         } catch (MalformedURLException e) {
-            return Component.text("Invalid URL").color(NamedTextColor.RED);
+            throw new CommandException(Component.text("Invalid URL"));
         } catch (IndexOutOfBoundsException e) {
-            return Component.text("Song not found").color(NamedTextColor.RED);
+            throw new CommandException(Component.text("Song not found"));
         } catch (Exception e) {
-            return Component.text(e.toString()).color(NamedTextColor.RED);
+            throw new CommandException(Component.text(e.toString()));
         }
 
         return null;
@@ -158,58 +159,50 @@ public class MusicCommand extends Command {
         return Component.text("Cleared the song queue").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }
 
-    public Component loop (CommandContext context, String[] args) {
+    public Component loop (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        if (args.length < 2) return Component.text("Invalid loop").color(NamedTextColor.RED);
-
-        Loop loop;
-        switch (args[1]) {
-            case "off" -> {
-                loop = Loop.OFF;
-                context.sendOutput(
-                        Component.empty()
-                                .append(Component.text("Looping is now "))
-                                .append(Component.text("disabled").color(NamedTextColor.RED))
-                                .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
-                );
-            }
-            case "current" -> {
-                loop = Loop.CURRENT;
-                context.sendOutput(
-                        Component.empty()
-                                .append(Component.text("Now looping "))
-                                .append(Component.text(bot.music.currentSong.name).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
-                                .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
-                );
-            }
-            case "all" -> {
-                loop = Loop.ALL;
-                context.sendOutput(Component.text("Now looping every song").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)));
-            }
-            default -> {
-                return Component.text("Invalid action").color(NamedTextColor.RED);
-            }
-        }
+        final Loop loop = context.getEnum(Loop.class);
 
         bot.music.loop = loop;
 
-        return null;
+        switch (loop) {
+            case OFF -> {
+                return Component.empty()
+                            .append(Component.text("Looping is now "))
+                            .append(Component.text("disabled").color(NamedTextColor.RED))
+                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+            }
+            case CURRENT -> {
+                return Component.empty()
+                            .append(Component.text("Now looping "))
+                            .append(Component.text(bot.music.currentSong.name).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
+                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+            }
+            case ALL -> {
+                return Component.text("Now looping every song").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+            }
+            default -> {
+                throw new CommandException(Component.text("Invalid action"));
+            }
+        }
     }
 
-    public Component list (CommandContext context, String[] args) {
+    public Component list (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         final String prefix = context.prefix;
 
-        final Path path = (args.length < 2) ?
+        final String stringPathIfExists = context.getString(true, false);
+
+        final Path path = (stringPathIfExists.isEmpty()) ?
                 root :
                 Path.of(
                         root.toString(),
-                        String.join(" ", Arrays.copyOfRange(args, 1, args.length))
+                        stringPathIfExists
                 );
 
-        if (!path.normalize().startsWith(root.toString())) return Component.text("no").color(NamedTextColor.RED);
+        if (!path.normalize().startsWith(root.toString())) throw new CommandException(Component.text("no"));
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
             final List<Path> paths = new ArrayList<>();
@@ -238,7 +231,7 @@ public class MusicCommand extends Command {
                     location = Paths.get(""); // wtf mabe
                 }
 
-                final String joinedPath = (args.length < 2) ? eachPath.getFileName().toString() : Paths.get(location.getFileName().toString(), eachPath.getFileName().toString()).toString();
+                final String joinedPath = stringPathIfExists.isEmpty() ? eachPath.getFileName().toString() : Paths.get(location.getFileName().toString(), eachPath.getFileName().toString()).toString();
 
                 fullList.add(
                         Component
@@ -269,7 +262,7 @@ public class MusicCommand extends Command {
                 list.clear();
             }
         } catch (NoSuchFileException e) {
-            return Component.text("Directory doesn't exist").color(NamedTextColor.RED);
+            throw new CommandException(Component.text("Directory doesn't exist"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -277,10 +270,10 @@ public class MusicCommand extends Command {
         return null;
     }
 
-    public Component skip (CommandContext context) {
+    public Component skip (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
         final MusicPlayerPlugin music = bot.music;
-        if (music.currentSong == null) return Component.text("No song is currently playing").color(NamedTextColor.RED);
+        if (music.currentSong == null) throw new CommandException(Component.text("No song is currently playing"));
 
         context.sendOutput(
                 Component.empty()
@@ -294,10 +287,10 @@ public class MusicCommand extends Command {
         return null;
     }
 
-    public Component nowplaying (CommandContext context) {
+    public Component nowplaying (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
         final Song song = bot.music.currentSong;
-        if (song == null) return Component.text("No song is currently playing").color(NamedTextColor.RED);
+        if (song == null) throw new CommandException(Component.text("No song is currently playing"));
 
         return Component.empty()
                 .append(Component.text("Now playing "))
@@ -323,17 +316,17 @@ public class MusicCommand extends Command {
     }
 
     // lazy fix for java using "goto" as keyword real
-    public Component goTo (CommandContext context, String[] args) {
+    public Component goTo (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
         final Song currentSong = bot.music.currentSong;
 
-        final String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+        final String input = context.getString(true, true);
 
         final long timestamp = TimestampUtilities.parseTimestamp(input);
 
-        if (currentSong == null) return Component.text("No song is currently playing").color(NamedTextColor.RED);
+        if (currentSong == null) throw new CommandException(Component.text("No song is currently playing"));
 
-        if (timestamp < 0 || timestamp > currentSong.length) return Component.text("Invalid timestamp").color(NamedTextColor.RED);
+        if (timestamp < 0 || timestamp > currentSong.length) throw new CommandException(Component.text("Invalid timestamp"));
 
         currentSong.setTime(timestamp);
 
@@ -343,15 +336,10 @@ public class MusicCommand extends Command {
                 .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }
 
-    public Component pitch (CommandContext context, String[] args) {
+    public Component pitch (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        float pitch;
-        try {
-            pitch = Float.parseFloat(args[1]);
-        } catch (IllegalArgumentException ignored) {
-            return Component.text("Invalid pitch").color(NamedTextColor.RED);
-        }
+        final float pitch = context.getFloat(true);
 
         bot.music.pitch = pitch;
 
@@ -361,18 +349,13 @@ public class MusicCommand extends Command {
                 .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }
 
-    public Component speed (CommandContext context, String[] args) {
+    public Component speed (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
         final Song currentSong = bot.music.currentSong;
 
-        float speed;
-        try {
-            speed = Float.parseFloat(args[1]);
-        } catch (IllegalArgumentException ignored) {
-            return Component.text("Invalid speed").color(NamedTextColor.RED);
-        }
+        final float speed = context.getFloat(true);
 
-        if (speed > 5) return Component.text("Too fast").color(NamedTextColor.RED);
+        if (speed > 5) throw new CommandException(Component.text("Too fast!"));
 
         long oldTime = -1;
 
@@ -388,10 +371,10 @@ public class MusicCommand extends Command {
                 .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }
 
-    public Component noteInstrument (CommandContext context, String[] args) {
+    public Component noteInstrument (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        final String instrument = args[1];
+        final String instrument = context.getString(true, true);
 
         bot.music.instrument = instrument;
 
@@ -405,11 +388,11 @@ public class MusicCommand extends Command {
         }
     }
 
-    public Component pause (CommandContext context) {
+    public Component pause (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
         final Song currentSong = bot.music.currentSong;
 
-        if (currentSong == null) return Component.text("No song is currently playing").color(NamedTextColor.RED);
+        if (currentSong == null) throw new CommandException(Component.text("No song is currently playing"));
 
         if (currentSong.paused) {
             currentSong.play();
@@ -420,11 +403,11 @@ public class MusicCommand extends Command {
         }
     }
 
-    public Component info (CommandContext context) {
+    public Component info (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
         final Song currentSong = bot.music.currentSong;
 
-        if (currentSong == null) return Component.text("No song is currently playing").color(NamedTextColor.RED);
+        if (currentSong == null) throw new CommandException(Component.text("No song is currently playing"));
 
         // ig very code yup
         final String title = currentSong.originalName;

@@ -26,5 +26,5 @@ public abstract class Command {
         this.consoleOnly = consoleOnly;
     }
 
-    public abstract Component execute (CommandContext context, String[] args, String[] fullArgs) throws Exception;
+    public abstract Component execute (CommandContext context) throws Exception;
 }

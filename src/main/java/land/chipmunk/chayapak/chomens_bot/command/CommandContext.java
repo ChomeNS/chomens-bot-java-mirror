@@ -4,6 +4,8 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import net.kyori.adventure.text.Component;
 
+import java.util.Arrays;
+
 public class CommandContext {
     public final Bot bot;
 
@@ -15,7 +17,8 @@ public class CommandContext {
 
     public String commandName = null;
 
-    public String[] splitInput;
+    public String[] fullArgs;
+    public String[] args;
 
     public CommandContext(Bot bot, String prefix, PlayerEntry sender, boolean inGame) {
         this.bot = bot;
@@ -26,4 +29,82 @@ public class CommandContext {
 
     public Component displayName () { return Component.empty(); }
     public void sendOutput (Component component) {}
+
+    private int argsPosition = 0;
+
+    public String getString (boolean greedy, boolean required) throws CommandException { return getString(greedy, required, "string"); }
+    private String getString (boolean greedy, boolean required, String type) throws CommandException {
+        if (args.length == 0 || args[Math.min(argsPosition, args.length - 1)] == null) {
+            if (required) {
+                throw new CommandException(
+                        Component.translatable(
+                                "Expected %s",
+                                Component.text(type)
+                        )
+                );
+            } else {
+                return "";
+            }
+        }
+
+        return greedy ? String.join(" ", Arrays.copyOfRange(args, argsPosition++, args.length)) : args[Math.min(argsPosition++, args.length - 1)];
+    }
+
+    public Integer getInteger (boolean required) throws CommandException {
+        final String string = getString(false, required, "integer");
+
+        if (string.isEmpty()) return null;
+
+        try {
+            return Integer.parseInt(string);
+        } catch (NumberFormatException e) {
+            throw new CommandException(Component.text("Invalid integer"));
+        }
+    }
+
+    public Double getDouble (boolean required) throws CommandException {
+        final String string = getString(false, required, "double");
+
+        if (string.isEmpty()) return null;
+
+        try {
+            return Double.parseDouble(string);
+        } catch (NumberFormatException e) {
+            throw new CommandException(Component.text("Invalid double"));
+        }
+    }
+
+    public Float getFloat (boolean required) throws CommandException {
+        final String string = getString(false, required, "float");
+
+        if (string.isEmpty()) return null;
+
+        try {
+            return Float.parseFloat(string);
+        } catch (NumberFormatException e) {
+            throw new CommandException(Component.text("Invalid float"));
+        }
+    }
+
+    public Boolean getBoolean (boolean required) throws CommandException {
+        final String string = getString(false, required, "boolean");
+
+        if (string.isEmpty()) return null;
+
+        return switch (string) {
+            case "true" -> true;
+            case "false" -> false;
+            default -> throw new CommandException(Component.text("Invalid boolean"));
+        };
+    }
+
+    public <T extends Enum<T>> T getEnum (Class<T> enumClass) throws CommandException {
+        final String string = getString(false, true, enumClass.getSimpleName());
+
+        try {
+            return Enum.valueOf(enumClass, string.toUpperCase());
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new CommandException(Component.text("Invalid enum"));
+        }
+    }
 }

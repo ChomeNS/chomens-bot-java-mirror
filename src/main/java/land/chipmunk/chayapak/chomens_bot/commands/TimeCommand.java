@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.CommandException;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
@@ -25,16 +26,16 @@ public class TimeCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+    public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        final String timezone = args[0];
+        final String timezone = context.getString(true, true);
 
         DateTimeZone zone;
         try {
             zone = DateTimeZone.forID(timezone);
         } catch (IllegalArgumentException ignored) {
-            return Component.text("Invalid timezone (case-sensitive)").color(NamedTextColor.RED);
+            throw new CommandException(Component.text("Invalid timezone (case-sensitive)"));
         }
 
         final DateTime dateTime = new DateTime(zone);

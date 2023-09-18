@@ -18,7 +18,7 @@ public class ScreenshareCommand { // extends Command {
 //    }
 
 //    @Override
-//    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+//    public Component execute(CommandContext context) throws CommandException {
 //        final Bot bot = context.bot;
 //
 //        try {
@@ -66,11 +66,11 @@ public class ScreenshareCommand { // extends Command {
 //                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
 //                }
 //                default -> {
-//                    return Component.text("Invalid action").color(NamedTextColor.RED);
+//                    throw new CommandException(Component.text("Invalid action"));
 //                }
 //            }
 //        } catch (NumberFormatException e) {
-//            return Component.text("Invalid integer").color(NamedTextColor.RED);
+//            throw new CommandException(Component.text("Invalid integer"));
 //        }
 //    }
 }

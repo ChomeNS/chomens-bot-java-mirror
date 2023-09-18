@@ -3,13 +3,13 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.CommandException;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ConsoleCommand extends Command {
@@ -18,7 +18,7 @@ public class ConsoleCommand extends Command {
                 "console",
                 "Controls stuff about console",
                 new String[] {
-                        "<ownerHash> server <{server}>",
+                        "<ownerHash> server <server>",
                         "<ownerHash> logtoconsole <true|false>"
                 },
                 new String[] {},
@@ -28,12 +28,12 @@ public class ConsoleCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+    public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        if (args.length < 2) return Component.text("Not enough arguments").color(NamedTextColor.RED);
+        final String action = context.getString(false, true);
 
-        switch (args[0]) {
+        switch (action) {
             case "server" -> {
                 final List<String> servers = new ArrayList<>();
 
@@ -41,9 +41,9 @@ public class ConsoleCommand extends Command {
                     servers.add(eachBot.host + ":" + eachBot.port);
                 }
 
-                for (Bot eachBot : bot.bots) {
-                    final String server = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+                final String server = context.getString(true, true);
 
+                for (Bot eachBot : bot.bots) {
                     if (server.equalsIgnoreCase("all")) {
                         eachBot.console.consoleServer = "all";
 
@@ -60,12 +60,12 @@ public class ConsoleCommand extends Command {
 
                         context.sendOutput(Component.text("Set the console server to " + bot.console.consoleServer).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)));
                     } catch (ArrayIndexOutOfBoundsException e) {
-                        return Component.text("Invalid server: " + server).color(NamedTextColor.RED);
+                        throw new CommandException(Component.text("Invalid server: " + server));
                     }
                 }
             }
             case "logtoconsole" -> {
-                final boolean bool = Boolean.parseBoolean(args[1]);
+                final boolean bool = context.getBoolean(true);
 
                 bot.logger.logToConsole = bool;
 

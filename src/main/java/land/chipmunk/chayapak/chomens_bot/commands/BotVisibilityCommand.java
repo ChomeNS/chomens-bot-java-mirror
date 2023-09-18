@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.CommandException;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
@@ -21,10 +22,12 @@ public class BotVisibilityCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+    public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        if (args.length == 0) {
+        final String action = context.getString(false, false);
+
+        if (action.isEmpty()) {
             final boolean visibility = bot.selfCare.visibility;
             bot.selfCare.visibility = !visibility;
 
@@ -37,7 +40,7 @@ public class BotVisibilityCommand extends Command {
                     .append(Component.text(visibleOrInvisible).color(greenOrGold))
                     .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
         } else {
-            switch (args[0]) {
+            switch (action) {
                 case "on", "true" -> {
                     bot.selfCare.visibility = true;
                     bot.chat.send("/essentials:vanish disable");
@@ -55,7 +58,7 @@ public class BotVisibilityCommand extends Command {
                             .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
                 }
                 default -> {
-                    return Component.text("Invalid action").color(NamedTextColor.RED);
+                    throw new CommandException(Component.text("Invalid action"));
                 }
             }
         }

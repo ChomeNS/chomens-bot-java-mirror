@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.CommandException;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.data.FilteredPlayer;
 import land.chipmunk.chayapak.chomens_bot.plugins.FilterPlugin;
@@ -14,7 +15,6 @@ import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class FilterCommand extends Command {
@@ -23,10 +23,10 @@ public class FilterCommand extends Command {
                 "filter",
                 "Filter players",
                 new String[] {
-                        "<hash> add <{player}>",
-                        "<hash> -ignorecase add <{player}>",
-                        "<hash> -regex add <{player}>",
-                        "<hash> -ignorecase -regex add <{player}>",
+                        "<hash> add <player>",
+                        "<hash> -ignorecase add <player>",
+                        "<hash> -regex add <player>",
+                        "<hash> -ignorecase -regex add <player>",
                         "<hash> remove <index>",
                         "<hash> clear",
                         "<hash> list"
@@ -38,36 +38,37 @@ public class FilterCommand extends Command {
     }
 
     // most of these codes are from cloop and greplog
-    public Component execute(CommandContext context, String[] _args, String[] fullArgs) {
+    @Override
+    public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         boolean ignoreCase = false;
         boolean regex = false;
 
-        String[] args = _args;
+        String action = context.getString(false, true);
 
         // this is a mess
-        if (_args[0].equals("-ignorecase")) {
+        if (action.equals("-ignorecase")) {
             ignoreCase = true;
-            args = Arrays.copyOfRange(_args, 1, _args.length);
-        } else if (_args[0].equals("-regex")) {
+            action = context.getString(false, true);
+        } else if (action.equals("-regex")) {
             regex = true;
-            args = Arrays.copyOfRange(_args, 1, _args.length);
+            action = context.getString(false, true);
         }
 
-        if (_args.length > 1 && _args[1].equals("-ignorecase")) {
+        if (action.equals("-ignorecase")) {
             ignoreCase = true;
-            args = Arrays.copyOfRange(_args, 2, _args.length);
-        } else if (_args.length > 1 && _args[1].equals("-regex")) {
+            action = context.getString(false, true);
+        } else if (action.equals("-regex")) {
             regex = true;
-            args = Arrays.copyOfRange(_args, 2, _args.length);
+            action = context.getString(false, true);
         }
 
         final Gson gson = new Gson();
 
-        switch (args[0]) {
+        switch (action) {
             case "add" -> {
-                final String player = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+                final String player = context.getString(true, true);
 
                 bot.filter.add(player, regex, ignoreCase);
                 return Component.translatable(
@@ -77,7 +78,7 @@ public class FilterCommand extends Command {
             }
             case "remove" -> {
                 try {
-                    final int index = Integer.parseInt(args[1]);
+                    final int index = context.getInteger(true);
 
                     final FilteredPlayer removed = bot.filter.remove(index);
 
@@ -86,7 +87,7 @@ public class FilterCommand extends Command {
                             Component.text(removed.playerName).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
                     ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
                 } catch (IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
-                    return Component.text("Invalid index").color(NamedTextColor.RED);
+                    throw new CommandException(Component.text("Invalid index"));
                 }
             }
             case "clear" -> {
@@ -122,7 +123,7 @@ public class FilterCommand extends Command {
                         );
             }
             default -> {
-                return Component.text("Invalid action").color(NamedTextColor.RED);
+                throw new CommandException(Component.text("Invalid action"));
             }
         }
     }

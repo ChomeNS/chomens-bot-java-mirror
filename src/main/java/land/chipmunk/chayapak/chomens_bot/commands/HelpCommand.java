@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.CommandException;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.plugins.CommandHandlerPlugin;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
@@ -31,17 +32,19 @@ public class HelpCommand extends Command {
     private CommandContext context;
 
     @Override
-    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+    public Component execute(CommandContext context) throws CommandException {
         this.context = context;
 
-        if (args.length == 0) {
+        final String commandName = context.getString(true, false);
+
+        if (commandName.isEmpty()) {
             return sendCommandList();
         } else {
-            return sendUsages(context, args);
+            return sendUsages(context, commandName);
         }
     }
 
-    public Component sendCommandList () {
+    public Component sendCommandList () throws CommandException {
         final List<Component> list = new ArrayList<>();
         list.addAll(getCommandListByTrustLevel(TrustLevel.PUBLIC));
         list.addAll(getCommandListByTrustLevel(TrustLevel.TRUSTED));
@@ -60,7 +63,7 @@ public class HelpCommand extends Command {
                         .append(Component.join(JoinConfiguration.separator(Component.space()), list));
     }
 
-    public List<Component> getCommandListByTrustLevel(TrustLevel trustLevel) {
+    public List<Component> getCommandListByTrustLevel(TrustLevel trustLevel) throws CommandException {
         final List<Component> list = new ArrayList<>();
 
         List<String> commandNames = new ArrayList<>();
@@ -80,7 +83,7 @@ public class HelpCommand extends Command {
                             .color(getColorByTrustLevel(trustLevel))
                             .hoverEvent(
                                     HoverEvent.showText(
-                                            sendUsages(context, new String[] { name })
+                                            sendUsages(context, name)
                                     )
                             )
             );
@@ -97,20 +100,20 @@ public class HelpCommand extends Command {
         };
     }
 
-    public Component sendUsages (CommandContext context, String[] args) {
+    public Component sendUsages (CommandContext context, String commandName) throws CommandException {
         final Bot bot = context.bot;
 
         final String prefix = context.prefix;
 
         for (Command command : CommandHandlerPlugin.commands) {
-            if (!command.name.equals(args[0]) && !Arrays.stream(command.aliases).toList().contains(args[0])) continue;
+            if (!command.name.equals(commandName) && !Arrays.stream(command.aliases).toList().contains(commandName)) continue;
 
-            final String commandName = command.name;
+            final String actualCommandName = command.name;
             final List<Component> usages = new ArrayList<>();
 
             usages.add(
                     Component.empty()
-                            .append(Component.text(prefix + commandName).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
+                            .append(Component.text(prefix + actualCommandName).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
                             .append(Component.text(
                                     (command.aliases.length > 0 && !command.aliases[0].equals("")) ?
                                             " (" + String.join(", ", command.aliases) + ")" :
@@ -128,7 +131,7 @@ public class HelpCommand extends Command {
             for (String usage : command.usages) {
                 usages.add(
                         Component.empty()
-                                .append(Component.text(prefix + commandName).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
+                                .append(Component.text(prefix + actualCommandName).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
                                 .append(Component.text(" "))
                                 .append(Component.text(usage).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)))
                 );
@@ -137,6 +140,6 @@ public class HelpCommand extends Command {
             return Component.join(JoinConfiguration.separator(Component.newline()), usages);
         }
 
-        return Component.text("Unknown command").color(NamedTextColor.RED);
+        throw new CommandException(Component.text("Unknown command"));
     }
 }

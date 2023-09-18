@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.CommandException;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.HttpUtilities;
@@ -24,17 +25,17 @@ public class WeatherCommand extends Command {
         super(
                 "weather",
                 "Shows the weather in a place",
-                new String[] { "<{location}>" },
+                new String[] { "<location>" },
                 new String[] {},
                 TrustLevel.PUBLIC,
                 false
         );
     }
 
-    public Component execute (CommandContext context, String[] args, String[] fullArgs) {
+    public Component execute (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        final String location = String.join(" ", args);
+        final String location = context.getString(true, true);
 
         final Gson gson = new Gson();
 
@@ -107,7 +108,7 @@ public class WeatherCommand extends Command {
                     Component.text(time).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
             ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
         } catch (Exception e) {
-            return Component.text("Location \"" + location + "\" not found").color(NamedTextColor.RED);
+            throw new CommandException(Component.text("Location \"" + location + "\" not found"));
         }
     }
 }

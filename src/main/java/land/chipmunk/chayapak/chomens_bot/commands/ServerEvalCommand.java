@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.CommandException;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -16,7 +17,7 @@ public class ServerEvalCommand extends Command {
         super(
                 "servereval",
                 "Evaluate codes using LuaJ",
-                new String[] { "<ownerHash> <{code}>" },
+                new String[] { "<ownerHash> <code>" },
                 new String[] {},
                 TrustLevel.OWNER,
                 false
@@ -24,7 +25,7 @@ public class ServerEvalCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+    public Component execute(CommandContext context) throws CommandException {
         try {
             final Bot bot = context.bot;
 
@@ -34,13 +35,13 @@ public class ServerEvalCommand extends Command {
             globals.set("class", CoerceJavaToLua.coerce(Class.class));
             globals.set("context", CoerceJavaToLua.coerce(context));
 
-            LuaValue chunk = globals.load(String.join(" ", args));
+            LuaValue chunk = globals.load(context.getString(true, true));
 
             final LuaValue output = chunk.call();
 
             return Component.text(output.toString()).color(NamedTextColor.GREEN);
         } catch (Exception e) {
-            return Component.text(e.toString()).color(NamedTextColor.RED);
+            throw new CommandException(Component.text(e.toString()));
         }
     }
 }

@@ -100,23 +100,12 @@ public class CommandHandlerPlugin {
 
         final TrustLevel trustLevel = command.trustLevel;
 
-        final String[] fullArgs = Arrays.copyOfRange(splitInput, 1, splitInput.length);
-
-        // TODO: improve these minimum args and maximum args stuff, the current one really sucks.,.,
-        final int shortestUsageIndex = getShortestUsageIndex(command.usages);
-        final int longestUsageIndex = getLongestUsageIndex(command.usages);
-        final String shortestUsage = shortestUsageIndex == 0 && command.usages.length == 0 ? "" : command.usages[shortestUsageIndex];
-        final String longestUsage = longestUsageIndex == 0 && command.usages.length == 0 ? "" : command.usages[longestUsageIndex];
-
-        final int minimumArgs = getMinimumArgs(shortestUsage, inGame, command.trustLevel);
-        final int maximumArgs = getMaximumArgs(longestUsage, inGame, command.trustLevel);
-        if (fullArgs.length < minimumArgs) return Component.text("Excepted minimum of " + minimumArgs + " argument(s), got " + fullArgs.length).color(NamedTextColor.RED);
-        if (fullArgs.length > maximumArgs && !longestUsage.contains("{")) return Component.text("Too many arguments, expected " + maximumArgs + " max").color(NamedTextColor.RED);
-
         if (trustLevel != TrustLevel.PUBLIC && splitInput.length < 2 && inGame) return Component.text("Please provide a hash").color(NamedTextColor.RED);
 
         String userHash = "";
         if (trustLevel != TrustLevel.PUBLIC && inGame) userHash = splitInput[1];
+
+        final String[] fullArgs = Arrays.copyOfRange(splitInput, 1, splitInput.length);
 
         final String[] args = Arrays.copyOfRange(splitInput, (trustLevel != TrustLevel.PUBLIC && inGame) ? 2 : 1, splitInput.length);
 
@@ -157,11 +146,15 @@ public class CommandHandlerPlugin {
 
         if (!console && command.consoleOnly) return Component.text("This command can only be ran via console").color(NamedTextColor.RED);
 
-        context.splitInput = splitInput;
+        // should these be here?
+        context.fullArgs = fullArgs;
+        context.args = args;
         context.commandName = command.name;
 
         try {
-            return command.execute(context, args, fullArgs);
+            return command.execute(context);
+        } catch (CommandException e) {
+            return e.message.color(NamedTextColor.RED);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -176,7 +169,8 @@ public class CommandHandlerPlugin {
                                                 .text(stackTrace)
                                                 .color(NamedTextColor.RED)
                                 )
-                        );
+                        )
+                        .color(NamedTextColor.RED);
             } else {
                 return Component.text(stackTrace).color(NamedTextColor.RED);
             }
@@ -196,67 +190,5 @@ public class CommandHandlerPlugin {
             }
         }
         return null;
-    }
-
-    private int getLongestUsageIndex(String[] usages) {
-        int longestIndex = 0;
-        int maxLength = 0;
-
-        final int usagesSize = usages.length;
-
-        for (int i = 0; i < usagesSize; i++) {
-            String[] args = usages[i].split("\\s+");
-            if (args.length > maxLength) {
-                longestIndex = i;
-                maxLength = args.length;
-            }
-        }
-        return longestIndex;
-    }
-
-    private int getShortestUsageIndex(String[] usages) {
-        int shortestIndex = 0;
-        int minLength = Integer.MAX_VALUE;
-
-        final int usagesSize = usages.length;
-
-        for (int i = 0; i < usagesSize; i++) {
-            String[] args = usages[i].split("\\s+");
-            if (args.length < minLength) {
-                shortestIndex = i;
-                minLength = args.length;
-            }
-        }
-
-        return shortestIndex;
-    }
-
-    private int getMinimumArgs(String usage, boolean inGame, TrustLevel trustLevel) {
-        int count = 0;
-
-        final int usageLength = usage.length();
-
-        for (int i = 0; i < usageLength; i++) {
-            if (usage.charAt(i) == '<') {
-                count++;
-            }
-        }
-        if (usage.contains("<hash>")) count--; // bad fix?
-        if ((!inGame && trustLevel != TrustLevel.PUBLIC)) count--;
-        return count;
-    }
-
-    private int getMaximumArgs(String usage, boolean inGame, TrustLevel trustLevel) {
-        int count = 0;
-
-        final int usageLength = usage.length();
-
-        for (int i = 0; i < usageLength; i++) {
-            if (usage.charAt(i) == '<' || usage.charAt(i) == '[') {
-                count++;
-            }
-        }
-        if (!inGame && trustLevel != TrustLevel.PUBLIC) count++;
-        return count;
     }
 }

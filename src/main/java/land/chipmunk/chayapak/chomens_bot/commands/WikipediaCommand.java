@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.CommandException;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.util.HttpUtilities;
 import net.kyori.adventure.text.Component;
@@ -20,17 +21,17 @@ public class WikipediaCommand extends Command {
         super(
                 "wikipedia",
                 "Wikipedia in Minecraft",
-                new String[] { "<{page}>" },
+                new String[] { "<page>" },
                 new String[] { "wiki" },
                 TrustLevel.PUBLIC,
                 false
         );
     }
 
-    public Component execute (CommandContext context, String[] args, String[] fullArgs) {
+    public Component execute (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        final String page = String.join(" ", args);
+        final String page = context.getString(true, true);
 
         final Gson gson = new Gson();
 

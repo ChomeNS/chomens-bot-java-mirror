@@ -6,10 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Main;
-import land.chipmunk.chayapak.chomens_bot.command.Command;
-import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
-import land.chipmunk.chayapak.chomens_bot.command.DiscordCommandContext;
-import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
+import land.chipmunk.chayapak.chomens_bot.command.*;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.HttpUtilities;
 import net.kyori.adventure.text.Component;
@@ -32,7 +29,7 @@ public class UrbanCommand extends Command {
         super(
                 "urban",
                 "Urban Dictionary in Minecraft",
-                new String[] { "<{term}>" },
+                new String[] { "<term>" },
                 new String[] {},
                 TrustLevel.PUBLIC,
                 false
@@ -41,14 +38,14 @@ public class UrbanCommand extends Command {
         Main.executor.scheduleAtFixedRate(() -> requestsPerSecond = 0, 0, 1, TimeUnit.SECONDS);
     }
 
-    public Component execute (CommandContext context, String[] args, String[] fullArgs) {
-        if (requestsPerSecond > 3) return Component.text("Too many requests").color(NamedTextColor.RED);
+    public Component execute (CommandContext context) throws CommandException {
+        if (requestsPerSecond > 3) throw new CommandException(Component.text("Too many requests"));
 
         final Bot bot = context.bot;
 
         final boolean discord = context instanceof DiscordCommandContext;
 
-        final String term = String.join(" ", args);
+        final String term = context.getString(true, true);
 
         final Gson gson = new Gson();
 

@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 import com.github.ricksbrown.cowsay.plugin.CowExecutor;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.CommandException;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import net.kyori.adventure.text.Component;
 
@@ -11,7 +12,7 @@ public class CowsayCommand extends Command {
         super(
                 "cowsay",
                 "Moo",
-                new String[] { "<{message}>" },
+                new String[] { "<message>" },
                 new String[] {},
                 TrustLevel.PUBLIC,
                 false
@@ -19,8 +20,8 @@ public class CowsayCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
-        final String message = String.join(" ", args);
+    public Component execute(CommandContext context) throws CommandException {
+        final String message = context.getString(true, true);
 
         final CowExecutor cowExecutor = new CowExecutor();
         cowExecutor.setMessage(message);

@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.CommandException;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.HttpUtilities;
@@ -15,14 +16,13 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class TranslateCommand extends Command {
     public TranslateCommand () {
         super(
                 "translate",
                 "Translates a message using Google Translate",
-                new String[] { "<fromLanguage> <toLanguage> <{message}>" },
+                new String[] { "<fromLanguage> <toLanguage> <message>" },
                 new String[] {},
                 TrustLevel.PUBLIC,
                 false
@@ -30,13 +30,13 @@ public class TranslateCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+    public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        final String from = args[0];
-        final String to = args[1];
+        final String from = context.getString(false, true);
+        final String to = context.getString(false, true);
 
-        final String message = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+        final String message = context.getString(true, true);
 
         final Gson gson = new Gson();
 

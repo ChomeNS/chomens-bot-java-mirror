@@ -3,6 +3,7 @@ package land.chipmunk.chayapak.chomens_bot.commands;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
+import land.chipmunk.chayapak.chomens_bot.command.CommandException;
 import land.chipmunk.chayapak.chomens_bot.command.TrustLevel;
 import land.chipmunk.chayapak.chomens_bot.data.CommandLoop;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
@@ -11,7 +12,6 @@ import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class CloopCommand extends Command {
@@ -19,7 +19,7 @@ public class CloopCommand extends Command {
         super(
                 "cloop",
                 "Loop commands",
-                new String[] { "<hash> add <interval> <{command}>", "<hash> remove <index>", "<hash> clear", "<hash> list" },
+                new String[] { "<hash> add <interval> <command>", "<hash> remove <index>", "<hash> clear", "<hash> list" },
                 new String[] { "commandloop" },
                 TrustLevel.TRUSTED,
                 false
@@ -27,21 +27,17 @@ public class CloopCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context, String[] args, String[] fullArgs) {
+    public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        switch (args[0]) {
-            case "add" -> {
-                if (args.length < 3) return Component.text("Please specify interval and command").color(NamedTextColor.RED);
-                int interval;
-                try {
-                    interval = Integer.parseInt(args[1]);
-                    if (interval < 1) interval = 1;
-                } catch (IllegalArgumentException ignored) {
-                    return Component.text("Invalid interval").color(NamedTextColor.RED);
-                }
+        final String action = context.getString(false, true);
 
-                final String command = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+        switch (action) {
+            case "add" -> {
+                int interval = context.getInteger(true);
+                if (interval < 1) interval = 1;
+
+                final String command = context.getString(true, true);
 
                 bot.cloop.add(interval, command);
 
@@ -53,7 +49,7 @@ public class CloopCommand extends Command {
             }
             case "remove" -> {
                 try {
-                    final int index = Integer.parseInt(args[1]);
+                    final int index = context.getInteger(true);
                     bot.cloop.remove(index);
 
                     return Component.translatable(
@@ -61,7 +57,7 @@ public class CloopCommand extends Command {
                             Component.text(index).color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
                     ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
                 } catch (IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
-                    return Component.text("Invalid index").color(NamedTextColor.RED);
+                    throw new CommandException(Component.text("Invalid index"));
                 }
             }
             case "clear" -> {
@@ -95,7 +91,7 @@ public class CloopCommand extends Command {
                         );
             }
             default -> {
-                return Component.text("Invalid action").color(NamedTextColor.RED);
+                throw new CommandException(Component.text("Invalid action"));
             }
         }
     }
