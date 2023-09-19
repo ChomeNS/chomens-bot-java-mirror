@@ -12,6 +12,7 @@ import land.chipmunk.chayapak.chomens_bot.song.Loop;
 import land.chipmunk.chayapak.chomens_bot.song.Note;
 import land.chipmunk.chayapak.chomens_bot.song.Song;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
+import land.chipmunk.chayapak.chomens_bot.util.PathUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.TimestampUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
@@ -101,7 +102,7 @@ public class MusicCommand extends Command {
 
             path = Path.of(root.toString(), _path);
 
-            if (path.toString().contains("http")) player.loadSong(new URL(_path));
+            if (path.toString().startsWith("http")) player.loadSong(new URL(_path));
             else {
                 // among us protection!!!11
                 if (!path.normalize().startsWith(root.toString())) throw new CommandException(Component.text("no"));
@@ -117,27 +118,59 @@ public class MusicCommand extends Command {
 
                     final Path realPath = Path.of(root.toString(), String.join(separator, pathSplittedClone));
 
-                    final String[] songs = realPath.toFile().list();
+                    try (DirectoryStream<Path> stream = Files.newDirectoryStream(realPath)) {
+                        final List<Path> songsPaths = new ArrayList<>();
+                        for (Path eachPath : stream) songsPaths.add(eachPath);
 
-                    if (songs == null) throw new CommandException(Component.text("Directory does not exist"));
+                        PathUtilities.sort(songsPaths);
 
-                    final String lowerCaseFile = pathSplitted[pathSplitted.length - 1].toLowerCase();
+                        final List<String> songs = new ArrayList<>();
+                        for (Path eachPath : songsPaths) songs.add(eachPath.getFileName().toString());
 
-                    final String file = Arrays.stream(songs)
-                            .filter(song -> song.equalsIgnoreCase(lowerCaseFile) || song.toLowerCase().contains(lowerCaseFile))
-                            .toArray(String[]::new)[0];
+                        final String lowerCaseFile = pathSplitted[pathSplitted.length - 1].toLowerCase();
 
-                    player.loadSong(Path.of(realPath.toString(), file));
+                        final String[] matchedArray = songs.stream()
+                                .filter(song -> song.equalsIgnoreCase(lowerCaseFile) || song.toLowerCase().contains(lowerCaseFile))
+                                .toArray(String[]::new);
+
+                        if (matchedArray.length == 0) throw new CommandException(Component.text("Song not found"));
+
+                        final String file = matchedArray[0];
+
+                        player.loadSong(Path.of(realPath.toString(), file));
+                    } catch (CommandException e) {
+                        throw e;
+                    } catch (NoSuchFileException e) {
+                        throw new CommandException(Component.text("Directory does not exist"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 } else {
-                    final String[] songs = root.toFile().list();
+                    try (DirectoryStream<Path> stream = Files.newDirectoryStream(root)) {
+                        final List<Path> songsPaths = new ArrayList<>();
+                        for (Path eachPath : stream) songsPaths.add(eachPath);
 
-                    if (songs == null) return null;
+                        PathUtilities.sort(songsPaths);
 
-                    final String file = Arrays.stream(songs)
-                            .filter(song -> song.equalsIgnoreCase(_path) || song.toLowerCase().contains(_path.toLowerCase()))
-                            .toArray(String[]::new)[0];
+                        final List<String> songs = new ArrayList<>();
+                        for (Path eachPath : songsPaths) songs.add(eachPath.getFileName().toString());
 
-                    player.loadSong(Path.of(root.toString(), file));
+                        final String[] matchedArray = songs.stream()
+                                .filter(song -> song.equalsIgnoreCase(_path) || song.toLowerCase().contains(_path.toLowerCase()))
+                                .toArray(String[]::new);
+
+                        if (matchedArray.length == 0) throw new CommandException(Component.text("Song not found"));
+
+                        final String file = matchedArray[0];
+
+                        player.loadSong(Path.of(root.toString(), file));
+                    } catch (CommandException e) {
+                        throw e;
+                    } catch (NoSuchFileException e) {
+                        throw new CommandException(Component.text("this will never happen ok??"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         } catch (MalformedURLException e) {
@@ -184,9 +217,7 @@ public class MusicCommand extends Command {
             case ALL -> {
                 return Component.text("Now looping every song").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
-            default -> {
-                throw new CommandException(Component.text("Invalid action"));
-            }
+            default -> throw new CommandException(Component.text("Invalid action"));
         }
     }
 
@@ -210,16 +241,7 @@ public class MusicCommand extends Command {
             final List<Path> paths = new ArrayList<>();
             for (Path eachPath : stream) paths.add(eachPath);
 
-            paths.sort((p1, p2) -> {
-                final String s1 = p1.getFileName().toString();
-                final String s2 = p2.getFileName().toString();
-
-                int result = s1.compareToIgnoreCase(s2);
-                if (result == 0) {
-                    return s2.compareTo(s1);
-                }
-                return result;
-            });
+            PathUtilities.sort(paths);
 
             final List<Component> fullList = new ArrayList<>();
             int i = 0;
