@@ -65,7 +65,6 @@ public class Bot {
     public BossbarManagerPlugin bossbar;
     public MusicPlayerPlugin music;
     public TPSPlugin tps;
-    public EvalPlugin eval;
     public TrustedPlugin trusted;
     public BruhifyPlugin bruhify;
     public CloopPlugin cloop;
@@ -115,7 +114,6 @@ public class Bot {
         this.bossbar = new BossbarManagerPlugin(this);
         this.music = new MusicPlayerPlugin(this);
         this.tps = new TPSPlugin(this);
-        this.eval = new EvalPlugin(this);
         this.trusted = new TrustedPlugin(this);
         this.bruhify = new BruhifyPlugin(this);
         this.cloop = new CloopPlugin(this);
