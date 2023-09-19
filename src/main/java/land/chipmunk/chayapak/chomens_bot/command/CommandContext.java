@@ -34,7 +34,7 @@ public class CommandContext {
 
     public String getString (boolean greedy, boolean required) throws CommandException { return getString(greedy, required, "string"); }
     private String getString (boolean greedy, boolean required, String type) throws CommandException {
-        if (args.length == 0 || args[Math.min(argsPosition, args.length - 1)] == null) {
+        if (argsPosition >= args.length || args[argsPosition] == null) {
             if (required) {
                 throw new CommandException(
                         Component.translatable(
@@ -47,7 +47,13 @@ public class CommandContext {
             }
         }
 
-        return greedy ? String.join(" ", Arrays.copyOfRange(args, argsPosition++, args.length)) : args[Math.min(argsPosition++, args.length - 1)];
+        final String string = greedy ?
+                String.join(" ", Arrays.copyOfRange(args, argsPosition, args.length)) :
+                args[argsPosition];
+
+        argsPosition++;
+
+        return string;
     }
 
     public Integer getInteger (boolean required) throws CommandException {

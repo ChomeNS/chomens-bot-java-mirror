@@ -73,7 +73,7 @@ public class MailCommand extends Command {
                 bot.mail.send(
                         new Mail(
                                 sender.profile.getName(),
-                                context.getString(true, true),
+                                context.getString(false, true),
                                 Instant.now().toEpochMilli(),
                                 bot.host + ":" + bot.port,
                                 context.getString(true, true)
