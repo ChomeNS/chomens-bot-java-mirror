@@ -144,6 +144,8 @@ public class MusicCommand extends Command {
             throw new CommandException(Component.text("Invalid URL"));
         } catch (IndexOutOfBoundsException e) {
             throw new CommandException(Component.text("Song not found"));
+        } catch (CommandException e) {
+            throw e;
         } catch (Exception e) {
             throw new CommandException(Component.text(e.toString()));
         }
