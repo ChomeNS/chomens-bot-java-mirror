@@ -126,7 +126,7 @@ public class Bot {
         this.tag = new TagPlugin(this);
         this.world = new WorldPlugin(this);
         this.auth = new AuthPlugin(this);
-        this.screenshare = new ScreensharePlugin(this);
+//        this.screenshare = new ScreensharePlugin(this);
 
         for (Listener listener : listeners) listener.loadedPlugins();
 
