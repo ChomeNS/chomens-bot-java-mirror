@@ -40,11 +40,25 @@ public class DiscordPlugin {
 
     public final String prefix;
 
+    public Component messagePrefix;
+
+    public final String discordUrl;
+
     public DiscordPlugin (Configuration config, JDA jda) {
         final Configuration.Discord options = config.discord;
         this.prefix = options.prefix;
         this.servers = options.servers;
         this.jda = jda;
+        this.discordUrl = config.discord.inviteLink;
+        this.messagePrefix = Component.empty()
+                .append(Component.text("ChomeNS ").color(NamedTextColor.YELLOW))
+                .append(Component.text("Discord").color(NamedTextColor.BLUE))
+                .hoverEvent(
+                        HoverEvent.showText(
+                                Component.text("Click here to join the Discord server").color(NamedTextColor.GREEN)
+                        )
+                )
+                .clickEvent(ClickEvent.openUrl(discordUrl));
 
         if (jda == null) return;
 
@@ -262,18 +276,6 @@ public class DiscordPlugin {
 
                     if (nameComponent.color() == null) nameComponent = nameComponent.color(NamedTextColor.RED);
 
-                    final String discordUrl = config.discord.inviteLink;
-
-                    final Component discordComponent = Component.empty()
-                            .append(Component.text("ChomeNS ").color(NamedTextColor.YELLOW))
-                            .append(Component.text("Discord").color(NamedTextColor.BLUE))
-                            .hoverEvent(
-                                    HoverEvent.showText(
-                                            Component.text("Click here to join the Discord server").color(NamedTextColor.GREEN)
-                                    )
-                            )
-                            .clickEvent(ClickEvent.openUrl(discordUrl));
-
                     final Component deserialized = LegacyComponentSerializer.legacyAmpersand().deserialize(message.replace("\uD83D\uDC80", "☠"));
 
                     final Component messageComponent = Component
@@ -287,7 +289,7 @@ public class DiscordPlugin {
 
                     final Component component = Component.translatable(
                             "[%s] %s › %s",
-                            discordComponent,
+                            messagePrefix,
                             nameComponent,
                             messageComponent
                     ).color(NamedTextColor.DARK_GRAY);
