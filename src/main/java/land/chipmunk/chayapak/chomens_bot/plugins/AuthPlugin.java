@@ -6,6 +6,7 @@ import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -102,6 +103,8 @@ public class AuthPlugin extends PlayersPlugin.Listener {
                     .hashString(key + key + time + time, StandardCharsets.UTF_8)
                     .toString()
                     .substring(0, 8);
+
+            bot.logger.custom(Component.text("Auth").color(NamedTextColor.RED), Component.text("Authenticating with real hash " + hash + " and user hash " + inputHash));
 
             hasCorrectHash = inputHash.equals(hash);
         } catch (Exception ignored) {}
