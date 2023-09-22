@@ -34,8 +34,8 @@ public class AuthPlugin extends PlayersPlugin.Listener {
         bot.players.addListener(this);
         bot.chat.addListener(new ChatPlugin.Listener() {
             @Override
-            public void systemMessageReceived(Component component, boolean isCommandSuggestions, boolean isAuth, String string, String ansi) {
-                AuthPlugin.this.systemMessageReceived(component, isCommandSuggestions, isAuth);
+            public void systemMessageReceived(Component component, boolean isCommandSuggestions, boolean isAuth, boolean isImposterFormat, String string, String ansi) {
+                AuthPlugin.this.systemMessageReceived(component, isCommandSuggestions, isAuth, isImposterFormat);
             }
         });
         bot.executor.scheduleAtFixedRate(this::check, 0, 1, TimeUnit.SECONDS);
@@ -83,9 +83,9 @@ public class AuthPlugin extends PlayersPlugin.Listener {
         started = false;
     }
 
-    private void systemMessageReceived (Component component, boolean isCommandSuggestions, boolean isAuth) {
+    private void systemMessageReceived (Component component, boolean isCommandSuggestions, boolean isAuth, boolean isImposterFormat) {
         try {
-            if (isCommandSuggestions || !isAuth) return;
+            if (isCommandSuggestions || !isAuth || !isImposterFormat) return;
 
             final List<Component> children = component.children();
 

@@ -51,6 +51,10 @@ colorPalette:
 
 ownerName: 'chayapak' # currently this is only used in the console
 
+imposterFormatChecker:
+  enabled: false
+  key: ''
+
 ownerAuthentication:
   enabled: false
   key: ''
@@ -105,9 +109,6 @@ selfCare:
     enabled: true
     prefix: '&8[&eChomeNS Bot&8]'
   username: true # MIGHT cause problem(s) if set to false (not tested,.,.)
-
-eval:
-  address: 'ws://localhost:3069'
 
 bots:
   # username - optional, if not specified it will just use a random username

@@ -100,12 +100,14 @@ public class ChatPlugin extends Bot.Listener {
             else if (id.equals(bot.auth.id)) isAuth = true;
         }
 
+        final boolean isImposterFormat = bot.formatChecker.isImposterFormat(component);
+
         final String string = ComponentUtilities.stringify(component);
         final String ansi = ComponentUtilities.stringifyAnsi(component);
 
         for (Listener listener : listeners) {
-            if (!isCommandSuggestions && !isAuth) listener.systemMessageReceived(component, string, ansi);
-            listener.systemMessageReceived(component, isCommandSuggestions, isAuth, string, ansi);
+            if (!isCommandSuggestions && !isAuth && !isImposterFormat) listener.systemMessageReceived(component, string, ansi);
+            listener.systemMessageReceived(component, isCommandSuggestions, isAuth, isImposterFormat, string, ansi);
 
             if (playerMessage != null) listener.playerMessageReceived(playerMessage);
         }
@@ -365,6 +367,6 @@ public class ChatPlugin extends Bot.Listener {
     public static class Listener {
         public void playerMessageReceived (PlayerMessage message) {}
         public void systemMessageReceived (Component component, String string, String ansi) {}
-        public void systemMessageReceived (Component component, boolean isCommandSuggestions, boolean isAuth, String string, String ansi) {}
+        public void systemMessageReceived (Component component, boolean isCommandSuggestions, boolean isAuth, boolean isImposterFormat, String string, String ansi) {}
     }
 }

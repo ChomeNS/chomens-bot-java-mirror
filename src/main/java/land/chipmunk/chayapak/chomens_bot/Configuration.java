@@ -27,13 +27,19 @@ public class Configuration {
     
     public String ownerName = "chayapak"; // mabe mabe
 
+    public ImposterFormatChecker imposterFormatChecker = new ImposterFormatChecker();
+
     public OwnerAuthentication ownerAuthentication = new OwnerAuthentication();
     
     public List<String> trusted = new ArrayList<>();
     public SelfCare selfCare = new SelfCare();
-    public Eval eval = new Eval();
 
     public BotOption[] bots = new BotOption[]{};
+
+    public static class ImposterFormatChecker {
+        public boolean enabled = false;
+        public String key;
+    }
 
     public static class OwnerAuthentication {
         public boolean enabled = false;
@@ -135,10 +141,6 @@ public class Configuration {
         }
 
         public boolean username = true;
-    }
-
-    public static class Eval {
-        public String address = "ws://localhost:3069";
     }
 
     public static class BotOption {
