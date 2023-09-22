@@ -102,7 +102,7 @@ public class MusicCommand extends Command {
 
             path = Path.of(root.toString(), _path);
 
-            if (path.toString().startsWith("http")) player.loadSong(new URL(_path));
+            if (path.toString().contains("http")) player.loadSong(new URL(_path));
             else {
                 // among us protection!!!11
                 if (!path.normalize().startsWith(root.toString())) throw new CommandException(Component.text("no"));
