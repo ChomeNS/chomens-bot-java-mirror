@@ -26,6 +26,8 @@ public class FormatCheckerPlugin extends ChatPlugin.Listener {
     }
 
     public boolean isImposterFormat (Component component) {
+        if (!bot.config.imposterFormatChecker.enabled) return false;
+
         if (!(component instanceof TranslatableComponent format)) return false;
 
         final List<Component> args = format.args();
