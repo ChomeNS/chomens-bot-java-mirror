@@ -5,6 +5,9 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextDecoration;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -22,7 +25,7 @@ public class FormatCheckerPlugin extends ChatPlugin.Listener {
     public void systemMessageReceived(Component component, boolean isCommandSuggestions, boolean isAuth, boolean isImposterFormat, String string, String ansi) {
         if (!isImposterFormat) return;
 
-        bot.chat.tellraw(Component.text("fake chomens custom chat .,.,.,.,"));
+        bot.chat.tellraw(Component.text("Possible fake ChomeNS custom chat (this can be false-positive)").color(NamedTextColor.GRAY).style(Style.style(TextDecoration.ITALIC)));
     }
 
     public boolean isImposterFormat (Component component) {

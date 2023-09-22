@@ -86,7 +86,7 @@ public class AuthPlugin extends PlayersPlugin.Listener {
 
     private void systemMessageReceived (Component component, boolean isCommandSuggestions, boolean isAuth, boolean isImposterFormat) {
         try {
-            if (isCommandSuggestions || !isAuth || !isImposterFormat) return;
+            if (isCommandSuggestions || !isAuth || isImposterFormat) return;
 
             final List<Component> children = component.children();
 
