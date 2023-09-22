@@ -1,5 +1,6 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
+import com.github.steveice10.packetlib.event.session.ConnectedEvent;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Configuration;
 import land.chipmunk.chayapak.chomens_bot.Main;
@@ -23,6 +24,8 @@ public class ConsolePlugin implements Completer {
 
     public String prefix;
 
+    public Component formatPrefix;
+
     private static final List<Listener> listeners = new ArrayList<>();
 
     public ConsolePlugin (List<Bot> allBots, Configuration discordConfig, JDA jda) {
@@ -38,6 +41,13 @@ public class ConsolePlugin implements Completer {
             prefix = bot.config.consoleCommandPrefix;
 
             bot.console = this;
+
+            bot.addListener(new Bot.Listener() {
+                @Override
+                public void connected(ConnectedEvent event) {
+                    bot.console.formatPrefix = Component.text(bot.username + " Console").color(NamedTextColor.GRAY);
+                }
+            });
 
             bot.logger = new LoggerPlugin(bot);
         }
@@ -104,7 +114,7 @@ public class ConsolePlugin implements Completer {
             bot.chat.tellraw(
                     Component.translatable(
                             "[%s] %s › %s",
-                            Component.text(bot.username + " Console").color(NamedTextColor.GRAY),
+                            formatPrefix,
                             Component.text(bot.config.ownerName).color(ColorUtilities.getColorByString(bot.config.colorPalette.ownerName)),
                             Component.text(line).color(NamedTextColor.GRAY)
                     ).color(NamedTextColor.DARK_GRAY)

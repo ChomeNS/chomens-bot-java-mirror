@@ -43,6 +43,8 @@ public class FormatCheckerPlugin extends ChatPlugin.Listener {
 
         final Component prefix = format.args().get(0);
 
+        if (prefix.equals(bot.console.formatPrefix)) return false;
+
         if (!(prefix instanceof TranslatableComponent translatablePrefix)) return true;
 
         final Component userHash = translatablePrefix.args().get(0);

@@ -106,7 +106,7 @@ public class ChatPlugin extends Bot.Listener {
         final String ansi = ComponentUtilities.stringifyAnsi(component);
 
         for (Listener listener : listeners) {
-            if (!isCommandSuggestions && !isAuth && !isImposterFormat) listener.systemMessageReceived(component, string, ansi);
+            if (!isCommandSuggestions && !isAuth) listener.systemMessageReceived(component, string, ansi);
             listener.systemMessageReceived(component, isCommandSuggestions, isAuth, isImposterFormat, string, ansi);
 
             if (playerMessage != null) listener.playerMessageReceived(playerMessage);
