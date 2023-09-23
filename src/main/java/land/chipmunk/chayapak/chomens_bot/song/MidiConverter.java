@@ -43,7 +43,7 @@ public class MidiConverter implements Converter {
           } else if (mm.getType() == TRACK_NAME && isFirst) {
             final String stringTitle = new String(mm.getData());
 
-            if (stringTitle.isBlank()) {
+            if (!stringTitle.isBlank()) {
               songName = stringTitle + " (" + name + ")"; // i have put the ` (filename)` just in case the sequence is getting sus (like Track 2 for example)
 
               isFirst = false;
