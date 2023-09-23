@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 // Author: hhhzzzsss
 public class MidiConverter implements Converter {
+  public static final int TRACK_NAME = 0x03;
   public static final int SET_INSTRUMENT = 0xC0;
   public static final int SET_TEMPO = 0x51;
   public static final int NOTE_ON = 0x90;
@@ -23,9 +24,9 @@ public class MidiConverter implements Converter {
   }
   
   public static Song getSong(Sequence sequence, String name, Bot bot) {
-    Song song = new Song(name, bot, null, null, null, null, false);
-
     long tpq = sequence.getResolution();
+
+    String songName = null;
 
     ArrayList<MidiEvent> tempoEvents = new ArrayList<>();
     for (Track track : sequence.getTracks()) {
@@ -37,10 +38,14 @@ public class MidiConverter implements Converter {
         if (message instanceof MetaMessage mm) {
           if (mm.getType() == SET_TEMPO) {
             tempoEvents.add(event);
+          } else if (mm.getType() == TRACK_NAME) {
+            songName = new String(mm.getData()) + " (" + name + ")"; // i have put the ` (filename)` just in case the sequence is getting sus (like Track 2 for example)
           }
         }
       }
     }
+
+    final Song song = new Song(name, bot, songName, null, null, null, false);
     
     tempoEvents.sort(Comparator.comparingLong(MidiEvent::getTick));
     
