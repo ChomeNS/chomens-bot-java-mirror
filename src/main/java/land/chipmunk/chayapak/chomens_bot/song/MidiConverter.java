@@ -28,6 +28,8 @@ public class MidiConverter implements Converter {
 
     String songName = null;
 
+    boolean isFirst = true;
+
     ArrayList<MidiEvent> tempoEvents = new ArrayList<>();
     for (Track track : sequence.getTracks()) {
       final int trackSize = track.size();
@@ -38,8 +40,10 @@ public class MidiConverter implements Converter {
         if (message instanceof MetaMessage mm) {
           if (mm.getType() == SET_TEMPO) {
             tempoEvents.add(event);
-          } else if (mm.getType() == TRACK_NAME) {
+          } else if (mm.getType() == TRACK_NAME && isFirst) {
             songName = new String(mm.getData()) + " (" + name + ")"; // i have put the ` (filename)` just in case the sequence is getting sus (like Track 2 for example)
+
+            isFirst = false;
           }
         }
       }
