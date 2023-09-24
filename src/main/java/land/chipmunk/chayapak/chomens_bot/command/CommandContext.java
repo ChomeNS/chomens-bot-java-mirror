@@ -3,10 +3,14 @@ package land.chipmunk.chayapak.chomens_bot.command;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextDecoration;
 
 import java.util.Arrays;
 
 public class CommandContext {
+    public static final Component UNKNOWN_ARGUMENT_COMPONENT = Component.text("???").style(Style.style(TextDecoration.UNDERLINED));
+
     public final Bot bot;
 
     public final String prefix;
@@ -38,8 +42,16 @@ public class CommandContext {
             if (required) {
                 throw new CommandException(
                         Component.translatable(
-                                "Expected %s",
-                                Component.text(type)
+                                "Expected %s at position %s (%s %s)",
+                                Component.text(type),
+                                Component.text(argsPosition),
+                                Component.text(prefix + commandName),
+                                argsPosition == 0 ?
+                                        UNKNOWN_ARGUMENT_COMPONENT :
+                                        Component
+                                                .text(String.join(" ", args))
+                                                .append(Component.space())
+                                                .append(UNKNOWN_ARGUMENT_COMPONENT)
                         )
                 );
             } else {
