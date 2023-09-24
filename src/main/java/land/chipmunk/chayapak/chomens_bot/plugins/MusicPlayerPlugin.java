@@ -51,8 +51,6 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
     public String instrument = "off";
 
-    private int ticksUntilPausedBossbar = 20;
-
     private int notesPerSecond = 0;
 
     private int limit = 0;
@@ -130,8 +128,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                         currentSong.play();
                     }
 
-                    if (currentSong.paused && ticksUntilPausedBossbar-- < 0) return;
-                    else ticksUntilPausedBossbar = 20 - (((int) bot.tps.getTickRate()) - 20);
+                    if (currentSong.paused) return;
 
                     if (!currentSong.finished()) {
                         BotBossBar bossBar = bot.bossbar.get(bossbarName);
