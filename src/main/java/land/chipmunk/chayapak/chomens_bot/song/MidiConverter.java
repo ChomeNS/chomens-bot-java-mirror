@@ -138,6 +138,8 @@ public class MidiConverter implements Converter {
           break;
         }
       }
+
+      if (instrument == null) instrument = instrumentList[0];
     }
 
     if (instrument == null) {
