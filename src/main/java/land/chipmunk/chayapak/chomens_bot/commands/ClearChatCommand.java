@@ -29,7 +29,7 @@ public class ClearChatCommand extends Command {
 
         final String name = context.getString(true, false);
 
-        if (name.isEmpty()) {
+        if (!name.isEmpty()) {
             final PlayerEntry entry = bot.players.getEntry(name);
 
             if (entry == null) throw new CommandException(Component.text("Invalid player name"));
