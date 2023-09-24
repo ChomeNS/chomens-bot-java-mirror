@@ -70,6 +70,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     public void loadSong (Path location) {
+        if (songQueue.size() > 100) return;
+
         final SongLoaderRunnable runnable = new SongLoaderRunnable(location, bot);
 
         bot.chat.tellraw(
@@ -85,6 +87,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     public void loadSong (URL location) {
+        if (songQueue.size() > 100) return;
+
         limit++;
 
         if (limit > bot.config.music.urlRatelimit.limit) {
