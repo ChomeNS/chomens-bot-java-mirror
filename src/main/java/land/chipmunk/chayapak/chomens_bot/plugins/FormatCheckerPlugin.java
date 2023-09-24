@@ -85,8 +85,10 @@ public class FormatCheckerPlugin extends ChatPlugin.Listener {
                 .toString()
                 .substring(0, 8);
 
-        totalFormat++;
+        final boolean correct = hash.equals(userHashComponent.content());
 
-        return !hash.equals(userHashComponent.content());
+        if (correct) totalFormat++;
+
+        return correct;
     }
 }
