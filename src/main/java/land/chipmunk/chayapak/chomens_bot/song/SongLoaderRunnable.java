@@ -95,7 +95,7 @@ public class SongLoaderRunnable implements Runnable {
     }
 
     for (Converter converter : converters) {
-      if (song != null) break;
+      if (song != null && !isFolder) break;
 
       try {
         song = converter.getSongFromBytes(bytes, name, bot);
