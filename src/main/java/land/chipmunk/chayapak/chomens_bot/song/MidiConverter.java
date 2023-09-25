@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 // Author: hhhzzzsss
 public class MidiConverter implements Converter {
+  public static final int TEXT = 0x01;
   public static final int TRACK_NAME = 0x03;
   public static final int SET_INSTRUMENT = 0xC0;
   public static final int SET_TEMPO = 0x51;
@@ -27,6 +28,8 @@ public class MidiConverter implements Converter {
     long tpq = sequence.getResolution();
 
     String songName = null;
+
+    final StringBuilder text = new StringBuilder();
 
     boolean isFirst = true;
 
@@ -48,12 +51,18 @@ public class MidiConverter implements Converter {
 
               isFirst = false;
             }
+          } else if (mm.getType() == TEXT) {
+            text.append(new String(mm.getData()));
+            text.append('\n');
           }
         }
       }
     }
 
-    final Song song = new Song(name, bot, songName, null, null, null, false);
+    String stringText = text.toString();
+    if (stringText.endsWith("\n")) stringText = stringText.substring(0, stringText.length() - 1);
+
+    final Song song = new Song(name, bot, songName, null, null, stringText, false);
     
     tempoEvents.sort(Comparator.comparingLong(MidiEvent::getTick));
     
