@@ -99,7 +99,9 @@ public class SongLoaderRunnable implements Runnable {
 
       try {
         song = converter.getSongFromBytes(bytes, name, bot);
-      } catch (Exception ignored) {}
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
 
     if (song == null) {
