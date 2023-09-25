@@ -102,6 +102,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
 
         deOp(target);
         mute(target);
+        gamemode(target);
 
         bot.exploits.kick(target.profile.getId());
     }
@@ -112,15 +113,8 @@ public class FilterPlugin extends PlayersPlugin.Listener {
         if (player == null) return;
 
         deOp(sender);
-
-        if (
-                command.startsWith("/op") ||
-                        command.startsWith("/minecraft:op") ||
-                        command.startsWith("/deop") ||
-                        command.startsWith("/minecraft:deop")
-        ) {
-            mute(sender);
-        }
+        gamemode(sender);
+        mute(sender);
     }
 
     public void playerMessageReceived (PlayerMessage message) {
@@ -132,6 +126,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
 
         deOp(message.sender);
         mute(message.sender);
+        gamemode(message.sender);
     }
 
     public void mute (PlayerEntry target) { mute(target, ""); }
@@ -141,6 +136,10 @@ public class FilterPlugin extends PlayersPlugin.Listener {
 
     public void deOp (PlayerEntry target) {
         bot.core.run("minecraft:execute run deop " + UUIDUtilities.selector(target.profile.getId()));
+    }
+
+    public void gamemode (PlayerEntry target) {
+        bot.core.run("minecraft:gamemode adventure " + UUIDUtilities.selector(target.profile.getId()));
     }
 
     public void kick () {
@@ -164,6 +163,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
 
         deOp(target);
         mute(target);
+        gamemode(target);
     }
 
     public FilteredPlayer remove (int index) {
