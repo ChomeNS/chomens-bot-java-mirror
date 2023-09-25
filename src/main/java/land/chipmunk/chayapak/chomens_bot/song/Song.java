@@ -10,6 +10,7 @@ public class Song {
   public final ArrayList<Note> notes = new ArrayList<>();
   public final String originalName;
   public final String name;
+  public String requester = "Unknown";
   public int position = 0; // Current note index
   public boolean paused = true;
   public long startTime = 0; // Start time in millis since unix epoch

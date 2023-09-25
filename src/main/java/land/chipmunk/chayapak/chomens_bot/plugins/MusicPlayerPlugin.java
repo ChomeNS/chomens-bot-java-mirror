@@ -5,6 +5,7 @@ import com.github.steveice10.mc.protocol.data.game.BossBarDivision;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.BotBossBar;
+import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.song.Loop;
 import land.chipmunk.chayapak.chomens_bot.song.Note;
 import land.chipmunk.chayapak.chomens_bot.song.Song;
@@ -67,10 +68,10 @@ public class MusicPlayerPlugin extends Bot.Listener {
         bot.executor.scheduleAtFixedRate(() -> limit = 0, 0, bot.config.music.urlRatelimit.seconds, TimeUnit.SECONDS);
     }
 
-    public void loadSong (Path location) {
+    public void loadSong (Path location, PlayerEntry sender) {
         if (songQueue.size() > 100) return;
 
-        final SongLoaderRunnable runnable = new SongLoaderRunnable(location, bot);
+        final SongLoaderRunnable runnable = new SongLoaderRunnable(location, bot, sender.profile.getName());
 
         bot.chat.tellraw(
                 Component
@@ -84,7 +85,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
         bot.executorService.submit(runnable);
     }
 
-    public void loadSong (URL location) {
+    public void loadSong (URL location, PlayerEntry sender) {
         if (songQueue.size() > 100) return;
 
         limit++;
@@ -94,7 +95,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
             return;
         }
 
-        final SongLoaderRunnable runnable = new SongLoaderRunnable(location, bot);
+        final SongLoaderRunnable runnable = new SongLoaderRunnable(location, bot, sender.profile.getName());
 
         bot.chat.tellraw(
                 Component

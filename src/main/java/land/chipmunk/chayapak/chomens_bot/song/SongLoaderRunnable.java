@@ -36,20 +36,24 @@ public class SongLoaderRunnable implements Runnable {
 
   private final Bot bot;
 
+  private final String requester;
+
   private final boolean isUrl;
 
   private boolean isFolder = false;
 
-  public SongLoaderRunnable(URL location, Bot bot) {
+  public SongLoaderRunnable(URL location, Bot bot, String requester) {
     this.bot = bot;
+    this.requester = requester;
     isUrl = true;
     songUrl = location;
 
     fileName = location.getFile();
   }
 
-  public SongLoaderRunnable(Path location, Bot bot) {
+  public SongLoaderRunnable(Path location, Bot bot, String requester) {
     this.bot = bot;
+    this.requester = requester;
     isUrl = false;
     songPath = location;
 
@@ -109,6 +113,8 @@ public class SongLoaderRunnable implements Runnable {
 
       failed();
     } else {
+      song.requester = requester;
+
       bot.music.songQueue.add(song);
 
       if (!isFolder) showAddedToQueue();

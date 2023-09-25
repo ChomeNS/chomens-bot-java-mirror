@@ -18,6 +18,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 
 import java.io.File;
 import java.io.IOException;
@@ -102,7 +103,7 @@ public class MusicCommand extends Command {
 
             path = Path.of(root.toString(), _path);
 
-            if (path.toString().contains("http")) player.loadSong(new URL(_path));
+            if (path.toString().contains("http")) player.loadSong(new URL(_path), context.sender);
             else {
                 // among us protection!!!11
                 if (!path.normalize().startsWith(root.toString())) throw new CommandException(Component.text("no"));
@@ -137,7 +138,7 @@ public class MusicCommand extends Command {
 
                         final String file = matchedArray[0];
 
-                        player.loadSong(Path.of(realPath.toString(), file));
+                        player.loadSong(Path.of(realPath.toString(), file), context.sender);
                     } catch (CommandException e) {
                         throw e;
                     } catch (NoSuchFileException e) {
@@ -163,7 +164,7 @@ public class MusicCommand extends Command {
 
                         final String file = matchedArray[0];
 
-                        player.loadSong(Path.of(root.toString(), file));
+                        player.loadSong(Path.of(root.toString(), file), context.sender);
                     } catch (CommandException e) {
                         throw e;
                     } catch (NoSuchFileException e) {
@@ -433,23 +434,18 @@ public class MusicCommand extends Command {
 
         if (currentSong == null) throw new CommandException(Component.text("No song is currently playing"));
 
-        // ig very code yup
-        final String title = currentSong.name;
-        final String songAuthor = currentSong.songAuthor == null || currentSong.songAuthor.equals("") ? "N/A" : currentSong.songAuthor;
-        final String songOriginalAuthor = currentSong.songOriginalAuthor == null || currentSong.songOriginalAuthor.equals("") ? "N/A" : currentSong.songOriginalAuthor;
-        final String songDescription = currentSong.songDescription == null || currentSong.songDescription.equals("") ? "N/A" : currentSong.songDescription;
+        final List<Component> components = new ArrayList<>();
 
-        return Component.translatable(
-                """
-                        Title/Filename: %s
-                        Author: %s
-                        Original author: %s
-                        Description: %s""",
-                Component.text(title).color(NamedTextColor.AQUA),
-                Component.text(songAuthor).color(NamedTextColor.AQUA),
-                Component.text(songOriginalAuthor).color(NamedTextColor.AQUA),
-                Component.text(songDescription).color(NamedTextColor.AQUA)
-        ).color(NamedTextColor.GOLD);
+        final TextColor keyColor = ColorUtilities.getColorByString(bot.config.colorPalette.secondary);
+        final TextColor valueColor = ColorUtilities.getColorByString(bot.config.colorPalette.string);
+
+        if (currentSong.name != null) components.add(Component.translatable("Title/Filename: %s", Component.text(currentSong.name).color(valueColor)).color(keyColor));
+        if (currentSong.requester != null) components.add(Component.translatable("Requester: %s", Component.text(currentSong.requester).color(valueColor)).color(keyColor));
+        if (currentSong.songAuthor != null && !currentSong.songAuthor.isBlank()) components.add(Component.translatable("Author: %s", Component.text(currentSong.songAuthor).color(valueColor)).color(keyColor));
+        if (currentSong.songOriginalAuthor != null && !currentSong.songOriginalAuthor.isBlank()) components.add(Component.translatable("Original author: %s", Component.text(currentSong.songOriginalAuthor).color(valueColor)).color(keyColor));
+        if (currentSong.songDescription != null && !currentSong.songDescription.isBlank()) components.add(Component.translatable("Description: %s", Component.text(currentSong.songDescription).color(valueColor)).color(keyColor));
+
+        return Component.join(JoinConfiguration.newlines(), components);
     }
 
     public Component testSong (CommandContext context) {
