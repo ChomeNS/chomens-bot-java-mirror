@@ -53,6 +53,7 @@ public class CommandHandlerPlugin {
         registerCommand(new ConsoleCommand());
         registerCommand(new PCrashCommand());
 //        registerCommand(new ScreenshareCommand());
+        registerCommand(new WhitelistCommand());
     }
 
     public boolean disabled = false;

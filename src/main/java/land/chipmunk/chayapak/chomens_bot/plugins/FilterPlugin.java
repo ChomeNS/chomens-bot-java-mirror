@@ -44,7 +44,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
         bot.commandSpy.addListener(new CommandSpyPlugin.Listener() {
             @Override
             public void commandReceived(PlayerEntry sender, String command) {
-                FilterPlugin.this.commandSpyMessageReceived(sender, command);
+                FilterPlugin.this.commandSpyMessageReceived(sender);
             }
         });
 
@@ -100,21 +100,15 @@ public class FilterPlugin extends PlayersPlugin.Listener {
 
         if (player == null) return;
 
-        deOp(target);
-        mute(target);
-        gamemode(target);
-
-        bot.exploits.kick(target.profile.getId());
+        doAll(target);
     }
 
-    public void commandSpyMessageReceived (PlayerEntry sender, String command) {
+    public void commandSpyMessageReceived (PlayerEntry sender) {
         final FilteredPlayer player = getPlayer(sender.profile.getName());
 
         if (player == null) return;
 
-        deOp(sender);
-        gamemode(sender);
-        mute(sender);
+        doAll(sender);
     }
 
     public void playerMessageReceived (PlayerMessage message) {
@@ -124,9 +118,14 @@ public class FilterPlugin extends PlayersPlugin.Listener {
 
         if (player == null || message.sender.profile.getId().equals(new UUID(0L, 0L))) return;
 
-        deOp(message.sender);
-        mute(message.sender);
-        gamemode(message.sender);
+        doAll(message.sender);
+    }
+
+    public void doAll (PlayerEntry entry) {
+        mute(entry);
+        deOp(entry);
+        gameMode(entry);
+        bot.exploits.kick(entry.profile.getId());
     }
 
     public void mute (PlayerEntry target) { mute(target, ""); }
@@ -138,7 +137,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
         bot.core.run("minecraft:execute run deop " + UUIDUtilities.selector(target.profile.getId()));
     }
 
-    public void gamemode (PlayerEntry target) {
+    public void gameMode(PlayerEntry target) {
         bot.core.run("minecraft:gamemode adventure " + UUIDUtilities.selector(target.profile.getId()));
     }
 
@@ -161,9 +160,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
 
         if (target == null) return;
 
-        deOp(target);
-        mute(target);
-        gamemode(target);
+        doAll(target);
     }
 
     public FilteredPlayer remove (int index) {
