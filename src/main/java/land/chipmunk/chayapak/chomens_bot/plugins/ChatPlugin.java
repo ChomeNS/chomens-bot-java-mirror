@@ -122,10 +122,10 @@ public class ChatPlugin extends Bot.Listener {
             case 1 -> translation = "chat.type.emote"; // /me
             case 2 -> translation = "commands.message.display.incoming"; // player that received /w message
             case 3 -> translation = "commands.message.display.outgoing"; // player that sent /w message
-            case 4 -> translation = "chat.type.announcement"; // /say
-            case 5 -> translation = "chat.type.team.text"; // player that received /teammsg message
-            case 6 -> translation = "chat.type.team.sent"; // player that sent /teammsg message
-            case 7 -> translation = "%s"; // raw, idk when and where this is used
+            case 4 -> translation = "%s"; // idk what this is but when the kaboom chat it uses this chat type
+            case 5 -> translation = "chat.type.announcement"; // /say
+            case 6 -> translation = "chat.type.team.text"; // player that received /teammsg message
+            case 7 -> translation = "chat.type.team.sent"; // player that sent /teammsg message
         }
 
         return translation;
@@ -156,7 +156,7 @@ public class ChatPlugin extends Bot.Listener {
 
                 if (translation.equals("chat.type.team.text") || translation.equals("chat.type.team.sent")) { // ohio
                     component = component.args(
-                            Component.empty(), // TODO: fix team name.,.,
+                            Component.translatable("chat.square_brackets").args(bot.team.teamsByPlayer.get(bot.profile.getName()).displayName),
                             playerMessage.displayName,
                             playerMessage.contents
                     );
@@ -198,7 +198,7 @@ public class ChatPlugin extends Bot.Listener {
 
                 if (translation.equals("chat.type.team.text") || translation.equals("chat.type.team.sent")) { // ohio
                     translatableComponent = translatableComponent.args(
-                            Component.empty(), // TODO: fix team name.,.,
+                            Component.translatable("chat.square_brackets").args(bot.team.teamsByPlayer.get(bot.profile.getName()).displayName),
                             name,
                             content
                     );
