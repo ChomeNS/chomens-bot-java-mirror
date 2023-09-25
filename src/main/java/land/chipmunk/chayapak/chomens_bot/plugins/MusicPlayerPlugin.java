@@ -309,19 +309,23 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                 float blockPosition = 0;
 
-                // totallynotskidded from opennbs
+                // code idea stolen from OpenNBS
                 if (currentSong.nbs) {
-                    final int s = (note.stereo + note.panning) / 2; // Stereo values to X coordinates, calc'd from the average of both note and layer pan.
-                    if (s > 100) blockPosition = (float) (s - 100) / -100;
-                    else if (s < 100) blockPosition = (float) ((s - 100) * -1) / 100;
+                    final int average = (note.stereo + note.panning) / 2;
+
+                    // The stereo position of the note block, from 0-200. 0 is 2 blocks right, 100 is center, 200 is 2 blocks left.
+                    // and
+                    // How much this layer is panned to the left/right. 0 is 2 blocks right, 100 is center, 200 is 2 blocks left.
+                    // (taken from https://opennbs.org/nbs)
+                    if (average > 100) blockPosition = -(float) average / 100; // left
+                    else if (average < 100) blockPosition = (float) average / 100; // right
                 } else {
-                    // i wrote this part
+                    // this uses the pitch to calculate
+                    final float pitch = note.pitch;
 
-                    // this uses the average of the pitch and the volume to calculate the stereo
-                    final float average = (note.pitch + note.volume) / 2;
-
-                    if (average > 5) blockPosition = (average - 5) / -5;
-                    else if (average < 5) blockPosition = ((average - 5) * -1) / 5;
+                    // these numbers seems to work for me
+                    if (pitch < 1) blockPosition = -(float) pitch / -1; // left
+                    else if (pitch > 9) blockPosition = pitch / 9; // right
                 }
 
                 key += 33;
