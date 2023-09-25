@@ -323,9 +323,10 @@ public class MusicPlayerPlugin extends Bot.Listener {
                     // this uses the pitch to calculate
                     final float pitch = note.pitch;
 
-                    // these numbers seems to work for me
-                    if (pitch < 1) blockPosition = -(float) pitch / -1; // left
-                    else if (pitch > 9) blockPosition = pitch / 9; // right
+                    if (pitch > 5) blockPosition = -(float) (pitch / -5) - 2; // left
+                    else if (pitch < 5) blockPosition = (pitch / 5) - 2; // right
+
+                    blockPosition = MathUtilities.clamp(blockPosition, -1, 1);
                 }
 
                 key += 33;
