@@ -9,7 +9,7 @@ import java.util.Collections;
 public class Song {
   public final ArrayList<Note> notes = new ArrayList<>();
   public final String originalName;
-  public final String name;
+  public String name;
   public String requester = "Unknown";
   public int position = 0; // Current note index
   public boolean paused = true;
@@ -31,8 +31,18 @@ public class Song {
   private final Bot bot;
 
   public Song (String originalName, Bot bot, String songName, String songAuthor, String songOriginalAuthor, String songDescription, boolean nbs) {
-    String name;
+    this.originalName = originalName;
+    this.bot = bot;
+    this.songName = songName;
+    this.songAuthor = songAuthor;
+    this.songOriginalAuthor = songOriginalAuthor;
+    this.songDescription = songDescription;
+    this.nbs = nbs;
 
+    updateName();
+  }
+
+  public void updateName() {
     // real ohio code
     // TODO: clean this up
     if (isNotNullAndNotBlank(songOriginalAuthor) && !isNotNullAndNotBlank(songAuthor)) name = String.format(
@@ -52,15 +62,6 @@ public class Song {
             isNotNullAndNotBlank(songName) ? songName : originalName
     );
     else name = isNotNullAndNotBlank(songName) ? songName : originalName;
-
-    this.originalName = originalName;
-    this.name = name;
-    this.bot = bot;
-    this.songName = songName;
-    this.songAuthor = songAuthor;
-    this.songOriginalAuthor = songOriginalAuthor;
-    this.songDescription = songDescription;
-    this.nbs = nbs;
   }
 
   // should this be in idk, util?

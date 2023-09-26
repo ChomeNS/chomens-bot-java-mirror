@@ -2,8 +2,6 @@ package land.chipmunk.chayapak.chomens_bot.song;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
 
-import java.util.Arrays;
-
 public class TextFileConverter implements Converter {
     @Override
     public Song getSongFromBytes(byte[] bytes, String fileName, Bot bot) {
@@ -16,7 +14,7 @@ public class TextFileConverter implements Converter {
         final Song song = new Song(fileName, bot, null, null, null, null, false);
 
         for (String line : data.split("\r\n|\r|\n")) {
-            if (line.isEmpty()) continue;
+            if (line.isBlank()) continue;
 
             // worst way to implement this but it works lol
             if (line.startsWith("title:")) {
@@ -33,18 +31,38 @@ public class TextFileConverter implements Converter {
                 continue;
             }
 
+            song.updateName();
 
-            final Integer[] mapped = Arrays.stream(line.split(":")).map(Integer::parseInt).toArray(Integer[]::new);
+            final String[] split = line.split(":");
 
-            final int tick = mapped[0];
-            final int pitch = mapped[1];
-            final int instrument = mapped[2];
+            final int tick = Integer.parseInt(split[0]);
+            final int pitch = (int) Float.parseFloat(split[1]);
+            final String instrument = split[2];
+
+            int intInstrument = -1;
+            try {
+                intInstrument = Integer.parseInt(instrument);
+            } catch (NumberFormatException ignored) {}
+
+            float volume = 1;
+            if (split.length > 3) volume = Float.parseFloat(split[3]);
 
             final int time = tick * 50;
 
             length = Math.max(length, time);
 
-            song.add(new Note(Instrument.fromId(instrument), pitch, 1, time, -1, 100));
+            song.add(
+                    new Note(
+                            intInstrument == -1 ?
+                                    Instrument.of(instrument) :
+                                    Instrument.fromId(intInstrument),
+                            pitch,
+                            volume,
+                            time,
+                            -1,
+                            100
+                    )
+            );
         }
 
         song.length = song.get(song.size() - 1).time + 50;
