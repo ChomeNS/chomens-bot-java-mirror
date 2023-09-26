@@ -15,7 +15,7 @@ public class PCrashCommand extends Command {
         super(
                 "pcrash",
                 "Crashes a player using particle",
-                new String[] { "<hash> <player>" },
+                new String[] { "<player>" },
                 new String[] { "particlecrash" },
                 TrustLevel.TRUSTED,
                 false

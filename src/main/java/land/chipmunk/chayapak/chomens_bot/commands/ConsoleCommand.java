@@ -18,8 +18,8 @@ public class ConsoleCommand extends Command {
                 "console",
                 "Controls stuff about console",
                 new String[] {
-                        "<ownerHash> server <server>",
-                        "<ownerHash> logtoconsole <true|false>"
+                        "server <server>",
+                        "logtoconsole <true|false>"
                 },
                 new String[] {},
                 TrustLevel.OWNER,

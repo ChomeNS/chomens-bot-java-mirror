@@ -129,12 +129,19 @@ public class HelpCommand extends Command {
             );
 
             for (String usage : command.usages) {
-                usages.add(
-                        Component.empty()
-                                .append(Component.text(prefix + actualCommandName).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
-                                .append(Component.text(" "))
-                                .append(Component.text(usage).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)))
-                );
+                Component usageComponent = Component.empty()
+                        .append(Component.text(prefix + actualCommandName).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
+                        .append(Component.text(" "));
+
+                if (command.trustLevel == TrustLevel.TRUSTED) {
+                    usageComponent = usageComponent.append(Component.text("<hash>"));
+                } else if (command.trustLevel == TrustLevel.OWNER) {
+                    usageComponent = usageComponent.append(Component.text("<ownerHash>"));
+                }
+
+                usageComponent = usageComponent.append(Component.text(usage).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)));
+
+                usages.add(usageComponent);
             }
 
             return Component.join(JoinConfiguration.separator(Component.newline()), usages);

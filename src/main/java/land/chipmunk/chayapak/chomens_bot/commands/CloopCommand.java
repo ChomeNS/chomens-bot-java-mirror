@@ -19,7 +19,7 @@ public class CloopCommand extends Command {
         super(
                 "cloop",
                 "Loop commands",
-                new String[] { "<hash> add <interval> <command>", "<hash> remove <index>", "<hash> clear", "<hash> list" },
+                new String[] { "add <interval> <command>", "remove <index>", "clear", "list" },
                 new String[] { "commandloop" },
                 TrustLevel.TRUSTED,
                 false

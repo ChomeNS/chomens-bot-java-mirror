@@ -23,13 +23,13 @@ public class FilterCommand extends Command {
                 "filter",
                 "Filter players",
                 new String[] {
-                        "<hash> add <player>",
-                        "<hash> -ignorecase add <player>",
-                        "<hash> -regex add <player>",
-                        "<hash> -ignorecase -regex add <player>",
-                        "<hash> remove <index>",
-                        "<hash> clear",
-                        "<hash> list"
+                        "add <player>",
+                        "-ignorecase add <player>",
+                        "-regex add <player>",
+                        "-ignorecase -regex add <player>",
+                        "remove <index>",
+                        "clear",
+                        "list"
                 },
                 new String[] { "filterplayer", "ban", "blacklist" },
                 TrustLevel.OWNER,

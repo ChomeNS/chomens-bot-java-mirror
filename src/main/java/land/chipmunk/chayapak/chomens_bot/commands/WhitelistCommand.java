@@ -18,7 +18,7 @@ public class WhitelistCommand extends Command {
         super(
                 "whitelist",
                 "Manages whitelist",
-                new String[] { "<ownerHash> enable", "<ownerHash> disable", "<ownerHash> add <player>", "<ownerHash> remove <index>", "<ownerHash> clear", "<ownerHash> list" },
+                new String[] { "enable", "disable", "add <player>", "remove <index>", "clear", "list" },
                 new String[] {},
                 TrustLevel.OWNER,
                 false
