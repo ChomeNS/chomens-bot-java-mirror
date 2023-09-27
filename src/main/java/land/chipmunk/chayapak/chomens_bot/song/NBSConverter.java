@@ -174,6 +174,8 @@ public class NBSConverter implements Converter {
       int key = note.key;
       if (note.instrument < instrumentIndex.length) {
         instrument = instrumentIndex[note.instrument];
+
+        key = note.key + (note.pitch / 100);
       } else {
         int index = note.instrument - instrumentIndex.length;
 
@@ -217,8 +219,8 @@ public class NBSConverter implements Converter {
         if (!sounds.contains(name) && sounds.contains(file)) name = file;
 
         instrument = Instrument.of(name);
-        key += customInstrument.pitch;
 
+        key += note.key + customInstrument.pitch;
         key -= 45 + (note.pitch / 100);
       }
 
