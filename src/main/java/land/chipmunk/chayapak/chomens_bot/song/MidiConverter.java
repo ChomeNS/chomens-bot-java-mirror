@@ -5,15 +5,13 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import javax.sound.midi.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
+import java.util.*;
 
 // Author: hhhzzzsss
 public class MidiConverter implements Converter {
   public static final int TEXT = 0x01;
   public static final int TRACK_NAME = 0x03;
+  public static final int LYRICS = 0x05;
   public static final int SET_INSTRUMENT = 0xC0;
   public static final int SET_TEMPO = 0x51;
   public static final int NOTE_ON = 0x90;
@@ -26,6 +24,8 @@ public class MidiConverter implements Converter {
   }
   
   public static Song getSong(Sequence sequence, String name, Bot bot) {
+    final Map<Long, String> lyrics = new HashMap<>();
+
     long tpq = sequence.getResolution();
 
     String songName = null;
@@ -55,6 +55,10 @@ public class MidiConverter implements Converter {
           } else if (mm.getType() == TEXT) {
             text.append(new String(mm.getData()));
             text.append('\n');
+          } else if (mm.getType() == LYRICS) {
+            final String lyric = new String(mm.getMessage());
+
+            lyrics.put(event.getTick(), lyric);
           }
         }
       }
@@ -129,6 +133,10 @@ public class MidiConverter implements Converter {
               song.length = time;
             }
           }
+        }
+
+        if (lyrics.get(event.getTick()) != null) {
+          song.lyrics.put(microTime / 1000L, lyrics.get(event.getTick()));
         }
       }
     }

@@ -2,8 +2,7 @@ package land.chipmunk.chayapak.chomens_bot.song;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 
 // Author: hhhzzzsss & _ChipMC_ but i changed most of the stuff
 public class Song {
@@ -17,6 +16,8 @@ public class Song {
   public long length = 0; // Milliseconds in the song
   public long time = 0; // Time since start of song
   public long loopPosition = 200; // Milliseconds into the song to start looping
+
+  public final Map<Long, String> lyrics = new HashMap<>();
 
   public String songName;
   public String songAuthor;
