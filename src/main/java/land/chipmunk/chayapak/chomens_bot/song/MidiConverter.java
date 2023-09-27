@@ -6,6 +6,7 @@ import javax.sound.midi.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 
@@ -148,7 +149,31 @@ public class MidiConverter implements Converter {
         }
       }
 
-//      if (instrument == null) instrument = instrumentList[0];
+      if (instrument == null) {
+//        instrument = instrumentList[0];
+
+        // we are finding the closest instrument offset here and use that
+        // closest instrument as the instrument
+
+        final Integer[] offsets = Arrays.stream(instrumentList).map(ins -> ins.offset).toArray(Integer[]::new);
+
+        // https://stackoverflow.com/questions/13318733/get-closest-value-to-a-number-in-array
+        int distance = Math.abs(offsets[0] - midiPitch);
+        int idx = 0;
+        for (int c = 1; c < offsets.length; c++) {
+          int cdistance = Math.abs(offsets[c] - midiPitch);
+          if (cdistance < distance) {
+            idx = c;
+            distance = cdistance;
+          }
+        }
+
+        final int closest = offsets[idx];
+
+        instrument = Arrays.stream(instrumentList)
+                .filter(ins -> ins.offset == closest)
+                .toArray(Instrument[]::new)[0];
+      }
     }
 
     if (instrument == null) {
