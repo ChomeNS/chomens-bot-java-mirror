@@ -134,9 +134,15 @@ public class HelpCommand extends Command {
                         .append(Component.text(" "));
 
                 if (command.trustLevel == TrustLevel.TRUSTED) {
-                    usageComponent = usageComponent.append(Component.text("<hash>"));
+                    usageComponent = usageComponent
+                            .append(Component.text("<hash>"))
+                            .append(Component.space())
+                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.string));
                 } else if (command.trustLevel == TrustLevel.OWNER) {
-                    usageComponent = usageComponent.append(Component.text("<ownerHash>"));
+                    usageComponent = usageComponent
+                            .append(Component.text("<ownerHash>"))
+                            .append(Component.space())
+                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.string));
                 }
 
                 usageComponent = usageComponent.append(Component.text(usage).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)));

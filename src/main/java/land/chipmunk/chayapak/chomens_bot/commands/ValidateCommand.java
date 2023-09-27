@@ -13,7 +13,7 @@ public class ValidateCommand extends Command {
         super(
                 "validate",
                 "Validates a hash",
-                new String[] { "<hash|ownerHash>" },
+                new String[] { "" },
                 new String[] { "checkhash" },
                 TrustLevel.TRUSTED,
                 false
