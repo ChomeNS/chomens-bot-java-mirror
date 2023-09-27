@@ -421,10 +421,10 @@ public class MusicCommand extends Command {
 
         if (currentSong.paused) {
             currentSong.play();
-            return Component.text("Resumed the current song");
+            return Component.text("Resumed the current song").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
         } else {
             currentSong.pause();
-            return Component.text("Paused the current song");
+            return Component.text("Paused the current song").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
         }
     }
 
