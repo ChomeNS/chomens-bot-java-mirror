@@ -114,7 +114,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
         // the extras config
         final String stringifiedDisplayName = ComponentUtilities.stringify(displayName);
 
-        if (stringifiedDisplayName.equals("[OP]")) deOp(target);
+        if (stringifiedDisplayName.startsWith("[OP] ")) deOp(target);
     }
 
     public void commandSpyMessageReceived (PlayerEntry sender) {
