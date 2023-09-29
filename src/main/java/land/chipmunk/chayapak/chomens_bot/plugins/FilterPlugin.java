@@ -7,6 +7,7 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.FilteredPlayer;
 import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerMessage;
+import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.PersistentDataUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
@@ -101,6 +102,19 @@ public class FilterPlugin extends PlayersPlugin.Listener {
         if (player == null) return;
 
         doAll(target);
+    }
+
+    @Override
+    public void playerDisplayNameUpdated(PlayerEntry target, Component displayName) {
+        final FilteredPlayer player = getPlayer(target.profile.getName());
+
+        if (player == null) return;
+
+        // we use the stringified instead of the component because you can configure the OP and DeOP tag in
+        // the extras config
+        final String stringifiedDisplayName = ComponentUtilities.stringify(displayName);
+
+        if (stringifiedDisplayName.equals("[OP]")) deOp(target);
     }
 
     public void commandSpyMessageReceived (PlayerEntry sender) {
