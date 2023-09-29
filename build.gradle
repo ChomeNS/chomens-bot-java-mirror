@@ -15,6 +15,8 @@ description = 'ChomeNS Bot'
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
+    mavenLocal()
+
     mavenCentral()
 
     maven {
@@ -28,12 +30,10 @@ repositories {
     maven {
         url = uri('https://repo.maven.apache.org/maven2/')
     }
-
-    mavenLocal()
 }
 
 dependencies {
-    implementation 'com.github.steveice10:mcprotocollib:1.20-2-SNAPSHOT'
+    implementation 'com.github.steveice10:mcprotocollib:1.20.2-1-SNAPSHOT'
     implementation 'net.kyori:adventure-text-serializer-ansi:4.14.0'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.google.guava:guava:31.1-jre'

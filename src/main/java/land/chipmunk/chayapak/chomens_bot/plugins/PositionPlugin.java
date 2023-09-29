@@ -5,7 +5,7 @@ import com.github.steveice10.mc.protocol.packet.ingame.clientbound.entity.Client
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.entity.ClientboundMoveEntityRotPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.entity.ClientboundRemoveEntitiesPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.entity.player.ClientboundPlayerPositionPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.clientbound.entity.spawn.ClientboundAddPlayerPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.clientbound.entity.spawn.ClientboundAddEntityPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.level.ServerboundAcceptTeleportationPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.player.ServerboundMovePlayerPosPacket;
 import com.github.steveice10.packetlib.Session;
@@ -54,7 +54,7 @@ public class PositionPlugin extends Bot.Listener {
         else if (packet instanceof ClientboundMoveEntityRotPacket) packetReceived((ClientboundMoveEntityRotPacket) packet);
         else if (packet instanceof ClientboundMoveEntityPosPacket) packetReceived((ClientboundMoveEntityPosPacket) packet);
         else if (packet instanceof ClientboundMoveEntityPosRotPacket) packetReceived((ClientboundMoveEntityPosRotPacket) packet);
-        else if (packet instanceof ClientboundAddPlayerPacket) packetReceived((ClientboundAddPlayerPacket) packet);
+        else if (packet instanceof ClientboundAddEntityPacket) packetReceived((ClientboundAddEntityPacket) packet);
         else if (packet instanceof ClientboundRemoveEntitiesPacket) packetReceived((ClientboundRemoveEntitiesPacket) packet);
     }
 
@@ -65,7 +65,7 @@ public class PositionPlugin extends Bot.Listener {
         for (Listener listener : listeners) { listener.positionChange(position); }
     }
 
-    public void packetReceived (ClientboundAddPlayerPacket packet) {
+    public void packetReceived (ClientboundAddEntityPacket packet) {
         final PlayerEntry entry = bot.players.getEntry(packet.getUuid());
 
         if (entry == null) return;

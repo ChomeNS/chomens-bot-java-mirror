@@ -129,7 +129,7 @@ public class SelfCarePlugin extends Bot.Listener {
 
     public void packetReceived (ClientboundLoginPacket packet) {
         this.entityId = packet.getEntityId();
-        this.gamemode = packet.getGameMode();
+        this.gamemode = packet.getCommonPlayerSpawnInfo().getGameMode();
 
         cspy = false;
         vanish = false;
