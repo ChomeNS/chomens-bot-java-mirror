@@ -326,7 +326,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                     if (pitch > 5) blockPosition = -(float) (pitch / -5) - 2; // left
                     else if (pitch < 5) blockPosition = (pitch / 5) - 2; // right
 
-                    blockPosition = MathUtilities.clamp(blockPosition, -1, 1);
+                    blockPosition = MathUtilities.clamp(blockPosition, -0.4F, 0.4F);
                 }
 
                 key += 33;
