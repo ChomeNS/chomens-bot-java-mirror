@@ -40,6 +40,8 @@ public class ServerEvalCommand extends Command {
             final LuaValue output = chunk.call();
 
             return Component.text(output.toString()).color(NamedTextColor.GREEN);
+        } catch (CommandException e) {
+            throw e;
         } catch (Exception e) {
             throw new CommandException(Component.text(e.toString()));
         }
