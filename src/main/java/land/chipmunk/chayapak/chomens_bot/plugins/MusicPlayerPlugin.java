@@ -323,8 +323,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
                     // this uses the MIDI PITCH to calculate
                     final float pitch = note.originalPitch;
 
-                    if (pitch > 93) blockPosition = -(float) (pitch / -93) - 2; // right
-                    else if (pitch < 10) blockPosition = (pitch / 10) - 2; // left
+                    if (pitch > 80) blockPosition = -(float) (pitch / -85) - 2; // right
+                    else if (pitch < 20) blockPosition = (pitch / 15) - 2; // left
 
                     blockPosition = MathUtilities.clamp(blockPosition, -0.4F, 0.4F);
                 }
