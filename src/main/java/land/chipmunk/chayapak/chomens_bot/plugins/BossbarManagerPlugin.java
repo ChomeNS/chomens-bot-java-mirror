@@ -41,7 +41,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
             }
         });
 
-        bot.executor.scheduleAtFixedRate(this::check, 0, 1, TimeUnit.SECONDS);
+        bot.executor.scheduleAtFixedRate(this::check, 0, 500, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -83,6 +83,8 @@ public class BossbarManagerPlugin extends Bot.Listener {
 
                             bossBars.get(packet.getUuid()).id = bossBar.id;
                             bossBars.get(packet.getUuid()).uuid = packet.getUuid();
+
+                            newBossBar.setTitle(bossBar.title);
                         }
                     }
 
@@ -101,14 +103,6 @@ public class BossbarManagerPlugin extends Bot.Listener {
                 case UPDATE_STYLE -> {
                     final BossBar bossBar = serverBossBars.get(packet.getUuid());
 
-                    final BotBossBar botBossBar = get(bossBar.uuid);
-
-                    if (botBossBar != null && botBossBar.color != packet.getColor()) {
-                        botBossBar.setColor(botBossBar.color, true);
-                    } else if (botBossBar != null && botBossBar.division != packet.getDivision()) {
-                        botBossBar.setDivision(botBossBar.division, true);
-                    }
-
                     bossBar.color = packet.getColor();
                     bossBar.division = packet.getDivision();
                 }
@@ -117,9 +111,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
 
                     final BotBossBar botBossBar = get(bossBar.uuid);
 
-                    if (botBossBar != null && !ComponentUtilities.isEqual(botBossBar.title(), packet.getTitle())) {
-                        botBossBar.setTitle(botBossBar.title, true);
-                    } else if (botBossBar != null && ComponentUtilities.isEqual(botBossBar.secret, packet.getTitle())) {
+                    if (botBossBar != null && ComponentUtilities.isEqual(botBossBar.secret, packet.getTitle())) {
                         botBossBar.uuid = packet.getUuid();
 
                         botBossBar.gotSecret = true;
@@ -129,16 +121,6 @@ public class BossbarManagerPlugin extends Bot.Listener {
                 }
                 case UPDATE_HEALTH -> {
                     final BossBar bossBar = serverBossBars.get(packet.getUuid());
-
-                    final BotBossBar botBossBar = get(bossBar.uuid);
-
-                    if (
-                            botBossBar != null &&
-                                    botBossBar.value() != packet.getHealth() * botBossBar.max()
-                    ) {
-                        botBossBar.setValue(botBossBar.value(), true);
-                        botBossBar.setMax(botBossBar.max(), true);
-                    }
 
                     bossBar.health = packet.getHealth();
                 }
@@ -153,10 +135,21 @@ public class BossbarManagerPlugin extends Bot.Listener {
             final UUID uuid = _bossBar.getKey();
             final BotBossBar bossBar = _bossBar.getValue();
 
-            if (!serverBossBars.containsKey(uuid)) {
+            final BossBar serverBossBar = serverBossBars.get(uuid);
+
+            if (serverBossBar == null) {
                 bossBar.gotSecret = false;
 
                 addBossBar(bossBar.id, bossBar, true);
+            } else if (!ComponentUtilities.isEqual(bossBar.title(), serverBossBar.title)) {
+                bossBar.setTitle(bossBar.title, true);
+            } else if (bossBar.value() != serverBossBar.health * bossBar.max()) {
+                bossBar.setValue(bossBar.value(), true);
+                bossBar.setMax(bossBar.max(), true);
+            } else if (bossBar.color != serverBossBar.color) {
+                bossBar.setColor(bossBar.color, true);
+            } else if (bossBar.division != serverBossBar.division) {
+                bossBar.setDivision(bossBar.division, true);
             }
         }
     }
