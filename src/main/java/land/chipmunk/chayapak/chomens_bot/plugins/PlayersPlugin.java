@@ -1,6 +1,5 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
-import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntry;
 import com.github.steveice10.mc.protocol.data.game.PlayerListEntryAction;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
@@ -92,11 +91,7 @@ public class PlayersPlugin extends Bot.Listener {
     public PlayerEntry getBotEntry () { return getEntry(bot.username); }
 
     private PlayerEntry getEntry (PlayerListEntry other) {
-        final GameProfile gameProfile = other.getProfile();
-
-        if (gameProfile == null) return null;
-
-        return getEntry(gameProfile.getId());
+        return getEntry(other.getProfileId());
     }
 
     private void initializeChat (PlayerListEntry newEntry) {

@@ -49,3 +49,5 @@ gradle-app.setting
 
 # Testing plugins
 /src/main/java/land/chipmunk/chayapak/chomens_bot/plugins/testing
+/.idea/modules/
+/.idea/modules.xml
