@@ -4,6 +4,7 @@ package land.chipmunk.chayapak.chomens_bot.song;
 public class Note implements Comparable<Note> {
   public final Instrument instrument;
   public final int pitch;
+  public final int originalPitch;
   public final float volume;
   public final long time;
   public final int panning;
@@ -12,6 +13,7 @@ public class Note implements Comparable<Note> {
   public Note (
           Instrument instrument,
           int pitch,
+          int originalPitch,
           float volume,
           long time,
           int panning,
@@ -19,6 +21,7 @@ public class Note implements Comparable<Note> {
   ) {
     this.instrument = instrument;
     this.pitch = pitch;
+    this.originalPitch = originalPitch;
     this.volume = volume;
     this.time = time;
     this.panning = panning;

@@ -469,6 +469,7 @@ public class MusicCommand extends Command {
                     new Note(
                             Instrument.fromId(instrumentId),
                             j,
+                            j,
                             1,
                             i * 50,
                             -1,

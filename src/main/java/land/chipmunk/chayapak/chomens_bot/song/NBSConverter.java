@@ -232,9 +232,9 @@ public class NBSConverter implements Converter {
       int pitch = key-33;
 
       try {
-        song.add(new Note(instrument, pitch, (float) note.velocity * (float) layerVolume / 10000f, getMilliTime(note.tick, tempo), note.panning, nbsLayers.get(note.layer).stereo));
+        song.add(new Note(instrument, pitch, key, (float) note.velocity * (float) layerVolume / 10000f, getMilliTime(note.tick, tempo), note.panning, nbsLayers.get(note.layer).stereo));
       } catch (Exception e) {
-        song.add(new Note(instrument, pitch, (float) note.velocity * (float) layerVolume / 10000f, getMilliTime(note.tick, tempo), -1, 100));
+        song.add(new Note(instrument, pitch, key, (float) note.velocity * (float) layerVolume / 10000f, getMilliTime(note.tick, tempo), -1, 100));
       }
     }
 

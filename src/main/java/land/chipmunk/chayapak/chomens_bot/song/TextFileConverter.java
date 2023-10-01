@@ -57,6 +57,7 @@ public class TextFileConverter implements Converter {
                                     Instrument.of(instrument) :
                                     Instrument.fromId(intInstrument),
                             pitch,
+                            pitch,
                             volume,
                             time,
                             -1,
