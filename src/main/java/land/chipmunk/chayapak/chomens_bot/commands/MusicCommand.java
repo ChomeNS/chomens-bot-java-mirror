@@ -20,10 +20,9 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -103,15 +102,15 @@ public class MusicCommand extends Command {
 
             path = Path.of(root.toString(), _path);
 
-            if (path.toString().contains("http")) player.loadSong(new URL(_path), context.sender);
+            if (path.toString().contains("http")) player.loadSong(new URI(_path).toURL(), context.sender);
             else {
                 // among us protection!!!11
                 if (!path.normalize().startsWith(root.toString())) throw new CommandException(Component.text("no"));
 
                 // ignore my ohio code for autocomplete
-                final String separator = File.separator; // how do i do this with the new Files?
+                final String separator = FileSystems.getDefault().getSeparator();
 
-                if (_path.contains(separator) && !_path.equals("")) {
+                if (_path.contains(separator) && !_path.isEmpty()) {
                     final String[] pathSplitted = _path.split(separator);
 
                     final List<String> pathSplittedClone = new ArrayList<>(Arrays.stream(pathSplitted.clone()).toList());
