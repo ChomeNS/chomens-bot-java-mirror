@@ -23,7 +23,6 @@ public class CommandHandlerPlugin {
         registerCommand(new CommandBlockCommand());
         registerCommand(new CowsayCommand());
         registerCommand(new EchoCommand());
-        registerCommand(new DiscordCommand());
         registerCommand(new HelpCommand());
         registerCommand(new TestCommand());
         registerCommand(new ValidateCommand());
