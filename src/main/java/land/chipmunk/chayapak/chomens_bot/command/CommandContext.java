@@ -20,6 +20,7 @@ public class CommandContext {
     public final boolean inGame;
 
     public String commandName = null;
+    public String userInputCommandName = null;
 
     public String[] fullArgs;
     public String[] args;
@@ -45,7 +46,7 @@ public class CommandContext {
                                 "Expected %s at position %s (%s %s)",
                                 Component.text(type),
                                 Component.text(argsPosition),
-                                Component.text(prefix + commandName),
+                                Component.text(prefix + userInputCommandName),
                                 argsPosition == 0 ?
                                         UNKNOWN_ARGUMENT_COMPONENT :
                                         Component

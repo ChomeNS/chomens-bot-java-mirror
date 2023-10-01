@@ -149,6 +149,7 @@ public class CommandHandlerPlugin {
         context.fullArgs = fullArgs;
         context.args = args;
         context.commandName = command.name;
+        context.userInputCommandName = commandName;
 
         try {
             return command.execute(context);
