@@ -251,7 +251,7 @@ public class CorePlugin extends PositionPlugin.Listener {
         shouldRefill = true; // worst fix
     }
 
-    private boolean isCommandBlockUpdate(int blockState) {
+    private boolean isCommandBlockUpdate (int blockState) {
         return
                 // command block
                 (
@@ -261,14 +261,16 @@ public class CorePlugin extends PositionPlugin.Listener {
 
                         // chain command block
                         (
-                                blockState >= 12371 &&
-                                        blockState <= 12382
+                                blockState == 12533
+//                                blockState >= 12371 &&
+//                                        blockState <= 12382
                         ) ||
 
                         // repeating command block
                         (
-                                blockState >= 12359 &&
-                                        blockState <= 12370
+                                blockState == 12521
+//                                blockState >= 12359 &&
+//                                        blockState <= 12370
                         );
     }
 
