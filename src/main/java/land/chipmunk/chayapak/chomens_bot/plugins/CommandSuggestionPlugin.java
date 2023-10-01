@@ -34,11 +34,18 @@ public class CommandSuggestionPlugin extends ChatPlugin.Listener {
             output.add(Component.text(id));
 
             for (Command command : CommandHandlerPlugin.commands) {
-                output.add(
-                        Component
-                                .text(command.name)
-                                .append(Component.text(command.trustLevel.name()))
-                );
+                final boolean hasAliases = command.aliases.length != 0;
+
+                Component outputComponent = Component
+                        .text(command.name)
+                        .append(Component.text(command.trustLevel.name()))
+                        .append(Component.text(hasAliases));
+
+                if (hasAliases) {
+                    for (String alias : command.aliases) outputComponent = outputComponent.append(Component.text(alias));
+                }
+
+                output.add(outputComponent);
             }
 
             bot.chat.tellraw(Component.join(JoinConfiguration.noSeparators(), output), player);
