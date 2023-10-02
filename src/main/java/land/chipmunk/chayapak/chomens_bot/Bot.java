@@ -80,6 +80,7 @@ public class Bot {
     public ScreensharePlugin screenshare;
     public FormatCheckerPlugin formatChecker;
     public WhitelistPlugin whitelist;
+    public PlayersPersistentDataPlugin playersPersistent;
 
     public Bot (Configuration.BotOption botOption, List<Bot> bots, Configuration config) {
         this.host = botOption.host;
@@ -131,6 +132,7 @@ public class Bot {
 //        this.screenshare = new ScreensharePlugin(this);
         this.formatChecker = new FormatCheckerPlugin(this);
         this.whitelist = new WhitelistPlugin(this);
+        this.playersPersistent = new PlayersPersistentDataPlugin(this);
 
         for (Listener listener : listeners) listener.loadedPlugins();
 

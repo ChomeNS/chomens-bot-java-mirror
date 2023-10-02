@@ -186,9 +186,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
     }
 
     public void clear () {
-        for (int i = 0; i <= filteredPlayers.size(); i++) {
-            filteredPlayers.remove(i);
-        }
+        while (!filteredPlayers.isEmpty()) filteredPlayers.remove(0);
 
         PersistentDataUtilities.put("filters", filteredPlayers);
     }
