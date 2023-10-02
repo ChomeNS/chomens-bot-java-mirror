@@ -42,7 +42,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
             }
         });
 
-        bot.executor.scheduleAtFixedRate(this::check, 0, 500, TimeUnit.MILLISECONDS);
+        bot.executor.scheduleAtFixedRate(this::check, 0, 600, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -211,7 +211,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
 
         bot.core.run("minecraft:bossbar add " + name + " " + stringifiedName);
         bot.core.run(prefix + "players " + bossBar.players());
-        bot.core.run(prefix + "color " + (bossBar.color == BossBarColor.LIME ? "green" : bossBar.color.name().toLowerCase()));
+        bot.core.run(prefix + "color " + (bossBar.color == BossBarColor.LIME ? "green" : (bossBar.color == BossBarColor.CYAN ? "blue" : bossBar.color.name().toLowerCase())));
         bot.core.run(prefix + "visible " + bossBar.visible());
         bot.core.run(prefix + "style " + division);
         bot.core.run(prefix + "max " + bossBar.max());

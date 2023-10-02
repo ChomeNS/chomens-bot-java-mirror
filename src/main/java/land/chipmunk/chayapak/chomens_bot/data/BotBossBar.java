@@ -83,7 +83,7 @@ public class BotBossBar extends BossBar {
 
         if (bot.bossbar.actionBar) return;
 
-        bot.core.run("minecraft:bossbar set " + id + " color " + (color == BossBarColor.LIME ? "green" : color.name().toLowerCase()));
+        bot.core.run("minecraft:bossbar set " + id + " color " + (color == BossBarColor.LIME ? "green" : (color == BossBarColor.CYAN ? "blue" : color.name().toLowerCase())));
     }
 
     public String players() {

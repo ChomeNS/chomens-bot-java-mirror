@@ -59,6 +59,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
     private final String bossbarName = "music";
 
+    public BossBarColor bossBarColor;
+
     public MusicPlayerPlugin (Bot bot) {
         this.bot = bot;
         bot.addListener(this);
@@ -139,7 +141,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                         if (bot.bossbar.enabled && bot.options.useCore) {
                             bossBar.setTitle(generateBossbar());
-                            bossBar.setColor(pitch > 0 ? BossBarColor.PURPLE : BossBarColor.YELLOW);
+                            bossBar.setColor(bossBarColor);
                             bossBar.setValue((int) Math.floor(((double) currentSong.time / 1000) * speed));
                             bossBar.setMax((long) ((currentSong.length / 1000) * speed));
                         }
@@ -211,7 +213,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
         final BotBossBar bossBar = new BotBossBar(
                 Component.empty(),
                 BOTH_SELECTOR,
-                BossBarColor.WHITE,
+                BossBarColor.LIME,
                 BossBarDivision.NONE,
                 true,
                 (int) currentSong.length / 1000,
@@ -229,8 +231,20 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     public Component generateBossbar () {
+        NamedTextColor namedTextColor;
+        if (pitch > 0) {
+            namedTextColor = NamedTextColor.LIGHT_PURPLE;
+            bossBarColor = BossBarColor.PURPLE;
+        } else if (pitch < 0) {
+            namedTextColor = NamedTextColor.AQUA;
+            bossBarColor = BossBarColor.CYAN;
+        } else {
+            namedTextColor = NamedTextColor.GREEN;
+            bossBarColor = BossBarColor.YELLOW;
+        }
+
         Component component = Component.empty()
-                .append(Component.empty().append(Component.text(currentSong.name)).color(pitch > 0 ? NamedTextColor.LIGHT_PURPLE : NamedTextColor.GREEN))
+                .append(Component.empty().append(Component.text(currentSong.name)).color(namedTextColor))
                 .append(Component.text(" | ").color(NamedTextColor.DARK_GRAY))
                 .append(
                         Component
