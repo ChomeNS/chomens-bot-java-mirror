@@ -200,6 +200,12 @@ public class NBSConverter implements Converter {
         } else if (name.toLowerCase().contains("anvil")) {
           name = "block.anvil.fall";
           replaced = true;
+        } else if (name.toLowerCase().contains("piston extend")) {
+          name = "block.piston.extend";
+          replaced = true;
+        } else if (name.toLowerCase().contains("explosion")) {
+          name = "entity.generic.explode";
+          replaced = true;
         }
 
         if (!sounds.contains(name) && !sounds.contains(file) && !replaced) {
