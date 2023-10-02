@@ -49,6 +49,7 @@ public class MusicCommand extends Command {
                         "goto <timestamp>",
                         "pitch <pitch>",
                         "speed <speed>",
+                        "amplify <amplification>",
                         "noteinstrument <instrument>",
                         "pause",
                         "resume",
@@ -82,6 +83,7 @@ public class MusicCommand extends Command {
             case "goto" -> goTo(context);
             case "pitch" -> pitch(context);
             case "speed" -> speed(context);
+            case "amplify" -> amplify(context);
             case "noteinstrument" -> noteInstrument(context);
             case "pause", "resume" -> pause(context);
             case "info" -> info(context);
@@ -392,6 +394,21 @@ public class MusicCommand extends Command {
         return Component.empty()
                 .append(Component.text("Set the speed to "))
                 .append(Component.text(speed).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)))
+                .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+    }
+
+    public Component amplify(CommandContext context) throws CommandException {
+        final Bot bot = context.bot;
+
+        final int amplify = context.getInteger(true);
+
+        if (amplify > 8) throw new CommandException(Component.text("Too big value"));
+
+        bot.music.amplify = amplify;
+
+        return Component.empty()
+                .append(Component.text("Set the amplification to "))
+                .append(Component.text(amplify).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)))
                 .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }
 

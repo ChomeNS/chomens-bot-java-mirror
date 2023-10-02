@@ -197,6 +197,9 @@ public class NBSConverter implements Converter {
         } else if (name.toLowerCase().contains("door close") || name.toLowerCase().contains("door open")) {
           name = "block.wooden_door.open";
           replaced = true;
+        } else if (name.toLowerCase().contains("anvil")) {
+          name = "block.anvil.fall";
+          replaced = true;
         }
 
         if (!sounds.contains(name) && !sounds.contains(file) && !replaced) {
@@ -205,7 +208,7 @@ public class NBSConverter implements Converter {
 
           final List<String> outputTitles = LevenshteinUtilities.searchTitles(name, subtitles.values());
 
-          final String bestMatch = outputTitles.size() == 0 ? "" : outputTitles.get(0);
+          final String bestMatch = outputTitles.isEmpty() ? "" : outputTitles.get(0);
 
           for (Map.Entry<String, String> entry : subtitles.entrySet()) {
             if (!entry.getValue().equals(bestMatch)) continue;
@@ -220,7 +223,7 @@ public class NBSConverter implements Converter {
 
         instrument = Instrument.of(name);
 
-        key += note.key + customInstrument.pitch;
+        key += note.key + (customInstrument.pitch / 100);
         key -= 45 + (note.pitch / 100);
       }
 

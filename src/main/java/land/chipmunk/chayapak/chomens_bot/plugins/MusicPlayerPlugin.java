@@ -49,6 +49,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
     // sus nightcore stuff,..,.,.
     public float pitch = 0;
     public float speed = 1;
+    public int amplify = 1;
 
     public String instrument = "off";
 
@@ -355,16 +356,18 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                 floatingPitch = Math.pow(2.0, ((key + (pitch / 10)) - 12) / 12.0);
 
-                bot.core.run(
-                        "minecraft:execute as " +
-                                (isMoreOrLessOctave ? SELECTOR : BOTH_SELECTOR) +
-                                " at @s run playsound " +
-                                (!instrument.equals("off") ? instrument : note.instrument.sound) +
-                                " record @s ^" + blockPosition + " ^ ^ " +
-                                note.volume +
-                                " " +
-                                MathUtilities.clamp(floatingPitch, 0, 2)
-                );
+                for (int i = 0; i < amplify; i++) {
+                    bot.core.run(
+                            "minecraft:execute as " +
+                                    (isMoreOrLessOctave ? SELECTOR : BOTH_SELECTOR) +
+                                    " at @s run playsound " +
+                                    (!instrument.equals("off") ? instrument : note.instrument.sound) +
+                                    " record @s ^" + blockPosition + " ^ ^ " +
+                                    note.volume +
+                                    " " +
+                                    MathUtilities.clamp(floatingPitch, 0, 2)
+                    );
+                }
 
                 notesPerSecond++;
             }
