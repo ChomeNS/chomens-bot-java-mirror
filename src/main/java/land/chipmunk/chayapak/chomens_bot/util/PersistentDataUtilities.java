@@ -34,7 +34,7 @@ public class PersistentDataUtilities {
         future = Main.executor.scheduleAtFixedRate(() -> {
             // TODO: thread-safe
             try {
-                if (queue.size() == 0) return;
+                if (queue.isEmpty()) return;
 
                 final Map.Entry<String, JsonElement> entry = queue.entrySet().iterator().next(); // is this the best way to get the first item of the map?
 
