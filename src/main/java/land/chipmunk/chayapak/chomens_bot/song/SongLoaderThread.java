@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 // Author: _ChipMC_ or hhhzzzsss? also i modified it to use runnable
 // because thread = bad !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-public class SongLoaderRunnable implements Runnable {
+public class SongLoaderThread extends Thread {
   // should the converters be here?
   public static final List<Converter> converters = new ArrayList<>();
 
@@ -42,7 +42,7 @@ public class SongLoaderRunnable implements Runnable {
 
   private boolean isFolder = false;
 
-  public SongLoaderRunnable(URL location, Bot bot, String requester) {
+  public SongLoaderThread(URL location, Bot bot, String requester) {
     this.bot = bot;
     this.requester = requester;
     isUrl = true;
@@ -51,7 +51,7 @@ public class SongLoaderRunnable implements Runnable {
     fileName = location.getFile();
   }
 
-  public SongLoaderRunnable(Path location, Bot bot, String requester) {
+  public SongLoaderThread(Path location, Bot bot, String requester) {
     this.bot = bot;
     this.requester = requester;
     isUrl = false;
@@ -62,6 +62,7 @@ public class SongLoaderRunnable implements Runnable {
     fileName = location.getFileName().toString();
   }
 
+  @Override
   public void run () {
     if (isFolder && !isUrl) {
       try (Stream<Path> files = Files.list(songPath)) {
@@ -80,6 +81,8 @@ public class SongLoaderRunnable implements Runnable {
   }
 
   private void processFile () {
+    if (bot.music.songQueue.size() > 100) return;
+
     byte[] bytes;
     String name;
     try {
@@ -119,6 +122,8 @@ public class SongLoaderRunnable implements Runnable {
 
       if (!isFolder) showAddedToQueue();
     }
+
+    bot.music.loaderThread = null;
   }
 
   private void showAddedToQueue () {

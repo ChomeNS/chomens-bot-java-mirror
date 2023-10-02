@@ -95,6 +95,8 @@ public class MusicCommand extends Command {
     public Component play (CommandContext context) throws CommandException {
         final MusicPlayerPlugin player = context.bot.music;
 
+        if (player.loaderThread != null) throw new CommandException(Component.text("Already loading a song"));
+
         String _path;
         Path path;
         try {

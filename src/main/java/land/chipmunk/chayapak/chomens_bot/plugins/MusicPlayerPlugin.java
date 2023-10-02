@@ -9,7 +9,7 @@ import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.song.Loop;
 import land.chipmunk.chayapak.chomens_bot.song.Note;
 import land.chipmunk.chayapak.chomens_bot.song.Song;
-import land.chipmunk.chayapak.chomens_bot.song.SongLoaderRunnable;
+import land.chipmunk.chayapak.chomens_bot.song.SongLoaderThread;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
@@ -43,7 +43,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
     public Song currentSong;
     public final List<Song> songQueue = new ArrayList<>();
-    public SongLoaderRunnable loaderThread;
+    public SongLoaderThread loaderThread = null;
     public Loop loop = Loop.OFF;
 
     // sus nightcore stuff,..,.,.
@@ -74,7 +74,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
     public void loadSong (Path location, PlayerEntry sender) {
         if (songQueue.size() > 100) return;
 
-        final SongLoaderRunnable runnable = new SongLoaderRunnable(location, bot, sender.profile.getName());
+        loaderThread = new SongLoaderThread(location, bot, sender.profile.getName());
 
         bot.chat.tellraw(
                 Component
@@ -85,7 +85,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                         .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
         );
 
-        bot.executorService.submit(runnable);
+        loaderThread.start();
     }
 
     public void loadSong (URL location, PlayerEntry sender) {
@@ -98,7 +98,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
             return;
         }
 
-        final SongLoaderRunnable runnable = new SongLoaderRunnable(location, bot, sender.profile.getName());
+        loaderThread = new SongLoaderThread(location, bot, sender.profile.getName());
 
         bot.chat.tellraw(
                 Component
@@ -109,7 +109,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                         .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
         );
 
-        bot.executorService.submit(runnable);
+        loaderThread.start();
     }
 
     public void coreReady () {
