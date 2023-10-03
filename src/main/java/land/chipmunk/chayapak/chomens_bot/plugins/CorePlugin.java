@@ -169,9 +169,13 @@ public class CorePlugin extends PositionPlugin.Listener {
     }
 
     public CompletableFuture<CompoundTag> runTracked (String command) {
-        final Vector3i beforeBlock = block.clone();
+        final Vector3i placeBlock = Vector3i.from(
+                bot.position.position.getX(),
+                bot.position.position.getY() - 1,
+                bot.position.position.getZ()
+        );
 
-        run(command);
+        runPlaceBlock(command);
 
         if (!bot.options.useCore) return null;
 
@@ -181,7 +185,7 @@ public class CorePlugin extends PositionPlugin.Listener {
         final CompletableFuture<CompoundTag> future = new CompletableFuture<>();
         transactions.put(transactionId, future);
 
-        final Runnable afterTick = () -> bot.session.send(new ServerboundBlockEntityTagQuery(transactionId, beforeBlock));
+        final Runnable afterTick = () -> bot.session.send(new ServerboundBlockEntityTagQuery(transactionId, placeBlock));
 
         bot.executor.schedule(afterTick, 50, TimeUnit.MILLISECONDS);
 
