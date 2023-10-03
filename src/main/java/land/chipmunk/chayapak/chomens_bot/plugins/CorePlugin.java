@@ -200,6 +200,7 @@ public class CorePlugin extends PositionPlugin.Listener {
         blockEntityTag.put(new StringTag("Command", command));
         blockEntityTag.put(new ByteTag("auto", (byte) 1));
         blockEntityTag.put(new ByteTag("TrackOutput", (byte) 1));
+        blockEntityTag.put(new StringTag("CustomName", bot.config.core.customName));
         tag.put(blockEntityTag);
 
         final Vector3i temporaryBlockPosition = Vector3i.from(
