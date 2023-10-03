@@ -54,6 +54,7 @@ public class CommandHandlerPlugin {
 //        registerCommand(new ScreenshareCommand());
         registerCommand(new WhitelistCommand());
         registerCommand(new SeenCommand());
+        registerCommand(new IPFilterCommand());
     }
 
     public boolean disabled = false;

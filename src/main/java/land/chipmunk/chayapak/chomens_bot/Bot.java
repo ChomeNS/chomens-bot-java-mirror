@@ -81,6 +81,7 @@ public class Bot {
     public FormatCheckerPlugin formatChecker;
     public WhitelistPlugin whitelist;
     public PlayersPersistentDataPlugin playersPersistent;
+    public IPFilterPlugin ipFilter;
 
     public Bot (Configuration.BotOption botOption, List<Bot> bots, Configuration config) {
         this.host = botOption.host;
@@ -133,6 +134,7 @@ public class Bot {
         this.formatChecker = new FormatCheckerPlugin(this);
         this.whitelist = new WhitelistPlugin(this);
         this.playersPersistent = new PlayersPersistentDataPlugin(this);
+        this.ipFilter = new IPFilterPlugin(this);
 
         for (Listener listener : listeners) listener.loadedPlugins();
 

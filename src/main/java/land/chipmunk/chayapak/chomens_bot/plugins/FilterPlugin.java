@@ -45,7 +45,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
         bot.commandSpy.addListener(new CommandSpyPlugin.Listener() {
             @Override
             public void commandReceived(PlayerEntry sender, String command) {
-                FilterPlugin.this.commandSpyMessageReceived(sender);
+                FilterPlugin.this.commandSpyMessageReceived(sender, command);
             }
         });
 
@@ -117,12 +117,25 @@ public class FilterPlugin extends PlayersPlugin.Listener {
         if (stringifiedDisplayName.startsWith("[OP] ")) deOp(target);
     }
 
-    public void commandSpyMessageReceived (PlayerEntry sender) {
-        final FilteredPlayer player = getPlayer(sender.profile.getName());
+    public void commandSpyMessageReceived (PlayerEntry entry, String command) {
+        final FilteredPlayer player = getPlayer(entry.profile.getName());
 
         if (player == null) return;
 
-        doAll(sender);
+        if (
+                command.startsWith("/mute") ||
+                        command.startsWith("/emute") ||
+                        command.startsWith("/silence") ||
+                        command.startsWith("/esilence") ||
+                        command.startsWith("/essentials:mute") ||
+                        command.startsWith("/essentials:emute") ||
+                        command.startsWith("/essentials:silence") ||
+                        command.startsWith("/essentials:esilence")
+        ) mute(entry);
+
+        deOp(entry);
+        gameMode(entry);
+        bot.exploits.kick(entry.profile.getId());
     }
 
     public void playerMessageReceived (PlayerMessage message) {
