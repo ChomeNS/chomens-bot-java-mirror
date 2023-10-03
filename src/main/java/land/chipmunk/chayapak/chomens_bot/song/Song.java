@@ -150,7 +150,7 @@ public class Song {
   }
 
   public boolean finished () {
-    return time > length || position >= size();
+    return (time * bot.music.speed) > length || position >= size();
   }
 
   public int size () {

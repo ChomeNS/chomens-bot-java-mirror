@@ -142,8 +142,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
                         if (bot.bossbar.enabled && bot.options.useCore) {
                             bossBar.setTitle(generateBossbar());
                             bossBar.setColor(bossBarColor);
-                            bossBar.setValue((int) Math.floor(((double) currentSong.time / 1000) * speed));
-                            bossBar.setMax((long) ((currentSong.length / 1000) * speed));
+                            bossBar.setValue((int) Math.floor(((double) (currentSong.time * speed) / 1000)));
+                            bossBar.setMax((long) (currentSong.length * speed) / 1000);
                         }
 
                         if (currentSong.paused || bot.core.isRateLimited()) return;
@@ -250,7 +250,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                         Component
                                 .translatable("%s / %s",
                                         formatTime((long) (currentSong.time * speed)).color(NamedTextColor.GRAY),
-                                        formatTime(currentSong.length).color(NamedTextColor.GRAY)).color(NamedTextColor.DARK_GRAY)
+                                        formatTime((long) (currentSong.length * speed)).color(NamedTextColor.GRAY)).color(NamedTextColor.DARK_GRAY)
                 );
 
         if (!bot.core.hasRateLimit()) {
