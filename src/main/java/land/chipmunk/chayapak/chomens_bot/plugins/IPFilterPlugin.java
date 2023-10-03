@@ -27,8 +27,6 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
         }
     }
 
-    private final Map<UUID, String> cached = new HashMap<>();
-
     public IPFilterPlugin (Bot bot) {
         this.bot = bot;
 
@@ -40,11 +38,6 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
     @Override
     public void playerJoined(PlayerEntry target) {
         check(target);
-    }
-
-    @Override
-    public void playerLeft(PlayerEntry target) {
-        cached.remove(target.profile.getId());
     }
 
     private void check (PlayerEntry target) {
@@ -83,6 +76,8 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
     }
 
     private void checkAllPlayers () {
+        if (filteredIPs.isEmpty()) return;
+
         int ms = 0;
         for (PlayerEntry entry : bot.players.list) {
             bot.executor.schedule(() -> check(entry), ms, TimeUnit.MILLISECONDS);
@@ -108,8 +103,6 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
     private void handleIP (String ip, PlayerEntry entry) {
         for (JsonElement element : filteredIPs) {
             if (!element.getAsString().equals(ip)) continue;
-
-            if (!cached.containsValue(ip)) cached.put(entry.profile.getId(), ip);
 
             if (entry.profile.getId().equals(bot.profile.getId())) continue;
 

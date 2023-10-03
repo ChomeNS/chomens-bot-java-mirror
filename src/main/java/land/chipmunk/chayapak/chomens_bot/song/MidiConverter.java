@@ -113,7 +113,7 @@ public class MidiConverter implements Converter {
             if (sm.getData2() == 0) continue;
             int pitch = sm.getData1();
             int velocity = sm.getData2();
-            int effectiveVelocity = (int) ((float) velocity * channelVolumes[sm.getChannel()] / 127);
+            float effectiveVelocity = (float) velocity * channelVolumes[sm.getChannel()] / 127;
             int pan = channelPans[sm.getChannel()];
             long deltaTick = event.getTick() - prevTick;
             prevTick = event.getTick();
@@ -171,7 +171,7 @@ public class MidiConverter implements Converter {
     return song;
   }
 
-  public static Note getMidiInstrumentNote(int midiInstrument, int midiPitch, int velocity, long microTime, int panning) {
+  public static Note getMidiInstrumentNote(int midiInstrument, int midiPitch, float velocity, long microTime, int panning) {
     Instrument instrument = null;
     Instrument[] instrumentList = instrumentMap.get(midiInstrument);
     if (instrumentList != null) {
@@ -215,13 +215,13 @@ public class MidiConverter implements Converter {
 
     int pitch = midiPitch-instrument.offset;
 
-    float volume = (float) velocity / 127.0f;
+    float volume = velocity / 127.0f;
     long time = microTime / 1000L;
 
     return new Note(instrument, pitch, midiPitch, volume, time, (int) ((panning - 64) / (float) 64) * 100, 100);
   }
 
-  private static Note getMidiPercussionNote (int midiPitch, int velocity, long microTime, int panning) {
+  private static Note getMidiPercussionNote (int midiPitch, float velocity, long microTime, int panning) {
     if (percussionMap.containsKey(midiPitch)) {
       int noteId = percussionMap.get(midiPitch);
       int pitch = noteId % 25;
