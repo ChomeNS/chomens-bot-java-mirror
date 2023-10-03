@@ -34,7 +34,7 @@ public class BotVisibilityCommand extends Command {
             final NamedTextColor greenOrGold = bot.selfCare.visibility ? NamedTextColor.GREEN : NamedTextColor.GOLD;
             final String visibleOrInvisible = bot.selfCare.visibility ? "visible" : "invisible";
             final String disableOrEnable = bot.selfCare.visibility ? "disable" : "enable";
-            bot.core.run("/essentials:vanish " + disableOrEnable);
+            bot.core.run("/essentials:vanish " + bot.profile.getName() + " " + disableOrEnable);
             return Component.empty()
                     .append(Component.text("The bot's visibility is now "))
                     .append(Component.text(visibleOrInvisible).color(greenOrGold))
@@ -43,7 +43,7 @@ public class BotVisibilityCommand extends Command {
             switch (action) {
                 case "on", "true" -> {
                     bot.selfCare.visibility = true;
-                    bot.core.run("/essentials:vanish disable");
+                    bot.core.run("/essentials:vanish " + bot.profile.getName() + " disable");
                     return Component.empty()
                             .append(Component.text("The bot's visibility is now "))
                             .append(Component.text("visible").color(NamedTextColor.GREEN))
@@ -51,7 +51,7 @@ public class BotVisibilityCommand extends Command {
                 }
                 case "off", "false" -> {
                     bot.selfCare.visibility = false;
-                    bot.core.run("/essentials:vanish enable");
+                    bot.core.run("/essentials:vanish " + bot.profile.getName() + " enable");
                     return Component.empty()
                             .append(Component.text("The bot's visibility is now "))
                             .append(Component.text("invisible").color(NamedTextColor.GOLD))
