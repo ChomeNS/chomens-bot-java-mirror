@@ -219,7 +219,7 @@ public class MidiConverter implements Converter {
     float volume = velocity / 127.0f;
     long time = microTime / 1000L;
 
-    return new Note(instrumentList[0], shiftedInstrument, shiftedInstrumentPitch, pitch, midiPitch, volume, time, (int) ((panning - 64) / (float) 64) * 100, 100);
+    return new Note(instrumentList[0], shiftedInstrument, pitch, shiftedInstrumentPitch, midiPitch, volume, time, (int) ((panning - 64) / (float) 64) * 100, 100);
   }
 
   private static Note getMidiPercussionNote (int midiPitch, float velocity, long microTime, int panning) {

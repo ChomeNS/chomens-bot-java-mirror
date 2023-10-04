@@ -340,13 +340,18 @@ public class MusicPlayerPlugin extends Bot.Listener {
                     blockPosition = MathUtilities.clamp(blockPosition, -0.4F, 0.4F);
                 }
 
+                final double notShiftedFloatingPitch = Math.pow(2.0, ((note.pitch + (pitch / 10)) - 12) / 12.0);
+
                 key += 33;
 
                 final boolean isMoreOrLessOctave = key < 33 || key > 57;
 
-                if (isMoreOrLessOctave) {
-                    final double notShiftedFloatingPitch = Math.pow(2.0, ((note.pitch + (pitch / 10)) - 12) / 12.0);
+                final boolean shouldCustomPitch = currentSong.nbs ?
+                        isMoreOrLessOctave :
+                        note.pitch != note.shiftedPitch ||
+                                note.shiftedInstrument != note.instrument;
 
+                if (shouldCustomPitch) {
                     bot.core.run(
                             "minecraft:execute as " +
                                     CUSTOM_PITCH_SELECTOR +
@@ -371,7 +376,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                 for (int i = 0; i < amplify; i++) {
                     bot.core.run(
                             "minecraft:execute as " +
-                                    (isMoreOrLessOctave ? SELECTOR : BOTH_SELECTOR) +
+                                    (shouldCustomPitch ? SELECTOR : BOTH_SELECTOR) +
                                     " at @s run playsound " +
                                     (!instrument.equals("off") ? instrument : note.shiftedInstrument.sound) +
                                     " record @s ^" + blockPosition + " ^ ^ " +
