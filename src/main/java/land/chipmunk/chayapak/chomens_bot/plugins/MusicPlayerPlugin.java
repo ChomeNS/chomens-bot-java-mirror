@@ -57,6 +57,9 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
     private int limit = 0;
 
+    private int stereoNoteIndex = 0;
+    private float stereoPosition = -0.1F;
+
     private final String bossbarName = "music";
 
     public BossBarColor bossBarColor;
@@ -331,13 +334,19 @@ public class MusicPlayerPlugin extends Bot.Listener {
                     if (average > 100) blockPosition = -(float) average / 100; // left
                     else if (average < 100) blockPosition = (float) average / 100; // right
                 } else {
-                    // this uses the MIDI PITCH and MIDI PANNING to calculate
-                    final double pitch = (double) (note.originalPitch + (note.panning / 100)) / 2;
+                    // is this better than using the pitches??
 
-                    if (pitch > 80) blockPosition = (float) (pitch / 80) - 2;
-                    else if (pitch < 20) blockPosition = -(float) ((pitch / -20) - 2);
+                    if (stereoNoteIndex > 4) {
+                        // is there already a function for this?
+                        if (stereoPosition == -0.1F) stereoPosition = 0.1F;
+                        else if (stereoPosition == 0.1F) stereoPosition = -0.1F;
 
-                    blockPosition = MathUtilities.clamp(blockPosition, -0.4F, 0.4F);
+                        stereoNoteIndex = 0;
+                    }
+
+                    blockPosition = stereoPosition;
+
+                    stereoNoteIndex++;
                 }
 
                 final double notShiftedFloatingPitch = Math.pow(2.0, ((note.pitch + (pitch / 10)) - 12) / 12.0);
