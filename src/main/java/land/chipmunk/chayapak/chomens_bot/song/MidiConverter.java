@@ -172,18 +172,18 @@ public class MidiConverter implements Converter {
   }
 
   public static Note getMidiInstrumentNote(int midiInstrument, int midiPitch, float velocity, long microTime, int panning) {
-    Instrument instrument = null;
+    Instrument shiftedInstrument = null;
     Instrument[] instrumentList = instrumentMap.get(midiInstrument);
     if (instrumentList != null) {
       for (Instrument candidateInstrument : instrumentList) {
         if (midiPitch >= candidateInstrument.offset && midiPitch <= candidateInstrument.offset+24) {
-          instrument = candidateInstrument;
+          shiftedInstrument = candidateInstrument;
           break;
         }
       }
 
-      if (instrument == null) {
-//        instrument = instrumentList[0];
+      if (shiftedInstrument == null) {
+//        shiftedInstrument = instrumentList[0];
 
         // we are finding the closest instrument offset here and use that
         // closest instrument as the instrument
@@ -203,29 +203,30 @@ public class MidiConverter implements Converter {
 
         final int closest = offsets[idx];
 
-        instrument = Arrays.stream(instrumentList)
+        shiftedInstrument = Arrays.stream(instrumentList)
                 .filter(ins -> ins.offset == closest)
                 .toArray(Instrument[]::new)[0];
       }
     }
 
-    if (instrument == null) {
+    if (shiftedInstrument == null) {
       return null;
     }
 
-    int pitch = midiPitch-instrument.offset;
+    int shiftedInstrumentPitch = midiPitch - shiftedInstrument.offset;
+    int pitch = midiPitch - instrumentList[0].offset;
 
     float volume = velocity / 127.0f;
     long time = microTime / 1000L;
 
-    return new Note(instrument, pitch, midiPitch, volume, time, (int) ((panning - 64) / (float) 64) * 100, 100);
+    return new Note(instrumentList[0], shiftedInstrument, shiftedInstrumentPitch, pitch, midiPitch, volume, time, (int) ((panning - 64) / (float) 64) * 100, 100);
   }
 
   private static Note getMidiPercussionNote (int midiPitch, float velocity, long microTime, int panning) {
     if (percussionMap.containsKey(midiPitch)) {
       int noteId = percussionMap.get(midiPitch);
       int pitch = noteId % 25;
-      float volume = (float) velocity / 127.0f;
+      float volume = velocity / 127.0f;
       Instrument instrument = Instrument.fromId(noteId / 25);
       long time = microTime / 1000L;
 

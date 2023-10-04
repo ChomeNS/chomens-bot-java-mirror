@@ -316,11 +316,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                 if (note.volume == 0 || notesPerSecond > totalCoreBlocks * (50 * 20)) continue;
 
-                float key = note.pitch;
-
-                // totally didn't look at the minecraft code and found the note block pitch thingy so i totallydidnotskidded™ it
-                double floatingPitch = Math.pow(2.0, ((key + (pitch / 10)) - 12) / 12.0);
-                // final double floatingPitch = 0.5 * (Math.pow(2, ((key + (pitch / 10)) / 12)));
+                float key = note.shiftedPitch;
 
                 float blockPosition = 0;
 
@@ -349,11 +345,13 @@ public class MusicPlayerPlugin extends Bot.Listener {
                 final boolean isMoreOrLessOctave = key < 33 || key > 57;
 
                 if (isMoreOrLessOctave) {
+                    final double notShiftedFloatingPitch = Math.pow(2.0, ((note.pitch + (pitch / 10)) - 12) / 12.0);
+
                     bot.core.run(
                             "minecraft:execute as " +
                                     CUSTOM_PITCH_SELECTOR +
                                     " at @s run playsound " +
-                                    (!instrument.equals("off") ? instrument : note.instrument.sound) + ".pitch." + floatingPitch +
+                                    (!instrument.equals("off") ? instrument : note.instrument.sound) + ".pitch." + notShiftedFloatingPitch +
                                     " record @s ^" + blockPosition + " ^ ^ " +
                                     note.volume +
                                     " " +
@@ -363,19 +361,19 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                 // these 2 lines are totallynotskidded from https://github.com/OpenNBS/OpenNoteBlockStudio/blob/master/scripts/selection_transpose/selection_transpose.gml
                 // so huge thanks to them uwu
-                while (key < 33) key += 12;
+                while (key < 33) key += 12; // 1 octave has 12 notes so we just keep moving octaves here
                 while (key > 57) key -= 12;
 
                 key -= 33;
 
-                floatingPitch = Math.pow(2.0, ((key + (pitch / 10)) - 12) / 12.0);
+                double floatingPitch = Math.pow(2.0, ((key + (pitch / 10)) - 12) / 12.0);
 
                 for (int i = 0; i < amplify; i++) {
                     bot.core.run(
                             "minecraft:execute as " +
                                     (isMoreOrLessOctave ? SELECTOR : BOTH_SELECTOR) +
                                     " at @s run playsound " +
-                                    (!instrument.equals("off") ? instrument : note.instrument.sound) +
+                                    (!instrument.equals("off") ? instrument : note.shiftedInstrument.sound) +
                                     " record @s ^" + blockPosition + " ^ ^ " +
                                     note.volume +
                                     " " +
