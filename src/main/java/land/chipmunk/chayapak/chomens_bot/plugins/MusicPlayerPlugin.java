@@ -357,7 +357,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                                     CUSTOM_PITCH_SELECTOR +
                                     " at @s run playsound " +
                                     (!instrument.equals("off") ? instrument : note.instrument.sound) + ".pitch." + notShiftedFloatingPitch +
-                                    " record @s ^" + blockPosition + " ^ ^ " +
+                                    " record @s ^" + blockPosition + " ^1 ^ " +
                                     note.volume +
                                     " " +
                                     0
@@ -379,7 +379,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                                     (shouldCustomPitch ? SELECTOR : BOTH_SELECTOR) +
                                     " at @s run playsound " +
                                     (!instrument.equals("off") ? instrument : note.shiftedInstrument.sound) +
-                                    " record @s ^" + blockPosition + " ^ ^ " +
+                                    " record @s ^" + blockPosition + " ^1 ^ " +
                                     note.volume +
                                     " " +
                                     MathUtilities.clamp(floatingPitch, 0, 2)
