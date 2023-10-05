@@ -115,8 +115,8 @@ public class MailCommand extends Command {
                     final List<Component> children = output.children();
 
                     if (
-                            children.size() > 0 &&
-                                    children.get(0).children().size() > 0 &&
+                            !children.isEmpty() &&
+                                    !children.get(0).children().isEmpty() &&
                                     ((TranslatableComponent) children.get(0).children().get(0))
                                             .key()
                                             .equals("arguments.nbtpath.nothing_found")
