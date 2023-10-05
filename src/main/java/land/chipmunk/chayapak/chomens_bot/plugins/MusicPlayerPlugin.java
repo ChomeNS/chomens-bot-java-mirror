@@ -32,6 +32,10 @@ public class MusicPlayerPlugin extends Bot.Listener {
     public static final String CUSTOM_PITCH_SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic,tag=custompitch]";
     public static final String BOTH_SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic]";
 
+
+    private static final float LEFT_STEREO_POSITION = -0.3F;
+    private static final float RIGHT_STEREO_POSITION = 0.3F;
+
     public static final Path SONG_DIR = Path.of("songs");
     static {
         try {
@@ -58,7 +62,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
     private int limit = 0;
 
     private int stereoNoteIndex = 0;
-    private float stereoPosition = -0.2F;
+    private float stereoPosition = LEFT_STEREO_POSITION;
 
     private final String bossbarName = "music";
 
@@ -334,12 +338,14 @@ public class MusicPlayerPlugin extends Bot.Listener {
                     if (average > 100) blockPosition = -(float) average / 100; // left
                     else if (average < 100) blockPosition = (float) average / 100; // right
                 } else {
+                    // i wrote this part
+                    
                     // is this better than using the pitches??
 
                     if (stereoNoteIndex > 4) {
                         // is there already a function for this?
-                        if (stereoPosition == -0.2F) stereoPosition = 0.2F;
-                        else if (stereoPosition == 0.2F) stereoPosition = -0.2F;
+                        if (stereoPosition == LEFT_STEREO_POSITION) stereoPosition = RIGHT_STEREO_POSITION; // L -> R
+                        else if (stereoPosition == RIGHT_STEREO_POSITION) stereoPosition = LEFT_STEREO_POSITION; // R -> L
 
                         stereoNoteIndex = 0;
                     }
