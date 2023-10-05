@@ -58,7 +58,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
     private int limit = 0;
 
     private int stereoNoteIndex = 0;
-    private float stereoPosition = -0.1F;
+    private float stereoPosition = -0.2F;
 
     private final String bossbarName = "music";
 
@@ -338,8 +338,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                     if (stereoNoteIndex > 4) {
                         // is there already a function for this?
-                        if (stereoPosition == -0.1F) stereoPosition = 0.1F;
-                        else if (stereoPosition == 0.1F) stereoPosition = -0.1F;
+                        if (stereoPosition == -0.2F) stereoPosition = 0.2F;
+                        else if (stereoPosition == 0.2F) stereoPosition = -0.2F;
 
                         stereoNoteIndex = 0;
                     }
