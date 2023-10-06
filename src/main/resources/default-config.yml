@@ -69,6 +69,8 @@ keys:
 
 weatherApiKey: 'key here' # weatherapi.com key
 
+bossBarNamespace: 'chomens_bot' # useful when you make a clone of the bot
+
 core:
   start:
     x: 0

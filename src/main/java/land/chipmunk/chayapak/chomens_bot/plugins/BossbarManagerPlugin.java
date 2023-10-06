@@ -28,10 +28,11 @@ public class BossbarManagerPlugin extends Bot.Listener {
     public boolean enabled = true;
     public boolean actionBar = false;
 
-    public final String bossBarPrefix = "chomens_bot:";
+    public final String bossBarPrefix;
 
     public BossbarManagerPlugin (Bot bot) {
         this.bot = bot;
+        this.bossBarPrefix = bot.config.bossBarNamespace + ":";
 
         bot.addListener(this);
 
