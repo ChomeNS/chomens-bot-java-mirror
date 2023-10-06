@@ -30,6 +30,10 @@ repositories {
     maven {
         url = uri('https://repo.maven.apache.org/maven2/')
     }
+
+    maven {
+        url = uri('https://maven.maxhenkel.de/repository/public')
+    }
 }
 
 dependencies {
@@ -46,6 +50,8 @@ dependencies {
     implementation 'net.kyori:adventure-text-serializer-legacy:4.13.1'
     implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.20.0'
     implementation 'io.socket:socket.io-client:2.1.0'
+    implementation 'de.maxhenkel.opus4j:opus4j:2.0.2'
+    implementation 'org.concentus:Concentus:1.0-SNAPSHOT'
 }
 
 jar {
