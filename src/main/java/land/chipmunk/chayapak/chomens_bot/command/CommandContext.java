@@ -38,7 +38,9 @@ public class CommandContext {
     private int argsPosition = 0;
 
     public String getString (boolean greedy, boolean required) throws CommandException { return getString(greedy, required, "string"); }
-    private String getString (boolean greedy, boolean required, String type) throws CommandException {
+    public String getString (boolean greedy, boolean required, boolean returnLowerCase) throws CommandException { return getString(greedy, returnLowerCase, required, "string"); }
+    private String getString (boolean greedy, boolean required, String type) throws CommandException { return getString(greedy, required, false, type); }
+    private String getString (boolean greedy, boolean returnLowerCase, boolean required, String type) throws CommandException {
         if (argsPosition >= args.length || args[argsPosition] == null) {
             if (required) {
                 throw new CommandException(
@@ -66,7 +68,7 @@ public class CommandContext {
 
         argsPosition++;
 
-        return string;
+        return returnLowerCase ? string.toLowerCase() : string;
     }
 
     public Integer getInteger (boolean required) throws CommandException {

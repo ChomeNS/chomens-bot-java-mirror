@@ -69,7 +69,7 @@ public class MusicCommand extends Command {
 
         if (ratelimit > 10) return null;
 
-        final String action = context.getString(false, true);
+        final String action = context.getString(false, true, true);
 
         root = MusicPlayerPlugin.SONG_DIR;
         return switch (action) {

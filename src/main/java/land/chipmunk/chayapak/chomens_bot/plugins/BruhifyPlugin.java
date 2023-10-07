@@ -14,7 +14,7 @@ public class BruhifyPlugin {
 
     public BruhifyPlugin (Bot bot) {
         bot.executor.scheduleAtFixedRate(() -> {
-            if (bruhifyText.equals("")) return;
+            if (bruhifyText.isEmpty()) return;
 
             int hue = startHue;
             String displayName = bruhifyText;

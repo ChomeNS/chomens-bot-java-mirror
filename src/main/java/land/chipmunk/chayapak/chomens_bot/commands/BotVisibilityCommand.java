@@ -25,7 +25,7 @@ public class BotVisibilityCommand extends Command {
     public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        final String action = context.getString(false, false);
+        final String action = context.getString(false, false, false);
 
         if (action.isEmpty()) {
             final boolean visibility = bot.selfCare.visibility;

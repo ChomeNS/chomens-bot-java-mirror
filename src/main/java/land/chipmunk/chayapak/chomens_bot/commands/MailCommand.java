@@ -52,7 +52,7 @@ public class MailCommand extends Command {
 
         // kinda messy ngl
 
-        final String action = context.getString(false, true);
+        final String action = context.getString(false, true, true);
 
         switch (action) {
             case "send" -> {

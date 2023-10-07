@@ -186,7 +186,7 @@ public class CommandHandlerPlugin {
                             command.name.equals(searchTerm.toLowerCase()) ||
                                     Arrays.stream(command.aliases).toList().contains(searchTerm.toLowerCase())
                     ) &&
-                            !searchTerm.equals("") // ig yup
+                            !searchTerm.isEmpty() // ig yup
             ) {
                 return command;
             }

@@ -28,7 +28,7 @@ public class KaboomChatParser implements ChatParser {
     public PlayerMessage parse (TextComponent message) {
         List<Component> children = message.children();
 
-        if (!message.content().equals("") || !message.style().isEmpty() || children.size() < 3) return null;
+        if (!message.content().isEmpty() || !message.style().isEmpty() || children.size() < 3) return null;
 
         final Component prefix = children.get(0);
         Component displayName = Component.empty();

@@ -106,16 +106,16 @@ public class HelpCommand extends Command {
         final String prefix = context.prefix;
 
         for (Command command : CommandHandlerPlugin.commands) {
-            if (!command.name.equals(commandName) && !Arrays.stream(command.aliases).toList().contains(commandName)) continue;
+            if (!command.name.equalsIgnoreCase(commandName) && !Arrays.stream(command.aliases).toList().contains(commandName.toLowerCase())) continue;
 
-            final String actualCommandName = command.name;
+            final String actualCommandName = command.name.toLowerCase();
             final List<Component> usages = new ArrayList<>();
 
             usages.add(
                     Component.empty()
                             .append(Component.text(prefix + actualCommandName).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
                             .append(Component.text(
-                                    (command.aliases.length > 0 && !command.aliases[0].equals("")) ?
+                                    (command.aliases.length > 0 && !command.aliases[0].isEmpty()) ?
                                             " (" + String.join(", ", command.aliases) + ")" :
                                             ""
                             ).color(NamedTextColor.WHITE))

@@ -29,7 +29,7 @@ public class WhitelistCommand extends Command {
     public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        final String action = context.getString(false, true);
+        final String action = context.getString(false, true, true);
 
         switch (action) {
             case "enable" -> {

@@ -45,7 +45,7 @@ public class FilterCommand extends Command {
         boolean ignoreCase = false;
         boolean regex = false;
 
-        String action = context.getString(false, true);
+        String action = context.getString(false, true, true);
 
         // this is a mess
         if (action.equals("-ignorecase")) {
