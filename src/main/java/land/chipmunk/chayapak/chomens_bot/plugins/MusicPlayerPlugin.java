@@ -33,8 +33,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
     public static final String BOTH_SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic]";
 
 
-    private static final float LEFT_STEREO_POSITION = -0.3F;
-    private static final float RIGHT_STEREO_POSITION = 0.3F;
+    private static final float LEFT_STEREO_POSITION = -0.15F;
+    private static final float RIGHT_STEREO_POSITION = 0.15F;
 
     public static final Path SONG_DIR = Path.of("songs");
     static {
