@@ -39,7 +39,7 @@ public class CommandContext {
 
     public String getString (boolean greedy, boolean required) throws CommandException { return getString(greedy, required, "string"); }
     public String getString (boolean greedy, boolean required, boolean returnLowerCase) throws CommandException { return getString(greedy, returnLowerCase, required, "string"); }
-    private String getString (boolean greedy, boolean required, String type) throws CommandException { return getString(greedy, required, false, type); }
+    private String getString (boolean greedy, boolean required, String type) throws CommandException { return getString(greedy, false, required, type); }
     private String getString (boolean greedy, boolean returnLowerCase, boolean required, String type) throws CommandException {
         if (argsPosition >= args.length || args[argsPosition] == null) {
             if (required) {
