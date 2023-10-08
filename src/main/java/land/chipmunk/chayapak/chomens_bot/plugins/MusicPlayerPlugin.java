@@ -33,8 +33,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
     public static final String BOTH_SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic]";
 
 
-    private static final float LEFT_STEREO_POSITION = -0.15F;
-    private static final float RIGHT_STEREO_POSITION = 0.15F;
+    private static final float LEFT_STEREO_POSITION = -0.06F;
+    private static final float RIGHT_STEREO_POSITION = 0.06F;
 
     public static final Path SONG_DIR = Path.of("songs");
     static {
@@ -60,9 +60,6 @@ public class MusicPlayerPlugin extends Bot.Listener {
     private int notesPerSecond = 0;
 
     private int limit = 0;
-
-    private int stereoNoteIndex = 0;
-    private float stereoPosition = LEFT_STEREO_POSITION;
 
     private final String bossbarName = "music";
 
@@ -325,32 +322,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                 float key = note.shiftedPitch;
 
-                float blockPosition;
-
-                if (currentSong.nbs) {
-                    // https://github.com/OpenNBS/OpenNoteBlockStudio/blob/45f35ea193268fb541c1297d0b656f4964339d97/scripts/dat_generate/dat_generate.gml#L22C18-L22C31
-                    final int average = (note.stereo + note.panning) / 2;
-
-                    if (average > 100) blockPosition = (float) (average - 100) / -100;
-                    else if (average == 100) blockPosition = 0;
-                    else blockPosition = (float) ((average - 100) * -1) /100;
-                } else {
-                    // i wrote this part
-                    
-                    // is this better than using the pitches??
-
-                    if (stereoNoteIndex > 4) {
-                        // is there already a function for this?
-                        if (stereoPosition == LEFT_STEREO_POSITION) stereoPosition = RIGHT_STEREO_POSITION; // L -> R
-                        else if (stereoPosition == RIGHT_STEREO_POSITION) stereoPosition = LEFT_STEREO_POSITION; // R -> L
-
-                        stereoNoteIndex = 0;
-                    }
-
-                    blockPosition = stereoPosition;
-
-                    stereoNoteIndex++;
-                }
+                final float blockPosition = getBlockPosition(note);
 
                 final double notShiftedFloatingPitch = Math.pow(2.0, ((note.pitch + (pitch / 10)) - 12) / 12.0);
 
@@ -378,7 +350,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                 // these 2 lines are totallynotskidded from https://github.com/OpenNBS/OpenNoteBlockStudio/blob/master/scripts/selection_transpose/selection_transpose.gml
                 // so huge thanks to them uwu
-                while (key < 33) key += 12; // 1 octave has 12 notes so we just keep moving octaves here
+                while (key < 33) key += 12; // 1 octave has 12 notes, so we just keep moving octaves here
                 while (key > 57) key -= 12;
 
                 key -= 33;
@@ -403,5 +375,28 @@ public class MusicPlayerPlugin extends Bot.Listener {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private float getBlockPosition (Note note) {
+        float blockPosition;
+
+        if (currentSong.nbs) {
+            // https://github.com/OpenNBS/OpenNoteBlockStudio/blob/45f35ea193268fb541c1297d0b656f4964339d97/scripts/dat_generate/dat_generate.gml#L22C18-L22C31
+            final int average = (note.stereo + note.panning) / 2;
+
+            if (average > 100) blockPosition = (float) (average - 100) / -100;
+            else if (average == 100) blockPosition = 0;
+            else blockPosition = (float) ((average - 100) * -1) /100;
+        } else {
+            // i wrote this part
+
+            final int originalPitch = note.originalPitch;
+
+            if (originalPitch > 62) blockPosition = RIGHT_STEREO_POSITION;
+            else if (originalPitch < 38) blockPosition = LEFT_STEREO_POSITION;
+            else blockPosition = 0;
+        }
+
+        return blockPosition;
     }
 }
