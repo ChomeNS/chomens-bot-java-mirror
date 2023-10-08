@@ -30,7 +30,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ChatPlugin extends Bot.Listener {
-    public static final Pattern CHAT_SPLIT_PATTERN = Pattern.compile("\\G\\s*([^\\r\\n]{1,254}(?=\\s|$)|[^\\r\\n]{254})"); // thanks HBot for the regex <3
+    public final Pattern CHAT_SPLIT_PATTERN;
     public static final Pattern COLOR_CODE_PATTERN = Pattern.compile("(&[a-f0-9rlonmk])", Pattern.MULTILINE);
     public static final Pattern COLOR_CODE_END_PATTERN = Pattern.compile("^.*&[a-f0-9rlonmk]$", Pattern.MULTILINE);
 
@@ -46,6 +46,7 @@ public class ChatPlugin extends Bot.Listener {
 
     public ChatPlugin (Bot bot) {
         this.bot = bot;
+        this.CHAT_SPLIT_PATTERN = Pattern.compile("\\G\\s*([^\\r\\n]{1," + (bot.options.creayun ? 126 : 254) + "}(?=\\s|$)|[^\\r\\n]{254})"); // thanks HBot for the regex <3
 
         queueDelay = bot.options.chatQueueDelay;
 
