@@ -32,10 +32,6 @@ public class MusicPlayerPlugin extends Bot.Listener {
     public static final String CUSTOM_PITCH_SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic,tag=custompitch]";
     public static final String BOTH_SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic]";
 
-
-    private static final float LEFT_STEREO_POSITION = -0.06F;
-    private static final float RIGHT_STEREO_POSITION = 0.06F;
-
     public static final Path SONG_DIR = Path.of("songs");
     static {
         try {
@@ -386,14 +382,14 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
             if (average > 100) blockPosition = (float) (average - 100) / -100;
             else if (average == 100) blockPosition = 0;
-            else blockPosition = (float) ((average - 100) * -1) /100;
+            else blockPosition = (float) ((average - 100) * -1) / 100;
         } else {
             // i wrote this part
 
             final int originalPitch = note.originalPitch;
 
-            if (originalPitch > 62) blockPosition = RIGHT_STEREO_POSITION;
-            else if (originalPitch < 38) blockPosition = LEFT_STEREO_POSITION;
+            if (originalPitch > 60) blockPosition = 0.10F;
+            else if (originalPitch < 40) blockPosition = -0.10F;
             else blockPosition = 0;
         }
 
