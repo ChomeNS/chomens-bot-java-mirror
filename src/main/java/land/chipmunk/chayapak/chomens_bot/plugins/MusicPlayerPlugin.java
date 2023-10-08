@@ -325,18 +325,15 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                 float key = note.shiftedPitch;
 
-                float blockPosition = 0;
+                float blockPosition;
 
-                // code idea stolen from OpenNBS
                 if (currentSong.nbs) {
+                    // https://github.com/OpenNBS/OpenNoteBlockStudio/blob/45f35ea193268fb541c1297d0b656f4964339d97/scripts/dat_generate/dat_generate.gml#L22C18-L22C31
                     final int average = (note.stereo + note.panning) / 2;
 
-                    // The stereo position of the note block, from 0-200. 0 is 2 blocks right, 100 is center, 200 is 2 blocks left.
-                    // and
-                    // How much this layer is panned to the left/right. 0 is 2 blocks right, 100 is center, 200 is 2 blocks left.
-                    // (taken from https://opennbs.org/nbs)
-                    if (average > 100) blockPosition = -(float) average / 100; // left
-                    else if (average < 100) blockPosition = (float) average / 100; // right
+                    if (average > 100) blockPosition = (float) (average - 100) / -100;
+                    else if (average == 100) blockPosition = 0;
+                    else blockPosition = (float) ((average - 100) * -1) /100;
                 } else {
                     // i wrote this part
                     
