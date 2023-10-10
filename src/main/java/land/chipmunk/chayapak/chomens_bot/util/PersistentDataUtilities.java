@@ -32,7 +32,6 @@ public class PersistentDataUtilities {
         init();
 
         future = Main.executor.scheduleAtFixedRate(() -> {
-            // TODO: thread-safe
             try {
                 if (queue.isEmpty()) return;
 
@@ -91,23 +90,23 @@ public class PersistentDataUtilities {
         } catch (IOException ignored) {}
     }
 
-    public static synchronized void put (String property, JsonElement value) {
-        queue.put(property, value);
+    public static void put (String property, JsonElement value) {
+        Main.executorService.submit(() -> queue.put(property, value));
     }
 
-    public static synchronized void put (String property, String value) {
-        queue.put(property, new JsonPrimitive(value));
+    public static void put (String property, String value) {
+        Main.executorService.submit(() -> queue.put(property, new JsonPrimitive(value)));
     }
 
-    public static synchronized void put (String property, boolean value) {
-        queue.put(property, new JsonPrimitive(value));
+    public static void put (String property, boolean value) {
+        Main.executorService.submit(() -> queue.put(property, new JsonPrimitive(value)));
     }
 
-    public static synchronized void put (String property, int value) {
-        queue.put(property, new JsonPrimitive(value));
+    public static void put (String property, int value) {
+        Main.executorService.submit(() -> queue.put(property, new JsonPrimitive(value)));
     }
 
-    public static synchronized void put (String property, char value) {
-        queue.put(property, new JsonPrimitive(value));
+    public static void put (String property, char value) {
+        Main.executorService.submit(() -> queue.put(property, new JsonPrimitive(value)));
     }
 }
