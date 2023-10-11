@@ -193,6 +193,8 @@ public class Bot {
                                     true
                             )
                     );
+
+                    if (options.creayun) chat.send("/server creative");
                 } else if (packet instanceof ClientboundGameProfilePacket) packetReceived((ClientboundGameProfilePacket) packet);
             }
 
