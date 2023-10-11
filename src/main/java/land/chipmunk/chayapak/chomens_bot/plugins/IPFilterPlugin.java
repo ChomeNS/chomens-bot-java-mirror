@@ -37,6 +37,8 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
 
     @Override
     public void playerJoined(PlayerEntry target) {
+        if (filteredIPs.isEmpty()) return;
+
         check(target);
     }
 
