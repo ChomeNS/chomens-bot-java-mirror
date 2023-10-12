@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 // Author: _ChipMC_ & chayapak <3
@@ -60,6 +61,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
     private final String bossbarName = "music";
 
     public BossBarColor bossBarColor;
+
+    private String currentLyrics = "";
 
     public MusicPlayerPlugin (Bot bot) {
         this.bot = bot;
@@ -135,6 +138,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
                     if (currentSong.paused) return;
 
                     if (!currentSong.finished()) {
+                        handleLyrics();
+
                         BotBossBar bossBar = bot.bossbar.get(bossbarName);
 
                         if (bossBar == null && bot.bossbar.enabled) bossBar = addBossBar();
@@ -150,6 +155,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                         handlePlaying();
                     } else {
+                        currentLyrics = "";
+
                         if (loop == Loop.CURRENT) {
                             currentSong.loop();
                             return;
@@ -226,6 +233,45 @@ public class MusicPlayerPlugin extends Bot.Listener {
         return bossBar;
     }
 
+    private void handleLyrics () {
+        final Map<Long, String> lyrics = currentSong.lyrics;
+
+        if (lyrics.isEmpty()) return;
+
+        // this will be a piece of text for now
+
+        /*
+        final List<String> lyricsList = new ArrayList<>();
+
+        for (Map.Entry<Long, String> entry : lyrics.entrySet()) {
+            final long time = entry.getKey();
+            final String _lyric = entry.getValue();
+
+            if (time > currentSong.time) continue;
+
+            StringBuilder lyric = new StringBuilder();
+
+            for (char character : _lyric.toCharArray()) {
+                if (character == '\n' || character == '\r') {
+                    lyricsList.clear();
+
+                    continue;
+                }
+
+                if (character < ' ' || character == '�') continue;
+
+                lyric.append(character);
+            }
+
+            while (lyricsList.size() > 10) lyricsList.remove(0);
+
+            lyricsList.add(lyric.toString());
+        }
+
+        currentLyrics = String.join("", lyricsList);
+         */
+    }
+
     public void removeBossBar() {
         bot.bossbar.remove(bossbarName);
     }
@@ -265,6 +311,10 @@ public class MusicPlayerPlugin extends Bot.Listener {
                                     Component.text(formatter.format(currentSong.size()), NamedTextColor.GRAY)
                             ).color(NamedTextColor.DARK_GRAY)
                     );
+
+            if (!currentLyrics.isEmpty()) component = component
+                    .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
+                    .append(Component.text(currentLyrics).color(NamedTextColor.BLUE));
         }
 
         if (currentSong.paused) {
