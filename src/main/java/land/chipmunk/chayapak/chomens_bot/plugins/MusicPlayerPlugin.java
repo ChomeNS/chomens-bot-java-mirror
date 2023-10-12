@@ -237,39 +237,39 @@ public class MusicPlayerPlugin extends Bot.Listener {
         // midi lyrics are very weird
         // i need some karaoke players too see how this works
 
-        /*
-        final Map<Long, String> lyrics = currentSong.lyrics;
-
-        if (lyrics.isEmpty()) return;
-
-        final List<String> lyricsList = new ArrayList<>();
-
-        for (Map.Entry<Long, String> entry : lyrics.entrySet()) {
-            final long time = entry.getKey();
-            String _lyric = entry.getValue();
-
-            if (time > currentSong.time) continue;
-
-            StringBuilder lyric = new StringBuilder();
-
-            for (char character : _lyric.toCharArray()) {
-                if ((character != '\n' && character != '\r' && character < ' ') || character == '�') continue;
-
-                lyric.append(character);
-            }
-
-            final String stringLyric = lyric.toString();
-
-            if ( stringLyric.equals("\n") || stringLyric.equals("\r") || stringLyric.equals("\r\n") || stringLyric.equals("\n\r")) {
-                lyricsList.clear();
-            }
-
-            lyricsList.add(stringLyric);
-
-//            while (lyricsList.size() > 10) lyricsList.remove(0);
-        }
-
-        currentLyrics = String.join("", lyricsList); */
+//        final Map<Long, String> lyrics = currentSong.lyrics;
+//
+//        if (lyrics.isEmpty()) return;
+//
+//        final List<String> lyricsList = new ArrayList<>();
+//
+//        for (Map.Entry<Long, String> entry : lyrics.entrySet()) {
+//            final long time = entry.getKey();
+//            String _lyric = entry.getValue();
+//
+//            if (time > currentSong.time) continue;
+//
+////            StringBuilder lyric = new StringBuilder();
+////
+////            for (char character : _lyric.toCharArray()) {
+////                if ((character != '\n' && character != '\r' && character < ' ') || character == '�') continue;
+////
+////                lyric.append(character);
+////            }
+////
+////            String stringLyric = lyric.toString();
+////
+////            if (stringLyric.startsWith("\\") || stringLyric.startsWith("/")) {
+////                lyricsList.clear();
+////
+////                stringLyric = stringLyric.substring(1);
+////            }
+//
+//            lyricsList.add(_lyric);
+//        }
+//
+//        final String joined = String.join("", lyricsList);
+//        currentLyrics = joined.substring(Math.max(0, joined.length() - 25));
     }
 
     public void removeBossBar() {
