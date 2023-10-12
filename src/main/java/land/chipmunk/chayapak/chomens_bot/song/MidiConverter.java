@@ -5,6 +5,7 @@ import land.chipmunk.chayapak.chomens_bot.Bot;
 import javax.sound.midi.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static javax.sound.midi.ShortMessage.SYSTEM_RESET;
@@ -49,7 +50,7 @@ public class MidiConverter implements Converter {
           if (mm.getType() == SET_TEMPO) {
             tempoEvents.add(event);
           } else if (mm.getType() == TRACK_NAME && isFirst) {
-            final String stringTitle = new String(mm.getData());
+            final String stringTitle = new String(mm.getData(), StandardCharsets.UTF_8);
 
             if (!stringTitle.isBlank()) {
               songName = stringTitle + " (" + name + ")"; // i have put the ` (filename)` just in case the sequence is getting sus (like Track 2 for example)
@@ -57,10 +58,10 @@ public class MidiConverter implements Converter {
               isFirst = false;
             }
           } else if (mm.getType() == TEXT) {
-            text.append(new String(mm.getData()));
+            text.append(new String(mm.getData(), StandardCharsets.UTF_8));
             text.append('\n');
           } else if (mm.getType() == LYRICS) {
-            final String lyric = new String(mm.getMessage());
+            final String lyric = new String(mm.getMessage(), StandardCharsets.UTF_8);
 
             lyrics.put(event.getTick(), lyric);
           }

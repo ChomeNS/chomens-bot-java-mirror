@@ -2,10 +2,12 @@ package land.chipmunk.chayapak.chomens_bot.song;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
 
+import java.nio.charset.StandardCharsets;
+
 public class TextFileConverter implements Converter {
     @Override
     public Song getSongFromBytes(byte[] bytes, String fileName, Bot bot) {
-        final String data = new String(bytes);
+        final String data = new String(bytes, StandardCharsets.UTF_8);
 
         if (!data.contains(":")) return null;
 

@@ -22,7 +22,6 @@ import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 // Author: _ChipMC_ & chayapak <3
@@ -234,42 +233,43 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     private void handleLyrics () {
+        // please help, this is many attempts trying to get this working
+        // midi lyrics are very weird
+        // i need some karaoke players too see how this works
+
+        /*
         final Map<Long, String> lyrics = currentSong.lyrics;
 
         if (lyrics.isEmpty()) return;
 
-        // this will be a piece of text for now
-
-        /*
         final List<String> lyricsList = new ArrayList<>();
 
         for (Map.Entry<Long, String> entry : lyrics.entrySet()) {
             final long time = entry.getKey();
-            final String _lyric = entry.getValue();
+            String _lyric = entry.getValue();
 
             if (time > currentSong.time) continue;
 
             StringBuilder lyric = new StringBuilder();
 
             for (char character : _lyric.toCharArray()) {
-                if (character == '\n' || character == '\r') {
-                    lyricsList.clear();
-
-                    continue;
-                }
-
-                if (character < ' ' || character == '�') continue;
+                if ((character != '\n' && character != '\r' && character < ' ') || character == '�') continue;
 
                 lyric.append(character);
             }
 
-            while (lyricsList.size() > 10) lyricsList.remove(0);
+            final String stringLyric = lyric.toString();
 
-            lyricsList.add(lyric.toString());
+            if ( stringLyric.equals("\n") || stringLyric.equals("\r") || stringLyric.equals("\r\n") || stringLyric.equals("\n\r")) {
+                lyricsList.clear();
+            }
+
+            lyricsList.add(stringLyric);
+
+//            while (lyricsList.size() > 10) lyricsList.remove(0);
         }
 
-        currentLyrics = String.join("", lyricsList);
-         */
+        currentLyrics = String.join("", lyricsList); */
     }
 
     public void removeBossBar() {
