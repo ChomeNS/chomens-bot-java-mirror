@@ -88,7 +88,9 @@ public class SongLoaderThread extends Thread {
     try {
       if (isUrl) {
         bytes = DownloadUtilities.DownloadToByteArray(songUrl, 5 * 1024 * 1024);
-        name = Paths.get(songUrl.toURI().getPath()).getFileName().toString();
+        final Path fileName = Paths.get(songUrl.toURI().getPath()).getFileName();
+
+        name = fileName == null ? "(root)" : fileName.toString();
       } else {
         bytes = Files.readAllBytes(songPath);
         name = !isFolder ? fileName : songPath.getFileName().toString();
