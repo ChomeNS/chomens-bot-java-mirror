@@ -40,11 +40,13 @@ public class PersistentDataUtilities {
                 final String property = entry.getKey();
                 final JsonElement value = entry.getValue();
 
-                jsonObject.add(property, value);
+                Main.executorService.submit(() -> {
+                    jsonObject.add(property, value);
 
-                write(jsonObject.toString());
+                    write(jsonObject.toString());
 
-                queue.remove(property);
+                    queue.remove(property);
+                });
             } catch (Exception e) {
                 e.printStackTrace();
             }
