@@ -1,5 +1,7 @@
 package land.chipmunk.chayapak.chomens_bot.commands;
 
+import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
+import com.github.steveice10.opennbt.tag.builtin.StringTag;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Main;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
@@ -11,14 +13,14 @@ import land.chipmunk.chayapak.chomens_bot.song.Instrument;
 import land.chipmunk.chayapak.chomens_bot.song.Loop;
 import land.chipmunk.chayapak.chomens_bot.song.Note;
 import land.chipmunk.chayapak.chomens_bot.song.Song;
-import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
-import land.chipmunk.chayapak.chomens_bot.util.PathUtilities;
-import land.chipmunk.chayapak.chomens_bot.util.TimestampUtilities;
+import land.chipmunk.chayapak.chomens_bot.util.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -26,7 +28,9 @@ import java.net.URI;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class MusicCommand extends Command {
@@ -74,6 +78,7 @@ public class MusicCommand extends Command {
         root = MusicPlayerPlugin.SONG_DIR;
         return switch (action) {
             case "play", "playurl", "playnbs", "playnbsurl" -> play(context);
+            case "playfromitem", "playitem" -> playFromItem(context);
             case "stop" -> stop(context);
             case "loop" -> loop(context);
             case "list" -> list(context);
@@ -186,6 +191,67 @@ public class MusicCommand extends Command {
         } catch (Exception e) {
             throw new CommandException(Component.text(e.toString()));
         }
+
+        return null;
+    }
+
+    public Component playFromItem (CommandContext context) throws CommandException {
+        // mail command lol
+
+        final Bot bot = context.bot;
+
+        final CompletableFuture<CompoundTag> future = bot.core.runTracked(
+                "minecraft:data get entity " +
+                        UUIDUtilities.selector(context.sender.profile.getId()) +
+                        " SelectedItem.tag.data"
+        );
+
+        if (future == null) {
+            throw new CommandException(Component.text("There was an error while getting your data"));
+        }
+
+        future.thenApply(tags -> {
+            if (!tags.contains("LastOutput") || !(tags.get("LastOutput") instanceof StringTag)) return tags;
+
+            final StringTag lastOutput = tags.get("LastOutput");
+
+            final Component output = GsonComponentSerializer.gson().deserialize(lastOutput.getValue());
+
+            final List<Component> children = output.children();
+
+            if (
+                    !children.isEmpty() &&
+                            !children.get(0).children().isEmpty() &&
+                            ((TranslatableComponent) children.get(0).children().get(0))
+                                    .key()
+                                    .equals("arguments.nbtpath.nothing_found")
+            ) {
+                context.sendOutput(Component.text("Player has no `data` NBT tag in the selected item").color(NamedTextColor.RED));
+                return tags;
+            }
+
+            final String value = ComponentUtilities.stringify(((TranslatableComponent) children.get(0)).args().get(1));
+
+            if (!value.startsWith("\"") && !value.endsWith("\"") && !value.startsWith("'") && !value.endsWith("'")) {
+                context.sendOutput(Component.text("`data` NBT is not a string").color(NamedTextColor.RED));
+                return tags;
+            }
+
+            try {
+                bot.music.loadSong(
+                        Base64.getDecoder().decode(
+                                value
+                                        .substring(1)
+                                        .substring(0, value.length() - 2)
+                        ),
+                        context.sender
+                );
+            } catch (IllegalArgumentException e) {
+                context.sendOutput(Component.text("Invalid base64 in the selected item").color(NamedTextColor.RED));
+            }
+
+            return tags;
+        });
 
         return null;
     }

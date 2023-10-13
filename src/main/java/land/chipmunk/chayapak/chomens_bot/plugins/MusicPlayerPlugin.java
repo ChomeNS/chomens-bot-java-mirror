@@ -114,6 +114,23 @@ public class MusicPlayerPlugin extends Bot.Listener {
         loaderThread.start();
     }
 
+    public void loadSong (byte[] data, PlayerEntry sender) {
+        if (songQueue.size() > 100) return;
+
+        loaderThread = new SongLoaderThread(data, bot, sender.profile.getName());
+
+        bot.chat.tellraw(
+                Component
+                        .translatable(
+                                "Loading %s",
+                                Component.text(sender.profile.getName() + "'s song item", ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                        )
+                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
+        );
+
+        loaderThread.start();
+    }
+
     public void coreReady () {
         bot.tick.addListener(new TickPlugin.Listener() {
             @Override

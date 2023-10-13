@@ -40,6 +40,10 @@ public class SongLoaderThread extends Thread {
 
   private final boolean isUrl;
 
+  private byte[] data;
+
+  private boolean isItem = false;
+
   private boolean isFolder = false;
 
   public SongLoaderThread(URL location, Bot bot, String requester) {
@@ -62,9 +66,19 @@ public class SongLoaderThread extends Thread {
     fileName = location.getFileName().toString();
   }
 
+  public SongLoaderThread (byte[] data, Bot bot, String requester) {
+    this.bot = bot;
+    this.requester = requester;
+    this.data = data;
+    this.isItem = true;
+    this.isUrl = false;
+
+    fileName = requester + "'s song item";
+  }
+
   @Override
   public void run () {
-    if (isFolder && !isUrl) {
+    if (isFolder && !isUrl && !isItem) {
       try (Stream<Path> files = Files.list(songPath)) {
         if (files != null) {
           files.forEach((file) -> {
@@ -91,6 +105,9 @@ public class SongLoaderThread extends Thread {
         final Path fileName = Paths.get(songUrl.toURI().getPath()).getFileName();
 
         name = fileName == null ? "(root)" : fileName.toString();
+      } else if (isItem) {
+        bytes = data;
+        name = requester + "'s song item";
       } else {
         bytes = Files.readAllBytes(songPath);
         name = !isFolder ? fileName : songPath.getFileName().toString();
