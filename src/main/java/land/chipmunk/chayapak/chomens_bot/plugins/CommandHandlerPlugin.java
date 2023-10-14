@@ -55,6 +55,7 @@ public class CommandHandlerPlugin {
         registerCommand(new WhitelistCommand());
         registerCommand(new SeenCommand());
         registerCommand(new IPFilterCommand());
+        registerCommand(new StopCommand());
     }
 
     public boolean disabled = false;
