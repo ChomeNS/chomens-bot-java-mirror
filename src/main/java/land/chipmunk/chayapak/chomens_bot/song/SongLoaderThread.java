@@ -25,6 +25,7 @@ public class SongLoaderThread extends Thread {
     converters.add(new MidiConverter());
     converters.add(new NBSConverter());
     converters.add(new TextFileConverter());
+    converters.add(new SongPlayerConverter());
   }
 
   public final String fileName;

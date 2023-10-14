@@ -79,6 +79,7 @@ public class MusicCommand extends Command {
         return switch (action) {
             case "play", "playurl", "playnbs", "playnbsurl" -> play(context);
             case "playfromitem", "playitem" -> playFromItem(context);
+            case "playsongplayer" -> playSongPlayer(context);
             case "stop" -> stop(context);
             case "loop" -> loop(context);
             case "list" -> list(context);
@@ -248,6 +249,67 @@ public class MusicCommand extends Command {
                 );
             } catch (IllegalArgumentException e) {
                 context.sendOutput(Component.text("Invalid base64 in the selected item").color(NamedTextColor.RED));
+            }
+
+            return tags;
+        });
+
+        return null;
+    }
+
+    public Component playSongPlayer (CommandContext context) throws CommandException {
+        // dupe codes ??
+
+        final Bot bot = context.bot;
+
+        final CompletableFuture<CompoundTag> future = bot.core.runTracked(
+                "minecraft:data get entity " +
+                        UUIDUtilities.selector(context.sender.profile.getId()) +
+                        " SelectedItem.tag.SongItemData.SongData"
+        );
+
+        if (future == null) {
+            throw new CommandException(Component.text("There was an error while getting your data"));
+        }
+
+        future.thenApply(tags -> {
+            if (!tags.contains("LastOutput") || !(tags.get("LastOutput") instanceof StringTag)) return tags;
+
+            final StringTag lastOutput = tags.get("LastOutput");
+
+            final Component output = GsonComponentSerializer.gson().deserialize(lastOutput.getValue());
+
+            final List<Component> children = output.children();
+
+            if (
+                    !children.isEmpty() &&
+                            !children.get(0).children().isEmpty() &&
+                            ((TranslatableComponent) children.get(0).children().get(0))
+                                    .key()
+                                    .equals("arguments.nbtpath.nothing_found")
+            ) {
+                context.sendOutput(Component.text("Player has no SongItemData -> SongData NBT tag in the selected item").color(NamedTextColor.RED));
+                return tags;
+            }
+
+            final String value = ComponentUtilities.stringify(((TranslatableComponent) children.get(0)).args().get(1));
+
+            if (!value.startsWith("\"") && !value.endsWith("\"") && !value.startsWith("'") && !value.endsWith("'")) {
+                context.sendOutput(Component.text("NBT is not a string").color(NamedTextColor.RED));
+                return tags;
+            }
+
+            try {
+                bot.music.loadSong(
+                        Base64.getDecoder().decode(
+                                value
+                                        .substring(1)
+                                        .substring(0, value.length() - 2)
+                        ),
+                        context.sender
+                );
+            } catch (IllegalArgumentException e) {
+                context.sendOutput(Component.text("Invalid song data in the selected item").color(NamedTextColor.RED));
             }
 
             return tags;
