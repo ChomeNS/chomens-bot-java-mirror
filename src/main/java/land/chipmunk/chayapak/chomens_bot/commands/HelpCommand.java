@@ -33,9 +33,11 @@ public class HelpCommand extends Command {
 
     @Override
     public Component execute(CommandContext context) throws CommandException {
+        context.checkOverloadArgs(1);
+
         this.context = context;
 
-        final String commandName = context.getString(true, false);
+        final String commandName = context.getString(false, false);
 
         if (commandName.isEmpty()) {
             return sendCommandList();

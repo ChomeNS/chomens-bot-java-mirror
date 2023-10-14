@@ -45,6 +45,8 @@ public class InfoCommand extends Command {
 
     @Override
     public Component execute(CommandContext context) throws CommandException {
+        context.checkOverloadArgs(1);
+
         final Bot bot = context.bot;
 
         final String action = context.getString(false, true, true);

@@ -33,11 +33,15 @@ public class WhitelistCommand extends Command {
 
         switch (action) {
             case "enable" -> {
+                context.checkOverloadArgs(1);
+
                 bot.whitelist.enable();
 
                 return Component.text("Enabled whitelist").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "disable" -> {
+                context.checkOverloadArgs(1);
+
                 bot.whitelist.disable();
 
                 return Component.text("Disabled whitelist").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
@@ -67,11 +71,15 @@ public class WhitelistCommand extends Command {
                 ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "clear" -> {
+                context.checkOverloadArgs(1);
+
                 bot.whitelist.clear();
 
                 return Component.text("Cleared the whitelist").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "list" -> {
+                context.checkOverloadArgs(1);
+
                 final List<Component> playersComponent = new ArrayList<>();
 
                 int index = 0;

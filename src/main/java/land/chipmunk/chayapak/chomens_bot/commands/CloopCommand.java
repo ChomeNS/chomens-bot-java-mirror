@@ -48,6 +48,8 @@ public class CloopCommand extends Command {
                 ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "remove" -> {
+                context.checkOverloadArgs(2);
+
                 try {
                     final int index = context.getInteger(true);
                     bot.cloop.remove(index);
@@ -61,10 +63,14 @@ public class CloopCommand extends Command {
                 }
             }
             case "clear" -> {
+                context.checkOverloadArgs(1);
+
                 bot.cloop.clear();
                 return Component.text("Cleared all cloops").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "list" -> {
+                context.checkOverloadArgs(1);
+
                 final List<Component> cloopsComponent = new ArrayList<>();
 
                 int index = 0;

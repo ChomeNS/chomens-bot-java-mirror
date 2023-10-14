@@ -65,6 +65,8 @@ public class ConsoleCommand extends Command {
                 }
             }
             case "logtoconsole" -> {
+                context.checkOverloadArgs(2);
+
                 final boolean bool = context.getBoolean(true);
 
                 bot.logger.logToConsole = bool;

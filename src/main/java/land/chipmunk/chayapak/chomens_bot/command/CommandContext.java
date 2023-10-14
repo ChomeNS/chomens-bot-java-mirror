@@ -35,6 +35,7 @@ public class CommandContext {
     public Component displayName () { return Component.empty(); }
     public void sendOutput (Component component) {}
 
+    // args parsing stuff
     private int argsPosition = 0;
 
     public String getString (boolean greedy, boolean required) throws CommandException { return getString(greedy, required, "string"); }
@@ -127,5 +128,14 @@ public class CommandContext {
         } catch (IllegalArgumentException | NullPointerException e) {
             throw new CommandException(Component.text("Invalid enum"));
         }
+    }
+
+    public void checkOverloadArgs (int maximumArgs) throws CommandException {
+        if (args.length > maximumArgs) throw new CommandException(
+                Component.translatable(
+                        "Too many arguments, expected %s max",
+                        Component.text(maximumArgs)
+                )
+        );
     }
 }

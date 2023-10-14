@@ -50,6 +50,8 @@ public class IPFilterCommand extends Command {
                 ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "remove" -> {
+                context.checkOverloadArgs(2);
+
                 try {
                     final int index = context.getInteger(true);
 
@@ -64,10 +66,14 @@ public class IPFilterCommand extends Command {
                 }
             }
             case "clear" -> {
+                context.checkOverloadArgs(1);
+
                 bot.ipFilter.clear();
                 return Component.text("Cleared the filter").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "list" -> {
+                context.checkOverloadArgs(1);
+
                 final List<Component> filtersComponents = new ArrayList<>();
 
                 int index = 0;

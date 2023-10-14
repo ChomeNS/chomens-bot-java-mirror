@@ -35,6 +35,8 @@ public class ScreenshareCommand extends Command {
         try {
             switch (action) {
                 case "start" -> {
+                    context.checkOverloadArgs(4);
+
                     final int x = context.getInteger(true);
                     final int y = context.getInteger(true);
                     final int z = context.getInteger(true);
@@ -46,6 +48,8 @@ public class ScreenshareCommand extends Command {
                             .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
                 }
                 case "stop" -> {
+                    context.checkOverloadArgs(1);
+
                     bot.screenshare.stop();
 
                     return Component
@@ -53,6 +57,8 @@ public class ScreenshareCommand extends Command {
                             .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
                 }
                 case "setres" -> {
+                    context.checkOverloadArgs(3);
+
                     final int width = context.getInteger(true);
                     final int height = context.getInteger(true);
 
@@ -67,6 +73,8 @@ public class ScreenshareCommand extends Command {
                             .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
                 }
                 case "setfps" -> {
+                    context.checkOverloadArgs(2);
+
                     final int fps = context.getInteger(true);
 
                     bot.screenshare.fps = fps;

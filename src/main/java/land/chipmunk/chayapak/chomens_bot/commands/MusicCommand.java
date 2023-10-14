@@ -197,6 +197,8 @@ public class MusicCommand extends Command {
     }
 
     public Component playFromItem (CommandContext context) throws CommandException {
+        context.checkOverloadArgs(1);
+
         // mail command lol
 
         final Bot bot = context.bot;
@@ -258,6 +260,8 @@ public class MusicCommand extends Command {
     }
 
     public Component playSongPlayer (CommandContext context) throws CommandException {
+        context.checkOverloadArgs(1);
+
         // dupe codes ??
 
         final Bot bot = context.bot;
@@ -318,7 +322,9 @@ public class MusicCommand extends Command {
         return null;
     }
 
-    public Component stop (CommandContext context) {
+    public Component stop (CommandContext context) throws CommandException {
+        context.checkOverloadArgs(1);
+
         final Bot bot = context.bot;
         bot.music.stopPlaying();
         bot.music.songQueue.clear();
@@ -327,6 +333,8 @@ public class MusicCommand extends Command {
     }
 
     public Component loop (CommandContext context) throws CommandException {
+        context.checkOverloadArgs(2);
+
         final Bot bot = context.bot;
 
         final Loop loop = context.getEnum(Loop.class);
@@ -427,6 +435,8 @@ public class MusicCommand extends Command {
     }
 
     public Component skip (CommandContext context) throws CommandException {
+        context.checkOverloadArgs(1);
+
         final Bot bot = context.bot;
         final MusicPlayerPlugin music = bot.music;
         if (music.currentSong == null) throw new CommandException(Component.text("No song is currently playing"));
@@ -444,6 +454,8 @@ public class MusicCommand extends Command {
     }
 
     public Component nowplaying (CommandContext context) throws CommandException {
+        context.checkOverloadArgs(1);
+
         final Bot bot = context.bot;
         final Song song = bot.music.currentSong;
         if (song == null) throw new CommandException(Component.text("No song is currently playing"));
@@ -454,7 +466,9 @@ public class MusicCommand extends Command {
                 .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }
 
-    public Component queue (CommandContext context) {
+    public Component queue (CommandContext context) throws CommandException {
+        context.checkOverloadArgs(1);
+
         final Bot bot = context.bot;
         final List<Song> queue = bot.music.songQueue;
 
@@ -493,6 +507,8 @@ public class MusicCommand extends Command {
     }
 
     public Component pitch (CommandContext context) throws CommandException {
+        context.checkOverloadArgs(2);
+
         final Bot bot = context.bot;
 
         final float pitch = context.getFloat(true);
@@ -506,6 +522,8 @@ public class MusicCommand extends Command {
     }
 
     public Component speed (CommandContext context) throws CommandException {
+        context.checkOverloadArgs(2);
+
         final Bot bot = context.bot;
         final Song currentSong = bot.music.currentSong;
 
@@ -528,6 +546,8 @@ public class MusicCommand extends Command {
     }
 
     public Component amplify(CommandContext context) throws CommandException {
+        context.checkOverloadArgs(2);
+
         final Bot bot = context.bot;
 
         final int amplify = context.getInteger(true);
@@ -560,6 +580,8 @@ public class MusicCommand extends Command {
     }
 
     public Component pause (CommandContext context) throws CommandException {
+        context.checkOverloadArgs(1);
+
         final Bot bot = context.bot;
         final Song currentSong = bot.music.currentSong;
 
@@ -575,6 +597,8 @@ public class MusicCommand extends Command {
     }
 
     public Component info (CommandContext context) throws CommandException {
+        context.checkOverloadArgs(1);
+
         final Bot bot = context.bot;
         final Song currentSong = bot.music.currentSong;
 
@@ -594,7 +618,9 @@ public class MusicCommand extends Command {
         return Component.join(JoinConfiguration.newlines(), components);
     }
 
-    public Component testSong (CommandContext context) {
+    public Component testSong (CommandContext context) throws CommandException {
+        context.checkOverloadArgs(1);
+
         final Bot bot = context.bot;
 
         final Song song = new Song(

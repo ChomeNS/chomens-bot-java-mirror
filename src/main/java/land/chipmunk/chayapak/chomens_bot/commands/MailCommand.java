@@ -83,6 +83,8 @@ public class MailCommand extends Command {
                 return Component.text("Mail sent!").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "sendselecteditem" -> {
+                context.checkOverloadArgs(1);
+
                 int senderMailsSentTotal = 0;
                 for (JsonElement mailElement : MailPlugin.mails) {
                     final Mail mail = gson.fromJson(mailElement, Mail.class);
@@ -154,6 +156,8 @@ public class MailCommand extends Command {
                 });
             }
             case "read" -> {
+                context.checkOverloadArgs(1);
+
                 // TODO: use less for loops?
 
                 int senderMailSize = 0;

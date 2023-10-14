@@ -77,6 +77,8 @@ public class FilterCommand extends Command {
                 ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "remove" -> {
+                context.checkOverloadArgs(2);
+
                 try {
                     final int index = context.getInteger(true);
 
@@ -91,10 +93,14 @@ public class FilterCommand extends Command {
                 }
             }
             case "clear" -> {
+                context.checkOverloadArgs(1);
+
                 bot.filter.clear();
                 return Component.text("Cleared the filter").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "list" -> {
+                context.checkOverloadArgs(1);
+
                 final List<Component> filtersComponents = new ArrayList<>();
 
                 int index = 0;
