@@ -125,6 +125,17 @@ public class Main {
                 System.exit(1);
             }
         }, 0, 1, TimeUnit.MINUTES);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                final boolean success = executorService.awaitTermination(3, TimeUnit.SECONDS);
+
+                if (!success) System.exit(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+        }));
     }
 
     public static void initializeBots() {

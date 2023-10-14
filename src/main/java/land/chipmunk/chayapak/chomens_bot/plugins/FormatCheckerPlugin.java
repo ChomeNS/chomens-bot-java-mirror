@@ -67,7 +67,10 @@ public class FormatCheckerPlugin extends ChatPlugin.Listener {
 
         final Component prefix = format.args().get(0);
 
-        if (prefix.equals(bot.console.formatPrefix) || (bot.discord != null && prefix.equals(bot.discord.messagePrefix))) return false;
+        if (
+                ((prefix instanceof TextComponent text) && text.content().equals(bot.username + " Console")) || // ohio
+                        (bot.discord != null && prefix.equals(bot.discord.messagePrefix))
+        ) return false;
 
         if (!(prefix instanceof TranslatableComponent translatablePrefix)) return true;
 
