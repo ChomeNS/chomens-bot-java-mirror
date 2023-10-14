@@ -73,7 +73,7 @@ public class PersistentDataUtilities {
                 jsonObject = gson.fromJson(reader, JsonObject.class);
             }
 
-            writer = Files.newBufferedWriter(path, StandardOpenOption.WRITE);
+            writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }
