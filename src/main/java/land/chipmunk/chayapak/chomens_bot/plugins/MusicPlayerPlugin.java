@@ -6,10 +6,7 @@ import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.BotBossBar;
 import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
-import land.chipmunk.chayapak.chomens_bot.song.Loop;
-import land.chipmunk.chayapak.chomens_bot.song.Note;
-import land.chipmunk.chayapak.chomens_bot.song.Song;
-import land.chipmunk.chayapak.chomens_bot.song.SongLoaderThread;
+import land.chipmunk.chayapak.chomens_bot.song.*;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
@@ -399,14 +396,18 @@ public class MusicPlayerPlugin extends Bot.Listener {
                         note.pitch != note.shiftedPitch ||
                                 note.shiftedInstrument != note.instrument;
 
+                final boolean isBass = note.instrument == Instrument.BASS;
+
+                final double volume = (isBass ? note.volume * 1.5 : note.volume);
+
                 if (shouldCustomPitch) {
                     bot.core.run(
                             "minecraft:execute as " +
                                     CUSTOM_PITCH_SELECTOR +
                                     " at @s run playsound " +
-                                    (!instrument.equals("off") ? instrument : note.instrument.sound) + ".pitch." + notShiftedFloatingPitch +
+                                    (!instrument.equals("off") ? instrument : note.instrument.sound) + ".pitch." + (isBass ? notShiftedFloatingPitch - 1.5 : notShiftedFloatingPitch) +
                                     " record @s ^" + blockPosition.getX() + " ^" + blockPosition.getY() + " ^" + blockPosition.getZ() + " " +
-                                    note.volume +
+                                    volume +
                                     " " +
                                     0
                     );
@@ -428,9 +429,9 @@ public class MusicPlayerPlugin extends Bot.Listener {
                                     " at @s run playsound " +
                                     (!instrument.equals("off") ? instrument : note.shiftedInstrument.sound) +
                                     " record @s ^" + blockPosition.getX() + " ^" + blockPosition.getY() + " ^" + blockPosition.getZ() + " " +
-                                    note.volume +
+                                    volume +
                                     " " +
-                                    MathUtilities.clamp(floatingPitch, 0, 2)
+                                    MathUtilities.clamp((isBass ? floatingPitch - 1.5 : floatingPitch), 0, 2)
                     );
                 }
 
@@ -460,13 +461,13 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
             final int originalPitch = note.originalPitch;
 
-            float xPos = (float) originalPitch / 768;
-            if (originalPitch < 75) xPos = -xPos;
+            float xPos = -(float) originalPitch / 768;
+            if (originalPitch > 25) xPos = Math.abs(xPos);
 
-            float yPos = (float) originalPitch / 35;
+            float yPos = -(float) originalPitch / 35;
             if (originalPitch < 75) yPos = -yPos;
 
-            float zPos = (float) originalPitch / 40;
+            float zPos = -(float) originalPitch / 40;
             if (originalPitch < 75) zPos = -zPos;
 
             blockPosition = Vector3f.from(xPos, yPos, zPos);
