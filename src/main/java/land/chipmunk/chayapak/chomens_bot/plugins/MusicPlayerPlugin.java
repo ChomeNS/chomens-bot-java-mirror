@@ -14,6 +14,7 @@ import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.cloudburstmc.math.vector.Vector3f;
 
 import java.io.IOException;
 import java.net.URL;
@@ -385,7 +386,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                 float key = note.shiftedPitch;
 
-                final float blockPosition = getBlockPosition(note);
+                final Vector3f blockPosition = getBlockPosition(note);
 
                 final double notShiftedFloatingPitch = Math.pow(2.0, ((note.pitch + (pitch / 10)) - 12) / 12.0);
 
@@ -404,7 +405,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                                     CUSTOM_PITCH_SELECTOR +
                                     " at @s run playsound " +
                                     (!instrument.equals("off") ? instrument : note.instrument.sound) + ".pitch." + notShiftedFloatingPitch +
-                                    " record @s ^" + blockPosition + " ^1 ^ " +
+                                    " record @s ^" + blockPosition.getX() + " ^" + blockPosition.getY() + " ^" + blockPosition.getZ() + " " +
                                     note.volume +
                                     " " +
                                     0
@@ -426,7 +427,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                                     (shouldCustomPitch ? SELECTOR : BOTH_SELECTOR) +
                                     " at @s run playsound " +
                                     (!instrument.equals("off") ? instrument : note.shiftedInstrument.sound) +
-                                    " record @s ^" + blockPosition + " ^1 ^ " +
+                                    " record @s ^" + blockPosition.getX() + " ^" + blockPosition.getY() + " ^" + blockPosition.getZ() + " " +
                                     note.volume +
                                     " " +
                                     MathUtilities.clamp(floatingPitch, 0, 2)
@@ -440,24 +441,35 @@ public class MusicPlayerPlugin extends Bot.Listener {
         }
     }
 
-    private float getBlockPosition (Note note) {
-        float blockPosition;
+    private Vector3f getBlockPosition (Note note) {
+        Vector3f blockPosition;
 
         if (currentSong.nbs) {
             // https://github.com/OpenNBS/OpenNoteBlockStudio/blob/45f35ea193268fb541c1297d0b656f4964339d97/scripts/dat_generate/dat_generate.gml#L22C18-L22C31
             final int average = (note.stereo + note.panning) / 2;
 
-            if (average > 100) blockPosition = (float) (average - 100) / -100;
-            else if (average == 100) blockPosition = 0;
-            else blockPosition = (float) ((average - 100) * -1) / 100;
+            float pos;
+
+            if (average > 100) pos = (float) (average - 100) / -100;
+            else if (average == 100) pos = 0;
+            else pos = (float) ((average - 100) * -1) / 100;
+
+            blockPosition = Vector3f.from(pos, 0, 0);
         } else {
             // i wrote this part
 
             final int originalPitch = note.originalPitch;
 
-            if (originalPitch > 60) blockPosition = 0.10F;
-            else if (originalPitch < 40) blockPosition = -0.10F;
-            else blockPosition = 0;
+            float xPos = (float) originalPitch / 768;
+            if (originalPitch < 75) xPos = -xPos;
+
+            float yPos = (float) originalPitch / 35;
+            if (originalPitch < 75) yPos = -yPos;
+
+            float zPos = (float) originalPitch / 40;
+            if (originalPitch < 75) zPos = -zPos;
+
+            blockPosition = Vector3f.from(xPos, yPos, zPos);
         }
 
         return blockPosition;
