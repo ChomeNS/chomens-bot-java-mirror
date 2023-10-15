@@ -398,7 +398,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                 final boolean isBass = note.instrument == Instrument.BASS;
 
-                final double volume = (isBass ? note.volume * 1.5 : note.volume);
+                final double volume = (isBass ? note.volume * 1.2 : note.volume);
 
                 if (shouldCustomPitch) {
                     bot.core.run(
@@ -431,7 +431,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                                     " record @s ^" + blockPosition.getX() + " ^" + blockPosition.getY() + " ^" + blockPosition.getZ() + " " +
                                     volume +
                                     " " +
-                                    MathUtilities.clamp((isBass ? floatingPitch - 1.5 : floatingPitch), 0, 2)
+                                    MathUtilities.clamp((isBass ? floatingPitch - 0.5 : floatingPitch), 0, 2)
                     );
                 }
 
