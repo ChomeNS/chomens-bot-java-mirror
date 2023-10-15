@@ -84,6 +84,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
                             );
 
                             bossBars.get(packet.getUuid()).id = bossBar.id;
+                            bossBars.get(packet.getUuid()).onlyName = bossBar.onlyName;
                             bossBars.get(packet.getUuid()).uuid = packet.getUuid();
 
                             newBossBar.setTitle(bossBar.title);
@@ -182,6 +183,8 @@ public class BossbarManagerPlugin extends Bot.Listener {
 
     public void add (String name, BotBossBar bossBar) {
         if (!enabled || !bot.options.useCore) return;
+
+        bossBar.onlyName = name;
 
         bossBar.id = bossBarPrefix + name;
 

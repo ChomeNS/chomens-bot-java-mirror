@@ -18,6 +18,7 @@ public class BotBossBar extends BossBar {
 
     private final Bot bot;
 
+    public String onlyName;
     public String id;
 
     private String players;
@@ -63,7 +64,11 @@ public class BotBossBar extends BossBar {
 
         this.title = title;
 
-        bot.core.run("minecraft:bossbar set " + id + " name " + GsonComponentSerializer.gson().serialize(title));
+        final String serialized = GsonComponentSerializer.gson().serialize(title);
+
+        bot.core.run("minecraft:bossbar set " + id + " name " + serialized);
+
+        if (!bot.core.hasRateLimit()) bot.core.run("minecraft:execute as @e[type=minecraft:text_display,tag=" + bot.config.bossBarNamespace + "_" + onlyName + "] run data modify entity @s text set value '" + serialized.replace("\\", "\\\\" + "'").replace("'", "\\'") + "'");
     }
 
     public BossBarColor color(BossBarColor color) {
