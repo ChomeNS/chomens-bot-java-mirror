@@ -4,7 +4,7 @@ import com.github.steveice10.mc.auth.data.GameProfile;
 import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.chat.ChatParser;
-import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
+import land.chipmunk.chayapak.chomens_bot.data.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerMessage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;

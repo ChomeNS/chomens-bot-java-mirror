@@ -1,5 +1,6 @@
 package land.chipmunk.chayapak.chomens_bot.data.chat;
 
+import land.chipmunk.chayapak.chomens_bot.data.PlayerEntry;
 import net.kyori.adventure.text.Component;
 
 public class PlayerMessage {

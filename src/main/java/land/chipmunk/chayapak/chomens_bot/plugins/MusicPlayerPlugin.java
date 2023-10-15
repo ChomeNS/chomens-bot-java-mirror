@@ -5,7 +5,7 @@ import com.github.steveice10.mc.protocol.data.game.BossBarDivision;
 import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.data.BotBossBar;
-import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
+import land.chipmunk.chayapak.chomens_bot.data.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.song.*;
 import land.chipmunk.chayapak.chomens_bot.util.ColorUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.MathUtilities;
@@ -394,7 +394,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                 final boolean shouldCustomPitch = currentSong.nbs ?
                         isMoreOrLessOctave :
                         note.pitch != note.shiftedPitch ||
-                                note.shiftedInstrument != note.instrument;E
+                                note.shiftedInstrument != note.instrument;
 
                 final double volume = (note.instrument == Instrument.BASS ? note.volume * 1.5 : note.volume);
 

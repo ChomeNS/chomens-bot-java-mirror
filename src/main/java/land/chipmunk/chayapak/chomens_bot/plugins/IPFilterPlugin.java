@@ -5,7 +5,7 @@ import com.github.steveice10.opennbt.tag.builtin.StringTag;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
+import land.chipmunk.chayapak.chomens_bot.data.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.PersistentDataUtilities;
 import net.kyori.adventure.text.Component;

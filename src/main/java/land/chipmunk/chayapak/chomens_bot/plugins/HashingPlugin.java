@@ -2,7 +2,7 @@ package land.chipmunk.chayapak.chomens_bot.plugins;
 
 import com.google.common.hash.Hashing;
 import land.chipmunk.chayapak.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
+import land.chipmunk.chayapak.chomens_bot.data.PlayerEntry;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;

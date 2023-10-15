@@ -13,7 +13,7 @@ import land.chipmunk.chayapak.chomens_bot.chatParsers.KaboomChatParser;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.MinecraftChatParser;
 import land.chipmunk.chayapak.chomens_bot.chatParsers.U203aChatParser;
 import land.chipmunk.chayapak.chomens_bot.data.chat.ChatParser;
-import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerEntry;
+import land.chipmunk.chayapak.chomens_bot.data.PlayerEntry;
 import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerMessage;
 import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.IllegalCharactersUtilities;
