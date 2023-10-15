@@ -394,18 +394,16 @@ public class MusicPlayerPlugin extends Bot.Listener {
                 final boolean shouldCustomPitch = currentSong.nbs ?
                         isMoreOrLessOctave :
                         note.pitch != note.shiftedPitch ||
-                                note.shiftedInstrument != note.instrument;
+                                note.shiftedInstrument != note.instrument;E
 
-                final boolean isBass = note.instrument == Instrument.BASS;
-
-                final double volume = (isBass ? note.volume * 1.2 : note.volume);
+                final double volume = (note.instrument == Instrument.BASS ? note.volume * 1.5 : note.volume);
 
                 if (shouldCustomPitch) {
                     bot.core.run(
                             "minecraft:execute as " +
                                     CUSTOM_PITCH_SELECTOR +
                                     " at @s run playsound " +
-                                    (!instrument.equals("off") ? instrument : note.instrument.sound) + ".pitch." + (isBass ? notShiftedFloatingPitch - 1.5 : notShiftedFloatingPitch) +
+                                    (!instrument.equals("off") ? instrument : note.instrument.sound) + ".pitch." + notShiftedFloatingPitch +
                                     " record @s ^" + blockPosition.getX() + " ^" + blockPosition.getY() + " ^" + blockPosition.getZ() + " " +
                                     volume +
                                     " " +
@@ -431,7 +429,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                                     " record @s ^" + blockPosition.getX() + " ^" + blockPosition.getY() + " ^" + blockPosition.getZ() + " " +
                                     volume +
                                     " " +
-                                    MathUtilities.clamp((isBass ? floatingPitch - 0.5 : floatingPitch), 0, 2)
+                                    MathUtilities.clamp(floatingPitch, 0, 2)
                     );
                 }
 
