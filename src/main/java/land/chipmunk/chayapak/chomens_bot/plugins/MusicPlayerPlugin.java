@@ -288,6 +288,10 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     public void removeBossBar() {
+        final BotBossBar bossBar = bot.bossbar.get(bossbarName);
+
+        if (bossBar != null) bossBar.setTitle(Component.text("No song is currently playing"));
+
         bot.bossbar.remove(bossbarName);
     }
 
@@ -372,6 +376,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     public void handlePlaying () {
+        if (currentSong == null) return;
+
         try {
             currentSong.advanceTime();
             while (currentSong.reachedNextNote()) {

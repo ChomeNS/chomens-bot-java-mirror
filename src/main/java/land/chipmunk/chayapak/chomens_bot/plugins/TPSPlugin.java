@@ -66,6 +66,11 @@ public class TPSPlugin extends Bot.Listener {
 
     public void off () {
         enabled = false;
+
+        final BotBossBar bossBar = bot.bossbar.get(bossbarName);
+
+        if (bossBar != null) bossBar.setTitle(Component.text("TPSBar is currently disabled"));
+
         bot.bossbar.remove(bossbarName);
     }
 
