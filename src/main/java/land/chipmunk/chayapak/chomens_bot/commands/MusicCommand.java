@@ -368,12 +368,10 @@ public class MusicCommand extends Command {
 
         final String stringPathIfExists = context.getString(true, false);
 
-        final Path path = (stringPathIfExists.isEmpty()) ?
-                root :
-                Path.of(
-                        root.toString(),
-                        stringPathIfExists
-                );
+        final Path path = Path.of(
+                root.toString(),
+                stringPathIfExists
+        );
 
         if (!path.normalize().startsWith(root.toString())) throw new CommandException(Component.text("no"));
 
@@ -395,7 +393,12 @@ public class MusicCommand extends Command {
                     location = Paths.get(""); // wtf mabe
                 }
 
-                final String joinedPath = stringPathIfExists.isEmpty() ? eachPath.getFileName().toString() : Paths.get(location.getFileName().toString(), eachPath.getFileName().toString()).toString();
+                final String joinedPath = location.equals(root) ?
+                        eachPath.getFileName().toString() :
+                        Paths.get(
+                                location.getFileName().toString(),
+                                eachPath.getFileName().toString()
+                        ).toString();
 
                 fullList.add(
                         Component
