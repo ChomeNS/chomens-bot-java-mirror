@@ -48,6 +48,7 @@ public class Bot {
     public ConsolePlugin console;
     public LoggerPlugin logger; // in ConsolePlugin
     public DiscordPlugin discord; // same for this one too
+    public IRCPlugin irc; // AND same for this one too
 
     public TickPlugin tick;
     public ChatPlugin chat;

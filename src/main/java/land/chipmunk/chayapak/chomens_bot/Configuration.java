@@ -23,6 +23,7 @@ public class Configuration {
 
     public Core core = new Core();
     public Discord discord = new Discord();
+    public IRC irc = new IRC();
     public Music music = new Music();
 
     public ColorPalette colorPalette = new ColorPalette();
@@ -98,6 +99,19 @@ public class Configuration {
         public String adminRoleName = "Admin";
         public String statusMessage = "Gay Sex";
         public String inviteLink = "https://discord.gg/xdgCkUyaA4";
+    }
+
+    public static class IRC {
+        public boolean enabled = true;
+        public String prefix = "!";
+        public String host;
+        public int port;
+        public String nickname = "chomens-bot";
+        public String username = "chomens-bot";
+        public String realName = "chomens-bot";
+        public String hostName = "null";
+        public String serverName = "null";
+        public Map<String, String> servers = new HashMap<>();
     }
 
     public static class Music {

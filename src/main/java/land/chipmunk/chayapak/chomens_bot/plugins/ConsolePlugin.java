@@ -25,7 +25,7 @@ public class ConsolePlugin implements Completer {
 
     private static final List<Listener> listeners = new ArrayList<>();
 
-    public ConsolePlugin (List<Bot> allBots, Configuration discordConfig, JDA jda) {
+    public ConsolePlugin (List<Bot> allBots, Configuration config, JDA jda) {
         this.allBots = allBots;
         this.reader = LineReaderBuilder
                 .builder()
@@ -42,7 +42,8 @@ public class ConsolePlugin implements Completer {
             bot.logger = new LoggerPlugin(bot);
         }
 
-        new DiscordPlugin(discordConfig, jda);
+        new DiscordPlugin(config, jda);
+        if (config.irc.enabled) new IRCPlugin(config);
 
         final String prompt = "> ";
 

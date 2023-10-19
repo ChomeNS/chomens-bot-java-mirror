@@ -34,6 +34,19 @@ discord:
   servers:
     localhost:25565: 'channel id'
 
+irc:
+  enabled: true
+  prefix: '!'
+  host: 'irc.libera.chat'
+  port: 6665
+  nickname: 'chomens-bot'
+  username: 'chomens-bot'
+  realName: 'chomens-bot'
+  hostName: 'null'
+  serverName: 'null'
+  servers:
+    localhost:25565: '#chomens-localhost' # channel name
+
 music:
   URLRatelimit:
     seconds: 15

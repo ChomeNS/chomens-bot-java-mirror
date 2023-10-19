@@ -314,7 +314,7 @@ public class DiscordPlugin {
             }
             StringBuilder logMessage = logMessages.get(channelId);
             if (logMessage.length() < 2000) {
-                if (logMessage.length() > 0) {
+                if (!logMessage.isEmpty()) {
                     logMessage.append('\n');
                 }
                 logMessage.append(message);
