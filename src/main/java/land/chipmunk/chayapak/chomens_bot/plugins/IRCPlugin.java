@@ -23,6 +23,8 @@ public class IRCPlugin extends IRCMessageLoop {
 
     private final Map<String, List<String>> messageQueue = new HashMap<>();
 
+    private String lastMessage = "";
+
     public IRCPlugin (Configuration config) {
         super(config.irc.host, config.irc.port);
 
@@ -133,13 +135,19 @@ public class IRCPlugin extends IRCMessageLoop {
         final String stringifiedName = ComponentUtilities.stringify(message.displayName);
         final String stringifiedContents = ComponentUtilities.stringify(message.contents);
 
+        final String toSend = String.format(
+                "<%s> %s",
+                stringifiedName,
+                stringifiedContents
+        );
+
+        if (lastMessage.equals(toSend)) return;
+
+        lastMessage = toSend;
+
         addMessageToQueue(
                 bot,
-                String.format(
-                        "<%s> %s",
-                        stringifiedName,
-                        stringifiedContents
-                )
+                toSend
         );
     }
 
