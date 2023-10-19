@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
@@ -43,6 +44,8 @@ public class DiscordPlugin {
     public Component messagePrefix;
 
     public final String discordUrl;
+
+    public boolean shuttedDown = false;
 
     public DiscordPlugin (Configuration config, JDA jda) {
         final Configuration.Discord options = config.discord;
@@ -295,6 +298,11 @@ public class DiscordPlugin {
                     ).color(NamedTextColor.DARK_GRAY);
 
                     bot.chat.tellraw(component);
+                }
+
+                @Override
+                public void onShutdown(@NotNull ShutdownEvent event) {
+                    shuttedDown = true;
                 }
             });
 

@@ -1,6 +1,7 @@
 package land.chipmunk.chayapak.chomens_bot.commands;
 
 import land.chipmunk.chayapak.chomens_bot.Bot;
+import land.chipmunk.chayapak.chomens_bot.Main;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
 import land.chipmunk.chayapak.chomens_bot.command.CommandContext;
 import land.chipmunk.chayapak.chomens_bot.command.CommandException;
@@ -26,7 +27,7 @@ public class StopCommand extends Command {
 
         final Bot bot = context.bot;
 
-        System.exit(0);
+        Main.stop();
 
         return Component.text("Stopping").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }

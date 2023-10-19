@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import land.chipmunk.chayapak.chomens_bot.plugins.ConsolePlugin;
 import land.chipmunk.chayapak.chomens_bot.util.HttpUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.LoggerUtilities;
+import land.chipmunk.chayapak.chomens_bot.util.PersistentDataUtilities;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -43,6 +44,8 @@ public class Main {
     private static boolean alreadyStarted = false;
 
     private static final List<Thread> alreadyAddedThreads = new ArrayList<>();
+
+    private static JDA jda = null;
 
     public static void main(String[] args) throws IOException {
         final Path configPath = Path.of("config.yml");
@@ -125,17 +128,6 @@ public class Main {
                 System.exit(1);
             }
         }, 0, 1, TimeUnit.MINUTES);
-
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                final boolean success = executorService.awaitTermination(3, TimeUnit.SECONDS);
-
-                if (!success) System.exit(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                System.exit(1);
-            }
-        }));
     }
 
     public static void initializeBots() {
@@ -145,7 +137,6 @@ public class Main {
             Configuration.BotOption[] botsOptions = config.bots;
 
             // idk if these should be here lol, but it is just the discord stuff
-            JDA jda = null;
             if (config.discord.enabled) {
                 JDABuilder builder = JDABuilder.createDefault(config.discord.token);
                 builder.enableIntents(GatewayIntent.MESSAGE_CONTENT);
@@ -192,5 +183,74 @@ public class Main {
 
             System.exit(1);
         }
+    }
+
+    // most of these are stolen from HBot
+    public static void stop () {
+        executor.shutdownNow();
+
+        PersistentDataUtilities.stop();
+
+        executorService.shutdownNow();
+
+        try {
+            final boolean executorDone = executor.awaitTermination(5, TimeUnit.SECONDS);
+            final boolean executorServiceDone = executorService.awaitTermination(5, TimeUnit.SECONDS);
+
+            if (executorDone || executorServiceDone) {
+                System.out.println("Executors failed to shut down");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        ArrayList<Bot> copiedList;
+        synchronized (bots) {
+            copiedList = new ArrayList<>(bots);
+        }
+
+        final boolean ircEnabled = config.irc.enabled;
+        final boolean discordEnabled = config.discord.enabled;
+
+        for (Bot bot : copiedList) {
+            if (discordEnabled) {
+                final String channelId = bot.discord.servers.get(bot.host + ":" + bot.port);
+
+                bot.discord.sendMessageInstantly("Stopping..", channelId);
+            }
+
+            if (ircEnabled) {
+                bot.irc.quit("Stopping..");
+            }
+
+            bot.stop();
+        }
+
+        jda.shutdownNow();
+
+        if (discordEnabled) {
+            for (int i = 0; i < 150; i++) {
+                boolean stoppedDiscord = true;
+
+                for (Bot bot : bots) {
+                    if (!bot.discord.shuttedDown) {
+                        stoppedDiscord = false;
+                        break;
+                    }
+                }
+
+                if (!stoppedDiscord) {
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
+
+        System.exit(69); // nice
     }
 }

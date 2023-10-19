@@ -51,13 +51,6 @@ public class PersistentDataUtilities {
                 e.printStackTrace();
             }
         }, 0, 100, TimeUnit.MILLISECONDS);
-
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                future.cancel(false);
-            }
-        });
     }
 
     private static void init () {
@@ -90,6 +83,11 @@ public class PersistentDataUtilities {
             writer.write(string);
             writer.flush();
         } catch (IOException ignored) {}
+    }
+
+    public static void stop () {
+        future.cancel(false);
+        write(jsonObject.toString());
     }
 
     public static void put (String property, JsonElement value) {

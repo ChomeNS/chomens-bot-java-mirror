@@ -264,6 +264,11 @@ public class Bot {
         session.connect(false);
     }
 
+    public void stop () {
+        session.disconnect("Received stop signal");
+        Main.bots.remove(this);
+    }
+
     public void addListener (Listener listener) {
         listeners.add(listener);
     }
