@@ -173,6 +173,9 @@ public class Bot {
                         listener.connected(new ConnectedEvent(session));
                     }
 
+                    // this enables all the skin parts (by default they are ALL DISABLED
+                    // which is why most bots when they use someone's skin they are just
+                    // kinda broken)
                     final List<SkinPart> skinParts = new ArrayList<>();
                     skinParts.add(SkinPart.CAPE);
                     skinParts.add(SkinPart.JACKET);
@@ -182,6 +185,7 @@ public class Bot {
                     skinParts.add(SkinPart.RIGHT_PANTS_LEG);
                     skinParts.add(SkinPart.HAT);
 
+                    // we also set other stuffs here
                     session.send(
                             new ServerboundClientInformationPacket(
                                     ComponentUtilities.language.getOrDefault("language.code", "en-us"),
@@ -191,7 +195,7 @@ public class Bot {
                                     skinParts,
                                     HandPreference.RIGHT_HAND,
                                     false,
-                                    true
+                                    true // should this be false lol so only real players are displayed
                             )
                     );
 
