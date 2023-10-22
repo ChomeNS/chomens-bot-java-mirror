@@ -8,7 +8,6 @@ import land.chipmunk.chayapak.chomens_bot.command.IRCCommandContext;
 import land.chipmunk.chayapak.chomens_bot.data.IRCMessage;
 import land.chipmunk.chayapak.chomens_bot.data.chat.PlayerMessage;
 import land.chipmunk.chayapak.chomens_bot.irc.IRCMessageLoop;
-import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -23,7 +22,7 @@ public class IRCPlugin extends IRCMessageLoop {
 
     private final Map<String, List<String>> messageQueue = new HashMap<>();
 
-    private String lastMessage = "";
+//    private String lastMessage = "";
 
     public IRCPlugin (Configuration config) {
         super(config.irc.host, config.irc.port);
@@ -132,6 +131,9 @@ public class IRCPlugin extends IRCMessageLoop {
     }
 
     private void playerMessageReceived (Bot bot, PlayerMessage message) {
+        // best fix in 2023
+
+        /*
         final String stringifiedName = ComponentUtilities.stringify(message.displayName);
         final String stringifiedContents = ComponentUtilities.stringify(message.contents);
 
@@ -149,6 +151,7 @@ public class IRCPlugin extends IRCMessageLoop {
                 bot,
                 toSend
         );
+        */
     }
 
     // i only have listened to connected because the ratelimit
