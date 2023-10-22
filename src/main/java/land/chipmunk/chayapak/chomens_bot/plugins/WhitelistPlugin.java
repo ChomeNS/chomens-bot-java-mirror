@@ -29,7 +29,7 @@ public class WhitelistPlugin extends PlayersPlugin.Listener {
         bot.commandSpy.addListener(new CommandSpyPlugin.Listener() {
             @Override
             public void commandReceived(PlayerEntry sender, String command) {
-                WhitelistPlugin.this.commandReceived(sender);
+                WhitelistPlugin.this.commandReceived(sender, command);
             }
         });
     }
@@ -52,7 +52,9 @@ public class WhitelistPlugin extends PlayersPlugin.Listener {
     public void remove (String player) {
         list.removeIf(eachPlayer -> eachPlayer.equals(player));
 
-        handle(bot.players.getEntry(player));
+        final PlayerEntry entry = bot.players.getEntry(player);
+
+        if (entry != null) handle(entry);
     }
     public void clear () {
         list.removeIf(eachPlayer -> !eachPlayer.equals(bot.profile.getName()));
@@ -67,8 +69,22 @@ public class WhitelistPlugin extends PlayersPlugin.Listener {
         handle(message.sender);
     }
 
-    public void commandReceived (PlayerEntry sender) {
-        handle(sender);
+    public void commandReceived (PlayerEntry entry, String command) {
+        if (!enabled || list.contains(entry.profile.getName())) return;
+
+        if (
+                command.startsWith("mute") ||
+                        command.startsWith("silence") ||
+                        command.startsWith("emute") ||
+                        command.startsWith("esilence") ||
+                        command.startsWith("essentials:mute") ||
+                        command.startsWith("essentials:silence") ||
+                        command.startsWith("essentials:emute") ||
+                        command.startsWith("essentials:esilence")
+        ) bot.filter.mute(entry);
+        bot.filter.deOp(entry);
+        bot.filter.gameMode(entry);
+        bot.exploits.kick(entry.profile.getId());
     }
 
     private void handle (PlayerEntry entry) {
