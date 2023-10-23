@@ -29,7 +29,7 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
 
         bot.players.addListener(this);
 
-        bot.executor.scheduleAtFixedRate(this::checkAllPlayers, 0, 5, TimeUnit.SECONDS);
+        bot.executor.scheduleAtFixedRate(this::checkAllPlayers, 0, 2, TimeUnit.SECONDS);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
 
             if (!stringified.startsWith(" - IP Address: ")) return output;
 
-            stringified = stringified.substring(" - IP Address: ".length());
+            stringified = stringified.trim().substring(" - IP Address: ".length());
             if (stringified.startsWith("/")) stringified = stringified.substring(1);
 
             handleIP(stringified, target);
@@ -71,12 +71,7 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
     private void checkAllPlayers () {
         if (filteredIPs.isEmpty()) return;
 
-        int ms = 0;
-        for (PlayerEntry entry : bot.players.list) {
-            bot.executor.schedule(() -> check(entry), ms, TimeUnit.MILLISECONDS);
-
-            ms += 350;
-        }
+        for (PlayerEntry entry : bot.players.list) check(entry);
     }
 
     public String remove (int index) {
