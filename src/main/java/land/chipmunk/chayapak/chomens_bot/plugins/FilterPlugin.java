@@ -37,8 +37,10 @@ public class FilterPlugin extends PlayersPlugin.Listener {
 
         bot.chat.addListener(new ChatPlugin.Listener() {
             @Override
-            public void playerMessageReceived(PlayerMessage message) {
+            public boolean playerMessageReceived(PlayerMessage message) {
                 FilterPlugin.this.playerMessageReceived(message);
+
+                return true;
             }
         });
 

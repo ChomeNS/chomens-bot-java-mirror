@@ -80,7 +80,7 @@ public class DiscordPlugin {
 
                     bot.chat.addListener(new ChatPlugin.Listener() {
                         @Override
-                        public void systemMessageReceived (Component component, String string, String ansi) {
+                        public boolean systemMessageReceived (Component component, String string, String ansi) {
                             if (string.length() > 2048) {
                                 sendMessage(CodeBlockUtilities.escape(string), channelId);
                             } else {
@@ -94,6 +94,8 @@ public class DiscordPlugin {
                                         channelId
                                 );
                             }
+
+                            return true;
                         }
                     });
                 }

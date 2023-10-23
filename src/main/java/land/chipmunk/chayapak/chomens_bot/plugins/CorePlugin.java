@@ -9,10 +9,8 @@ import com.github.steveice10.mc.protocol.data.game.level.block.CommandBlockMode;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundBlockUpdatePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundLevelChunkWithLightPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundSectionBlocksUpdatePacket;
-import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundTagQueryPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.inventory.ServerboundSetCommandBlockPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.inventory.ServerboundSetCreativeModeSlotPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.serverbound.level.ServerboundBlockEntityTagQuery;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.player.ServerboundPlayerActionPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.serverbound.player.ServerboundUseItemOnPacket;
 import com.github.steveice10.opennbt.tag.builtin.ByteTag;
@@ -23,6 +21,11 @@ import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import com.github.steveice10.packetlib.packet.Packet;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.util.MathUtilities;
+import net.kyori.adventure.text.BlockNBTComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.cloudburstmc.math.vector.Vector3i;
 
 import java.util.ArrayList;
@@ -51,7 +54,9 @@ public class CorePlugin extends PositionPlugin.Listener {
     public Vector3i block = null;
 
     private int nextTransactionId = 0;
-    private final Map<Integer, CompletableFuture<CompoundTag>> transactions = new HashMap<>();
+    private final Map<Integer, CompletableFuture<Component>> transactions = new HashMap<>();
+
+    private final List<Double> secrets = new ArrayList<>();
 
     private int commandsPerSecond = 0;
 
@@ -101,10 +106,16 @@ public class CorePlugin extends PositionPlugin.Listener {
 
             @Override
             public void packetReceived(Session session, Packet packet) {
-                if (packet instanceof ClientboundTagQueryPacket) CorePlugin.this.packetReceived((ClientboundTagQueryPacket) packet);
-                else if (packet instanceof ClientboundBlockUpdatePacket) CorePlugin.this.packetReceived((ClientboundBlockUpdatePacket) packet);
+                if (packet instanceof ClientboundBlockUpdatePacket) CorePlugin.this.packetReceived((ClientboundBlockUpdatePacket) packet);
                 else if (packet instanceof ClientboundSectionBlocksUpdatePacket) CorePlugin.this.packetReceived((ClientboundSectionBlocksUpdatePacket) packet);
                 else if (packet instanceof ClientboundLevelChunkWithLightPacket) CorePlugin.this.packetReceived((ClientboundLevelChunkWithLightPacket) packet);
+            }
+        });
+
+        bot.chat.addListener(new ChatPlugin.Listener() {
+            @Override
+            public boolean systemMessageReceived(Component component, String string, String ansi) {
+                return CorePlugin.this.systemMessageReceived(component);
             }
         });
     }
@@ -168,28 +179,68 @@ public class CorePlugin extends PositionPlugin.Listener {
         }
     }
 
-    public CompletableFuture<CompoundTag> runTracked (String command) {
-        final Vector3i placeBlock = Vector3i.from(
-                bot.position.position.getX(),
-                bot.position.position.getY() - 1,
-                bot.position.position.getZ()
-        );
-
-        runPlaceBlock(command);
-
+    // thanks chipmunk for this new tellraw method :3
+    public CompletableFuture<Component> runTracked (String command) {
         if (!bot.options.useCore) return null;
+
+        final Vector3i coreBlock = block;
+
+        run(command);
 
         final int transactionId = nextTransactionId++;
 
-        // promises are renamed to future lmao
-        final CompletableFuture<CompoundTag> future = new CompletableFuture<>();
+        final CompletableFuture<Component> future = new CompletableFuture<>();
         transactions.put(transactionId, future);
 
-        final Runnable afterTick = () -> bot.session.send(new ServerboundBlockEntityTagQuery(transactionId, placeBlock));
+        final double secret = Math.random(); // it is uh bad whatever
+        secrets.add(secret);
 
-        bot.executor.schedule(afterTick, 50, TimeUnit.MILLISECONDS);
+        bot.chat.tellraw(
+                Component
+                        .text(secret)
+                        .append(Component.text(transactionId))
+                        .append(
+                                Component.blockNBT(
+                                        "LastOutput",
+
+                                        // is there a better way of doing this?
+                                        BlockNBTComponent.Pos.fromString(
+                                                coreBlock.getX() + " " +
+                                                        coreBlock.getY() + " " +
+                                                        coreBlock.getZ()
+                                        )
+                                )
+                        ),
+                bot.profile.getId()
+        );
 
         return future;
+    }
+
+    private boolean systemMessageReceived (Component component) {
+        if (!(component instanceof TextComponent textComponent)) return true;
+
+        try {
+            if (!secrets.contains(Double.parseDouble(textComponent.content()))) return true;
+
+            final List<Component> children = component.children();
+
+            if (children.size() != 2) return true;
+
+            final int transactionId = Integer.parseInt(((TextComponent) children.get(0)).content());
+
+            if (!transactions.containsKey(transactionId)) return true;
+
+            final CompletableFuture<Component> future = transactions.get(transactionId);
+
+            final String stringLastOutput = ((TextComponent) children.get(1)).content();
+
+            future.complete(Component.join(JoinConfiguration.separator(Component.space()), GsonComponentSerializer.gson().deserialize(stringLastOutput).children()));
+
+            return false;
+        } catch (ClassCastException | NumberFormatException ignored) {}
+
+        return true;
     }
 
     public void runPlaceBlock (String command) {
@@ -224,10 +275,6 @@ public class CorePlugin extends PositionPlugin.Listener {
         );
         session.send(new ServerboundPlayerActionPacket(PlayerAction.START_DIGGING, temporaryBlockPosition, Direction.NORTH, 0));
         session.send(new ServerboundUseItemOnPacket(temporaryBlockPosition, Direction.UP, Hand.MAIN_HAND, 0.5f, 0.5f, 0.5f, false, 1));
-    }
-
-    public void packetReceived (ClientboundTagQueryPacket packet) {
-        transactions.get(packet.getTransactionId()).complete(packet.getNbt());
     }
 
     public void packetReceived (ClientboundBlockUpdatePacket packet) {

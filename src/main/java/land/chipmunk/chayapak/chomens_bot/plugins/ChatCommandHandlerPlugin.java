@@ -33,14 +33,14 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.Listener {
     }
 
     @Override
-    public void playerMessageReceived (PlayerMessage message) {
+    public boolean playerMessageReceived (PlayerMessage message) {
         try {
-            if (message.sender.profile.getId().equals(bot.profile.getId())) return;
+            if (message.sender.profile.getId().equals(bot.profile.getId())) return true;
         } catch (Exception ignored) {} // kinda sus ngl
 
         final Component displayNameComponent = message.displayName;
         final Component messageComponent = message.contents;
-        if (displayNameComponent == null || messageComponent == null) return;
+        if (displayNameComponent == null || messageComponent == null) return true;
 
         final String displayName = ComponentUtilities.stringify(displayNameComponent);
         final String contents = ComponentUtilities.stringify(messageComponent);
@@ -52,7 +52,7 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.Listener {
             prefix = eachPrefix;
         }
 
-        if (prefix == null) return;
+        if (prefix == null) return true;
 
         final String commandString = contents.substring(prefix.length());
 
@@ -63,6 +63,8 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.Listener {
 
             if (output != null) context.sendOutput(output);
         });
+
+        return true;
     }
 
     public void commandSpyMessageReceived (PlayerEntry sender, String command) {

@@ -49,8 +49,10 @@ public class IRCPlugin extends IRCMessageLoop {
                 public void loadedPlugins() {
                     bot.chat.addListener(new ChatPlugin.Listener() {
                         @Override
-                        public void playerMessageReceived(PlayerMessage message) {
+                        public boolean playerMessageReceived(PlayerMessage message) {
                             IRCPlugin.this.playerMessageReceived(bot, message);
+
+                            return true;
                         }
                     });
                 }

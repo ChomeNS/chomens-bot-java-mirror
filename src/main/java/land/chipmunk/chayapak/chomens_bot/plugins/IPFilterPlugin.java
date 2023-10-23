@@ -1,7 +1,5 @@
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
-import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
-import com.github.steveice10.opennbt.tag.builtin.StringTag;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import land.chipmunk.chayapak.chomens_bot.Bot;
@@ -10,9 +8,8 @@ import land.chipmunk.chayapak.chomens_bot.util.ComponentUtilities;
 import land.chipmunk.chayapak.chomens_bot.util.PersistentDataUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
-import java.util.*;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -43,29 +40,23 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
     }
 
     private void check (PlayerEntry target) {
-        final CompletableFuture<CompoundTag> future = bot.core.runTracked("essentials:seen " + target.profile.getIdAsString());
+        final CompletableFuture<Component> future = bot.core.runTracked("essentials:seen " + target.profile.getIdAsString());
 
         if (future == null) return;
 
-        future.thenApply(tags -> {
-            if (!tags.contains("LastOutput") || !(tags.get("LastOutput") instanceof StringTag)) return tags;
-
-            final StringTag lastOutput = tags.get("LastOutput");
-
-            final Component output = GsonComponentSerializer.gson().deserialize(lastOutput.getValue());
-
+        future.thenApply(output -> {
             final List<Component> children = output.children();
 
             String stringified = ComponentUtilities.stringify(Component.join(JoinConfiguration.separator(Component.space()), children));
 
-            if (!stringified.startsWith(" - IP Address: ")) return tags;
+            if (!stringified.startsWith(" - IP Address: ")) return output;
 
             stringified = stringified.substring(" - IP Address: ".length());
             if (stringified.startsWith("/")) stringified = stringified.substring(1);
 
             handleIP(stringified, target);
 
-            return tags;
+            return output;
         });
     }
 

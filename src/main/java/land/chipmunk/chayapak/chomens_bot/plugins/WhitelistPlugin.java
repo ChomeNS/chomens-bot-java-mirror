@@ -21,8 +21,10 @@ public class WhitelistPlugin extends PlayersPlugin.Listener {
 
         bot.chat.addListener(new ChatPlugin.Listener() {
             @Override
-            public void playerMessageReceived(PlayerMessage message) {
+            public boolean playerMessageReceived(PlayerMessage message) {
                 WhitelistPlugin.this.playerMessageReceived(message);
+
+                return true;
             }
         });
 

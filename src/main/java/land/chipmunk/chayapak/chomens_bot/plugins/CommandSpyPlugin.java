@@ -22,7 +22,7 @@ public class CommandSpyPlugin extends ChatPlugin.Listener {
     }
 
     @Override
-    public void systemMessageReceived(Component component, String string, String ansi) {
+    public boolean systemMessageReceived(Component component, String string, String ansi) {
         TextComponent textComponent;
 
         try {
@@ -37,19 +37,21 @@ public class CommandSpyPlugin extends ChatPlugin.Listener {
                                     textComponent.style().isEmpty()
                     ) &&
                             children.size() < 2
-            ) return;
+            ) return true;
 
-            if (!((TextComponent) children.get(0)).content().equals(": ")) return;
+            if (!((TextComponent) children.get(0)).content().equals(": ")) return true;
 
             final String username = textComponent.content();
             final String command = ComponentUtilities.stringify(children.get(1));
 
             final PlayerEntry sender = bot.players.getEntry(username);
 
-            if (sender == null) return;
+            if (sender == null) return true;
 
             for (Listener listener : listeners) listener.commandReceived(sender, command);
         } catch (ClassCastException ignored) {}
+
+        return true;
     }
 
     public void addListener (Listener listener) { listeners.add(listener); }

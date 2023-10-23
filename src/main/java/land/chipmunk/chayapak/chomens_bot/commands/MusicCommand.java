@@ -1,7 +1,5 @@
 package land.chipmunk.chayapak.chomens_bot.commands;
 
-import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
-import com.github.steveice10.opennbt.tag.builtin.StringTag;
 import land.chipmunk.chayapak.chomens_bot.Bot;
 import land.chipmunk.chayapak.chomens_bot.Main;
 import land.chipmunk.chayapak.chomens_bot.command.Command;
@@ -20,7 +18,6 @@ import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -203,7 +200,7 @@ public class MusicCommand extends Command {
 
         final Bot bot = context.bot;
 
-        final CompletableFuture<CompoundTag> future = bot.core.runTracked(
+        final CompletableFuture<Component> future = bot.core.runTracked(
                 "minecraft:data get entity " +
                         UUIDUtilities.selector(context.sender.profile.getId()) +
                         " SelectedItem.tag.data"
@@ -213,13 +210,7 @@ public class MusicCommand extends Command {
             throw new CommandException(Component.text("There was an error while getting your data"));
         }
 
-        future.thenApply(tags -> {
-            if (!tags.contains("LastOutput") || !(tags.get("LastOutput") instanceof StringTag)) return tags;
-
-            final StringTag lastOutput = tags.get("LastOutput");
-
-            final Component output = GsonComponentSerializer.gson().deserialize(lastOutput.getValue());
-
+        future.thenApply(output -> {
             final List<Component> children = output.children();
 
             if (
@@ -230,14 +221,14 @@ public class MusicCommand extends Command {
                                     .equals("arguments.nbtpath.nothing_found")
             ) {
                 context.sendOutput(Component.text("Player has no `data` NBT tag in the selected item").color(NamedTextColor.RED));
-                return tags;
+                return output;
             }
 
             final String value = ComponentUtilities.stringify(((TranslatableComponent) children.get(0)).args().get(1));
 
             if (!value.startsWith("\"") && !value.endsWith("\"") && !value.startsWith("'") && !value.endsWith("'")) {
                 context.sendOutput(Component.text("`data` NBT is not a string").color(NamedTextColor.RED));
-                return tags;
+                return output;
             }
 
             try {
@@ -253,7 +244,7 @@ public class MusicCommand extends Command {
                 context.sendOutput(Component.text("Invalid base64 in the selected item").color(NamedTextColor.RED));
             }
 
-            return tags;
+            return output;
         });
 
         return null;
@@ -266,7 +257,7 @@ public class MusicCommand extends Command {
 
         final Bot bot = context.bot;
 
-        final CompletableFuture<CompoundTag> future = bot.core.runTracked(
+        final CompletableFuture<Component> future = bot.core.runTracked(
                 "minecraft:data get entity " +
                         UUIDUtilities.selector(context.sender.profile.getId()) +
                         " SelectedItem.tag.SongItemData.SongData"
@@ -276,13 +267,7 @@ public class MusicCommand extends Command {
             throw new CommandException(Component.text("There was an error while getting your data"));
         }
 
-        future.thenApply(tags -> {
-            if (!tags.contains("LastOutput") || !(tags.get("LastOutput") instanceof StringTag)) return tags;
-
-            final StringTag lastOutput = tags.get("LastOutput");
-
-            final Component output = GsonComponentSerializer.gson().deserialize(lastOutput.getValue());
-
+        future.thenApply(output -> {
             final List<Component> children = output.children();
 
             if (
@@ -293,14 +278,14 @@ public class MusicCommand extends Command {
                                     .equals("arguments.nbtpath.nothing_found")
             ) {
                 context.sendOutput(Component.text("Player has no SongItemData -> SongData NBT tag in the selected item").color(NamedTextColor.RED));
-                return tags;
+                return output;
             }
 
             final String value = ComponentUtilities.stringify(((TranslatableComponent) children.get(0)).args().get(1));
 
             if (!value.startsWith("\"") && !value.endsWith("\"") && !value.startsWith("'") && !value.endsWith("'")) {
                 context.sendOutput(Component.text("NBT is not a string").color(NamedTextColor.RED));
-                return tags;
+                return output;
             }
 
             try {
@@ -316,7 +301,7 @@ public class MusicCommand extends Command {
                 context.sendOutput(Component.text("Invalid song data in the selected item").color(NamedTextColor.RED));
             }
 
-            return tags;
+            return output;
         });
 
         return null;

@@ -43,10 +43,12 @@ public class FormatCheckerPlugin extends ChatPlugin.Listener {
     }
 
     @Override
-    public void systemMessageReceived(Component component, boolean isCommandSuggestions, boolean isAuth, boolean isImposterFormat, String string, String ansi) {
-        if (!isImposterFormat) return;
+    public boolean systemMessageReceived(Component component, String string, String ansi) {
+        if (!isImposterFormat(component)) return true;
 
         bot.chat.tellraw(Component.text("Possible fake ChomeNS custom chat").style(Style.style(TextDecoration.ITALIC)).color(NamedTextColor.GRAY));
+
+        return true;
     }
 
     public boolean isImposterFormat (Component component) {

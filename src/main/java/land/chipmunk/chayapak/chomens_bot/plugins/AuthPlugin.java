@@ -35,8 +35,8 @@ public class AuthPlugin extends PlayersPlugin.Listener {
         bot.players.addListener(this);
         bot.chat.addListener(new ChatPlugin.Listener() {
             @Override
-            public void systemMessageReceived(Component component, boolean isCommandSuggestions, boolean isAuth, boolean isImposterFormat, String string, String ansi) {
-                AuthPlugin.this.systemMessageReceived(component, isCommandSuggestions, isAuth, isImposterFormat);
+            public boolean systemMessageReceived(Component component, String string, String ansi) {
+                return AuthPlugin.this.systemMessageReceived(component);
             }
         });
         bot.executor.scheduleAtFixedRate(this::check, 0, 1, TimeUnit.SECONDS);
@@ -84,15 +84,17 @@ public class AuthPlugin extends PlayersPlugin.Listener {
         started = false;
     }
 
-    private void systemMessageReceived (Component component, boolean isCommandSuggestions, boolean isAuth, boolean isImposterFormat) {
+    private boolean systemMessageReceived (Component component) {
         try {
-            if (isCommandSuggestions || !isAuth || isImposterFormat) return;
+            if (!(component instanceof TextComponent idComponent)) return true;
+
+            if (!idComponent.content().equals(id)) return true;
 
             final List<Component> children = component.children();
 
-            if (children.size() != 1) return;
+            if (children.size() != 1) return true;
 
-            if (!(children.get(0) instanceof TextComponent)) return;
+            if (!(children.get(0) instanceof TextComponent)) return true;
 
             final String inputHash = ((TextComponent) children.get(0)).content();
 
@@ -107,7 +109,11 @@ public class AuthPlugin extends PlayersPlugin.Listener {
             bot.logger.custom(Component.text("Auth").color(NamedTextColor.RED), Component.text("Authenticating with real hash " + hash + " and user hash " + inputHash));
 
             hasCorrectHash = inputHash.equals(hash);
+
+            return false;
         } catch (Exception ignored) {}
+
+        return true;
     }
 
     private void check() {

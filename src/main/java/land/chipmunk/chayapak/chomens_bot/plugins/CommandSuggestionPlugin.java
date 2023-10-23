@@ -20,13 +20,15 @@ public class CommandSuggestionPlugin extends ChatPlugin.Listener {
     }
 
     @Override
-    public void systemMessageReceived(Component component, boolean isCommandSuggestions, boolean isAuth, boolean isImposterFormat, String string, String ansi) {
-        if (!isCommandSuggestions) return;
+    public boolean systemMessageReceived(Component component, String string, String ansi) {
+        if (!(component instanceof TextComponent idComponent)) return true;
+
+        if (!idComponent.content().equals(id)) return true;
 
         try {
             final List<Component> children = component.children();
 
-            if (children.size() != 1) return;
+            if (children.size() != 1) return true;
 
             final String player = ((TextComponent) children.get(0)).content();
 
@@ -49,6 +51,10 @@ public class CommandSuggestionPlugin extends ChatPlugin.Listener {
             }
 
             bot.chat.tellraw(Component.join(JoinConfiguration.noSeparators(), output), player);
+
+            return false;
         } catch (Exception ignored) {}
+
+        return true;
     }
 }

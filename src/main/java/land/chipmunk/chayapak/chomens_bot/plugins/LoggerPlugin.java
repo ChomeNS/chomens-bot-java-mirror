@@ -103,11 +103,13 @@ public class LoggerPlugin extends ChatPlugin.Listener {
     }
 
     @Override
-    public void systemMessageReceived(Component component, String string, String ansi) {
+    public boolean systemMessageReceived(Component component, String string, String ansi) {
         if (logToConsole) {
             log(ansi, false, true);
         }
 
         log(string, true, false);
+
+        return true;
     }
 }
