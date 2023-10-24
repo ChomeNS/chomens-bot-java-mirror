@@ -74,8 +74,8 @@ public class CommandHandlerPlugin {
         commands.add(command);
     }
 
-    // literally the same quality as the js chomens bot
-    // well probably less mess (mabe.,,.)
+    // BETTER QUALITY than the js version
+    // BUT still not the best
     public Component executeCommand (
             String input,
             CommandContext context,
