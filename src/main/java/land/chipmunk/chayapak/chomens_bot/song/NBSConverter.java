@@ -176,7 +176,7 @@ public class NBSConverter implements Converter {
       if (note.instrument < instrumentIndex.length) {
         instrument = instrumentIndex[note.instrument];
 
-        key = note.key + (note.pitch / 100);
+        key = note.key + note.pitch / 100;
       } else {
         int index = note.instrument - instrumentIndex.length;
 
@@ -230,8 +230,7 @@ public class NBSConverter implements Converter {
 
         instrument = Instrument.of(name);
 
-        key += note.key + (customInstrument.pitch / 100);
-        key -= 45 + (note.pitch / 100);
+        key += (customInstrument.pitch + note.pitch) / 100;
       }
 
       byte layerVolume = 100;
