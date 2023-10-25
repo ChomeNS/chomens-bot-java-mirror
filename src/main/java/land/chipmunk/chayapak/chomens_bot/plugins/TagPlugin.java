@@ -17,6 +17,8 @@ public class TagPlugin extends CorePlugin.Listener {
     }
 
     private void runCommand () {
+        if (!bot.serverPluginsManager.hasPlugin(ServerPluginsManagerPlugin.EXTRAS)) return;
+
         final String botSelector = UUIDUtilities.selector(bot.profile.getId());
 
         bot.core.run("minecraft:tag " + botSelector + " add " + tag);

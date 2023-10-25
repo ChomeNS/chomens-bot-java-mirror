@@ -91,6 +91,8 @@ public class SelfCarePlugin extends Bot.Listener {
         final boolean kaboom = bot.serverPluginsManager.hasPlugin(ServerPluginsManagerPlugin.EXTRAS);
         final boolean hasEssentials = bot.serverPluginsManager.hasPlugin(ServerPluginsManagerPlugin.ESSENTIALS);
 
+        final boolean creayun = bot.options.creayun;
+
         // chat only
         if (selfCares.op && permissionLevel < 2) bot.chat.send("/minecraft:op @s[type=player]");
         else if (selfCares.gamemode && gamemode != GameMode.CREATIVE && !bot.options.creayun) bot.chat.send("/minecraft:gamemode creative @s[type=player]");
@@ -103,16 +105,16 @@ public class SelfCarePlugin extends Bot.Listener {
         else if (hasEssentials) {
             // TODO: improve lol, this is ohio
 
-            if (selfCares.vanish && !vanish && !visibility) {
+            if (selfCares.vanish && !vanish && !visibility && !creayun) {
                 if (bot.options.useChat) bot.chat.sendCommandInstantly("essentials:vanish enable");
                 else bot.core.run("essentials:vanish " + bot.username + " enable");
             } else if (selfCares.nickname && !nickname) {
                 if (bot.options.useChat) bot.chat.sendCommandInstantly("essentials:nick off");
                 else bot.core.run("essentials:nickname " + bot.username + " off");
-            } else if (selfCares.socialspy && !socialspy) {
+            } else if (selfCares.socialspy && !socialspy && !creayun) {
                 if (bot.options.useChat) bot.chat.sendCommandInstantly("essentials:socialspy enable");
                 else bot.core.run("essentials:socialspy " + bot.username + " enable");
-            } else if (selfCares.mute && muted) {
+            } else if (selfCares.mute && muted && !creayun) {
                 if (bot.options.useChat) bot.chat.sendCommandInstantly("essentials:mute " + bot.profile.getIdAsString());
                 else bot.core.run("essentials:mute " + bot.profile.getIdAsString());
 
