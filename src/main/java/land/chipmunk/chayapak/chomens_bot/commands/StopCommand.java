@@ -14,7 +14,7 @@ public class StopCommand extends Command {
         super(
                 "stop",
                 "Gracefully stops the bot",
-                new String[] {},
+                new String[] { "" },
                 new String[] {},
                 TrustLevel.OWNER,
                 false

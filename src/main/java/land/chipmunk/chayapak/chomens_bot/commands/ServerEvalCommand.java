@@ -20,7 +20,7 @@ public class ServerEvalCommand extends Command {
                 new String[] { "<code>" },
                 new String[] {},
                 TrustLevel.OWNER,
-                false
+                true
         );
     }
 
