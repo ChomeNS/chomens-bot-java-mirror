@@ -225,7 +225,9 @@ public class CorePlugin extends PositionPlugin.Listener {
 
             final List<Component> children = component.children();
 
-            if (children.size() != 2) return true;
+            if (children.size() > 2 || children.isEmpty()) return true;
+
+            if (children.size() == 1) return false;
 
             final int transactionId = Integer.parseInt(((TextComponent) children.get(0)).content());
 
