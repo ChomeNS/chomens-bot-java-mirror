@@ -59,7 +59,7 @@ public class ComponentUtilities {
         ansiMap.put("r", "\u001b[0m");
     }
 
-    private record PartiallyStringified(
+    public record PartiallyStringified(
         String output,
         String lastColor
     ) {}
@@ -95,7 +95,7 @@ public class ComponentUtilities {
         try {
             final StringBuilder builder = new StringBuilder();
 
-            final PartiallyStringified output = stringifyPartially(message, false, false, lastColor);
+            final PartiallyStringified output = stringifyPartially(message, false, false, lastColor, false);
 
             builder.append(output.output);
 
@@ -112,7 +112,7 @@ public class ComponentUtilities {
         try {
             final StringBuilder builder = new StringBuilder();
 
-            final PartiallyStringified output = stringifyPartially(message, true, false, lastColor);
+            final PartiallyStringified output = stringifyPartially(message, true, false, lastColor, false);
 
             builder.append(output.output);
 
@@ -124,16 +124,17 @@ public class ComponentUtilities {
         }
     }
 
-    public static String stringifyAnsi (Component message) { return stringifyAnsi(message, null); }
-    private static String stringifyAnsi (Component message, String lastColor) {
+    public static String stringifyAnsi (Component message) { return stringifyAnsi(message, null, false); }
+    public static String stringifyAnsi (Component message, boolean noHex) { return stringifyAnsi(message, null, noHex); }
+    private static String stringifyAnsi (Component message, String lastColor, boolean noHex) {
         try {
             final StringBuilder builder = new StringBuilder();
 
-            final PartiallyStringified output = stringifyPartially(message, false, true, lastColor);
+            final PartiallyStringified output = stringifyPartially(message, false, true, lastColor, noHex);
 
             builder.append(output.output);
 
-            for (Component child : message.children()) builder.append(stringifyAnsi(child, output.lastColor));
+            for (Component child : message.children()) builder.append(stringifyAnsi(child, output.lastColor, noHex));
 
             return builder.toString();
         } catch (Exception e) {
@@ -141,11 +142,11 @@ public class ComponentUtilities {
         }
     }
 
-    public static PartiallyStringified stringifyPartially (Component message, boolean motd, boolean ansi, String lastColor) {
-        if (message instanceof TextComponent) return stringifyPartially((TextComponent) message, motd, ansi, lastColor);
-        else if (message instanceof TranslatableComponent) return stringifyPartially((TranslatableComponent) message, motd, ansi, lastColor);
-        else if (message instanceof SelectorComponent) return stringifyPartially((SelectorComponent) message, motd, ansi, lastColor);
-        else if (message instanceof KeybindComponent) return stringifyPartially((KeybindComponent) message, motd, ansi, lastColor);
+    public static PartiallyStringified stringifyPartially (Component message, boolean motd, boolean ansi, String lastColor, boolean noHex) {
+        if (message instanceof TextComponent) return stringifyPartially((TextComponent) message, motd, ansi, lastColor, noHex);
+        else if (message instanceof TranslatableComponent) return stringifyPartially((TranslatableComponent) message, motd, ansi, lastColor, noHex);
+        else if (message instanceof SelectorComponent) return stringifyPartially((SelectorComponent) message, motd, ansi, lastColor, noHex);
+        else if (message instanceof KeybindComponent) return stringifyPartially((KeybindComponent) message, motd, ansi, lastColor, noHex);
 
         return new PartiallyStringified("", null);
     }
@@ -183,7 +184,7 @@ public class ComponentUtilities {
         return style.toString();
     }
 
-    public static String getColor (TextColor color, boolean motd, boolean ansi) {
+    public static String getColor (TextColor color, boolean motd, boolean ansi, boolean noHex) {
         if (color == null) return null;
 
         // map totallynotskidded™ too from https://github.com/PrismarineJS/prismarine-chat/blob/master/index.js#L299
@@ -217,22 +218,30 @@ public class ComponentUtilities {
         } else if (ansi) {
             String ansiCode = ansiMap.get(code);
             if (ansiCode == null) {
-                ansiCode = "\u001b[38;2;" +
-                        color.red() +
-                        ";" +
-                        color.green() +
-                        ";" +
-                        color.blue() +
-                        "m";
+                if (noHex) {
+                    final int rgb = Integer.parseInt(code.substring(1), 16);
+
+                    final String chatColor = ColorUtilities.getClosestChatColor(rgb);
+
+                    ansiCode = ansiMap.get(chatColor);
+                } else {
+                    ansiCode = "\u001b[38;2;" +
+                            color.red() +
+                            ";" +
+                            color.green() +
+                            ";" +
+                            color.blue() +
+                            "m";
+                }
             }
 
             return ansiCode;
         } else return null;
     }
 
-    public static PartiallyStringified stringifyPartially (TextComponent message, boolean motd, boolean ansi, String lastColor) {
+    public static PartiallyStringified stringifyPartially (TextComponent message, boolean motd, boolean ansi, String lastColor, boolean noHex) {
         if ((motd || ansi) && /* don't color big messages -> */ message.content().length() < 25_000) {
-            final String color = getColor(message.color(), motd, ansi);
+            final String color = getColor(message.color(), motd, ansi, noHex);
             final String style = getStyle(message.style(), motd);
 
             String replacedContent = message.content();
@@ -254,7 +263,7 @@ public class ComponentUtilities {
         return new PartiallyStringified(message.content(), null);
     }
 
-    public static PartiallyStringified stringifyPartially (TranslatableComponent message, boolean motd, boolean ansi, String lastColor) {
+    public static PartiallyStringified stringifyPartially (TranslatableComponent message, boolean motd, boolean ansi, String lastColor, boolean noHex) {
         String format = getOrReturnKey(message.key());
 
         // totallynotskidded™️ from HBot (and changed a bit)
@@ -262,7 +271,7 @@ public class ComponentUtilities {
         StringBuilder sb = new StringBuilder();
 
         final String style = getStyle(message.style(), motd);
-        final String _color = getColor(message.color(), motd, ansi);
+        final String _color = getColor(message.color(), motd, ansi, noHex);
         String color;
         if (_color == null) color = "";
         else color = _color;
@@ -297,18 +306,18 @@ public class ComponentUtilities {
         return new PartiallyStringified((lastColor != null ? lastColor : "") + color + (style != null && ansi ? style : "") + sb + (ansi ? ansiMap.get("r") : ""), _color);
     }
 
-    public static PartiallyStringified stringifyPartially (SelectorComponent message, boolean motd, boolean ansi, String lastColor) {
+    public static PartiallyStringified stringifyPartially (SelectorComponent message, boolean motd, boolean ansi, String lastColor, boolean noHex) {
         final String style = getStyle(message.style(), motd);
-        final String _color = getColor(message.color(), motd, ansi);
+        final String _color = getColor(message.color(), motd, ansi, noHex);
         String color;
         if (_color == null) color = "";
         else color = _color;
         return new PartiallyStringified((lastColor != null ? lastColor : "") + color + (style != null && ansi ? style : "") + message.pattern(), _color); // * Client-side selector components are equivalent to text ones, and do NOT list entities.
     }
 
-    public static PartiallyStringified stringifyPartially (KeybindComponent message, boolean motd, boolean ansi, String lastColor) {
+    public static PartiallyStringified stringifyPartially (KeybindComponent message, boolean motd, boolean ansi, String lastColor, boolean noHex) {
         String keybind = message.keybind();
         Component component = keybinds.containsKey(keybind) ? Component.translatable(keybind) : Component.text(keybind); // TODO: Fix some keys like `key.keyboard.a`
-        return stringifyPartially(component, motd, ansi, lastColor);
+        return stringifyPartially(component, motd, ansi, lastColor, noHex);
     }
 }
