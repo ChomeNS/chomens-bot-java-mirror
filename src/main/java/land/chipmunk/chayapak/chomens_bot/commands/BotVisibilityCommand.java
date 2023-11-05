@@ -12,7 +12,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class BotVisibilityCommand extends Command {
     public BotVisibilityCommand () {
         super(
-                "botvisibilty",
+                "botvisibility",
                 "Changes the bot's visibility",
                 new String[] { "<true|false>", "<on|off>", "" },
                 new String[] { "botvis", "togglevis", "togglevisibility" },
