@@ -11,7 +11,7 @@ import me.chayapak1.chomens_bot.song.Instrument;
 import me.chayapak1.chomens_bot.song.Loop;
 import me.chayapak1.chomens_bot.song.Note;
 import me.chayapak1.chomens_bot.song.Song;
-import land.chipmunk.chayapak.chomens_bot.util.*;
+import me.chayapak1.chomens_bot.util.*;
 import me.chayapak1.chomens_bot.util.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
@@ -225,7 +225,7 @@ public class MusicCommand extends Command {
                 return output;
             }
 
-            final String value = ComponentUtilities.stringify(((TranslatableComponent) children.get(0)).args().get(1));
+            final String value = ComponentUtilities.stringify(((TranslatableComponent) children.get(0)).arguments().get(1).asComponent());
 
             if (!value.startsWith("\"") && !value.endsWith("\"") && !value.startsWith("'") && !value.endsWith("'")) {
                 context.sendOutput(Component.text("`data` NBT is not a string").color(NamedTextColor.RED));
@@ -282,7 +282,7 @@ public class MusicCommand extends Command {
                 return output;
             }
 
-            final String value = ComponentUtilities.stringify(((TranslatableComponent) children.get(0)).args().get(1));
+            final String value = ComponentUtilities.stringify(((TranslatableComponent) children.get(0)).arguments().get(1).asComponent());
 
             if (!value.startsWith("\"") && !value.endsWith("\"") && !value.startsWith("'") && !value.endsWith("'")) {
                 context.sendOutput(Component.text("NBT is not a string").color(NamedTextColor.RED));

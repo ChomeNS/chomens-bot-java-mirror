@@ -1,12 +1,12 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import com.github.steveice10.mc.protocol.data.game.BossBarColor;
-import com.github.steveice10.mc.protocol.data.game.BossBarDivision;
-import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
+import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
+import org.geysermc.mcprotocollib.protocol.data.game.BossBarColor;
+import org.geysermc.mcprotocollib.protocol.data.game.BossBarDivision;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.BotBossBar;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
-import land.chipmunk.chayapak.chomens_bot.song.*;
+import me.chayapak1.chomens_bot.song.*;
 import me.chayapak1.chomens_bot.song.*;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.MathUtilities;

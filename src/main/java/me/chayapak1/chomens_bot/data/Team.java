@@ -1,8 +1,8 @@
 package me.chayapak1.chomens_bot.data;
 
-import com.github.steveice10.mc.protocol.data.game.scoreboard.CollisionRule;
-import com.github.steveice10.mc.protocol.data.game.scoreboard.NameTagVisibility;
-import com.github.steveice10.mc.protocol.data.game.scoreboard.TeamColor;
+import org.geysermc.mcprotocollib.protocol.data.game.scoreboard.CollisionRule;
+import org.geysermc.mcprotocollib.protocol.data.game.scoreboard.NameTagVisibility;
+import org.geysermc.mcprotocollib.protocol.data.game.scoreboard.TeamColor;
 import net.kyori.adventure.text.Component;
 
 public class Team {

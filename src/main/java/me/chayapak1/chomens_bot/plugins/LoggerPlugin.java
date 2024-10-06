@@ -1,11 +1,11 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import com.github.steveice10.packetlib.event.session.ConnectedEvent;
-import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.kyori.adventure.text.Component;
+import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
+import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 
 public class LoggerPlugin extends ChatPlugin.Listener {
     private final Bot bot;

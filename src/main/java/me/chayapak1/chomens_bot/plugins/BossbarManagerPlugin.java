@@ -1,11 +1,11 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import com.github.steveice10.mc.protocol.data.game.BossBarColor;
-import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundBossEventPacket;
-import com.github.steveice10.packetlib.Session;
-import com.github.steveice10.packetlib.event.session.ConnectedEvent;
-import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
-import com.github.steveice10.packetlib.packet.Packet;
+import org.geysermc.mcprotocollib.network.Session;
+import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
+import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
+import org.geysermc.mcprotocollib.network.packet.Packet;
+import org.geysermc.mcprotocollib.protocol.data.game.BossBarColor;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundBossEventPacket;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.BossBar;
 import me.chayapak1.chomens_bot.data.BotBossBar;

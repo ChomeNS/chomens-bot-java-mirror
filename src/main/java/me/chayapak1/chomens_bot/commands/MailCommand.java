@@ -118,7 +118,7 @@ public class MailCommand extends Command {
                         return output;
                     }
 
-                    final String value = ComponentUtilities.stringify(((TranslatableComponent) children.get(0)).args().get(1));
+                    final String value = ComponentUtilities.stringify(((TranslatableComponent) children.get(0)).arguments().get(1).asComponent());
 
                     if (!value.startsWith("\"") && !value.endsWith("\"") && !value.startsWith("'") && !value.endsWith("'")) {
                         context.sendOutput(Component.text("`message` NBT is not a string").color(NamedTextColor.RED));

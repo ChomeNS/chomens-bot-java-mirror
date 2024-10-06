@@ -283,16 +283,16 @@ public class ComponentUtilities {
             } else {
                 String idxStr = matcher.group(1);
                 int idx = idxStr == null ? i++ : (Integer.parseInt(idxStr) - 1);
-                if (idx >= 0 && idx < message.args().size()) {
+                if (idx >= 0 && idx < message.arguments().size()) {
                     matcher.appendReplacement(
                             sb,
                             Matcher.quoteReplacement(
                                     motd ?
-                                            stringifyMotd(message.args().get(idx)) + color :
+                                            stringifyMotd(message.arguments().get(idx).asComponent()) + color :
                                             (
                                                     ansi ?
-                                                            stringifyAnsi(message.args().get(idx)) + color :
-                                                            stringify(message.args().get(idx))
+                                                            stringifyAnsi(message.arguments().get(idx).asComponent()) + color :
+                                                            stringify(message.arguments().get(idx).asComponent())
                                             )
                             )
                     );

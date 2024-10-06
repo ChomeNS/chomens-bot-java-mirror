@@ -7,6 +7,7 @@ import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.event.HoverEvent;
 
 import java.util.List;
@@ -28,11 +29,11 @@ public class U203aChatParser implements ChatParser {
 
     // very similar to MinecraftChatParser
     public PlayerMessage parse (TranslatableComponent message) {
-        final List<Component> args = message.args();
+        final List<TranslationArgument> args = message.arguments();
         if (args.size() < 3 || (!message.key().equals("[%s] %s › %s") && !message.key().equals("%s %s › %s"))) return null;
 
-        final Component senderComponent = args.get(1);
-        final Component contents = args.get(2);
+        final Component senderComponent = args.get(1).asComponent();
+        final Component contents = args.get(2).asComponent();
 
         PlayerEntry sender;
         final HoverEvent<?> hoverEvent = senderComponent.hoverEvent();

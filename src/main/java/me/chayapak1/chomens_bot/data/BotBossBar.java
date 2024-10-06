@@ -1,7 +1,7 @@
 package me.chayapak1.chomens_bot.data;
 
-import com.github.steveice10.mc.protocol.data.game.BossBarColor;
-import com.github.steveice10.mc.protocol.data.game.BossBarDivision;
+import org.geysermc.mcprotocollib.protocol.data.game.BossBarColor;
+import org.geysermc.mcprotocollib.protocol.data.game.BossBarDivision;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import net.kyori.adventure.text.Component;

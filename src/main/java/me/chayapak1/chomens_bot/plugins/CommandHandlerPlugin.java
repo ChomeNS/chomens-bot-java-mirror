@@ -1,8 +1,6 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
-import land.chipmunk.chayapak.chomens_bot.command.*;
-import land.chipmunk.chayapak.chomens_bot.commands.*;
 import me.chayapak1.chomens_bot.command.*;
 import me.chayapak1.chomens_bot.commands.*;
 import me.chayapak1.chomens_bot.util.ExceptionUtilities;

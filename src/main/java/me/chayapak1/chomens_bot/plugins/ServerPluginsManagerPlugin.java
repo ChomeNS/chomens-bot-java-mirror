@@ -1,7 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundCommandSuggestionsPacket;
-import com.github.steveice10.packetlib.event.session.ConnectedEvent;
+import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundCommandSuggestionsPacket;
 import me.chayapak1.chomens_bot.Bot;
 
 import java.util.ArrayList;

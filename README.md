@@ -7,7 +7,7 @@ You will see that the exploits plugin is missing because I gitignored it to prev
 To make this successfully compile just make `ExploitsPlugin.java` in the plugins folder and add this code:
 
 ```java
-package land.chipmunk.chayapak.chomens_bot.plugins;
+package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
 

@@ -1,6 +1,8 @@
 package me.chayapak1.chomens_bot.util;
 
-import com.github.steveice10.opennbt.tag.builtin.IntArrayTag;
+import org.cloudburstmc.nbt.NbtMap;
+import org.cloudburstmc.nbt.NbtMapBuilder;
+
 import java.util.UUID;
 import java.nio.ByteBuffer;
 
@@ -19,8 +21,12 @@ public class UUIDUtilities {
         return intArray;
     }
 
-    public static IntArrayTag tag (UUID uuid) {
-        return new IntArrayTag("", intArray(uuid));
+    public static NbtMap tag (UUID uuid) {
+        final NbtMapBuilder builder = NbtMap.builder();
+
+        builder.putIntArray("", intArray(uuid));
+
+        return builder.build();
     }
 
     public static String snbt (UUID uuid) {

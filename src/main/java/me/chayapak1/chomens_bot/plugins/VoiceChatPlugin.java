@@ -1,11 +1,12 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import com.github.steveice10.mc.protocol.packet.common.clientbound.ClientboundCustomPayloadPacket;
-import com.github.steveice10.mc.protocol.packet.common.serverbound.ServerboundCustomPayloadPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
-import com.github.steveice10.packetlib.Session;
-import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
-import com.github.steveice10.packetlib.packet.Packet;
+import net.kyori.adventure.key.Key;
+import org.geysermc.mcprotocollib.network.Session;
+import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
+import org.geysermc.mcprotocollib.network.packet.Packet;
+import org.geysermc.mcprotocollib.protocol.packet.common.clientbound.ClientboundCustomPayloadPacket;
+import org.geysermc.mcprotocollib.protocol.packet.common.serverbound.ServerboundCustomPayloadPacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
 import io.netty.buffer.Unpooled;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.voiceChat.ClientGroup;
@@ -15,7 +16,7 @@ import me.chayapak1.chomens_bot.voiceChat.InitializationData;
 import me.chayapak1.chomens_bot.voiceChat.NetworkMessage;
 import me.chayapak1.chomens_bot.voiceChat.customPayload.JoinGroupPacket;
 import me.chayapak1.chomens_bot.voiceChat.customPayload.SecretPacket;
-import land.chipmunk.chayapak.chomens_bot.voiceChat.packets.*;
+import me.chayapak1.chomens_bot.voiceChat.packets.*;
 import me.chayapak1.chomens_bot.voiceChat.packets.*;
 
 import java.net.*;
@@ -51,17 +52,17 @@ public class VoiceChatPlugin extends Bot.Listener {
     public void packetReceived(ClientboundLoginPacket ignored) {
         // totally didn't use a real minecraft client with voicechat mod to get this
         bot.session.send(new ServerboundCustomPayloadPacket(
-                "minecraft:brand",
+                Key.key("minecraft:brand"),
                 "\u0006fabric".getBytes() // should i use fabric here?
         ));
 
         bot.session.send(new ServerboundCustomPayloadPacket(
-                "voicechat:request_secret",
+                Key.key("voicechat:request_secret"),
                 new FriendlyByteBuf(Unpooled.buffer()).writeInt(17).array()
         ));
 
         bot.session.send(new ServerboundCustomPayloadPacket(
-                "voicechat:update_state",
+                Key.key("voicechat:update_state"),
                 new FriendlyByteBuf(Unpooled.buffer()).writeBoolean(false).array()
         ));
 
@@ -69,7 +70,7 @@ public class VoiceChatPlugin extends Bot.Listener {
     }
 
     public void packetReceived(ClientboundCustomPayloadPacket _packet) {
-        if (_packet.getChannel().equals("voicechat:secret")) { // fard
+        if (_packet.getChannel().equals(Key.key("voicechat:secret"))) { // fard
             final byte[] bytes = _packet.getData();
             final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
 
@@ -112,14 +113,14 @@ public class VoiceChatPlugin extends Bot.Listener {
 
             thread.setName("Simple Voice Chat Thread");
             thread.start();
-        } else if (_packet.getChannel().equals("voicechat:add_group")) {
+        } else if (_packet.getChannel().equals(Key.key("voicechat:add_group"))) {
             final byte[] bytes = _packet.getData();
             final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
 
             final ClientGroup group = ClientGroup.fromBytes(buf);
 
             groups.add(group);
-        } else if (_packet.getChannel().equals("voicechat:remove_group")) {
+        } else if (_packet.getChannel().equals(Key.key("voicechat:remove_group"))) {
             final byte[] bytes = _packet.getData();
             final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
 
@@ -144,7 +145,7 @@ public class VoiceChatPlugin extends Bot.Listener {
         new JoinGroupPacket(clientGroup.id(), password).toBytes(buf);
 
         bot.session.send(new ServerboundCustomPayloadPacket(
-                "voicechat:set_group",
+                Key.key("voicechat:set_group"),
                 buf.array()
         ));
     }

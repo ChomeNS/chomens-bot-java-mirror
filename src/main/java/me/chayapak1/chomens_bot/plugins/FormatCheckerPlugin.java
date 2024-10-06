@@ -6,9 +6,11 @@ import me.chayapak1.chomens_bot.data.PlayerEntry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -56,10 +58,10 @@ public class FormatCheckerPlugin extends ChatPlugin.Listener {
 
         if (!(component instanceof TranslatableComponent format)) return false;
 
-        final List<Component> args = format.args();
+        final List<TranslationArgument> args = format.arguments();
         if (args.size() < 3 || !format.key().equals("[%s] %s › %s")) return false;
 
-        final Component nameComponent = format.args().get(1);
+        final TranslationArgument nameComponent = format.arguments().get(1);
 
         if (!(nameComponent instanceof TextComponent)) return false;
 
@@ -67,7 +69,7 @@ public class FormatCheckerPlugin extends ChatPlugin.Listener {
 
         if (!name.equals(bot.config.ownerName)) return false;
 
-        final Component prefix = format.args().get(0);
+        final Component prefix = (Component) format.arguments().get(0);
 
         if (
                 ((prefix instanceof TextComponent text) && text.content().equals(bot.username + " Console")) || // ohio
@@ -76,7 +78,7 @@ public class FormatCheckerPlugin extends ChatPlugin.Listener {
 
         if (!(prefix instanceof TranslatableComponent translatablePrefix)) return true;
 
-        final Component userHash = translatablePrefix.args().get(0);
+        final TranslationArgument userHash = translatablePrefix.arguments().get(0);
 
         if (userHash == null) return true;
 

@@ -1,11 +1,11 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import com.github.steveice10.mc.protocol.data.game.BossBarColor;
-import com.github.steveice10.mc.protocol.data.game.BossBarDivision;
-import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundSetTimePacket;
-import com.github.steveice10.packetlib.Session;
-import com.github.steveice10.packetlib.packet.Packet;
+import org.geysermc.mcprotocollib.network.Session;
+import org.geysermc.mcprotocollib.network.packet.Packet;
+import org.geysermc.mcprotocollib.protocol.data.game.BossBarColor;
+import org.geysermc.mcprotocollib.protocol.data.game.BossBarDivision;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundSetTimePacket;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.BotBossBar;
 import me.chayapak1.chomens_bot.util.MathUtilities;
@@ -141,7 +141,7 @@ public class TPSPlugin extends Bot.Listener {
         float sumTickRates = 0.0f;
         for (double tickRate : tickRates) {
             if (tickRate > 0) {
-                sumTickRates += tickRate;
+                sumTickRates += (float) tickRate;
                 numTicks++;
             }
         }

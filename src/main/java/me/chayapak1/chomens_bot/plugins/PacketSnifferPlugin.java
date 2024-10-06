@@ -1,8 +1,8 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import com.github.steveice10.packetlib.Session;
-import com.github.steveice10.packetlib.packet.Packet;
 import me.chayapak1.chomens_bot.Bot;
+import org.geysermc.mcprotocollib.network.Session;
+import org.geysermc.mcprotocollib.network.packet.Packet;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

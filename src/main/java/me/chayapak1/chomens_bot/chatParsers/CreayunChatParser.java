@@ -1,7 +1,7 @@
 package me.chayapak1.chomens_bot.chatParsers;
 
-import com.github.steveice10.mc.auth.data.GameProfile;
-import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
+import org.geysermc.mcprotocollib.auth.GameProfile;
+import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.chat.ChatParser;
 import me.chayapak1.chomens_bot.data.PlayerEntry;

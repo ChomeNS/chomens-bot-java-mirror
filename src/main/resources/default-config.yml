@@ -48,7 +48,7 @@ irc:
     localhost:25565: '#chomens-localhost' # channel name
 
 music:
-  URLRatelimit:
+  urlRatelimit:
     seconds: 15
     limit: 7
 

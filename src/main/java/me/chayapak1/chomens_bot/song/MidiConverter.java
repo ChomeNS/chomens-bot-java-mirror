@@ -11,7 +11,7 @@ import java.util.*;
 import static javax.sound.midi.ShortMessage.SYSTEM_RESET;
 
 // Author: hhhzzzsss
-// i modified this and some codes are stolen from https://github.com/RaphiMC/NoteBlockLib so thanks to them uwu
+// i modified this and some codes are stolen from https://github.com/RaphiMC/NoteBlockLib so thanks to them
 public class MidiConverter implements Converter {
   public static final int TEXT = 0x01;
   public static final int TRACK_NAME = 0x03;

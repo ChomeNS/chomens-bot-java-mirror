@@ -1,7 +1,5 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import com.github.steveice10.packetlib.event.session.ConnectedEvent;
-import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.Main;
@@ -26,6 +24,8 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
+import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -167,7 +167,7 @@ public class DiscordPlugin {
                     // ignore my very very ohio code,..,,.
 
                     Component attachmentsComponent = Component.empty();
-                    if (messageEvent.getAttachments().size() > 0) {
+                    if (!messageEvent.getAttachments().isEmpty()) {
                         attachmentsComponent = attachmentsComponent.append(Component.space());
                         for (Message.Attachment attachment : messageEvent.getAttachments()) {
                             attachmentsComponent = attachmentsComponent
@@ -182,7 +182,7 @@ public class DiscordPlugin {
                     }
 
                     Component embedsComponent = Component.empty();
-                    if (messageEvent.getEmbeds().size() > 0) {
+                    if (!messageEvent.getEmbeds().isEmpty()) {
                         if (messageEvent.getAttachments().isEmpty()) embedsComponent = embedsComponent.append(Component.space());
                         for (MessageEmbed embed : messageEvent.getEmbeds()) {
                             final Component hoverEvent = Component.translatable(
@@ -216,7 +216,7 @@ public class DiscordPlugin {
                     final List<Role> roles = member == null ? Collections.emptyList() : member.getRoles();
 
                     Component rolesComponent = Component.empty();
-                    if (roles.size() > 0) {
+                    if (!roles.isEmpty()) {
                         rolesComponent = rolesComponent
                                 .append(Component.text("Roles:").color(NamedTextColor.GRAY))
                                 .append(Component.newline());
@@ -356,7 +356,7 @@ public class DiscordPlugin {
 
     public void onDiscordTick(String channelId) {
         synchronized (logMessages) {
-            if (!logMessages.containsKey(channelId) || logMessages.get(channelId).length() == 0) {
+            if (!logMessages.containsKey(channelId) || logMessages.get(channelId).isEmpty()) {
                 return;
             }
         }

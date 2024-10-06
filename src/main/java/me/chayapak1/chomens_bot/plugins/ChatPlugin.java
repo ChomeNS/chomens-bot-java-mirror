@@ -1,12 +1,12 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundDisguisedChatPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundPlayerChatPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.clientbound.ClientboundSystemChatPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundChatCommandPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundChatPacket;
-import com.github.steveice10.packetlib.Session;
-import com.github.steveice10.packetlib.packet.Packet;
+import org.geysermc.mcprotocollib.network.Session;
+import org.geysermc.mcprotocollib.network.packet.Packet;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundDisguisedChatPacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundPlayerChatPacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundSystemChatPacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.ServerboundChatCommandPacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.ServerboundChatPacket;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.chatParsers.CreayunChatParser;
 import me.chayapak1.chomens_bot.chatParsers.KaboomChatParser;
@@ -141,7 +141,7 @@ public class ChatPlugin extends Bot.Listener {
 
         final Component unsignedContent = packet.getUnsignedContent();
 
-        final String translation = getTranslationByChatType(packet.getChatType());
+        final String translation = getTranslationByChatType(packet.getChatType().id());
 
         for (Listener listener : listeners) {
             final boolean bool = listener.playerMessageReceived(playerMessage);
@@ -152,13 +152,13 @@ public class ChatPlugin extends Bot.Listener {
                 TranslatableComponent component = Component.translatable(translation);
 
                 if (translation.equals("chat.type.team.text") || translation.equals("chat.type.team.sent")) { // ohio
-                    component = component.args(
-                            Component.translatable("chat.square_brackets").args(bot.team.teamsByPlayer.get(bot.profile.getName()).displayName),
+                    component = component.arguments(
+                            Component.translatable("chat.square_brackets").arguments(bot.team.teamsByPlayer.get(bot.profile.getName()).displayName),
                             playerMessage.displayName,
                             playerMessage.contents
                     );
                 } else {
-                    component = component.args(playerMessage.displayName, playerMessage.contents);
+                    component = component.arguments(playerMessage.displayName, playerMessage.contents);
                 }
 
                 final String string = ComponentUtilities.stringify(component);
@@ -180,7 +180,7 @@ public class ChatPlugin extends Bot.Listener {
 
     public void packetReceived (ClientboundDisguisedChatPacket packet) {
         try {
-            final String translation = getTranslationByChatType(packet.getChatType());
+            final String translation = getTranslationByChatType(packet.getChatType().id());
 
             final Component component = packet.getMessage();
 
@@ -198,13 +198,13 @@ public class ChatPlugin extends Bot.Listener {
                 TranslatableComponent translatableComponent = Component.translatable(translation);
 
                 if (translation.equals("chat.type.team.text") || translation.equals("chat.type.team.sent")) { // ohio
-                    translatableComponent = translatableComponent.args(
-                            Component.translatable("chat.square_brackets").args(bot.team.teamsByPlayer.get(bot.profile.getName()).displayName),
+                    translatableComponent = translatableComponent.arguments(
+                            Component.translatable("chat.square_brackets").arguments(bot.team.teamsByPlayer.get(bot.profile.getName()).displayName),
                             name,
                             content
                     );
                 } else {
-                    translatableComponent = translatableComponent.args(name, content);
+                    translatableComponent = translatableComponent.arguments(name, content);
                 }
 
                 final String string = ComponentUtilities.stringify(translatableComponent);
@@ -282,14 +282,7 @@ public class ChatPlugin extends Bot.Listener {
     }
 
     public void sendCommandInstantly (String command) {
-        bot.session.send(new ServerboundChatCommandPacket(
-                command,
-                Instant.now().toEpochMilli(),
-                0L,
-                Collections.emptyList(),
-                0,
-                new BitSet()
-        ));
+        bot.session.send(new ServerboundChatCommandPacket(command));
     }
 
     public void sendChatInstantly (String message) {

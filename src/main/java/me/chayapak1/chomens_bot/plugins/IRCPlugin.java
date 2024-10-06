@@ -1,6 +1,5 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import com.github.steveice10.packetlib.event.session.ConnectedEvent;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.Main;
@@ -11,6 +10,7 @@ import me.chayapak1.chomens_bot.irc.IRCMessageLoop;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -30,6 +30,8 @@ public class IRCPlugin extends IRCMessageLoop {
         this.ircConfig = config.irc;
 
         this.servers = ircConfig.servers;
+
+        if (!ircConfig.enabled) return;
 
         nick(ircConfig.nickname);
         user(ircConfig.username, ircConfig.hostName, ircConfig.serverName, ircConfig.realName);

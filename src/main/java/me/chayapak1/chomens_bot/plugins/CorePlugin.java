@@ -1,24 +1,26 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import com.github.steveice10.mc.protocol.data.game.entity.metadata.ItemStack;
-import com.github.steveice10.mc.protocol.data.game.entity.object.Direction;
-import com.github.steveice10.mc.protocol.data.game.entity.player.Hand;
-import com.github.steveice10.mc.protocol.data.game.entity.player.PlayerAction;
-import com.github.steveice10.mc.protocol.data.game.level.block.BlockChangeEntry;
-import com.github.steveice10.mc.protocol.data.game.level.block.CommandBlockMode;
-import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundBlockUpdatePacket;
-import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundLevelChunkWithLightPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.clientbound.level.ClientboundSectionBlocksUpdatePacket;
-import com.github.steveice10.mc.protocol.packet.ingame.serverbound.inventory.ServerboundSetCommandBlockPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.serverbound.inventory.ServerboundSetCreativeModeSlotPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.serverbound.player.ServerboundPlayerActionPacket;
-import com.github.steveice10.mc.protocol.packet.ingame.serverbound.player.ServerboundUseItemOnPacket;
-import com.github.steveice10.opennbt.tag.builtin.ByteTag;
-import com.github.steveice10.opennbt.tag.builtin.CompoundTag;
-import com.github.steveice10.opennbt.tag.builtin.StringTag;
-import com.github.steveice10.packetlib.Session;
-import com.github.steveice10.packetlib.event.session.DisconnectedEvent;
-import com.github.steveice10.packetlib.packet.Packet;
+import org.cloudburstmc.nbt.NbtMap;
+import org.cloudburstmc.nbt.NbtMapBuilder;
+import org.geysermc.mcprotocollib.network.Session;
+import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
+import org.geysermc.mcprotocollib.network.packet.Packet;
+import org.geysermc.mcprotocollib.protocol.data.game.entity.object.Direction;
+import org.geysermc.mcprotocollib.protocol.data.game.entity.player.Hand;
+import org.geysermc.mcprotocollib.protocol.data.game.entity.player.PlayerAction;
+import org.geysermc.mcprotocollib.protocol.data.game.item.ItemStack;
+import org.geysermc.mcprotocollib.protocol.data.game.item.component.DataComponent;
+import org.geysermc.mcprotocollib.protocol.data.game.item.component.DataComponentType;
+import org.geysermc.mcprotocollib.protocol.data.game.item.component.DataComponents;
+import org.geysermc.mcprotocollib.protocol.data.game.level.block.BlockChangeEntry;
+import org.geysermc.mcprotocollib.protocol.data.game.level.block.CommandBlockMode;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundBlockUpdatePacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundLevelChunkWithLightPacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundSectionBlocksUpdatePacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.inventory.ServerboundSetCommandBlockPacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.inventory.ServerboundSetCreativeModeSlotPacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundPlayerActionPacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundUseItemOnPacket;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.BlockNBTComponent;
@@ -179,7 +181,7 @@ public class CorePlugin extends PositionPlugin.Listener {
         }
     }
 
-    // thanks chipmunk for this new tellraw method :3
+    // thanks chipmunk for this new tellraw method
     public CompletableFuture<Component> runTracked (String command) {
         if (!bot.options.useCore) return null;
 
@@ -248,13 +250,29 @@ public class CorePlugin extends PositionPlugin.Listener {
     public void runPlaceBlock (String command) {
         if (!ready || !bot.options.useCore) return;
 
-        final CompoundTag tag = new CompoundTag("");
-        final CompoundTag blockEntityTag = new CompoundTag("BlockEntityTag");
-        blockEntityTag.put(new StringTag("Command", command));
-        blockEntityTag.put(new ByteTag("auto", (byte) 1));
-        blockEntityTag.put(new ByteTag("TrackOutput", (byte) 1));
-        blockEntityTag.put(new StringTag("CustomName", bot.config.core.customName));
-        tag.put(blockEntityTag);
+//        final NbtMapBuilder tagBuilder = NbtMap.builder();
+
+        final NbtMapBuilder blockEntityTagBuilder = NbtMap.builder();
+
+        blockEntityTagBuilder.putString("id", "minecraft:command_block");
+        blockEntityTagBuilder.putString("Command", command);
+        blockEntityTagBuilder.putByte("auto", (byte) 1);
+        blockEntityTagBuilder.putByte("TrackOutput", (byte) 1);
+        blockEntityTagBuilder.putString("CustomName", bot.config.core.customName);
+
+        final NbtMap blockEntityTag = blockEntityTagBuilder.build();
+
+//        tagBuilder.putCompound("BlockEntityTag", blockEntityTag);
+
+//        final NbtMap tag = tagBuilder.build();
+
+        final Map<DataComponentType<?>, DataComponent<?, ?>> map = new HashMap<>();
+
+        map.put(DataComponentType.BLOCK_ENTITY_DATA, DataComponentType.BLOCK_ENTITY_DATA.getDataComponentFactory().create(DataComponentType.BLOCK_ENTITY_DATA, blockEntityTag));
+
+//        map.put(DataComponentType.BLOCK_ENTITY_DATA, DataComponentType.BLOCK_ENTITY_DATA.getDataComponentFactory().create(DataComponentType.BLOCK_ENTITY_DATA, tag));
+
+        final DataComponents dataComponents = new DataComponents(map);
 
         final Vector3i temporaryBlockPosition = Vector3i.from(
                 bot.position.position.getX(),
@@ -265,13 +283,13 @@ public class CorePlugin extends PositionPlugin.Listener {
         final Session session = bot.session;
         session.send(
                 new ServerboundSetCreativeModeSlotPacket(
-                        36,
+                        (short) 36,
                         new ItemStack(
                                 bot.serverPluginsManager.hasPlugin(ServerPluginsManagerPlugin.EXTRAS) ?
-                                        492 /* repeating command block id */ :
-                                        373 /* command block id */,
+                                        514 /* repeating command block id */ :
+                                        395 /* command block id */,
                                 64,
-                                tag
+                                dataComponents
                         )
                 )
         );

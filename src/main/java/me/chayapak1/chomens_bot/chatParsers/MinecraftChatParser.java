@@ -7,6 +7,7 @@ import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.event.HoverEvent;
 
 import java.util.*;
@@ -34,12 +35,12 @@ public class MinecraftChatParser implements ChatParser {
     }
 
     public PlayerMessage parse (TranslatableComponent message) {
-        final List<Component> args = message.args();
+        final List<TranslationArgument> args = message.arguments();
         final String key = message.key();
         if (args.size() < 2 || !keys.contains(key)) return null;
 
-        final Component senderComponent = args.get(0);
-        final Component contents = args.get(1);
+        final Component senderComponent = args.get(0).asComponent();
+        final Component contents = args.get(1).asComponent();
 
         PlayerEntry sender;
 
