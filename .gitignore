@@ -24,6 +24,8 @@
 .idea/**/gradle.xml
 .idea/**/libraries
 
+.idea/misc.xml
+
 gradle
 
 # Ignore Gradle GUI config
