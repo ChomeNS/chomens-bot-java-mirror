@@ -1,0 +1,44 @@
+package me.chayapak1.chomens_bot.commands;
+
+import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.command.Command;
+import me.chayapak1.chomens_bot.command.CommandContext;
+import me.chayapak1.chomens_bot.command.CommandException;
+import me.chayapak1.chomens_bot.command.TrustLevel;
+import me.chayapak1.chomens_bot.data.PlayerEntry;
+import me.chayapak1.chomens_bot.util.ColorUtilities;
+import net.kyori.adventure.text.Component;
+
+import java.util.UUID;
+
+public class KickCommand extends Command {
+    public KickCommand () {
+        super(
+                "kick",
+                "Kicks a player",
+                new String[] { "<player>" },
+                new String[] {},
+                TrustLevel.TRUSTED,
+                false
+        );
+    }
+
+    @Override
+    public Component execute(CommandContext context) throws CommandException {
+        final Bot bot = context.bot;
+
+        final PlayerEntry entry = bot.players.getEntry(context.getString(true, true));
+
+        if (entry == null) throw new CommandException(Component.text("Invalid player name"));
+
+        final String name = entry.profile.getName();
+        final UUID uuid = entry.profile.getId();
+
+        bot.exploits.kick(uuid);
+
+        return Component.empty()
+                .append(Component.text("Kicking player "))
+                .append(Component.text(name).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)))
+                .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+    }
+}

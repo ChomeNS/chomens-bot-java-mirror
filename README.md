@@ -9,7 +9,7 @@ To make this successfully compile just make `ExploitsPlugin.java` in the plugins
 ```java
 package land.chipmunk.chayapak.chomens_bot.plugins;
 
-import land.chipmunk.chayapak.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.Bot;
 
 import java.util.UUID;
 

@@ -9,7 +9,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
-group = 'land.chipmunk.chayapak'
+group = 'me.chayapak1'
 version = 'rolling'
 description = 'ChomeNS Bot'
 java.sourceCompatibility = JavaVersion.VERSION_17
