@@ -1,10 +1,10 @@
 # ChomeNS Bot Java
 A Java verison of ChomeNS Bot.
 
-# Cum piling
+# Compiling
 You will see that the exploits plugin is missing because I gitignored it to prevent exploit leaks
 
-To make this cum pie just make `ExploitsPlugin.java` in the plugins folder and add this code:
+To make this successfully compile just make `ExploitsPlugin.java` in the plugins folder and add this code:
 
 ```java
 package land.chipmunk.chayapak.chomens_bot.plugins;
