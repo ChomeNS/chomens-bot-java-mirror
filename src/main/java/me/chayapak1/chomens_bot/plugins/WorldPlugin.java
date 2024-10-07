@@ -1,8 +1,10 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import net.kyori.adventure.key.Key;
+import org.cloudburstmc.nbt.NbtMap;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.packet.Packet;
+import org.geysermc.mcprotocollib.protocol.data.game.RegistryEntry;
 import org.geysermc.mcprotocollib.protocol.packet.configuration.clientbound.ClientboundRegistryDataPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundRespawnPacket;
@@ -18,7 +20,7 @@ public class WorldPlugin extends Bot.Listener {
     public int minY = 0;
     public int maxY = 256;
 
-    public Key registry = null;
+    public List<RegistryEntry> registry = null;
 
     private final List<Listener> listeners = new ArrayList<>();
 
@@ -35,37 +37,33 @@ public class WorldPlugin extends Bot.Listener {
         else if (packet instanceof ClientboundRegistryDataPacket) packetReceived((ClientboundRegistryDataPacket) packet);
     }
 
-//    @SuppressWarnings("unchecked")
-    private void worldChanged (int dimension) {
-        // FIXME
-        bot.logger.info(registry.value());
-        bot.logger.info(registry.toString());
-//        final Key dimensionType = ((LinkedHashMap<String, Key>) registry.get("minecraft:dimension_type").asString()).get("value");
-//
-//        final ArrayList<Key> dimensions = (ArrayList<Key>) dimensionType.asString();
-//
-//        final Key currentDimension = dimensions.stream()
-//                .filter((eachDimension) -> eachDimension.get("name").getValue().equals(dimension))
-//                .toArray(Key[]::new)[0];
-//
-//        final Key element = currentDimension.get("element");
-//
-//        minY = (int) element.get("min_y").getValue();
-//        maxY = (int) element.get("height").getValue();
-//
-//        for (Listener listener : listeners) listener.worldChanged(dimension);
+    private void worldChanged (String dimension) {
+        final RegistryEntry currentDimension = registry.stream()
+                .filter(eachDimension -> eachDimension.getId().asString().equals(dimension))
+                .toArray(RegistryEntry[]::new)[0];
+
+        final NbtMap data = currentDimension.getData();
+
+        if (data == null) return;
+
+        minY = data.getInt("min_y");
+        maxY = data.getInt("height");
+
+        for (Listener listener : listeners) listener.worldChanged(dimension);
     }
 
     public void packetReceived (ClientboundRegistryDataPacket packet) {
-        registry = packet.getRegistry();
+        if (!packet.getRegistry().value().equals("dimension_type")) return;
+
+        registry = packet.getEntries();
     }
 
     public void packetReceived (ClientboundLoginPacket packet) {
-        worldChanged(packet.getCommonPlayerSpawnInfo().getDimension());
+        worldChanged(packet.getCommonPlayerSpawnInfo().getWorldName().asString());
     }
 
     public void packetReceived (ClientboundRespawnPacket packet) {
-        worldChanged(packet.getCommonPlayerSpawnInfo().getDimension());
+        worldChanged(packet.getCommonPlayerSpawnInfo().getWorldName().asString());
     }
 
     public static class Listener {
