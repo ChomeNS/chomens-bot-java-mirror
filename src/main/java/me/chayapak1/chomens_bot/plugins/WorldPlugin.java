@@ -1,6 +1,5 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import net.kyori.adventure.key.Key;
 import org.cloudburstmc.nbt.NbtMap;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.packet.Packet;
@@ -11,12 +10,9 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.Clientbound
 import me.chayapak1.chomens_bot.Bot;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 public class WorldPlugin extends Bot.Listener {
-    private final Bot bot;
-
     public int minY = 0;
     public int maxY = 256;
 
@@ -25,8 +21,6 @@ public class WorldPlugin extends Bot.Listener {
     private final List<Listener> listeners = new ArrayList<>();
 
     public WorldPlugin (Bot bot) {
-        this.bot = bot;
-
         bot.addListener(this);
     }
 
