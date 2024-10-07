@@ -226,7 +226,7 @@ public class Main {
             bot.stop();
         }
 
-        jda.shutdownNow();
+        if (jda != null) jda.shutdownNow();
 
         if (discordEnabled) {
             for (int i = 0; i < 150; i++) {
