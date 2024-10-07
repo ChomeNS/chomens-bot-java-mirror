@@ -16,6 +16,7 @@ import me.chayapak1.chomens_bot.util.PersistentDataUtilities;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -80,7 +81,7 @@ public class MailCommand extends Command {
                 return Component.text("Mail sent!").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "sendselecteditem" -> {
-                context.checkOverloadArgs(1);
+                context.checkOverloadArgs(2);
 
                 int senderMailsSentTotal = 0;
                 for (JsonElement mailElement : MailPlugin.mails) {
@@ -97,7 +98,7 @@ public class MailCommand extends Command {
                 final CompletableFuture<Component> future = bot.core.runTracked(
                         "minecraft:data get entity " +
                                 UUIDUtilities.selector(sender.profile.getId()) +
-                                " SelectedItem.tag.message"
+                                " SelectedItem.components.minecraft:custom_data.message"
                 );
 
                 if (future == null) {
@@ -105,27 +106,28 @@ public class MailCommand extends Command {
                 }
 
                 future.thenApply(output -> {
-                    final List<Component> children = output.children();
-
-                    if (
-                            !children.isEmpty() &&
-                                    !children.get(0).children().isEmpty() &&
-                                    ((TranslatableComponent) children.get(0).children().get(0))
-                                            .key()
-                                            .equals("arguments.nbtpath.nothing_found")
-                    ) {
-                        context.sendOutput(Component.text("Player has no `message` NBT tag in the selected item").color(NamedTextColor.RED));
-                        return output;
-                    }
-
-                    final String value = ComponentUtilities.stringify(((TranslatableComponent) children.get(0)).arguments().get(1).asComponent());
-
-                    if (!value.startsWith("\"") && !value.endsWith("\"") && !value.startsWith("'") && !value.endsWith("'")) {
-                        context.sendOutput(Component.text("`message` NBT is not a string").color(NamedTextColor.RED));
-                        return output;
-                    }
-
                     try {
+                        final List<Component> children = output.children();
+
+                        if (
+                                !children.isEmpty() &&
+                                        children.get(0).children().isEmpty() &&
+                                        ((TranslatableComponent) children.get(0)).key()
+                                                .equals("arguments.nbtpath.nothing_found")
+                        ) {
+                            context.sendOutput(Component.text("Player has no `message` NBT tag in their selected item's minecraft:custom_data").color(NamedTextColor.RED));
+                            return output;
+                        }
+
+                        final Component actualOutputComponent = ((TranslatableComponent) output).arguments().get(1).asComponent();
+
+                        final String value = ComponentUtilities.stringify(actualOutputComponent);
+
+                        if (!value.startsWith("\"") && !value.endsWith("\"") && !value.startsWith("'") && !value.endsWith("'")) {
+                            context.sendOutput(Component.text("`message` NBT is not a string").color(NamedTextColor.RED));
+                            return output;
+                        }
+
                         bot.mail.send(
                                 new Mail(
                                         sender.profile.getName(),
@@ -137,6 +139,7 @@ public class MailCommand extends Command {
                         );
                     } catch (CommandException e) {
                         context.sendOutput(e.message.color(NamedTextColor.RED));
+                        return output;
                     }
 
                     context.sendOutput(
