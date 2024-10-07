@@ -250,8 +250,6 @@ public class CorePlugin extends PositionPlugin.Listener {
     public void runPlaceBlock (String command) {
         if (!ready || !bot.options.useCore) return;
 
-//        final NbtMapBuilder tagBuilder = NbtMap.builder();
-
         final NbtMapBuilder blockEntityTagBuilder = NbtMap.builder();
 
         blockEntityTagBuilder.putString("id", "minecraft:command_block");
@@ -262,15 +260,9 @@ public class CorePlugin extends PositionPlugin.Listener {
 
         final NbtMap blockEntityTag = blockEntityTagBuilder.build();
 
-//        tagBuilder.putCompound("BlockEntityTag", blockEntityTag);
-
-//        final NbtMap tag = tagBuilder.build();
-
         final Map<DataComponentType<?>, DataComponent<?, ?>> map = new HashMap<>();
 
         map.put(DataComponentType.BLOCK_ENTITY_DATA, DataComponentType.BLOCK_ENTITY_DATA.getDataComponentFactory().create(DataComponentType.BLOCK_ENTITY_DATA, blockEntityTag));
-
-//        map.put(DataComponentType.BLOCK_ENTITY_DATA, DataComponentType.BLOCK_ENTITY_DATA.getDataComponentFactory().create(DataComponentType.BLOCK_ENTITY_DATA, tag));
 
         final DataComponents dataComponents = new DataComponents(map);
 
