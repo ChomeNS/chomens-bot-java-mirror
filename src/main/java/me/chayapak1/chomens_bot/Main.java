@@ -187,17 +187,17 @@ public class Main {
 
     // most of these are stolen from HBot
     public static void stop () {
-        executor.shutdownNow();
+        executor.shutdown();
 
         PersistentDataUtilities.stop();
 
-        executorService.shutdownNow();
+        executorService.shutdown();
 
         try {
             final boolean executorDone = executor.awaitTermination(5, TimeUnit.SECONDS);
             final boolean executorServiceDone = executorService.awaitTermination(5, TimeUnit.SECONDS);
 
-            if (executorDone || executorServiceDone) {
+            if (!executorDone || !executorServiceDone) {
                 System.out.println("Executors failed to shut down");
             }
         } catch (InterruptedException e) {
@@ -226,7 +226,7 @@ public class Main {
             bot.stop();
         }
 
-        if (jda != null) jda.shutdownNow();
+        if (jda != null) jda.shutdown();
 
         if (discordEnabled) {
             for (int i = 0; i < 150; i++) {
