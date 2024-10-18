@@ -52,9 +52,9 @@ public class WikipediaCommand extends Command {
 
                 final JsonObject query = pageIDJsonOutput.getAsJsonObject("query");
 
-                final JsonElement normalizedElement = query.get("normalized");
-                if (normalizedElement != null) {
-                    final JsonArray normalized = normalizedElement.getAsJsonArray();
+                final JsonElement redirectsElement = query.get("redirects");
+                if (redirectsElement != null) {
+                    final JsonArray normalized = redirectsElement.getAsJsonArray();
 
                     for (JsonElement element : normalized) {
                         final JsonObject redirect = element.getAsJsonObject();
