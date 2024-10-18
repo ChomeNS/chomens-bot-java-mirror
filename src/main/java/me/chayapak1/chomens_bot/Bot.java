@@ -242,20 +242,18 @@ public class Bot {
 
                 final Throwable cause = disconnectedEvent.getCause();
 
-                if (cause != null) {
-                    // lazy fix (#69420)
-                    if (cause instanceof OutOfMemoryError) System.exit(1);
-                }
+                // lazy fix #69420
+                if (cause instanceof OutOfMemoryError) System.exit(1);
 
                 int reconnectDelay = options.reconnectDelay;
 
                 final String stringMessage = ComponentUtilities.stringify(disconnectedEvent.getReason());
 
-                // this part is ported from chomens bot js
                 if (
                         stringMessage.equals("Wait 5 seconds before connecting, thanks! :)") ||
-                                stringMessage.equals("You are logging in too fast, try again later.")
-                ) reconnectDelay = 1000 * 7;
+                                stringMessage.equals("You are logging in too fast, try again later.") ||
+                                stringMessage.equals("Connection throttled! Please wait before reconnecting.")
+                ) reconnectDelay = 1000 * (5 + 2); // 2 seconds extra delay just in case
 
                 executor.schedule(() -> reconnect(), reconnectDelay, TimeUnit.MILLISECONDS);
 
