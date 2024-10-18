@@ -164,6 +164,7 @@ public class Configuration {
         public String serverName;
         public boolean useCore = true;
         public boolean useChat = false;
+        public boolean coreCommandSpy = false;
         public int reconnectDelay = 2000;
         public boolean removeNamespaces = false;
         public int chatQueueDelay = 125;

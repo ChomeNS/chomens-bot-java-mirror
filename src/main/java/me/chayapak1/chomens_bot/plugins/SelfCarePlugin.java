@@ -99,7 +99,7 @@ public class SelfCarePlugin extends Bot.Listener {
 
         // core
         else if (selfCares.cspy && !cspy && kaboom) {
-            if (bot.options.useChat) bot.chat.sendCommandInstantly("/commandspy:commandspy on");
+            if (bot.options.useChat || !bot.options.coreCommandSpy) bot.chat.sendCommandInstantly("commandspy:commandspy on");
             else bot.core.run("commandspy:commandspy " + bot.username + " on");
         }
 
