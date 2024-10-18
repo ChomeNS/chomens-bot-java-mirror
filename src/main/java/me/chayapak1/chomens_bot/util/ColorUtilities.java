@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class ColorUtilities {
     private static final Map<Integer, String> ansiToIrcMap = new HashMap<>();
+    private static final Map<Integer, String> ansiStyleToIrcMap = new HashMap<>();
 
     public static TextColor getColorByString (String _color) {
         final String color = _color.toLowerCase();
@@ -93,15 +94,24 @@ public class ColorUtilities {
 
     // Author: ChatGPT
     static {
-        ansiToIrcMap.put(30, "01"); // Black -> IRC Black
-        ansiToIrcMap.put(31, "04"); // Red -> IRC Red
-        ansiToIrcMap.put(32, "09"); // Green -> IRC Green
-        ansiToIrcMap.put(33, "08"); // Yellow -> IRC Yellow
-        ansiToIrcMap.put(34, "02"); // Blue -> IRC Blue
+        ansiToIrcMap.put(0, "0"); // Reset -> IRC White (is this correct?)
+
+        ansiToIrcMap.put(30, "1"); // Black -> IRC Black
+        ansiToIrcMap.put(31, "4"); // Red -> IRC Red
+        ansiToIrcMap.put(32, "9"); // Green -> IRC Green
+        ansiToIrcMap.put(33, "8"); // Yellow -> IRC Yellow
+        ansiToIrcMap.put(34, "2"); // Blue -> IRC Blue
         ansiToIrcMap.put(35, "13"); // Magenta -> IRC Magenta (Purple)
         ansiToIrcMap.put(36, "11"); // Cyan -> IRC Cyan
-        ansiToIrcMap.put(37, "00"); // White -> IRC White
-        ansiToIrcMap.put(39, "00"); // White -> IRC White
+        ansiToIrcMap.put(37, "0"); // White -> IRC White
+        ansiToIrcMap.put(39, "0"); // White -> IRC White
+
+        ansiToIrcMap.put(92, "9"); // Green -> IRC Green
+        ansiToIrcMap.put(96, "2"); // Blue -> IRC Blue
+        ansiToIrcMap.put(91, "4"); // Red -> IRC Red
+        ansiToIrcMap.put(95, "13"); // Magenta -> IRC Magenta (Purple)
+        ansiToIrcMap.put(93, "8"); // Yellow -> IRC Yellow
+        ansiToIrcMap.put(97, "0"); // White -> IRC White
 
         final Map<Integer, String> clone = new HashMap<>(ansiToIrcMap);
 
@@ -110,6 +120,11 @@ public class ColorUtilities {
         }
 
         ansiToIrcMap.put(49, "01");
+
+        // Styles
+        ansiStyleToIrcMap.put(1, "\u0002"); // Bold
+        ansiStyleToIrcMap.put(3, "\u001d"); // Italic
+        ansiStyleToIrcMap.put(4, "\u001f"); // Underlined
     }
 
     public static String convertAnsiToIrc(String input) {
@@ -129,6 +144,8 @@ public class ColorUtilities {
                             int ansiColorCode = Integer.parseInt(code);
                             if (ansiToIrcMap.containsKey(ansiColorCode)) {
                                 result.append("\u0003").append(ansiToIrcMap.get(ansiColorCode));
+                            } else if (ansiStyleToIrcMap.containsKey(ansiColorCode)) {
+                                result.append(ansiStyleToIrcMap.get(ansiColorCode));
                             }
                         } catch (NumberFormatException ignored) {
                         }
