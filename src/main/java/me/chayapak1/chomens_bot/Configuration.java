@@ -26,6 +26,8 @@ public class Configuration {
     public IRC irc = new IRC();
     public Music music = new Music();
 
+    public Eval eval = new Eval();
+
     public ColorPalette colorPalette = new ColorPalette();
     
     public String ownerName = "chayapak"; // mabe mabe
@@ -123,6 +125,10 @@ public class Configuration {
     public static class EmbedColors {
         public String normal = "#FFFF00";
         public String error = "#FF0000";
+    }
+
+    public static class Eval {
+        public String address = "ws://localhost:3069";
     }
 
     public static class SelfCare {

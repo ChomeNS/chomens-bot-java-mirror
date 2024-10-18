@@ -94,6 +94,10 @@ core:
   # PLEASE give valid JSON component here else the core don't refill at all
   customName: '[{"text":"ChomeNS ","color":"yellow"},{"text":"Core","color":"green"},{"text":"™","color":"gold"}]'
 
+# https://code.chipmunk.land/ChomeNS/eval-server
+eval:
+  address: 'ws://localhost:3069'
+
 selfCare:
   delay: 225 # NOTE: self care does NOT use chat queue
 
