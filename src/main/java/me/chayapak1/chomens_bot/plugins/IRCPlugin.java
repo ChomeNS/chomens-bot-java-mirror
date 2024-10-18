@@ -187,7 +187,9 @@ public class IRCPlugin extends ListenerAdapter {
         if (!bot.isConnected() || messageQueue.isEmpty()) return;
 
         try {
-            for (Map.Entry<String, List<String>> entry : messageQueue.entrySet()) {
+            final Map<String, List<String>> clonedMap = new HashMap<>(messageQueue);
+
+            for (Map.Entry<String, List<String>> entry : clonedMap.entrySet()) {
                 final List<String> logs = entry.getValue();
 
                 if (logs.isEmpty()) continue;
