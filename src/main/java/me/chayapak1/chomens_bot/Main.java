@@ -196,10 +196,6 @@ public class Main {
         try {
             final boolean executorDone = executor.awaitTermination(5, TimeUnit.SECONDS);
             final boolean executorServiceDone = executorService.awaitTermination(5, TimeUnit.SECONDS);
-
-            if (!executorDone || !executorServiceDone) {
-                System.out.println("Executors failed to shut down");
-            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
