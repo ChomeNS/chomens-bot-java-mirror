@@ -4,8 +4,12 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ColorUtilities {
+    private static final Map<Integer, String> ansiToIrcMap = new HashMap<>();
+
     public static TextColor getColorByString (String _color) {
         final String color = _color.toLowerCase();
 
@@ -85,6 +89,65 @@ public class ColorUtilities {
             }
         }
         return closest.colorName;
+    }
+
+    // Author: ChatGPT
+    static {
+        ansiToIrcMap.put(30, "01"); // Black -> IRC Black
+        ansiToIrcMap.put(31, "04"); // Red -> IRC Red
+        ansiToIrcMap.put(32, "09"); // Green -> IRC Green
+        ansiToIrcMap.put(33, "08"); // Yellow -> IRC Yellow
+        ansiToIrcMap.put(34, "02"); // Blue -> IRC Blue
+        ansiToIrcMap.put(35, "13"); // Magenta -> IRC Magenta (Purple)
+        ansiToIrcMap.put(36, "11"); // Cyan -> IRC Cyan
+        ansiToIrcMap.put(37, "00"); // White -> IRC White
+        ansiToIrcMap.put(39, "00"); // White -> IRC White
+
+        final Map<Integer, String> clone = new HashMap<>(ansiToIrcMap);
+
+        for (Map.Entry<Integer, String> entry : clone.entrySet()) {
+            ansiToIrcMap.put(entry.getKey() + 10, ansiToIrcMap.get(entry.getKey()));
+        }
+
+        ansiToIrcMap.put(49, "01");
+    }
+
+    public static String convertAnsiToIrc(String input) {
+        StringBuilder result = new StringBuilder();
+        boolean insideEscape = false;
+        StringBuilder ansiCode = new StringBuilder();
+
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            if (insideEscape) {
+                if (c == 'm') {
+                    insideEscape = false;
+                    // Parse the ANSI color code and map it to IRC color
+                    String[] codes = ansiCode.toString().split(";");
+                    for (String code : codes) {
+                        try {
+                            int ansiColorCode = Integer.parseInt(code);
+                            if (ansiToIrcMap.containsKey(ansiColorCode)) {
+                                result.append("\u0003").append(ansiToIrcMap.get(ansiColorCode));
+                            }
+                        } catch (NumberFormatException ignored) {
+                        }
+                    }
+                    ansiCode.setLength(0); // Clear the buffer
+                } else {
+                    ansiCode.append(c); // Collect the rest of the ANSI sequence
+                }
+            } else {
+                if (c == '\u001B' && i + 1 < input.length() && input.charAt(i + 1) == '[') {
+                    insideEscape = true;
+                    i++; // Skip the '[' character
+                } else {
+                    result.append(c); // Append non-ANSI characters directly
+                }
+            }
+        }
+
+        return result.toString();
     }
 
     public static final class ChatColor {

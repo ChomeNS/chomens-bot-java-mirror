@@ -20,6 +20,10 @@ repositories {
     mavenCentral()
 
     maven {
+        url = uri('https://jitpack.io')
+    }
+
+    maven {
         url = uri('https://repo.opencollab.dev/main/')
     }
 
@@ -46,6 +50,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.google.guava:guava:31.1-jre'
     implementation 'org.jline:jline:3.23.0'
+    implementation 'ch.qos.logback:logback-classic:1.5.11'
+    implementation 'com.github.pircbotx:pircbotx:2.3.1'
     implementation 'com.github.ricksbrown:cowsay:1.1.0'
     implementation 'org.yaml:snakeyaml:2.0'
     implementation 'org.luaj:luaj-jse:3.0.1'

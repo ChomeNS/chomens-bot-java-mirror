@@ -97,7 +97,7 @@ public class Configuration {
         public EmbedColors embedColors = new EmbedColors();
         public String trustedRoleName = "Trusted";
         public String adminRoleName = "Admin";
-        public String statusMessage = "Gay Sex";
+        public String statusMessage = "Oh hi!";
         public String inviteLink = "https://discord.gg/xdgCkUyaA4";
     }
 
@@ -106,11 +106,8 @@ public class Configuration {
         public String prefix = "!";
         public String host;
         public int port;
-        public String nickname = "chomens-bot";
-        public String username = "chomens-bot";
-        public String realName = "chomens-bot";
-        public String hostName = "null";
-        public String serverName = "null";
+        public String name = "chomens-bot";
+        public String password = "";
         public Map<String, String> servers = new HashMap<>();
     }
 

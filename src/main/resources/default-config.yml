@@ -39,13 +39,10 @@ irc:
   prefix: '!'
   host: 'irc.libera.chat'
   port: 6665
-  nickname: 'chomens-bot'
-  username: 'chomens-bot'
-  realName: 'chomens-bot'
-  hostName: 'null'
-  serverName: 'null'
+  name: 'chomens_bot'
+  password: ''
   servers:
-    localhost:25565: '#chomens-localhost' # channel name
+    localhost:25565: '#chomens/localhost' # channel name
 
 music:
   urlRatelimit:

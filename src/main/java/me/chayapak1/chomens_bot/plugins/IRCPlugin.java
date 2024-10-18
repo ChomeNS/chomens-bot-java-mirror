@@ -4,41 +4,60 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.IRCCommandContext;
-import me.chayapak1.chomens_bot.data.IRCMessage;
-import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
-import me.chayapak1.chomens_bot.irc.IRCMessageLoop;
+import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
+import org.pircbotx.PircBotX;
+import org.pircbotx.User;
+import org.pircbotx.cap.SASLCapHandler;
+import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.MessageEvent;
 
+import javax.net.ssl.SSLSocketFactory;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class IRCPlugin extends IRCMessageLoop {
+public class IRCPlugin extends ListenerAdapter {
     private final Configuration.IRC ircConfig;
 
     private final Map<String, String> servers;
 
-    private final Map<String, List<String>> messageQueue = new HashMap<>();
+    public final Map<String, List<String>> messageQueue = new HashMap<>();
 
-//    private String lastMessage = "";
+    private PircBotX bot;
 
     public IRCPlugin (Configuration config) {
-        super(config.irc.host, config.irc.port);
-
         this.ircConfig = config.irc;
 
         this.servers = ircConfig.servers;
 
         if (!ircConfig.enabled) return;
 
-        nick(ircConfig.nickname);
-        user(ircConfig.username, ircConfig.hostName, ircConfig.serverName, ircConfig.realName);
+        final org.pircbotx.Configuration.Builder builder = new org.pircbotx.Configuration.Builder()
+                .setName(ircConfig.name)
+                .setLogin("bot@chomens-bot")
+                .addServer(ircConfig.host, ircConfig.port)
+                .setSocketFactory(SSLSocketFactory.getDefault())
+                .setAutoReconnect(true)
+                .addListener(this);
 
-        for (Map.Entry<String, String> entry : ircConfig.servers.entrySet()) join(entry.getValue());
+        if (!ircConfig.password.isEmpty()) builder.addCapHandler(new SASLCapHandler(ircConfig.name, ircConfig.password, true));
 
-        Main.executorService.submit(this);
+        for (Map.Entry<String, String> entry : ircConfig.servers.entrySet()) builder.addAutoJoinChannel(entry.getValue());
+
+        final org.pircbotx.Configuration configuration = builder.buildConfiguration();
+
+        bot = new PircBotX(configuration);
+
+        new Thread(() -> {
+            try {
+                bot.startBot();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
 
         for (Bot bot : Main.bots) {
             bot.addListener(new Bot.Listener() {
@@ -51,8 +70,8 @@ public class IRCPlugin extends IRCMessageLoop {
                 public void loadedPlugins() {
                     bot.chat.addListener(new ChatPlugin.Listener() {
                         @Override
-                        public boolean playerMessageReceived(PlayerMessage message) {
-                            IRCPlugin.this.playerMessageReceived(bot, message);
+                        public boolean systemMessageReceived(Component component, String string, String ansi) {
+                            IRCPlugin.this.systemMessageReceived(bot, ansi);
 
                             return true;
                         }
@@ -67,18 +86,19 @@ public class IRCPlugin extends IRCMessageLoop {
     }
 
     @Override
-    protected void onMessage (IRCMessage message) {
+    public void onMessage(MessageEvent event) {
         Bot serverBot = null;
 
-        String channel = null;
+        String targetChannel = null;
 
         for (Map.Entry<String, String> entry : servers.entrySet()) {
-            if (entry.getValue().equals(message.channel)) {
+            if (entry.getValue().equals(event.getChannel().getName())) {
                 serverBot = Main.bots.stream()
                         .filter(eachBot -> entry.getKey().equals(eachBot.host + ":" + eachBot.port))
-                        .toArray(Bot[]::new)[0];
+                        .findFirst()
+                        .orElse(null);
 
-                channel = entry.getValue();
+                targetChannel = entry.getValue();
 
                 break;
             }
@@ -88,10 +108,17 @@ public class IRCPlugin extends IRCMessageLoop {
 
         final String commandPrefix = ircConfig.prefix;
 
-        if (message.content.startsWith(commandPrefix)) {
-            final String noPrefix = message.content.substring(commandPrefix.length());
+        final User user = event.getUser();
 
-            final IRCCommandContext context = new IRCCommandContext(serverBot, commandPrefix, message.nickName);
+        if (user == null) return;
+
+        final String name = user.getRealName();
+        final String message = event.getMessage();
+
+        if (message.startsWith(commandPrefix)) {
+            final String noPrefix = message.substring(commandPrefix.length());
+
+            final IRCCommandContext context = new IRCCommandContext(serverBot, commandPrefix, name);
 
             final Component output = serverBot.commandHandler.executeCommand(noPrefix, context, null);
 
@@ -101,7 +128,7 @@ public class IRCPlugin extends IRCMessageLoop {
         }
 
         final Component prefix = Component
-                .text(channel)
+                .text(targetChannel)
                 .hoverEvent(
                         HoverEvent.showText(
                                 Component
@@ -116,12 +143,12 @@ public class IRCPlugin extends IRCMessageLoop {
                 .color(NamedTextColor.BLUE);
 
         final Component username = Component
-                .text(message.nickName)
-                .hoverEvent(HoverEvent.showText(Component.text(message.origin).color(NamedTextColor.RED)))
+                .text(name)
+                .hoverEvent(HoverEvent.showText(Component.text(event.getUser().getHostname()).color(NamedTextColor.RED)))
                 .color(NamedTextColor.RED);
 
         final Component messageComponent = Component
-                .text(message.content)
+                .text(message)
                 .color(NamedTextColor.GRAY);
 
         final Component component = Component.translatable(
@@ -134,31 +161,17 @@ public class IRCPlugin extends IRCMessageLoop {
         serverBot.chat.tellraw(component);
     }
 
-    private void playerMessageReceived (Bot bot, PlayerMessage message) {
-        // best fix in 2023
-
-        /*
-        final String stringifiedName = ComponentUtilities.stringify(message.displayName);
-        final String stringifiedContents = ComponentUtilities.stringify(message.contents);
-
-        final String toSend = String.format(
-                "<%s> %s",
-                stringifiedName,
-                stringifiedContents
-        );
-
-        if (lastMessage.equals(toSend)) return;
-
-        lastMessage = toSend;
-
-        addMessageToQueue(
+    private void systemMessageReceived (Bot bot, String ansi) {
+        sendMessage(
                 bot,
-                toSend
+                ansi
         );
-        */
     }
 
-    // i only have listened to connected because the ratelimit
+    public void quit (String reason) {
+        bot.sendIRC().quitServer(reason);
+    }
+
     private void connected (Bot bot) {
         sendMessage(
                 bot,
@@ -171,18 +184,24 @@ public class IRCPlugin extends IRCMessageLoop {
     }
 
     private void queueTick () {
-        if (!initialSetupStatus || messageQueue.isEmpty()) return;
+        if (!bot.isConnected() || messageQueue.isEmpty()) return;
 
-        for (Map.Entry<String, List<String>> entry : messageQueue.entrySet()) {
-            final List<String> logs = entry.getValue();
+        try {
+            for (Map.Entry<String, List<String>> entry : messageQueue.entrySet()) {
+                final List<String> logs = entry.getValue();
 
-            if (logs.isEmpty()) continue;
+                if (logs.isEmpty()) continue;
 
-            final String firstLog = logs.get(0);
+                final String firstLog = logs.get(0);
 
-            logs.remove(0);
+                logs.remove(0);
 
-            channelMessage(entry.getKey(), firstLog);
+                final String withIRCColors = ColorUtilities.convertAnsiToIrc(firstLog);
+
+                bot.sendIRC().message(entry.getKey(), withIRCColors);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
