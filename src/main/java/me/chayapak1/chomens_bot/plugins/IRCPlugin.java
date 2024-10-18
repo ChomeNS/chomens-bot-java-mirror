@@ -112,7 +112,7 @@ public class IRCPlugin extends ListenerAdapter {
 
         if (user == null) return;
 
-        final String name = user.getRealName();
+        final String name = user.getRealName().isBlank() ? user.getNick() : user.getRealName();
         final String message = event.getMessage();
 
         if (message.startsWith(commandPrefix)) {
