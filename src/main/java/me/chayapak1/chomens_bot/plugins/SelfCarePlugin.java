@@ -96,7 +96,14 @@ public class SelfCarePlugin extends Bot.Listener {
         // chat only
         if (selfCares.op && permissionLevel < 2) bot.chat.send("/minecraft:op @s[type=player]");
         else if (selfCares.gamemode && gamemode != GameMode.CREATIVE && !bot.options.creayun) bot.chat.send("/minecraft:gamemode creative @s[type=player]");
-        else if (selfCares.cspy && !cspy && kaboom) bot.chat.send("/commandspy:commandspy on");
+
+        // core
+        else if (selfCares.cspy && !cspy && kaboom) {
+            if (bot.options.useChat) bot.chat.sendCommandInstantly("/commandspy:commandspy on");
+            else bot.core.run("commandspy:commandspy " + bot.username + " on");
+        }
+
+        // back to chat only
         else if (selfCares.prefix.enabled && !prefix && kaboom && !bot.options.creayun) bot.chat.send("/extras:prefix " + bot.config.selfCare.prefix.prefix);
         else if (selfCares.username && !username && kaboom) bot.chat.send("/extras:username " + bot.username);
 
