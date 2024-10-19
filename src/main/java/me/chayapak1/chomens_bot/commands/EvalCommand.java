@@ -16,7 +16,7 @@ public class EvalCommand extends Command {
     public EvalCommand () {
         super(
                 "eval",
-                "Evaluate JavaScript codes on a separate Node.JS server running isolated-vm",
+                "Evaluate JavaScript codes on a Node.JS container running @n8n/vm2",
                 new String[] { "run <code>", "reset" },
                 new String[] {},
                 TrustLevel.PUBLIC,
