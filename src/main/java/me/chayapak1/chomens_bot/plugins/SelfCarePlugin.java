@@ -68,6 +68,8 @@ public class SelfCarePlugin extends Bot.Listener {
                 else if (string.equals("You now have the tag: " + bot.config.selfCare.prefix.prefix)) prefix = true;
                 else if (string.startsWith("You no longer have a tag")) prefix = false;
                 else if (string.startsWith("You now have the tag: ")) prefix = false;
+                // prefix = true as a workaround to prevent spamming
+                else if (string.equals("Something went wrong while saving the prefix. Please check console.")) prefix = true; // Parker2991
 
                 else if (string.equals("Successfully set your username to \"" + bot.username + "\"")) username = true;
                 else if (string.startsWith("You already have the username \"")) username = true;
