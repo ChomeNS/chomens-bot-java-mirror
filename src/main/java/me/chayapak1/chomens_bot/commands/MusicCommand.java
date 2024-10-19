@@ -204,7 +204,7 @@ public class MusicCommand extends Command {
         final CompletableFuture<Component> future = bot.core.runTracked(
                 "minecraft:data get entity " +
                         UUIDUtilities.selector(context.sender.profile.getId()) +
-                        " SelectedItem.tag.data"
+                        " SelectedItem.tag.SongItemData.SongData"
         );
 
         if (future == null) {
@@ -216,16 +216,17 @@ public class MusicCommand extends Command {
 
             if (
                     !children.isEmpty() &&
-                            !children.get(0).children().isEmpty() &&
-                            ((TranslatableComponent) children.get(0).children().get(0))
-                                    .key()
+                            children.get(0).children().isEmpty() &&
+                            ((TranslatableComponent) children.get(0)).key()
                                     .equals("arguments.nbtpath.nothing_found")
             ) {
-                context.sendOutput(Component.text("Player has no `data` NBT tag in the selected item").color(NamedTextColor.RED));
+                context.sendOutput(Component.text("Player has no `SongItemData.SongData` NBT tag in their selected item").color(NamedTextColor.RED));
                 return output;
             }
 
-            final String value = ComponentUtilities.stringify(((TranslatableComponent) children.get(0)).arguments().get(1).asComponent());
+            final Component actualOutputComponent = ((TranslatableComponent) output).arguments().get(1).asComponent();
+
+            final String value = ComponentUtilities.stringify(actualOutputComponent);
 
             if (!value.startsWith("\"") && !value.endsWith("\"") && !value.startsWith("'") && !value.endsWith("'")) {
                 context.sendOutput(Component.text("`data` NBT is not a string").color(NamedTextColor.RED));
