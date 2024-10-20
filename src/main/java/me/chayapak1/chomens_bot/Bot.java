@@ -163,7 +163,7 @@ public class Bot {
 
         // this replicates the minecraft behavior of not resolving SRV records.
         // some servers check for this, so that's why i have it here
-        session.setFlag(BuiltinFlags.ATTEMPT_SRV_RESOLVE, false);
+        session.setFlag(BuiltinFlags.ATTEMPT_SRV_RESOLVE, options.resolveSRV);
 
         session.addListener(new SessionAdapter() {
             // fard

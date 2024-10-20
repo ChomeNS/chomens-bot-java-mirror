@@ -133,6 +133,7 @@ bots:
   # useCore - if enabled it just sends the command using chat instead of using core. recommended to enable useChat too when this is enabled
   # useChat - when the bot tellraws it will chat instead of using the core to run tellraw
   # coreCommandSpy - set to true if server supports enabling player's commandspy though command block
+  # resolveSRV - whether to resolve SRV records on the server. the notchian minecraft doesn't resolve them
   # removeNamespaces - when the bot sends a command it will remove like `minecraft:` for example if set to true
   # coreRateLimit - will ignore commands if reached the ratelimit
 
@@ -144,6 +145,7 @@ bots:
     useCore: true
     useChat: false
     coreCommandSpy: false
+    resolveSRV: true
     reconnectDelay: 2000
     removeNamespaces: false
     chatQueueDelay: 125
