@@ -4,6 +4,7 @@ import me.chayapak1.chomens_bot.plugins.*;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.RandomStringUtilities;
 import org.geysermc.mcprotocollib.auth.GameProfile;
+import org.geysermc.mcprotocollib.network.BuiltinFlags;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.event.session.*;
 import org.geysermc.mcprotocollib.network.packet.Packet;
@@ -159,6 +160,10 @@ public class Bot {
         Session session = new TcpClientSession(host, port, new MinecraftProtocol(username), null);
 
         this.session = session;
+
+        // this replicates the minecraft behavior of not resolving SRV records.
+        // some servers check for this, so that's why i have it here
+        session.setFlag(BuiltinFlags.ATTEMPT_SRV_RESOLVE, false);
 
         session.addListener(new SessionAdapter() {
             // fard
