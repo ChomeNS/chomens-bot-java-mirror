@@ -10,6 +10,10 @@ import java.nio.ByteBuffer;
 public class UUIDUtilities {
     private UUIDUtilities () {}
 
+    public static UUID getOfflineUUID (String username) {
+        return UUID.nameUUIDFromBytes(("OfflinePlayer:" + username).getBytes());
+    }
+
     public static int[] intArray (UUID uuid) {
         final ByteBuffer buffer = ByteBuffer.wrap(new byte[16]);
         buffer.putLong(0, uuid.getMostSignificantBits());

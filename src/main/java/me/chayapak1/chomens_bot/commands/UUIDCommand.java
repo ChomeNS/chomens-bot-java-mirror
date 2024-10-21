@@ -7,6 +7,7 @@ import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
+import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -33,10 +34,16 @@ public class UUIDCommand extends Command {
         if (!player.isEmpty()) {
             final PlayerEntry entry = bot.players.getEntry(player);
 
-            if (entry == null) throw new CommandException(Component.text("Invalid player name"));
+            String name;
+            String uuid;
 
-            final String name = entry.profile.getName();
-            final String uuid = entry.profile.getIdAsString();
+            if (entry == null) {
+                name = player;
+                uuid = UUIDUtilities.getOfflineUUID(player).toString();
+            } else {
+                name = entry.profile.getName();
+                uuid = entry.profile.getIdAsString();
+            }
 
             return Component.translatable(
                     "%s's UUID: %s",
