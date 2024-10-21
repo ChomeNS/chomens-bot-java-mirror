@@ -97,20 +97,22 @@ public class ColorUtilities {
         ansiToIrcMap.put(0, "0"); // Reset -> IRC White (is this correct?)
 
         ansiToIrcMap.put(30, "1"); // Black -> IRC Black
-        ansiToIrcMap.put(31, "4"); // Red -> IRC Red
-        ansiToIrcMap.put(32, "9"); // Green -> IRC Green
-        ansiToIrcMap.put(33, "8"); // Yellow -> IRC Yellow
-        ansiToIrcMap.put(34, "2"); // Blue -> IRC Blue
-        ansiToIrcMap.put(35, "13"); // Magenta -> IRC Magenta (Purple)
-        ansiToIrcMap.put(36, "11"); // Cyan -> IRC Cyan
-        ansiToIrcMap.put(37, "0"); // White -> IRC White
+        ansiToIrcMap.put(31, "40"); // Red -> IRC Red
+        ansiToIrcMap.put(32, "32"); // Green -> IRC Green
+        ansiToIrcMap.put(33, "53"); // Yellow -> IRC Yellow
+        ansiToIrcMap.put(34, "60"); // Blue -> IRC Blue
+        ansiToIrcMap.put(35, "49"); // Magenta -> IRC Magenta (Purple)
+        ansiToIrcMap.put(36, "46"); // Cyan -> IRC Cyan
+        ansiToIrcMap.put(37, "96"); // Gray -> IRC Gray
         ansiToIrcMap.put(39, "0"); // White -> IRC White
 
-        ansiToIrcMap.put(92, "9"); // Green -> IRC Green
-        ansiToIrcMap.put(96, "2"); // Blue -> IRC Blue
-        ansiToIrcMap.put(91, "4"); // Red -> IRC Red
-        ansiToIrcMap.put(95, "13"); // Magenta -> IRC Magenta (Purple)
-        ansiToIrcMap.put(93, "8"); // Yellow -> IRC Yellow
+        ansiToIrcMap.put(90, "92"); // Dark Gray -> IRC Dark Gray
+        ansiToIrcMap.put(92, "56"); // Green -> IRC Green
+        ansiToIrcMap.put(96, "58"); // Blue -> IRC Blue
+        ansiToIrcMap.put(91, "52"); // Red -> IRC Red
+        ansiToIrcMap.put(94, "60"); // Blue -> IRC Blue
+        ansiToIrcMap.put(95, "61"); // Magenta -> IRC Magenta (Purple)
+        ansiToIrcMap.put(93, "54"); // Yellow -> IRC Yellow
         ansiToIrcMap.put(97, "0"); // White -> IRC White
 
         final Map<Integer, String> clone = new HashMap<>(ansiToIrcMap);
