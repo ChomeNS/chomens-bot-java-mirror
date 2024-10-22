@@ -47,21 +47,15 @@ public class FilterCommand extends Command {
 
         String action = context.getString(false, true);
 
-        // this is a mess
-        if (action.equals("-ignorecase")) {
-            ignoreCase = true;
-            action = context.getString(false, true);
-        } else if (action.equals("-regex")) {
-            regex = true;
-            action = context.getString(false, true);
-        }
-
-        if (action.equals("-ignorecase")) {
-            ignoreCase = true;
-            action = context.getString(false, true);
-        } else if (action.equals("-regex")) {
-            regex = true;
-            action = context.getString(false, true);
+        // run 2 times. for example `*filter -ignorecase -regex add test` will be both accepted
+        for (int i = 0; i < 2; i++) {
+            if (action.equals("-ignorecase")) {
+                ignoreCase = true;
+                action = context.getString(false, true);
+            } else if (action.equals("-regex")) {
+                regex = true;
+                action = context.getString(false, true);
+            }
         }
 
         final Gson gson = new Gson();
@@ -128,9 +122,7 @@ public class FilterCommand extends Command {
                                 Component.join(JoinConfiguration.newlines(), filtersComponents)
                         );
             }
-            default -> {
-                throw new CommandException(Component.text("Invalid action"));
-            }
+            default -> throw new CommandException(Component.text("Invalid action"));
         }
     }
 }
