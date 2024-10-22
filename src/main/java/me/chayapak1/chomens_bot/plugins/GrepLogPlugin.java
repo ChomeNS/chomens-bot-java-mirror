@@ -49,7 +49,10 @@ public class GrepLogPlugin {
             final StringBuilder result = new StringBuilder();
 
             for (Path filePath : fileList) {
-                if (!running) return;
+                if (!running) {
+                    pattern = null;
+                    return;
+                }
 
                 if (count > 1_000_000) break;
 
