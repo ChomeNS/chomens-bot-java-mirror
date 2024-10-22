@@ -28,7 +28,7 @@ import java.util.zip.GZIPInputStream;
 public class GrepLogPlugin {
     private final Bot bot;
 
-    private Pattern pattern;
+    public Pattern pattern;
 
     private int count = 0;
 

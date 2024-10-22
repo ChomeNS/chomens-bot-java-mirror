@@ -52,6 +52,7 @@ public class GrepLogCommand extends Command {
             if (thread == null) throw new CommandException(Component.text("There is no query process running"));
 
             bot.grepLog.running = false;
+            bot.grepLog.pattern = null;
 
             thread.interrupt(); // ? should i interrupt it this way?
 
