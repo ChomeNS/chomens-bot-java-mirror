@@ -69,6 +69,7 @@ public class Bot {
     public TPSPlugin tps;
     public EvalPlugin eval;
     public TrustedPlugin trusted;
+    public GrepLogPlugin grepLog;
     public BruhifyPlugin bruhify;
     public CloopPlugin cloop;
     public ExploitsPlugin exploits;
@@ -123,6 +124,7 @@ public class Bot {
         this.tps = new TPSPlugin(this);
         this.eval = new EvalPlugin(this);
         this.trusted = new TrustedPlugin(this);
+        this.grepLog = new GrepLogPlugin(this);
         this.bruhify = new BruhifyPlugin(this);
         this.cloop = new CloopPlugin(this);
         this.exploits = new ExploitsPlugin(this);

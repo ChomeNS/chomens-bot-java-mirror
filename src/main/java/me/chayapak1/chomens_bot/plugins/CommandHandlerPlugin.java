@@ -57,6 +57,7 @@ public class CommandHandlerPlugin {
         registerCommand(new SeenCommand());
         registerCommand(new IPFilterCommand());
         registerCommand(new StopCommand());
+        registerCommand(new GrepLogCommand());
     }
 
     public boolean disabled = false;
