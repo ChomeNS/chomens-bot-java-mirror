@@ -81,7 +81,8 @@ public class ChatPlugin extends Bot.Listener {
 
             if (
                     key.equals("advMode.setCommand.success") ||
-                            key.equals("advMode.notAllowed")
+                            key.equals("advMode.notAllowed") ||
+                            key.equals("multiplayer.message_not_delivered")
             ) return;
         }
 
