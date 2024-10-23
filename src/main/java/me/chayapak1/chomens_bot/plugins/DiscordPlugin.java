@@ -45,7 +45,7 @@ public class DiscordPlugin {
 
     public final String discordUrl;
 
-    private int totalConnects = 0;
+    private final Map<String, Integer> totalConnects = new HashMap<>();
 
     public boolean shuttedDown = false;
 
@@ -69,6 +69,8 @@ public class DiscordPlugin {
 
         for (Bot bot : Main.bots) {
             final String channelId = servers.get(bot.host + ":" + bot.port);
+
+            totalConnects.put(channelId, 0); // is this necessary?
 
             bot.addListener(new Bot.Listener() {
                 @Override
@@ -106,10 +108,12 @@ public class DiscordPlugin {
 
                 @Override
                 public void connecting() {
-                    totalConnects++;
+                    final int newTotalConnects = totalConnects.get(channelId) + 1;
 
-                    if (totalConnects > 20) return;
-                    else if (totalConnects == 20) {
+                    totalConnects.put(channelId, newTotalConnects);
+
+                    if (newTotalConnects > 20) return;
+                    else if (newTotalConnects == 20) {
                         sendMessageInstantly("Suspending connecting and disconnect messages from now on", channelId);
 
                         return;
@@ -127,7 +131,7 @@ public class DiscordPlugin {
 
                 @Override
                 public void connected (ConnectedEvent event) {
-                    totalConnects = 0;
+                    totalConnects.put(channelId, 0);
 
                     sendMessageInstantly(
                             String.format(
@@ -141,7 +145,7 @@ public class DiscordPlugin {
 
                 @Override
                 public void disconnected(DisconnectedEvent event) {
-                    if (totalConnects >= 20) return;
+                    if (totalConnects.get(channelId) >= 20) return;
 
                     final String reason = ComponentUtilities.stringifyAnsi(event.getReason());
                     sendMessageInstantly(
