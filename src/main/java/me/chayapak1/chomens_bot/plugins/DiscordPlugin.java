@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.*;
 
 // please ignore my ohio code
-// also this is one of the classes which has >100 lines or actually >300 LMAO
+// also this is one of the classes which has >100 lines or actually >400 LMAO
 public class DiscordPlugin {
     public final JDA jda;
 
@@ -44,6 +44,8 @@ public class DiscordPlugin {
     public Component messagePrefix;
 
     public final String discordUrl;
+
+    private int totalConnects = 0;
 
     public boolean shuttedDown = false;
 
@@ -104,6 +106,15 @@ public class DiscordPlugin {
 
                 @Override
                 public void connecting() {
+                    totalConnects++;
+
+                    if (totalConnects > 20) return;
+                    else if (totalConnects == 20) {
+                        sendMessageInstantly("Suspending connecting and disconnect messages from now on", channelId);
+
+                        return;
+                    }
+
                     sendMessageInstantly(
                             String.format(
                                     "Connecting to: `%s:%s`",
@@ -116,6 +127,8 @@ public class DiscordPlugin {
 
                 @Override
                 public void connected (ConnectedEvent event) {
+                    totalConnects = 0;
+
                     sendMessageInstantly(
                             String.format(
                                     "Successfully connected to: `%s:%s`",
@@ -128,6 +141,8 @@ public class DiscordPlugin {
 
                 @Override
                 public void disconnected(DisconnectedEvent event) {
+                    if (totalConnects >= 20) return;
+
                     final String reason = ComponentUtilities.stringifyAnsi(event.getReason());
                     sendMessageInstantly(
                             "Disconnected: \n" +
