@@ -35,6 +35,7 @@ public class MidiConverter implements Converter {
 
     String songName = null;
 
+    final StringBuilder tracks = new StringBuilder();
     final StringBuilder text = new StringBuilder();
 
     boolean isFirst = true;
@@ -49,10 +50,15 @@ public class MidiConverter implements Converter {
         if (message instanceof MetaMessage mm) {
           if (mm.getType() == SET_TEMPO) {
             tempoEvents.add(event);
-          } else if (mm.getType() == TRACK_NAME && isFirst) {
+          } else if (mm.getType() == TRACK_NAME) {
             final String stringTitle = new String(mm.getData(), StandardCharsets.UTF_8);
 
-            if (!stringTitle.isBlank()) {
+            if (stringTitle.isBlank()) continue;
+
+            tracks.append(stringTitle);
+            tracks.append("\n");
+
+            if (isFirst) {
               songName = stringTitle + " (" + name + ")"; // i have put the ` (filename)` just in case the sequence is getting sus (like Track 2 for example)
 
               isFirst = false;
@@ -69,10 +75,13 @@ public class MidiConverter implements Converter {
       }
     }
 
+    String stringTracks = tracks.toString();
     String stringText = text.toString();
-    if (stringText.endsWith("\n")) stringText = stringText.substring(0, stringText.length() - 1);
 
-    final Song song = new Song(name, bot, songName, null, null, stringText, false);
+    if (stringText.endsWith("\n")) stringText = stringText.substring(0, stringText.length() - 1);
+    if (stringTracks.endsWith("\n")) stringTracks = stringTracks.substring(0, stringTracks.length() - 1);
+
+    final Song song = new Song(name, bot, songName, null, null, stringText, stringTracks, false);
     
     tempoEvents.sort(Comparator.comparingLong(MidiEvent::getTick));
 

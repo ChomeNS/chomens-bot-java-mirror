@@ -24,6 +24,8 @@ public class Song {
   public String songOriginalAuthor;
   public String songDescription;
 
+  public String tracks;
+
   public final boolean nbs;
 
 //  public int loopCount = 0; // Number of times to loop
@@ -31,13 +33,14 @@ public class Song {
 
   private final Bot bot;
 
-  public Song (String originalName, Bot bot, String songName, String songAuthor, String songOriginalAuthor, String songDescription, boolean nbs) {
+  public Song (String originalName, Bot bot, String songName, String songAuthor, String songOriginalAuthor, String songDescription, String tracks, boolean nbs) {
     this.originalName = originalName;
     this.bot = bot;
     this.songName = songName;
     this.songAuthor = songAuthor;
     this.songOriginalAuthor = songOriginalAuthor;
     this.songDescription = songDescription;
+    this.tracks = tracks;
     this.nbs = nbs;
 
     updateName();

@@ -165,7 +165,16 @@ public class NBSConverter implements Converter {
       }
     }
 
-    Song song = new Song(!songName.isBlank() ? songName : fileName, bot, songName, songAuthor, songOriginalAuthor, songDescription, true);
+    final StringBuilder layerNames = new StringBuilder();
+
+    for (NBSLayer layer : nbsLayers) {
+      layerNames.append(layer.name);
+      layerNames.append("\n");
+    }
+
+    final String stringLayerNames = layerNames.toString();
+
+    Song song = new Song(!songName.isBlank() ? songName : fileName, bot, songName, songAuthor, songOriginalAuthor, songDescription, stringLayerNames.substring(0, stringLayerNames.length() - 1), true);
     if (loop > 0) {
       song.loopPosition = getMilliTime(loopStartTick, tempo);
 //      song.loopCount = maxLoopCount;

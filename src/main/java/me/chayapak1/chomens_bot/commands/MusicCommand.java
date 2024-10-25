@@ -603,6 +603,7 @@ public class MusicCommand extends Command {
         if (currentSong.requester != null) components.add(Component.translatable("Requester: %s", Component.text(currentSong.requester).color(valueColor)).color(keyColor));
         if (currentSong.songAuthor != null && !currentSong.songAuthor.isBlank()) components.add(Component.translatable("Author: %s", Component.text(currentSong.songAuthor).color(valueColor)).color(keyColor));
         if (currentSong.songOriginalAuthor != null && !currentSong.songOriginalAuthor.isBlank()) components.add(Component.translatable("Original author: %s", Component.text(currentSong.songOriginalAuthor).color(valueColor)).color(keyColor));
+        if (currentSong.tracks != null && !currentSong.tracks.isBlank()) components.add(Component.translatable("Tracks: %s", Component.text(currentSong.tracks).color(valueColor)).color(keyColor));
         if (currentSong.songDescription != null && !currentSong.songDescription.isBlank()) components.add(Component.translatable("Description: %s", Component.text(currentSong.songDescription).color(valueColor)).color(keyColor));
 
         return Component.join(JoinConfiguration.newlines(), components);
@@ -620,6 +621,7 @@ public class MusicCommand extends Command {
                 "chayapak",
                 "hhhzzzsss",
                 "SongPlayer's test song ported to ChomeNS Bot",
+                null,
                 false
         );
 
