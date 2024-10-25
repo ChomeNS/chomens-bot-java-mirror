@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import static me.chayapak1.chomens_bot.util.StringUtilities.isNotNullAndNotBlank;
+
 public class MusicCommand extends Command {
     private Path root;
 
@@ -599,12 +601,12 @@ public class MusicCommand extends Command {
         final TextColor keyColor = ColorUtilities.getColorByString(bot.config.colorPalette.secondary);
         final TextColor valueColor = ColorUtilities.getColorByString(bot.config.colorPalette.string);
 
-        if (currentSong.name != null) components.add(Component.translatable("Title/Filename: %s", Component.text(currentSong.name).color(valueColor)).color(keyColor));
-        if (currentSong.requester != null) components.add(Component.translatable("Requester: %s", Component.text(currentSong.requester).color(valueColor)).color(keyColor));
-        if (currentSong.songAuthor != null && !currentSong.songAuthor.isBlank()) components.add(Component.translatable("Author: %s", Component.text(currentSong.songAuthor).color(valueColor)).color(keyColor));
-        if (currentSong.songOriginalAuthor != null && !currentSong.songOriginalAuthor.isBlank()) components.add(Component.translatable("Original author: %s", Component.text(currentSong.songOriginalAuthor).color(valueColor)).color(keyColor));
-        if (currentSong.tracks != null && !currentSong.tracks.isBlank()) components.add(Component.translatable("Tracks: %s", Component.text(currentSong.tracks).color(valueColor)).color(keyColor));
-        if (currentSong.songDescription != null && !currentSong.songDescription.isBlank()) components.add(Component.translatable("Description: %s", Component.text(currentSong.songDescription).color(valueColor)).color(keyColor));
+        if (isNotNullAndNotBlank(currentSong.name)) components.add(Component.translatable("Title/Filename: %s", Component.text(currentSong.name).color(valueColor)).color(keyColor));
+        if (isNotNullAndNotBlank(currentSong.requester)) components.add(Component.translatable("Requester: %s", Component.text(currentSong.requester).color(valueColor)).color(keyColor));
+        if (isNotNullAndNotBlank(currentSong.songAuthor)) components.add(Component.translatable("Author: %s", Component.text(currentSong.songAuthor).color(valueColor)).color(keyColor));
+        if (isNotNullAndNotBlank(currentSong.songOriginalAuthor)) components.add(Component.translatable("Original author: %s", Component.text(currentSong.songOriginalAuthor).color(valueColor)).color(keyColor));
+        if (isNotNullAndNotBlank(currentSong.tracks)) components.add(Component.translatable("Tracks: %s", Component.text(currentSong.tracks).color(valueColor)).color(keyColor));
+        if (isNotNullAndNotBlank(currentSong.songDescription)) components.add(Component.translatable("Description: %s", Component.text(currentSong.songDescription).color(valueColor)).color(keyColor));
 
         return Component.join(JoinConfiguration.newlines(), components);
     }

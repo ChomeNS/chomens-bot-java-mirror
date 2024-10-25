@@ -50,4 +50,8 @@ public class StringUtilities {
 
         return false;
     }
+
+    public static boolean isNotNullAndNotBlank (String text) {
+        return text != null && !text.isBlank();
+    }
 }

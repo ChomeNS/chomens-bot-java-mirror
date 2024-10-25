@@ -4,6 +4,8 @@ import me.chayapak1.chomens_bot.Bot;
 
 import java.util.*;
 
+import static me.chayapak1.chomens_bot.util.StringUtilities.isNotNullAndNotBlank;
+
 // Author: hhhzzzsss & _ChipMC_ but i changed most of the stuff
 public class Song {
   public final ArrayList<Note> notes = new ArrayList<>();
@@ -47,30 +49,18 @@ public class Song {
   }
 
   public void updateName() {
-    // real ohio code
-    // TODO: clean this up
-    if (isNotNullAndNotBlank(songOriginalAuthor) && !isNotNullAndNotBlank(songAuthor)) name = String.format(
-            "%s - %s",
-            songOriginalAuthor,
-            isNotNullAndNotBlank(songName) ? songName : originalName
-    );
-    else if (!isNotNullAndNotBlank(songOriginalAuthor) && isNotNullAndNotBlank(songAuthor)) name = String.format(
-            "%s - %s",
-            songAuthor,
-            isNotNullAndNotBlank(songName) ? songName : originalName
-    );
-    else if (isNotNullAndNotBlank(songOriginalAuthor) && isNotNullAndNotBlank(songAuthor)) name = String.format(
-            "%s/%s - %s",
-            songOriginalAuthor,
-            songAuthor,
-            isNotNullAndNotBlank(songName) ? songName : originalName
-    );
-    else name = isNotNullAndNotBlank(songName) ? songName : originalName;
-  }
+    String authorPart = null;
 
-  // should this be in idk, util?
-  private boolean isNotNullAndNotBlank (String text) {
-    return text != null && !text.isBlank();
+    if (isNotNullAndNotBlank(songOriginalAuthor) && isNotNullAndNotBlank(songAuthor)) {
+      authorPart = String.format("%s/%s", songOriginalAuthor, songAuthor);
+    } else if (isNotNullAndNotBlank(songOriginalAuthor)) {
+      authorPart = songOriginalAuthor;
+    } else if (isNotNullAndNotBlank(songAuthor)) {
+      authorPart = songAuthor;
+    }
+
+    String namePart = isNotNullAndNotBlank(songName) ? songName : originalName;
+    name = (authorPart != null) ? String.format("%s - %s", authorPart, namePart) : namePart;
   }
 
   public Note get (int i) {
