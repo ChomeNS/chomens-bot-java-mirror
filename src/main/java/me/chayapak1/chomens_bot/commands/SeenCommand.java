@@ -34,13 +34,25 @@ public class SeenCommand extends Command {
 
         final String player = context.getString(true, true);
 
+        boolean online = false;
+
+        Component onlineComponents = Component.empty();
+
         for (Bot eachBot : bot.bots) {
-            if (eachBot.players.getEntry(player) != null) return Component.empty()
-                    .append(Component.text(player))
-                    .append(Component.text(" is currently online on "))
-                    .append(Component.text(eachBot.host + ":" + eachBot.port))
-                    .color(NamedTextColor.RED);
+            if (eachBot.players.getEntry(player) != null) {
+                online = true;
+
+                onlineComponents = onlineComponents.append(
+                        Component.empty()
+                            .append(Component.text(player))
+                            .append(Component.text(" is currently online on "))
+                            .append(Component.text(eachBot.host + ":" + eachBot.port))
+                            .color(NamedTextColor.RED)
+                );
+            }
         }
+
+        if (online) return onlineComponents;
 
         final JsonElement playerElement = PlayersPersistentDataPlugin.playersObject.get(player);
         if (playerElement == null) throw new CommandException(Component.translatable(
