@@ -33,6 +33,8 @@ public class FindAltsCommand extends Command {
     public Component execute(CommandContext context) throws Exception {
         final Bot bot = context.bot;
 
+        boolean argumentIsIP = true;
+
         String targetIP;
 
         final String player = context.getString(true, true);
@@ -41,6 +43,8 @@ public class FindAltsCommand extends Command {
 
         if (playerEntry == null) targetIP = player;
         else {
+            argumentIsIP = false;
+
             final CompletableFuture<String> future = bot.players.getPlayerIP(playerEntry);
 
             targetIP = future.get(5, TimeUnit.SECONDS);
@@ -67,9 +71,12 @@ public class FindAltsCommand extends Command {
                 .map(Map.Entry::getKey);
 
         Component component = Component
-                .translatable("Possible alts for the player %s:")
+                .translatable("Possible alts for the %s %s:")
                 .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
-                .arguments(Component.text(player).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)))
+                .arguments(
+                        Component.text(argumentIsIP ? "IP" : "player"),
+                        Component.text(player).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
+                )
                 .appendNewline();
 
         int i = 0;
