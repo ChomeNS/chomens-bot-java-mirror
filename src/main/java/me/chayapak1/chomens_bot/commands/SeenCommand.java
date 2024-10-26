@@ -52,7 +52,7 @@ public class SeenCommand extends Command {
 
         final JsonElement time = lastSeen.get("time");
 
-        if (time == null) throw new CommandException(Component.text("time is null.. (possible invalid entry)"));
+        if (time == null) throw new CommandException(Component.text("This player does not have the `lastSeen.time` entry in the database for some reason."));
 
         final DateTime dateTime = new DateTime(time.getAsLong(), DateTimeZone.UTC);
 
