@@ -43,10 +43,10 @@ public class SeenCommand extends Command {
         }
 
         final JsonElement playerElement = PlayersPersistentDataPlugin.playersObject.get(player);
-        if (playerElement == null) return Component.translatable(
+        if (playerElement == null) throw new CommandException(Component.translatable(
                 "%s was never seen",
                 Component.text(player)
-        ).color(NamedTextColor.RED);
+        ));
 
         final JsonObject lastSeen = playerElement.getAsJsonObject().get("lastSeen").getAsJsonObject();
 
