@@ -4,12 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
-import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.PersistentDataUtilities;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.JoinConfiguration;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -40,21 +36,12 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
     }
 
     private void check (PlayerEntry target) {
-        final CompletableFuture<Component> future = bot.core.runTracked("essentials:seen " + target.profile.getIdAsString());
+        final CompletableFuture<String> future = bot.players.getPlayerIP(target);
 
         if (future == null) return;
 
         future.thenApply(output -> {
-            final List<Component> children = output.children();
-
-            String stringified = ComponentUtilities.stringify(Component.join(JoinConfiguration.separator(Component.space()), children));
-
-            if (!stringified.startsWith(" - IP Address: ")) return output;
-
-            stringified = stringified.trim().substring(" - IP Address: ".length());
-            if (stringified.startsWith("/")) stringified = stringified.substring(1);
-
-            handleIP(stringified, target);
+            handleIP(output, target);
 
             return output;
         });

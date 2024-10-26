@@ -1,5 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import me.chayapak1.chomens_bot.util.ComponentUtilities;
+import net.kyori.adventure.text.JoinConfiguration;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.network.packet.Packet;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class PlayersPlugin extends Bot.Listener {
     private final Bot bot;
@@ -56,6 +59,31 @@ public class PlayersPlugin extends Bot.Listener {
         for (UUID uuid : uuids) {
             removePlayer(uuid);
         }
+    }
+
+    public CompletableFuture<String> getPlayerIP (PlayerEntry target) {
+        final CompletableFuture<String> outputFuture = new CompletableFuture<>();
+
+        final CompletableFuture<Component> trackedCoreFuture = bot.core.runTracked("essentials:seen " + target.profile.getIdAsString());
+
+        if (trackedCoreFuture == null) return null;
+
+        trackedCoreFuture.thenApply(output -> {
+            final List<Component> children = output.children();
+
+            String stringified = ComponentUtilities.stringify(Component.join(JoinConfiguration.separator(Component.space()), children));
+
+            if (!stringified.startsWith(" - IP Address: ")) return output;
+
+            stringified = stringified.trim().substring(" - IP Address: ".length());
+            if (stringified.startsWith("/")) stringified = stringified.substring(1);
+
+            outputFuture.complete(stringified);
+
+            return output;
+        });
+
+        return outputFuture;
     }
 
     public final PlayerEntry getEntry (UUID uuid) {

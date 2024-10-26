@@ -1,11 +1,14 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
 import me.chayapak1.chomens_bot.util.PersistentDataUtilities;
 
 import java.time.Instant;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
     public static JsonObject playersObject = new JsonObject();
@@ -26,12 +29,33 @@ public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
 
     @Override
     public void playerJoined(PlayerEntry target) {
-        if (playersObject.has(getName(target))) return;
-
         final JsonObject object = new JsonObject();
         object.addProperty("uuid", target.profile.getIdAsString());
         object.add("lastSeen", new JsonObject());
+        object.add("ips", new JsonObject());
 
+        final CompletableFuture<String> future = bot.players.getPlayerIP(target);
+
+        if (future == null) {
+            setPersistentEntry(target, object);
+            return;
+        }
+
+        future.completeOnTimeout(null, 5, TimeUnit.SECONDS);
+
+        future.thenApply(output -> {
+            if (output != null) {
+                object.getAsJsonObject("ips").addProperty(bot.host + ":" + bot.port, output);
+            }
+
+            setPersistentEntry(target, object);
+
+            return output;
+        });
+    }
+
+    // is this bad?
+    private void setPersistentEntry (PlayerEntry target, JsonObject object) {
         playersObject.add(getName(target), object);
 
         PersistentDataUtilities.put("players", playersObject);
