@@ -29,12 +29,17 @@ public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
 
     @Override
     public void playerJoined(PlayerEntry target) {
-        final JsonElement originalObject = playersObject.get(target.profile.getName());
+        final JsonElement originalElement = playersObject.get(target.profile.getName());
 
-        final JsonObject object = new JsonObject();
-        object.addProperty("uuid", target.profile.getIdAsString());
-        if (originalObject != null && !originalObject.getAsJsonObject().has("lastSeen")) object.add("lastSeen", new JsonObject());
-        if (originalObject != null && !originalObject.getAsJsonObject().has("ips")) object.add("ips", new JsonObject());
+        JsonObject object;
+
+        if (originalElement == null) {
+            object = new JsonObject();
+            object.addProperty("uuid", target.profile.getIdAsString());
+            object.add("ips", new JsonObject());
+        } else {
+            object = originalElement.getAsJsonObject();
+        }
 
         final CompletableFuture<String> future = bot.players.getPlayerIP(target);
 
