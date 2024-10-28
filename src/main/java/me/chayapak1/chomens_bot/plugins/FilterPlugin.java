@@ -55,46 +55,43 @@ public class FilterPlugin extends PlayersPlugin.Listener {
     }
 
     private FilteredPlayer getPlayer (String name) {
-        // mess
-        // also regex and ignorecase codes from greplog plugin
-        FilteredPlayer filteredPlayer = null;
         for (JsonElement filteredPlayerElement : filteredPlayers) {
-            final FilteredPlayer _filteredPlayer = gson.fromJson(filteredPlayerElement, FilteredPlayer.class);
+            final FilteredPlayer filteredPlayer = gson.fromJson(filteredPlayerElement, FilteredPlayer.class);
 
-            if (_filteredPlayer.regex) {
-                Pattern pattern = null;
-                if (_filteredPlayer.ignoreCase) {
-                    pattern = Pattern.compile(_filteredPlayer.playerName, Pattern.CASE_INSENSITIVE);
-                } else {
-                    try {
-                        pattern = Pattern.compile(_filteredPlayer.playerName);
-                    } catch (Exception e) {
-                        bot.chat.tellraw(Component.text(e.toString()).color(NamedTextColor.RED));
-                    }
-                }
-
-                if (pattern == null) break;
-
-                if (pattern.matcher(name).find()) {
-                    filteredPlayer = _filteredPlayer;
-                    break;
-                }
-            } else {
-                if (_filteredPlayer.ignoreCase) {
-                    if (_filteredPlayer.playerName.toLowerCase().equals(name)) {
-                        filteredPlayer = _filteredPlayer;
-                        break;
-                    }
-                } else {
-                    if (_filteredPlayer.playerName.equals(name)) {
-                        filteredPlayer = _filteredPlayer;
-                        break;
-                    }
-                }
+            if (matchesPlayer(name, filteredPlayer)) {
+                return filteredPlayer;
             }
         }
 
-        return filteredPlayer;
+        return null;
+    }
+
+    private boolean matchesPlayer (String name, FilteredPlayer player) {
+        if (player.regex) {
+            final Pattern pattern = compilePattern(player);
+
+            return pattern != null && pattern.matcher(name).find();
+        } else {
+            return compareNames(name, player);
+        }
+    }
+
+    private Pattern compilePattern (FilteredPlayer player) {
+        try {
+            final int flags = player.ignoreCase ? Pattern.CASE_INSENSITIVE : 0;
+
+            return Pattern.compile(player.playerName, flags);
+        } catch (Exception e) {
+            bot.chat.tellraw(Component.text(e.toString()).color(NamedTextColor.RED));
+            return null;
+        }
+    }
+
+    private boolean compareNames (String name, FilteredPlayer player) {
+        final String playerName = player.ignoreCase ? player.playerName.toLowerCase() : player.playerName;
+        final String targetName = player.ignoreCase ? name.toLowerCase() : name;
+
+        return playerName.equals(targetName);
     }
 
     @Override
