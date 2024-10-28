@@ -389,7 +389,7 @@ public class DiscordPlugin {
             String message;
             synchronized (logMessages) {
                 StringBuilder logMessage = logMessages.get(channelId);
-                message = logMessage.toString();
+                message = logMessage.toString().replace(".", "\u200b.\u200b"); // the ZWSP fixes discord.gg showing invite
                 final int maxLength = 2_000 - ("""
                         ```ansi
 
