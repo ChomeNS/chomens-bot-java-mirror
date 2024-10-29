@@ -101,11 +101,25 @@ public class FilterCommand extends Command {
                 for (JsonElement playerElement : FilterPlugin.filteredPlayers) {
                     final FilteredPlayer player = gson.fromJson(playerElement, FilteredPlayer.class);
 
+                    Component options = Component.empty().color(NamedTextColor.DARK_GRAY);
+
+                    if (player.ignoreCase || player.regex) {
+                        final List<Component> args = new ArrayList<>();
+
+                        if (player.ignoreCase) args.add(Component.text("ignore case"));
+                        if (player.regex) args.add(Component.text("regex"));
+
+                        options = options.append(Component.text("("));
+                        options = options.append(Component.join(JoinConfiguration.commas(true), args).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)));
+                        options = options.append(Component.text(")"));
+                    }
+
                     filtersComponents.add(
                             Component.translatable(
-                                    "%s › %s",
+                                    "%s › %s %s",
                                     Component.text(index).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
-                                    Component.text(player.playerName).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
+                                    Component.text(player.playerName).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)),
+                                    options
                             ).color(NamedTextColor.DARK_GRAY)
                     );
 
