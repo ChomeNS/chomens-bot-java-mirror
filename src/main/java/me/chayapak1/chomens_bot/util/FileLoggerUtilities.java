@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -90,7 +91,7 @@ public class FileLoggerUtilities {
 
     public static void openLogFile() throws IOException {
         currentLogDate = LocalDate.parse(getLogDate(logPath));
-        logWriter = Files.newBufferedWriter(logPath, StandardOpenOption.APPEND);
+        logWriter = Files.newBufferedWriter(logPath, StandardCharsets.ISO_8859_1, StandardOpenOption.APPEND);
     }
 
     public static void compressLogFile() throws IOException {
