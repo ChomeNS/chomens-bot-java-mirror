@@ -81,13 +81,15 @@ public class ComponentUtilities {
         return map;
     }
 
-    private static String getOrReturnKey (String key) {
+    private static String getOrReturnFallback (TranslatableComponent component) {
+        final String key = component.key();
+
         final String minecraftKey = language.get(key);
         final String voiceChatKey = voiceChatLanguage.get(key);
 
         if (minecraftKey != null) return minecraftKey;
         else if (voiceChatKey != null) return voiceChatKey;
-        else return key;
+        else return component.fallback() != null ? component.fallback() : key;
     }
 
     public static String stringify (Component message) { return stringify(message, null); }
@@ -264,7 +266,7 @@ public class ComponentUtilities {
     }
 
     public static PartiallyStringified stringifyPartially (TranslatableComponent message, boolean motd, boolean ansi, String lastColor, boolean noHex) {
-        String format = getOrReturnKey(message.key());
+        String format = getOrReturnFallback(message);
 
         // totallynotskidded™️ from HBot (and changed a bit)
         Matcher matcher = ARG_PATTERN.matcher(format);
