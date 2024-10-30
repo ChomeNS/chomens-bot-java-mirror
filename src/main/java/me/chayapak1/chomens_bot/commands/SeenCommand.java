@@ -10,11 +10,15 @@ import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.plugins.PlayersPersistentDataPlugin;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SeenCommand extends Command {
     public SeenCommand () {
@@ -36,13 +40,13 @@ public class SeenCommand extends Command {
 
         boolean online = false;
 
-        Component onlineComponents = Component.empty();
+        final List<Component> onlineComponents = new ArrayList<>();
 
         for (Bot eachBot : bot.bots) {
             if (eachBot.players.getEntry(player) != null) {
                 online = true;
 
-                onlineComponents = onlineComponents.append(
+                onlineComponents.add(
                         Component.empty()
                             .append(Component.text(player))
                             .append(Component.text(" is currently online on "))
@@ -52,7 +56,7 @@ public class SeenCommand extends Command {
             }
         }
 
-        if (online) return onlineComponents;
+        if (online) return Component.join(JoinConfiguration.newlines(), onlineComponents);
 
         final JsonElement playerElement = PlayersPersistentDataPlugin.playersObject.get(player);
         if (playerElement == null) throw new CommandException(Component.translatable(
