@@ -22,6 +22,6 @@ public class ExploitsPlugin {
 }
 ```
 
-Then at the root of the project run `./gradlew shadowJar` for Linux or `gradlew.bat shadowJar` for Windows
+Then at the root of the project run `./gradlew build` to build.
 
 The .jar file will be at `build/libs`, to run the bot do `java -jar chomens_bot-rolling-all.jar` 
