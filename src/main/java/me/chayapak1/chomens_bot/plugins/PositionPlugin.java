@@ -30,9 +30,9 @@ public class PositionPlugin extends Bot.Listener {
 
     public Vector3i position = Vector3i.from(0, 0, 0);
 
-    private final Map<Integer, PlayerEntry> entityIdMap = new HashMap<>();
-    private final Map<Integer, Vector3f> positionMap = new HashMap<>();
-    private final Map<Integer, Rotation> rotationMap = new HashMap<>();
+    public final Map<Integer, PlayerEntry> entityIdMap = new HashMap<>();
+    public final Map<Integer, Vector3f> positionMap = new HashMap<>();
+    public final Map<Integer, Rotation> rotationMap = new HashMap<>();
 
     public PositionPlugin (Bot bot) {
         this.bot = bot;
