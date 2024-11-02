@@ -58,7 +58,7 @@ public class VoiceChatPlugin extends Bot.Listener {
 
         bot.session.send(new ServerboundCustomPayloadPacket(
                 Key.key("voicechat:request_secret"),
-                new FriendlyByteBuf(Unpooled.buffer()).writeInt(17).array()
+                new FriendlyByteBuf(Unpooled.buffer()).writeInt(18).array()
         ));
 
         bot.session.send(new ServerboundCustomPayloadPacket(
