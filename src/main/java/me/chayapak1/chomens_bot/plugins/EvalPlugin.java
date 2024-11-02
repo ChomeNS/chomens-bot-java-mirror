@@ -36,6 +36,7 @@ public class EvalPlugin {
         functions.add(new ChatFunction(bot));
         functions.add(new GetPlayerListFunction(bot));
         functions.add(new GetBotUsernameFunction(bot));
+        functions.add(new GetLatestChatMessageFunction(bot));
 
         try {
             socket = IO.socket(bot.config.eval.address);
