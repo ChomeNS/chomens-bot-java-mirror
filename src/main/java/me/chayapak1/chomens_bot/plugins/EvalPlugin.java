@@ -7,10 +7,7 @@ import io.socket.client.Socket;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.eval.EvalFunction;
 import me.chayapak1.chomens_bot.data.eval.EvalOutput;
-import me.chayapak1.chomens_bot.evalFunctions.ChatFunction;
-import me.chayapak1.chomens_bot.evalFunctions.CoreFunction;
-import me.chayapak1.chomens_bot.evalFunctions.CorePlaceBlockFunction;
-import me.chayapak1.chomens_bot.evalFunctions.GetPlayerListFunction;
+import me.chayapak1.chomens_bot.evalFunctions.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +35,7 @@ public class EvalPlugin {
         functions.add(new CorePlaceBlockFunction(bot));
         functions.add(new ChatFunction(bot));
         functions.add(new GetPlayerListFunction(bot));
+        functions.add(new GetBotUsernameFunction(bot));
 
         try {
             socket = IO.socket(bot.config.eval.address);
