@@ -18,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.regex.Pattern;
@@ -104,10 +105,12 @@ public class GrepLogPlugin {
                     .queue(message -> {
                         final String url = message.getAttachments().get(0).getUrl();
 
+                        final DecimalFormat formatter = new DecimalFormat("#,###");
+
                         final Component component = Component.translatable("Found %s matches for %s. You can see the results by clicking %s or in the Discord server.")
                                 .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
                                 .arguments(
-                                        Component.text(matches).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
+                                        Component.text(formatter.format(matches)).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
                                         Component.text(input).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
                                         Component
                                                 .text("here")
