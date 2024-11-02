@@ -70,6 +70,8 @@ public class EvalPlugin {
         }
 
         socket.on("codeOutput", (args) -> {
+            if (args.length < 3) return;
+
             final int id = (int) args[0];
             final boolean isError = (boolean) args[1];
             final String output = (String) args[2];

@@ -56,7 +56,8 @@ public class ConsoleCommand extends Command {
                         // servers.find(server => server.toLowerCase().includes(args.join(' '))) in js i guess
                         eachBot.console.consoleServer = servers.stream()
                                 .filter(eachServer -> eachServer.toLowerCase().contains(server))
-                                .toArray(String[]::new)[0];
+                                .findFirst()
+                                .orElse("all");
 
                         context.sendOutput(Component.text("Set the console server to " + bot.console.consoleServer).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)));
                     } catch (ArrayIndexOutOfBoundsException e) {

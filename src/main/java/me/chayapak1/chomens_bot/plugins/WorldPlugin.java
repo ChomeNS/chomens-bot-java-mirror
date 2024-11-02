@@ -34,14 +34,17 @@ public class WorldPlugin extends Bot.Listener {
     private void worldChanged (String dimension) {
         final RegistryEntry currentDimension = registry.stream()
                 .filter(eachDimension -> eachDimension.getId().asString().equals(dimension))
-                .toArray(RegistryEntry[]::new)[0];
+                .findFirst()
+                .orElse(null);
+
+        if (currentDimension == null) return;
 
         final NbtMap data = currentDimension.getData();
 
         if (data == null) return;
 
         minY = data.getInt("min_y");
-        maxY = data.getInt("height");
+        maxY = data.getInt("height") + minY;
 
         for (Listener listener : listeners) listener.worldChanged(dimension);
     }

@@ -24,7 +24,11 @@ public class ValidateCommand extends Command {
     public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        final String hash = context.fullArgs[0];
+        final String[] fullArgs = context.fullArgs;
+
+        if (fullArgs.length == 0) return null;
+
+        final String hash = fullArgs[0];
 
         if (bot.hashing.isCorrectHash(hash, context.userInputCommandName, context.sender)) return Component.text("Valid hash").color(NamedTextColor.GREEN);
         else if (bot.hashing.isCorrectOwnerHash(hash, context.userInputCommandName, context.sender)) return Component.text("Valid OwnerHash").color(NamedTextColor.GREEN);

@@ -215,7 +215,8 @@ public class MidiConverter implements Converter {
 
         shiftedInstrument = Arrays.stream(instrumentList)
                 .filter(ins -> ins.offset == closest)
-                .toArray(Instrument[]::new)[0];
+                .findFirst()
+                .orElse(null);
       }
     }
 

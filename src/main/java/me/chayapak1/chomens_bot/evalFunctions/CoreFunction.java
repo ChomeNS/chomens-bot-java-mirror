@@ -10,6 +10,8 @@ public class CoreFunction extends EvalFunction {
 
     @Override
     public Output execute(Object... args) {
+        if (args.length == 0) return null;
+
         final String command = (String) args[0];
 
         bot.core.run(command);

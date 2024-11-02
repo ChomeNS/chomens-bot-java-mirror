@@ -10,6 +10,8 @@ public class ChatFunction extends EvalFunction {
 
     @Override
     public Output execute(Object... args) {
+        if (args.length == 0) return null;
+
         final String message = (String) args[0];
 
         bot.chat.send(message);

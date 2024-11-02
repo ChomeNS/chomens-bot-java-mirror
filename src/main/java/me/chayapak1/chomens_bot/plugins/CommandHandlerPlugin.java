@@ -94,6 +94,8 @@ public class CommandHandlerPlugin {
 
         final String[] splitInput = input.trim().split("\\s+");
 
+        if (splitInput.length == 0) return null;
+
         final String commandName = splitInput[0];
 
         final Command command = findCommand(commands, commandName);
