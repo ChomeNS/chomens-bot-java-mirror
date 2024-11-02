@@ -188,7 +188,7 @@ public class PositionPlugin extends Bot.Listener {
 
             if (bot.serverPluginsManager.hasPlugin(ServerPluginsManagerPlugin.ESSENTIALS)) command += "essentials:";
 
-            command += String.format("tp %s %s %s", position.getX(), maxY - 1, position.getZ());
+            command += String.format("tp ~ %s ~", maxY - 1);
 
             bot.chat.send(command);
 
