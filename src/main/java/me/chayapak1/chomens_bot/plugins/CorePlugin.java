@@ -374,6 +374,8 @@ public class CorePlugin extends PositionPlugin.Listener {
 
     @Override
     public void positionChange (Vector3i position) {
+        if (bot.position.isGoingDownFromHeightLimit) return;
+
         from = Vector3i.from(
                 (int) (fromSize.getX() + Math.floor((double) bot.position.position.getX() / 16) * 16),
                 MathUtilities.clamp(fromSize.getY(), bot.world.minY, bot.world.maxY),

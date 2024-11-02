@@ -30,9 +30,11 @@ public class PositionPlugin extends Bot.Listener {
 
     public Vector3i position = Vector3i.from(0, 0, 0);
 
-    public final Map<Integer, PlayerEntry> entityIdMap = new HashMap<>();
-    public final Map<Integer, Vector3f> positionMap = new HashMap<>();
-    public final Map<Integer, Rotation> rotationMap = new HashMap<>();
+    public boolean isGoingDownFromHeightLimit = false; // cool variable name
+
+    private final Map<Integer, PlayerEntry> entityIdMap = new HashMap<>();
+    private final Map<Integer, Vector3f> positionMap = new HashMap<>();
+    private final Map<Integer, Rotation> rotationMap = new HashMap<>();
 
     public PositionPlugin (Bot bot) {
         this.bot = bot;
@@ -40,12 +42,23 @@ public class PositionPlugin extends Bot.Listener {
         bot.addListener(this);
 
         // notchian clients also does this, sends the position packet every second
-        bot.executor.scheduleAtFixedRate(() -> bot.session.send(new ServerboundMovePlayerPosPacket(
-                false,
-                position.getX(),
-                position.getY(),
-                position.getZ()
-        )), 0, 1, TimeUnit.SECONDS);
+        bot.executor.scheduleAtFixedRate(() -> {
+            if (isGoingDownFromHeightLimit) return;
+
+            bot.session.send(new ServerboundMovePlayerPosPacket(
+                    false,
+                    position.getX(),
+                    position.getY(),
+                    position.getZ()
+            ));
+        }, 0, 1, TimeUnit.SECONDS);
+
+        bot.tick.addListener(new TickPlugin.Listener() {
+            @Override
+            public void onTick() {
+                handleHeightLimit();
+            }
+        });
     }
 
     @Override
@@ -143,6 +156,51 @@ public class PositionPlugin extends Bot.Listener {
         rotationMap.put(packet.getEntityId(), rotation);
 
         for (Listener listener : listeners) listener.playerMoved(player, position, rotation);
+    }
+
+    // for now this is used in CorePlugin when placing the command block
+    private void handleHeightLimit () {
+        final int y = position.getY();
+        final int maxY = bot.world.maxY;
+
+        if (y < maxY) {
+            if (isGoingDownFromHeightLimit) {
+                isGoingDownFromHeightLimit = false;
+
+                for (Listener listener : listeners) { listener.positionChange(position); }
+            }
+
+            return;
+        }
+
+        isGoingDownFromHeightLimit = true;
+
+        final Vector3i newPosition = Vector3i.from(
+                position.getX(),
+                position.getY() - 2,
+                position.getZ()
+        );
+
+        position = newPosition;
+
+        if (position.getY() > maxY + 500) {
+            String command = "/";
+
+            if (bot.serverPluginsManager.hasPlugin(ServerPluginsManagerPlugin.ESSENTIALS)) command += "essentials:";
+
+            command += String.format("tp %s %s %s", position.getX(), maxY - 1, position.getZ());
+
+            bot.chat.send(command);
+
+            return;
+        }
+
+        bot.session.send(new ServerboundMovePlayerPosPacket(
+                false,
+                newPosition.getX(),
+                newPosition.getY(),
+                newPosition.getZ()
+        ));
     }
 
     public Vector3f getPlayerPosition (String playerName) {
