@@ -16,7 +16,7 @@ internetCheck:
 # how backup works is that it checks for the address every 1 minute,
 # if the address is reachable it will not start the bot
 # if the address is not reachable then it will start the bot
-#
+
 # if the bot has already been started and the address is back up it
 # will stop the bot (using System.exit(1))
 backup:
@@ -59,7 +59,8 @@ colorPalette:
   number: 'gold'
   ownerName: 'green'
 
-ownerName: 'chayapak' # currently this is only used in the console
+# you HAVE TO CHANGE THIS if you are hosting another instance of my bot.
+ownerName: 'XxChange_mexX'
 
 imposterFormatChecker:
   enabled: false
