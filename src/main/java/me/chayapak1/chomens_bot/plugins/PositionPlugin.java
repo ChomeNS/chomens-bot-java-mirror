@@ -161,6 +161,7 @@ public class PositionPlugin extends Bot.Listener {
     // for now this is used in CorePlugin when placing the command block
     private void handleHeightLimit () {
         final int y = position.getY();
+        final int minY = bot.world.minY;
         final int maxY = bot.world.maxY;
 
         if (y < maxY) {
@@ -183,7 +184,7 @@ public class PositionPlugin extends Bot.Listener {
 
         position = newPosition;
 
-        if (position.getY() > maxY + 500) {
+        if (position.getY() > maxY + 500 || position.getY() < minY) {
             String command = "/";
 
             if (bot.serverPluginsManager.hasPlugin(ServerPluginsManagerPlugin.ESSENTIALS)) command += "essentials:";
