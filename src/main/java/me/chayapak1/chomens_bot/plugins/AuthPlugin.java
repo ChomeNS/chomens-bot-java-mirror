@@ -23,6 +23,8 @@ public class AuthPlugin extends PlayersPlugin.Listener {
 
     private boolean hasCorrectHash;
 
+    private PlayerEntry targetPlayer;
+
     private boolean started = false;
 
     public AuthPlugin (Bot bot) {
@@ -39,7 +41,7 @@ public class AuthPlugin extends PlayersPlugin.Listener {
                 return AuthPlugin.this.systemMessageReceived(component);
             }
         });
-        bot.executor.scheduleAtFixedRate(this::check, 0, 1, TimeUnit.SECONDS);
+        bot.executor.scheduleAtFixedRate(this::check, 1, 3, TimeUnit.SECONDS);
     }
 
     private String getSanitizedOwnerName() {
@@ -49,6 +51,8 @@ public class AuthPlugin extends PlayersPlugin.Listener {
     @Override
     public void playerJoined(PlayerEntry target) {
         if (!target.profile.getName().equals(getSanitizedOwnerName()) || !bot.options.useCore) return;
+
+        targetPlayer = target;
 
         bot.executor.schedule(() -> sendVerificationMessage(target, true), 2, TimeUnit.SECONDS);
     }
@@ -110,6 +114,8 @@ public class AuthPlugin extends PlayersPlugin.Listener {
 
             hasCorrectHash = inputHash.equals(hash);
 
+            if (hasCorrectHash && targetPlayer != null) bot.chat.tellraw(Component.text("You have been verified").color(NamedTextColor.GREEN), targetPlayer.profile.getId());
+
             return false;
         } catch (Exception ignored) {}
 
@@ -117,7 +123,7 @@ public class AuthPlugin extends PlayersPlugin.Listener {
     }
 
     private void check() {
-        if (!started) return;
+        if (!started || !bot.config.ownerAuthentication.enabled) return;
 
         final PlayerEntry entry = bot.players.getEntry(getSanitizedOwnerName());
 
