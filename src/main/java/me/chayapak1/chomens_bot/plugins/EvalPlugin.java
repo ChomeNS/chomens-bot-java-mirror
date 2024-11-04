@@ -35,7 +35,7 @@ public class EvalPlugin {
         functions.add(new CorePlaceBlockFunction(bot));
         functions.add(new ChatFunction(bot));
         functions.add(new GetPlayerListFunction(bot));
-        functions.add(new GetBotUsernameFunction(bot));
+        functions.add(new GetBotInfoFunction(bot));
         functions.add(new GetLatestChatMessageFunction(bot));
 
         try {
@@ -60,13 +60,15 @@ public class EvalPlugin {
         socket.on(Socket.EVENT_CONNECT_ERROR, (args) -> connected = false);
 
         for (EvalFunction function : functions) {
-            socket.on(BRIDGE_PREFIX + function.name, args -> {
-                final EvalFunction.Output output = function.execute(args);
+            socket.on(BRIDGE_PREFIX + function.name, args -> new Thread(() -> {
+                try {
+                    final EvalFunction.Output output = function.execute(args);
 
-                if (output == null) return;
+                    if (output == null) return;
 
-                socket.emit("functionOutput:" + function.name, output.message, output.parseJSON);
-            });
+                    socket.emit("functionOutput:" + function.name, output.message, output.parseJSON);
+                } catch (Exception ignored) {}
+            }).start());
         }
 
         socket.on("codeOutput", (args) -> {
