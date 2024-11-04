@@ -84,14 +84,14 @@ public class FileLoggerUtilities {
 
         if (!Files.exists(logPath)) Files.createFile(logPath);
 
-        logWriter = Files.newBufferedWriter(logPath, StandardCharsets.UTF_8, StandardOpenOption.TRUNCATE_EXISTING);
+        logWriter = Files.newBufferedWriter(logPath, StandardCharsets.UTF_16, StandardOpenOption.TRUNCATE_EXISTING);
         logWriter.write(currentLogDate.toString() + '\n');
         logWriter.flush();
     }
 
     public static void openLogFile() throws IOException {
         currentLogDate = LocalDate.parse(getLogDate(logPath));
-        logWriter = Files.newBufferedWriter(logPath, StandardCharsets.UTF_8, StandardOpenOption.APPEND);
+        logWriter = Files.newBufferedWriter(logPath, StandardCharsets.UTF_16, StandardOpenOption.APPEND);
     }
 
     public static void compressLogFile() throws IOException {
