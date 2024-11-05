@@ -2,10 +2,7 @@ package me.chayapak1.chomens_bot.util;
 
 import me.chayapak1.chomens_bot.Main;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,12 +15,13 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
 
-// totallynotskidded™ from HBot
+// original source code from hhhzzzsss, specifically HBot.
+// source: https://github.com/hhhzzzsss/HBot-Release/blob/main/src/main/java/com/github/hhhzzzsss/hbot/Logger.java
 public class FileLoggerUtilities {
     public static final Path logDirectory = Path.of("logs");
     public static final Path logPath = Paths.get(logDirectory.toString(), "log.txt");
 
-    public static BufferedWriter logWriter;
+    public static OutputStreamWriter logWriter;
 
     public static LocalDate currentLogDate;
     public static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("'['dd/MM/yyyy HH:mm:ss']' ");
@@ -79,56 +77,49 @@ public class FileLoggerUtilities {
         }
     }
 
-    public static void makeNewLogFile() throws IOException {
+    public static synchronized void makeNewLogFile() throws IOException {
         currentLogDate = LocalDate.now();
-
-        if (!Files.exists(logPath)) Files.createFile(logPath);
-
-        logWriter = Files.newBufferedWriter(logPath, StandardCharsets.UTF_16, StandardOpenOption.TRUNCATE_EXISTING);
+        logWriter = new OutputStreamWriter(Files.newOutputStream(logPath, StandardOpenOption.CREATE, StandardOpenOption.APPEND), StandardCharsets.UTF_8);
         logWriter.write(currentLogDate.toString() + '\n');
         logWriter.flush();
     }
 
-    public static void openLogFile() throws IOException {
+    public static synchronized void openLogFile() throws IOException {
         currentLogDate = LocalDate.parse(getLogDate(logPath));
-        logWriter = Files.newBufferedWriter(logPath, StandardCharsets.UTF_16, StandardOpenOption.APPEND);
+        logWriter = new OutputStreamWriter(Files.newOutputStream(logPath, StandardOpenOption.CREATE, StandardOpenOption.APPEND), StandardCharsets.UTF_8);
     }
 
-    public static void compressLogFile() throws IOException {
+    public static synchronized void compressLogFile() throws IOException {
         if (Files.size(logPath) > 100 * 1024 * 1024) { // Will not save because log file is too big
             return;
         }
 
         final Path path = Paths.get(logDirectory.toString(), getLogDate(logPath) + ".txt.gz");
 
-        Files.createFile(path);
-
-        InputStream in = Files.newInputStream(logPath);
-        GZIPOutputStream out = new GZIPOutputStream(Files.newOutputStream(path));
-
-        byte[] buffer = new byte[1024];
-        int size;
-        while ((size = in.read(buffer)) > 0) {
-            out.write(buffer, 0, size);
+        try (
+                final InputStream in = Files.newInputStream(logPath, StandardOpenOption.READ);
+                final GZIPOutputStream out = new GZIPOutputStream(Files.newOutputStream(path, StandardOpenOption.CREATE))
+        ) {
+            byte[] buffer = new byte[1024];
+            int size;
+            while ((size = in.read(buffer)) > 0) {
+                out.write(buffer, 0, size);
+            }
         }
-        in.close();
-        out.finish();
-        out.close();
     }
 
-    public static String getLogDate(Path path) throws IOException {
-        BufferedReader reader = Files.newBufferedReader(path);
-        String date = reader.readLine();
-        reader.close();
-        return date;
+    public static synchronized String getLogDate (Path filePath) throws IOException {
+        try (final BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
+            return reader.readLine();
+        }
     }
 
-    public static boolean logIsCurrent(Path path) throws IOException {
+    public static synchronized boolean logIsCurrent(Path path) throws IOException {
         LocalDate date = LocalDate.now();
         return getLogDate(path).equals(date.toString());
     }
 
-    public static void log(String str) {
+    public static synchronized void log(String str) {
         if (freezeTime > System.currentTimeMillis()) {
             return;
         }
@@ -162,8 +153,7 @@ public class FileLoggerUtilities {
                     logWriter.write("\n");
                 }
 
-                if (str.length() > 32767) logWriter.write("Message too big, not logging this message"); // should these stuff be hardcoded?
-                else logWriter.write(getTimePrefix() + str.replaceAll("\\[(\\d+?)x](?=$|[\r\n])", "[/$1x]")); // the replaceAll will prevent conflicts with the duplicate counter
+                logWriter.write(getTimePrefix() + str.replaceAll("\\[(\\d+?)x](?=$|[\r\n])", "[/$1x]")); // the replaceAll will prevent conflicts with the duplicate counter
                 logWriter.flush();
 
                 duplicateCounter = 1;
