@@ -19,7 +19,8 @@ public class ConsoleCommand extends Command {
                 "Controls stuff about console",
                 new String[] {
                         "server <server>",
-                        "logtoconsole <true|false>"
+                        "logtoconsole <true|false>",
+                        "printdisconnectedreason <true|false>"
                 },
                 new String[] {},
                 TrustLevel.OWNER,
@@ -74,6 +75,18 @@ public class ConsoleCommand extends Command {
 
                 return Component.translatable(
                         "Logging to console is now %s",
+                        bool ? Component.text("enabled").color(NamedTextColor.GREEN) : Component.text("disabled").color(NamedTextColor.RED)
+                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+            }
+            case "printdisconnectedreason" -> {
+                context.checkOverloadArgs(2);
+
+                final boolean bool = context.getBoolean(true);
+
+                bot.printDisconnectedCause = bool;
+
+                return Component.translatable(
+                        "Printing the disconnected cause is now %s",
                         bool ? Component.text("enabled").color(NamedTextColor.GREEN) : Component.text("disabled").color(NamedTextColor.RED)
                 ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }

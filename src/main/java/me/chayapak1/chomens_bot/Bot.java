@@ -41,6 +41,8 @@ public class Bot {
 
     public Session session;
 
+    public boolean printDisconnectedCause = false;
+
     public boolean loggedIn = false;
 
     public final ExecutorService executorService = Main.executorService;
@@ -250,6 +252,8 @@ public class Bot {
                 loggedIn = false;
 
                 final Throwable cause = disconnectedEvent.getCause();
+
+                if (printDisconnectedCause && cause != null) cause.printStackTrace();
 
                 // lazy fix #69420
                 if (cause instanceof OutOfMemoryError) System.exit(1);
