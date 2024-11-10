@@ -129,6 +129,9 @@ public class GrepLogPlugin {
 
                         context.sendOutput(component);
                     });
+        } catch (CommandException e) {
+            running = false;
+            throw e;
         } catch (FileNotFoundException e) {
             running = false;
             throw new CommandException(Component.text("File not found"));
