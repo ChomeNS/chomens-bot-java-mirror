@@ -79,7 +79,7 @@ public class FileLoggerUtilities {
 
     public static synchronized void makeNewLogFile() throws IOException {
         currentLogDate = LocalDate.now();
-        logWriter = new OutputStreamWriter(Files.newOutputStream(logPath, StandardOpenOption.CREATE, StandardOpenOption.APPEND), StandardCharsets.UTF_8);
+        logWriter = new OutputStreamWriter(Files.newOutputStream(logPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING), StandardCharsets.UTF_8);
         logWriter.write(currentLogDate.toString() + '\n');
         logWriter.flush();
     }
