@@ -72,7 +72,7 @@ public class WhitelistPlugin extends PlayersPlugin.Listener {
     }
 
     public void commandReceived (PlayerEntry entry, String command) {
-        if (!enabled || list.contains(entry.profile.getName())) return;
+        if (!enabled || list.contains(entry.profile.getName()) || entry.profile.equals(bot.profile)) return;
 
         if (
                 command.startsWith("mute") ||
@@ -90,7 +90,7 @@ public class WhitelistPlugin extends PlayersPlugin.Listener {
     }
 
     private void handle (PlayerEntry entry) {
-        if (!enabled || list.contains(entry.profile.getName())) return;
+        if (!enabled || list.contains(entry.profile.getName()) || entry.profile.equals(bot.profile)) return;
 
         bot.filter.doAll(entry);
     }
