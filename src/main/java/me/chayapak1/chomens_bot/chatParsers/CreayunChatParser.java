@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.chatParsers;
 
+import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import org.geysermc.mcprotocollib.auth.GameProfile;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
 import me.chayapak1.chomens_bot.Bot;
@@ -38,7 +39,7 @@ public class CreayunChatParser implements ChatParser {
             final String contents = matcher.group(2);
 
             PlayerEntry sender = bot.players.getEntry(displayName);
-            if (sender == null) sender = new PlayerEntry(new GameProfile(new UUID(0L, 0L), displayName), GameMode.SURVIVAL, 0, Component.text(displayName), 0L, null, new byte[0], true);
+            if (sender == null) sender = new PlayerEntry(new GameProfile(UUIDUtilities.getOfflineUUID(displayName), displayName), GameMode.SURVIVAL, 0, Component.text(displayName), 0L, null, new byte[0], true);
 
             return new PlayerMessage(sender, Component.text(displayName), Component.text(contents));
         }
