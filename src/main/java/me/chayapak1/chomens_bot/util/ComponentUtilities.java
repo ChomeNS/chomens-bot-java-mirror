@@ -280,6 +280,8 @@ public class ComponentUtilities {
 
         int i = 0;
         while (matcher.find()) {
+            if (i > 300) break;
+
             if (matcher.group().equals("%%")) {
                 matcher.appendReplacement(sb, "%");
             } else {
