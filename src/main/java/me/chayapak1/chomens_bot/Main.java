@@ -215,15 +215,17 @@ public class Main {
         final boolean discordEnabled = config.discord.enabled;
 
         for (Bot bot : copiedList) {
-            if (discordEnabled) {
-                final String channelId = bot.discord.servers.get(bot.host + ":" + bot.port);
+            try {
+                if (discordEnabled) {
+                    final String channelId = bot.discord.servers.get(bot.host + ":" + bot.port);
 
-                bot.discord.sendMessageInstantly("Stopping..", channelId);
-            }
+                    bot.discord.sendMessageInstantly("Stopping..", channelId);
+                }
 
-            if (ircEnabled) bot.irc.quit("Stopping..");
+                if (ircEnabled) bot.irc.quit("Stopping..");
 
-            bot.stop();
+                bot.stop();
+            } catch (Exception ignored) {}
         }
 
         if (jda != null) jda.shutdown();
