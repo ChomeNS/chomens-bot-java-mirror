@@ -43,6 +43,8 @@ public class Main {
 
     private static boolean alreadyStarted = false;
 
+    private static boolean stopping = false;
+
     private static final List<Thread> alreadyAddedThreads = new ArrayList<>();
 
     private static JDA jda = null;
@@ -187,6 +189,10 @@ public class Main {
 
     // most of these are stolen from HBot
     public static void stop () {
+        if (stopping) return;
+
+        stopping = true;
+
         executor.shutdown();
 
         PersistentDataUtilities.stop();
@@ -215,9 +221,7 @@ public class Main {
                 bot.discord.sendMessageInstantly("Stopping..", channelId);
             }
 
-            if (ircEnabled) {
-                bot.irc.quit("Stopping..");
-            }
+            if (ircEnabled) bot.irc.quit("Stopping..");
 
             bot.stop();
         }

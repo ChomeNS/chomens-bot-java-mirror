@@ -169,7 +169,7 @@ public class IRCPlugin extends ListenerAdapter {
     }
 
     public void quit (String reason) {
-        bot.sendIRC().quitServer(reason);
+        if (bot.isConnected()) bot.sendIRC().quitServer(reason);
     }
 
     private void connected (Bot bot) {
