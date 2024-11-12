@@ -202,9 +202,7 @@ public class IRCPlugin extends ListenerAdapter {
 
                 bot.sendIRC().message(entry.getKey(), withIRCColors);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception ignored) {}
     }
 
     private void addMessageToQueue (Bot bot, String message) {
