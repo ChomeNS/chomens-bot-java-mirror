@@ -12,7 +12,6 @@ import me.chayapak1.chomens_bot.song.Loop;
 import me.chayapak1.chomens_bot.song.Note;
 import me.chayapak1.chomens_bot.song.Song;
 import me.chayapak1.chomens_bot.util.*;
-import me.chayapak1.chomens_bot.util.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -35,8 +34,6 @@ import static me.chayapak1.chomens_bot.util.StringUtilities.isNotNullAndNotBlank
 
 public class MusicCommand extends Command {
     private Path root;
-
-    private int ratelimit = 0;
 
     public MusicCommand () {
         super(
@@ -63,15 +60,11 @@ public class MusicCommand extends Command {
                 TrustLevel.PUBLIC,
                 false
         );
-
-        Main.executor.scheduleAtFixedRate(() -> ratelimit = 0, 0, 5, TimeUnit.SECONDS);
     }
 
     @Override
     public Component execute(CommandContext context) throws CommandException {
-        ratelimit++;
-
-        if (ratelimit > 10) return null;
+        if (context.bot.music.locked) throw new CommandException(Component.text("Managing music is currently locked"));
 
         final String action = context.getString(false, true, true);
 
@@ -264,7 +257,7 @@ public class MusicCommand extends Command {
         final CompletableFuture<Component> future = bot.core.runTracked(
                 "minecraft:data get entity " +
                         UUIDUtilities.selector(context.sender.profile.getId()) +
-                        " SelectedItem.tag.SongItemData.SongData"
+                        " SelectedItem.components.minecraft:custom_data.SongItemData.SongData"
         );
 
         if (future == null) {
@@ -281,7 +274,7 @@ public class MusicCommand extends Command {
                                     .key()
                                     .equals("arguments.nbtpath.nothing_found")
             ) {
-                context.sendOutput(Component.text("Player has no SongItemData -> SongData NBT tag in the selected item").color(NamedTextColor.RED));
+                context.sendOutput(Component.text("Player has no SongItemData -> SongData NBT tag in their selected item's minecraft:custom_data").color(NamedTextColor.RED));
                 return output;
             }
 

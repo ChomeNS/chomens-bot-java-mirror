@@ -56,6 +56,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
     private int limit = 0;
 
+    public boolean locked = false; // this can be set through servereval
+
     private final String bossbarName = "music";
 
     public BossBarColor bossBarColor;
@@ -73,7 +75,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     public void loadSong (Path location, PlayerEntry sender) {
-        if (songQueue.size() > 100) return;
+        if (songQueue.size() > 500) return;
 
         loaderThread = new SongLoaderThread(location, bot, sender.profile.getName());
 
@@ -90,7 +92,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     public void loadSong (URL location, PlayerEntry sender) {
-        if (songQueue.size() > 100) return;
+        if (songQueue.size() > 500) return;
 
         limit++;
 
@@ -114,7 +116,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     public void loadSong (byte[] data, PlayerEntry sender) {
-        if (songQueue.size() > 100) return;
+        if (songQueue.size() > 500) return;
 
         loaderThread = new SongLoaderThread(data, bot, sender.profile.getName());
 
@@ -194,13 +196,9 @@ public class MusicPlayerPlugin extends Bot.Listener {
                         if (songQueue.isEmpty()) {
                             stopPlaying();
                             removeBossBar();
-                            bot.chat.tellraw(
-                                    Component
-                                            .text("Finished playing every song in the queue")
-                                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
-                            );
                             return;
                         }
+
                         if (currentSong.size() > 0) {
                             currentSong = songQueue.get(0);
                             currentSong.setTime(0);
