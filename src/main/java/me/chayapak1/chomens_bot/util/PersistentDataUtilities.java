@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import me.chayapak1.chomens_bot.Main;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,10 +11,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 public class PersistentDataUtilities {
     public static final Path path = Path.of("persistent.json");
@@ -24,33 +19,10 @@ public class PersistentDataUtilities {
 
     public static JsonObject jsonObject = new JsonObject();
 
-    private static final Map<String, JsonElement> queue = new ConcurrentHashMap<>();
-
-    private static final ScheduledFuture<?> future;
+    private static boolean stopping = false;
 
     static {
         init();
-
-        future = Main.executor.scheduleAtFixedRate(() -> {
-            try {
-                if (queue.isEmpty()) return;
-
-                final Map.Entry<String, JsonElement> entry = queue.entrySet().iterator().next(); // is this the best way to get the first item of the map?
-
-                final String property = entry.getKey();
-                final JsonElement value = entry.getValue();
-
-                Main.executorService.submit(() -> {
-                    jsonObject.add(property, value);
-
-                    write(jsonObject.toString());
-
-                    queue.remove(property);
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }, 0, 100, TimeUnit.MILLISECONDS);
     }
 
     private static void init () {
@@ -66,19 +38,17 @@ public class PersistentDataUtilities {
                 jsonObject = gson.fromJson(reader, JsonObject.class);
             }
 
-            writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING);
+            writer = Files.newBufferedWriter(path, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private static void write (String string) {
-        try {
-            writer.close();
+        if (stopping) return; // is this necessary?
 
-            // ? how do i clear the file contents without making a completely new writer?
-            //   or is this the only way?
-            writer = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING);
+        try {
+            writer = Files.newBufferedWriter(path, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
             writer.write(string);
             writer.flush();
@@ -86,27 +56,32 @@ public class PersistentDataUtilities {
     }
 
     public static void stop () {
-        future.cancel(false);
+        stopping = true;
         write(jsonObject.toString());
     }
 
     public static void put (String property, JsonElement value) {
-        Main.executorService.submit(() -> queue.put(property, value));
+        jsonObject.add(property, value);
+        write(jsonObject.toString());
     }
 
     public static void put (String property, String value) {
-        Main.executorService.submit(() -> queue.put(property, new JsonPrimitive(value)));
+        jsonObject.add(property, new JsonPrimitive(value));
+        write(jsonObject.toString());
     }
 
     public static void put (String property, boolean value) {
-        Main.executorService.submit(() -> queue.put(property, new JsonPrimitive(value)));
+        jsonObject.add(property, new JsonPrimitive(value));
+        write(jsonObject.toString());
     }
 
     public static void put (String property, int value) {
-        Main.executorService.submit(() -> queue.put(property, new JsonPrimitive(value)));
+        jsonObject.add(property, new JsonPrimitive(value));
+        write(jsonObject.toString());
     }
 
     public static void put (String property, char value) {
-        Main.executorService.submit(() -> queue.put(property, new JsonPrimitive(value)));
+        jsonObject.add(property, new JsonPrimitive(value));
+        write(jsonObject.toString());
     }
 }
