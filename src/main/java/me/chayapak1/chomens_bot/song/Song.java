@@ -17,7 +17,7 @@ public class Song {
   public long startTime = 0; // Start time in millis since unix epoch
   public long length = 0; // Milliseconds in the song
   public long time = 0; // Time since start of song
-  public long loopPosition = 200; // Milliseconds into the song to start looping
+  public long loopPosition = 0; // Milliseconds into the song to start looping
 
   public final Map<Long, String> lyrics = new HashMap<>();
 
@@ -80,7 +80,7 @@ public class Song {
    */
   public void play () {
     if (paused) {
-      if (loopPosition != 200) bot.music.loop = Loop.CURRENT;
+      if (loopPosition != 0) bot.music.loop = Loop.CURRENT;
       paused = false;
       startTime = System.currentTimeMillis() - time;
     }

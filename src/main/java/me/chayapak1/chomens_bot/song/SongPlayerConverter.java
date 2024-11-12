@@ -46,7 +46,7 @@ public class SongPlayerConverter implements Converter {
         song.length = songLength;
 //        song.looping = loop > 0;
 //        song.loopCount = loopCount;
-        song.loopPosition = loopPosition == 0 ? 200 : loopPosition;
+        song.loopPosition = loopPosition;
 
         long time = 0;
         while (true) {
