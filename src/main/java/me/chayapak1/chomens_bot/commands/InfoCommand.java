@@ -10,7 +10,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -26,11 +28,14 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public class InfoCommand extends Command {
+    public static final String ORIGINAL_REPOSITORY_URL = "https://code.chipmunk.land/ChomeNS/chomens-bot-java";
+
     public InfoCommand () {
         super(
                 "info",
                 "Shows an info about various things",
                 new String[] {
+                        "",
                         "<creator>",
                         "<discord>",
                         "<server>",
@@ -49,7 +54,7 @@ public class InfoCommand extends Command {
 
         final Bot bot = context.bot;
 
-        final String action = context.getString(false, true, true);
+        final String action = context.getString(false, false, true);
 
         switch (action) {
             case "creator" -> {
@@ -199,7 +204,31 @@ public class InfoCommand extends Command {
                 ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             default -> {
-                throw new CommandException(Component.text("Invalid action"));
+                return Component.empty()
+                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
+                        .append(Component.text("ChomeNS Bot").color(NamedTextColor.YELLOW))
+                        .append(Component.space())
+                        .append(
+                                Component
+                                        .translatable(
+                                                "is an open-source utility bot and a moderation bot made for " +
+                                                        "the %s Minecraft server (and its clones) " +
+                                                        "but also works on vanilla Minecraft servers. " +
+                                                        "It was originally made for fun but " +
+                                                        "I got addicted and made it a full blown bot."
+                                        )
+                                        .arguments(Component.text("Kaboom").style(Style.style().color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD)))
+                        )
+                        .append(Component.newline())
+                        .append(Component.text("Original repository: "))
+                        .append(
+                                Component
+                                        .text(ORIGINAL_REPOSITORY_URL)
+                                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                                        .clickEvent(
+                                                ClickEvent.openUrl(ORIGINAL_REPOSITORY_URL)
+                                        )
+                        );
             }
         }
     }
