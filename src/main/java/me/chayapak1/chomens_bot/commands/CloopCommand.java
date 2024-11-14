@@ -57,7 +57,7 @@ public class CloopCommand extends Command {
 
                     return Component.translatable(
                             "Removed cloop %s",
-                            Component.text(cloop.command()).color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
+                            Component.text(cloop.command()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
                     ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
                 } catch (IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
                     throw new CommandException(Component.text("Invalid index"));
