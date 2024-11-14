@@ -57,18 +57,18 @@ public class WhitelistCommand extends Command {
                 ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "remove" -> {
-                final String player = context.getString(true, true);
+                try {
+                    final int index = context.getInteger(true);
 
-                if (!bot.whitelist.list.contains(player)) throw new CommandException(Component.text("Player doesn't exist in the list"));
+                    final String player = bot.whitelist.remove(index);
 
-                if (player.equals(bot.profile.getName())) throw new CommandException(Component.text("Cannot remove the bot"));
-
-                bot.whitelist.remove(player);
-
-                return Component.translatable(
-                        "Removed %s from the whitelist",
-                        Component.text(player).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
-                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                    return Component.translatable(
+                            "Removed %s from the whitelist",
+                            Component.text(player).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
+                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                } catch (IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
+                    throw new CommandException(Component.text("Invalid index"));
+                }
             }
             case "clear" -> {
                 context.checkOverloadArgs(1);

@@ -51,13 +51,7 @@ public class WhitelistPlugin extends PlayersPlugin.Listener {
     }
 
     public void add (String player) { list.add(player); }
-    public void remove (String player) {
-        list.removeIf(eachPlayer -> eachPlayer.equals(player));
-
-        final PlayerEntry entry = bot.players.getEntry(player);
-
-        if (entry != null) handle(entry);
-    }
+    public String remove (int index) { return list.remove(index); }
     public void clear () {
         list.removeIf(eachPlayer -> !eachPlayer.equals(bot.profile.getName()));
     }
