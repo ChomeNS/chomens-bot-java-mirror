@@ -259,7 +259,7 @@ public class ComponentUtilities {
             }
 
             // messy af
-            return new PartiallyStringified((lastColor != null ? lastColor : "") + (color != null ? color : "") + (style != null ? style : "") + replacedContent + (ansi ? ansiMap.get("r") : ""), color);
+            return new PartiallyStringified((lastColor != null ? lastColor : "") + (color != null ? color : "") + (style != null ? style : "") + replacedContent + (ansi ? ansiMap.get("r") : "") + (style != null ? style : ""), color);
         }
 
         return new PartiallyStringified(message.content(), null);
@@ -307,7 +307,7 @@ public class ComponentUtilities {
         }
         matcher.appendTail(sb);
 
-        return new PartiallyStringified((lastColor != null ? lastColor : "") + color + (style != null && ansi ? style : "") + sb + (ansi ? ansiMap.get("r") : ""), _color);
+        return new PartiallyStringified((lastColor != null ? lastColor : "") + color + (style != null && ansi ? style : "") + sb + (ansi ? ansiMap.get("r") + (style != null ? style : "") : ""), _color);
     }
 
     public static PartiallyStringified stringifyPartially (SelectorComponent message, boolean motd, boolean ansi, String lastColor, boolean noHex) {
