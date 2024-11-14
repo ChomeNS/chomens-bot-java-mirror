@@ -26,14 +26,14 @@ public class CloopPlugin {
         loopTasks.add(bot.executor.scheduleAtFixedRate(loopTask, 0, interval, TimeUnit.MILLISECONDS));
     }
 
-    public void remove (int index) {
+    public CommandLoop remove (int index) {
         ScheduledFuture<?> loopTask = loopTasks.remove(index);
 
         if (loopTask != null) {
             loopTask.cancel(true);
         }
 
-        loops.remove(index);
+        return loops.remove(index);
     }
 
     public void clear () {

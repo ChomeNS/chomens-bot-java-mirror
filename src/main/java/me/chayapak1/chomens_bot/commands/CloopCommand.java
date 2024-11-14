@@ -52,11 +52,12 @@ public class CloopCommand extends Command {
 
                 try {
                     final int index = context.getInteger(true);
-                    bot.cloop.remove(index);
+
+                    final CommandLoop cloop = bot.cloop.remove(index);
 
                     return Component.translatable(
                             "Removed cloop %s",
-                            Component.text(index).color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
+                            Component.text(cloop.command()).color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
                     ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
                 } catch (IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
                     throw new CommandException(Component.text("Invalid index"));
@@ -96,9 +97,7 @@ public class CloopCommand extends Command {
                                 Component.join(JoinConfiguration.newlines(), cloopsComponent)
                         );
             }
-            default -> {
-                throw new CommandException(Component.text("Invalid action"));
-            }
+            default -> throw new CommandException(Component.text("Invalid action"));
         }
     }
 }
