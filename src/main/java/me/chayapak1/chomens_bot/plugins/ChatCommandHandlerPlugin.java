@@ -58,11 +58,9 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.Listener {
 
         final PlayerCommandContext context = new PlayerCommandContext(bot, displayName, prefix, "@a", message.sender);
 
-        bot.executorService.submit(() -> {
-            final Component output = bot.commandHandler.executeCommand(commandString, context, null);
+        final Component output = bot.commandHandler.executeCommand(commandString, context, null);
 
-            if (output != null) context.sendOutput(output);
-        });
+        if (output != null) context.sendOutput(output);
 
         return true;
     }
