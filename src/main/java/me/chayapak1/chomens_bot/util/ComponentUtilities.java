@@ -321,7 +321,7 @@ public class ComponentUtilities {
 
     public static PartiallyStringified stringifyPartially (KeybindComponent message, boolean motd, boolean ansi, String lastColor, boolean noHex) {
         String keybind = message.keybind();
-        Component component = keybinds.containsKey(keybind) ? Component.translatable(keybind) : Component.text(keybind); // TODO: Fix some keys like `key.keyboard.a`
+        Component component = keybinds.containsKey(keybind) ? Component.translatable(keybinds.get(keybind)) : Component.text(keybind);
         return stringifyPartially(component, motd, ansi, lastColor, noHex);
     }
 }
