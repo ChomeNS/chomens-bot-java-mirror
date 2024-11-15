@@ -11,14 +11,13 @@ import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.HttpUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class WeatherCommand extends Command {
     public WeatherCommand () {
@@ -53,13 +52,11 @@ public class WeatherCommand extends Command {
 
             final JsonObject jsonObject = gson.fromJson(jsonOutput, JsonObject.class);
 
-            final DateTimeFormatter formatter = DateTimeFormat.forPattern("hh:mm:ss a");
+            final ZoneId zoneId = ZoneId.of(jsonObject.get("location").getAsJsonObject().get("tz_id").getAsString());
+            final ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId);
 
-            final DateTimeZone zone = DateTimeZone.forID(jsonObject.get("location").getAsJsonObject().get("tz_id").getAsString());
-
-            final DateTime dateTime = new DateTime(zone);
-
-            final String time = formatter.print(dateTime);
+            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm:ss a");
+            final String time = zonedDateTime.format(formatter);
 
             return Component.translatable(
                     "Weather forecast for %s, %s:\n%s (%s), feels like %s (%s)\nTime: %s",

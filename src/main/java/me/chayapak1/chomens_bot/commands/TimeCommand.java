@@ -8,10 +8,11 @@ import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+
+import java.time.DateTimeException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class TimeCommand extends Command {
     public TimeCommand () {
@@ -27,26 +28,24 @@ public class TimeCommand extends Command {
 
     @Override
     public Component execute(CommandContext context) throws CommandException {
-        final Bot bot = context.bot;
-
-        final String timezone = context.getString(true, true);
-
-        DateTimeZone zone;
         try {
-            zone = DateTimeZone.forID(timezone);
-        } catch (IllegalArgumentException ignored) {
+            final Bot bot = context.bot;
+
+            final String timezone = context.getString(true, true);
+
+            final ZoneId zoneId = ZoneId.of(timezone);
+            final ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId);
+
+            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy, hh:mm:ss a");
+            final String formattedTime = zonedDateTime.format(formatter);
+
+            return Component.translatable(
+                    "The current time for %s is: %s",
+                    Component.text(timezone).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                    Component.text(formattedTime).color(NamedTextColor.GREEN)
+            ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+        } catch (DateTimeException e) {
             throw new CommandException(Component.text("Invalid timezone (case-sensitive)"));
         }
-
-        final DateTime dateTime = new DateTime(zone);
-
-        final DateTimeFormatter formatter = DateTimeFormat.forPattern("EEEE, MMMM d, YYYY, hh:mm:ss a");
-        final String formattedTime = formatter.print(dateTime);
-
-        return Component.translatable(
-                "The current time for %s is: %s",
-                Component.text(timezone).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
-                Component.text(formattedTime).color(NamedTextColor.GREEN)
-        ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }
 }

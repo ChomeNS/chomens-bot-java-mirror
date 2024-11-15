@@ -5,10 +5,9 @@ import me.chayapak1.chomens_bot.data.PlayerEntry;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
@@ -64,10 +63,10 @@ public class TrustedPlugin extends PlayersPlugin.Listener {
                     Component.text(target.profile.getName()).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
             ).color(NamedTextColor.GREEN);
         } else {
-            final DateTime now = DateTime.now();
+            final LocalDateTime now = LocalDateTime.now();
 
-            final DateTimeFormatter formatter = DateTimeFormat.forPattern("hh:mm:ss a");
-            final String formattedTime = formatter.print(now);
+            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm:ss a");
+            final String formattedTime = now.format(formatter);
 
             component = Component.translatable(
                     """

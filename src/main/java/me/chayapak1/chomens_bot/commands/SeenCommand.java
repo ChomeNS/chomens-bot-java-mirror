@@ -12,11 +12,9 @@ import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,10 +68,12 @@ public class SeenCommand extends Command {
 
         if (time == null) throw new CommandException(Component.text("This player does not have the `lastSeen.time` entry in the database for some reason."));
 
-        final DateTime dateTime = new DateTime(time.getAsLong(), DateTimeZone.UTC);
+        final Instant instant = Instant.ofEpochMilli(time.getAsLong());
+        final ZoneId zoneId = ZoneId.of("UTC"); // should i be doing this?
+        final OffsetDateTime localDateTime = OffsetDateTime.ofInstant(instant, zoneId);
 
-        final DateTimeFormatter formatter = DateTimeFormat.forPattern("EEEE, MMMM d, YYYY, hh:mm:ss a z");
-        final String formattedTime = formatter.print(dateTime);
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy, hh:mm:ss a Z");
+        final String formattedTime = localDateTime.format(formatter);
 
         final String server = lastSeen.get("server").getAsString();
 
