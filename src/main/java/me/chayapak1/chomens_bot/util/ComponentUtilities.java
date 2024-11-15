@@ -26,7 +26,6 @@ public class ComponentUtilities {
 
     // component parsing
     public static final Map<String, String> language = loadJsonStringMap("language.json");
-    public static final Map<String, String> englishLanguage = loadJsonStringMap("englishLanguage.json");
     private static final Map<String, String> voiceChatLanguage = loadJsonStringMap("voiceChatLanguage.json");
     private static final Map<String, String> keybinds = loadJsonStringMap("keybinds.json");
 
@@ -63,9 +62,6 @@ public class ComponentUtilities {
         String output,
         String lastColor
     ) {}
-
-    private ComponentUtilities () {
-    }
 
     private static Map<String, String> loadJsonStringMap (String name) {
         Map<String, String> map = new HashMap<>();

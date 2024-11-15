@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import me.chayapak1.chomens_bot.plugins.ConsolePlugin;
+import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.HttpUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import me.chayapak1.chomens_bot.util.PersistentDataUtilities;
@@ -9,6 +10,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.kyori.adventure.text.Component;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -156,7 +158,9 @@ public class Main {
                 bots.add(bot);
             }
 
-            // fard
+            // fards
+            ComponentUtilities.stringify(Component.empty()); // best way to initialize the class 2024
+
             new ConsolePlugin(bots, config, jda);
         } catch (Exception e) {
             e.printStackTrace();
