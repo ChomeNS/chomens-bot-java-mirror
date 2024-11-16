@@ -38,7 +38,7 @@ public class EvalCommand extends Command {
 
                 final CompletableFuture<EvalOutput> future = bot.eval.run(command);
 
-                future.thenApply((output) -> {
+                future.thenApplyAsync(output -> {
                     if (output.isError()) context.sendOutput(Component.text(output.output()).color(NamedTextColor.RED));
                     else context.sendOutput(Component.text(output.output()));
 

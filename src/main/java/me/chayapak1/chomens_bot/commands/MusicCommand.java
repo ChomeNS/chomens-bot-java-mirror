@@ -206,7 +206,7 @@ public class MusicCommand extends Command {
             throw new CommandException(Component.text("There was an error while getting your data"));
         }
 
-        future.thenApply(output -> {
+        future.thenApplyAsync(output -> {
             final List<Component> children = output.children();
 
             if (
@@ -264,7 +264,7 @@ public class MusicCommand extends Command {
             throw new CommandException(Component.text("There was an error while getting your data"));
         }
 
-        future.thenApply(output -> {
+        future.thenApplyAsync(output -> {
             final List<Component> children = output.children();
 
             if (

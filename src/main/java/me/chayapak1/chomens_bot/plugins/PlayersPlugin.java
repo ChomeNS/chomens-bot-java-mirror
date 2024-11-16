@@ -68,10 +68,10 @@ public class PlayersPlugin extends Bot.Listener {
 
         if (trackedCoreFuture == null) return null;
 
-        trackedCoreFuture.thenApply(output -> {
+        trackedCoreFuture.thenApplyAsync(output -> {
             final List<Component> children = output.children();
 
-            String stringified = ComponentUtilities.stringify(Component.join(JoinConfiguration.separator(Component.space()), children));
+            String stringified = ComponentUtilities.stringify(Component.join(JoinConfiguration.separator(Component.empty()), children));
 
             if (!stringified.startsWith(" - IP Address: ")) return output;
 
@@ -192,7 +192,7 @@ public class PlayersPlugin extends Bot.Listener {
         final PlayerEntry target = getEntry(uuid);
         if (target == null) return;
 
-        bot.tabComplete.tabComplete("/minecraft:scoreboard players add ").thenApply(packet -> {
+        bot.tabComplete.tabComplete("/minecraft:scoreboard players add ").thenApplyAsync(packet -> {
             final String[] matches = packet.getMatches();
             final Component[] tooltips = packet.getTooltips();
             final String username = target.profile.getName();

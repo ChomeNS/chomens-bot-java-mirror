@@ -50,7 +50,7 @@ public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
 
         future.completeOnTimeout(null, 5, TimeUnit.SECONDS);
 
-        future.thenApply(output -> {
+        future.thenApplyAsync(output -> {
             if (output != null) {
                 object.getAsJsonObject("ips").addProperty(bot.host + ":" + bot.port, output);
             }

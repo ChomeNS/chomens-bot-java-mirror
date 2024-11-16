@@ -103,7 +103,7 @@ public class CommandBlockCommand extends Command {
 
             if (future == null) return;
 
-            future.thenApply(output -> {
+            future.thenApplyAsync(output -> {
                 context.sendOutput(output);
 
                 return output;

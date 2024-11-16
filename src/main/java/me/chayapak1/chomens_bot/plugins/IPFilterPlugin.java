@@ -40,7 +40,7 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
 
         if (future == null) return;
 
-        future.thenApply(output -> {
+        future.thenApplyAsync(output -> {
             handleIP(output, target);
 
             return output;

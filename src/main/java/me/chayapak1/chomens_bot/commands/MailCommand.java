@@ -106,7 +106,7 @@ public class MailCommand extends Command {
                     throw new CommandException(Component.text("There was an error while sending your mail"));
                 }
 
-                future.thenApply(output -> {
+                future.thenApplyAsync(output -> {
                     try {
                         final List<Component> children = output.children();
 

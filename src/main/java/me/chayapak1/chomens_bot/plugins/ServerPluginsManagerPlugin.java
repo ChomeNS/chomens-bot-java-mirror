@@ -27,7 +27,7 @@ public class ServerPluginsManagerPlugin extends Bot.Listener {
     public void connected(ConnectedEvent event) {
         final CompletableFuture<ClientboundCommandSuggestionsPacket> future = bot.tabComplete.tabComplete("/ver ");
 
-        future.thenApply((packet) -> {
+        future.thenApplyAsync((packet) -> {
             final String[] matches = packet.getMatches();
 
             // should i just use the plugins as the String array instead of a list?

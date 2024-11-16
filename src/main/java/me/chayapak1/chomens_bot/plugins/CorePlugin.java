@@ -239,7 +239,7 @@ public class CorePlugin extends PositionPlugin.Listener {
 
             final String stringLastOutput = ((TextComponent) children.get(1)).content();
 
-            future.complete(Component.join(JoinConfiguration.separator(Component.space()), GsonComponentSerializer.gson().deserialize(stringLastOutput).children()));
+            future.complete(Component.join(JoinConfiguration.separator(Component.empty()), GsonComponentSerializer.gson().deserialize(stringLastOutput).children()));
 
             return false;
         } catch (ClassCastException | NumberFormatException ignored) {}

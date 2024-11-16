@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
-import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
 import me.chayapak1.chomens_bot.plugins.PlayersPersistentDataPlugin;
@@ -14,7 +13,6 @@ import net.kyori.adventure.text.Component;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 public class FindAltsCommand extends Command {
@@ -33,25 +31,25 @@ public class FindAltsCommand extends Command {
     public Component execute(CommandContext context) throws Exception {
         final Bot bot = context.bot;
 
-        boolean argumentIsIP = true;
-
-        String targetIP;
-
         final String player = context.getString(true, true);
 
         final PlayerEntry playerEntry = bot.players.getEntry(player);
 
-        if (playerEntry == null) targetIP = player;
+        if (playerEntry == null) return handle(bot, player, true, player);
         else {
-            argumentIsIP = false;
-
             final CompletableFuture<String> future = bot.players.getPlayerIP(playerEntry);
 
-            targetIP = future.get(5, TimeUnit.SECONDS);
+            future.thenApplyAsync(targetIP -> {
+                context.sendOutput(handle(bot, targetIP, false, player));
+
+                return targetIP;
+            });
         }
 
-        if (targetIP == null) throw new CommandException(Component.text("Could not find player's IP address"));
+        return null;
+    }
 
+    private Component handle (Bot bot, String targetIP, boolean argumentIsIP, String player) {
         final Stream<String> matches = PlayersPersistentDataPlugin.playersObject.deepCopy().entrySet() // is calling deepCopy necessary?
                 .stream()
                 .filter(
