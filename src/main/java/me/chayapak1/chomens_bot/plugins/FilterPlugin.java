@@ -96,11 +96,13 @@ public class FilterPlugin extends PlayersPlugin.Listener {
 
     @Override
     public void playerJoined (PlayerEntry target) {
-        final FilteredPlayer player = getPlayer(target.profile.getName());
+        bot.executorService.submit(() -> {
+            final FilteredPlayer player = getPlayer(target.profile.getName());
 
-        if (player == null) return;
+            if (player == null) return;
 
-        doAll(target);
+            doAll(target);
+        });
     }
 
     @Override

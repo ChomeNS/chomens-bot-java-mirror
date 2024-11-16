@@ -84,6 +84,9 @@ public class Main {
 
         config = yaml.load(reader);
 
+        PersistentDataUtilities.init();
+        ComponentUtilities.stringify(Component.empty()); // best way to initialize the class 2024
+
         executor.scheduleAtFixedRate(() -> {
             try {
                 checkInternet();
@@ -158,9 +161,7 @@ public class Main {
                 bots.add(bot);
             }
 
-            // fards
-            ComponentUtilities.stringify(Component.empty()); // best way to initialize the class 2024
-
+            // fard
             new ConsolePlugin(bots, config, jda);
         } catch (Exception e) {
             e.printStackTrace();

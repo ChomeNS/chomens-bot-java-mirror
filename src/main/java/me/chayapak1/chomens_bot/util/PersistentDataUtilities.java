@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import me.chayapak1.chomens_bot.Main;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -21,11 +22,7 @@ public class PersistentDataUtilities {
 
     private static boolean stopping = false;
 
-    static {
-        init();
-    }
-
-    private static void init () {
+    public static void init () {
         try {
             if (!Files.exists(path)) Files.createFile(path);
 
@@ -47,12 +44,16 @@ public class PersistentDataUtilities {
     private static void write (String string) {
         if (stopping) return; // is this necessary?
 
-        try {
-            writer = Files.newBufferedWriter(path, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        Main.executorService.submit(() -> {
+            try {
+                writer.close();
 
-            writer.write(string);
-            writer.flush();
-        } catch (IOException ignored) {}
+                writer = Files.newBufferedWriter(path, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+
+                writer.write(string);
+                writer.flush();
+            } catch (IOException ignored) {}
+        });
     }
 
     public static void stop () {
