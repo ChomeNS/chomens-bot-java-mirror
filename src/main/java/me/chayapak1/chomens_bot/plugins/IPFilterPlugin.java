@@ -36,6 +36,8 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
     }
 
     private void check (PlayerEntry target) {
+        if (bot.options.useCorePlaceBlock) return; // it will spam the place block core so i ignored this
+
         final CompletableFuture<String> future = bot.players.getPlayerIP(target);
 
         if (future == null) return;

@@ -30,10 +30,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.cloudburstmc.math.vector.Vector3i;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -54,6 +51,8 @@ public class CorePlugin extends PositionPlugin.Listener {
     public Vector3i to;
 
     public Vector3i block = null;
+
+    public final List<String> placeBlockQueue = Collections.synchronizedList(new ArrayList<>());
 
     private int nextTransactionId = 0;
     private final Map<Integer, CompletableFuture<Component>> transactions = new HashMap<>();
@@ -118,6 +117,27 @@ public class CorePlugin extends PositionPlugin.Listener {
             @Override
             public boolean systemMessageReceived(Component component, String string, String ansi) {
                 return CorePlugin.this.systemMessageReceived(component);
+            }
+        });
+
+        bot.tick.addListener(new TickPlugin.Listener() {
+            @Override
+            public void onTick() {
+                try {
+                    final List<String> clonedQueue = new ArrayList<>(placeBlockQueue);
+
+                    if (clonedQueue.isEmpty()) return;
+
+                    if (clonedQueue.size() > 500) {
+                        placeBlockQueue.clear();
+                        return;
+                    }
+
+                    forceRunPlaceBlock(clonedQueue.get(0));
+                    placeBlockQueue.remove(0);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -258,6 +278,10 @@ public class CorePlugin extends PositionPlugin.Listener {
     }
 
     public void runPlaceBlock (String command) {
+        bot.executorService.submit(() -> placeBlockQueue.add(command));
+    }
+
+    private void forceRunPlaceBlock (String command) {
         if (!ready || !bot.options.useCore) return;
 
         final NbtMapBuilder blockEntityTagBuilder = NbtMap.builder();
