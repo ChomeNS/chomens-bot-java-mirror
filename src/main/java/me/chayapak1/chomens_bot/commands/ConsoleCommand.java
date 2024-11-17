@@ -48,8 +48,6 @@ public class ConsoleCommand extends Command {
                     if (server.equalsIgnoreCase("all")) {
                         eachBot.console.consoleServer = "all";
 
-                        context.sendOutput(Component.text("Set the console server to all servers").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)));
-
                         continue;
                     }
 
@@ -59,8 +57,6 @@ public class ConsoleCommand extends Command {
                                 .filter(eachServer -> eachServer.toLowerCase().contains(server))
                                 .findFirst()
                                 .orElse("all");
-
-                        context.sendOutput(Component.text("Set the console server to " + bot.console.consoleServer).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)));
                     } catch (ArrayIndexOutOfBoundsException e) {
                         throw new CommandException(Component.text("Invalid server: " + server));
                     }

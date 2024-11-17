@@ -38,6 +38,8 @@ public class LoggerUtilities {
     }
 
     public static void log (String message) { log(null, message, true, true); }
+    public static void log (Component message) { log(null, ComponentUtilities.stringifyAnsi(message)); }
+    public static void log (Bot bot, Component message) { log(bot, ComponentUtilities.stringifyAnsi(message)); }
     public static void log (Bot bot, String message) { log(bot, message, true, true); }
     public static void log (Bot bot, String message, boolean logToFile, boolean logToConsole) {
         final String component = prefix(bot, Component.text("Log").color(NamedTextColor.GOLD), message);
@@ -58,6 +60,8 @@ public class LoggerUtilities {
     }
 
     public static void info (String message) { info(null, message); }
+    public static void info (Component message) { info(null, ComponentUtilities.stringifyAnsi(message)); }
+    public static void info (Bot bot, Component message) { info(bot, ComponentUtilities.stringifyAnsi(message)); }
     public static void info (Bot bot, String message) {
         final String component = prefix(bot, Component.text("Info").color(NamedTextColor.GREEN), message);
 
@@ -66,6 +70,8 @@ public class LoggerUtilities {
     }
 
     public static void error (String message) { error(null, message); }
+    public static void error (Component message) { error(null, ComponentUtilities.stringifyAnsi(message)); }
+    public static void error (Bot bot, Component message) { error(bot, ComponentUtilities.stringifyAnsi(message)); }
     public static void error (Bot bot, String message) {
         final String component = prefix(bot, Component.text("Error").color(NamedTextColor.RED), message);
 
