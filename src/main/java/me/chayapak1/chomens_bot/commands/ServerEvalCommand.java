@@ -26,24 +26,26 @@ public class ServerEvalCommand extends Command {
 
     @Override
     public Component execute(CommandContext context) throws CommandException {
-        try {
-            final Bot bot = context.bot;
+        final Bot bot = context.bot;
 
-            final Globals globals = JsePlatform.standardGlobals();
+        bot.executorService.submit(() -> {
+            try {
+                final Globals globals = JsePlatform.standardGlobals();
 
-            globals.set("bot", CoerceJavaToLua.coerce(bot));
-            globals.set("class", CoerceJavaToLua.coerce(Class.class));
-            globals.set("context", CoerceJavaToLua.coerce(context));
+                globals.set("bot", CoerceJavaToLua.coerce(bot));
+                globals.set("class", CoerceJavaToLua.coerce(Class.class));
+                globals.set("context", CoerceJavaToLua.coerce(context));
 
-            LuaValue chunk = globals.load(context.getString(true, true));
+                LuaValue chunk = globals.load(context.getString(true, true));
 
-            final LuaValue output = chunk.call();
+                final LuaValue output = chunk.call();
 
-            return Component.text(output.toString()).color(NamedTextColor.GREEN);
-        } catch (CommandException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new CommandException(Component.text(e.toString()));
-        }
+                context.sendOutput(Component.text(output.toString()).color(NamedTextColor.GREEN));
+            } catch (Exception e) {
+                context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
+            }
+        });
+
+        return null;
     }
 }
