@@ -131,7 +131,8 @@ bots:
   # username - optional, if not specified it will just use a random username
   # creayun - defaults to false
   # serverName - name it whatever you like, it will be used as server name in trusted broadcast and in console
-  # useCore - if enabled it just sends the command using chat instead of using core. recommended to enable useChat too when this is enabled
+  # useCore - if enabled it just sends the command using chat instead of using core. recommended to enable useChat too when this is disabled
+  # useCorePlaceBlock - uses the place block core instead of the main core. only used if useCore is enabled
   # useChat - when the bot tellraws it will chat instead of using the core to run tellraw
   # coreCommandSpy - set to true if server supports enabling player's commandspy though command block
   # resolveSRV - whether to resolve SRV records on the server. the notchian minecraft doesn't resolve them
@@ -140,22 +141,23 @@ bots:
 
   - host: 'localhost'
     port: 25565
-    username: 'ChomeNS_Bot'
-    creayun: false
     serverName: 'Localhost'
-    useCore: true
-    useChat: false
-    coreCommandSpy: false
-    resolveSRV: true
     reconnectDelay: 2000
-    removeNamespaces: false
     chatQueueDelay: 125
-    coreRateLimit:
-      limit: 10
-      reset: 1000 # in milliseconds
-  # or without the optional ones:
+  # or with the optional ones
   # - host: 'localhost'
   #   port: 25565
+  #   username: 'ChomeNS_Bot'
+  #   creayun: false
   #   serverName: 'Localhost'
+  #   useCore: true
+  #   useCorePlaceBlock: false
+  #   useChat: false
+  #   coreCommandSpy: false
+  #   resolveSRV: true
   #   reconnectDelay: 2000
+  #   removeNamespaces: false
   #   chatQueueDelay: 125
+  #   coreRateLimit:
+  #     limit: 10
+  #     reset: 1000 # in milliseconds

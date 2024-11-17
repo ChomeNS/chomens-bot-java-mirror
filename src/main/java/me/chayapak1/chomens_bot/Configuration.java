@@ -169,6 +169,7 @@ public class Configuration {
         public boolean creayun = false;
         public String serverName;
         public boolean useCore = true;
+        public boolean useCorePlaceBlock = false;
         public boolean useChat = false;
         public boolean coreCommandSpy = false;
         public boolean resolveSRV = true;

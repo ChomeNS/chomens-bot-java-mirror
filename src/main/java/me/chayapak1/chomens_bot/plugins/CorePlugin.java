@@ -171,6 +171,11 @@ public class CorePlugin extends PositionPlugin.Listener {
         if (!ready || command.length() > 32767) return;
 
         if (bot.options.useCore) {
+            if (bot.options.useCorePlaceBlock) {
+                runPlaceBlock(command);
+                return;
+            }
+
             if (isRateLimited() && hasRateLimit()) return;
 
             forceRun(command);
@@ -184,6 +189,11 @@ public class CorePlugin extends PositionPlugin.Listener {
     // thanks chipmunk for this new tellraw method
     public CompletableFuture<Component> runTracked (String command) {
         if (!bot.options.useCore) return null;
+
+        if (bot.options.useCorePlaceBlock) {
+            runPlaceBlock(command);
+            return null;
+        }
 
         final Vector3i coreBlock = block;
 
