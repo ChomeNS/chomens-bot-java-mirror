@@ -9,14 +9,13 @@ import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -35,7 +34,7 @@ import java.util.*;
 // please ignore my ohio code
 // also this is one of the classes which has >100 lines or actually >400 LMAO
 public class DiscordPlugin {
-    public final JDA jda;
+    public JDA jda;
 
     public final Map<String, String> servers;
 
@@ -49,11 +48,10 @@ public class DiscordPlugin {
 
     public boolean shuttedDown = false;
 
-    public DiscordPlugin (Configuration config, JDA jda) {
+    public DiscordPlugin (Configuration config) {
         final Configuration.Discord options = config.discord;
         this.prefix = options.prefix;
         this.servers = options.servers;
-        this.jda = jda;
         this.discordUrl = config.discord.inviteLink;
         this.messagePrefix = Component.empty()
                 .append(Component.text("ChomeNS ").color(NamedTextColor.YELLOW))
@@ -65,7 +63,16 @@ public class DiscordPlugin {
                 )
                 .clickEvent(ClickEvent.openUrl(discordUrl));
 
+        final JDABuilder builder = JDABuilder.createDefault(config.discord.token);
+        builder.enableIntents(GatewayIntent.MESSAGE_CONTENT);
+        try {
+            jda = builder.build();
+            jda.awaitReady();
+        } catch (InterruptedException ignored) {}
+
         if (jda == null) return;
+
+        jda.getPresence().setPresence(Activity.playing(config.discord.statusMessage), false);
 
         for (Bot bot : Main.bots) {
             final String channelId = servers.get(bot.host + ":" + bot.port);

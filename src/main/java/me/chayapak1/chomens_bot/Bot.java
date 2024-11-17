@@ -98,16 +98,9 @@ public class Bot {
         this.bots = bots;
 
         this.config = config;
-
-        ConsolePlugin.addListener(new ConsolePlugin.Listener() {
-            @Override
-            public void ready() {
-                Bot.this.ready();
-            }
-        });
     }
 
-    public void ready () {
+    public void connect () {
         this.tick = new TickPlugin(this);
         this.chat = new ChatPlugin(this);
         this.commandSpy = new CommandSpyPlugin(this);

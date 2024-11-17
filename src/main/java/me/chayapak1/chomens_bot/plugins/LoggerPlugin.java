@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.kyori.adventure.text.Component;
@@ -8,6 +9,10 @@ import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 
 public class LoggerPlugin extends ChatPlugin.Listener {
+    public static void init () {
+        for (Bot bot : Main.bots) new LoggerPlugin(bot);
+    }
+
     private final Bot bot;
 
     private boolean addedListener = false;
@@ -16,7 +21,7 @@ public class LoggerPlugin extends ChatPlugin.Listener {
 
     private int totalConnects = 0;
 
-    public LoggerPlugin(Bot bot) {
+    public LoggerPlugin (Bot bot) {
         this.bot = bot;
 
         bot.addListener(new Bot.Listener() {
@@ -75,6 +80,8 @@ public class LoggerPlugin extends ChatPlugin.Listener {
                 log(message + string, true, false);
             }
         });
+
+        bot.logger = this;
     }
 
     public void log (String message) {

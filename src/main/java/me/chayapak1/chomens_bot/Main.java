@@ -2,14 +2,13 @@ package me.chayapak1.chomens_bot;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import me.chayapak1.chomens_bot.plugins.ConsolePlugin;
+import me.chayapak1.chomens_bot.plugins.DiscordPlugin;
+import me.chayapak1.chomens_bot.plugins.IRCPlugin;
+import me.chayapak1.chomens_bot.plugins.LoggerPlugin;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.HttpUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import me.chayapak1.chomens_bot.util.PersistentDataUtilities;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.kyori.adventure.text.Component;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
@@ -49,7 +48,7 @@ public class Main {
 
     private static final List<Thread> alreadyAddedThreads = new ArrayList<>();
 
-    private static JDA jda = null;
+    private static DiscordPlugin discord;
 
     public static void main(String[] args) throws IOException {
         final Path configPath = Path.of("config.yml");
@@ -83,9 +82,6 @@ public class Main {
         BufferedReader reader = new BufferedReader(new InputStreamReader(opt));
 
         config = yaml.load(reader);
-
-        PersistentDataUtilities.init();
-        ComponentUtilities.stringify(Component.empty()); // best way to initialize the class 2024
 
         executor.scheduleAtFixedRate(() -> {
             try {
@@ -141,28 +137,25 @@ public class Main {
         alreadyStarted = true;
 
         try {
-            Configuration.BotOption[] botsOptions = config.bots;
-
-            // idk if these should be here lol, but it is just the discord stuff
-            if (config.discord.enabled) {
-                JDABuilder builder = JDABuilder.createDefault(config.discord.token);
-                builder.enableIntents(GatewayIntent.MESSAGE_CONTENT);
-                try {
-                    jda = builder.build();
-                    jda.awaitReady();
-                } catch (InterruptedException ignored) {
-                    System.exit(1);
-                }
-                jda.getPresence().setPresence(Activity.playing(config.discord.statusMessage), false);
-            }
+            final Configuration.BotOption[] botsOptions = config.bots;
 
             for (Configuration.BotOption botOption : botsOptions) {
                 final Bot bot = new Bot(botOption, bots, config);
                 bots.add(bot);
             }
 
-            // fard
-            new ConsolePlugin(bots, config, jda);
+            // initialize util classes and plugins
+            PersistentDataUtilities.init();
+            ComponentUtilities.init();
+
+            new ConsolePlugin();
+            LoggerPlugin.init();
+            if (config.discord.enabled) discord = new DiscordPlugin(config);
+            if (config.irc.enabled) new IRCPlugin(config);
+
+            LoggerUtilities.info("Initialized all bots. Now connecting");
+
+            for (Bot bot : bots) bot.connect();
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -233,7 +226,7 @@ public class Main {
             } catch (Exception ignored) {}
         }
 
-        if (jda != null) jda.shutdown();
+        if (discord.jda != null) discord.jda.shutdown();
 
         if (discordEnabled) {
             for (int i = 0; i < 150; i++) {

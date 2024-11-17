@@ -24,6 +24,8 @@ public class ComponentUtilities {
         return component1.toString().equals(component2.toString());
     }
 
+    public static void init () {}
+
     // component parsing
     public static final Map<String, String> language = loadJsonStringMap("language.json");
     private static final Map<String, String> voiceChatLanguage = loadJsonStringMap("voiceChatLanguage.json");

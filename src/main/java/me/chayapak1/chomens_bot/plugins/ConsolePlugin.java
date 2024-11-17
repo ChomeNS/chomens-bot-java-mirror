@@ -1,17 +1,14 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.ConsoleCommandContext;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
-import net.dv8tion.jda.api.JDA;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.jline.reader.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ConsolePlugin implements Completer {
@@ -23,10 +20,8 @@ public class ConsolePlugin implements Completer {
 
     public String prefix;
 
-    private static final List<Listener> listeners = new ArrayList<>();
-
-    public ConsolePlugin (List<Bot> allBots, Configuration config, JDA jda) {
-        this.allBots = allBots;
+    public ConsolePlugin () {
+        this.allBots = Main.bots;
         this.reader = LineReaderBuilder
                 .builder()
                 .completer(this)
@@ -38,12 +33,7 @@ public class ConsolePlugin implements Completer {
             prefix = bot.config.consoleCommandPrefix;
 
             bot.console = this;
-
-            bot.logger = new LoggerPlugin(bot);
         }
-
-        new DiscordPlugin(config, jda);
-        if (config.irc.enabled) new IRCPlugin(config);
 
         final String prompt = "> ";
 
@@ -59,8 +49,6 @@ public class ConsolePlugin implements Completer {
                 handleLine(line);
             }
         });
-
-        for (Listener listener : listeners) { listener.ready(); }
     }
 
     @Override
@@ -111,11 +99,5 @@ public class ConsolePlugin implements Completer {
                     ).color(NamedTextColor.DARK_GRAY)
             );
         }
-    }
-
-    public static void addListener (Listener listener) { listeners.add(listener); }
-
-    public static class Listener {
-        public void ready () {}
     }
 }
