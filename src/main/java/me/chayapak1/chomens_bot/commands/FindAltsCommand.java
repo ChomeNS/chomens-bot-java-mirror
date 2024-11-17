@@ -39,6 +39,8 @@ public class FindAltsCommand extends Command {
         else {
             final CompletableFuture<String> future = bot.players.getPlayerIP(playerEntry);
 
+            if (future == null) return null;
+
             future.thenApplyAsync(targetIP -> {
                 context.sendOutput(handle(bot, targetIP, false, player));
 
