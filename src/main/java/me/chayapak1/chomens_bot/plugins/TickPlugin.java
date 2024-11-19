@@ -18,11 +18,25 @@ public class TickPlugin {
     }
 
     private void tick () {
-        for (Listener listener : listeners) listener.onAlwaysTick();
+        for (Listener listener : listeners) {
+            try {
+                listener.onAlwaysTick();
+            } catch (Exception e) {
+                bot.logger.error("Caught exception in an always tick listener!");
+                e.printStackTrace();
+            }
+        }
 
         if (!bot.loggedIn) return;
 
-        for (Listener listener : listeners) listener.onTick();
+        for (Listener listener : listeners) {
+            try {
+                listener.onTick();
+            } catch (Exception e) {
+                bot.logger.error("Caught exception in a tick listener!");
+                e.printStackTrace();
+            }
+        }
     }
 
     public void addListener (Listener listener) {

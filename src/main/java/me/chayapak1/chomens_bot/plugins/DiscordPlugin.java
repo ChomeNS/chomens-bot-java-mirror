@@ -86,7 +86,9 @@ public class DiscordPlugin {
                     bot.tick.addListener(new TickPlugin.Listener() {
                         @Override
                         public void onAlwaysTick () {
-                            onDiscordTick(channelId);
+                            try {
+                                onDiscordTick(channelId);
+                            } catch (Exception ignored) {}
                         }
                     });
 
