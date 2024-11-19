@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import me.chayapak1.chomens_bot.Main;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,77 +11,87 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class PersistentDataUtilities {
-    public static final Path path = Path.of("persistent.json");
+    private static final Path path = Path.of("persistent.json");
 
-    private static BufferedWriter writer;
+    private static final Gson gson = new Gson();
 
     public static JsonObject jsonObject = new JsonObject();
 
-    private static boolean stopping = false;
+    private static final ReentrantLock lock = new ReentrantLock();
+
+    private static volatile boolean stopping = false;
 
     public static void init () {
+        lock.lock();
+
         try {
-            if (!Files.exists(path)) Files.createFile(path);
-
-            // loads the persistent data from the last session
-            else {
-                final BufferedReader reader = Files.newBufferedReader(path);
-
-                final Gson gson = new Gson();
-
-                jsonObject = gson.fromJson(reader, JsonObject.class);
+            if (Files.exists(path)) {
+                try (BufferedReader reader = Files.newBufferedReader(path)) {
+                    jsonObject = gson.fromJson(reader, JsonObject.class);
+                }
+            } else {
+                Files.createFile(path);
             }
-
-            writer = Files.newBufferedWriter(path, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            lock.unlock();
         }
     }
 
-    private static void write (String string) {
-        if (stopping) return; // is this necessary?
+    private static void writeToFile() {
+        if (stopping) return;
 
-        Main.executorService.submit(() -> {
-            try {
-                writer.close();
+        lock.lock();
 
-                writer = Files.newBufferedWriter(path, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-
-                writer.write(string);
-                writer.flush();
-            } catch (IOException ignored) {}
-        });
+        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
+            writer.write(gson.toJson(jsonObject));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
     }
 
     public static void stop () {
         stopping = true;
-        write(jsonObject.toString());
+
+        lock.lock();
+
+        try {
+            writeToFile();
+        } finally {
+            lock.unlock();
+        }
     }
 
     public static void put (String property, JsonElement value) {
-        jsonObject.add(property, value);
-        write(jsonObject.toString());
+        lock.lock();
+
+        try {
+            jsonObject.add(property, value);
+            writeToFile();
+        } finally {
+            lock.unlock();
+        }
     }
 
     public static void put (String property, String value) {
-        jsonObject.add(property, new JsonPrimitive(value));
-        write(jsonObject.toString());
+        put(property, new JsonPrimitive(value));
     }
 
     public static void put (String property, boolean value) {
-        jsonObject.add(property, new JsonPrimitive(value));
-        write(jsonObject.toString());
+        put(property, new JsonPrimitive(value));
     }
 
     public static void put (String property, int value) {
-        jsonObject.add(property, new JsonPrimitive(value));
-        write(jsonObject.toString());
+        put(property, new JsonPrimitive(value));
     }
 
     public static void put (String property, char value) {
-        jsonObject.add(property, new JsonPrimitive(value));
-        write(jsonObject.toString());
+        put(property, new JsonPrimitive(value));
     }
 }
