@@ -16,6 +16,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -360,24 +361,31 @@ public class DiscordPlugin {
         }
     }
 
-    public void sendMessageInstantly (String message, String channelId) {
-        if (jda == null) return;
+    public void sendMessageInstantly (String message, String channelId) { sendMessageInstantly(message, channelId, true); }
+    public MessageCreateAction sendMessageInstantly (String message, String channelId, boolean queue) {
+        if (jda == null) return null;
 
         final TextChannel logChannel = jda.getTextChannelById(channelId);
 
         if (logChannel == null) {
             LoggerUtilities.error("Log channel for " + channelId + " is null");
-            return;
+            return null;
         }
 
-        logChannel.sendMessage(message).queue(
-                (msg) -> doneSendingInLogs.put(channelId, true),
-                (err) -> {
-                    err.printStackTrace();
+        if (queue) {
+            logChannel.sendMessage(message).queue(
+                    (msg) -> doneSendingInLogs.put(channelId, true),
+                    (err) -> {
+                        err.printStackTrace();
 
-                    doneSendingInLogs.put(channelId, false);
-                }
-        );
+                        doneSendingInLogs.put(channelId, false);
+                    }
+            );
+
+            return null;
+        } else {
+            return logChannel.sendMessage(message);
+        }
     }
 
     public void onDiscordTick(String channelId) {

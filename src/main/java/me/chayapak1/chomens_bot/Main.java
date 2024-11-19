@@ -5,10 +5,8 @@ import me.chayapak1.chomens_bot.plugins.ConsolePlugin;
 import me.chayapak1.chomens_bot.plugins.DiscordPlugin;
 import me.chayapak1.chomens_bot.plugins.IRCPlugin;
 import me.chayapak1.chomens_bot.plugins.LoggerPlugin;
-import me.chayapak1.chomens_bot.util.ComponentUtilities;
-import me.chayapak1.chomens_bot.util.HttpUtilities;
-import me.chayapak1.chomens_bot.util.LoggerUtilities;
-import me.chayapak1.chomens_bot.util.PersistentDataUtilities;
+import me.chayapak1.chomens_bot.util.*;
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import net.kyori.adventure.text.Component;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
@@ -22,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -198,11 +197,9 @@ public class Main {
         executorService.shutdown();
 
         try {
-            final boolean executorDone = executor.awaitTermination(5, TimeUnit.SECONDS);
-            final boolean executorServiceDone = executorService.awaitTermination(5, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+            final boolean ignoredExecutorDone = executor.awaitTermination(5, TimeUnit.SECONDS);
+            final boolean ignoredExecutorServiceDone = executorService.awaitTermination(5, TimeUnit.SECONDS);
+        } catch (InterruptedException ignored) {}
 
         ArrayList<Bot> copiedList;
         synchronized (bots) {
@@ -212,46 +209,42 @@ public class Main {
         final boolean ircEnabled = config.irc.enabled;
         final boolean discordEnabled = config.discord.enabled;
 
+        final boolean[] stoppedDiscord = new boolean[copiedList.size()];
+
+        int botIndex = 0;
         for (Bot bot : copiedList) {
             try {
                 if (discordEnabled) {
                     final String channelId = bot.discord.servers.get(bot.host + ":" + bot.port);
 
-                    bot.discord.sendMessageInstantly("Stopping..", channelId);
+                    final MessageCreateAction messageAction = bot.discord.sendMessageInstantly("Stopping..", channelId, false);
+
+                    final int finalBotIndex = botIndex;
+                    messageAction.queue(
+                            (message) -> stoppedDiscord[finalBotIndex] = true,
+                            (error) -> stoppedDiscord[finalBotIndex] = true // should i also set this to true on fail?
+                    );
                 }
 
                 if (ircEnabled) bot.irc.quit("Stopping..");
 
                 bot.stop();
             } catch (Exception ignored) {}
+
+            botIndex++;
         }
 
         if (discord.jda != null) discord.jda.shutdown();
 
         if (discordEnabled) {
             for (int i = 0; i < 150; i++) {
-                boolean stoppedDiscord = true;
-
-                for (Bot bot : bots) {
-                    if (!bot.discord.shuttedDown) {
-                        stoppedDiscord = false;
-                        break;
-                    }
-                }
-
-                if (!stoppedDiscord) {
-                    try {
-                        Thread.sleep(50);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                        break;
-                    }
-                } else {
-                    break;
-                }
+                try {
+                    if (!ArrayUtilities.isAllTrue(stoppedDiscord)) Thread.sleep(50);
+                    else break;
+                } catch (InterruptedException ignored) {}
             }
         }
 
-        System.exit(69); // nice
+        System.exit(0);
     }
 }
