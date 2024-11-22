@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.song;
 
 import me.chayapak1.chomens_bot.Bot;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -107,12 +108,12 @@ public class SongPlayerConverter implements Converter {
         }
 
         @Override
-        public int read(byte b[]) throws IOException {
+        public int read(byte @NotNull [] b) throws IOException {
             return read(b, 0, b.length);
         }
 
         @Override
-        public int read(byte b[], int off, int len) throws IOException {
+        public int read(byte @NotNull [] b, int off, int len) throws IOException {
             int i = original.read(b, off, len);
             if (i>=0) incrementCounter(i);
             return i;

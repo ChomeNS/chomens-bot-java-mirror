@@ -285,7 +285,7 @@ public class NBSConverter implements Converter {
     }
   }
 
-  private static List<String> sounds = loadJsonStringArray("sounds.json");
+  private static final List<String> sounds = loadJsonStringArray("sounds.json");
 
   private static List<String> loadJsonStringArray (String name) {
     List<String> list = new ArrayList<>();

@@ -70,9 +70,9 @@ public class JavaOpusEncoder {
 
     public static OpusApplication getApplication(de.maxhenkel.opus4j.OpusEncoder.Application application) {
         return switch (application) {
-            default -> OpusApplication.OPUS_APPLICATION_VOIP;
             case AUDIO -> OpusApplication.OPUS_APPLICATION_AUDIO;
             case LOW_DELAY -> OpusApplication.OPUS_APPLICATION_RESTRICTED_LOWDELAY;
+            default -> OpusApplication.OPUS_APPLICATION_VOIP;
         };
     }
 }
