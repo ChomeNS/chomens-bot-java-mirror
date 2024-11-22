@@ -23,8 +23,16 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Optional;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 public class InfoCommand extends Command {
@@ -36,11 +44,12 @@ public class InfoCommand extends Command {
                 "Shows an info about various things",
                 new String[] {
                         "",
-                        "<creator>",
-                        "<discord>",
-                        "<server>",
-                        "<botuser>",
-                        "<uptime>"
+                        "creator",
+                        "discord",
+                        "server",
+                        "botuser",
+                        "botlogintime",
+                        "uptime"
                 },
                 new String[] {},
                 TrustLevel.PUBLIC,
@@ -182,6 +191,30 @@ public class InfoCommand extends Command {
                                         ClickEvent.copyToClipboard(uuid)
                                 )
                                 .color(ColorUtilities.getColorByString(bot.config.colorPalette.uuid))
+                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+            }
+            case "botlogintime" -> {
+                final long loginTime = bot.loginTime;
+
+                final Instant instant = Instant.ofEpochMilli(loginTime);
+                final ZoneId zoneId = ZoneId.of("UTC");
+                final OffsetDateTime localDateTime = OffsetDateTime.ofInstant(instant, zoneId);
+
+                final DateTimeFormatter loginTimeFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy, hh:mm:ss a Z");
+                final String formattedLoginTime = localDateTime.format(loginTimeFormatter);
+
+                final DateFormat timeSinceFormatter = new SimpleDateFormat("HH 'hours' mm 'minutes' ss 'seconds'");
+                timeSinceFormatter.setTimeZone(TimeZone.getTimeZone(zoneId)); // very important
+                final String formattedTimeSince = timeSinceFormatter.format(new Date(System.currentTimeMillis() - loginTime));
+
+                return Component.translatable(
+                        "The bots login time is %s and has been on the server for %s",
+                        Component
+                                .text(formattedLoginTime)
+                                .color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                        Component
+                                .text(formattedTimeSince)
+                                .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
                 ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "uptime" -> {

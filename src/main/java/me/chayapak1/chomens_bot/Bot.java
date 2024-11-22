@@ -44,6 +44,7 @@ public class Bot {
     public boolean printDisconnectedCause = false;
 
     public boolean loggedIn = false;
+    public long loginTime;
 
     public final ExecutorService executorService = Main.executorService;
     public final ScheduledExecutorService executor = Main.executor;
@@ -172,8 +173,10 @@ public class Bot {
                 }
 
                 if (packet instanceof ClientboundLoginPacket) {
+                    loggedIn = true;
+                    loginTime = System.currentTimeMillis();
+
                     for (SessionListener listener : listeners) {
-                        loggedIn = true;
                         listener.connected(new ConnectedEvent(session));
                     }
 
