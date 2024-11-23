@@ -18,7 +18,7 @@ public class ConsolePlugin implements Completer {
 
     public String consoleServer = "all";
 
-    public String prefix;
+    private String prefix;
 
     public ConsolePlugin () {
         this.allBots = Main.bots;
@@ -70,7 +70,7 @@ public class ConsolePlugin implements Completer {
         candidates.addAll(filteredCommands);
     }
 
-    public void handleLine (String line) {
+    private void handleLine (String line) {
         if (line == null) return;
 
         for (Bot bot : allBots) {
