@@ -15,6 +15,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
@@ -29,14 +30,19 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Optional;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class InfoCommand extends Command {
     public static final String ORIGINAL_REPOSITORY_URL = "https://code.chipmunk.land/ChomeNS/chomens-bot-java";
+
+    public static final Properties BUILD_INFO = new Properties();
+
+    static {
+        try (final InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("application.properties")) {
+            BUILD_INFO.load(input);
+        } catch (IOException ignored) {}
+    }
 
     public InfoCommand () {
         super(
@@ -260,6 +266,35 @@ public class InfoCommand extends Command {
                                         .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
                                         .clickEvent(
                                                 ClickEvent.openUrl(ORIGINAL_REPOSITORY_URL)
+                                        )
+                        )
+                        .append(Component.newline())
+                        .append(Component.text("Compiled at "))
+                        .append(
+                                Component
+                                        .text(BUILD_INFO.getProperty("build.date", "unknown"))
+                                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                        )
+                        .append(
+                                Component
+                                        .translatable(
+                                                ", Git commit %s (%s)",
+                                                Component
+                                                        .text(BUILD_INFO.getProperty("build.git.commit.hash", "unknown"))
+                                                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                                                Component
+                                                        .text(BUILD_INFO.getProperty("build.git.commit.count", "unknown"))
+                                                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
+                                        )
+                        )
+                        .append(Component.newline())
+                        .append(
+                                Component
+                                        .translatable(
+                                                "Build %s",
+                                                Component
+                                                        .text(BUILD_INFO.getProperty("build.number", "unknown"))
+                                                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
                                         )
                         );
             }

@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 plugins {
     id 'java'
     id 'application'
@@ -55,6 +57,51 @@ dependencies {
     implementation 'io.socket:socket.io-client:2.1.0'
     implementation 'de.maxhenkel.opus4j:opus4j:2.0.2'
     implementation 'org.concentus:Concentus:1.0-SNAPSHOT'
+}
+
+static def getGitCommitHash() {
+    try {
+        return 'git rev-parse --short HEAD'.execute().text.trim()
+    } catch (Exception e) {
+        e.printStackTrace()
+
+        return "unknown"
+    }
+}
+
+static def getGitCommitCount() {
+    try {
+        return 'git rev-list --count HEAD'.execute().text.trim()
+    } catch (Exception e) {
+        e.printStackTrace()
+
+        return "unknown"
+    }
+}
+
+def buildNumberFile = file("build-number.txt")
+def buildNumber = 0
+
+if (buildNumberFile.exists()) {
+    buildNumber = buildNumberFile.text.trim().toInteger() + 1
+} else {
+    buildNumber = 1
+}
+
+buildNumberFile.text = buildNumber
+
+ext.buildInfo = [
+        gitCommitCount: getGitCommitCount(),
+        compileDate: new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z").format(new Date()),
+        gitCommitHash: getGitCommitHash(),
+        buildNumber: buildNumber,
+]
+
+processResources {
+    inputs.property("buildInfo", buildInfo)
+    filesMatching("application.properties") {
+        expand(buildInfo)
+    }
 }
 
 application {
