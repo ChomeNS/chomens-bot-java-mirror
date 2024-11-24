@@ -10,7 +10,7 @@ commandSpyPrefixes:
 consoleCommandPrefix: '.'
 
 internetCheck:
-  enabled: true
+  enabled: false
   address: 'https://sus.red'
 
 # how backup works is that it checks for the address every 1 minute,
@@ -35,7 +35,7 @@ discord:
     localhost:25565: 'channel id'
 
 irc:
-  enabled: true
+  enabled: false
   prefix: '!'
   host: 'irc.libera.chat'
   port: 6665

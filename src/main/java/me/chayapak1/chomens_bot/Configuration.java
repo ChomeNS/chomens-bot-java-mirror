@@ -53,7 +53,7 @@ public class Configuration {
     }
 
     public static class InternetCheck {
-        public boolean enabled = true;
+        public boolean enabled = false;
         public String address = "https://sus.red";
     }
 
@@ -92,7 +92,7 @@ public class Configuration {
     }
 
     public static class Discord {
-        public boolean enabled = true;
+        public boolean enabled = false;
         public String prefix = "default!";
         public String token;
         public Map<String, String> servers = new HashMap<>();
@@ -104,7 +104,7 @@ public class Configuration {
     }
 
     public static class IRC {
-        public boolean enabled = true;
+        public boolean enabled = false;
         public String prefix = "!";
         public String host;
         public int port;
