@@ -6,9 +6,11 @@ import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
+import me.chayapak1.chomens_bot.data.exploitMethods.Kick;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 public class KickCommand extends Command {
@@ -16,16 +18,22 @@ public class KickCommand extends Command {
         super(
                 "kick",
                 "Kicks a player",
-                new String[] { "<player>" },
+                new String[] {},
                 new String[] {},
                 TrustLevel.TRUSTED,
                 false
         );
+
+        final String allMethods = String.join("|", Arrays.stream(Kick.values()).map(Enum::name).toList());
+
+        this.usages = new String[] { "<" + allMethods + "> <player>" };
     }
 
     @Override
     public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
+
+        final Kick method = context.getEnum(Kick.class);
 
         final PlayerEntry entry = bot.players.getEntry(context.getString(true, true));
 
@@ -34,11 +42,16 @@ public class KickCommand extends Command {
         final String name = entry.profile.getName();
         final UUID uuid = entry.profile.getId();
 
-        bot.exploits.kick(uuid);
+        bot.exploits.kick(method, uuid);
 
         return Component.empty()
-                .append(Component.text("Kicking player "))
+                .append(Component.text("Kicking player"))
+                .append(Component.space())
                 .append(Component.text(name).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)))
+                .append(Component.space())
+                .append(Component.text("with method"))
+                .append(Component.space())
+                .append(Component.text(method.name()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)))
                 .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }
 }

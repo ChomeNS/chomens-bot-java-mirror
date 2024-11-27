@@ -4,9 +4,9 @@ import net.kyori.adventure.text.Component;
 
 public abstract class Command {
     public final String name;
-    public final String description;
-    public final String[] usages;
-    public final String[] aliases;
+    public String description;
+    public String[] usages;
+    public String[] aliases;
     public final TrustLevel trustLevel;
     public final boolean consoleOnly;
 

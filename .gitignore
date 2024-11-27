@@ -9,8 +9,9 @@ run/
 *.ipr
 *.iws
 
-# Exploits plugin
+# Exploits stuff
 src/main/java/me/chayapak1/chomens_bot/plugins/ExploitsPlugin.java
+src/main/java/me/chayapak1/chomens_bot/data/exploitMethods/
 
 # Testing plugins
 src/main/java/me/chayapak1/chomens_bot/plugins/testing

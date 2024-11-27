@@ -51,7 +51,6 @@ public class CommandHandlerPlugin {
         registerCommand(new EvalCommand());
         registerCommand(new InfoCommand());
         registerCommand(new ConsoleCommand());
-        registerCommand(new PCrashCommand());
 //        registerCommand(new ScreenshareCommand());
         registerCommand(new WhitelistCommand());
         registerCommand(new SeenCommand());
