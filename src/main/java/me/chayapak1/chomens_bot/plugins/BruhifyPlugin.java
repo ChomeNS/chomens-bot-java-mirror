@@ -5,32 +5,37 @@ import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
-import java.util.concurrent.TimeUnit;
+public class BruhifyPlugin extends TickPlugin.Listener {
+    private final Bot bot;
 
-public class BruhifyPlugin {
     public String bruhifyText = "";
 
     private int startHue = 0;
 
     public BruhifyPlugin (Bot bot) {
-        bot.executor.scheduleAtFixedRate(() -> {
-            if (bruhifyText.isEmpty()) return;
+        this.bot = bot;
 
-            int hue = startHue;
-            String displayName = bruhifyText;
-            int increment = 360 / Math.max(displayName.length(), 20);
+        bot.tick.addListener(this);
+    }
 
-            Component component = Component.empty();
+    @Override
+    public void onTick() {
+        if (bruhifyText.isEmpty()) return;
 
-            for (char character : displayName.toCharArray()) {
-                String color = String.format("#%06x", ColorUtilities.hsvToRgb(hue, 100, 100));
-                component = component.append(Component.text(character).color(TextColor.fromHexString(color)));
-                hue = (hue + increment) % 360;
-            }
+        int hue = startHue;
+        String displayName = bruhifyText;
+        int increment = 360 / Math.max(displayName.length(), 20);
 
-            bot.chat.actionBar(component);
+        Component component = Component.empty();
 
-            startHue = (startHue + increment) % 360;
-        }, 0, 50, TimeUnit.MILLISECONDS);
+        for (char character : displayName.toCharArray()) {
+            String color = String.format("#%06x", ColorUtilities.hsvToRgb(hue, 100, 100));
+            component = component.append(Component.text(character).color(TextColor.fromHexString(color)));
+            hue = (hue + increment) % 360;
+        }
+
+        bot.chat.actionBar(component);
+
+        startHue = (startHue + increment) % 360;
     }
 }
