@@ -13,13 +13,10 @@ import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.io.*;
 import java.net.URL;
-import java.net.URLConnection;
-import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -43,7 +40,7 @@ public class Main {
 
     private static boolean stopping = false;
 
-    private static final List<Thread> alreadyAddedThreads = new ArrayList<>();
+    private static int backupFailTimes = 0;
 
     private static DiscordPlugin discord;
 
@@ -72,7 +69,9 @@ public class Main {
             configWriter.write(defaultConfig);
             configWriter.close();
 
-            LoggerUtilities.info("config.yml file not found, so the default one was created");
+            LoggerUtilities.info("config.yml file was not found, so the default one was created. Please modify it to your needs.");
+
+            System.exit(1);
         }
 
         InputStream opt = Files.newInputStream(configPath);
@@ -80,54 +79,37 @@ public class Main {
 
         config = yaml.load(reader);
 
-        executor.scheduleAtFixedRate(() -> {
-            try {
-                checkInternet();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }, 0, 1, TimeUnit.MINUTES);
-
-        executor.scheduleAtFixedRate(() -> {
-            final Set<Thread> threads = Thread.getAllStackTraces().keySet();
-
-            for (Thread thread : threads) {
-                final Thread.UncaughtExceptionHandler oldHandler = thread.getUncaughtExceptionHandler();
-
-                thread.setUncaughtExceptionHandler((_thread, throwable) -> {
-                    if (!alreadyAddedThreads.contains(thread) && throwable instanceof OutOfMemoryError) System.exit(1);
-
-                    alreadyAddedThreads.add(thread);
-
-                    oldHandler.uncaughtException(_thread, throwable);
-                });
-            }
-        }, 0, 30, TimeUnit.SECONDS);
-
         if (!config.backup.enabled) {
             initializeBots();
-            return;
+        } else {
+            executor.scheduleAtFixedRate(() -> {
+                boolean reachable;
+
+                try {
+                    HttpUtilities.getRequest(new URL(config.backup.address));
+
+                    reachable = true;
+                } catch (Exception e) {
+                    reachable = false;
+                }
+
+                if (!reachable && !alreadyStarted) {
+                    backupFailTimes++;
+
+                    if (backupFailTimes > config.backup.failTimes) {
+                        LoggerUtilities.info("Main instance is down! Starting backup instance");
+
+                        initializeBots();
+                    }
+                } else if (reachable && alreadyStarted) {
+                    LoggerUtilities.info("Main instance is back up! Now stopping");
+
+                    // no need to reset backupFailTimes because we are stopping anyway
+
+                    stop();
+                }
+            }, 0, config.backup.interval, TimeUnit.MILLISECONDS);
         }
-
-        executor.scheduleAtFixedRate(() -> {
-            boolean reachable;
-
-            try {
-                HttpUtilities.getRequest(new URL(config.backup.address));
-
-                reachable = true;
-            } catch (Exception e) {
-                reachable = false;
-            }
-
-            if (!reachable && !alreadyStarted) {
-                LoggerUtilities.info("Main instance is down! Starting backup instance");
-
-                initializeBots();
-            } else if (reachable && alreadyStarted) {
-                System.exit(1);
-            }
-        }, 0, 1, TimeUnit.MINUTES);
     }
 
     public static void initializeBots() {
@@ -155,28 +137,6 @@ public class Main {
             for (Bot bot : bots) bot.connect();
         } catch (Exception e) {
             e.printStackTrace();
-
-            System.exit(1);
-        }
-    }
-
-    private static void checkInternet () throws IOException {
-        if (!config.internetCheck.enabled) return;
-
-        boolean reachable = false;
-
-        try {
-            final URL url = new URL(config.internetCheck.address);
-
-            final URLConnection connection = url.openConnection();
-
-            connection.connect();
-
-            reachable = true;
-        } catch (UnknownHostException ignored) {}
-
-        if (!reachable) {
-            LoggerUtilities.error("No internet, exiting");
 
             System.exit(1);
         }
@@ -232,9 +192,9 @@ public class Main {
             botIndex++;
         }
 
-        if (discord.jda != null) discord.jda.shutdown();
-
         if (discordEnabled) {
+            discord.jda.shutdown();
+
             for (int i = 0; i < 150; i++) {
                 try {
                     if (!ArrayUtilities.isAllTrue(stoppedDiscord)) Thread.sleep(50);

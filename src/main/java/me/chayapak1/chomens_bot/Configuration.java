@@ -12,9 +12,6 @@ public class Configuration {
     public String consoleCommandPrefix;
 
     public Keys keys = new Keys();
-
-    public InternetCheck internetCheck = new InternetCheck();
-
     public Backup backup = new Backup();
 
     public String weatherApiKey;
@@ -52,14 +49,11 @@ public class Configuration {
         public int timeout = 6000;
     }
 
-    public static class InternetCheck {
-        public boolean enabled = false;
-        public String address = "https://sus.red";
-    }
-
     public static class Backup {
         public boolean enabled = false;
         public String address = "http://fard.sex/check";
+        public int interval = 1000;
+        public int failTimes = 2;
     }
 
     public static class Keys {
