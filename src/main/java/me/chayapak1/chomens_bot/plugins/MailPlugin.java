@@ -19,8 +19,8 @@ public class MailPlugin extends PlayersPlugin.Listener {
     private final Gson gson = new Gson();
 
     static {
-        if (PersistentDataUtilities.jsonObject.has("mails")) {
-            mails = PersistentDataUtilities.jsonObject.get("mails").getAsJsonArray();
+        if (PersistentDataUtilities.has("mails")) {
+            mails = PersistentDataUtilities.get("mails").getAsJsonArray();
         }
     }
 

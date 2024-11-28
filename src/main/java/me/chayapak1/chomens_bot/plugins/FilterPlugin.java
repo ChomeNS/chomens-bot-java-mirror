@@ -25,8 +25,8 @@ public class FilterPlugin extends PlayersPlugin.Listener {
     private final Gson gson = new Gson();
 
     static {
-        if (PersistentDataUtilities.jsonObject.has("filters")) {
-            filteredPlayers = PersistentDataUtilities.jsonObject.get("filters").getAsJsonArray();
+        if (PersistentDataUtilities.has("filters")) {
+            filteredPlayers = PersistentDataUtilities.get("filters").getAsJsonArray();
         }
     }
 

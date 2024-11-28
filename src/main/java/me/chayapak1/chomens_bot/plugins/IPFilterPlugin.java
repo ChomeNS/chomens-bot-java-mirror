@@ -15,8 +15,8 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
     public static JsonArray filteredIPs = new JsonArray();
 
     static {
-        if (PersistentDataUtilities.jsonObject.has("ipFilters")) {
-            filteredIPs = PersistentDataUtilities.jsonObject.get("ipFilters").getAsJsonArray();
+        if (PersistentDataUtilities.has("ipFilters")) {
+            filteredIPs = PersistentDataUtilities.get("ipFilters").getAsJsonArray();
         }
     }
 

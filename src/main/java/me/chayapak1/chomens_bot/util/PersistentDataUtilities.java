@@ -18,7 +18,7 @@ public class PersistentDataUtilities {
 
     private static final Gson gson = new Gson();
 
-    public static JsonObject jsonObject = new JsonObject();
+    private static JsonObject jsonObject = new JsonObject();
 
     private static final ReentrantLock lock = new ReentrantLock();
 
@@ -42,7 +42,7 @@ public class PersistentDataUtilities {
         }
     }
 
-    private static void writeToFile() {
+    private static synchronized void writeToFile() {
         if (stopping) return;
 
         lock.lock();
@@ -56,7 +56,7 @@ public class PersistentDataUtilities {
         }
     }
 
-    public static void stop () {
+    public static synchronized void stop () {
         stopping = true;
 
         lock.lock();
@@ -68,7 +68,15 @@ public class PersistentDataUtilities {
         }
     }
 
-    public static void put (String property, JsonElement value) {
+    public static synchronized boolean has (String property) {
+        return jsonObject.has(property);
+    }
+
+    public static synchronized JsonElement get (String property) {
+        return jsonObject.get(property);
+    }
+
+    public static synchronized void put (String property, JsonElement value) {
         lock.lock();
 
         try {
@@ -79,19 +87,19 @@ public class PersistentDataUtilities {
         }
     }
 
-    public static void put (String property, String value) {
+    public static synchronized void put (String property, String value) {
         put(property, new JsonPrimitive(value));
     }
 
-    public static void put (String property, boolean value) {
+    public static synchronized void put (String property, boolean value) {
         put(property, new JsonPrimitive(value));
     }
 
-    public static void put (String property, int value) {
+    public static synchronized void put (String property, int value) {
         put(property, new JsonPrimitive(value));
     }
 
-    public static void put (String property, char value) {
+    public static synchronized void put (String property, char value) {
         put(property, new JsonPrimitive(value));
     }
 }

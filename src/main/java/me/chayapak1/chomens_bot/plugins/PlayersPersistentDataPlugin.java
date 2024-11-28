@@ -14,8 +14,8 @@ public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
     public static JsonObject playersObject = new JsonObject();
 
     static {
-        if (PersistentDataUtilities.jsonObject.has("players")) {
-            playersObject = PersistentDataUtilities.jsonObject.get("players").getAsJsonObject();
+        if (PersistentDataUtilities.has("players")) {
+            playersObject = PersistentDataUtilities.get("players").getAsJsonObject();
         }
     }
 
