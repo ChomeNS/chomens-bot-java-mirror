@@ -25,7 +25,7 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
 
         bot.players.addListener(this);
 
-        bot.executor.scheduleAtFixedRate(this::checkAllPlayers, 0, 2, TimeUnit.SECONDS);
+        bot.executor.scheduleAtFixedRate(this::checkAllPlayers, 0, 10, TimeUnit.SECONDS);
     }
 
     @Override
@@ -60,7 +60,9 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
     private void checkAllPlayers () {
         if (filteredIPs.isEmpty()) return;
 
-        for (PlayerEntry entry : bot.players.list) check(entry);
+        bot.executorService.submit(() -> {
+            for (PlayerEntry entry : bot.players.list) check(entry);
+        });
     }
 
     public String remove (int index) {
