@@ -208,6 +208,8 @@ public class CorePlugin extends PositionPlugin.Listener {
 
     // thanks chipmunk for this new tellraw method
     public CompletableFuture<Component> runTracked (String command) {
+        if (!ready || command.length() > 32767) return null;
+
         if (!bot.options.useCore) return null;
 
         if (bot.options.useCorePlaceBlock) {
