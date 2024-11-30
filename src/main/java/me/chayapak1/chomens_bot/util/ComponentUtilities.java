@@ -24,8 +24,6 @@ public class ComponentUtilities {
         return component1.toString().equals(component2.toString());
     }
 
-    public static void init () {}
-
     // component parsing
     public static final Map<String, String> language = loadJsonStringMap("language.json");
     private static final Map<String, String> voiceChatLanguage = loadJsonStringMap("voiceChatLanguage.json");
@@ -257,7 +255,7 @@ public class ComponentUtilities {
             }
 
             // messy af
-            return new PartiallyStringified((lastColor != null ? lastColor : "") + (color != null ? color : "") + (style != null ? style : "") + replacedContent + (ansi ? ansiMap.get("r") : "") + (style != null ? style : ""), color);
+            return new PartiallyStringified((lastColor != null ? lastColor : "") + (color != null ? color : "") + (style != null ? style : "") + replacedContent + (ansi ? ansiMap.get("r") : ""), color);
         }
 
         return new PartiallyStringified(message.content(), null);
@@ -305,7 +303,7 @@ public class ComponentUtilities {
         }
         matcher.appendTail(sb);
 
-        return new PartiallyStringified((lastColor != null ? lastColor : "") + color + (style != null && ansi ? style : "") + sb + (ansi ? ansiMap.get("r") + (style != null ? style : "") : ""), _color);
+        return new PartiallyStringified((lastColor != null ? lastColor : "") + color + (style != null && ansi ? style : "") + sb + (ansi ? ansiMap.get("r") : ""), _color);
     }
 
     public static PartiallyStringified stringifyPartially (SelectorComponent message, boolean motd, boolean ansi, String lastColor, boolean noHex) {
