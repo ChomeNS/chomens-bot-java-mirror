@@ -125,28 +125,43 @@ public class CommandHandlerPlugin {
 
                 final String trustedRoleName = bot.config.discord.trustedRoleName;
                 final String adminRoleName = bot.config.discord.adminRoleName;
+                final String ownerRoleName = bot.config.discord.ownerRoleName;
 
                 if (
                         command.trustLevel == TrustLevel.TRUSTED &&
                                 roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase(trustedRoleName)) &&
-                                roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase(adminRoleName))
+                                roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase(adminRoleName)) &&
+                                roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase(ownerRoleName))
                 ) return Component.text("You're not in the trusted role!").color(NamedTextColor.RED);
 
                 if (
-                        command.trustLevel == TrustLevel.OWNER &&
-                                roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase(adminRoleName))
+                        command.trustLevel == TrustLevel.ADMIN &&
+                                roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase(adminRoleName)) &&
+                                roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase(ownerRoleName))
                 ) return Component.text("You're not in the admin role!").color(NamedTextColor.RED);
+
+                if (
+                        command.trustLevel == TrustLevel.OWNER &&
+                                roles.stream().noneMatch(role -> role.getName().equalsIgnoreCase(ownerRoleName))
+                ) return Component.text("You're not in the owner role!").color(NamedTextColor.RED);
             } else {
                 if (
                         command.trustLevel == TrustLevel.TRUSTED &&
                                 !bot.hashing.isCorrectHash(userHash, splitInput[0], context.sender) &&
+                                !bot.hashing.isCorrectAdminHash(userHash, splitInput[0], context.sender) &&
                                 !bot.hashing.isCorrectOwnerHash(userHash, splitInput[0], context.sender)
                 ) return Component.text("Invalid hash").color(NamedTextColor.RED);
 
                 if (
+                        command.trustLevel == TrustLevel.ADMIN &&
+                                !bot.hashing.isCorrectAdminHash(userHash, splitInput[0], context.sender) &&
+                                !bot.hashing.isCorrectOwnerHash(userHash, splitInput[0], context.sender)
+                ) return Component.text("Invalid admin hash").color(NamedTextColor.RED);
+
+                if (
                         command.trustLevel == TrustLevel.OWNER &&
                                 !bot.hashing.isCorrectOwnerHash(userHash, splitInput[0], context.sender)
-                ) return Component.text("Invalid OwnerHash").color(NamedTextColor.RED);
+                ) return Component.text("Invalid owner hash").color(NamedTextColor.RED);
             }
         }
 

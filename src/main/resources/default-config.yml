@@ -28,7 +28,8 @@ discord:
   prefix: 'default!'
   token: 'token here'
   trustedRoleName: 'Trusted'
-  adminRoleName: 'Admin' # NOTE: admin will be able to access servereval..
+  adminRoleName: 'Admin'
+  ownerRoleName: 'Owner'
   statusMessage: 'Say Gex'
   inviteLink: 'https://discord.gg/xdgCkUyaA4'
   servers:
@@ -75,8 +76,9 @@ trusted:
   - 'player name'
 
 keys:
-  normalKey: 'normal hash key here'
-  ownerKey: 'OwnerHash™ key here'
+  trustedKey: 'trusted key here'
+  adminKey: 'admin key here'
+  ownerKey: 'owner key here'
 
 weatherApiKey: 'key here' # weatherapi.com key
 

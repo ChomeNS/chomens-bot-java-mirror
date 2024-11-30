@@ -125,7 +125,6 @@ public class Main {
 
             // initialize util classes and plugins
             PersistentDataUtilities.init();
-            ComponentUtilities.init();
 
             new ConsolePlugin();
             LoggerPlugin.init();

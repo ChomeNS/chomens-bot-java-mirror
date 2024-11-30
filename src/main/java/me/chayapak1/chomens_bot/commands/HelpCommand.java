@@ -50,6 +50,7 @@ public class HelpCommand extends Command {
         final List<Component> list = new ArrayList<>();
         list.addAll(getCommandListByTrustLevel(TrustLevel.PUBLIC));
         list.addAll(getCommandListByTrustLevel(TrustLevel.TRUSTED));
+        list.addAll(getCommandListByTrustLevel(TrustLevel.ADMIN));
         list.addAll(getCommandListByTrustLevel(TrustLevel.OWNER));
 
         return Component.empty()
@@ -60,7 +61,8 @@ public class HelpCommand extends Command {
                         .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
                         .append(Component.text("Public ").color(NamedTextColor.GREEN))
                         .append(Component.text("Trusted ").color(NamedTextColor.RED))
-                        .append(Component.text("Owner").color(NamedTextColor.DARK_RED))
+                        .append(Component.text("Admin ").color(NamedTextColor.DARK_RED))
+                        .append(Component.text("Owner").color(NamedTextColor.LIGHT_PURPLE))
                         .append(Component.text(") - ").color(NamedTextColor.DARK_GRAY))
                         .append(Component.join(JoinConfiguration.separator(Component.space()), list));
     }
@@ -98,7 +100,8 @@ public class HelpCommand extends Command {
         return switch (trustLevel) {
             case PUBLIC -> NamedTextColor.GREEN;
             case TRUSTED -> NamedTextColor.RED;
-            case OWNER -> NamedTextColor.DARK_RED;
+            case ADMIN -> NamedTextColor.DARK_RED;
+            case OWNER -> NamedTextColor.LIGHT_PURPLE;
         };
     }
 

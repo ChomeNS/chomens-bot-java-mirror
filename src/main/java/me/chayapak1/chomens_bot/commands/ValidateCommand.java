@@ -30,8 +30,9 @@ public class ValidateCommand extends Command {
 
         final String hash = fullArgs[0];
 
-        if (bot.hashing.isCorrectHash(hash, context.userInputCommandName, context.sender)) return Component.text("Valid hash").color(NamedTextColor.GREEN);
-        else if (bot.hashing.isCorrectOwnerHash(hash, context.userInputCommandName, context.sender)) return Component.text("Valid OwnerHash").color(NamedTextColor.GREEN);
+        if (bot.hashing.isCorrectHash(hash, context.userInputCommandName, context.sender)) return Component.text("Valid trusted hash").color(NamedTextColor.GREEN);
+        else if (bot.hashing.isCorrectAdminHash(hash, context.userInputCommandName, context.sender)) return Component.text("Valid admin hash").color(NamedTextColor.GREEN);
+        else if (bot.hashing.isCorrectOwnerHash(hash, context.userInputCommandName, context.sender)) return Component.text("Valid owner hash").color(NamedTextColor.GREEN);
 
         return null;
     }

@@ -14,10 +14,13 @@ public class HashingPlugin {
         this.bot = bot;
     }
 
-    public String getHash (String prefix, PlayerEntry sender, boolean sectionSigns) {
-        final long time = System.currentTimeMillis() / 5_000;
+    public String getHash (String prefix, PlayerEntry sender, boolean sectionSigns) { return getGenericHash(bot.config.keys.trustedKey, prefix, sender, sectionSigns); }
+    public String getAdminHash (String prefix, PlayerEntry sender, boolean sectionSigns) { return getGenericHash(bot.config.keys.adminKey, prefix, sender, sectionSigns); }
+    public String getOwnerHash (String prefix, PlayerEntry sender, boolean sectionSigns) { return getGenericHash(bot.config.keys.ownerKey, prefix, sender, sectionSigns); }
 
-        final String key = bot.config.keys.normalKey;
+    // should this be public?
+    public String getGenericHash (String key, String prefix, PlayerEntry sender, boolean sectionSigns) {
+        final long time = System.currentTimeMillis() / 5_000;
 
         final String hashValue = sender.profile.getIdAsString() + prefix + time + key;
 
@@ -35,40 +38,25 @@ public class HashingPlugin {
                 hash;
     }
 
-    public String getOwnerHash (String prefix, PlayerEntry sender, boolean sectionSigns) {
-        final long time = System.currentTimeMillis() / 5_000;
+    private boolean checkHash (String hash, String input, String prefix, PlayerEntry sender) {
+        // removes reset section sign
+        if (input.length() == (16 * 2 /* <-- don't forget, we have the section signs */) + 2 && input.endsWith("§r")) input = input.substring(0, input.length() - 2);
 
-        final String key = bot.config.keys.ownerKey;
-
-        final String value = sender.profile.getIdAsString() + prefix + time + key;
-
-        final String hash = Hashing.sha256()
-                .hashString(value, StandardCharsets.UTF_8)
-                .toString()
-                .substring(0, 16);
-
-        return sectionSigns ?
-                String.join("",
-                        Arrays.stream(hash.split(""))
-                                .map((letter) -> "§" + letter)
-                                .toArray(String[]::new)
-                ) :
-                hash;
+        return input.equals(hash);
     }
 
-    public boolean isCorrectHash (String hash, String prefix, PlayerEntry sender) {
-        // removes reset section sign
-        if (hash.length() == (16 * 2 /* <-- don't forget, we have the section signs */) + 2 && hash.endsWith("§r")) hash = hash.substring(0, hash.length() - 2);
-
-        return hash.equals(getHash(prefix, sender, true)) ||
-                hash.equals(getHash(prefix, sender, false));
+    public boolean isCorrectHash (String input, String prefix, PlayerEntry sender) {
+        return checkHash(getHash(prefix, sender, true), input, prefix, sender) ||
+                checkHash(getHash(prefix, sender, false), input, prefix, sender);
     }
 
-    public boolean isCorrectOwnerHash (String hash, String prefix, PlayerEntry sender) {
-        // removes reset section sign
-        if (hash.length() == (16 * 2 /* <-- don't forget, we have the section signs */) + 2 && hash.endsWith("§r")) hash = hash.substring(0, hash.length() - 2);
+    public boolean isCorrectAdminHash (String input, String prefix, PlayerEntry sender) {
+        return checkHash(getAdminHash(prefix, sender, true), input, prefix, sender) ||
+                checkHash(getAdminHash(prefix, sender, false), input, prefix, sender);
+    }
 
-        return hash.equals(getOwnerHash(prefix, sender, true)) ||
-                hash.equals(getOwnerHash(prefix, sender, false));
+    public boolean isCorrectOwnerHash (String input, String prefix, PlayerEntry sender) {
+        return checkHash(getOwnerHash(prefix, sender, true), input, prefix, sender) ||
+                checkHash(getOwnerHash(prefix, sender, false), input, prefix, sender);
     }
 }

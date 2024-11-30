@@ -57,7 +57,8 @@ public class Configuration {
     }
 
     public static class Keys {
-        public String normalKey;
+        public String trustedKey;
+        public String adminKey;
         public String ownerKey;
     }
 
@@ -93,6 +94,7 @@ public class Configuration {
         public EmbedColors embedColors = new EmbedColors();
         public String trustedRoleName = "Trusted";
         public String adminRoleName = "Admin";
+        public String ownerRoleName = "Owner";
         public String statusMessage = "Oh hi!";
         public String inviteLink = "https://discord.gg/xdgCkUyaA4";
     }

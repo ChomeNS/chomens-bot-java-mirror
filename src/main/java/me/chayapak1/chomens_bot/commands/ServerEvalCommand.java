@@ -41,6 +41,8 @@ public class ServerEvalCommand extends Command {
                 final LuaValue output = chunk.call();
 
                 context.sendOutput(Component.text(output.toString()).color(NamedTextColor.GREEN));
+            } catch (CommandException e) {
+                context.sendOutput(e.message.color(NamedTextColor.RED));
             } catch (Exception e) {
                 context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
             }
