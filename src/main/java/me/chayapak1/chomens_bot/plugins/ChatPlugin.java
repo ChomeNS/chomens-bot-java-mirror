@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import me.chayapak1.chomens_bot.data.Team;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundDisguisedChatPacket;
@@ -109,22 +110,28 @@ public class ChatPlugin extends Bot.Listener {
         }
     }
 
-    private String getTranslationByChatType (int chatType) {
-        String translation = null;
-
+    private Component getComponentByChatType (int chatType, Component name, Component message) {
         // maybe use the registry in the login packet? too lazy.,.,,.
-        switch (chatType) {
-            case 0 -> translation = "chat.type.text"; // normal vanilla chat message
-            case 1 -> translation = "chat.type.emote"; // /me
-            case 2 -> translation = "commands.message.display.incoming"; // player that received /w message
-            case 3 -> translation = "commands.message.display.outgoing"; // player that sent /w message
-            case 4 -> translation = "%s"; // idk what this is but when the kaboom chat it uses this chat type
-            case 5 -> translation = "chat.type.announcement"; // /say
-            case 6 -> translation = "chat.type.team.text"; // player that received /teammsg message
-            case 7 -> translation = "chat.type.team.sent"; // player that sent /teammsg message
-        }
+        return switch (chatType) {
+            case 0 -> Component.translatable("chat.type.text", name, message); // normal vanilla chat message
+            case 1 -> Component.translatable("chat.type.emote", name, message); // /me
+            case 2 -> Component.translatable("commands.message.display.incoming"); // player that received /w message
+            case 3 -> Component.translatable("commands.message.display.outgoing", name, message); // player that sent /w message
+            case 4 -> Component.translatable("%s", name, message); // paper chat type thingy
+            case 5 -> Component.translatable("chat.type.announcement", name, message); // /say
+            case 6, 7 -> {
+                final Team botTeam = bot.team.teamsByPlayer.get(bot.profile.getName());
+                final Component botTeamDisplayName = Component
+                        .translatable("chat.square_brackets")
+                        .arguments(botTeam.displayName)
+                        .style(botTeam.colorToStyle());
 
-        return translation;
+                yield chatType == 6 ?
+                        Component.translatable("chat.type.team.text", botTeamDisplayName, name, message) : // player that received /teammsg message (type 6)
+                        Component.translatable("chat.type.team.sent", botTeamDisplayName, name, message); // player that sent /teammsg message (type 7)
+            }
+            default -> null;
+        };
     }
 
     public void packetReceived (ClientboundPlayerChatPacket packet) {
@@ -142,30 +149,18 @@ public class ChatPlugin extends Bot.Listener {
 
         final Component unsignedContent = packet.getUnsignedContent();
 
-        final String translation = getTranslationByChatType(packet.getChatType().id());
-
         for (Listener listener : listeners) {
             final boolean bool = listener.playerMessageReceived(playerMessage);
 
             if (!bool) break;
 
-            if (translation != null && unsignedContent == null) {
-                TranslatableComponent component = Component.translatable(translation);
+            final Component chatTypeComponent = getComponentByChatType(packet.getChatType().id(), playerMessage.displayName, playerMessage.contents);
 
-                if (translation.equals("chat.type.team.text") || translation.equals("chat.type.team.sent")) { // ohio
-                    component = component.arguments(
-                            Component.translatable("chat.square_brackets").arguments(bot.team.teamsByPlayer.get(bot.profile.getName()).displayName),
-                            playerMessage.displayName,
-                            playerMessage.contents
-                    );
-                } else {
-                    component = component.arguments(playerMessage.displayName, playerMessage.contents);
-                }
+            if (chatTypeComponent != null && unsignedContent == null) {
+                final String string = ComponentUtilities.stringify(chatTypeComponent);
+                final String ansi = ComponentUtilities.stringifyAnsi(chatTypeComponent);
 
-                final String string = ComponentUtilities.stringify(component);
-                final String ansi = ComponentUtilities.stringifyAnsi(component);
-
-                final boolean _bool = listener.systemMessageReceived(component, string, ansi);
+                final boolean _bool = listener.systemMessageReceived(chatTypeComponent, string, ansi);
 
                 if (!_bool) break;
             } else {
@@ -181,8 +176,6 @@ public class ChatPlugin extends Bot.Listener {
 
     public void packetReceived (ClientboundDisguisedChatPacket packet) {
         try {
-            final String translation = getTranslationByChatType(packet.getChatType().id());
-
             final Component component = packet.getMessage();
 
             PlayerMessage parsedFromMessage = null;
@@ -192,33 +185,20 @@ public class ChatPlugin extends Bot.Listener {
                 if (parsedFromMessage != null) break;
             }
 
-            if (translation != null && parsedFromMessage == null) {
-                final Component name = packet.getName();
-                final Component content = packet.getMessage();
+            final Component chatTypeComponent = getComponentByChatType(packet.getChatType().id(), packet.getName(), packet.getMessage());
 
-                TranslatableComponent translatableComponent = Component.translatable(translation);
-
-                if (translation.equals("chat.type.team.text") || translation.equals("chat.type.team.sent")) { // ohio
-                    translatableComponent = translatableComponent.arguments(
-                            Component.translatable("chat.square_brackets").arguments(bot.team.teamsByPlayer.get(bot.profile.getName()).displayName),
-                            name,
-                            content
-                    );
-                } else {
-                    translatableComponent = translatableComponent.arguments(name, content);
-                }
-
-                final String string = ComponentUtilities.stringify(translatableComponent);
-                final String ansi = ComponentUtilities.stringifyAnsi(translatableComponent);
+            if (chatTypeComponent != null && parsedFromMessage == null) {
+                final String string = ComponentUtilities.stringify(chatTypeComponent);
+                final String ansi = ComponentUtilities.stringifyAnsi(chatTypeComponent);
 
                 for (Listener listener : listeners) {
-                    final boolean bool = listener.systemMessageReceived(translatableComponent, string, ansi);
+                    final boolean bool = listener.systemMessageReceived(chatTypeComponent, string, ansi);
 
                     if (!bool) break;
                 }
 
                 for (ChatParser parser : chatParsers) {
-                    final PlayerMessage parsed = parser.parse(translatableComponent);
+                    final PlayerMessage parsed = parser.parse(chatTypeComponent);
 
                     if (parsed == null) continue;
 
