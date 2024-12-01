@@ -31,6 +31,8 @@ public class ComponentUtilities {
 
     public static final Pattern ARG_PATTERN = Pattern.compile("%(?:(\\d+)\\$)?([s%])");
 
+    public static final int MAX_DEPTH = 16;
+
     public static final Map<String, String> ansiMap = new HashMap<>();
     static {
         // map totallynotskidded™ from https://github.com/PrismarineJS/prismarine-chat/blob/master/index.js#L10
@@ -88,16 +90,18 @@ public class ComponentUtilities {
         else return component.fallback() != null ? component.fallback() : key;
     }
 
-    public static String stringify (Component message) { return stringify(message, null); }
-    private static String stringify (Component message, String lastColor) {
+    public static String stringify (Component message) { return stringify(message, null, 0); }
+    private static String stringify (Component message, String lastColor, int depth) {
+        if (depth > MAX_DEPTH) return "";
+
         try {
             final StringBuilder builder = new StringBuilder();
 
-            final PartiallyStringified output = stringifyPartially(message, false, false, lastColor, false);
+            final PartiallyStringified output = stringifyPartially(message, false, false, lastColor, false, depth);
 
             builder.append(output.output);
 
-            for (Component child : message.children()) builder.append(stringify(child, output.lastColor));
+            for (Component child : message.children()) builder.append(stringify(child, output.lastColor, depth));
 
             return builder.toString();
         } catch (Exception e) {
@@ -105,16 +109,18 @@ public class ComponentUtilities {
         }
     }
 
-    public static String stringifyMotd (Component message) { return stringifyMotd(message, null); }
-    private static String stringifyMotd (Component message, String lastColor) {
+    public static String stringifyMotd (Component message) { return stringifyMotd(message, null, 0); }
+    private static String stringifyMotd (Component message, String lastColor, int depth) {
+        if (depth > MAX_DEPTH) return "";
+
         try {
             final StringBuilder builder = new StringBuilder();
 
-            final PartiallyStringified output = stringifyPartially(message, true, false, lastColor, false);
+            final PartiallyStringified output = stringifyPartially(message, true, false, lastColor, false, depth);
 
             builder.append(output.output);
 
-            for (Component child : message.children()) builder.append(stringifyMotd(child, output.lastColor));
+            for (Component child : message.children()) builder.append(stringifyMotd(child, output.lastColor, depth));
 
             return builder.toString();
         } catch (Exception e) {
@@ -122,17 +128,19 @@ public class ComponentUtilities {
         }
     }
 
-    public static String stringifyAnsi (Component message) { return stringifyAnsi(message, null, false); }
-    public static String stringifyAnsi (Component message, boolean noHex) { return stringifyAnsi(message, null, noHex); }
-    private static String stringifyAnsi (Component message, String lastColor, boolean noHex) {
+    public static String stringifyAnsi (Component message) { return stringifyAnsi(message, null, false, 0); }
+    public static String stringifyAnsi (Component message, boolean noHex) { return stringifyAnsi(message, null, noHex, 0); }
+    private static String stringifyAnsi (Component message, String lastColor, boolean noHex, int depth) {
+        if (depth > MAX_DEPTH) return "";
+
         try {
             final StringBuilder builder = new StringBuilder();
 
-            final PartiallyStringified output = stringifyPartially(message, false, true, lastColor, noHex);
+            final PartiallyStringified output = stringifyPartially(message, false, true, lastColor, noHex, depth);
 
             builder.append(output.output);
 
-            for (Component child : message.children()) builder.append(stringifyAnsi(child, output.lastColor, noHex));
+            for (Component child : message.children()) builder.append(stringifyAnsi(child, output.lastColor, noHex, depth));
 
             return builder.toString();
         } catch (Exception e) {
@@ -140,9 +148,9 @@ public class ComponentUtilities {
         }
     }
 
-    public static PartiallyStringified stringifyPartially (Component message, boolean motd, boolean ansi, String lastColor, boolean noHex) {
+    public static PartiallyStringified stringifyPartially (Component message, boolean motd, boolean ansi, String lastColor, boolean noHex, int depth) {
         if (message instanceof TextComponent) return stringifyPartially((TextComponent) message, motd, ansi, lastColor, noHex);
-        else if (message instanceof TranslatableComponent) return stringifyPartially((TranslatableComponent) message, motd, ansi, lastColor, noHex);
+        else if (message instanceof TranslatableComponent) return stringifyPartially((TranslatableComponent) message, motd, ansi, lastColor, noHex, depth);
         else if (message instanceof SelectorComponent) return stringifyPartially((SelectorComponent) message, motd, ansi, lastColor, noHex);
         else if (message instanceof KeybindComponent) return stringifyPartially((KeybindComponent) message, motd, ansi, lastColor, noHex);
 
@@ -261,7 +269,7 @@ public class ComponentUtilities {
         return new PartiallyStringified(message.content(), null);
     }
 
-    public static PartiallyStringified stringifyPartially (TranslatableComponent message, boolean motd, boolean ansi, String lastColor, boolean noHex) {
+    public static PartiallyStringified stringifyPartially (TranslatableComponent message, boolean motd, boolean ansi, String lastColor, boolean noHex, int depth) {
         String format = getOrReturnFallback(message);
 
         // totallynotskidded™️ from HBot (and changed a bit)
@@ -276,8 +284,7 @@ public class ComponentUtilities {
 
         int i = 0;
         while (matcher.find()) {
-            if (i > 300) break;
-
+            depth++;
             if (matcher.group().equals("%%")) {
                 matcher.appendReplacement(sb, "%");
             } else {
@@ -288,11 +295,11 @@ public class ComponentUtilities {
                             sb,
                             Matcher.quoteReplacement(
                                     motd ?
-                                            stringifyMotd(message.arguments().get(idx).asComponent()) + color :
+                                            stringifyMotd(message.arguments().get(idx).asComponent(), lastColor, depth + 1) + color :
                                             (
                                                     ansi ?
-                                                            stringifyAnsi(message.arguments().get(idx).asComponent()) + color :
-                                                            stringify(message.arguments().get(idx).asComponent())
+                                                            stringifyAnsi(message.arguments().get(idx).asComponent(), lastColor, noHex, depth + 1) + color :
+                                                            stringify(message.arguments().get(idx).asComponent(), lastColor, depth + 1)
                                             )
                             )
                     );
@@ -318,6 +325,6 @@ public class ComponentUtilities {
     public static PartiallyStringified stringifyPartially (KeybindComponent message, boolean motd, boolean ansi, String lastColor, boolean noHex) {
         String keybind = message.keybind();
         Component component = keybinds.containsKey(keybind) ? Component.translatable(keybinds.get(keybind)) : Component.text(keybind);
-        return stringifyPartially(component, motd, ansi, lastColor, noHex);
+        return stringifyPartially(component, motd, ansi, lastColor, noHex, 0);
     }
 }
