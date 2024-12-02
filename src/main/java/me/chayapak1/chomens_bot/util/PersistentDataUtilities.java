@@ -42,8 +42,9 @@ public class PersistentDataUtilities {
         }
     }
 
-    private static synchronized void writeToFile() {
-        if (stopping) return;
+    private static synchronized void writeToFile () { writeToFile(false); }
+    private static synchronized void writeToFile (boolean force) {
+        if (stopping && !force) return;
 
         lock.lock();
 
@@ -62,7 +63,7 @@ public class PersistentDataUtilities {
         lock.lock();
 
         try {
-            writeToFile();
+            writeToFile(true);
         } finally {
             lock.unlock();
         }
