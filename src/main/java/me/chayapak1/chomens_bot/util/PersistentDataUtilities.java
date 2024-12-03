@@ -49,8 +49,10 @@ public class PersistentDataUtilities {
         lock.lock();
 
         try (BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
-            writer.write(gson.toJson(jsonObject));
-        } catch (IOException e) {
+            final JsonElement copy = jsonObject.deepCopy();
+
+            writer.write(gson.toJson(copy));
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             lock.unlock();
