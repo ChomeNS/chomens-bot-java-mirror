@@ -77,6 +77,10 @@ public class PersistentDataUtilities {
         return jsonObject.get(property);
     }
 
+    public static synchronized JsonElement getOrDefault (String property, JsonElement defaultElement) {
+        return has(property) ? get(property) : defaultElement;
+    }
+
     public static synchronized void put (String property, JsonElement value) {
         lock.lock();
 

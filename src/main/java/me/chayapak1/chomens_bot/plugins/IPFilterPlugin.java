@@ -12,13 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class IPFilterPlugin extends PlayersPlugin.Listener {
     private final Bot bot;
 
-    public static JsonArray filteredIPs = new JsonArray();
-
-    static {
-        if (PersistentDataUtilities.has("ipFilters")) {
-            filteredIPs = PersistentDataUtilities.get("ipFilters").getAsJsonArray();
-        }
-    }
+    public static JsonArray filteredIPs = PersistentDataUtilities.getOrDefault("ipFilters", new JsonArray()).getAsJsonArray();
 
     public IPFilterPlugin (Bot bot) {
         this.bot = bot;

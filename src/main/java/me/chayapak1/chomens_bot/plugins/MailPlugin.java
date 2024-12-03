@@ -14,15 +14,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class MailPlugin extends PlayersPlugin.Listener {
     private final Bot bot;
 
-    public static JsonArray mails = new JsonArray();
+    public static JsonArray mails = PersistentDataUtilities.getOrDefault("mails", new JsonArray()).getAsJsonArray();
 
     private final Gson gson = new Gson();
-
-    static {
-        if (PersistentDataUtilities.has("mails")) {
-            mails = PersistentDataUtilities.get("mails").getAsJsonArray();
-        }
-    }
 
     public MailPlugin (Bot bot) {
         this.bot = bot;

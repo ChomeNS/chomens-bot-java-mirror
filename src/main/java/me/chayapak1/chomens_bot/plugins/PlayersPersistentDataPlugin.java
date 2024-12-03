@@ -11,13 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
-    public static JsonObject playersObject = new JsonObject();
-
-    static {
-        if (PersistentDataUtilities.has("players")) {
-            playersObject = PersistentDataUtilities.get("players").getAsJsonObject();
-        }
-    }
+    public static JsonObject playersObject = PersistentDataUtilities.getOrDefault("players", new JsonObject()).getAsJsonObject();
 
     private final Bot bot;
 

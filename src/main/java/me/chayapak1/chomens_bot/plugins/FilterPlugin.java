@@ -20,15 +20,9 @@ import java.util.regex.Pattern;
 public class FilterPlugin extends PlayersPlugin.Listener {
     private final Bot bot;
 
-    public static JsonArray filteredPlayers = new JsonArray();
+    public static JsonArray filteredPlayers = PersistentDataUtilities.getOrDefault("filters", new JsonArray()).getAsJsonArray();
 
     private final Gson gson = new Gson();
-
-    static {
-        if (PersistentDataUtilities.has("filters")) {
-            filteredPlayers = PersistentDataUtilities.get("filters").getAsJsonArray();
-        }
-    }
 
     public FilterPlugin (Bot bot) {
         this.bot = bot;
