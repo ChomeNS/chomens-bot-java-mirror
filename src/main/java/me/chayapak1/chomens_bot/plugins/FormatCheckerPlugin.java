@@ -10,7 +10,6 @@ import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -61,7 +60,7 @@ public class FormatCheckerPlugin extends ChatPlugin.Listener {
         final List<TranslationArgument> args = format.arguments();
         if (args.size() < 3 || !format.key().equals("[%s] %s › %s")) return false;
 
-        final TranslationArgument nameComponent = format.arguments().get(1);
+        final Object nameComponent = format.arguments().get(1).value();
 
         if (!(nameComponent instanceof TextComponent)) return false;
 
@@ -69,7 +68,7 @@ public class FormatCheckerPlugin extends ChatPlugin.Listener {
 
         if (!name.equals(bot.config.ownerName)) return false;
 
-        final Component prefix = (Component) format.arguments().get(0);
+        final Object prefix = format.arguments().get(0).value();
 
         if (
                 ((prefix instanceof TextComponent text) && text.content().equals(bot.username + " Console")) || // ohio
@@ -78,9 +77,7 @@ public class FormatCheckerPlugin extends ChatPlugin.Listener {
 
         if (!(prefix instanceof TranslatableComponent translatablePrefix)) return true;
 
-        final TranslationArgument userHash = translatablePrefix.arguments().get(0);
-
-        if (userHash == null) return true;
+        final Object userHash = translatablePrefix.arguments().get(0).value();
 
         if (!(userHash instanceof TextComponent userHashComponent)) return true;
 
