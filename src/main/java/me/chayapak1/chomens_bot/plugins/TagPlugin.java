@@ -13,7 +13,7 @@ public class TagPlugin extends CorePlugin.Listener {
     public TagPlugin (Bot bot) {
         this.bot = bot;
 
-        bot.executor.scheduleAtFixedRate(this::runCommand, 5, 30, TimeUnit.SECONDS);
+        bot.executor.scheduleAtFixedRate(this::runCommand, 1, 2, TimeUnit.MINUTES);
     }
 
     private void runCommand () {
