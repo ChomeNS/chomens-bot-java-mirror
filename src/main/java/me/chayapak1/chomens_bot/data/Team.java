@@ -8,8 +8,11 @@ import org.geysermc.mcprotocollib.protocol.data.game.scoreboard.NameTagVisibilit
 import org.geysermc.mcprotocollib.protocol.data.game.scoreboard.TeamColor;
 import net.kyori.adventure.text.Component;
 
+import java.util.List;
+
 public class Team {
     public String teamName;
+    public List<String> players;
     public Component displayName;
     public boolean friendlyFire;
     public boolean seeFriendlyInvisibles;
@@ -21,6 +24,7 @@ public class Team {
 
     public Team (
             String teamName,
+            List<String> players,
             Component displayName,
             boolean friendlyFire,
             boolean seeFriendlyInvisibles,
@@ -31,6 +35,7 @@ public class Team {
             Component suffix
     ) {
         this.teamName = teamName;
+        this.players = players;
         this.displayName = displayName;
         this.friendlyFire = friendlyFire;
         this.seeFriendlyInvisibles = seeFriendlyInvisibles;

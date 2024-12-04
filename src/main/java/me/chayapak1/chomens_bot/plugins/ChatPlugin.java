@@ -120,7 +120,10 @@ public class ChatPlugin extends Bot.Listener {
             case 4 -> Component.translatable("%s", name, message); // paper chat type thingy
             case 5 -> Component.translatable("chat.type.announcement", name, message); // /say
             case 6, 7 -> {
-                final Team botTeam = bot.team.teamsByPlayer.get(bot.profile.getName());
+                final Team botTeam = bot.team.findTeamByMember(bot.profile.getName());
+
+                if (botTeam == null) yield null;
+
                 final Component botTeamDisplayName = Component
                         .translatable("chat.square_brackets")
                         .arguments(botTeam.displayName)

@@ -38,6 +38,9 @@ public class UUIDUtilities {
         return "[I;" + array[0] + "," + array[1] + "," + array[2] + "," + array[3] + "]"; // TODO: improve lol
     }
 
-    public static String selector (UUID uuid) { return "@a[limit=1,nbt={UUID:" + snbt(uuid) + "}]"; }
-    public static String exclusiveSelector (UUID uuid) { return "@a[nbt=!{UUID:" + snbt(uuid) + "}]"; }
+    public static String selector (UUID uuid) { return selector(uuid, true); }
+    public static String selector (UUID uuid, boolean end) { return "@a[limit=1,nbt={UUID:" + snbt(uuid) + "}" + (end ? "]" : ""); }
+
+    public static String exclusiveSelector (UUID uuid) { return exclusiveSelector(uuid, true); }
+    public static String exclusiveSelector (UUID uuid, boolean end) { return "@a[nbt=!{UUID:" + snbt(uuid) + "}" + (end ? "]" : ""); }
 }

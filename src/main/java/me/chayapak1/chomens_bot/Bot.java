@@ -81,6 +81,7 @@ public class Bot {
     public MailPlugin mail;
     public PacketSnifferPlugin packetSniffer;
     public VoiceChatPlugin voiceChat;
+    public TeamJoinerPlugin teamJoiner;
     public TagPlugin tag;
     public WorldPlugin world;
     public AuthPlugin auth;
@@ -129,6 +130,7 @@ public class Bot {
         this.mail = new MailPlugin(this);
         this.packetSniffer = new PacketSnifferPlugin(this);
         this.voiceChat = new VoiceChatPlugin(this);
+        this.teamJoiner = new TeamJoinerPlugin(this);
         this.tag = new TagPlugin(this);
         this.world = new WorldPlugin(this);
         this.auth = new AuthPlugin(this);

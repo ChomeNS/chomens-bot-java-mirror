@@ -1,20 +1,36 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.Team;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.scoreboard.ClientboundSetPlayerTeamPacket;
-import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.data.Team;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class TeamPlugin extends Bot.Listener {
-    public final Map<String, Team> teams = new HashMap<>();
-    public final Map<String, Team> teamsByPlayer = new HashMap<>();
+    public final List<Team> teams = new ArrayList<>();
 
     public TeamPlugin (Bot bot) {
         bot.addListener(this);
+    }
+
+    public Team findTeamByName (String name) {
+        for (Team team : teams) {
+            if (team.teamName.equals(name)) return team;
+        }
+
+        return null;
+    }
+
+    public Team findTeamByMember (String member) {
+        for (Team team : teams) {
+            if (team.players.contains(member)) return team;
+        }
+
+        return null;
     }
 
     @Override
@@ -28,6 +44,7 @@ public class TeamPlugin extends Bot.Listener {
                 case CREATE -> {
                     final Team team = new Team(
                             packet.getTeamName(),
+                            new ArrayList<>(),
                             packet.getDisplayName(),
                             packet.isFriendlyFire(),
                             packet.isSeeFriendlyInvisibles(),
@@ -38,11 +55,17 @@ public class TeamPlugin extends Bot.Listener {
                             packet.getSuffix()
                     );
 
-                    teams.put(packet.getTeamName(), team);
+                    teams.add(team);
                 }
-                case REMOVE -> teams.remove(packet.getTeamName());
+                case REMOVE -> {
+                    final Team team = findTeamByName(packet.getTeamName());
+
+                    if (team == null) return;
+
+                    teams.remove(team);
+                }
                 case UPDATE -> {
-                    final Team team = teams.get(packet.getTeamName());
+                    final Team team = findTeamByName(packet.getTeamName());
 
                     if (team == null) return;
 
@@ -57,20 +80,22 @@ public class TeamPlugin extends Bot.Listener {
                     team.suffix = packet.getSuffix();
                 }
                 case ADD_PLAYER -> {
-                    final Team team = teams.get(packet.getTeamName());
+                    final Team team = findTeamByName(packet.getTeamName());
 
                     if (team == null) return;
 
-                    for (String player : packet.getPlayers()) teamsByPlayer.put(player, team);
+                    team.players.addAll(Arrays.asList(packet.getPlayers()));
                 }
                 case REMOVE_PLAYER -> {
-                    final Team team = teams.get(packet.getTeamName());
+                    final Team team = findTeamByName(packet.getTeamName());
 
                     if (team == null) return;
 
-                    for (String player : packet.getPlayers()) teamsByPlayer.remove(player);
+                    team.players.removeAll(Arrays.asList(packet.getPlayers()));
                 }
             }
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
