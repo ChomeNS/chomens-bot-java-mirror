@@ -73,9 +73,9 @@ public class PersistentDataUtilities {
     public static synchronized void stop () {
         stopping = true;
 
-        lock.lock();
-
         writeFuture.cancel(false);
+
+        lock.lock();
 
         try {
             writeToFile(true);

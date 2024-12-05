@@ -52,6 +52,8 @@ public class FindAltsCommand extends Command {
     }
 
     private Component handle (Bot bot, String targetIP, boolean argumentIsIP, String player) {
+        PlayersPersistentDataPlugin.lock.lock();
+
         final Stream<String> matches = PlayersPersistentDataPlugin.playersObject.deepCopy().properties()
                 .stream()
                 .filter(
@@ -69,6 +71,8 @@ public class FindAltsCommand extends Command {
                         }
                 )
                 .map(Map.Entry::getKey);
+
+        PlayersPersistentDataPlugin.lock.unlock();
 
         Component component = Component
                 .translatable("Possible alts for the %s %s:")
