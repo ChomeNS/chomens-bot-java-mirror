@@ -173,7 +173,23 @@ public class Configuration {
         public int reconnectDelay = 2000;
         public boolean removeNamespaces = false;
         public int chatQueueDelay = 125;
+        public EssentialsMessages essentialsMessages = new EssentialsMessages();
         public CoreRateLimit coreRateLimit = new CoreRateLimit();
+
+        public static class EssentialsMessages {
+            public String vanishEnable1 = "Vanish for %s: enabled";
+            public String vanishEnable2 = "You are now completely invisible to normal users, and hidden from in-game commands.";
+            public String vanishDisable = "Vanish for %s: disabled";
+
+            public String nickNameRemove = "You no longer have a nickname.";
+            public String nickNameSet = "Your nickname is now ";
+
+            public String socialSpyEnable = "SocialSpy for %s: enabled";
+            public String socialSpyDisable = "SocialSpy for %s: disabled";
+
+            public String muted = "You have been muted";
+            public String unmuted = "You have been unmuted.";
+        }
 
         public static class CoreRateLimit {
             public int limit = 0;

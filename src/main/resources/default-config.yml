@@ -140,6 +140,7 @@ bots:
   # coreCommandSpy - set to true if server supports enabling player's commandspy though command block
   # resolveSRV - whether to resolve SRV records on the server. the notchian minecraft doesn't resolve them
   # removeNamespaces - when the bot sends a command it will remove like `minecraft:` for example if set to true
+  # essentialsMessages - the messages in essentials that the bot uses for self care (no example is intentional)
   # coreRateLimit - will ignore commands if reached the ratelimit
 
   - host: 'localhost'

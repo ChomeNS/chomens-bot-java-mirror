@@ -52,18 +52,18 @@ public class SelfCarePlugin extends Bot.Listener {
                 if (string.equals("Successfully enabled CommandSpy")) cspy = true;
                 else if (string.equals("Successfully disabled CommandSpy")) cspy = false;
 
-                else if (string.equals("Vanish for " + bot.username + ": enabled")) vanish = true;
-                else if (string.equals("You are now completely invisible to normal users, and hidden from in-game commands.")) vanish = true;
-                else if (string.equals("Vanish for " + bot.username + ": disabled")) vanish = false;
+                else if (string.equals(String.format(bot.options.essentialsMessages.vanishEnable1, bot.username))) vanish = true;
+                else if (string.equals(bot.options.essentialsMessages.vanishEnable2)) vanish = true;
+                else if (string.equals(String.format(bot.options.essentialsMessages.vanishDisable, bot.username))) vanish = false;
 
-                else if (string.equals("You no longer have a nickname.")) nickname = true;
-                else if (string.startsWith("Your nickname is now ")) nickname = false;
+                else if (string.equals(bot.options.essentialsMessages.nickNameRemove)) nickname = true;
+                else if (string.startsWith(bot.options.essentialsMessages.nickNameSet)) nickname = false;
 
-                else if (string.equals("SocialSpy for " + bot.username + ": enabled")) socialspy = true;
-                else if (string.equals("SocialSpy for " + bot.username + ": disabled")) socialspy = false;
+                else if (string.equals(bot.options.essentialsMessages.socialSpyEnable)) socialspy = true;
+                else if (string.equals(bot.options.essentialsMessages.socialSpyDisable)) socialspy = false;
 
-                else if (string.startsWith("You have been muted")) muted = true;
-                else if (string.equals("You have been unmuted.")) muted = false;
+                else if (string.startsWith(bot.options.essentialsMessages.muted)) muted = true;
+                else if (string.equals(bot.options.essentialsMessages.unmuted)) muted = false;
 
                 else if (string.equals("You now have the tag: " + bot.config.selfCare.prefix.prefix)) prefix = true;
                 else if (string.startsWith("You no longer have a tag")) prefix = false;
