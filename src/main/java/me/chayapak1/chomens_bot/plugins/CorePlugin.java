@@ -55,8 +55,7 @@ public class CorePlugin extends PositionPlugin.Listener {
     public final List<String> placeBlockQueue = Collections.synchronizedList(new ArrayList<>());
 
     private int nextTransactionId = 0;
-    private final Map<Integer, CompletableFuture<Component>> transactions = new HashMap<>();
-
+    private final Map<Long, CompletableFuture<Component>> transactions = new HashMap<>();
     private final List<Double> secrets = new ArrayList<>();
 
     private int commandsPerSecond = 0;
@@ -100,7 +99,11 @@ public class CorePlugin extends PositionPlugin.Listener {
             public void disconnected (DisconnectedEvent event) {
                 ready = false;
 
-                refillTask.cancel(true);
+                refillTask.cancel(false);
+
+                nextTransactionId = 0;
+                transactions.clear();
+                secrets.clear();
 
                 reset();
             }
@@ -221,7 +224,7 @@ public class CorePlugin extends PositionPlugin.Listener {
 
         run(command);
 
-        final int transactionId = nextTransactionId++;
+        final long transactionId = nextTransactionId++;
 
         final CompletableFuture<Component> future = new CompletableFuture<>();
         transactions.put(transactionId, future);
@@ -255,7 +258,11 @@ public class CorePlugin extends PositionPlugin.Listener {
         if (!(component instanceof TextComponent textComponent)) return true;
 
         try {
-            if (!secrets.contains(Double.parseDouble(textComponent.content()))) return true;
+            final double inputSecret = Double.parseDouble(textComponent.content());
+
+            if (!secrets.contains(inputSecret)) return true;
+
+            secrets.remove(inputSecret);
 
             final List<Component> children = component.children();
 
@@ -263,7 +270,9 @@ public class CorePlugin extends PositionPlugin.Listener {
 
             if (children.size() == 1) return false;
 
-            final int transactionId = Integer.parseInt(((TextComponent) children.get(0)).content());
+            if (!(children.get(0) instanceof TextComponent) || !(children.get(1) instanceof TextComponent)) return true;
+
+            final long transactionId = Integer.parseInt(((TextComponent) children.get(0)).content());
 
             if (!transactions.containsKey(transactionId)) return true;
 
