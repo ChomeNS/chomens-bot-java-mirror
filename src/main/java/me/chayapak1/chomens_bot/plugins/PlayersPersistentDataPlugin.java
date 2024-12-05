@@ -30,17 +30,13 @@ public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
         try {
             final JsonNode originalElement = playersObject.get(target.profile.getName());
 
-            System.out.println("the original element " + originalElement);
-
             ObjectNode object;
 
             if (originalElement == null || originalElement.isNull()) {
-                System.out.println("entry no exist");
                 object = JsonNodeFactory.instance.objectNode();
                 object.put("uuid", target.profile.getIdAsString());
                 object.set("ips", JsonNodeFactory.instance.objectNode());
             } else if (originalElement instanceof ObjectNode) {
-                System.out.println("entry exist");
                 object = (ObjectNode) originalElement;
             } else {
                 return;
@@ -56,8 +52,6 @@ public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
             future.completeOnTimeout(null, 5, TimeUnit.SECONDS);
 
             future.thenApplyAsync(output -> {
-                System.out.println("i got the ip it is " + output);
-
                 if (output != null) {
                     ((ObjectNode) object.get("ips")).put(bot.host + ":" + bot.port, output);
                 }
@@ -73,19 +67,15 @@ public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
 
     // is this bad?
     private synchronized void setPersistentEntry (PlayerEntry target, ObjectNode object) {
-        System.out.println("locking");
         lock.lock();
         try {
-            System.out.println("setting");
             playersObject.set(getName(target), object);
 
             PersistentDataUtilities.put("players", playersObject);
-            System.out.println("done setting");
         } catch (Exception e) {
             e.printStackTrace();
         }
         lock.unlock();
-        System.out.println("unlock !");
     }
 
     private String getName (PlayerEntry target) {
