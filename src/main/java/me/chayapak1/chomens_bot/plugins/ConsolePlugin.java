@@ -37,7 +37,7 @@ public class ConsolePlugin implements Completer {
 
         final String prompt = "> ";
 
-        Main.executorService.submit(() -> {
+        final Thread thread = new Thread(() -> {
             while (true) {
                 String line = null;
                 try {
@@ -49,6 +49,9 @@ public class ConsolePlugin implements Completer {
                 handleLine(line);
             }
         });
+
+        thread.setName("Console Thread");
+        thread.start();
     }
 
     @Override
