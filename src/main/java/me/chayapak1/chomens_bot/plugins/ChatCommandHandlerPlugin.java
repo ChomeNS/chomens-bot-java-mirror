@@ -1,9 +1,9 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.command.PlayerCommandContext;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
 import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
-import me.chayapak1.chomens_bot.command.PlayerCommandContext;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
@@ -34,14 +34,43 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.Listener {
 
     @Override
     public boolean playerMessageReceived (PlayerMessage message) {
-        try {
-            if (message.sender.profile.getId().equals(bot.profile.getId())) return true;
-        } catch (Exception ignored) {} // kinda sus ngl
+        if (
+                message.sender != null &&
+                        bot.profile != null &&
+                        message.sender.profile.getId().equals(bot.profile.getId())
+        ) return true;
 
         final Component displayNameComponent = message.displayName;
         final Component messageComponent = message.contents;
         if (displayNameComponent == null || messageComponent == null) return true;
 
+        handle(displayNameComponent, messageComponent, message.sender, "@a", prefixes);
+
+        return true;
+    }
+
+    public void commandSpyMessageReceived (PlayerEntry sender, String command) {
+        if (
+                sender.profile != null &&
+                        bot.profile != null &&
+                        sender.profile.getId().equals(bot.profile.getId())
+        ) return;
+
+        if (sender.profile == null) return;
+
+        final Component displayNameComponent = Component.text(sender.profile.getName());
+        final Component messageComponent = Component.text(command);
+
+        handle(displayNameComponent, messageComponent, sender, UUIDUtilities.selector(sender.profile.getId()), commandSpyPrefixes);
+    }
+
+    private void handle (
+            Component displayNameComponent,
+            Component messageComponent,
+            PlayerEntry sender,
+            String selector,
+            List<String> prefixes
+    ) {
         final String displayName = ComponentUtilities.stringify(displayNameComponent);
         final String contents = ComponentUtilities.stringify(messageComponent);
 
@@ -52,43 +81,9 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.Listener {
             prefix = eachPrefix;
         }
 
-        if (prefix == null) return true;
-
-        final String commandString = contents.substring(prefix.length());
-
-        final PlayerCommandContext context = new PlayerCommandContext(bot, displayName, prefix, "@a", message.sender);
-
-        final Component output = bot.commandHandler.executeCommand(commandString, context, null);
-
-        if (output != null) context.sendOutput(output);
-
-        return true;
-    }
-
-    public void commandSpyMessageReceived (PlayerEntry sender, String command) {
-        try {
-            if (sender.profile.getId().equals(bot.profile.getId())) return;
-        } catch (Exception ignored) {
-        } // kinda sus ngl
-
-        final Component displayNameComponent = Component.text(sender.profile.getName());
-        final Component messageComponent = Component.text(command);
-
-        final String displayName = ComponentUtilities.stringify(displayNameComponent);
-        final String contents = ComponentUtilities.stringify(messageComponent);
-
-        String prefix = null;
-
-        for (String eachPrefix : commandSpyPrefixes) {
-            if (!contents.startsWith(eachPrefix)) continue;
-            prefix = eachPrefix;
-        }
-
         if (prefix == null) return;
 
         final String commandString = contents.substring(prefix.length());
-
-        final String selector = UUIDUtilities.selector(sender.profile.getId());
 
         final PlayerCommandContext context = new PlayerCommandContext(bot, displayName, prefix, selector, sender);
 
