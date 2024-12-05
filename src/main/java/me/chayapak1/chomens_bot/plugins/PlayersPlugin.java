@@ -19,6 +19,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class PlayersPlugin extends Bot.Listener {
     private final Bot bot;
@@ -67,6 +68,8 @@ public class PlayersPlugin extends Bot.Listener {
         final CompletableFuture<Component> trackedCoreFuture = bot.core.runTracked("essentials:seen " + target.profile.getIdAsString());
 
         if (trackedCoreFuture == null) return null;
+
+        trackedCoreFuture.completeOnTimeout(null, 5, TimeUnit.SECONDS);
 
         trackedCoreFuture.thenApplyAsync(output -> {
             final List<Component> children = output.children();

@@ -9,7 +9,6 @@ import me.chayapak1.chomens_bot.util.PersistentDataUtilities;
 
 import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
@@ -49,8 +48,6 @@ public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
                 return;
             }
 
-            future.completeOnTimeout(null, 5, TimeUnit.SECONDS);
-
             future.thenApplyAsync(output -> {
                 if (output != null) {
                     ((ObjectNode) object.get("ips")).put(bot.host + ":" + bot.port, output);
@@ -66,7 +63,7 @@ public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
     }
 
     // is this bad?
-    private synchronized void setPersistentEntry (PlayerEntry target, ObjectNode object) {
+    private void setPersistentEntry (PlayerEntry target, ObjectNode object) {
         lock.lock();
         try {
             playersObject.set(getName(target), object);
@@ -83,21 +80,21 @@ public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
     }
 
     @Override
-    public synchronized void playerLeft(PlayerEntry target) {
-        lock.lock();
+    public void playerLeft(PlayerEntry target) {
+        bot.executorService.submit(() -> {
+            if (!playersObject.has(getName(target))) return;
 
-        if (!playersObject.has(getName(target))) return;
+            final ObjectNode player = (ObjectNode) playersObject.get(getName(target));
 
-        final ObjectNode player = (ObjectNode) playersObject.get(getName(target));
+            final ObjectNode object = JsonNodeFactory.instance.objectNode();
+            object.put("time", Instant.now().toEpochMilli());
+            object.put("server", bot.host + ":" + bot.port);
 
-        final ObjectNode object = JsonNodeFactory.instance.objectNode();
-        object.put("time", Instant.now().toEpochMilli());
-        object.put("server", bot.host + ":" + bot.port);
+            player.set("lastSeen", object);
 
-        player.set("lastSeen", object);
+            PersistentDataUtilities.put("players", playersObject);
 
-        PersistentDataUtilities.put("players", playersObject);
-
-        lock.unlock();
+            lock.unlock();
+        });
     }
 }
