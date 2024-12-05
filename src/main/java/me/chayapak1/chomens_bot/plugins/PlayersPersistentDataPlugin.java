@@ -29,43 +29,47 @@ public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
     public synchronized void playerJoined(PlayerEntry target) {
         lock.lock();
 
-        final JsonNode originalElement = playersObject.get(target.profile.getName());
+        try {
+            final JsonNode originalElement = playersObject.get(target.profile.getName());
 
-        ObjectNode object;
+            ObjectNode object;
 
-        if (originalElement == null || originalElement.isNull()) {
-            object = JsonNodeFactory.instance.objectNode();
-            object.put("uuid", target.profile.getIdAsString());
-            object.set("ips", JsonNodeFactory.instance.objectNode());
-        } else if (originalElement instanceof ObjectNode) {
-            object = (ObjectNode) originalElement;
-        } else {
-            lock.unlock();
-            return;
-        }
-
-        lock.unlock();
-
-        bot.executorService.submit(() -> {
-            final CompletableFuture<String> future = bot.players.getPlayerIP(target);
-
-            if (future == null) {
-                setPersistentEntry(target, object);
+            if (originalElement == null || originalElement.isNull()) {
+                object = JsonNodeFactory.instance.objectNode();
+                object.put("uuid", target.profile.getIdAsString());
+                object.set("ips", JsonNodeFactory.instance.objectNode());
+            } else if (originalElement instanceof ObjectNode) {
+                object = (ObjectNode) originalElement;
+            } else {
+                lock.unlock();
                 return;
             }
 
-            future.completeOnTimeout(null, 5, TimeUnit.SECONDS);
+            lock.unlock();
 
-            future.thenApplyAsync(output -> {
-                if (output != null) {
-                    ((ObjectNode) object.get("ips")).put(bot.host + ":" + bot.port, output);
+            bot.executorService.submit(() -> {
+                final CompletableFuture<String> future = bot.players.getPlayerIP(target);
+
+                if (future == null) {
+                    setPersistentEntry(target, object);
+                    return;
                 }
 
-                setPersistentEntry(target, object);
+                future.completeOnTimeout(null, 5, TimeUnit.SECONDS);
 
-                return output;
+                future.thenApplyAsync(output -> {
+                    if (output != null) {
+                        ((ObjectNode) object.get("ips")).put(bot.host + ":" + bot.port, output);
+                    }
+
+                    setPersistentEntry(target, object);
+
+                    return output;
+                });
             });
-        });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // is this bad?

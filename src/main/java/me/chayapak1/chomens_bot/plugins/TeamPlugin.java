@@ -6,27 +6,25 @@ import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.scoreboard.ClientboundSetPlayerTeamPacket;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class TeamPlugin extends Bot.Listener {
-    public final List<Team> teams = new ArrayList<>();
+    public final List<Team> teams = Collections.synchronizedList(new ArrayList<>());
 
     public TeamPlugin (Bot bot) {
         bot.addListener(this);
     }
 
-    public Team findTeamByName (String name) {
-        for (Team team : teams) {
+    public synchronized Team findTeamByName (String name) {
+        for (Team team : new ArrayList<>(teams)) {
             if (team.teamName.equals(name)) return team;
         }
 
         return null;
     }
 
-    public Team findTeamByMember (String member) {
-        for (Team team : teams) {
+    public synchronized Team findTeamByMember (String member) {
+        for (Team team : new ArrayList<>(teams)) {
             if (team.players.contains(member)) return team;
         }
 
