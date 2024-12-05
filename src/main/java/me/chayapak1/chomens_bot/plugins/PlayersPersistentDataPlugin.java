@@ -26,65 +26,66 @@ public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
     }
 
     @Override
-    public synchronized void playerJoined(PlayerEntry target) {
-        bot.executorService.submit(() -> {
-            try {
-                lock.lock();
+    public void playerJoined(PlayerEntry target) {
+        try {
+            final JsonNode originalElement = playersObject.get(target.profile.getName());
 
-                final JsonNode originalElement = playersObject.get(target.profile.getName());
+            System.out.println("the original element " + originalElement);
 
-                ObjectNode object;
+            ObjectNode object;
 
-                if (originalElement == null || originalElement.isNull()) {
-                    object = JsonNodeFactory.instance.objectNode();
-                    object.put("uuid", target.profile.getIdAsString());
-                    object.set("ips", JsonNodeFactory.instance.objectNode());
-                } else if (originalElement instanceof ObjectNode) {
-                    object = (ObjectNode) originalElement;
-                } else {
-                    lock.unlock();
-                    return;
-                }
-
-                lock.unlock();
-
-                final CompletableFuture<String> future = bot.players.getPlayerIP(target);
-
-                if (future == null) {
-                    setPersistentEntry(target, object);
-                    return;
-                }
-
-                future.completeOnTimeout(null, 5, TimeUnit.SECONDS);
-
-                future.thenApplyAsync(output -> {
-                    if (output != null) {
-                        ((ObjectNode) object.get("ips")).put(bot.host + ":" + bot.port, output);
-                    }
-
-                    setPersistentEntry(target, object);
-
-                    return output;
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (originalElement == null || originalElement.isNull()) {
+                System.out.println("entry no exist");
+                object = JsonNodeFactory.instance.objectNode();
+                object.put("uuid", target.profile.getIdAsString());
+                object.set("ips", JsonNodeFactory.instance.objectNode());
+            } else if (originalElement instanceof ObjectNode) {
+                System.out.println("entry exist");
+                object = (ObjectNode) originalElement;
+            } else {
+                return;
             }
-        });
+
+            final CompletableFuture<String> future = bot.players.getPlayerIP(target);
+
+            if (future == null) {
+                setPersistentEntry(target, object);
+                return;
+            }
+
+            future.completeOnTimeout(null, 5, TimeUnit.SECONDS);
+
+            future.thenApplyAsync(output -> {
+                System.out.println("i got the ip it is " + output);
+
+                if (output != null) {
+                    ((ObjectNode) object.get("ips")).put(bot.host + ":" + bot.port, output);
+                }
+
+                setPersistentEntry(target, object);
+
+                return output;
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // is this bad?
     private synchronized void setPersistentEntry (PlayerEntry target, ObjectNode object) {
+        System.out.println("locking");
+        lock.lock();
         try {
-            lock.lock();
-
+            System.out.println("setting");
             playersObject.set(getName(target), object);
 
             PersistentDataUtilities.put("players", playersObject);
-
-            lock.unlock();
+            System.out.println("done setting");
         } catch (Exception e) {
             e.printStackTrace();
         }
+        lock.unlock();
+        System.out.println("unlock !");
     }
 
     private String getName (PlayerEntry target) {

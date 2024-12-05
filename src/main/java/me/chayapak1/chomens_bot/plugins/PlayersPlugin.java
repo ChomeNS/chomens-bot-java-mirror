@@ -149,13 +149,7 @@ public class PlayersPlugin extends Bot.Listener {
         list.add(target);
 
         if (duplicate == null) {
-            for (Listener listener : listeners) {
-                try {
-                    listener.playerJoined(target);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            for (Listener listener : listeners) { listener.playerJoined(target); }
         } else {
             for (Listener listener : listeners) { listener.playerUnVanished(target); }
         }
