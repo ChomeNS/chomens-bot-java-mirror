@@ -21,20 +21,24 @@ public class TeamJoinerPlugin extends TickPlugin.Listener {
 
     @Override
     public void onTick () {
-        final Team team = bot.team.findTeamByName(teamName);
+        try {
+            final Team team = bot.team.findTeamByName(teamName);
 
-        if (team == null) {
-            addTeam();
-            return;
-        }
-
-        if (!team.players.contains(bot.username)) joinTeam();
-
-        for (String player : new ArrayList<>(team.players)) {
-            if (!player.equals(bot.username)) {
-                excludeOthers();
-                break;
+            if (team == null) {
+                addTeam();
+                return;
             }
+
+            if (!team.players.contains(bot.username)) joinTeam();
+
+            for (String player : new ArrayList<>(team.players)) {
+                if (!player.equals(bot.username)) {
+                    excludeOthers();
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
