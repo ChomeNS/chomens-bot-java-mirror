@@ -43,7 +43,7 @@ public class PositionPlugin extends Bot.Listener {
 
         // notchian clients also does this, sends the position packet every second
         bot.executor.scheduleAtFixedRate(() -> {
-            if (isGoingDownFromHeightLimit) return;
+            if (!bot.loggedIn || isGoingDownFromHeightLimit) return;
 
             bot.session.send(new ServerboundMovePlayerPosPacket(
                     false,

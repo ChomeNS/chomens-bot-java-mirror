@@ -266,10 +266,14 @@ public class ChatPlugin extends Bot.Listener {
     }
 
     public void sendCommandInstantly (String command) {
+        if (!bot.loggedIn) return;
+
         bot.session.send(new ServerboundChatCommandPacket(command));
     }
 
     public void sendChatInstantly (String message) {
+        if (!bot.loggedIn) return;
+
         bot.session.send(new ServerboundChatPacket(
                 message,
                 Instant.now().toEpochMilli(),
