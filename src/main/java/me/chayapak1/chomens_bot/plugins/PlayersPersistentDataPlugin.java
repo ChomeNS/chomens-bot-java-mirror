@@ -27,27 +27,27 @@ public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
 
     @Override
     public synchronized void playerJoined(PlayerEntry target) {
-        lock.lock();
+        bot.executorService.submit(() -> {
+            try {
+                lock.lock();
 
-        try {
-            final JsonNode originalElement = playersObject.get(target.profile.getName());
+                final JsonNode originalElement = playersObject.get(target.profile.getName());
 
-            ObjectNode object;
+                ObjectNode object;
 
-            if (originalElement == null || originalElement.isNull()) {
-                object = JsonNodeFactory.instance.objectNode();
-                object.put("uuid", target.profile.getIdAsString());
-                object.set("ips", JsonNodeFactory.instance.objectNode());
-            } else if (originalElement instanceof ObjectNode) {
-                object = (ObjectNode) originalElement;
-            } else {
+                if (originalElement == null || originalElement.isNull()) {
+                    object = JsonNodeFactory.instance.objectNode();
+                    object.put("uuid", target.profile.getIdAsString());
+                    object.set("ips", JsonNodeFactory.instance.objectNode());
+                } else if (originalElement instanceof ObjectNode) {
+                    object = (ObjectNode) originalElement;
+                } else {
+                    lock.unlock();
+                    return;
+                }
+
                 lock.unlock();
-                return;
-            }
 
-            lock.unlock();
-
-            bot.executorService.submit(() -> {
                 final CompletableFuture<String> future = bot.players.getPlayerIP(target);
 
                 if (future == null) {
@@ -66,24 +66,28 @@ public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
 
                     return output;
                 });
-            });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    // is this bad?
+    private synchronized void setPersistentEntry (PlayerEntry target, ObjectNode object) {
+        try {
+            lock.lock();
+
+            playersObject.set(getName(target), object);
+
+            PersistentDataUtilities.put("players", playersObject);
+
+            lock.unlock();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // is this bad?
-    private synchronized void setPersistentEntry (PlayerEntry target, ObjectNode object) {
-        lock.lock();
-
-        playersObject.set(getName(target), object);
-
-        PersistentDataUtilities.put("players", playersObject);
-
-        lock.unlock();
-    }
-
-    private String getName(PlayerEntry target) {
+    private String getName (PlayerEntry target) {
         return bot.options.creayun ? target.profile.getName().replaceAll("§.", "") : target.profile.getName();
     }
 
