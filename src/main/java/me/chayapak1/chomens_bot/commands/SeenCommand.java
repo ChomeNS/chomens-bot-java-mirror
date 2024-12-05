@@ -1,7 +1,7 @@
 package me.chayapak1.chomens_bot.commands;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
@@ -13,7 +13,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.time.*;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,26 +58,26 @@ public class SeenCommand extends Command {
 
         if (online) return Component.join(JoinConfiguration.newlines(), onlineComponents);
 
-        final JsonElement playerElement = PlayersPersistentDataPlugin.playersObject.get(player);
-        if (playerElement == null) throw new CommandException(Component.translatable(
+        final JsonNode playerElement = PlayersPersistentDataPlugin.playersObject.get(player);
+        if (playerElement == null || playerElement.isNull()) throw new CommandException(Component.translatable(
                 "%s was never seen",
                 Component.text(player)
         ));
 
-        final JsonObject lastSeen = playerElement.getAsJsonObject().get("lastSeen").getAsJsonObject();
+        final ObjectNode lastSeen = (ObjectNode) playerElement.get("lastSeen");
 
-        final JsonElement time = lastSeen.get("time");
+        final JsonNode time = lastSeen.get("time");
 
-        if (time == null) throw new CommandException(Component.text("This player does not have the `lastSeen.time` entry in the database for some reason."));
+        if (time == null || time.isNull()) throw new CommandException(Component.text("This player does not have the `lastSeen.time` entry in the database for some reason."));
 
-        final Instant instant = Instant.ofEpochMilli(time.getAsLong());
+        final Instant instant = Instant.ofEpochMilli(time.asLong());
         final ZoneId zoneId = ZoneId.of("UTC"); // should i be doing this?
         final OffsetDateTime localDateTime = OffsetDateTime.ofInstant(instant, zoneId);
 
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy, hh:mm:ss a Z");
         final String formattedTime = localDateTime.format(formatter);
 
-        final String server = lastSeen.get("server").getAsString();
+        final String server = lastSeen.get("server").asText();
 
         return Component.translatable(
                 "%s was last seen at %s on %s",

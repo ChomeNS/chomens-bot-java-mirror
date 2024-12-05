@@ -1,6 +1,6 @@
 package me.chayapak1.chomens_bot.commands;
 
-import com.google.gson.JsonElement;
+import com.fasterxml.jackson.databind.JsonNode;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
@@ -77,12 +77,12 @@ public class IPFilterCommand extends Command {
                 final List<Component> filtersComponents = new ArrayList<>();
 
                 int index = 0;
-                for (JsonElement playerElement : IPFilterPlugin.filteredIPs) {
+                for (JsonNode playerElement : IPFilterPlugin.filteredIPs.deepCopy()) {
                     filtersComponents.add(
                             Component.translatable(
                                     "%s › %s",
                                     Component.text(index).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
-                                    Component.text(playerElement.getAsString()).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
+                                    Component.text(playerElement.asText()).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
                             ).color(NamedTextColor.DARK_GRAY)
                     );
 

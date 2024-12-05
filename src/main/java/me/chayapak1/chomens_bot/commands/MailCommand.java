@@ -1,7 +1,8 @@
 package me.chayapak1.chomens_bot.commands;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
@@ -21,7 +22,6 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -47,7 +47,7 @@ public class MailCommand extends Command {
 
         final PlayerEntry sender = context.sender;
 
-        final Gson gson = new Gson();
+        final ObjectMapper objectMapper = MailPlugin.objectMapper;
 
         // kinda messy ngl
 
@@ -55,20 +55,6 @@ public class MailCommand extends Command {
 
         switch (action) {
             case "send" -> {
-                int senderMailsSentTotal = 0;
-                for (JsonElement mailElement : MailPlugin.mails) {
-                    final Mail mail = gson.fromJson(mailElement, Mail.class);
-
-                    if (mail.sentBy == null) continue;
-
-                    if (!mail.sentBy.equals(sender.profile.getName())) continue;
-                    senderMailsSentTotal++;
-                }
-
-                if (senderMailsSentTotal > 256) {
-                    throw new CommandException(Component.text("You are sending too many mails!"));
-                }
-
                 bot.mail.send(
                         new Mail(
                                 sender.profile.getName(),
@@ -83,18 +69,6 @@ public class MailCommand extends Command {
             }
             case "sendselecteditem" -> {
                 context.checkOverloadArgs(2);
-
-                int senderMailsSentTotal = 0;
-                for (JsonElement mailElement : MailPlugin.mails) {
-                    final Mail mail = gson.fromJson(mailElement, Mail.class);
-
-                    if (!mail.sentTo.equals(sender.profile.getName())) continue;
-                    senderMailsSentTotal++;
-                }
-
-                if (senderMailsSentTotal > 256) {
-                    throw new CommandException(Component.text("You are sending too many mails!"));
-                }
 
                 final CompletableFuture<Component> future = bot.core.runTracked(
                         "minecraft:data get entity " +
@@ -156,11 +130,15 @@ public class MailCommand extends Command {
                 // TODO: use less for loops?
 
                 int senderMailSize = 0;
-                for (JsonElement mailElement : MailPlugin.mails) {
-                    final Mail mail = gson.fromJson(mailElement, Mail.class);
+                for (JsonNode mailElement : MailPlugin.mails.deepCopy()) {
+                    try {
+                        final Mail mail = objectMapper.treeToValue(mailElement, Mail.class);
 
-                    if (!mail.sentTo.equals(sender.profile.getName())) continue;
-                    senderMailSize++;
+                        if (!mail.sentTo.equals(sender.profile.getName())) continue;
+                        senderMailSize++;
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 if (senderMailSize == 0) {
@@ -169,48 +147,52 @@ public class MailCommand extends Command {
 
                 final List<Component> mailsComponent = new ArrayList<>();
 
-                int i = 1;
-                for (JsonElement mailElement : MailPlugin.mails) {
-                    final Mail mail = gson.fromJson(mailElement, Mail.class);
+                int count = 1;
+                for (JsonNode mailElement : MailPlugin.mails.deepCopy()) {
+                    try {
+                        final Mail mail = objectMapper.treeToValue(mailElement, Mail.class);
 
-                    if (!mail.sentTo.equals(sender.profile.getName())) continue;
+                        if (!mail.sentTo.equals(sender.profile.getName())) continue;
 
-                    final Instant instant = Instant.ofEpochMilli(mail.timeSent);
-                    final ZoneId zoneId = ZoneId.systemDefault();
-                    final OffsetDateTime localDateTime = OffsetDateTime.ofInstant(instant, zoneId);
+                        final Instant instant = Instant.ofEpochMilli(mail.timeSent);
+                        final ZoneId zoneId = ZoneId.systemDefault();
+                        final OffsetDateTime localDateTime = OffsetDateTime.ofInstant(instant, zoneId);
 
-                    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy, hh:mm:ss a Z");
-                    final String formattedTime = localDateTime.format(formatter);
+                        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy, hh:mm:ss a Z");
+                        final String formattedTime = localDateTime.format(formatter);
 
-                    mailsComponent.add(
-                            Component.translatable(
-                                    """
-                                            %s %s Sent by: %s %s
-                                            Contents:
-                                            %s""",
-                                    Component.text(i).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
-                                    Component.text("-").color(NamedTextColor.DARK_GRAY),
+                        mailsComponent.add(
+                                Component.translatable(
+                                        """
+                                                %s %s Sent by: %s %s
+                                                Contents:
+                                                %s""",
+                                        Component.text(count).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
+                                        Component.text("-").color(NamedTextColor.DARK_GRAY),
 
-                                    Component.text(mail.sentBy).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)),
-                                    Component
-                                            .text("[Hover here for more info]")
-                                            .color(NamedTextColor.GREEN)
-                                            .hoverEvent(
-                                                    HoverEvent.showText(
-                                                            Component.translatable(
-                                                                    """
-                                                                            Time sent: %s
-                                                                            Server: %s""",
-                                                                    Component.text(formattedTime).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
-                                                                    Component.text(mail.server).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
-                                                            ).color(NamedTextColor.GREEN)
-                                                    )
-                                            ),
-                                    Component.text(mail.contents).color(NamedTextColor.WHITE)
-                            ).color(NamedTextColor.GREEN)
-                    );
+                                        Component.text(mail.sentBy).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)),
+                                        Component
+                                                .text("[Hover here for more info]")
+                                                .color(NamedTextColor.GREEN)
+                                                .hoverEvent(
+                                                        HoverEvent.showText(
+                                                                Component.translatable(
+                                                                        """
+                                                                                Time sent: %s
+                                                                                Server: %s""",
+                                                                        Component.text(formattedTime).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                                                                        Component.text(mail.server).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                                                                ).color(NamedTextColor.GREEN)
+                                                        )
+                                                ),
+                                        Component.text(mail.contents).color(NamedTextColor.WHITE)
+                                ).color(NamedTextColor.GREEN)
+                        );
 
-                    i++;
+                        count++;
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 final Component component = Component.empty()
@@ -230,10 +212,14 @@ public class MailCommand extends Command {
                     context.sendOutput(component);
                 }
 
-                for (JsonElement mailElement : MailPlugin.mails.deepCopy()) {
-                    final Mail mail = gson.fromJson(mailElement, Mail.class);
+                for (JsonNode mailElement : MailPlugin.mails.deepCopy()) {
+                    try {
+                        final Mail mail = objectMapper.treeToValue(mailElement, Mail.class);
 
-                    if (mail.sentTo.equals(sender.profile.getName())) MailPlugin.mails.remove(mailElement);
+                        if (mail.sentTo.equals(sender.profile.getName())) bot.mail.remove(mailElement);
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 PersistentDataUtilities.put("mails", MailPlugin.mails);

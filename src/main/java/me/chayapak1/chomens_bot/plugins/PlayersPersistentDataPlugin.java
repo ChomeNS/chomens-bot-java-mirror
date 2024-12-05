@@ -1,7 +1,8 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
 import me.chayapak1.chomens_bot.util.PersistentDataUtilities;
@@ -11,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
-    public static JsonObject playersObject = PersistentDataUtilities.getOrDefault("players", new JsonObject()).getAsJsonObject();
+    public static ObjectNode playersObject = (ObjectNode) PersistentDataUtilities.getOrDefault("players", JsonNodeFactory.instance.objectNode());
 
     private final Bot bot;
 
@@ -22,42 +23,46 @@ public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
     }
 
     @Override
-    public void playerJoined(PlayerEntry target) {
-        final JsonElement originalElement = playersObject.get(target.profile.getName());
+    public synchronized void playerJoined(PlayerEntry target) {
+        final JsonNode originalElement = playersObject.get(target.profile.getName());
 
-        JsonObject object;
+        ObjectNode object;
 
-        if (originalElement == null) {
-            object = new JsonObject();
-            object.addProperty("uuid", target.profile.getIdAsString());
-            object.add("ips", new JsonObject());
+        if (originalElement == null || originalElement.isNull()) {
+            object = JsonNodeFactory.instance.objectNode();
+            object.put("uuid", target.profile.getIdAsString());
+            object.set("ips", JsonNodeFactory.instance.objectNode());
+        } else if (originalElement instanceof ObjectNode) {
+            object = (ObjectNode) originalElement;
         } else {
-            object = originalElement.getAsJsonObject();
-        }
-
-        final CompletableFuture<String> future = bot.players.getPlayerIP(target);
-
-        if (future == null) {
-            setPersistentEntry(target, object);
             return;
         }
 
-        future.completeOnTimeout(null, 5, TimeUnit.SECONDS);
+        bot.executorService.submit(() -> {
+            final CompletableFuture<String> future = bot.players.getPlayerIP(target);
 
-        future.thenApplyAsync(output -> {
-            if (output != null) {
-                object.getAsJsonObject("ips").addProperty(bot.host + ":" + bot.port, output);
+            if (future == null) {
+                setPersistentEntry(target, object);
+                return;
             }
 
-            setPersistentEntry(target, object);
+            future.completeOnTimeout(null, 5, TimeUnit.SECONDS);
 
-            return output;
+            future.thenApplyAsync(output -> {
+                if (output != null) {
+                    ((ObjectNode) object.get("ips")).put(bot.host + ":" + bot.port, output);
+                }
+
+                setPersistentEntry(target, object);
+
+                return output;
+            });
         });
     }
 
     // is this bad?
-    private void setPersistentEntry (PlayerEntry target, JsonObject object) {
-        playersObject.add(getName(target), object);
+    private synchronized void setPersistentEntry (PlayerEntry target, ObjectNode object) {
+        playersObject.set(getName(target), object);
 
         PersistentDataUtilities.put("players", playersObject);
     }
@@ -67,16 +72,16 @@ public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
     }
 
     @Override
-    public void playerLeft(PlayerEntry target) {
+    public synchronized void playerLeft(PlayerEntry target) {
         if (!playersObject.has(getName(target))) return;
 
-        final JsonObject player = playersObject.get(getName(target)).getAsJsonObject();
+        final ObjectNode player = (ObjectNode) playersObject.get(getName(target));
 
-        final JsonObject object = new JsonObject();
-        object.addProperty("time", Instant.now().toEpochMilli());
-        object.addProperty("server", bot.host + ":" + bot.port);
+        final ObjectNode object = JsonNodeFactory.instance.objectNode();
+        object.put("time", Instant.now().toEpochMilli());
+        object.put("server", bot.host + ":" + bot.port);
 
-        player.add("lastSeen", object);
+        player.set("lastSeen", object);
 
         PersistentDataUtilities.put("players", playersObject);
     }

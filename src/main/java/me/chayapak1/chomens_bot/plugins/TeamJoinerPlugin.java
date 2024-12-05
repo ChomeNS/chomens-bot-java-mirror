@@ -4,6 +4,8 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.Team;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 
+import java.util.ArrayList;
+
 // the name might sound confusing but it just adds the bot into its own team
 public class TeamJoinerPlugin extends TickPlugin.Listener {
     public final String teamName;
@@ -28,7 +30,7 @@ public class TeamJoinerPlugin extends TickPlugin.Listener {
 
         if (!team.players.contains(bot.username)) joinTeam();
 
-        for (String player : team.players) {
+        for (String player : new ArrayList<>(team.players)) {
             if (!player.equals(bot.username)) {
                 excludeOthers();
                 break;

@@ -1,8 +1,10 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.Mail;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
@@ -12,11 +14,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 public class MailPlugin extends PlayersPlugin.Listener {
+    public static final ObjectMapper objectMapper = new ObjectMapper();
+
     private final Bot bot;
 
-    public static JsonArray mails = PersistentDataUtilities.getOrDefault("mails", new JsonArray()).getAsJsonArray();
-
-    private final Gson gson = new Gson();
+    public static ArrayNode mails = (ArrayNode) PersistentDataUtilities.getOrDefault("mails", JsonNodeFactory.instance.arrayNode());
 
     public MailPlugin (Bot bot) {
         this.bot = bot;
@@ -31,14 +33,18 @@ public class MailPlugin extends PlayersPlugin.Listener {
         int sendToTargetSize = 0;
 
         boolean shouldSend = false;
-        for (JsonElement mailElement : mails) {
-            final Mail mail = gson.fromJson(mailElement, Mail.class);
+        for (JsonNode mailNode : mails.deepCopy()) {
+            try {
+                final Mail mail = objectMapper.treeToValue(mailNode, Mail.class);
 
-            if (!mail.sentTo.equals(name)) continue;
+                if (!mail.sentTo.equals(name)) continue;
 
-            shouldSend = true;
+                shouldSend = true;
 
-            sendToTargetSize++;
+                sendToTargetSize++;
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
         }
 
         if (shouldSend) {
@@ -56,8 +62,19 @@ public class MailPlugin extends PlayersPlugin.Listener {
     }
 
     public void send (Mail mail) {
-        mails.add(gson.fromJson(gson.toJson(mail), JsonElement.class)); // is this the best way?
+        mails.add(objectMapper.valueToTree(mail));
 
         PersistentDataUtilities.put("mails", mails);
+    }
+
+    public void remove (JsonNode mail) {
+        for (int i = 0; i < mails.size(); i++) {
+            final JsonNode currentNode = mails.get(i);
+
+            if (currentNode.equals(mail)) {
+                mails.remove(i);
+                break;
+            }
+        }
     }
 }

@@ -1,7 +1,7 @@
 package me.chayapak1.chomens_bot.commands;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
@@ -52,20 +52,20 @@ public class FindAltsCommand extends Command {
     }
 
     private Component handle (Bot bot, String targetIP, boolean argumentIsIP, String player) {
-        final Stream<String> matches = PlayersPersistentDataPlugin.playersObject.deepCopy().entrySet() // is calling deepCopy necessary?
+        final Stream<String> matches = PlayersPersistentDataPlugin.playersObject.deepCopy().properties()
                 .stream()
                 .filter(
                         entry -> {
-                            final JsonObject ipsObject = entry
-                                    .getValue().getAsJsonObject().getAsJsonObject("ips");
+                            final ObjectNode ipsObject = (ObjectNode) entry
+                                    .getValue().get("ips");
 
-                            if (ipsObject == null) return false;
+                            if (ipsObject == null || ipsObject.isNull()) return false;
 
-                            final JsonElement currentServerIP = ipsObject.get(bot.host + ":" + bot.port);
+                            final JsonNode currentServerIP = ipsObject.get(bot.host + ":" + bot.port);
 
-                            if (currentServerIP == null) return false;
+                            if (currentServerIP == null || currentServerIP.isNull()) return false;
 
-                            return currentServerIP.getAsString().equals(targetIP);
+                            return currentServerIP.asText().equals(targetIP);
                         }
                 )
                 .map(Map.Entry::getKey);

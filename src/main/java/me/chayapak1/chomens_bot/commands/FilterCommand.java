@@ -1,7 +1,8 @@
 package me.chayapak1.chomens_bot.commands;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
@@ -58,7 +59,7 @@ public class FilterCommand extends Command {
             }
         }
 
-        final Gson gson = new Gson();
+        final ObjectMapper objectMapper = FilterPlugin.objectMapper;
 
         switch (action) {
             case "add" -> {
@@ -98,32 +99,36 @@ public class FilterCommand extends Command {
                 final List<Component> filtersComponents = new ArrayList<>();
 
                 int index = 0;
-                for (JsonElement playerElement : FilterPlugin.filteredPlayers) {
-                    final FilteredPlayer player = gson.fromJson(playerElement, FilteredPlayer.class);
+                for (JsonNode playerElement : FilterPlugin.filteredPlayers.deepCopy()) {
+                    try {
+                        final FilteredPlayer player = objectMapper.treeToValue(playerElement, FilteredPlayer.class);
 
-                    Component options = Component.empty().color(NamedTextColor.DARK_GRAY);
+                        Component options = Component.empty().color(NamedTextColor.DARK_GRAY);
 
-                    if (player.ignoreCase || player.regex) {
-                        final List<Component> args = new ArrayList<>();
+                        if (player.ignoreCase || player.regex) {
+                            final List<Component> args = new ArrayList<>();
 
-                        if (player.ignoreCase) args.add(Component.text("ignore case"));
-                        if (player.regex) args.add(Component.text("regex"));
+                            if (player.ignoreCase) args.add(Component.text("ignore case"));
+                            if (player.regex) args.add(Component.text("regex"));
 
-                        options = options.append(Component.text("("));
-                        options = options.append(Component.join(JoinConfiguration.commas(true), args).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)));
-                        options = options.append(Component.text(")"));
+                            options = options.append(Component.text("("));
+                            options = options.append(Component.join(JoinConfiguration.commas(true), args).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)));
+                            options = options.append(Component.text(")"));
+                        }
+
+                        filtersComponents.add(
+                                Component.translatable(
+                                        "%s › %s %s",
+                                        Component.text(index).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
+                                        Component.text(player.playerName).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)),
+                                        options
+                                ).color(NamedTextColor.DARK_GRAY)
+                        );
+
+                        index++;
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
                     }
-
-                    filtersComponents.add(
-                            Component.translatable(
-                                    "%s › %s %s",
-                                    Component.text(index).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
-                                    Component.text(player.playerName).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)),
-                                    options
-                            ).color(NamedTextColor.DARK_GRAY)
-                    );
-
-                    index++;
                 }
 
                 return Component.empty()

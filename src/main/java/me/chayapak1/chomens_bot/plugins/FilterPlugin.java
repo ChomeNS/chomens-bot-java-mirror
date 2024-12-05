@@ -1,8 +1,10 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.FilteredPlayer;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
@@ -18,11 +20,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class FilterPlugin extends PlayersPlugin.Listener {
+    public static final ObjectMapper objectMapper = new ObjectMapper();
+
     private final Bot bot;
 
-    public static JsonArray filteredPlayers = PersistentDataUtilities.getOrDefault("filters", new JsonArray()).getAsJsonArray();
-
-    private final Gson gson = new Gson();
+    public static ArrayNode filteredPlayers = (ArrayNode) PersistentDataUtilities.getOrDefault("filters", JsonNodeFactory.instance.arrayNode());
 
     public FilterPlugin (Bot bot) {
         this.bot = bot;
@@ -49,11 +51,15 @@ public class FilterPlugin extends PlayersPlugin.Listener {
     }
 
     private FilteredPlayer getPlayer (String name) {
-        for (JsonElement filteredPlayerElement : filteredPlayers) {
-            final FilteredPlayer filteredPlayer = gson.fromJson(filteredPlayerElement, FilteredPlayer.class);
+        for (JsonNode filteredPlayerElement : filteredPlayers.deepCopy()) {
+            try {
+                final FilteredPlayer filteredPlayer = objectMapper.treeToValue(filteredPlayerElement, FilteredPlayer.class);
 
-            if (matchesPlayer(name, filteredPlayer)) {
-                return filteredPlayer;
+                if (matchesPlayer(name, filteredPlayer)) {
+                    return filteredPlayer;
+                }
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
             }
         }
 
@@ -174,7 +180,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
     }
 
     public void add (String playerName, boolean regex, boolean ignoreCase) {
-        filteredPlayers.add(gson.fromJson(gson.toJson(new FilteredPlayer(playerName, regex, ignoreCase)), JsonElement.class));
+        filteredPlayers.add(objectMapper.valueToTree(new FilteredPlayer(playerName, regex, ignoreCase)));
 
         PersistentDataUtilities.put("filters", filteredPlayers);
 
@@ -186,11 +192,15 @@ public class FilterPlugin extends PlayersPlugin.Listener {
     }
 
     public FilteredPlayer remove (int index) {
-        final JsonElement element = filteredPlayers.remove(index);
+        final JsonNode element = filteredPlayers.remove(index);
 
         PersistentDataUtilities.put("filters", filteredPlayers);
 
-        return gson.fromJson(element, FilteredPlayer.class);
+        try {
+            return objectMapper.treeToValue(element, FilteredPlayer.class);
+        } catch (JsonProcessingException e) {
+            return null;
+        }
     }
 
     public void clear () {

@@ -1,7 +1,8 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
 import me.chayapak1.chomens_bot.util.PersistentDataUtilities;
@@ -12,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class IPFilterPlugin extends PlayersPlugin.Listener {
     private final Bot bot;
 
-    public static JsonArray filteredIPs = PersistentDataUtilities.getOrDefault("ipFilters", new JsonArray()).getAsJsonArray();
+    public static ArrayNode filteredIPs = (ArrayNode) PersistentDataUtilities.getOrDefault("ipFilters", JsonNodeFactory.instance.arrayNode());
 
     public IPFilterPlugin (Bot bot) {
         this.bot = bot;
@@ -60,11 +61,11 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
     }
 
     public String remove (int index) {
-        final JsonElement element = filteredIPs.remove(index);
+        final JsonNode element = filteredIPs.remove(index);
 
         PersistentDataUtilities.put("ipFilters", filteredIPs);
 
-        return element.getAsString();
+        return element.asText();
     }
 
     public void clear () {
@@ -74,8 +75,8 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
     }
 
     private void handleIP (String ip, PlayerEntry entry) {
-        for (JsonElement element : filteredIPs) {
-            if (!element.getAsString().equals(ip)) continue;
+        for (JsonNode element : filteredIPs.deepCopy()) {
+            if (!element.asText().equals(ip)) continue;
 
             if (entry.profile.getId().equals(bot.profile.getId())) continue;
 
