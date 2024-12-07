@@ -166,7 +166,7 @@ public class PositionPlugin extends Bot.Listener {
         final int minY = bot.world.minY;
         final int maxY = bot.world.maxY;
 
-        if (y < maxY) {
+        if (y < maxY && y > minY) {
             if (isGoingDownFromHeightLimit) {
                 isGoingDownFromHeightLimit = false;
 
@@ -178,15 +178,7 @@ public class PositionPlugin extends Bot.Listener {
 
         isGoingDownFromHeightLimit = true;
 
-        final Vector3d newPosition = Vector3d.from(
-                position.getX(),
-                position.getY() - 2,
-                position.getZ()
-        );
-
-        position = newPosition;
-
-        if (position.getY() > maxY + 500 || position.getY() < minY) {
+        if (y > maxY + 500 || y < minY) {
             String command = "/";
 
             if (bot.serverPluginsManager.hasPlugin(ServerPluginsManagerPlugin.ESSENTIALS)) command += "essentials:";
@@ -197,6 +189,14 @@ public class PositionPlugin extends Bot.Listener {
 
             return;
         }
+
+        final Vector3d newPosition = Vector3d.from(
+                position.getX(),
+                position.getY() - 2,
+                position.getZ()
+        );
+
+        position = newPosition;
 
         bot.session.send(new ServerboundMovePlayerPosPacket(
                 false,
