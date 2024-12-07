@@ -88,6 +88,7 @@ public class Bot {
     public AuthPlugin auth;
     public ScreensharePlugin screenshare;
     public FormatCheckerPlugin formatChecker;
+    public ClearChatNameAnnouncerPlugin clearChatNameAnnouncer;
     public WhitelistPlugin whitelist;
     public PlayersPersistentDataPlugin playersPersistent;
     public IPFilterPlugin ipFilter;
@@ -137,6 +138,7 @@ public class Bot {
         this.auth = new AuthPlugin(this);
 //        this.screenshare = new ScreensharePlugin(this);
         this.formatChecker = new FormatCheckerPlugin(this);
+        this.clearChatNameAnnouncer = new ClearChatNameAnnouncerPlugin(this);
         this.whitelist = new WhitelistPlugin(this);
         this.playersPersistent = new PlayersPersistentDataPlugin(this);
         this.ipFilter = new IPFilterPlugin(this);
