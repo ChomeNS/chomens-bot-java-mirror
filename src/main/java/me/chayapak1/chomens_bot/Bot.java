@@ -12,10 +12,11 @@ import org.geysermc.mcprotocollib.network.tcp.TcpClientSession;
 import org.geysermc.mcprotocollib.protocol.MinecraftProtocol;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.HandPreference;
 import org.geysermc.mcprotocollib.protocol.data.game.setting.ChatVisibility;
+import org.geysermc.mcprotocollib.protocol.data.game.setting.ParticleStatus;
 import org.geysermc.mcprotocollib.protocol.data.game.setting.SkinPart;
 import org.geysermc.mcprotocollib.protocol.packet.common.serverbound.ServerboundClientInformationPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
-import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundGameProfilePacket;
+import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginFinishedPacket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -204,15 +205,16 @@ public class Bot {
                                     skinParts,
                                     HandPreference.RIGHT_HAND,
                                     false,
-                                    true // should this be false lol so only real players are displayed
+                                    true, // should this be false lol so only real players are displayed
+                                    ParticleStatus.ALL
                             )
                     );
 
                     if (options.creayun) chat.send("/server creative");
-                } else if (packet instanceof ClientboundGameProfilePacket) packetReceived((ClientboundGameProfilePacket) packet);
+                } else if (packet instanceof ClientboundLoginFinishedPacket) packetReceived((ClientboundLoginFinishedPacket) packet);
             }
 
-            public void packetReceived(ClientboundGameProfilePacket packet) {
+            public void packetReceived(ClientboundLoginFinishedPacket packet) {
                 profile = packet.getProfile();
             }
 

@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import org.cloudburstmc.math.vector.Vector3d;
 import org.cloudburstmc.nbt.NbtMap;
 import org.cloudburstmc.nbt.NbtMapBuilder;
 import org.geysermc.mcprotocollib.network.Session;
@@ -323,15 +324,15 @@ public class CorePlugin extends PositionPlugin.Listener {
                         (short) 36,
                         new ItemStack(
                                 bot.serverPluginsManager.hasPlugin(ServerPluginsManagerPlugin.EXTRAS) ?
-                                        514 /* repeating command block id */ :
-                                        395 /* command block id */,
+                                        528 /* repeating command block id */ :
+                                        409 /* command block id */,
                                 64,
                                 dataComponents
                         )
                 )
         );
         session.send(new ServerboundPlayerActionPacket(PlayerAction.START_DIGGING, temporaryBlockPosition, Direction.NORTH, 0));
-        session.send(new ServerboundUseItemOnPacket(temporaryBlockPosition, Direction.UP, Hand.MAIN_HAND, 0.5f, 0.5f, 0.5f, false, 1));
+        session.send(new ServerboundUseItemOnPacket(temporaryBlockPosition, Direction.UP, Hand.MAIN_HAND, 0.5f, 0.5f, 0.5f, false, false, 1));
     }
 
     public void packetReceived (ClientboundBlockUpdatePacket packet) {
@@ -418,19 +419,19 @@ public class CorePlugin extends PositionPlugin.Listener {
     }
 
     @Override
-    public void positionChange (Vector3i position) {
+    public void positionChange (Vector3d position) {
         if (bot.position.isGoingDownFromHeightLimit) return;
 
         from = Vector3i.from(
-                (int) (fromSize.getX() + Math.floor((double) bot.position.position.getX() / 16) * 16),
+                (int) (fromSize.getX() + Math.floor(bot.position.position.getX() / 16) * 16),
                 MathUtilities.clamp(fromSize.getY(), bot.world.minY, bot.world.maxY),
-                (int) (fromSize.getZ() + Math.floor((double) bot.position.position.getZ() / 16) * 16)
+                (int) (fromSize.getZ() + Math.floor(bot.position.position.getZ() / 16) * 16)
         );
 
         to = Vector3i.from(
-                (int) (toSize.getX() + Math.floor((double) bot.position.position.getX() / 16) * 16),
+                (int) (toSize.getX() + Math.floor(bot.position.position.getX() / 16) * 16),
                 MathUtilities.clamp(toSize.getY(), bot.world.minY, bot.world.maxY),
-                (int) (toSize.getZ() + Math.floor((double) bot.position.position.getZ() / 16) * 16)
+                (int) (toSize.getZ() + Math.floor(bot.position.position.getZ() / 16) * 16)
         );
 
         reset();

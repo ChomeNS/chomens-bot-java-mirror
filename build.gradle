@@ -41,7 +41,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.geysermc.mcprotocollib:protocol:1.21-SNAPSHOT'
+    implementation 'org.geysermc.mcprotocollib:protocol:1.21.2-SNAPSHOT'
     implementation 'net.kyori:adventure-text-serializer-ansi:4.15.0'
     implementation 'com.google.code.gson:gson:2.11.0'
     implementation 'com.google.guava:guava:31.1-jre'

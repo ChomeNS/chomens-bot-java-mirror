@@ -1,5 +1,10 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.PlayerEntry;
+import me.chayapak1.chomens_bot.data.Rotation;
+import org.cloudburstmc.math.vector.Vector3d;
+import org.cloudburstmc.math.vector.Vector3f;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundMoveEntityPosPacket;
@@ -10,11 +15,6 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.play
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.spawn.ClientboundAddEntityPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.level.ServerboundAcceptTeleportationPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundMovePlayerPosPacket;
-import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.data.Rotation;
-import me.chayapak1.chomens_bot.data.PlayerEntry;
-import org.cloudburstmc.math.vector.Vector3f;
-import org.cloudburstmc.math.vector.Vector3i;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +28,7 @@ public class PositionPlugin extends Bot.Listener {
 
     private final List<Listener> listeners = new ArrayList<>();
 
-    public Vector3i position = Vector3i.from(0, 0, 0);
+    public Vector3d position = Vector3d.from(0, 0, 0);
 
     public boolean isGoingDownFromHeightLimit = false; // cool variable name
 
@@ -46,6 +46,7 @@ public class PositionPlugin extends Bot.Listener {
             if (!bot.loggedIn || isGoingDownFromHeightLimit) return;
 
             bot.session.send(new ServerboundMovePlayerPosPacket(
+                    false,
                     false,
                     position.getX(),
                     position.getY(),
@@ -72,9 +73,10 @@ public class PositionPlugin extends Bot.Listener {
     }
 
     public void packetReceived (ClientboundPlayerPositionPacket packet) {
-        bot.session.send(new ServerboundAcceptTeleportationPacket(packet.getTeleportId()));
+        bot.session.send(new ServerboundAcceptTeleportationPacket(packet.getId()));
 
-        position = Vector3i.from(packet.getX(), packet.getY(), packet.getZ());
+        position = packet.getPosition();
+
         for (Listener listener : listeners) { listener.positionChange(position); }
     }
 
@@ -160,7 +162,7 @@ public class PositionPlugin extends Bot.Listener {
 
     // for now this is used in CorePlugin when placing the command block
     private void handleHeightLimit () {
-        final int y = position.getY();
+        final double y = position.getY();
         final int minY = bot.world.minY;
         final int maxY = bot.world.maxY;
 
@@ -176,7 +178,7 @@ public class PositionPlugin extends Bot.Listener {
 
         isGoingDownFromHeightLimit = true;
 
-        final Vector3i newPosition = Vector3i.from(
+        final Vector3d newPosition = Vector3d.from(
                 position.getX(),
                 position.getY() - 2,
                 position.getZ()
@@ -197,6 +199,7 @@ public class PositionPlugin extends Bot.Listener {
         }
 
         bot.session.send(new ServerboundMovePlayerPosPacket(
+                false,
                 false,
                 newPosition.getX(),
                 newPosition.getY(),
@@ -237,7 +240,7 @@ public class PositionPlugin extends Bot.Listener {
     public void addListener (Listener listener) { listeners.add(listener); }
 
     public static class Listener {
-        public void positionChange (Vector3i position) {}
+        public void positionChange (Vector3d position) {}
         public void playerMoved (PlayerEntry player, Vector3f position, Rotation rotation) {}
     }
 }
