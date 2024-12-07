@@ -1,6 +1,12 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.util.MathUtilities;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.cloudburstmc.math.vector.Vector3d;
+import org.cloudburstmc.math.vector.Vector3i;
 import org.cloudburstmc.nbt.NbtMap;
 import org.cloudburstmc.nbt.NbtMapBuilder;
 import org.geysermc.mcprotocollib.network.Session;
@@ -22,14 +28,6 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.inventory.S
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.inventory.ServerboundSetCreativeModeSlotPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundPlayerActionPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundUseItemOnPacket;
-import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.util.MathUtilities;
-import net.kyori.adventure.text.BlockNBTComponent;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.JoinConfiguration;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import org.cloudburstmc.math.vector.Vector3i;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -54,10 +52,6 @@ public class CorePlugin extends PositionPlugin.Listener {
     public Vector3i block = null;
 
     public final List<String> placeBlockQueue = Collections.synchronizedList(new ArrayList<>());
-
-    private int nextTransactionId = 0;
-    private final Map<Long, CompletableFuture<Component>> transactions = new HashMap<>();
-    private final List<Double> secrets = new ArrayList<>();
 
     private int commandsPerSecond = 0;
 
@@ -102,10 +96,6 @@ public class CorePlugin extends PositionPlugin.Listener {
 
                 refillTask.cancel(false);
 
-                nextTransactionId = 0;
-                transactions.clear();
-                secrets.clear();
-
                 reset();
             }
 
@@ -114,13 +104,6 @@ public class CorePlugin extends PositionPlugin.Listener {
                 if (packet instanceof ClientboundBlockUpdatePacket) CorePlugin.this.packetReceived((ClientboundBlockUpdatePacket) packet);
                 else if (packet instanceof ClientboundSectionBlocksUpdatePacket) CorePlugin.this.packetReceived((ClientboundSectionBlocksUpdatePacket) packet);
                 else if (packet instanceof ClientboundLevelChunkWithLightPacket) CorePlugin.this.packetReceived((ClientboundLevelChunkWithLightPacket) packet);
-            }
-        });
-
-        bot.chat.addListener(new ChatPlugin.Listener() {
-            @Override
-            public boolean systemMessageReceived(Component component, String string, String ansi) {
-                return CorePlugin.this.systemMessageReceived(component);
             }
         });
 
@@ -225,68 +208,26 @@ public class CorePlugin extends PositionPlugin.Listener {
 
         run(command);
 
-        final long transactionId = nextTransactionId++;
+        final CompletableFuture<Component> trackedFuture = new CompletableFuture<>();
 
-        final CompletableFuture<Component> future = new CompletableFuture<>();
-        transactions.put(transactionId, future);
+        final CompletableFuture<String> future = bot.query.block(coreBlock, "LastOutput");
 
-        final double secret = Math.random(); // it is uh bad whatever
-        secrets.add(secret);
+        future.thenApplyAsync(output -> {
+            if (output == null) return output;
 
-        bot.chat.tellraw(
-                Component
-                        .text(secret)
-                        .append(Component.text(transactionId))
-                        .append(
-                                Component.blockNBT(
-                                        "LastOutput",
+            trackedFuture.complete(
+                    Component.join(
+                            JoinConfiguration.separator(Component.empty()),
+                            GsonComponentSerializer.gson()
+                                    .deserialize(output)
+                                    .children() // ignores the time
+                    )
+            );
 
-                                        // is there a better way of doing this?
-                                        BlockNBTComponent.Pos.fromString(
-                                                coreBlock.getX() + " " +
-                                                        coreBlock.getY() + " " +
-                                                        coreBlock.getZ()
-                                        )
-                                )
-                        ),
-                bot.profile.getId()
-        );
+            return output;
+        });
 
-        return future;
-    }
-
-    private boolean systemMessageReceived (Component component) {
-        if (!(component instanceof TextComponent textComponent)) return true;
-
-        try {
-            final double inputSecret = Double.parseDouble(textComponent.content());
-
-            if (!secrets.contains(inputSecret)) return true;
-
-            secrets.remove(inputSecret);
-
-            final List<Component> children = component.children();
-
-            if (children.size() > 2 || children.isEmpty()) return true;
-
-            if (children.size() == 1) return false;
-
-            if (!(children.get(0) instanceof TextComponent) || !(children.get(1) instanceof TextComponent)) return true;
-
-            final long transactionId = Integer.parseInt(((TextComponent) children.get(0)).content());
-
-            if (!transactions.containsKey(transactionId)) return true;
-
-            final CompletableFuture<Component> future = transactions.get(transactionId);
-
-            final String stringLastOutput = ((TextComponent) children.get(1)).content();
-
-            future.complete(Component.join(JoinConfiguration.separator(Component.empty()), GsonComponentSerializer.gson().deserialize(stringLastOutput).children()));
-
-            return false;
-        } catch (ClassCastException | NumberFormatException ignored) {}
-
-        return true;
+        return trackedFuture;
     }
 
     public void runPlaceBlock (String command) {

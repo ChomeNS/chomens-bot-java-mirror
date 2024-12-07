@@ -6,12 +6,18 @@ import org.cloudburstmc.nbt.NbtMapBuilder;
 import java.util.UUID;
 import java.nio.ByteBuffer;
 
-// Author: _ChipMC_ i guess
+// Author: _ChipMC_ for int array and selector stuff
 public class UUIDUtilities {
-    private UUIDUtilities () {}
-
     public static UUID getOfflineUUID (String username) {
         return UUID.nameUUIDFromBytes(("OfflinePlayer:" + username).getBytes());
+    }
+
+    public static UUID tryParse (String input) {
+        try {
+            return UUID.fromString(input);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
     public static int[] intArray (UUID uuid) {

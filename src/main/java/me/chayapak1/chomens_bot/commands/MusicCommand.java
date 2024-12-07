@@ -1,7 +1,6 @@
 package me.chayapak1.chomens_bot.commands;
 
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
@@ -11,10 +10,12 @@ import me.chayapak1.chomens_bot.song.Instrument;
 import me.chayapak1.chomens_bot.song.Loop;
 import me.chayapak1.chomens_bot.song.Note;
 import me.chayapak1.chomens_bot.song.Song;
-import me.chayapak1.chomens_bot.util.*;
+import me.chayapak1.chomens_bot.util.ColorUtilities;
+import me.chayapak1.chomens_bot.util.PathUtilities;
+import me.chayapak1.chomens_bot.util.TimestampUtilities;
+import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
-import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -28,7 +29,6 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 import static me.chayapak1.chomens_bot.util.StringUtilities.isNotNullAndNotBlank;
 
@@ -41,6 +41,7 @@ public class MusicCommand extends Command {
                 "Plays music",
                 new String[] {
                         "play <song|URL>",
+                        "playitem",
                         "stop",
                         "loop <current|all|off>",
                         "list [directory]",
@@ -71,8 +72,7 @@ public class MusicCommand extends Command {
         root = MusicPlayerPlugin.SONG_DIR;
         return switch (action) {
             case "play", "playurl", "playnbs", "playnbsurl" -> play(context);
-            case "playfromitem", "playitem" -> playFromItem(context);
-            case "playsongplayer" -> playSongPlayer(context);
+            case "playfromitem", "playitem", "playsongplayer" -> playFromItem(context);
             case "stop" -> stop(context);
             case "loop" -> loop(context);
             case "list" -> list(context);
@@ -192,110 +192,26 @@ public class MusicCommand extends Command {
     public Component playFromItem (CommandContext context) throws CommandException {
         context.checkOverloadArgs(1);
 
-        // mail command lol
-
         final Bot bot = context.bot;
 
-        final CompletableFuture<Component> future = bot.core.runTracked(
-                "minecraft:data get entity " +
-                        UUIDUtilities.selector(context.sender.profile.getId()) +
-                        " SelectedItem.tag.SongItemData.SongData"
+        final CompletableFuture<String> future = bot.query.entity(
+                UUIDUtilities.selector(context.sender.profile.getId()),
+                "SelectedItem.tag.SongItemData.SongData"
         );
 
-        if (future == null) {
-            throw new CommandException(Component.text("There was an error while getting your data"));
-        }
-
         future.thenApplyAsync(output -> {
-            final List<Component> children = output.children();
-
-            if (
-                    !children.isEmpty() &&
-                            children.get(0).children().isEmpty() &&
-                            ((TranslatableComponent) children.get(0)).key()
-                                    .equals("arguments.nbtpath.nothing_found")
-            ) {
+            if (output == null) {
                 context.sendOutput(Component.text("Player has no `SongItemData.SongData` NBT tag in their selected item").color(NamedTextColor.RED));
                 return output;
             }
 
-            final Component actualOutputComponent = ((TranslatableComponent) output).arguments().get(1).asComponent();
-
-            final String value = ComponentUtilities.stringify(actualOutputComponent);
-
-            if (!value.startsWith("\"") && !value.endsWith("\"") && !value.startsWith("'") && !value.endsWith("'")) {
-                context.sendOutput(Component.text("`data` NBT is not a string").color(NamedTextColor.RED));
-                return output;
-            }
-
             try {
                 bot.music.loadSong(
-                        Base64.getDecoder().decode(
-                                value
-                                        .substring(1)
-                                        .substring(0, value.length() - 2)
-                        ),
+                        Base64.getDecoder().decode(output),
                         context.sender
                 );
             } catch (IllegalArgumentException e) {
                 context.sendOutput(Component.text("Invalid base64 in the selected item").color(NamedTextColor.RED));
-            }
-
-            return output;
-        });
-
-        return null;
-    }
-
-    public Component playSongPlayer (CommandContext context) throws CommandException {
-        context.checkOverloadArgs(1);
-
-        // dupe codes ??
-
-        final Bot bot = context.bot;
-
-        final CompletableFuture<Component> future = bot.core.runTracked(
-                "minecraft:data get entity " +
-                        UUIDUtilities.selector(context.sender.profile.getId()) +
-                        " SelectedItem.components.minecraft:custom_data.SongItemData.SongData"
-        );
-
-        if (future == null) {
-            throw new CommandException(Component.text("There was an error while getting your data"));
-        }
-
-        future.thenApplyAsync(output -> {
-            final List<Component> children = output.children();
-
-            if (
-                    !children.isEmpty() &&
-                            !children.get(0).children().isEmpty() &&
-                            ((TranslatableComponent) children.get(0).children().get(0))
-                                    .key()
-                                    .equals("arguments.nbtpath.nothing_found")
-            ) {
-                context.sendOutput(Component.text("Player has no SongItemData -> SongData NBT tag in their selected item's minecraft:custom_data").color(NamedTextColor.RED));
-                return output;
-            }
-
-            final String value = ComponentUtilities.stringify(((TranslatableComponent) children.get(0)).arguments().get(1).asComponent());
-
-            if (!value.startsWith("\"") && !value.endsWith("\"") && !value.startsWith("'") && !value.endsWith("'")) {
-                context.sendOutput(Component.text("NBT is not a string").color(NamedTextColor.RED));
-                return output;
-            }
-
-            try {
-                bot.music.loadSong(
-                        Base64.getDecoder().decode(
-                                value
-                                        .substring(1)
-                                        .substring(0, value.length() - 2)
-                        ),
-                        context.sender
-                );
-            } catch (IllegalArgumentException e) {
-                context.sendOutput(Component.text("Invalid song data in the selected item").color(NamedTextColor.RED));
             }
 
             return output;

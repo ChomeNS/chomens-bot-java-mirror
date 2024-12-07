@@ -63,6 +63,7 @@ public class Bot {
     public PositionPlugin position;
     public ServerPluginsManagerPlugin serverPluginsManager;
     public SelfCarePlugin selfCare;
+    public QueryPlugin query;
     public CorePlugin core;
     public TeamPlugin team;
     public PlayersPlugin players;
@@ -113,6 +114,7 @@ public class Bot {
         this.position = new PositionPlugin(this);
         this.serverPluginsManager = new ServerPluginsManagerPlugin(this);
         this.selfCare = new SelfCarePlugin(this);
+        this.query = new QueryPlugin(this);
         this.core = new CorePlugin(this);
         this.team = new TeamPlugin(this);
         this.players = new PlayersPlugin(this);

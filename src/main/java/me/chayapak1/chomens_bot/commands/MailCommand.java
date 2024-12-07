@@ -12,12 +12,10 @@ import me.chayapak1.chomens_bot.data.Mail;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
 import me.chayapak1.chomens_bot.plugins.MailPlugin;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
-import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.PersistentDataUtilities;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
-import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -70,37 +68,15 @@ public class MailCommand extends Command {
             case "sendselecteditem" -> {
                 context.checkOverloadArgs(2);
 
-                final CompletableFuture<Component> future = bot.core.runTracked(
-                        "minecraft:data get entity " +
-                                UUIDUtilities.selector(sender.profile.getId()) +
-                                " SelectedItem.components.minecraft:custom_data.message"
+                final CompletableFuture<String> future = bot.query.entity(
+                        UUIDUtilities.selector(context.sender.profile.getId()),
+                        "SelectedItem.components.minecraft:custom_data.message"
                 );
-
-                if (future == null) {
-                    throw new CommandException(Component.text("There was an error while sending your mail"));
-                }
 
                 future.thenApplyAsync(output -> {
                     try {
-                        final List<Component> children = output.children();
-
-                        if (
-                                !children.isEmpty() &&
-                                        children.get(0).children().isEmpty() &&
-                                        ((TranslatableComponent) children.get(0)).key()
-                                                .equals("arguments.nbtpath.nothing_found")
-                        ) {
-                            context.sendOutput(Component.text("Player has no `message` NBT tag in their selected item's minecraft:custom_data").color(NamedTextColor.RED));
-                            return output;
-                        }
-
-                        final Component actualOutputComponent = ((TranslatableComponent) output).arguments().get(1).asComponent();
-
-                        final String value = ComponentUtilities.stringify(actualOutputComponent);
-
-                        if (!value.startsWith("\"") && !value.endsWith("\"") && !value.startsWith("'") && !value.endsWith("'")) {
-                            context.sendOutput(Component.text("`message` NBT is not a string").color(NamedTextColor.RED));
-                            return output;
+                        if (output == null) {
+                            throw new CommandException(Component.text("Player has no `message` NBT tag in their selected item's minecraft:custom_data"));
                         }
 
                         bot.mail.send(
@@ -109,7 +85,7 @@ public class MailCommand extends Command {
                                         context.getString(true, true),
                                         Instant.now().toEpochMilli(),
                                         bot.host + ":" + bot.port,
-                                        value.substring(1).substring(0, value.length() - 2)
+                                        output
                                 )
                         );
                     } catch (CommandException e) {
