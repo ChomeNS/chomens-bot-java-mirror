@@ -281,51 +281,48 @@ public class CorePlugin extends PositionPlugin.Listener {
 
         final Vector3i position = entry.getPosition();
 
-        if (isCore(position) && !isCommandBlockUpdate(entry.getBlock())) shouldRefill = true;
+        if (isCore(position) && !isCommandBlockState(entry.getBlock())) shouldRefill = true;
     }
 
     public void packetReceived (ClientboundSectionBlocksUpdatePacket packet) {
         final BlockChangeEntry[] entries = packet.getEntries();
 
-        boolean willRefill = false;
-
         for (BlockChangeEntry entry : entries) {
             final Vector3i position = entry.getPosition();
 
-            if (isCore(position) && !isCommandBlockUpdate(entry.getBlock())) willRefill = true;
+            if (isCore(position) && !isCommandBlockState(entry.getBlock())) {
+                shouldRefill = true;
+                break;
+            }
         }
-
-        if (willRefill) shouldRefill = true;
     }
 
     public void packetReceived (ClientboundLevelChunkWithLightPacket packet) {
         shouldRefill = true; // worst fix
     }
 
-    private boolean isCommandBlockUpdate (int blockState) {
+    private boolean isCommandBlockState (int blockState) {
         return
                 // command block
                 (
-                        blockState >= 7902 &&
-                                blockState <= 7913
+                        blockState >= 8136 &&
+                                blockState <= 8147
                 ) ||
 
                         // chain command block
                         (
-                                blockState == 12533
-//                                blockState >= 12371 &&
-//                                        blockState <= 12382
+                                blockState >= 12996 &&
+                                        blockState <= 13007
                         ) ||
 
                         // repeating command block
                         (
-                                blockState == 12521
-//                                blockState >= 12359 &&
-//                                        blockState <= 12370
+                                blockState >= 12984 &&
+                                        blockState <= 12995
                         );
     }
 
-    // ported from chomens bot js
+    // ported from chomens bot js, which is originally from smp
     private boolean isCore (Vector3i position) {
         return
                 position.getX() >= from.getX() && position.getX() <= to.getX() &&
