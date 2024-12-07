@@ -51,10 +51,6 @@ public class VoiceChatPlugin extends Bot.Listener {
 
     public void packetReceived(ClientboundLoginPacket ignored) {
         // totally didn't use a real minecraft client with voicechat mod to get this
-        bot.session.send(new ServerboundCustomPayloadPacket(
-                Key.key("minecraft:brand"),
-                "\u0006fabric".getBytes() // should i use fabric here?
-        ));
 
         bot.session.send(new ServerboundCustomPayloadPacket(
                 Key.key("voicechat:request_secret"),

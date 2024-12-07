@@ -3,6 +3,7 @@ package me.chayapak1.chomens_bot;
 import me.chayapak1.chomens_bot.plugins.*;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.RandomStringUtilities;
+import net.kyori.adventure.key.Key;
 import org.geysermc.mcprotocollib.auth.GameProfile;
 import org.geysermc.mcprotocollib.network.BuiltinFlags;
 import org.geysermc.mcprotocollib.network.Session;
@@ -15,6 +16,7 @@ import org.geysermc.mcprotocollib.protocol.data.game.setting.ChatVisibility;
 import org.geysermc.mcprotocollib.protocol.data.game.setting.ParticleStatus;
 import org.geysermc.mcprotocollib.protocol.data.game.setting.SkinPart;
 import org.geysermc.mcprotocollib.protocol.packet.common.serverbound.ServerboundClientInformationPacket;
+import org.geysermc.mcprotocollib.protocol.packet.common.serverbound.ServerboundCustomPayloadPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
 import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginFinishedPacket;
 
@@ -211,6 +213,12 @@ public class Bot {
                                     ParticleStatus.ALL
                             )
                     );
+
+                    // for voicechat
+                    session.send(new ServerboundCustomPayloadPacket(
+                            Key.key("minecraft:brand"),
+                            "\u0006fabric".getBytes() // should i use fabric here?
+                    ));
 
                     if (options.creayun) chat.send("/server creative");
                 } else if (packet instanceof ClientboundLoginFinishedPacket) packetReceived((ClientboundLoginFinishedPacket) packet);
