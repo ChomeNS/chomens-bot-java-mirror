@@ -300,6 +300,16 @@ public class Bot {
         listeners.add(listener);
     }
 
+    @Override
+    public String toString() {
+        return "Bot{" +
+                "host='" + host + '\'' +
+                ", port=" + port +
+                ", username='" + username + '\'' +
+                ", loggedIn=" + loggedIn +
+                '}';
+    }
+
     public static class Listener extends SessionAdapter {
         public void connecting () {}
         public void loadedPlugins () {}

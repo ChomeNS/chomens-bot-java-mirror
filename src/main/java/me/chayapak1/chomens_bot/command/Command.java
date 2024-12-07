@@ -2,6 +2,8 @@ package me.chayapak1.chomens_bot.command;
 
 import net.kyori.adventure.text.Component;
 
+import java.util.Arrays;
+
 public abstract class Command {
     public final String name;
     public String description;
@@ -27,4 +29,16 @@ public abstract class Command {
     }
 
     public abstract Component execute (CommandContext context) throws Exception;
+
+    @Override
+    public String toString() {
+        return "Command{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", usages=" + Arrays.toString(usages) +
+                ", aliases=" + Arrays.toString(aliases) +
+                ", trustLevel=" + trustLevel +
+                ", consoleOnly=" + consoleOnly +
+                '}';
+    }
 }

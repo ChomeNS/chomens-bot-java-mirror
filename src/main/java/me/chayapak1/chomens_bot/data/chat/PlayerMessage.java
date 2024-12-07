@@ -17,4 +17,13 @@ public class PlayerMessage {
         this.displayName = displayName;
         this.contents = contents;
     }
+
+    @Override
+    public String toString() {
+        return "PlayerMessage{" +
+                "sender=" + sender +
+                ", displayName=" + displayName +
+                ", contents=" + contents +
+                '}';
+    }
 }

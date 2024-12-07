@@ -24,4 +24,14 @@ public class Mail {
         this.server = server;
         this.contents = contents;
     }
+
+    @Override
+    public String toString() {
+        return "Mail{" +
+                "sentBy='" + sentBy + '\'' +
+                ", sentTo='" + sentTo + '\'' +
+                ", timeSent=" + timeSent +
+                ", server='" + server + '\'' +
+                '}';
+    }
 }

@@ -72,4 +72,20 @@ public class Team {
             case RESET -> Style.empty();
         };
     }
+
+    @Override
+    public String toString() {
+        return "Team{" +
+                "teamName='" + teamName + '\'' +
+                ", players=" + players +
+                ", displayName=" + displayName +
+                ", friendlyFire=" + friendlyFire +
+                ", seeFriendlyInvisibles=" + seeFriendlyInvisibles +
+                ", nametagVisibility=" + nametagVisibility +
+                ", collisionRule=" + collisionRule +
+                ", color=" + color +
+                ", prefix=" + prefix +
+                ", suffix=" + suffix +
+                '}';
+    }
 }

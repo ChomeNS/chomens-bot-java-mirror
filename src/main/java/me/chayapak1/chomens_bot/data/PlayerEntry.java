@@ -37,7 +37,17 @@ public class PlayerEntry {
         this.listed = listed;
     }
 
-    public PlayerEntry(PlayerListEntry entry) {
+    public PlayerEntry (PlayerListEntry entry) {
         this(entry.getProfile(), entry.getGameMode(), entry.getLatency(), entry.getDisplayName(), entry.getExpiresAt(), entry.getPublicKey(), entry.getKeySignature(), entry.isListed());
+    }
+
+    @Override
+    public String toString() {
+        return "PlayerEntry{" +
+                "gamemode=" + gamemode +
+                ", latency=" + latency +
+                ", listed=" + listed +
+                ", displayName=" + displayName +
+                '}';
     }
 }

@@ -27,5 +27,15 @@ public class BossBar {
         this.division = division;
         this.health = health;
     }
-}
 
+    @Override
+    public String toString() {
+        return "BossBar{" +
+                "uuid=" + uuid +
+                ", title=" + title +
+                ", color=" + color +
+                ", division=" + division +
+                ", health=" + health +
+                '}';
+    }
+}

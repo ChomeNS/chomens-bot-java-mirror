@@ -18,4 +18,13 @@ public class FilteredPlayer {
         this.regex = regex;
         this.ignoreCase = ignoreCase;
     }
+
+    @Override
+    public String toString() {
+        return "FilteredPlayer{" +
+                "playerName='" + playerName + '\'' +
+                ", regex=" + regex +
+                ", ignoreCase=" + ignoreCase +
+                '}';
+    }
 }
