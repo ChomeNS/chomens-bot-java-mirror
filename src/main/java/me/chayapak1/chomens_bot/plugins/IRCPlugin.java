@@ -12,12 +12,12 @@ import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.cap.SASLCapHandler;
+import org.pircbotx.delay.StaticReadonlyDelay;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
 import javax.net.ssl.SSLSocketFactory;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class IRCPlugin extends ListenerAdapter {
     private final Configuration.IRC ircConfig;
@@ -41,6 +41,7 @@ public class IRCPlugin extends ListenerAdapter {
                 .addServer(ircConfig.host, ircConfig.port)
                 .setSocketFactory(SSLSocketFactory.getDefault())
                 .setAutoReconnect(true)
+                .setMessageDelay(new StaticReadonlyDelay(50))
                 .addListener(this);
 
         if (!ircConfig.password.isEmpty()) builder.addCapHandler(new SASLCapHandler(ircConfig.name, ircConfig.password, true));
@@ -82,7 +83,7 @@ public class IRCPlugin extends ListenerAdapter {
             bot.irc = this;
         }
 
-        Main.executor.scheduleAtFixedRate(this::queueTick, 0, 500, TimeUnit.MILLISECONDS);
+        // Main.executor.scheduleAtFixedRate(this::queueTick, 0, 500, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -200,7 +201,8 @@ public class IRCPlugin extends ListenerAdapter {
 
                 final String withIRCColors = ColorUtilities.convertAnsiToIrc(firstLog);
 
-                bot.sendIRC().message(entry.getKey(), withIRCColors);
+                // we don't need the queue
+                bot.sendRaw().rawLineNow("PRIVMSG " + entry.getKey() + " :" + withIRCColors);
             }
         } catch (Exception ignored) {}
     }
@@ -230,6 +232,10 @@ public class IRCPlugin extends ListenerAdapter {
 
         if (channel == null) return;
 
-        addMessageToQueue(channel, message);
+        final String withIRCColors = ColorUtilities.convertAnsiToIrc(message);
+
+        this.bot.sendIRC().message(channel, withIRCColors);
+
+        // addMessageToQueue(channel, message);
     }
 }
