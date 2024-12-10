@@ -86,6 +86,8 @@ public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
     public void playerLeft(PlayerEntry target) {
         bot.executorService.submit(() -> {
             try {
+                lock.lock();
+
                 if (!playersObject.has(getName(target))) return;
 
                 final ObjectNode player = (ObjectNode) playersObject.get(getName(target));
