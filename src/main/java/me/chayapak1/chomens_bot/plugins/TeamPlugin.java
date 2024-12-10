@@ -3,6 +3,7 @@ package me.chayapak1.chomens_bot.plugins;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.Team;
 import org.geysermc.mcprotocollib.network.Session;
+import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.scoreboard.ClientboundSetPlayerTeamPacket;
 
@@ -13,6 +14,11 @@ public class TeamPlugin extends Bot.Listener {
 
     public TeamPlugin (Bot bot) {
         bot.addListener(this);
+    }
+
+    @Override
+    public void disconnected(DisconnectedEvent event) {
+        teams.clear();
     }
 
     public synchronized Team findTeamByName (String name) {

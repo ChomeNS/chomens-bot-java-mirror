@@ -3,6 +3,7 @@ package me.chayapak1.chomens_bot.plugins;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.Team;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
+import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
 
 import java.util.ArrayList;
 
@@ -16,7 +17,18 @@ public class TeamJoinerPlugin extends TickPlugin.Listener {
         this.bot = bot;
         this.teamName = bot.config.teamName;
 
+        bot.addListener(new Bot.Listener() {
+            @Override
+            public void connected(ConnectedEvent event) {
+                TeamJoinerPlugin.this.connected();
+            }
+        });
+
         bot.tick.addListener(this);
+    }
+
+    private void connected () {
+        addTeam();
     }
 
     @Override
