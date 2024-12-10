@@ -9,6 +9,7 @@ import me.chayapak1.chomens_bot.plugins.CommandHandlerPlugin;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -85,6 +86,10 @@ public class HelpCommand extends Command {
                     Component
                             .text(name)
                             .color(getColorByTrustLevel(trustLevel))
+                            .clickEvent(
+                                    ClickEvent.suggestCommand(context.prefix + name) // *command
+                            )
+                            .insertion(context.prefix + this.name + " " + name) // *help <command>
                             .hoverEvent(
                                     HoverEvent.showText(
                                             sendUsages(context, name)
@@ -137,18 +142,6 @@ public class HelpCommand extends Command {
                 Component usageComponent = Component.empty()
                         .append(Component.text(prefix + actualCommandName).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
                         .append(Component.text(" "));
-
-                if (command.trustLevel == TrustLevel.TRUSTED) {
-                    usageComponent = usageComponent
-                            .append(Component.text("<hash>"))
-                            .append(Component.space())
-                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.string));
-                } else if (command.trustLevel == TrustLevel.OWNER) {
-                    usageComponent = usageComponent
-                            .append(Component.text("<ownerHash>"))
-                            .append(Component.space())
-                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.string));
-                }
 
                 usageComponent = usageComponent.append(Component.text(usage).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)));
 
