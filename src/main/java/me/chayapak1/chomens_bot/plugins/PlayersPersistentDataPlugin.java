@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.locks.ReentrantLock;
 
+// this is the most problematic plugin that breaks everything when it crashes
 public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
     public static ObjectNode playersObject = (ObjectNode) PersistentDataUtilities.getOrDefault("players", JsonNodeFactory.instance.objectNode());
 
@@ -64,15 +65,17 @@ public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
 
     // is this bad?
     private void setPersistentEntry (PlayerEntry target, ObjectNode object) {
-        lock.lock();
         try {
+            lock.lock();
+
             playersObject.set(getName(target), object);
 
             PersistentDataUtilities.put("players", playersObject);
+
+            lock.unlock();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        lock.unlock();
     }
 
     private String getName (PlayerEntry target) {
@@ -82,19 +85,23 @@ public class PlayersPersistentDataPlugin extends PlayersPlugin.Listener {
     @Override
     public void playerLeft(PlayerEntry target) {
         bot.executorService.submit(() -> {
-            if (!playersObject.has(getName(target))) return;
+            try {
+                if (!playersObject.has(getName(target))) return;
 
-            final ObjectNode player = (ObjectNode) playersObject.get(getName(target));
+                final ObjectNode player = (ObjectNode) playersObject.get(getName(target));
 
-            final ObjectNode object = JsonNodeFactory.instance.objectNode();
-            object.put("time", Instant.now().toEpochMilli());
-            object.put("server", bot.host + ":" + bot.port);
+                final ObjectNode object = JsonNodeFactory.instance.objectNode();
+                object.put("time", Instant.now().toEpochMilli());
+                object.put("server", bot.host + ":" + bot.port);
 
-            player.set("lastSeen", object);
+                player.set("lastSeen", object);
 
-            PersistentDataUtilities.put("players", playersObject);
+                PersistentDataUtilities.put("players", playersObject);
 
-            lock.unlock();
+                lock.unlock();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
     }
 }

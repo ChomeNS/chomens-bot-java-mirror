@@ -178,7 +178,11 @@ public class Bot {
             @Override
             public void packetReceived(Session session, Packet packet) {
                 for (SessionListener listener : listeners) {
-                    listener.packetReceived(session, packet);
+                    try {
+                        listener.packetReceived(session, packet);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 if (packet instanceof ClientboundLoginPacket) {
