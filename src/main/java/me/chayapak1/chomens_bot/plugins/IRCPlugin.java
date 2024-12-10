@@ -18,6 +18,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 
 import javax.net.ssl.SSLSocketFactory;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class IRCPlugin extends ListenerAdapter {
     private final Configuration.IRC ircConfig;
@@ -83,7 +84,7 @@ public class IRCPlugin extends ListenerAdapter {
             bot.irc = this;
         }
 
-        // Main.executor.scheduleAtFixedRate(this::queueTick, 0, 500, TimeUnit.MILLISECONDS);
+         Main.executor.scheduleAtFixedRate(this::queueTick, 0, 100, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -201,8 +202,7 @@ public class IRCPlugin extends ListenerAdapter {
 
                 final String withIRCColors = ColorUtilities.convertAnsiToIrc(firstLog);
 
-                // we don't need the queue
-                bot.sendRaw().rawLineNow("PRIVMSG " + entry.getKey() + " :" + withIRCColors);
+                bot.sendIRC().message(entry.getKey(), withIRCColors);
             }
         } catch (Exception ignored) {}
     }
@@ -232,10 +232,6 @@ public class IRCPlugin extends ListenerAdapter {
 
         if (channel == null) return;
 
-        final String withIRCColors = ColorUtilities.convertAnsiToIrc(message);
-
-        this.bot.sendIRC().message(channel, withIRCColors);
-
-        // addMessageToQueue(channel, message);
+        addMessageToQueue(channel, message);
     }
 }
