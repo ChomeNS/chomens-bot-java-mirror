@@ -228,10 +228,7 @@ public class IRCPlugin extends ListenerAdapter {
 
         final String channel = servers.get(hostAndPort);
 
-        if (channel == null) {
-            bot.logger.error("Channel is not configured for " + hostAndPort);
-            return;
-        }
+        if (channel == null) return;
 
         addMessageToQueue(channel, message);
     }
