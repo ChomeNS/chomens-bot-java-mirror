@@ -258,7 +258,12 @@ public class ComponentUtilities {
                     replacedContent = Pattern
                             .compile("(§.)")
                             .matcher(message.content())
-                            .replaceAll(m -> ansiMap.get(m.group(0).substring(1)));
+                            .replaceAll(m -> {
+                                final String code = m.group(0).substring(1);
+
+                                if (!code.equals("r")) return ansiMap.get(code);
+                                else return color;
+                            });
                 } catch (Exception ignored) {}
             }
 
