@@ -50,4 +50,14 @@ public class DatabasePlugin {
 
         return statement.executeUpdate(query);
     }
+
+    public void stop () {
+        executorService.shutdown();
+
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

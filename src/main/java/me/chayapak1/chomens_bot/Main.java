@@ -148,6 +148,8 @@ public class Main {
 
         executorService.shutdown();
 
+        database.stop();
+
         try {
             final boolean ignoredExecutorDone = executor.awaitTermination(5, TimeUnit.SECONDS);
             final boolean ignoredExecutorServiceDone = executorService.awaitTermination(5, TimeUnit.SECONDS);
