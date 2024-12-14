@@ -56,6 +56,8 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
 
             final ResultSet result = statement.executeQuery();
 
+            if (!result.isBeforeFirst()) return null; // doesn't exist
+
             // this will use only the first one in the output
             result.next();
             final String stringJson = result.getString("data");
