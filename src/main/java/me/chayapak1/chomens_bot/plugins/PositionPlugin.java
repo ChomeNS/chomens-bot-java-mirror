@@ -3,6 +3,7 @@ package me.chayapak1.chomens_bot.plugins;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
 import me.chayapak1.chomens_bot.data.Rotation;
+import me.chayapak1.chomens_bot.util.MathUtilities;
 import org.cloudburstmc.math.vector.Vector3d;
 import org.cloudburstmc.math.vector.Vector3f;
 import org.geysermc.mcprotocollib.network.Session;
@@ -166,7 +167,7 @@ public class PositionPlugin extends Bot.Listener {
         final int minY = bot.world.minY;
         final int maxY = bot.world.maxY;
 
-        if (y < maxY && y > minY) {
+        if (y <= maxY && y >= minY) {
             if (isGoingDownFromHeightLimit) {
                 isGoingDownFromHeightLimit = false;
 
@@ -183,7 +184,7 @@ public class PositionPlugin extends Bot.Listener {
 
             if (bot.serverPluginsManager.hasPlugin(ServerPluginsManagerPlugin.ESSENTIALS)) command += "essentials:";
 
-            command += String.format("tp ~ %s ~", maxY - 1);
+            command += String.format("tp ~ %s ~", maxY);
 
             bot.chat.send(command);
 
@@ -192,7 +193,7 @@ public class PositionPlugin extends Bot.Listener {
 
         final Vector3d newPosition = Vector3d.from(
                 position.getX(),
-                position.getY() - 2,
+                MathUtilities.clamp(position.getY() - 2, maxY, position.getY()),
                 position.getZ()
         );
 
