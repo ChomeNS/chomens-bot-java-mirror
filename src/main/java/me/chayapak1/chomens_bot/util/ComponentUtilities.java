@@ -101,7 +101,7 @@ public class ComponentUtilities {
 
             builder.append(output.output);
 
-            for (Component child : message.children()) builder.append(stringify(child, output.lastColor, depth));
+            for (Component child : message.children()) builder.append(stringify(child, lastColor != null ? lastColor : output.lastColor, depth));
 
             return builder.toString();
         } catch (Exception e) {
@@ -120,7 +120,7 @@ public class ComponentUtilities {
 
             builder.append(output.output);
 
-            for (Component child : message.children()) builder.append(stringifyMotd(child, output.lastColor, depth));
+            for (Component child : message.children()) builder.append(stringifyMotd(child, lastColor != null ? lastColor : output.lastColor, depth));
 
             return builder.toString();
         } catch (Exception e) {
@@ -140,7 +140,7 @@ public class ComponentUtilities {
 
             builder.append(output.output);
 
-            for (Component child : message.children()) builder.append(stringifyAnsi(child, output.lastColor, noHex, depth));
+            for (Component child : message.children()) builder.append(stringifyAnsi(child, lastColor != null ? lastColor : output.lastColor, noHex, depth));
 
             return builder.toString();
         } catch (Exception e) {
