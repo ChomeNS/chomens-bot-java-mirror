@@ -23,6 +23,12 @@ backup:
   interval: 1000 # in milliseconds
   failTimes: 2
 
+database:
+  enabled: false
+  address: 'localhost' # jdbc:mysql://<address>/chomens_bot
+  username: 'chomens_bot'
+  password: '123456'
+
 discord:
   enabled: false
   prefix: 'default!'

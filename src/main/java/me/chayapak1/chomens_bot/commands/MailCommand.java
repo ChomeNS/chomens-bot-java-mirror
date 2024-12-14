@@ -1,8 +1,5 @@
 package me.chayapak1.chomens_bot.commands;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
@@ -10,9 +7,8 @@ import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.Mail;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
-import me.chayapak1.chomens_bot.plugins.MailPlugin;
+import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
-import me.chayapak1.chomens_bot.util.PersistentDataUtilities;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
@@ -43,28 +39,32 @@ public class MailCommand extends Command {
     public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        final PlayerEntry sender = context.sender;
+        if (bot.database == null) throw new CommandException(Component.text("Database is not enabled in the bot's config"));
 
-        final ObjectMapper objectMapper = MailPlugin.objectMapper;
+        final PlayerEntry sender = context.sender;
 
         // kinda messy ngl
 
         final String action = context.getString(false, true, true);
 
         switch (action) {
-            case "send" -> {
-                bot.mail.send(
-                        new Mail(
-                                sender.profile.getName(),
-                                context.getString(false, true),
-                                Instant.now().toEpochMilli(),
-                                bot.host + ":" + bot.port,
-                                context.getString(true, true)
-                        )
-                );
+            case "send" -> DatabasePlugin.executorService.submit(() -> {
+                try {
+                    bot.mail.send(
+                            new Mail(
+                                    sender.profile.getName(),
+                                    context.getString(false, true),
+                                    Instant.now().toEpochMilli(),
+                                    bot.host + ":" + bot.port,
+                                    context.getString(true, true)
+                            )
+                    );
 
-                return Component.text("Mail sent!").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
-            }
+                    context.sendOutput(Component.text("Mail sent!").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)));
+                } catch (CommandException e) {
+                    context.sendOutput(e.message.color(NamedTextColor.RED));
+                }
+            });
             case "sendselecteditem" -> {
                 context.checkOverloadArgs(2);
 
@@ -79,23 +79,29 @@ public class MailCommand extends Command {
                             throw new CommandException(Component.text("Player has no `message` NBT tag in their selected item's minecraft:custom_data"));
                         }
 
-                        bot.mail.send(
-                                new Mail(
-                                        sender.profile.getName(),
-                                        context.getString(true, true),
-                                        Instant.now().toEpochMilli(),
-                                        bot.host + ":" + bot.port,
-                                        output
-                                )
-                        );
+                        DatabasePlugin.executorService.submit(() -> {
+                            try {
+                                bot.mail.send(
+                                        new Mail(
+                                                sender.profile.getName(),
+                                                context.getString(true, true),
+                                                Instant.now().toEpochMilli(),
+                                                bot.host + ":" + bot.port,
+                                                output
+                                        )
+                                );
+
+                                context.sendOutput(
+                                        Component.text("Mail sent!").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
+                                );
+                            } catch (CommandException e) {
+                                context.sendOutput(e.message.color(NamedTextColor.RED));
+                            }
+                        });
                     } catch (CommandException e) {
                         context.sendOutput(e.message.color(NamedTextColor.RED));
-                        return output;
+                        return null;
                     }
-
-                    context.sendOutput(
-                            Component.text("Mail sent!").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
-                    );
 
                     return output;
                 });
@@ -103,31 +109,24 @@ public class MailCommand extends Command {
             case "read" -> {
                 context.checkOverloadArgs(1);
 
-                // TODO: use less for loops?
+                DatabasePlugin.executorService.submit(() -> {
+                    final List<Mail> mails = bot.mail.list();
 
-                int senderMailSize = 0;
-                for (JsonNode mailElement : MailPlugin.mails.deepCopy()) {
-                    try {
-                        final Mail mail = objectMapper.treeToValue(mailElement, Mail.class);
-
+                    int senderMailSize = 0;
+                    for (Mail mail : mails) {
                         if (!mail.sentTo.equals(sender.profile.getName())) continue;
                         senderMailSize++;
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
                     }
-                }
 
-                if (senderMailSize == 0) {
-                    throw new CommandException(Component.text("You have no new mails"));
-                }
+                    if (senderMailSize == 0) {
+                        context.sendOutput(Component.text("You have no new mails").color(NamedTextColor.RED));
+                    }
 
-                final List<Component> mailsComponent = new ArrayList<>();
+                    final int tempFinalSenderMailSize = senderMailSize;
+                    final List<Component> mailsComponent = new ArrayList<>();
 
-                int count = 1;
-                for (JsonNode mailElement : MailPlugin.mails.deepCopy()) {
-                    try {
-                        final Mail mail = objectMapper.treeToValue(mailElement, Mail.class);
-
+                    int count = 1;
+                    for (Mail mail : mails) {
                         if (!mail.sentTo.equals(sender.profile.getName())) continue;
 
                         final Instant instant = Instant.ofEpochMilli(mail.timeSent);
@@ -166,39 +165,27 @@ public class MailCommand extends Command {
                         );
 
                         count++;
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
                     }
-                }
 
-                final Component component = Component.empty()
-                        .append(Component.text("Mails ").color(NamedTextColor.GREEN))
-                        .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
-                        .append(Component.text(senderMailSize).color(NamedTextColor.GRAY))
-                        .append(Component.text(")").color(NamedTextColor.DARK_GRAY))
-                        .append(Component.newline())
-                        .append(Component.join(JoinConfiguration.newlines(), mailsComponent));
+                    final Component component = Component.empty()
+                            .append(Component.text("Mails ").color(NamedTextColor.GREEN))
+                            .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
+                            .append(Component.text(tempFinalSenderMailSize).color(NamedTextColor.GRAY))
+                            .append(Component.text(")").color(NamedTextColor.DARK_GRAY))
+                            .append(Component.newline())
+                            .append(Component.join(JoinConfiguration.newlines(), mailsComponent));
 
-                if (context.inGame) {
-                    bot.chat.tellraw(
-                            component,
-                            context.sender.profile.getId()
-                    );
-                } else {
-                    context.sendOutput(component);
-                }
-
-                for (JsonNode mailElement : MailPlugin.mails.deepCopy()) {
-                    try {
-                        final Mail mail = objectMapper.treeToValue(mailElement, Mail.class);
-
-                        if (mail.sentTo.equals(sender.profile.getName())) bot.mail.remove(mailElement);
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                    if (context.inGame) {
+                        bot.chat.tellraw(
+                                component,
+                                context.sender.profile.getId()
+                        );
+                    } else {
+                        context.sendOutput(component);
                     }
-                }
 
-                PersistentDataUtilities.put("mails", MailPlugin.mails);
+                    bot.mail.clear(sender.profile.getName());
+                });
             }
             default -> context.sendOutput(Component.text("Invalid action").color(NamedTextColor.RED));
         }

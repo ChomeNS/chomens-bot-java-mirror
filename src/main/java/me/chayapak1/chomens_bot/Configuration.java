@@ -14,6 +14,8 @@ public class Configuration {
     public Keys keys = new Keys();
     public Backup backup = new Backup();
 
+    public Database database = new Database();
+
     public String weatherApiKey;
 
     public String bossBarNamespace = "chomens_bot";
@@ -55,6 +57,13 @@ public class Configuration {
         public String address = "http://fard.sex/check";
         public int interval = 1000;
         public int failTimes = 2;
+    }
+
+    public static class Database {
+        public boolean enabled = false;
+        public String address = "localhost";
+        public String username = "chomens_bot";
+        public String password = "123456";
     }
 
     public static class Keys {

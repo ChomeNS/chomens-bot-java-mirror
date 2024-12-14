@@ -1,33 +1,53 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.data.FilteredPlayer;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
 import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
-import me.chayapak1.chomens_bot.util.PersistentDataUtilities;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class FilterPlugin extends PlayersPlugin.Listener {
-    public static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS filters (name VARCHAR(255) PRIMARY KEY, regex BOOLEAN, ignoreCase BOOLEAN);";
+    private static final String LIST_FILTERS = "SELECT * FROM filters;";
+    private static final String INSERT_FILTER = "INSERT INTO filters (name, regex, ignoreCase) VALUES (?, ?, ?);";
+    private static final String REMOVE_FILTER = "DELETE FROM filters WHERE name = ?;";
+    private static final String CLEAR_FILTER = "DELETE FROM filters;";
+
+    public static List<FilteredPlayer> localList = new ArrayList<>();
+
+    static {
+        if (Main.database != null) {
+            DatabasePlugin.executorService.submit(() -> {
+                try {
+                    Main.database.execute(CREATE_TABLE);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            Main.executor.scheduleAtFixedRate(FilterPlugin::list, 3, 5, TimeUnit.SECONDS);
+        }
+    }
 
     private final Bot bot;
 
-    public static ArrayNode filteredPlayers = (ArrayNode) PersistentDataUtilities.getOrDefault("filters", JsonNodeFactory.instance.arrayNode());
-
     public FilterPlugin (Bot bot) {
         this.bot = bot;
+
+        if (Main.database == null) return;
 
         bot.players.addListener(this);
 
@@ -50,16 +70,34 @@ public class FilterPlugin extends PlayersPlugin.Listener {
         bot.executor.scheduleAtFixedRate(this::kick, 0, 10, TimeUnit.SECONDS);
     }
 
-    private FilteredPlayer getPlayer (String name) {
-        for (JsonNode filteredPlayerElement : filteredPlayers.deepCopy()) {
-            try {
-                final FilteredPlayer filteredPlayer = objectMapper.treeToValue(filteredPlayerElement, FilteredPlayer.class);
+    public static List<FilteredPlayer> list () {
+        final List<FilteredPlayer> output = new ArrayList<>();
 
-                if (matchesPlayer(name, filteredPlayer)) {
-                    return filteredPlayer;
-                }
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
+        try (ResultSet result = Main.database.query(LIST_FILTERS)) {
+            if (result == null) return output;
+
+            while (result.next()) {
+                final FilteredPlayer filteredPlayer = new FilteredPlayer(
+                        result.getString("name"),
+                        result.getBoolean("regex"),
+                        result.getBoolean("ignoreCase")
+                );
+
+                output.add(filteredPlayer);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        localList = output;
+
+        return output;
+    }
+
+    private FilteredPlayer getPlayer (String name) {
+        for (FilteredPlayer filteredPlayer : localList) {
+            if (matchesPlayer(name, filteredPlayer)) {
+                return filteredPlayer;
             }
         }
 
@@ -180,9 +218,19 @@ public class FilterPlugin extends PlayersPlugin.Listener {
     }
 
     public void add (String playerName, boolean regex, boolean ignoreCase) {
-        filteredPlayers.add(objectMapper.valueToTree(new FilteredPlayer(playerName, regex, ignoreCase)));
+        try {
+            final PreparedStatement statement = bot.database.connection.prepareStatement(INSERT_FILTER);
 
-        PersistentDataUtilities.put("filters", filteredPlayers);
+            statement.setString(1, playerName);
+            statement.setBoolean(2, regex);
+            statement.setBoolean(3, ignoreCase);
+
+            statement.executeUpdate();
+
+            list();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         final PlayerEntry target = bot.players.getEntry(playerName); // fix not working for regex and ignorecase
 
@@ -191,21 +239,27 @@ public class FilterPlugin extends PlayersPlugin.Listener {
         doAll(target);
     }
 
-    public FilteredPlayer remove (int index) {
-        final JsonNode element = filteredPlayers.remove(index);
-
-        PersistentDataUtilities.put("filters", filteredPlayers);
-
+    public void remove (String playerName) {
         try {
-            return objectMapper.treeToValue(element, FilteredPlayer.class);
-        } catch (JsonProcessingException e) {
-            return null;
+            final PreparedStatement statement = bot.database.connection.prepareStatement(REMOVE_FILTER);
+
+            statement.setString(1, playerName);
+
+            statement.executeUpdate();
+
+            list();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
     public void clear () {
-        while (!filteredPlayers.isEmpty()) filteredPlayers.remove(0);
+        try {
+            bot.database.update(CLEAR_FILTER);
 
-        PersistentDataUtilities.put("filters", filteredPlayers);
+            list();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,14 +1,12 @@
 package me.chayapak1.chomens_bot.commands;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.FilteredPlayer;
+import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
 import me.chayapak1.chomens_bot.plugins.FilterPlugin;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
@@ -46,7 +44,7 @@ public class FilterCommand extends Command {
         boolean ignoreCase = false;
         boolean regex = false;
 
-        String action = context.getString(false, true);
+        String action = context.getString(false, true, true);
 
         // run 2 times. for example `*filter -ignorecase -regex add test` will be both accepted
         for (int i = 0; i < 2; i++) {
@@ -59,13 +57,14 @@ public class FilterCommand extends Command {
             }
         }
 
-        final ObjectMapper objectMapper = FilterPlugin.objectMapper;
-
         switch (action) {
             case "add" -> {
                 final String player = context.getString(true, true);
 
-                bot.filter.add(player, regex, ignoreCase);
+                final boolean finalRegex = regex;
+                final boolean finalIgnoreCase = ignoreCase;
+
+                DatabasePlugin.executorService.submit(() -> bot.filter.add(player, finalRegex, finalIgnoreCase));
                 return Component.translatable(
                         "Added %s to the filters",
                         Component.text(player).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
@@ -74,23 +73,23 @@ public class FilterCommand extends Command {
             case "remove" -> {
                 context.checkOverloadArgs(2);
 
-                try {
-                    final int index = context.getInteger(true);
+                final int index = context.getInteger(true);
 
-                    final FilteredPlayer removed = bot.filter.remove(index);
+                final FilteredPlayer player = FilterPlugin.localList.get(index);
 
-                    return Component.translatable(
-                            "Removed %s from the filters",
-                            Component.text(removed.playerName).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
-                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
-                } catch (IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
-                    throw new CommandException(Component.text("Invalid index"));
-                }
+                if (player == null) throw new CommandException(Component.text("Invalid index"));
+
+                DatabasePlugin.executorService.submit(() -> bot.filter.remove(player.playerName));
+
+                return Component.translatable(
+                        "Removed %s from the filters",
+                        Component.text(player.playerName).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
+                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "clear" -> {
                 context.checkOverloadArgs(1);
 
-                bot.filter.clear();
+                DatabasePlugin.executorService.submit(() -> bot.filter.clear());
                 return Component.text("Cleared the filter").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "list" -> {
@@ -99,42 +98,36 @@ public class FilterCommand extends Command {
                 final List<Component> filtersComponents = new ArrayList<>();
 
                 int index = 0;
-                for (JsonNode playerElement : FilterPlugin.filteredPlayers.deepCopy()) {
-                    try {
-                        final FilteredPlayer player = objectMapper.treeToValue(playerElement, FilteredPlayer.class);
+                for (FilteredPlayer player : FilterPlugin.localList) {
+                    Component options = Component.empty().color(NamedTextColor.DARK_GRAY);
 
-                        Component options = Component.empty().color(NamedTextColor.DARK_GRAY);
+                    if (player.ignoreCase || player.regex) {
+                        final List<Component> args = new ArrayList<>();
 
-                        if (player.ignoreCase || player.regex) {
-                            final List<Component> args = new ArrayList<>();
+                        if (player.ignoreCase) args.add(Component.text("ignore case"));
+                        if (player.regex) args.add(Component.text("regex"));
 
-                            if (player.ignoreCase) args.add(Component.text("ignore case"));
-                            if (player.regex) args.add(Component.text("regex"));
-
-                            options = options.append(Component.text("("));
-                            options = options.append(Component.join(JoinConfiguration.commas(true), args).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)));
-                            options = options.append(Component.text(")"));
-                        }
-
-                        filtersComponents.add(
-                                Component.translatable(
-                                        "%s › %s %s",
-                                        Component.text(index).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
-                                        Component.text(player.playerName).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)),
-                                        options
-                                ).color(NamedTextColor.DARK_GRAY)
-                        );
-
-                        index++;
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        options = options.append(Component.text("("));
+                        options = options.append(Component.join(JoinConfiguration.commas(true), args).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)));
+                        options = options.append(Component.text(")"));
                     }
+
+                    filtersComponents.add(
+                            Component.translatable(
+                                    "%s › %s %s",
+                                    Component.text(index).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
+                                    Component.text(player.playerName).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)),
+                                    options
+                            ).color(NamedTextColor.DARK_GRAY)
+                    );
+
+                    index++;
                 }
 
                 return Component.empty()
                         .append(Component.text("Filtered players ").color(NamedTextColor.GREEN))
                         .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
-                        .append(Component.text(FilterPlugin.filteredPlayers.size()).color(NamedTextColor.GRAY))
+                        .append(Component.text(FilterPlugin.localList.size()).color(NamedTextColor.GRAY))
                         .append(Component.text(")").color(NamedTextColor.DARK_GRAY))
                         .append(Component.newline())
                         .append(

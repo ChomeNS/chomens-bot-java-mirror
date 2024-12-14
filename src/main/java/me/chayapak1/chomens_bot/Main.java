@@ -1,10 +1,7 @@
 package me.chayapak1.chomens_bot;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import me.chayapak1.chomens_bot.plugins.ConsolePlugin;
-import me.chayapak1.chomens_bot.plugins.DiscordPlugin;
-import me.chayapak1.chomens_bot.plugins.IRCPlugin;
-import me.chayapak1.chomens_bot.plugins.LoggerPlugin;
+import me.chayapak1.chomens_bot.plugins.*;
 import me.chayapak1.chomens_bot.util.*;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import org.yaml.snakeyaml.LoaderOptions;
@@ -42,6 +39,7 @@ public class Main {
 
     private static int backupFailTimes = 0;
 
+    public static DatabasePlugin database;
     private static DiscordPlugin discord;
 
     public static void main(String[] args) throws IOException {
@@ -123,11 +121,10 @@ public class Main {
                 bots.add(bot);
             }
 
-            // initialize util classes and plugins
-            PersistentDataUtilities.init();
-
+            // initialize plugins
             new ConsolePlugin();
             LoggerPlugin.init();
+            if (config.database.enabled) database = new DatabasePlugin(config);
             if (config.discord.enabled) discord = new DiscordPlugin(config);
             if (config.irc.enabled) new IRCPlugin(config);
 
@@ -148,8 +145,6 @@ public class Main {
         stopping = true;
 
         executor.shutdown();
-
-        PersistentDataUtilities.stop();
 
         executorService.shutdown();
 

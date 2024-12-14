@@ -61,6 +61,7 @@ public class Bot {
     public ChatPlugin chat;
     public CommandSpyPlugin commandSpy;
     public PositionPlugin position;
+    public DatabasePlugin database;
     public ServerPluginsManagerPlugin serverPluginsManager;
     public SelfCarePlugin selfCare;
     public QueryPlugin query;
@@ -93,7 +94,7 @@ public class Bot {
     public FormatCheckerPlugin formatChecker;
     public ClearChatNameAnnouncerPlugin clearChatNameAnnouncer;
     public WhitelistPlugin whitelist;
-    public PlayersPersistentDataPlugin playersPersistent;
+    public PlayersDatabasePlugin playersDatabase;
     public IPFilterPlugin ipFilter;
 
     public Bot (Configuration.BotOption botOption, List<Bot> bots, Configuration config) {
@@ -144,7 +145,7 @@ public class Bot {
         this.formatChecker = new FormatCheckerPlugin(this);
         this.clearChatNameAnnouncer = new ClearChatNameAnnouncerPlugin(this);
         this.whitelist = new WhitelistPlugin(this);
-        this.playersPersistent = new PlayersPersistentDataPlugin(this);
+        this.playersDatabase = new PlayersDatabasePlugin(this);
         this.ipFilter = new IPFilterPlugin(this);
 
         for (Listener listener : listeners) listener.loadedPlugins();

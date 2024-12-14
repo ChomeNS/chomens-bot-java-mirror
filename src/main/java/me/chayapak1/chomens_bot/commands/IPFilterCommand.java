@@ -1,11 +1,11 @@
 package me.chayapak1.chomens_bot.commands;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
+import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
 import me.chayapak1.chomens_bot.plugins.IPFilterPlugin;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
@@ -19,7 +19,7 @@ public class IPFilterCommand extends Command {
     public IPFilterCommand() {
         super(
                 "ipfilter",
-                "Filter IPs",
+                "Filters IPs",
                 new String[] {
                         "add <ip>",
                         "remove <index>",
@@ -43,7 +43,7 @@ public class IPFilterCommand extends Command {
             case "add" -> {
                 final String ip = context.getString(true, true);
 
-                bot.ipFilter.add(ip);
+                DatabasePlugin.executorService.submit(() -> bot.ipFilter.add(ip));
                 return Component.translatable(
                         "Added %s to the filters",
                         Component.text(ip).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
@@ -52,23 +52,23 @@ public class IPFilterCommand extends Command {
             case "remove" -> {
                 context.checkOverloadArgs(2);
 
-                try {
-                    final int index = context.getInteger(true);
+                final int index = context.getInteger(true);
 
-                    final String removed = bot.ipFilter.remove(index);
+                final String targetIP = IPFilterPlugin.localList.get(index);
 
-                    return Component.translatable(
-                            "Removed %s from the filters",
-                            Component.text(removed).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
-                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
-                } catch (IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
-                    throw new CommandException(Component.text("Invalid index"));
-                }
+                if (targetIP == null) throw new CommandException(Component.text("Invalid index"));
+
+                DatabasePlugin.executorService.submit(() -> bot.ipFilter.remove(targetIP));
+
+                return Component.translatable(
+                        "Removed %s from the filters",
+                        Component.text(targetIP).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
+                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "clear" -> {
                 context.checkOverloadArgs(1);
 
-                bot.ipFilter.clear();
+                DatabasePlugin.executorService.submit(() -> bot.ipFilter.clear());
                 return Component.text("Cleared the filter").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "list" -> {
@@ -77,12 +77,12 @@ public class IPFilterCommand extends Command {
                 final List<Component> filtersComponents = new ArrayList<>();
 
                 int index = 0;
-                for (JsonNode playerElement : IPFilterPlugin.filteredIPs.deepCopy()) {
+                for (String ip : IPFilterPlugin.localList) {
                     filtersComponents.add(
                             Component.translatable(
                                     "%s › %s",
                                     Component.text(index).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
-                                    Component.text(playerElement.asText()).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
+                                    Component.text(ip).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
                             ).color(NamedTextColor.DARK_GRAY)
                     );
 
@@ -92,16 +92,14 @@ public class IPFilterCommand extends Command {
                 return Component.empty()
                         .append(Component.text("Filtered IPs ").color(NamedTextColor.GREEN))
                         .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
-                        .append(Component.text(IPFilterPlugin.filteredIPs.size()).color(NamedTextColor.GRAY))
+                        .append(Component.text(IPFilterPlugin.localList.size()).color(NamedTextColor.GRAY))
                         .append(Component.text(")").color(NamedTextColor.DARK_GRAY))
                         .append(Component.newline())
                         .append(
                                 Component.join(JoinConfiguration.newlines(), filtersComponents)
                         );
             }
-            default -> {
-                throw new CommandException(Component.text("Invalid action"));
-            }
+            default -> throw new CommandException(Component.text("Invalid action"));
         }
     }
 }

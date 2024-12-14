@@ -1,22 +1,46 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
-import me.chayapak1.chomens_bot.util.PersistentDataUtilities;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class IPFilterPlugin extends PlayersPlugin.Listener {
-    private final Bot bot;
+    private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ipFilters (ip VARCHAR(255) PRIMARY KEY);";
+    private static final String LIST_FILTERS = "SELECT * FROM ipFilters;";
+    private static final String INSERT_FILTER = "INSERT INTO ipFilters (ip) VALUES (?);";
+    private static final String REMOVE_FILTER = "DELETE FROM ipFilters WHERE ip = ?;";
+    private static final String CLEAR_FILTER = "DELETE FROM ipFilters;";
 
-    public static ArrayNode filteredIPs = (ArrayNode) PersistentDataUtilities.getOrDefault("ipFilters", JsonNodeFactory.instance.arrayNode());
+    public static List<String> localList = new ArrayList<>();
+
+    static {
+        if (Main.database != null) {
+            DatabasePlugin.executorService.submit(() -> {
+                try {
+                    Main.database.execute(CREATE_TABLE);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            Main.executor.scheduleAtFixedRate(IPFilterPlugin::list, 3, 5, TimeUnit.SECONDS);
+        }
+    }
+
+    private final Bot bot;
 
     public IPFilterPlugin (Bot bot) {
         this.bot = bot;
+
+        if (Main.database == null) return;
 
         bot.players.addListener(this);
 
@@ -25,7 +49,7 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
 
     @Override
     public void playerJoined(PlayerEntry target) {
-        if (filteredIPs.isEmpty()) return;
+        if (localList.isEmpty()) return;
 
         check(target);
     }
@@ -44,39 +68,75 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
         });
     }
 
-    public void add (String ip) {
-        filteredIPs.add(ip);
 
-        PersistentDataUtilities.put("ipFilters", filteredIPs);
+
+    public static List<String> list () {
+        final List<String> output = new ArrayList<>();
+
+        try (ResultSet result = Main.database.query(LIST_FILTERS)) {
+            if (result == null) return output;
+
+            while (result.next()) output.add(result.getString("ip"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        localList = output;
+
+        return output;
+    }
+
+    public void add (String ip) {
+        try {
+            final PreparedStatement statement = bot.database.connection.prepareStatement(INSERT_FILTER);
+
+            statement.setString(1, ip);
+
+            statement.executeUpdate();
+
+            list();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         checkAllPlayers();
     }
 
     private void checkAllPlayers () {
-        if (filteredIPs.isEmpty()) return;
+        if (localList.isEmpty()) return;
 
         bot.executorService.submit(() -> {
             for (PlayerEntry entry : bot.players.list) check(entry);
         });
     }
 
-    public String remove (int index) {
-        final JsonNode element = filteredIPs.remove(index);
+    public void remove (String ip) {
+        try {
+            final PreparedStatement statement = bot.database.connection.prepareStatement(REMOVE_FILTER);
 
-        PersistentDataUtilities.put("ipFilters", filteredIPs);
+            statement.setString(1, ip);
 
-        return element.asText();
+            statement.executeUpdate();
+
+            list();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void clear () {
-        while (!filteredIPs.isEmpty()) filteredIPs.remove(0);
+        try {
+            bot.database.update(CLEAR_FILTER);
 
-        PersistentDataUtilities.put("ipFilters", filteredIPs);
+            list();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void handleIP (String ip, PlayerEntry entry) {
-        for (JsonNode element : filteredIPs.deepCopy()) {
-            if (!element.asText().equals(ip)) continue;
+        for (String eachIP : localList) {
+            if (!eachIP.equals(ip)) continue;
 
             if (entry.profile.getId().equals(bot.profile.getId())) continue;
 

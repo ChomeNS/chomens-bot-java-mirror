@@ -7,7 +7,7 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
-import me.chayapak1.chomens_bot.plugins.PlayersPersistentDataPlugin;
+import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
@@ -33,8 +33,10 @@ public class SeenCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context) throws Exception {
+    public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
+
+        if (bot.database == null) throw new CommandException(Component.text("Database is not enabled in the bot's config"));
 
         final String player = context.getString(true, true);
 
@@ -58,32 +60,44 @@ public class SeenCommand extends Command {
 
         if (online) return Component.join(JoinConfiguration.newlines(), onlineComponents);
 
-        final JsonNode playerElement = PlayersPersistentDataPlugin.playersObject.get(player);
-        if (playerElement == null || playerElement.isNull()) throw new CommandException(Component.translatable(
-                "%s was never seen",
-                Component.text(player)
-        ));
+        DatabasePlugin.executorService.submit(() -> {
+            try {
+                final JsonNode playerElement = bot.playersDatabase.getPlayerData(player);
+                if (playerElement == null) throw new CommandException(Component.translatable(
+                        "%s was never seen",
+                        Component.text(player)
+                ));
 
-        final ObjectNode lastSeen = (ObjectNode) playerElement.get("lastSeen");
+                final ObjectNode lastSeen = (ObjectNode) playerElement.get("lastSeen");
 
-        final JsonNode time = lastSeen.get("time");
+                if (lastSeen == null || lastSeen.isNull()) throw new CommandException(Component.text("This player doesn't seem to have the last seen entry in the database for some reason."));
 
-        if (time == null || time.isNull()) throw new CommandException(Component.text("This player does not have the `lastSeen.time` entry in the database for some reason."));
+                final JsonNode time = lastSeen.get("time");
 
-        final Instant instant = Instant.ofEpochMilli(time.asLong());
-        final ZoneId zoneId = ZoneId.of("UTC"); // should i be doing this?
-        final OffsetDateTime localDateTime = OffsetDateTime.ofInstant(instant, zoneId);
+                if (time == null || time.isNull()) throw new CommandException(Component.text("This player doesn't seem to have the `lastSeen.time` entry in the database for some reason."));
 
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy, hh:mm:ss a Z");
-        final String formattedTime = localDateTime.format(formatter);
+                final Instant instant = Instant.ofEpochMilli(time.asLong());
+                final ZoneId zoneId = ZoneId.of("UTC"); // should i be doing this?
+                final OffsetDateTime localDateTime = OffsetDateTime.ofInstant(instant, zoneId);
 
-        final String server = lastSeen.get("server").asText();
+                final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy, hh:mm:ss a Z");
+                final String formattedTime = localDateTime.format(formatter);
 
-        return Component.translatable(
-                "%s was last seen at %s on %s",
-                Component.text(player).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)),
-                Component.text(formattedTime).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
-                Component.text(server).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
-        ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                final String server = lastSeen.get("server").asText();
+
+                context.sendOutput(Component.translatable(
+                        "%s was last seen at %s on %s",
+                        Component.text(player).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)),
+                        Component.text(formattedTime).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                        Component.text(server).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)));
+            } catch (CommandException e) {
+                context.sendOutput(e.message.color(NamedTextColor.RED));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        return null;
     }
 }
