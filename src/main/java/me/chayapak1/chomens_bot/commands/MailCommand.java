@@ -120,6 +120,7 @@ public class MailCommand extends Command {
 
                     if (senderMailSize == 0) {
                         context.sendOutput(Component.text("You have no new mails").color(NamedTextColor.RED));
+                        return;
                     }
 
                     final int tempFinalSenderMailSize = senderMailSize;
