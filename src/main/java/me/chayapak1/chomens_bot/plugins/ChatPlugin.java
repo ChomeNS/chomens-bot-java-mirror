@@ -39,7 +39,7 @@ public class ChatPlugin extends Bot.Listener {
 
     private final List<ChatParser> chatParsers;
 
-    private final List<String> queue = new ArrayList<>();
+    private final List<String> queue = Collections.synchronizedList(new ArrayList<>());
 
     public final int queueDelay;
 
@@ -246,14 +246,16 @@ public class ChatPlugin extends Bot.Listener {
         if (message.startsWith("/")) {
             String removedMessage = message.substring(1);
 
-            final String[] splittedSpace = removedMessage.split("\\s+"); // [minecraft:test, arg1, arg2, ...]
-            final String[] splittedColon = splittedSpace[0].split(":"); // [minecraft, test]
-            if (bot.options.removeNamespaces && splittedColon.length >= 2) {
-                removedMessage = String.join(":", Arrays.copyOfRange(splittedColon, 1, splittedColon.length));
+            if (bot.options.removeNamespaces) {
+                final String[] splittedSpace = removedMessage.split("\\s+"); // [minecraft:test, arg1, arg2, ...]
+                final String[] splittedColon = splittedSpace[0].split(":"); // [minecraft, test]
+                if (splittedColon.length >= 2) {
+                    removedMessage = String.join(":", Arrays.copyOfRange(splittedColon, 1, splittedColon.length));
 
-                if (splittedSpace.length > 1) {
-                    removedMessage += " ";
-                    removedMessage += String.join(" ", Arrays.copyOfRange(splittedSpace, 1, splittedSpace.length));
+                    if (splittedSpace.length > 1) {
+                        removedMessage += " ";
+                        removedMessage += String.join(" ", Arrays.copyOfRange(splittedSpace, 1, splittedSpace.length));
+                    }
                 }
             }
 
@@ -287,6 +289,11 @@ public class ChatPlugin extends Bot.Listener {
     public void clearQueue () { queue.clear(); }
 
     public void send (String message) {
+        if (message.startsWith("/")) {
+            queue.add(message);
+            return;
+        }
+
         final Matcher splitMatcher = CHAT_SPLIT_PATTERN.matcher(message);
 
         String lastColor = "";
