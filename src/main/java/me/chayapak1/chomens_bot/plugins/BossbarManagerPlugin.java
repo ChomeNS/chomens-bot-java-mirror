@@ -32,7 +32,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
 
     public BossbarManagerPlugin (Bot bot) {
         this.bot = bot;
-        this.bossBarPrefix = bot.config.bossBarNamespace + ":";
+        this.bossBarPrefix = bot.config.namespace + ":";
 
         bot.addListener(this);
 

@@ -88,8 +88,8 @@ keys:
 
 weatherApiKey: 'key here' # weatherapi.com key
 
-bossBarNamespace: 'chomens_bot' # useful when you make a clone of the bot
-teamName: 'chomens_bot' # i recommend having this value the same as bossBarNamespace
+namespace: 'default_chomens_bot' # useful when you make a clone of the bot
+teamName: 'default_chomens_bot' # i recommend having this value the same as bossBarNamespace
 
 core:
   start:
