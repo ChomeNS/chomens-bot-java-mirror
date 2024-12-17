@@ -58,6 +58,7 @@ public class CommandHandlerPlugin {
         registerCommand(new StopCommand());
         registerCommand(new GrepLogCommand());
         registerCommand(new FindAltsCommand());
+        registerCommand(new RestartCommand());
     }
 
     public boolean disabled = false;

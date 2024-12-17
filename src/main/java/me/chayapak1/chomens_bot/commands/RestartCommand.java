@@ -9,11 +9,11 @@ import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 
-public class StopCommand extends Command {
-    public StopCommand () {
+public class RestartCommand extends Command {
+    public RestartCommand() {
         super(
-                "stop",
-                "Gracefully stops the bot",
+                "restart",
+                "Gracefully restarts the bot",
                 new String[] { "" },
                 new String[] {},
                 TrustLevel.OWNER,
@@ -27,8 +27,8 @@ public class StopCommand extends Command {
 
         final Bot bot = context.bot;
 
-        Main.stop(0);
+        Main.stop(1);
 
-        return Component.text("Stopping").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+        return Component.text("Restarting").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }
 }

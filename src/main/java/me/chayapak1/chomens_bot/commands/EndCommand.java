@@ -11,9 +11,9 @@ public class EndCommand extends Command {
     public EndCommand () {
         super(
                 "end",
-                "End/Reconnects the bot",
+                "Reconnects the bot",
                 new String[] { "" },
-                new String[] { "reconnect", "restart" },
+                new String[] { "reconnect" },
                 TrustLevel.TRUSTED,
                 false
         );

@@ -104,7 +104,7 @@ public class Main {
 
                     // no need to reset backupFailTimes because we are stopping anyway
 
-                    stop();
+                    stop(0);
                 }
             }, 0, config.backup.interval, TimeUnit.MILLISECONDS);
         }
@@ -139,7 +139,7 @@ public class Main {
     }
 
     // most of these are stolen from HBot
-    public static void stop () {
+    public static void stop (int exitCode) {
         if (stopping) return;
 
         stopping = true;
@@ -199,6 +199,6 @@ public class Main {
             }
         }
 
-        System.exit(0);
+        System.exit(exitCode);
     }
 }
