@@ -149,12 +149,13 @@ public class ComponentUtilities {
     }
 
     public static PartiallyStringified stringifyPartially (Component message, boolean motd, boolean ansi, String lastColor, boolean noHex, int depth) {
-        if (message instanceof TextComponent) return stringifyPartially((TextComponent) message, motd, ansi, lastColor, noHex);
-        else if (message instanceof TranslatableComponent) return stringifyPartially((TranslatableComponent) message, motd, ansi, lastColor, noHex, depth);
-        else if (message instanceof SelectorComponent) return stringifyPartially((SelectorComponent) message, motd, ansi, lastColor, noHex);
-        else if (message instanceof KeybindComponent) return stringifyPartially((KeybindComponent) message, motd, ansi, lastColor, noHex);
-
-        return new PartiallyStringified("", null);
+        return switch (message) {
+            case TextComponent t_component -> stringifyPartially(t_component, motd, ansi, lastColor, noHex);
+            case TranslatableComponent t_component -> stringifyPartially(t_component, motd, ansi, lastColor, noHex, depth);
+            case SelectorComponent t_component -> stringifyPartially(t_component, motd, ansi, lastColor, noHex);
+            case KeybindComponent t_component -> stringifyPartially(t_component, motd, ansi, lastColor, noHex);
+            default -> new PartiallyStringified("", null);
+        };
     }
 
     public static String getStyle (Style textStyle, boolean motd) {
