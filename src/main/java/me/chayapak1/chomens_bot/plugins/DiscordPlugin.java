@@ -95,7 +95,7 @@ public class DiscordPlugin {
                     bot.chat.addListener(new ChatPlugin.Listener() {
                         @Override
                         public boolean systemMessageReceived (Component component, String string, String _ansi) {
-                            if (string.length() > 2048) {
+                            if (string.length() > 2000 - 12) {
                                 sendMessage(CodeBlockUtilities.escape(string), channelId);
                             } else {
                                 final String ansi = ComponentUtilities.stringifyAnsi(component, true);
