@@ -122,8 +122,8 @@ public class DiscordPlugin {
 
                     totalConnects.put(channelId, newTotalConnects);
 
-                    if (newTotalConnects > 20) return;
-                    else if (newTotalConnects == 20) {
+                    if (newTotalConnects > 6) return;
+                    else if (newTotalConnects == 6) {
                         sendMessageInstantly("Suspending connecting and disconnect messages from now on", channelId);
 
                         return;
