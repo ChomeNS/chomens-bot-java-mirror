@@ -19,6 +19,8 @@ public class CommandContext {
 
     public final boolean inGame;
 
+    public TrustLevel trustLevel = TrustLevel.PUBLIC;
+
     public String commandName = null;
     public String userInputCommandName = null;
 
