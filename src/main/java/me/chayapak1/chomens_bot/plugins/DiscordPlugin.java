@@ -155,7 +155,7 @@ public class DiscordPlugin {
 
                 @Override
                 public void disconnected(DisconnectedEvent event) {
-                    if (totalConnects.get(channelId) >= 20) return;
+                    if (totalConnects.get(channelId) >= 6) return;
 
                     final String reason = ComponentUtilities.stringifyAnsi(event.getReason());
                     sendMessageInstantly(
