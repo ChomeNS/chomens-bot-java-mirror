@@ -115,7 +115,7 @@ public class ChatPlugin extends Bot.Listener {
         return switch (chatType) {
             case 0 -> Component.translatable("chat.type.text", name, message); // normal vanilla chat message
             case 1 -> Component.translatable("chat.type.emote", name, message); // /me
-            case 2 -> Component.translatable("commands.message.display.incoming"); // player that received /w message
+            case 2 -> Component.translatable("commands.message.display.incoming", name, message); // player that received /w message
             case 3 -> Component.translatable("commands.message.display.outgoing", name, message); // player that sent /w message
             case 4 -> Component.translatable("%s", name, message); // paper chat type thingy
             case 5 -> Component.translatable("chat.type.announcement", name, message); // /say
