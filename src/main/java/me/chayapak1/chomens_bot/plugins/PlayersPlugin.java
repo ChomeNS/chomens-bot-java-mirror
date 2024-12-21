@@ -101,7 +101,7 @@ public class PlayersPlugin extends Bot.Listener {
 
     public final PlayerEntry getEntry (String username) {
         for (PlayerEntry candidate : list) {
-            if (getName(candidate).equals(username)) {
+            if (getName(candidate).equals(username) || candidate.usernames.contains(username)) {
                 return candidate;
             }
         }
@@ -145,16 +145,32 @@ public class PlayersPlugin extends Bot.Listener {
 
     private void addPlayer (PlayerListEntry newEntry) {
         final PlayerEntry duplicate = getEntry(newEntry);
-        if (duplicate != null) list.remove(duplicate);
+
+        boolean isUsernameChange = false;
+        boolean isUnVanish = false;
 
         final PlayerEntry target = new PlayerEntry(newEntry);
 
+        if (duplicate != null) {
+            if (!duplicate.profile.getName().equals(target.profile.getName())) {
+                isUsernameChange = true;
+
+                target.usernames = duplicate.usernames;
+
+                target.usernames.add(target.profile.getName());
+            } else {
+                isUnVanish = true;
+            }
+        }
+
         list.add(target);
 
-        if (duplicate == null) {
+        if (!isUsernameChange && !isUnVanish) {
             for (Listener listener : listeners) { listener.playerJoined(target); }
-        } else {
+        } else if (isUnVanish) {
             for (Listener listener : listeners) { listener.playerUnVanished(target); }
+        } else {
+            for (Listener listener : listeners) { listener.playerChangedUsername(target); }
         }
     }
 
@@ -230,5 +246,6 @@ public class PlayersPlugin extends Bot.Listener {
         public void playerDisplayNameUpdated (PlayerEntry target, Component displayName) {}
         public void playerLeft (PlayerEntry target) {}
         public void playerVanished (PlayerEntry target) {}
+        public void playerChangedUsername (PlayerEntry target) {}
     }
 }

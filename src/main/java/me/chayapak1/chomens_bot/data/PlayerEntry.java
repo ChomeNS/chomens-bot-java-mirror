@@ -1,17 +1,20 @@
 package me.chayapak1.chomens_bot.data;
 
+import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.auth.GameProfile;
 import org.geysermc.mcprotocollib.protocol.data.game.PlayerListEntry;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
-import net.kyori.adventure.text.Component;
 
 import java.security.PublicKey;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerEntry {
     public final GameProfile profile;
     public GameMode gamemode;
     public int latency;
     public Component displayName;
+    public List<String> usernames = new ArrayList<>();
     public final long expiresAt;
     public PublicKey publicKey;
     public final byte[] keySignature;
@@ -35,6 +38,8 @@ public class PlayerEntry {
         this.publicKey = publicKey;
         this.keySignature = keySignature;
         this.listed = listed;
+
+        this.usernames.add(this.profile.getName());
     }
 
     public PlayerEntry (PlayerListEntry entry) {
