@@ -160,6 +160,8 @@ public class PlayersPlugin extends Bot.Listener {
                 target.usernames.add(target.profile.getName());
             } else {
                 isUnVanish = true;
+
+                list.remove(duplicate);
             }
         }
 
