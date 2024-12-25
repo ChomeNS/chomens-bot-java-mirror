@@ -84,13 +84,16 @@ public class CommandHandlerPlugin {
             CommandContext context,
             MessageReceivedEvent event
     ) {
-        if (disabled || commandPerSecond > 100) return null;
-
-        commandPerSecond++;
-
         final boolean inGame = context instanceof PlayerCommandContext;
         final boolean discord = context instanceof DiscordCommandContext;
         final boolean console = context instanceof ConsoleCommandContext;
+
+        if (!console) {
+            if (disabled) return Component.text("ChomeNS Bot is currently disabled").color(NamedTextColor.RED);
+            else if (commandPerSecond > 100) return null;
+        }
+
+        commandPerSecond++;
 
         final String[] splitInput = input.trim().split("\\s+");
 
