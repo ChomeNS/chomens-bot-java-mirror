@@ -14,7 +14,7 @@ public class StopCommand extends Command {
         super(
                 "stop",
                 "Gracefully stops the bot",
-                new String[] { "" },
+                new String[] { "[reason]" },
                 new String[] {},
                 TrustLevel.OWNER,
                 false
@@ -23,11 +23,11 @@ public class StopCommand extends Command {
 
     @Override
     public Component execute(CommandContext context) throws CommandException {
-        context.checkOverloadArgs(0);
-
         final Bot bot = context.bot;
 
-        Main.stop(0);
+        final String reason = context.getString(true, false);
+
+        Main.stop(0, reason.isEmpty() ? null : reason);
 
         return Component.text("Stopping").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }

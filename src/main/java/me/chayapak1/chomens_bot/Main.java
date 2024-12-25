@@ -139,10 +139,18 @@ public class Main {
     }
 
     // most of these are stolen from HBot
-    public static void stop (int exitCode) {
+    public static void stop (int exitCode) { stop(exitCode, null, null); }
+    public static void stop (int exitCode, String reason) { stop(exitCode, reason, null); }
+    public static void stop (int exitCode, String reason, String type) {
         if (stopping) return;
 
         stopping = true;
+
+        final String stoppingMessage = String.format(
+                "%s (%s)",
+                type != null ? type : "Stopping..",
+                reason != null ? reason : "No reason given"
+        );
 
         executor.shutdown();
 
@@ -171,7 +179,7 @@ public class Main {
                 if (discordEnabled) {
                     final String channelId = bot.discord.servers.get(bot.host + ":" + bot.port);
 
-                    final MessageCreateAction messageAction = bot.discord.sendMessageInstantly("Stopping..", channelId, false);
+                    final MessageCreateAction messageAction = bot.discord.sendMessageInstantly(stoppingMessage, channelId, false);
 
                     final int finalBotIndex = botIndex;
                     messageAction.queue(
@@ -180,7 +188,7 @@ public class Main {
                     );
                 }
 
-                if (ircEnabled) bot.irc.quit("Stopping..");
+                if (ircEnabled) bot.irc.quit(stoppingMessage);
 
                 bot.stop();
             } catch (Exception ignored) {}

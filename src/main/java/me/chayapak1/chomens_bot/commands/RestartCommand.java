@@ -14,7 +14,7 @@ public class RestartCommand extends Command {
         super(
                 "restart",
                 "Gracefully restarts the bot",
-                new String[] { "" },
+                new String[] { "[reason]" },
                 new String[] {},
                 TrustLevel.OWNER,
                 false
@@ -23,11 +23,11 @@ public class RestartCommand extends Command {
 
     @Override
     public Component execute(CommandContext context) throws CommandException {
-        context.checkOverloadArgs(0);
-
         final Bot bot = context.bot;
 
-        Main.stop(1);
+        final String reason = context.getString(true, false);
+
+        Main.stop(1, reason.isEmpty() ? null : reason, "Restarting..");
 
         return Component.text("Restarting").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }
