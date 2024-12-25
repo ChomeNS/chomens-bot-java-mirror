@@ -3,6 +3,7 @@ package me.chayapak1.chomens_bot.command;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 
@@ -27,7 +28,7 @@ public class CommandContext {
     public String[] fullArgs;
     public String[] args;
 
-    public CommandContext(Bot bot, String prefix, PlayerEntry sender, boolean inGame) {
+    public CommandContext (Bot bot, String prefix, PlayerEntry sender, boolean inGame) {
         this.bot = bot;
         this.prefix = prefix;
         this.sender = sender;
@@ -48,7 +49,7 @@ public class CommandContext {
             if (required) {
                 throw new CommandException(
                         Component.translatable(
-                                "Expected %s at position %s (%s %s)",
+                                "Expected %s at position %s (%s %s) [%s]",
                                 Component.text(type),
                                 Component.text(argsPosition),
                                 Component.text(prefix + userInputCommandName),
@@ -57,7 +58,10 @@ public class CommandContext {
                                         Component
                                                 .text(String.join(" ", args))
                                                 .append(Component.space())
-                                                .append(UNKNOWN_ARGUMENT_COMPONENT)
+                                                .append(UNKNOWN_ARGUMENT_COMPONENT),
+                                Component
+                                        .text("click for usages")
+                                        .clickEvent(ClickEvent.suggestCommand(prefix + "help " + this.commandName))
                         )
                 );
             } else {
