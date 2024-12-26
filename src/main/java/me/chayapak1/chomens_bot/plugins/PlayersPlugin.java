@@ -91,7 +91,7 @@ public class PlayersPlugin extends Bot.Listener {
 
     public final PlayerEntry getEntry (UUID uuid) {
         for (PlayerEntry candidate : list) {
-            if (candidate.profile.getId().equals(uuid)) {
+            if (candidate != null && candidate.profile.getId().equals(uuid)) {
                 return candidate;
             }
         }
@@ -101,7 +101,7 @@ public class PlayersPlugin extends Bot.Listener {
 
     public final PlayerEntry getEntry (String username) {
         for (PlayerEntry candidate : list) {
-            if (getName(candidate).equals(username) || candidate.usernames.contains(username)) {
+            if (candidate != null && (getName(candidate).equals(username) || candidate.usernames.contains(username))) {
                 return candidate;
             }
         }
@@ -111,7 +111,7 @@ public class PlayersPlugin extends Bot.Listener {
 
     public final PlayerEntry getEntry (Component displayName) {
         for (PlayerEntry candidate : list) {
-            if (candidate.displayName != null && candidate.displayName.equals(displayName)) {
+            if (candidate != null && candidate.displayName != null && candidate.displayName.equals(displayName)) {
                 return candidate;
             }
         }

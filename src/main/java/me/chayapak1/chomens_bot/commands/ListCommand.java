@@ -39,6 +39,7 @@ public class ListCommand extends Command {
         final List<Component> playersComponent = new ArrayList<>();
 
         for (PlayerEntry entry : list) {
+            if (entry == null) continue;
             playersComponent.add(
                     Component.translatable(
                             "%s › %s",
