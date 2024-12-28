@@ -19,11 +19,6 @@ import java.util.regex.Pattern;
 
 // totallynotskidded™ from chipmunkbot and added colors (ignore the ohio code please,..,.)
 public class ComponentUtilities {
-    // is this the best way to check?
-    public static boolean isEqual (Component component1, Component component2) {
-        return component1.toString().equals(component2.toString());
-    }
-
     // component parsing
     public static final Map<String, String> language = loadJsonStringMap("language.json");
     private static final Map<String, String> voiceChatLanguage = loadJsonStringMap("voiceChatLanguage.json");

@@ -1,18 +1,22 @@
 package me.chayapak1.chomens_bot.data;
 
+import me.chayapak1.chomens_bot.Bot;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.geysermc.mcprotocollib.protocol.data.game.BossBarColor;
 import org.geysermc.mcprotocollib.protocol.data.game.BossBarDivision;
-import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.util.ComponentUtilities;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.util.UUID;
 
 public class BotBossBar extends BossBar {
     public UUID uuid = UUID.randomUUID(); // the random uuid will be temporary
 
-    public final Component secret = Component.text(Math.random() * 69420);
+    public final Component secret = Component
+            .text(UUID.randomUUID().toString())
+            .color(NamedTextColor.BLACK)
+            .append(Component.space())
+            .append(Component.text("(please ignore!)").color(NamedTextColor.GRAY));
 
     public boolean gotSecret = false;
 
@@ -54,7 +58,7 @@ public class BotBossBar extends BossBar {
     public void setTitle(Component title, boolean force) {
         if (!gotSecret) return;
 
-        if (ComponentUtilities.isEqual(this.title, title) && !force) return;
+        if (this.title.equals(title) && !force) return;
 
         if (bot.bossbar.actionBar) {
             bot.chat.actionBar(title, players);

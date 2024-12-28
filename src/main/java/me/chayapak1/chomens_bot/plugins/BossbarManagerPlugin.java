@@ -1,17 +1,16 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.BossBar;
+import me.chayapak1.chomens_bot.data.BotBossBar;
+import me.chayapak1.chomens_bot.data.PlayerEntry;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.data.game.BossBarColor;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundBossEventPacket;
-import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.data.BossBar;
-import me.chayapak1.chomens_bot.data.BotBossBar;
-import me.chayapak1.chomens_bot.data.PlayerEntry;
-import me.chayapak1.chomens_bot.util.ComponentUtilities;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +61,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
                     for (Map.Entry<UUID, BotBossBar> _bossBar : mapCopy.entrySet()) {
                         final BotBossBar bossBar = _bossBar.getValue();
 
-                        if (ComponentUtilities.isEqual(bossBar.secret, packet.getTitle())) {
+                        if (bossBar.secret.equals(packet.getTitle())) {
                             bossBars.remove(_bossBar.getKey());
 
                             final BotBossBar newBossBar = new BotBossBar(
@@ -114,7 +113,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
 
                     final BotBossBar botBossBar = get(bossBar.uuid);
 
-                    if (botBossBar != null && ComponentUtilities.isEqual(botBossBar.secret, packet.getTitle())) {
+                    if (botBossBar != null && botBossBar.secret.equals(packet.getTitle())) {
                         botBossBar.uuid = packet.getUuid();
 
                         botBossBar.gotSecret = true;
@@ -144,7 +143,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
                 bossBar.gotSecret = false;
 
                 addBossBar(bossBar.id, bossBar, true);
-            } else if (!ComponentUtilities.isEqual(bossBar.title(), serverBossBar.title)) {
+            } else if (!bossBar.title().equals(serverBossBar.title)) {
                 bossBar.setTitle(bossBar.title, true);
             } else if (bossBar.value() != serverBossBar.health * bossBar.max()) {
                 bossBar.setValue(bossBar.value(), true);
