@@ -15,3 +15,8 @@ src/main/java/me/chayapak1/chomens_bot/data/exploitMethods/
 
 # Testing plugins
 src/main/java/me/chayapak1/chomens_bot/plugins/testing
+
+# Bot's files (made when running via ./gradlew run)
+config.yml
+logs/
+songs/
