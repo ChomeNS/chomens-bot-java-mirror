@@ -156,7 +156,7 @@ public class Main {
 
         executorService.shutdown();
 
-        database.stop();
+        if (database != null) database.stop();
 
         try {
             final boolean ignoredExecutorDone = executor.awaitTermination(5, TimeUnit.SECONDS);
