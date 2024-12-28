@@ -209,7 +209,7 @@ public class Bot {
                     // we also set other stuffs here
                     session.send(
                             new ServerboundClientInformationPacket(
-                                    ComponentUtilities.language.getOrDefault("language.code", "en-us"),
+                                    ComponentUtilities.LANGUAGE.getOrDefault("language.code", "en-us"),
                                     16,
                                     ChatVisibility.FULL,
                                     true,

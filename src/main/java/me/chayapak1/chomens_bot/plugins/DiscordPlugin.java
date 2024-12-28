@@ -98,15 +98,10 @@ public class DiscordPlugin {
                             if (string.length() > 2000 - 12) {
                                 sendMessage(CodeBlockUtilities.escape(string), channelId);
                             } else {
-                                final String ansi = ComponentUtilities.stringifyAnsi(component, true);
+                                final String ansi = ComponentUtilities.stringifyDiscordAnsi(component);
 
                                 sendMessage(
-                                        CodeBlockUtilities.escape(
-                                                ansi
-                                                        .replace(
-                                                                "\u001b[9", "\u001b[3"
-                                                        )
-                                        ),
+                                        CodeBlockUtilities.escape(ansi),
                                         channelId
                                 );
                             }

@@ -339,7 +339,7 @@ public class ChatPlugin extends Bot.Listener {
         if (bot.options.useChat) {
             if (!targets.equals("@a")) return; // worst fix of all time!1!
 
-            final String stringified = ComponentUtilities.stringifyMotd(component).replace("§", "&");
+            final String stringified = ComponentUtilities.stringifySectionSign(component).replace("§", "&");
             send(stringified);
         } else {
             bot.core.run("minecraft:tellraw " + targets + " " + GsonComponentSerializer.gson().serialize(component));

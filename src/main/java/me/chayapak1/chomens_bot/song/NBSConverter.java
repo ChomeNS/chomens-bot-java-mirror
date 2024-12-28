@@ -278,7 +278,7 @@ public class NBSConverter implements Converter {
   private static final Map<String, String> subtitles = new HashMap<>();
 
   static {
-    for (Map.Entry<String, String> entry : ComponentUtilities.language.entrySet()) {
+    for (Map.Entry<String, String> entry : ComponentUtilities.LANGUAGE.entrySet()) {
       if (!entry.getKey().startsWith("subtitles.")) continue;
 
       subtitles.put(entry.getKey(), entry.getValue());
