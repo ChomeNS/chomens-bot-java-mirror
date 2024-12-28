@@ -1,18 +1,17 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
-import org.geysermc.mcprotocollib.protocol.data.game.BossBarColor;
-import org.geysermc.mcprotocollib.protocol.data.game.BossBarDivision;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.BotBossBar;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
-import me.chayapak1.chomens_bot.song.*;
 import me.chayapak1.chomens_bot.song.*;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.cloudburstmc.math.vector.Vector3f;
+import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
+import org.geysermc.mcprotocollib.protocol.data.game.BossBarColor;
+import org.geysermc.mcprotocollib.protocol.data.game.BossBarDivision;
 
 import java.io.IOException;
 import java.net.URL;
@@ -142,7 +141,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                         addBossBar();
 
-                        currentSong = songQueue.get(0); // songQueue.poll();
+                        currentSong = songQueue.getFirst(); // songQueue.poll();
                         bot.chat.tellraw(
                                 Component.translatable(
                                         "Now playing %s",
@@ -191,16 +190,15 @@ public class MusicPlayerPlugin extends Bot.Listener {
                             return;
                         }
 
-                        songQueue.remove(0);
+                        songQueue.removeFirst();
 
                         if (songQueue.isEmpty()) {
                             stopPlaying();
-                            removeBossBar();
                             return;
                         }
 
                         if (currentSong.size() > 0) {
-                            currentSong = songQueue.get(0);
+                            currentSong = songQueue.getFirst();
                             currentSong.setTime(0);
                             currentSong.play();
                         }
@@ -216,13 +214,15 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
     public void skip () {
         if (loop == Loop.ALL) {
-            songQueue.add(songQueue.remove(0)); // bot.music.queue.push(bot.music.queue.shift()) in js
+            songQueue.add(songQueue.removeFirst()); // bot.music.queue.push(bot.music.queue.shift()) in js
         } else {
-            songQueue.remove(0);
-            stopPlaying();
+            songQueue.removeFirst();
         }
-        if (songQueue.isEmpty()) return;
-        currentSong = songQueue.get(0);
+        if (songQueue.isEmpty()) {
+            stopPlaying();
+            return;
+        }
+        currentSong = songQueue.getFirst();
         currentSong.setTime(0);
         currentSong.play();
     }
