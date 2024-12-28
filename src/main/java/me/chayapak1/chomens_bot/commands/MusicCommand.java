@@ -244,10 +244,16 @@ public class MusicCommand extends Command {
                             .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case CURRENT -> {
-                return Component.empty()
+                if (bot.music.currentSong != null) {
+                    return Component.empty()
                             .append(Component.text("Now looping "))
                             .append(Component.text(bot.music.currentSong.name).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
                             .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                } else {
+                    return Component.empty()
+                            .append(Component.text("Will now loop the next song"))
+                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                }
             }
             case ALL -> {
                 return Component.text("Now looping every song").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
@@ -443,7 +449,7 @@ public class MusicCommand extends Command {
                 .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }
 
-    public Component amplify(CommandContext context) throws CommandException {
+    public Component amplify (CommandContext context) throws CommandException {
         context.checkOverloadArgs(2);
 
         final Bot bot = context.bot;
