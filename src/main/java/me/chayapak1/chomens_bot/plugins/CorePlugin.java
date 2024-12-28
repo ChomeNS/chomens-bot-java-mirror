@@ -35,6 +35,9 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class CorePlugin extends PositionPlugin.Listener {
+    public static final int COMMAND_BLOCK_ID = 418;
+    public static final int REPEATING_COMMAND_BLOCK_ID = 537;
+
     private final Bot bot;
 
     private final List<Listener> listeners = new ArrayList<>();
@@ -265,8 +268,8 @@ public class CorePlugin extends PositionPlugin.Listener {
                         (short) 36,
                         new ItemStack(
                                 bot.serverPluginsManager.hasPlugin(ServerPluginsManagerPlugin.EXTRAS) ?
-                                        528 /* repeating command block id */ :
-                                        409 /* command block id */,
+                                        REPEATING_COMMAND_BLOCK_ID :
+                                        COMMAND_BLOCK_ID,
                                 64,
                                 dataComponents
                         )
