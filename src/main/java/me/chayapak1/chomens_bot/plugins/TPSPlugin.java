@@ -48,6 +48,8 @@ public class TPSPlugin extends Bot.Listener {
     }
 
     public void on () {
+        if (enabled) return;
+
         enabled = true;
 
         final BotBossBar bossBar = new BotBossBar(
