@@ -49,7 +49,7 @@ public class CommandContext {
             if (required) {
                 throw new CommandException(
                         Component.translatable(
-                                "Expected %s at position %s (%s %s) [%s]",
+                                "Expected %s at position %s (%s %s)%s",
                                 Component.text(type),
                                 Component.text(argsPosition),
                                 Component.text(prefix + userInputCommandName),
@@ -59,9 +59,18 @@ public class CommandContext {
                                                 .text(String.join(" ", args))
                                                 .append(Component.space())
                                                 .append(UNKNOWN_ARGUMENT_COMPONENT),
-                                Component
-                                        .text("click for usages")
-                                        .clickEvent(ClickEvent.suggestCommand(prefix + "help " + this.commandName))
+                                inGame ?
+                                        Component
+                                                .space()
+                                                .append(
+                                                        Component.translatable("[%s]")
+                                                                .arguments(
+                                                                        Component
+                                                                                .text("click for usages")
+                                                                                .clickEvent(ClickEvent.suggestCommand(prefix + "help " + this.commandName))
+                                                                )
+                                                ) :
+                                        Component.empty()
                         )
                 );
             } else {
