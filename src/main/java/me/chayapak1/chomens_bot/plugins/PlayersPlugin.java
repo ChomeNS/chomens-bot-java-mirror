@@ -1,6 +1,10 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.PlayerEntry;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
@@ -10,9 +14,6 @@ import org.geysermc.mcprotocollib.protocol.data.game.PlayerListEntryAction;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundPlayerInfoRemovePacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundPlayerInfoUpdatePacket;
-import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.data.PlayerEntry;
-import net.kyori.adventure.text.Component;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -62,28 +63,57 @@ public class PlayersPlugin extends Bot.Listener {
         }
     }
 
-    public CompletableFuture<String> getPlayerIP (PlayerEntry target) {
+    public String getPlayerIPFromDatabase (PlayerEntry target) {
+        final JsonNode data = bot.playersDatabase.getPlayerData(target.profile.getName());
+
+        if (data == null) return null;
+
+        final JsonNode ipsObject = data.get("ips");
+
+        if (ipsObject == null || ipsObject.isNull() || !ipsObject.isObject()) return null;
+
+        final JsonNode targetIP = ipsObject.get(bot.host + ":" + bot.port);
+
+        if (targetIP == null || targetIP.isNull() || !targetIP.isTextual()) return null;
+
+        return targetIP.textValue();
+    }
+
+    public CompletableFuture<String> getPlayerIP (PlayerEntry target) { return getPlayerIP(target, false); }
+    public CompletableFuture<String> getPlayerIP (PlayerEntry target, boolean forceSeen) {
         final CompletableFuture<String> outputFuture = new CompletableFuture<>();
 
-        final CompletableFuture<Component> trackedCoreFuture = bot.core.runTracked("essentials:seen " + target.profile.getIdAsString());
+        DatabasePlugin.executorService.submit(() -> {
+            final String databaseIP = getPlayerIPFromDatabase(target);
 
-        if (trackedCoreFuture == null) return null;
+            if (databaseIP != null && !forceSeen) {
+                outputFuture.complete(databaseIP);
+                return;
+            }
 
-        trackedCoreFuture.completeOnTimeout(null, 5, TimeUnit.SECONDS);
+            final CompletableFuture<Component> trackedCoreFuture = bot.core.runTracked("essentials:seen " + target.profile.getIdAsString());
 
-        trackedCoreFuture.thenApplyAsync(output -> {
-            final List<Component> children = output.children();
+            if (trackedCoreFuture == null) {
+                outputFuture.complete(null);
+                return;
+            }
 
-            String stringified = ComponentUtilities.stringify(Component.join(JoinConfiguration.separator(Component.empty()), children));
+            trackedCoreFuture.completeOnTimeout(null, 5, TimeUnit.SECONDS);
 
-            if (!stringified.startsWith(" - IP Address: ")) return output;
+            trackedCoreFuture.thenApplyAsync(output -> {
+                final List<Component> children = output.children();
 
-            stringified = stringified.trim().substring(" - IP Address: ".length());
-            if (stringified.startsWith("/")) stringified = stringified.substring(1);
+                String stringified = ComponentUtilities.stringify(Component.join(JoinConfiguration.separator(Component.empty()), children));
 
-            outputFuture.complete(stringified);
+                if (!stringified.startsWith(" - IP Address: ")) return output;
 
-            return output;
+                stringified = stringified.trim().substring(" - IP Address: ".length());
+                if (stringified.startsWith("/")) stringified = stringified.substring(1);
+
+                outputFuture.complete(stringified);
+
+                return output;
+            });
         });
 
         return outputFuture;

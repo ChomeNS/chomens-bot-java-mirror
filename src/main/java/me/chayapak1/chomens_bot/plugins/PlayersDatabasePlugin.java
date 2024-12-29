@@ -106,7 +106,7 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
 
                 insertPlayerStatement.executeUpdate();
 
-                final CompletableFuture<String> future = bot.players.getPlayerIP(target);
+                final CompletableFuture<String> future = bot.players.getPlayerIP(target, true);
 
                 if (future == null) return;
 

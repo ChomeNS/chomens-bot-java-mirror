@@ -53,12 +53,24 @@ public class FindAltsCommand extends Command {
     private Component handle (Bot bot, String targetIP, boolean argumentIsIP, String player) {
         final List<String> alts = bot.playersDatabase.findPlayerAlts(targetIP);
 
+        final Component playerComponent = Component
+                .text(player)
+                .color(ColorUtilities.getColorByString(bot.config.colorPalette.username));
+
         Component component = Component
                 .translatable("Possible alts for the %s %s:")
                 .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
                 .arguments(
                         Component.text(argumentIsIP ? "IP" : "player"),
-                        Component.text(player).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
+                        argumentIsIP ?
+                                playerComponent :
+                                Component.translatable("%s (%s)")
+                                        .arguments(
+                                                playerComponent,
+                                                Component
+                                                        .text(targetIP)
+                                                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
+                                        )
                 )
                 .appendNewline();
 
