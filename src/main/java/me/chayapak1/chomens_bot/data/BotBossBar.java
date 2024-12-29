@@ -51,11 +51,10 @@ public class BotBossBar extends BossBar {
         return title;
     }
 
-    public void setTitle(Component title) {
+    public void setTitle (Component title) {
         setTitle(title, false);
     }
-
-    public void setTitle(Component title, boolean force) {
+    public void setTitle (Component title, boolean force) {
         if (!gotSecret) return;
 
         if (this.title.equals(title) && !force) return;
@@ -79,11 +78,10 @@ public class BotBossBar extends BossBar {
         return color;
     }
 
-    public void setColor(BossBarColor color) {
+    public void setColor (BossBarColor color) {
         setColor(color, false);
     }
-
-    public void setColor(BossBarColor color, boolean force) {
+    public void setColor (BossBarColor color, boolean force) {
         if (!gotSecret) return;
 
         if (this.color == color && !force) return;
@@ -95,14 +93,15 @@ public class BotBossBar extends BossBar {
         bot.core.run("minecraft:bossbar set " + id + " color " + (color == BossBarColor.LIME ? "green" : (color == BossBarColor.CYAN ? "blue" : color.name().toLowerCase())));
     }
 
-    public String players() {
+    public String players () {
         return players;
     }
 
-    public void setPlayers(String players) {
+    public void setPlayers (String players) { setPlayers(players, false); }
+    public void setPlayers (String players, boolean force) {
         if (!gotSecret) return;
 
-        if (this.players.equals(players)) return;
+        if (this.players.equals(players) && !force) return;
 
         this.players = players;
 

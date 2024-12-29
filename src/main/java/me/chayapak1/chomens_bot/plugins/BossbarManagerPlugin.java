@@ -161,12 +161,12 @@ public class BossbarManagerPlugin extends Bot.Listener {
         for (Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
             final BotBossBar bossBar = _bossBar.getValue();
 
-            addBossBar(bossBar.id, bossBar);
+            addBossBar(bossBar.id, bossBar, true);
         }
     }
 
     @Override
-    public void disconnected(DisconnectedEvent event) {
+    public void disconnected (DisconnectedEvent event) {
         serverBossBars.clear();
     }
 
@@ -176,7 +176,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
         for (Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
             final BotBossBar bossBar = _bossBar.getValue();
 
-            bossBar.setPlayers(bossBar.players());
+            bossBar.setPlayers(bossBar.players(), true);
         }
     }
 
