@@ -308,20 +308,20 @@ public class CorePlugin extends PositionPlugin.Listener {
         return
                 // command block
                 (
-                        blockState >= 8136 &&
-                                blockState <= 8147
+                        blockState >= 8680 &&
+                                blockState <= 8686
                 ) ||
 
                         // chain command block
                         (
-                                blockState >= 12996 &&
-                                        blockState <= 13007
+                                blockState >= 13540 &&
+                                        blockState <= 13546
                         ) ||
 
                         // repeating command block
                         (
-                                blockState >= 12984 &&
-                                        blockState <= 12995
+                                blockState >= 13534 &&
+                                        blockState <= 13540
                         );
     }
 
