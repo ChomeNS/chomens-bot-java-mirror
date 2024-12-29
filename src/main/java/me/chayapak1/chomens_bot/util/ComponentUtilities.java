@@ -307,7 +307,7 @@ public class ComponentUtilities {
                                                         .get(idx)
                                                         .asComponent(),
                                                 type
-                                        ) + color // + color IMPORTANT!!!!
+                                        ) + color + style // IMPORTANT!!!!
                                 )
                         );
                     } else {
