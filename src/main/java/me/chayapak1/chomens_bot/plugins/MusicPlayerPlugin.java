@@ -51,8 +51,6 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
     public String instrument = "off";
 
-    private int notesPerSecond = 0;
-
     private int limit = 0;
 
     public boolean locked = false; // this can be set through servereval
@@ -69,7 +67,6 @@ public class MusicPlayerPlugin extends Bot.Listener {
         bot.core.addListener(new CorePlugin.Listener() {
             public void ready () { coreReady(); }
         });
-        bot.executor.scheduleAtFixedRate(() -> notesPerSecond = 0, 0, 1, TimeUnit.SECONDS);
         bot.executor.scheduleAtFixedRate(() -> limit = 0, 0, bot.config.music.urlRatelimit.seconds, TimeUnit.SECONDS);
     }
 
@@ -366,7 +363,6 @@ public class MusicPlayerPlugin extends Bot.Listener {
     public void stopPlaying () {
         removeBossBar();
         currentSong = null;
-        notesPerSecond = 0;
     }
 
     @Override
@@ -382,9 +378,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
             while (currentSong.reachedNextNote()) {
                 final Note note = currentSong.getNextNote();
 
-                final int totalCoreBlocks = (bot.config.core.end.x * bot.config.core.end.z) * MathUtilities.clamp(bot.config.core.end.y, 1, bot.world.maxY);
-
-                if (note.volume == 0 || notesPerSecond > totalCoreBlocks * (50 * 20)) continue;
+                if (note.volume == 0) continue;
 
                 float key = note.shiftedPitch;
 
@@ -437,8 +431,6 @@ public class MusicPlayerPlugin extends Bot.Listener {
                                     MathUtilities.clamp(floatingPitch, 0, 2)
                     );
                 }
-
-                notesPerSecond++;
             }
         } catch (Exception e) {
             e.printStackTrace();
