@@ -101,7 +101,14 @@ public class PlayersPlugin extends Bot.Listener {
 
     public final PlayerEntry getEntry (String username) {
         for (PlayerEntry candidate : list) {
-            if (candidate != null && (getName(candidate).equals(username) || candidate.usernames.contains(username))) {
+            if (
+                    candidate != null &&
+                            (
+                                    candidate.profile.getIdAsString().equals(username) || // checks for a string UUID
+                                            getName(candidate).equals(username) ||
+                                            candidate.usernames.contains(username)
+                            )
+            ) {
                 return candidate;
             }
         }
