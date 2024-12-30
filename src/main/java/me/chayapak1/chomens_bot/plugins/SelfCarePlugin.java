@@ -46,6 +46,8 @@ public class SelfCarePlugin extends Bot.Listener {
 
         bot.addListener(this);
 
+        bot.executor.scheduleAtFixedRate(() -> positionPacketsPerSecond = 0, 0, 1, TimeUnit.SECONDS);
+
         bot.chat.addListener(new ChatPlugin.Listener() {
             @Override
             public boolean systemMessageReceived(Component component, String string, String ansi) {
@@ -196,11 +198,8 @@ public class SelfCarePlugin extends Bot.Listener {
         );
     }
 
-    // totallynotskidded™ from smp.,.,
     public void positionChange () {
         positionPacketsPerSecond++;
-
-        bot.executor.schedule(() -> positionPacketsPerSecond--, 1, TimeUnit.SECONDS);
     }
 
     @Override
