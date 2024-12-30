@@ -12,12 +12,10 @@ import me.chayapak1.chomens_bot.util.HttpUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class WeatherCommand extends Command {
     public WeatherCommand () {
@@ -39,27 +37,20 @@ public class WeatherCommand extends Command {
         final Gson gson = new Gson();
 
         try {
-            final URL url = new URL(
+            final URL url = new URI(
                     "https://api.weatherapi.com/v1/current.json?key=" + bot.config.weatherApiKey + "&q=" +
                             URLEncoder.encode(
                                 location,
                                     StandardCharsets.UTF_8
                             )
-                    + "&aqi=no"
-            );
+            ).toURL();
 
             final String jsonOutput = HttpUtilities.getRequest(url);
 
             final JsonObject jsonObject = gson.fromJson(jsonOutput, JsonObject.class);
 
-            final ZoneId zoneId = ZoneId.of(jsonObject.get("location").getAsJsonObject().get("tz_id").getAsString());
-            final ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId);
-
-            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm:ss a");
-            final String time = zonedDateTime.format(formatter);
-
             return Component.translatable(
-                    "Weather forecast for %s, %s:\n%s (%s), feels like %s (%s)\nTime: %s",
+                    "Current weather for %s, %s:\n%s (%s), feels like %s (%s)\nCondition: %s\nCloud cover: %s\nHumidity: %s\nTime: %s",
                     Component.text(jsonObject.get("location").getAsJsonObject().get("name").getAsString()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
                     Component.text(jsonObject.get("location").getAsJsonObject().get("country").getAsString()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
                     Component
@@ -102,7 +93,46 @@ public class WeatherCommand extends Command {
                                             .getAsString() + "°F"
                             )
                             .color(NamedTextColor.GREEN),
-                    Component.text(time).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                    Component
+                            .text(
+                                    jsonObject
+                                            .get("current")
+                                            .getAsJsonObject()
+                                            .get("condition")
+                                            .getAsJsonObject()
+                                            .get("text")
+                                            .getAsString()
+                            )
+                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                    Component
+                            .text(
+                                    jsonObject
+                                            .get("current")
+                                            .getAsJsonObject()
+                                            .get("cloud")
+                                            .getAsInt()
+                            )
+                            .append(Component.text("%"))
+                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
+                    Component
+                            .text(
+                                    jsonObject
+                                            .get("current")
+                                            .getAsJsonObject()
+                                            .get("humidity")
+                                            .getAsInt()
+                            )
+                            .append(Component.text("%"))
+                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
+                    Component
+                            .text(
+                                    jsonObject
+                                            .get("location")
+                                            .getAsJsonObject()
+                                            .get("localtime")
+                                            .getAsString()
+                            )
+                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
             ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
         } catch (Exception e) {
             throw new CommandException(Component.text("Location \"" + location + "\" not found"));
