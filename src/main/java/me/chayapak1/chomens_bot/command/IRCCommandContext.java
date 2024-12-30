@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.command;
 
+import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import org.geysermc.mcprotocollib.auth.GameProfile;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
 import me.chayapak1.chomens_bot.Bot;
@@ -19,7 +20,7 @@ public class IRCCommandContext extends CommandContext {
                 prefix,
                 new PlayerEntry(
                         new GameProfile(
-                                UUID.nameUUIDFromBytes(("OfflinePlayer:" + nickName).getBytes()),
+                                UUIDUtilities.getOfflineUUID(nickName),
                                 nickName
                         ),
                         GameMode.SURVIVAL,

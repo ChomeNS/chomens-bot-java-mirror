@@ -98,7 +98,7 @@ public class GrepLogPlugin {
                     .addFiles(
                             FileUpload.fromData(
                                     // as of the time writing this, discord has an 8 MB file size limit for bots
-                                    StringUtilities.truncateToFitUtf8ByteLength(stringifiedResult, 8 * 1000 * 1000).getBytes(),
+                                    StringUtilities.truncateToFitUtf8ByteLength(stringifiedResult, 8 * 1000 * 1000).getBytes(StandardCharsets.UTF_8),
                                     String.format("result-%d.txt", System.currentTimeMillis() / 1000)
                             )
                     )

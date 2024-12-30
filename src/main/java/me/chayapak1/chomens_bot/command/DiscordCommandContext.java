@@ -1,18 +1,20 @@
 package me.chayapak1.chomens_bot.command;
 
-import org.geysermc.mcprotocollib.auth.GameProfile;
-import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
+import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
 import me.chayapak1.chomens_bot.util.CodeBlockUtilities;
-import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
+import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.utils.FileUpload;
 import net.kyori.adventure.text.Component;
+import org.geysermc.mcprotocollib.auth.GameProfile;
+import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
 
 import java.awt.*;
-import java.util.UUID;
+import java.nio.charset.StandardCharsets;
 
 public class DiscordCommandContext extends CommandContext {
     private final MessageReceivedEvent event;
@@ -25,7 +27,7 @@ public class DiscordCommandContext extends CommandContext {
                 prefix,
                 new PlayerEntry(
                         new GameProfile(
-                                UUID.nameUUIDFromBytes(("OfflinePlayer:" + event.getAuthor().getName()).getBytes()),
+                                UUIDUtilities.getOfflineUUID(event.getAuthor().getName()),
                                 event.getAuthor().getName()
                         ),
                         GameMode.SURVIVAL,
@@ -44,15 +46,27 @@ public class DiscordCommandContext extends CommandContext {
 
     @Override
     public void sendOutput (Component component) {
-        final String output = ComponentUtilities.stringifyAnsi(component);
-        final EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle("Output");
-        builder.setColor(Color.decode(bot.config.discord.embedColors.normal));
-        builder.setDescription("```ansi\n" + CodeBlockUtilities.escape(output.replace("\u001b[9", "\u001b[3")) + "\n```");
+        String output = ComponentUtilities.stringifyDiscordAnsi(component);
 
-        final MessageEmbed embed = builder.build();
+        if (output.length() > 2048) {
+            output = ComponentUtilities.stringify(component);
 
-        event.getMessage().replyEmbeds(embed).queue();
+            event.getMessage().replyFiles(
+                    FileUpload.fromData(
+                            output.getBytes(StandardCharsets.UTF_8),
+                            String.format("output-%d.txt", System.currentTimeMillis())
+                    )
+            ).queue();
+        } else {
+            final EmbedBuilder builder = new EmbedBuilder();
+            builder.setTitle("Output");
+            builder.setColor(Color.decode(bot.config.discord.embedColors.normal));
+            builder.setDescription("```ansi\n" + CodeBlockUtilities.escape(output) + "\n```");
+
+            final MessageEmbed embed = builder.build();
+
+            event.getMessage().replyEmbeds(embed).queue();
+        }
     }
 
     @Override
