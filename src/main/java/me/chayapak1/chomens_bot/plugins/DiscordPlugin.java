@@ -224,7 +224,7 @@ public class DiscordPlugin {
 
         Component attachmentsComponent = Component.empty();
         if (!message.getAttachments().isEmpty()) {
-            if (message.getContentStripped().isEmpty()) attachmentsComponent = attachmentsComponent.append(Component.space());
+            if (message.getContentDisplay().isEmpty()) attachmentsComponent = attachmentsComponent.append(Component.space());
 
             for (Message.Attachment attachment : message.getAttachments()) {
                 attachmentsComponent = attachmentsComponent
@@ -344,7 +344,7 @@ public class DiscordPlugin {
         final Component deserialized = LegacyComponentSerializer
                 .legacyAmpersand()
                 .deserialize(
-                        message.getContentStripped()
+                        message.getContentDisplay()
                                 // replaces skull emoji
                                 .replace("\uD83D\uDC80", "☠")
                 );
