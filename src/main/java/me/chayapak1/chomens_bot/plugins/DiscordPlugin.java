@@ -23,6 +23,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
@@ -188,144 +189,24 @@ public class DiscordPlugin {
                         return;
                     }
 
-                    // ignore my very very ohio code,..,,.
+                    Component output = Component.empty();
 
-                    Component attachmentsComponent = Component.empty();
-                    if (!messageEvent.getAttachments().isEmpty()) {
-                        attachmentsComponent = attachmentsComponent.append(Component.space());
-                        for (Message.Attachment attachment : messageEvent.getAttachments()) {
-                            attachmentsComponent = attachmentsComponent
-                                    .append(
-                                            Component
-                                                    .text("[Attachment]")
-                                                    .clickEvent(ClickEvent.openUrl(attachment.getProxyUrl()))
-                                                    .color(NamedTextColor.GREEN)
-                                    )
-                                    .append(Component.space());
-                        }
-                    }
+                    final Message reference = event.getMessage().getReferencedMessage();
 
-                    Component embedsComponent = Component.empty();
-                    if (!messageEvent.getEmbeds().isEmpty()) {
-                        if (messageEvent.getAttachments().isEmpty()) embedsComponent = embedsComponent.append(Component.space());
-                        for (MessageEmbed embed : messageEvent.getEmbeds()) {
-                            final Component hoverEvent = Component.translatable(
-                                    """
-                                            Title: %s
-                                            %s""",
-                                    embed.getTitle() == null ?
-                                            Component.text("No title").color(NamedTextColor.GRAY) :
-                                            Component.text(embed.getTitle()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
-                                    embed.getDescription() == null ?
-                                            Component.text("No description").color(NamedTextColor.GRAY) :
-                                            Component.text(embed.getDescription()).color(NamedTextColor.WHITE)
-                            ).color(NamedTextColor.GREEN);
-
-                            embedsComponent = embedsComponent
-                                    .append(
-                                            Component
-                                                    .text("[Embed]")
-                                                    .hoverEvent(HoverEvent.showText(hoverEvent))
-                                                    .color(NamedTextColor.GREEN)
-                                    )
-                                    .append(Component.space());
-                        }
-                    }
-
-                    final Member member = event.getMember();
-
-                    final String username = event.getAuthor().getName();
-                    final String displayName = member == null ? username : member.getEffectiveName();
-
-                    final List<Role> roles = member == null ? Collections.emptyList() : member.getRoles();
-
-                    Component rolesComponent = Component.empty();
-                    if (!roles.isEmpty()) {
-                        rolesComponent = rolesComponent
-                                .append(Component.text("Roles:").color(NamedTextColor.GRAY))
-                                .append(Component.newline());
-
-                        final List<Component> rolesList = new ArrayList<>();
-
-                        for (Role role : roles) {
-                            final Color color = role.getColor();
-
-                            rolesList.add(
-                                    Component
-                                            .text(role.getName())
-                                            .color(
-                                                    color == null ?
-                                                            NamedTextColor.WHITE :
-                                                            TextColor.color(
-                                                                    color.getRed(),
-                                                                    color.getGreen(),
-                                                                    color.getBlue()
-                                                            )
-                                            )
-                            );
-                        }
-
-                        rolesComponent = rolesComponent.append(Component.join(JoinConfiguration.newlines(), rolesList));
-                    } else {
-                        rolesComponent = rolesComponent.append(Component.text("No roles").color(NamedTextColor.GRAY));
-                    }
-
-                    Component nameComponent = Component
-                            .text(displayName)
-                            .clickEvent(ClickEvent.copyToClipboard(username))
-                            .hoverEvent(
-                                    HoverEvent.showText(
-                                            Component.translatable(
-                                                    """
-                                                            %s
-                                                            %s
-                                                            
-                                                            %s""",
-                                                    Component.text(username).color(NamedTextColor.WHITE),
-                                                    rolesComponent,
-                                                    Component.text("Click here to copy the tag to your clipboard").color(NamedTextColor.GREEN)
-                                            ).color(NamedTextColor.DARK_GRAY)
-                                    )
-                            );
-
-                    // too ohio
-                    for (Role role : roles) {
-                        final Color color = role.getColor();
-
-                        if (color == null) continue;
-
-                        nameComponent = nameComponent.color(
-                                TextColor.color(
-                                        color.getRed(),
-                                        color.getGreen(),
-                                        color.getBlue()
+                    if (reference != null) {
+                        output = output
+                                .append(
+                                        Component.empty()
+                                                .append(Component.text("Replying to ").color(NamedTextColor.GRAY))
+                                                .append(getMessageComponent(bot, reference))
+                                                .decorate(TextDecoration.ITALIC)
                                 )
-                        );
-
-                        break;
+                                .append(Component.newline());
                     }
 
-                    if (nameComponent.color() == null) nameComponent = nameComponent.color(NamedTextColor.RED);
+                    output = output.append(getMessageComponent(bot, event.getMessage()));
 
-                    final Component deserialized = LegacyComponentSerializer.legacyAmpersand().deserialize(message.replace("\uD83D\uDC80", "☠"));
-
-                    final Component messageComponent = Component
-                            .text("")
-                            .color(NamedTextColor.GRAY)
-                            .append(
-                                    deserialized
-                                            .append(attachmentsComponent)
-                                            .append(embedsComponent)
-                            );
-
-                    final Component component = Component.translatable(
-                            "[%s] %s › %s",
-                            messagePrefix,
-                            nameComponent,
-                            messageComponent
-                    ).color(NamedTextColor.DARK_GRAY);
-
-                    bot.chat.tellraw(component);
+                    bot.chat.tellraw(output);
                 }
 
                 @Override
@@ -336,6 +217,153 @@ public class DiscordPlugin {
 
             bot.discord = this;
         }
+    }
+
+    private Component getMessageComponent (Bot bot, Message message) {
+        // ignore my very very ohio code,..,,.
+
+        Component attachmentsComponent = Component.empty();
+        if (!message.getAttachments().isEmpty()) {
+            if (message.getContentStripped().isEmpty()) attachmentsComponent = attachmentsComponent.append(Component.space());
+
+            for (Message.Attachment attachment : message.getAttachments()) {
+                attachmentsComponent = attachmentsComponent
+                        .append(
+                                Component
+                                        .text("[Attachment]")
+                                        .clickEvent(ClickEvent.openUrl(attachment.getProxyUrl()))
+                                        .color(NamedTextColor.GREEN)
+                        )
+                        .append(Component.space());
+            }
+        }
+
+        Component embedsComponent = Component.empty();
+        if (!message.getEmbeds().isEmpty()) {
+            if (message.getAttachments().isEmpty()) embedsComponent = embedsComponent.append(Component.space());
+
+            for (MessageEmbed embed : message.getEmbeds()) {
+                final Component hoverEvent = Component.translatable(
+                        """
+                                Title: %s
+                                %s""",
+                        embed.getTitle() == null ?
+                                Component.text("No title").color(NamedTextColor.GRAY) :
+                                Component.text(embed.getTitle()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                        embed.getDescription() == null ?
+                                Component.text("No description").color(NamedTextColor.GRAY) :
+                                Component.text(embed.getDescription()).color(NamedTextColor.WHITE)
+                ).color(NamedTextColor.GREEN);
+
+                embedsComponent = embedsComponent
+                        .append(
+                                Component
+                                        .text("[Embed]")
+                                        .hoverEvent(HoverEvent.showText(hoverEvent))
+                                        .color(NamedTextColor.GREEN)
+                        )
+                        .append(Component.space());
+            }
+        }
+
+        final Member member = message.getMember();
+
+        final String username = message.getAuthor().getName();
+        final String displayName = member == null ? username : member.getEffectiveName();
+
+        final List<Role> roles = member == null ? Collections.emptyList() : member.getRoles();
+
+        Component rolesComponent = Component.empty();
+        if (!roles.isEmpty()) {
+            rolesComponent = rolesComponent
+                    .append(Component.text("Roles:").color(NamedTextColor.GRAY))
+                    .append(Component.newline());
+
+            final List<Component> rolesList = new ArrayList<>();
+
+            for (Role role : roles) {
+                final Color color = role.getColor();
+
+                rolesList.add(
+                        Component
+                                .text(role.getName())
+                                .color(
+                                        color == null ?
+                                                NamedTextColor.WHITE :
+                                                TextColor.color(
+                                                        color.getRed(),
+                                                        color.getGreen(),
+                                                        color.getBlue()
+                                                )
+                                )
+                );
+            }
+
+            rolesComponent = rolesComponent.append(Component.join(JoinConfiguration.newlines(), rolesList));
+        } else {
+            rolesComponent = rolesComponent.append(Component.text("No roles").color(NamedTextColor.GRAY));
+        }
+
+        Component nameComponent = Component
+                .text(displayName)
+                .clickEvent(ClickEvent.copyToClipboard(username))
+                .hoverEvent(
+                        HoverEvent.showText(
+                                Component.translatable(
+                                        """
+                                                %s
+                                                %s
+                                                
+                                                %s""",
+                                        Component.text(username).color(NamedTextColor.WHITE),
+                                        rolesComponent,
+                                        Component.text("Click here to copy the tag to your clipboard").color(NamedTextColor.GREEN)
+                                ).color(NamedTextColor.DARK_GRAY)
+                        )
+                );
+
+        // too ohio
+        for (Role role : roles) {
+            final Color color = role.getColor();
+
+            if (color == null) continue;
+
+            nameComponent = nameComponent.color(
+                    TextColor.color(
+                            color.getRed(),
+                            color.getGreen(),
+                            color.getBlue()
+                    )
+            );
+
+            break;
+        }
+
+        if (nameComponent.color() == null) nameComponent = nameComponent.color(NamedTextColor.RED);
+
+        final Component deserialized = LegacyComponentSerializer
+                .legacyAmpersand()
+                .deserialize(
+                        message.getContentStripped()
+                                // replaces skull emoji
+                                .replace("\uD83D\uDC80", "☠")
+                );
+
+        final Component messageComponent = Component
+                .text("")
+                .color(NamedTextColor.GRAY)
+                .append(
+                        deserialized
+                                .append(attachmentsComponent)
+                                .append(embedsComponent)
+                );
+
+        return Component.translatable(
+                "[%s] %s › %s",
+                messagePrefix,
+                nameComponent,
+                messageComponent
+        ).color(NamedTextColor.DARK_GRAY);
     }
 
     // totallynotskidded™️ from HBot (and changed a bit)
