@@ -450,7 +450,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
             else if (average == 100) pos = 0;
             else pos = (float) ((average - 100) * -1) / 100;
 
-            blockPosition = Vector3f.from(pos, 0, 0);
+            blockPosition = Vector3f.from(pos * 4, 0, 0);
         } else {
             // i wrote this part
 
