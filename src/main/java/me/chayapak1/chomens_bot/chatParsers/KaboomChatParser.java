@@ -1,18 +1,17 @@
 package me.chayapak1.chomens_bot.chatParsers;
 
+import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.PlayerEntry;
+import me.chayapak1.chomens_bot.data.chat.ChatParser;
+import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
-import org.geysermc.mcprotocollib.auth.GameProfile;
-import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
-import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.data.chat.ChatParser;
-import me.chayapak1.chomens_bot.data.PlayerEntry;
-import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import org.geysermc.mcprotocollib.auth.GameProfile;
+import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
 
 import java.util.List;
-import java.util.UUID;
 
 public class KaboomChatParser implements ChatParser {
     private final Bot bot;
@@ -45,12 +44,24 @@ public class KaboomChatParser implements ChatParser {
             return null;
         }
 
-//        final String stringifiedDisplayName = ComponentUtilities.stringify(displayName);
+        final String stringifiedDisplayName = ComponentUtilities.stringify(displayName);
 
         PlayerEntry sender = bot.players.getEntry(Component.empty().append(prefix).append(displayName));
-        if (sender == null) sender = bot.players.getEntry(prefix.append(displayName)); // old
-//        if (sender == null) sender = new PlayerEntry(new GameProfile(UUIDUtilities.getOfflineUUID(stringifiedDisplayName), stringifiedDisplayName), GameMode.SURVIVAL, 0, displayName, 0L, null, new byte[0], true); // new and currently using
-        if (sender == null) return null;
+
+        if (sender == null) sender = bot.players.getEntry(prefix.append(displayName));
+        if (sender == null) sender = new PlayerEntry(
+                new GameProfile(
+                        UUIDUtilities.getOfflineUUID(stringifiedDisplayName),
+                        stringifiedDisplayName
+                ),
+                GameMode.SURVIVAL,
+                0,
+                displayName,
+                0L,
+                null,
+                new byte[0],
+                true
+        );
 
         return new PlayerMessage(sender, displayName, contents);
     }
