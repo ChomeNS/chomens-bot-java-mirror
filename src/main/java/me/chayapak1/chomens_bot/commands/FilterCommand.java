@@ -22,10 +22,9 @@ public class FilterCommand extends Command {
                 "filter",
                 "Filter players",
                 new String[] {
-                        "add <player>",
-                        "-ignorecase add <player>",
-                        "-regex add <player>",
-                        "-ignorecase -regex add <player>",
+                        "add [player]",
+                        "-ignorecase add <player> [reason]",
+                        "-regex add <player> [reason]",
                         "remove <index>",
                         "clear",
                         "list"
