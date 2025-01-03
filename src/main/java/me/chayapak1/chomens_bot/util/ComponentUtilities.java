@@ -57,7 +57,7 @@ public class ComponentUtilities {
     private static class ComponentParser {
         public static final Pattern ARG_PATTERN = Pattern.compile("%(?:(\\d+)\\$)?([s%])");
 
-        public static final int MAX_DEPTH = 16;
+        public static final int MAX_DEPTH = 12;
 
         public static final Map<String, String> ansiMap = new HashMap<>();
         static {
@@ -87,14 +87,16 @@ public class ComponentUtilities {
         }
 
         private ParseType type;
-        private int formatsPlaceholdersCount = 0;
+        private int depth = 0;
 
         private String lastStyle = "";
+
+        private boolean isSubParsing = false;
 
         private String stringify (Component message, ParseType type) {
             this.type = type;
 
-            if (formatsPlaceholdersCount > MAX_DEPTH) return "";
+            if (depth > MAX_DEPTH) return "";
 
             try {
                 final StringBuilder builder = new StringBuilder();
@@ -109,8 +111,16 @@ public class ComponentUtilities {
                 for (Component child : message.children()) {
                     final ComponentParser parser = new ComponentParser();
                     parser.lastStyle = lastStyle + color + style;
-                    parser.formatsPlaceholdersCount = formatsPlaceholdersCount;
+                    parser.depth = depth;
+                    parser.isSubParsing = true;
                     builder.append(parser.stringify(child, type));
+                }
+
+                if (
+                        !isSubParsing &&
+                                (type == ParseType.ANSI || type == ParseType.DISCORD_ANSI)
+                ) {
+                    builder.append(ansiMap.get("r"));
                 }
 
                 if (type == ParseType.DISCORD_ANSI) {
@@ -285,7 +295,7 @@ public class ComponentUtilities {
             // is INTENTIONAL and is a FEATURE
             int i = 0;
             while (matcher.find()) {
-                formatsPlaceholdersCount++;
+                depth++;
                 if (matcher.group().equals("%%")) {
                     matcher.appendReplacement(sb, "%");
                 } else {
@@ -297,7 +307,8 @@ public class ComponentUtilities {
                         final ComponentParser parser = new ComponentParser();
 
                         parser.lastStyle = lastStyle + color + style;
-                        parser.formatsPlaceholdersCount = formatsPlaceholdersCount;
+                        parser.depth = depth;
+                        parser.isSubParsing = true;
 
                         matcher.appendReplacement(
                                 sb,
