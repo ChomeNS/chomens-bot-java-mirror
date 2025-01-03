@@ -59,16 +59,40 @@ public class FilterCommand extends Command {
 
         switch (action) {
             case "add" -> {
-                final String player = context.getString(true, true);
+                final String player = context.getString(false, true);
+                final String reason = context.getString(false, false);
+
+                if (
+                        FilterPlugin.localList.stream()
+                                .map(filteredPlayer -> filteredPlayer.playerName)
+                                .toList()
+                                .contains(player)
+                ) {
+                    throw new CommandException(
+                            Component.translatable(
+                                    "The player %s is already in the filters",
+                                    Component.text(player)
+                            )
+                    );
+                }
 
                 final boolean finalRegex = regex;
                 final boolean finalIgnoreCase = ignoreCase;
 
-                DatabasePlugin.executorService.submit(() -> bot.filter.add(player, finalRegex, finalIgnoreCase));
-                return Component.translatable(
-                        "Added %s to the filters",
-                        Component.text(player).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
-                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                DatabasePlugin.executorService.submit(() -> bot.filter.add(player, reason, finalRegex, finalIgnoreCase));
+
+                if (reason.isEmpty()) {
+                    return Component.translatable(
+                            "Added %s to the filters",
+                            Component.text(player).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
+                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                } else {
+                    return Component.translatable(
+                            "Added %s to the filters with reason %s",
+                            Component.text(player).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)),
+                            Component.text(reason).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                }
             }
             case "remove" -> {
                 context.checkOverloadArgs(2);
@@ -107,9 +131,30 @@ public class FilterCommand extends Command {
                         if (player.ignoreCase) args.add(Component.text("ignore case"));
                         if (player.regex) args.add(Component.text("regex"));
 
-                        options = options.append(Component.text("("));
-                        options = options.append(Component.join(JoinConfiguration.commas(true), args).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)));
-                        options = options.append(Component.text(")"));
+                        options = options
+                                .append(Component.text("("))
+                                .append(
+                                        Component
+                                                .join(
+                                                        JoinConfiguration.commas(true),
+                                                        args
+                                                )
+                                                .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                                )
+                                .append(Component.text(")"))
+                                .append(Component.space());
+                    }
+
+                    if (!player.reason.isEmpty()) {
+                        options = options
+                                .append(Component.text("("))
+                                .append(Component.text("reason: ").color(NamedTextColor.GRAY))
+                                .append(
+                                        Component
+                                                .text(player.reason)
+                                                .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                                )
+                                .append(Component.text(")"));
                     }
 
                     filtersComponents.add(

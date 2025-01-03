@@ -20,9 +20,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class FilterPlugin extends PlayersPlugin.Listener {
-    private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS filters (name VARCHAR(255) PRIMARY KEY, regex BOOLEAN, ignoreCase BOOLEAN);";
+    private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS filters (name VARCHAR(255) PRIMARY KEY, reason VARCHAR(255), regex BOOLEAN, ignoreCase BOOLEAN);";
     private static final String LIST_FILTERS = "SELECT * FROM filters;";
-    private static final String INSERT_FILTER = "INSERT INTO filters (name, regex, ignoreCase) VALUES (?, ?, ?);";
+    private static final String INSERT_FILTER = "INSERT INTO filters (name, reason, regex, ignoreCase) VALUES (?, ?, ?, ?);";
     private static final String REMOVE_FILTER = "DELETE FROM filters WHERE name = ?;";
     private static final String CLEAR_FILTER = "DELETE FROM filters;";
 
@@ -79,6 +79,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
             while (result.next()) {
                 final FilteredPlayer filteredPlayer = new FilteredPlayer(
                         result.getString("name"),
+                        result.getString("reason"),
                         result.getBoolean("regex"),
                         result.getBoolean("ignoreCase")
                 );
@@ -139,7 +140,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
 
             if (player == null) return;
 
-            doAll(target);
+            doAll(target, player.reason);
         });
     }
 
@@ -170,7 +171,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
                         command.startsWith("/essentials:emute") ||
                         command.startsWith("/essentials:silence") ||
                         command.startsWith("/essentials:esilence")
-        ) mute(entry);
+        ) mute(entry, player.reason);
 
         deOp(entry);
         gameMode(entry);
@@ -184,11 +185,12 @@ public class FilterPlugin extends PlayersPlugin.Listener {
 
         if (player == null || message.sender.profile.getId().equals(new UUID(0L, 0L))) return;
 
-        doAll(message.sender);
+        doAll(message.sender, player.reason);
     }
 
-    public void doAll (PlayerEntry entry) {
-        mute(entry);
+    public void doAll (PlayerEntry entry) { doAll(entry, ""); }
+    public void doAll (PlayerEntry entry, String reason) {
+        mute(entry, reason);
         deOp(entry);
         gameMode(entry);
         bot.exploits.kick(entry.profile.getId());
@@ -217,13 +219,14 @@ public class FilterPlugin extends PlayersPlugin.Listener {
         }
     }
 
-    public void add (String playerName, boolean regex, boolean ignoreCase) {
+    public void add (String playerName, String reason, boolean regex, boolean ignoreCase) {
         try {
             final PreparedStatement statement = bot.database.connection.prepareStatement(INSERT_FILTER);
 
             statement.setString(1, playerName);
-            statement.setBoolean(2, regex);
-            statement.setBoolean(3, ignoreCase);
+            statement.setString(2, reason);
+            statement.setBoolean(3, regex);
+            statement.setBoolean(4, ignoreCase);
 
             statement.executeUpdate();
 
@@ -236,7 +239,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
 
         if (target == null) return;
 
-        doAll(target);
+        doAll(target, reason);
     }
 
     public void remove (String playerName) {
