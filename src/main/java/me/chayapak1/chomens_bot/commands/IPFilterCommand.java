@@ -37,7 +37,7 @@ public class IPFilterCommand extends Command {
     public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        final String action = context.getString(false, true, true);
+        final String action = context.getAction();
 
         switch (action) {
             case "add" -> {

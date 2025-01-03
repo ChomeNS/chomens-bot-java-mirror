@@ -87,6 +87,10 @@ public class CommandContext {
         return returnLowerCase ? string.toLowerCase() : string;
     }
 
+    public String getAction () throws CommandException {
+        return getString(false, true, true, "action");
+    }
+
     public Integer getInteger (boolean required) throws CommandException {
         final String string = getString(false, required, "integer");
 

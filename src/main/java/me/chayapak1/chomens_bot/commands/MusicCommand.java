@@ -64,7 +64,7 @@ public class MusicCommand extends Command {
     public Component execute(CommandContext context) throws CommandException {
         if (context.bot.music.locked && !(context instanceof ConsoleCommandContext)) throw new CommandException(Component.text("Managing music is currently locked"));
 
-        final String action = context.getString(false, true, true);
+        final String action = context.getAction();
 
         root = MusicPlayerPlugin.SONG_DIR;
         return switch (action) {

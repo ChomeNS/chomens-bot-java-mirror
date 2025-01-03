@@ -45,7 +45,7 @@ public class MailCommand extends Command {
 
         // kinda messy ngl
 
-        final String action = context.getString(false, true, true);
+        final String action = context.getAction();
 
         switch (action) {
             case "send" -> DatabasePlugin.executorService.submit(() -> {

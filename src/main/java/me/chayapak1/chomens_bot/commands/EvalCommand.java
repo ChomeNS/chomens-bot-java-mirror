@@ -30,7 +30,7 @@ public class EvalCommand extends Command {
 
         if (!bot.eval.connected) throw new CommandException(Component.text("Eval server is not online"));
 
-        final String action = context.getString(false, true);
+        final String action = context.getAction();
 
         switch (action) {
             case "run" -> {
