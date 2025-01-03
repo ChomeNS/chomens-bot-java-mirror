@@ -237,7 +237,7 @@ public class ComponentUtilities {
             final String result =
                     lastStyle + color + style +
                     originalResult +
-                    resetCode;
+                    (lastStyle.isEmpty() ? resetCode : "");
 
             lastStyle = color + style;
 
@@ -307,7 +307,7 @@ public class ComponentUtilities {
                                                         .get(idx)
                                                         .asComponent(),
                                                 type
-                                        ) + color + style // IMPORTANT!!!!
+                                        ) + lastStyle + color + style // IMPORTANT!!!!
                                 )
                         );
                     } else {
