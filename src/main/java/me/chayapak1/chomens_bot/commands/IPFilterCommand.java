@@ -43,6 +43,15 @@ public class IPFilterCommand extends Command {
             case "add" -> {
                 final String ip = context.getString(true, true);
 
+                if (IPFilterPlugin.localList.contains(ip)) {
+                    throw new CommandException(
+                            Component.translatable(
+                                    "The IP %s is already in the filters",
+                                    Component.text(ip)
+                            )
+                    );
+                }
+
                 DatabasePlugin.executorService.submit(() -> bot.ipFilter.add(ip));
                 return Component.translatable(
                         "Added %s to the filters",
