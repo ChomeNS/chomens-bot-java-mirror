@@ -2,8 +2,11 @@ package me.chayapak1.chomens_bot.command;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
+import me.chayapak1.chomens_bot.util.ColorUtilities;
+import me.chayapak1.chomens_bot.util.StringUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 
@@ -78,13 +81,91 @@ public class CommandContext {
             }
         }
 
-        final String string = greedy ?
-                String.join(" ", Arrays.copyOfRange(args, argsPosition, args.length)) :
-                args[argsPosition];
+        final String greedyString = String.join(" ", Arrays.copyOfRange(args, argsPosition, args.length));
+
+        final StringBuilder string = new StringBuilder();
+
+        if (greedy) {
+            string.append(greedyString);
+        } else if (
+                greedyString.length() > 1 &&
+                (greedyString.startsWith("'") || greedyString.startsWith("\""))
+        ) {
+            // parses arguments with quotes
+
+            final char quote = greedyString.charAt(0);
+
+            int pointer = 1; // skips quote
+
+            while (true) {
+                if (pointer >= greedyString.length()) {
+                    if (greedyString.charAt(pointer - 1) != quote) {
+                        throw new CommandException(
+                                Component
+                                        .translatable("Unterminated quote at %s <-- %s")
+                                        .arguments(
+                                                Component
+                                                        .text(greedyString)
+                                                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                                                Component
+                                                        .text(quote)
+                                                        .color(NamedTextColor.YELLOW)
+                                        )
+                        );
+                    }
+
+                    break;
+                }
+
+                final char character = greedyString.charAt(pointer);
+
+                pointer++;
+
+                if (character == ' ') {
+                    argsPosition++;
+                }
+
+                if (character == '\\') {
+                    if (pointer >= greedyString.length()) {
+                        throw new CommandException(
+                                Component
+                                        .translatable("Unterminated escape at %s <--")
+                                        .arguments(
+                                                Component
+                                                        .text(greedyString)
+                                                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                                        )
+                        );
+                    }
+
+                    final char nextCharacter = greedyString.charAt(pointer); // pointer is already incremented above
+
+                    final char toAdd = switch (nextCharacter) {
+                        case 'n' -> '\n';
+                        case 't' -> '\t';
+                        case 'r' -> '\r';
+                        default -> nextCharacter;
+                    };
+
+                    string.append(toAdd);
+
+                    pointer++;
+                } else if (character == quote) {
+                    break;
+                } else {
+                    string.append(character);
+                }
+            }
+        } else {
+            // else just get the current argument
+            string.append(args[argsPosition]);
+        }
 
         argsPosition++;
 
-        return returnLowerCase ? string.toLowerCase() : string;
+        final String result = string.toString();
+
+        return returnLowerCase ? result.toLowerCase() : result;
     }
 
     public String getAction () throws CommandException {
@@ -150,7 +231,13 @@ public class CommandContext {
     }
 
     public void checkOverloadArgs (int maximumArgs) throws CommandException {
-        if (args.length > maximumArgs) throw new CommandException(
+        final String joined = String.join(" ", args);
+
+        final String quotesReplaced = joined.replaceAll("([\"'])(?:\\.|(?!\1).)*\1", "i");
+
+        final int count = StringUtilities.countCharacters(quotesReplaced, ' ');
+
+        if (count > maximumArgs) throw new CommandException(
                 Component.translatable(
                         "Too many arguments, expected %s max",
                         Component.text(maximumArgs)

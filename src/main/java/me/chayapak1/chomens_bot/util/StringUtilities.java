@@ -8,8 +8,13 @@ import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 
 public class StringUtilities {
+    // https://stackoverflow.com/a/8910767/18518424
+    public static int countCharacters (String string, char character) {
+        return string.length() - string.replace(String.valueOf(character), "").length();
+    }
+
     // https://stackoverflow.com/a/35148974/18518424
-    public static String truncateToFitUtf8ByteLength(String s, int maxBytes) {
+    public static String truncateToFitUtf8ByteLength (String s, int maxBytes) {
         if (s == null) {
             return null;
         }
