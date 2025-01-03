@@ -224,7 +224,7 @@ public class DiscordPlugin {
 
         Component attachmentsComponent = Component.empty();
         if (!message.getAttachments().isEmpty()) {
-            if (message.getContentDisplay().isEmpty()) attachmentsComponent = attachmentsComponent.append(Component.space());
+            if (!message.getContentDisplay().isEmpty()) attachmentsComponent = attachmentsComponent.append(Component.space());
 
             for (Message.Attachment attachment : message.getAttachments()) {
                 attachmentsComponent = attachmentsComponent
@@ -240,7 +240,7 @@ public class DiscordPlugin {
 
         Component embedsComponent = Component.empty();
         if (!message.getEmbeds().isEmpty()) {
-            if (message.getAttachments().isEmpty()) embedsComponent = embedsComponent.append(Component.space());
+            if (message.getAttachments().isEmpty() || !message.getContentDisplay().isEmpty()) embedsComponent = embedsComponent.append(Component.space());
 
             for (MessageEmbed embed : message.getEmbeds()) {
                 final Component hoverEvent = Component.translatable(
