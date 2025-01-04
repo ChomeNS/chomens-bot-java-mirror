@@ -234,7 +234,11 @@ public class CorePlugin extends PositionPlugin.Listener {
     }
 
     public void runPlaceBlock (String command) {
-        bot.executorService.submit(() -> placeBlockQueue.add(command));
+        try {
+            placeBlockQueue.add(command);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void forceRunPlaceBlock (String command) {

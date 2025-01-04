@@ -74,7 +74,7 @@ public class PositionPlugin extends Bot.Listener {
     }
 
     public void packetReceived (ClientboundPlayerPositionPacket packet) {
-        bot.session.send(new ServerboundAcceptTeleportationPacket(packet.getId()));
+        if (bot.session != null) bot.session.send(new ServerboundAcceptTeleportationPacket(packet.getId()));
 
         position = packet.getPosition();
 
