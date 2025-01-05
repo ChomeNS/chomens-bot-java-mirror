@@ -24,11 +24,13 @@ import java.util.concurrent.TimeUnit;
 
 // Author: _ChipMC_ & chayapak <3
 public class MusicPlayerPlugin extends Bot.Listener {
-    private final Bot bot;
-
     public static final String SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic,tag=!custompitch]";
     public static final String CUSTOM_PITCH_SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic,tag=custompitch]";
     public static final String BOTH_SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic]";
+
+    private static final DecimalFormat DECIMAL_FORMATTER = new DecimalFormat("#,###");
+
+    private final Bot bot;
 
     public static final Path SONG_DIR = Path.of("songs");
     static {
@@ -47,27 +49,34 @@ public class MusicPlayerPlugin extends Bot.Listener {
     // sus nightcore stuff,..,.,.
     public float pitch = 0;
     public float speed = 1;
+
     public int amplify = 1;
 
     public String instrument = "off";
 
-    private int limit = 0;
+    private int urlLimit = 0;
 
     public boolean locked = false; // this can be set through servereval
 
-    private final String bossbarName = "music";
-
+    private final String bossBarName = "music";
     public BossBarColor bossBarColor;
 
-    private String currentLyrics = "";
+    public String currentLyrics = "";
 
     public MusicPlayerPlugin (Bot bot) {
         this.bot = bot;
+
         bot.addListener(this);
+
         bot.core.addListener(new CorePlugin.Listener() {
-            public void ready () { coreReady(); }
+            @Override
+            public void ready() {
+                onCoreReady();
+            }
         });
-        bot.executor.scheduleAtFixedRate(() -> limit = 0, 0, bot.config.music.urlRatelimit.seconds, TimeUnit.SECONDS);
+
+        bot.executor.scheduleAtFixedRate(this::onTick, 0, 50, TimeUnit.MILLISECONDS);
+        bot.executor.scheduleAtFixedRate(() -> urlLimit = 0, 0, bot.config.music.urlRatelimit.seconds, TimeUnit.SECONDS);
     }
 
     public void loadSong (Path location, PlayerEntry sender) {
@@ -90,9 +99,9 @@ public class MusicPlayerPlugin extends Bot.Listener {
     public void loadSong (URL location, PlayerEntry sender) {
         if (songQueue.size() > 500) return;
 
-        limit++;
+        urlLimit++;
 
-        if (limit > bot.config.music.urlRatelimit.limit) {
+        if (urlLimit > bot.config.music.urlRatelimit.limit) {
             bot.chat.tellraw(Component.text("ohio").color(NamedTextColor.RED));
             return;
         }
@@ -128,85 +137,86 @@ public class MusicPlayerPlugin extends Bot.Listener {
         loaderThread.start();
     }
 
-    public void coreReady () {
-        bot.tick.addListener(new TickPlugin.Listener() {
-            @Override
-            public void onTick() {
-                try {
-                    if (currentSong == null) {
-                        if (songQueue.isEmpty()) return; // this line
+    private void onCoreReady () {
+        if (currentSong != null) currentSong.play();
+    }
 
-                        addBossBar();
+    // this needs a separate ticker because we need
+    // the song to be playing without lag
+    private void onTick () {
+        try {
+            if (!bot.loggedIn) return;
 
-                        currentSong = songQueue.getFirst(); // songQueue.poll();
-                        bot.chat.tellraw(
-                                Component.translatable(
-                                        "Now playing %s",
-                                        Component.empty().append(Component.text(currentSong.name)).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
-                                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
-                        );
-                        currentSong.play();
-                    }
+            if (currentSong == null) {
+                if (songQueue.isEmpty()) return; // this line
 
-                    if (currentSong.paused) return;
+                addBossBar();
 
-                    if (!currentSong.finished()) {
-                        handleLyrics();
+                currentSong = songQueue.getFirst(); // songQueue.poll();
+                bot.chat.tellraw(
+                        Component.translatable(
+                                "Now playing %s",
+                                Component.empty().append(Component.text(currentSong.name)).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                        ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
+                );
+                currentSong.play();
+            }
 
-                        BotBossBar bossBar = bot.bossbar.get(bossbarName);
+            if (currentSong.paused) return;
 
-                        if (bossBar == null && bot.bossbar.enabled) bossBar = addBossBar();
+            if (!currentSong.finished()) {
+                handleLyrics();
 
-                        if (bot.bossbar.enabled && bot.options.useCore) {
-                            bossBar.setTitle(generateBossbar());
-                            bossBar.setColor(bossBarColor);
-                            bossBar.setValue((int) Math.floor(((double) (currentSong.time * speed) / 1000)));
-                            bossBar.setMax((long) (currentSong.length * speed) / 1000);
-                        }
+                BotBossBar bossBar = bot.bossbar.get(bossBarName);
 
-                        if (currentSong.paused || bot.core.isRateLimited()) return;
+                if (bossBar == null && bot.bossbar.enabled) bossBar = addBossBar();
 
-                        handlePlaying();
-                    } else {
-                        currentLyrics = "";
+                if (bot.bossbar.enabled && bot.options.useCore) {
+                    bossBar.setTitle(generateBossBar());
+                    bossBar.setColor(bossBarColor);
+                    bossBar.setValue((int) Math.floor(((double) (currentSong.time * speed) / 1000)));
+                    bossBar.setMax((long) (currentSong.length * speed) / 1000);
+                }
 
-                        if (loop == Loop.CURRENT) {
-                            currentSong.loop();
-                            return;
-                        }
+                if (currentSong.paused || bot.core.isRateLimited()) return;
 
-                        bot.chat.tellraw(
-                                Component.translatable(
-                                        "Finished playing %s",
-                                        Component.empty().append(Component.text(currentSong.name)).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
-                                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
-                        );
+                handlePlaying();
+            } else {
+                currentLyrics = "";
 
-                        if (loop == Loop.ALL) {
-                            skip();
-                            return;
-                        }
+                if (loop == Loop.CURRENT) {
+                    currentSong.loop();
+                    return;
+                }
 
-                        songQueue.removeFirst();
+                bot.chat.tellraw(
+                        Component.translatable(
+                                "Finished playing %s",
+                                Component.empty().append(Component.text(currentSong.name)).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                        ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
+                );
 
-                        if (songQueue.isEmpty()) {
-                            stopPlaying();
-                            return;
-                        }
+                if (loop == Loop.ALL) {
+                    skip();
+                    return;
+                }
 
-                        if (currentSong.size() > 0) {
-                            currentSong = songQueue.getFirst();
-                            currentSong.setTime(0);
-                            currentSong.play();
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                songQueue.removeFirst();
+
+                if (songQueue.isEmpty()) {
+                    stopPlaying();
+                    return;
+                }
+
+                if (currentSong.size() > 0) {
+                    currentSong = songQueue.getFirst();
+                    currentSong.setTime(0);
+                    currentSong.play();
                 }
             }
-        });
-
-        if (currentSong != null) currentSong.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void skip () {
@@ -238,7 +248,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                 bot
         );
 
-        bot.bossbar.add(bossbarName, bossBar);
+        bot.bossbar.add(bossBarName, bossBar);
 
         return bossBar;
     }
@@ -246,7 +256,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
     private void handleLyrics () {
         // please help, this is many attempts trying to get this working
         // midi lyrics are very weird
-        // i need some karaoke players too see how this works
+        // i need some karaoke players to see how this works
 
 //        final Map<Long, String> lyrics = currentSong.lyrics;
 //
@@ -284,28 +294,28 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     public void removeBossBar() {
-        final BotBossBar bossBar = bot.bossbar.get(bossbarName);
+        final BotBossBar bossBar = bot.bossbar.get(bossBarName);
 
         if (bossBar != null) bossBar.setTitle(Component.text("No song is currently playing"));
 
-        bot.bossbar.remove(bossbarName);
+        bot.bossbar.remove(bossBarName);
     }
 
-    public Component generateBossbar () {
-        NamedTextColor namedTextColor;
+    public Component generateBossBar () {
+        NamedTextColor nameColor;
         if (pitch > 0) {
-            namedTextColor = NamedTextColor.LIGHT_PURPLE;
+            nameColor = NamedTextColor.LIGHT_PURPLE;
             bossBarColor = BossBarColor.PURPLE;
         } else if (pitch < 0) {
-            namedTextColor = NamedTextColor.AQUA;
+            nameColor = NamedTextColor.AQUA;
             bossBarColor = BossBarColor.CYAN;
         } else {
-            namedTextColor = NamedTextColor.GREEN;
+            nameColor = NamedTextColor.GREEN;
             bossBarColor = BossBarColor.YELLOW;
         }
 
         Component component = Component.empty()
-                .append(Component.empty().append(Component.text(currentSong.name)).color(namedTextColor))
+                .append(Component.empty().append(Component.text(currentSong.name)).color(nameColor))
                 .append(Component.text(" | ").color(NamedTextColor.DARK_GRAY))
                 .append(
                         Component
@@ -314,20 +324,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
                                         formatTime((long) (currentSong.length * speed)).color(NamedTextColor.GRAY)).color(NamedTextColor.DARK_GRAY)
                 );
 
-        if (!bot.core.hasRateLimit()) {
-            final DecimalFormat formatter = new DecimalFormat("#,###");
-
+        if (!bot.core.hasRateLimit() && !currentLyrics.isEmpty()) {
             component = component
-                    .append(Component.text(" | ").color(NamedTextColor.DARK_GRAY))
-                    .append(
-                            Component.translatable(
-                                    "%s / %s",
-                                    Component.text(formatter.format(currentSong.position), NamedTextColor.GRAY),
-                                    Component.text(formatter.format(currentSong.size()), NamedTextColor.GRAY)
-                            ).color(NamedTextColor.DARK_GRAY)
-                    );
-
-            if (!currentLyrics.isEmpty()) component = component
                     .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
                     .append(Component.text(currentLyrics).color(NamedTextColor.BLUE));
         }
@@ -395,7 +393,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                         note.pitch != note.shiftedPitch ||
                                 note.shiftedInstrument != note.instrument;
 
-                final double volume = (note.instrument == Instrument.BASS ? note.volume * 1.5 : note.volume);
+                final double volume = note.volume * 2;
 
                 if (shouldCustomPitch) {
                     bot.core.run(
@@ -450,7 +448,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
             else if (average == 100) pos = 0;
             else pos = (float) ((average - 100) * -1) / 100;
 
-            blockPosition = Vector3f.from(pos * 4, 0, 0);
+            blockPosition = Vector3f.from(pos * 5, 0, 0);
         } else {
             // i wrote this part
 

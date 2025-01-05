@@ -518,6 +518,7 @@ public class MusicCommand extends Command {
         if (isNotNullAndNotBlank(currentSong.songAuthor)) components.add(Component.translatable("Author: %s", Component.text(currentSong.songAuthor).color(valueColor)).color(keyColor));
         if (isNotNullAndNotBlank(currentSong.songOriginalAuthor)) components.add(Component.translatable("Original author: %s", Component.text(currentSong.songOriginalAuthor).color(valueColor)).color(keyColor));
         if (isNotNullAndNotBlank(currentSong.tracks)) components.add(Component.translatable("Tracks: %s", Component.text(currentSong.tracks).color(valueColor)).color(keyColor));
+        components.add(Component.translatable("Notes: %s", Component.text(currentSong.size()).color(valueColor)).color(keyColor));
         if (isNotNullAndNotBlank(currentSong.songDescription)) components.add(Component.translatable("Description: %s", Component.text(currentSong.songDescription).color(valueColor)).color(keyColor));
 
         return Component.join(JoinConfiguration.newlines(), components);
