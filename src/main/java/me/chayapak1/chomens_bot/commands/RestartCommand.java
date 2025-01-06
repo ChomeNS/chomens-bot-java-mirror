@@ -27,7 +27,7 @@ public class RestartCommand extends Command {
 
         final String reason = context.getString(true, false);
 
-        Main.stop(1, reason.isEmpty() ? null : reason, "Restarting..");
+        Main.stop(12, reason.isEmpty() ? null : reason, "Restarting..");
 
         return Component.text("Restarting").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }

@@ -2,14 +2,16 @@ package me.chayapak1.chomens_bot;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import me.chayapak1.chomens_bot.plugins.*;
-import me.chayapak1.chomens_bot.util.*;
+import me.chayapak1.chomens_bot.util.ArrayUtilities;
+import me.chayapak1.chomens_bot.util.HttpUtilities;
+import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.io.*;
-import java.net.URL;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -20,6 +22,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
+    public static final Path stopReasonFilePath = Path.of("shutdown_reason.txt");
+
     public static final List<Bot> bots = new ArrayList<>();
 
     public static final ExecutorService executorService = Executors.newFixedThreadPool(
@@ -77,6 +81,10 @@ public class Main {
 
         config = yaml.load(reader);
 
+        final Thread shutdownThread = new Thread(Main::handleShutdown);
+        shutdownThread.setName("ChomeNS Bot Shutdown Thread");
+        Runtime.getRuntime().addShutdownHook(shutdownThread);
+
         if (!config.backup.enabled) {
             initializeBots();
         } else {
@@ -84,7 +92,7 @@ public class Main {
                 boolean reachable;
 
                 try {
-                    HttpUtilities.getRequest(new URL(config.backup.address));
+                    HttpUtilities.getRequest(new URI(config.backup.address).toURL());
 
                     reachable = true;
                 } catch (Exception e) {
@@ -138,10 +146,24 @@ public class Main {
         }
     }
 
+    private static void handleShutdown () {
+        String reason = null;
+
+        if (Files.exists(stopReasonFilePath)) {
+            try {
+                reason = new String(Files.readAllBytes(stopReasonFilePath)).trim();
+            } catch (IOException ignored) {}
+        }
+
+        stop(0, reason, false);
+    }
+
     // most of these are stolen from HBot
-    public static void stop (int exitCode) { stop(exitCode, null, null); }
-    public static void stop (int exitCode, String reason) { stop(exitCode, reason, null); }
-    public static void stop (int exitCode, String reason, String type) {
+    public static void stop (int exitCode) { stop(exitCode, null, null, true); }
+    public static void stop (int exitCode, String reason) { stop(exitCode, reason, null, true); }
+    public static void stop (int exitCode, String reason, String type) { stop(exitCode, reason, type, true); }
+    public static void stop (int exitCode, String reason, boolean callSystemExit) { stop(exitCode, reason, null, callSystemExit); }
+    public static void stop (int exitCode, String reason, String type, boolean callSystemExit) {
         if (stopping) return;
 
         stopping = true;
@@ -151,6 +173,8 @@ public class Main {
                 type != null ? type : "Stopping..",
                 reason != null ? reason : "No reason given"
         );
+
+        LoggerUtilities.info(stoppingMessage);
 
         executor.shutdown();
 
@@ -207,6 +231,6 @@ public class Main {
             }
         }
 
-        System.exit(exitCode);
+        if (callSystemExit) System.exit(exitCode);
     }
 }
