@@ -43,6 +43,7 @@ public class Main {
 
     private static int backupFailTimes = 0;
 
+    public static ConsolePlugin console;
     public static DatabasePlugin database;
     private static DiscordPlugin discord;
 
@@ -130,7 +131,7 @@ public class Main {
             }
 
             // initialize plugins
-            new ConsolePlugin();
+            console = new ConsolePlugin();
             LoggerPlugin.init();
             if (config.database.enabled) database = new DatabasePlugin(config);
             if (config.discord.enabled) discord = new DiscordPlugin(config);
