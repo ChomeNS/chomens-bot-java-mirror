@@ -13,6 +13,7 @@ import me.chayapak1.chomens_bot.util.HttpUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -42,7 +43,7 @@ public class TranslateCommand extends Command {
 
         bot.executorService.submit(() -> {
             try {
-                final URL url = new URL("https://translate.google.com/translate_a/single?client=at&dt=t&dt=rm&dj=1");
+                final URL url = new URI("https://translate.google.com/translate_a/single?client=at&dt=t&dt=rm&dj=1").toURL();
 
                 final String jsonOutput = HttpUtilities.postRequest(
                         url,

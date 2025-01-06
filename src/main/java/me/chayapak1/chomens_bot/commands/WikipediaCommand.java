@@ -16,6 +16,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -46,7 +47,7 @@ public class WikipediaCommand extends Command {
             try {
                 Component component = Component.empty();
 
-                final URL pageIDUrl = new URL(String.format(pageIDStringURL, URLEncoder.encode(page, StandardCharsets.UTF_8)));
+                final URL pageIDUrl = new URI(String.format(pageIDStringURL, URLEncoder.encode(page, StandardCharsets.UTF_8))).toURL();
 
                 final JsonObject pageIDJsonOutput = gson.fromJson(HttpUtilities.getRequest(pageIDUrl), JsonObject.class);
 
@@ -83,7 +84,7 @@ public class WikipediaCommand extends Command {
                     return;
                 }
 
-                final URL outputUrl = new URL(String.format(outputStringURL, pageID));
+                final URL outputUrl = new URI(String.format(outputStringURL, pageID)).toURL();
 
                 final JsonObject outputJsonOutput = gson.fromJson(HttpUtilities.getRequest(outputUrl), JsonObject.class);
 

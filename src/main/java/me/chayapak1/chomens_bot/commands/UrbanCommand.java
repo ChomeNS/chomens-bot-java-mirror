@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.*;
-import me.chayapak1.chomens_bot.command.*;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.HttpUtilities;
 import net.kyori.adventure.text.Component;
@@ -17,6 +16,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -52,10 +52,10 @@ public class UrbanCommand extends Command {
 
         bot.executorService.submit(() -> {
             try {
-                final URL url = new URL(
+                final URL url = new URI(
                         "https://api.urbandictionary.com/v0/define?term=" +
                                 URLEncoder.encode(term, StandardCharsets.UTF_8)
-                );
+                ).toURL();
 
                 final String jsonOutput = HttpUtilities.getRequest(url);
 
