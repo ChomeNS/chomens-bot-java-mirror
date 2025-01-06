@@ -176,7 +176,7 @@ public class UrbanCommand extends Command {
 
                 if (discord && !list.isEmpty()) context.sendOutput(discordComponent);
             } catch (Exception e) {
-                e.printStackTrace();
+                bot.logger.error(e);
                 context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
             }
         });

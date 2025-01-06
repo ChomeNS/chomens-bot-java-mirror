@@ -12,11 +12,15 @@ import java.nio.file.StandardOpenOption;
 
 // normally unused in the main instance of the bot
 public class PacketSnifferPlugin extends Bot.Listener {
+    private final Bot bot;
+
     public final boolean enabled = false;
 
     private BufferedWriter writer;
 
     public PacketSnifferPlugin (Bot bot) {
+        this.bot = bot;
+
         if (!enabled) return;
 
         final String name = String.format(
@@ -32,7 +36,7 @@ public class PacketSnifferPlugin extends Bot.Listener {
 
             writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND);
         } catch (IOException e) {
-            e.printStackTrace();
+            bot.logger.error(e);
         }
 
         bot.addListener(this);
@@ -44,7 +48,7 @@ public class PacketSnifferPlugin extends Bot.Listener {
             writer.write(packet.toString() + "\n");
             writer.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            bot.logger.error(e);
         }
     }
 }

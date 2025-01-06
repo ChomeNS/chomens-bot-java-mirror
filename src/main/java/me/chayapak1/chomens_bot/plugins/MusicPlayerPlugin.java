@@ -5,6 +5,7 @@ import me.chayapak1.chomens_bot.data.BotBossBar;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
 import me.chayapak1.chomens_bot.song.*;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
+import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import me.chayapak1.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -37,7 +38,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
         try {
             if (!Files.exists(SONG_DIR)) Files.createDirectory(SONG_DIR);
         } catch (IOException e) {
-            e.printStackTrace();
+            LoggerUtilities.error(e);
         }
     }
 
@@ -215,7 +216,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            bot.logger.error(e);
         }
     }
 
@@ -431,7 +432,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            bot.logger.error(e);
         }
     }
 

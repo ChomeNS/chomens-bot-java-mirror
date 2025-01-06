@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.Main;
+import me.chayapak1.chomens_bot.util.LoggerUtilities;
 
 import java.sql.*;
 import java.util.concurrent.ExecutorService;
@@ -26,7 +27,7 @@ public class DatabasePlugin {
                     config.database.password
             );
         } catch (SQLException e) {
-            e.printStackTrace();
+            LoggerUtilities.error(e);
             return;
         }
 
@@ -57,7 +58,7 @@ public class DatabasePlugin {
         try {
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            LoggerUtilities.error(e);
         }
     }
 }

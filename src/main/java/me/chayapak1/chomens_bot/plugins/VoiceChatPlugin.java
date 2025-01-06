@@ -85,7 +85,7 @@ public class VoiceChatPlugin extends Bot.Listener {
             try {
                 socket.open();
             } catch (Exception e) {
-                e.printStackTrace();
+                bot.logger.error(e);
             }
 
             final Thread thread = new Thread(() -> {
@@ -101,7 +101,7 @@ public class VoiceChatPlugin extends Bot.Listener {
                         else if (message.packet instanceof KeepAlivePacket) sendToServer(new NetworkMessage(new KeepAlivePacket()));
                         else if (message.packet instanceof AuthenticateAckPacket) sendToServer(new NetworkMessage(new ConnectionCheckPacket()));
                     } catch (Exception e) {
-                        if (running) e.printStackTrace();
+                        if (running) bot.logger.error(e);
                         else break; // is this neccessary?
                     }
                 }
@@ -153,7 +153,7 @@ public class VoiceChatPlugin extends Bot.Listener {
                     socketAddress
             );
         } catch (Exception e) {
-            e.printStackTrace();
+            bot.logger.error(e);
         }
     }
 
@@ -175,7 +175,7 @@ public class VoiceChatPlugin extends Bot.Listener {
             } catch (Exception e) {
                 if (!running) return null;
 
-                e.printStackTrace();
+                bot.logger.error(e);
             }
 
             return null;

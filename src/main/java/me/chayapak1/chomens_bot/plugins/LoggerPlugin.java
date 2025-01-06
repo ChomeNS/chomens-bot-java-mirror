@@ -97,10 +97,15 @@ public class LoggerPlugin extends ChatPlugin.Listener {
         LoggerUtilities.info(bot, message);
     }
 
+    public void error (Throwable throwable) {
+        if (!logToConsole) return;
+
+        LoggerUtilities.error(bot, throwable);
+    }
     public void error (String message) {
         if (!logToConsole) return;
 
-        LoggerUtilities.info(bot, message);
+        LoggerUtilities.error(bot, message);
     }
 
     public void custom (Component prefix, Component message) {

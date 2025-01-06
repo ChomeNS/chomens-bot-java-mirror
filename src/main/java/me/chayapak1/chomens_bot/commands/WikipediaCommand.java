@@ -112,7 +112,7 @@ public class WikipediaCommand extends Command {
                 context.sendOutput(component);
             } catch (NumberFormatException e) {
                 context.sendOutput(Component.text("Failed parsing page ID").color(NamedTextColor.RED));
-                e.printStackTrace();
+                bot.logger.error(e);
             } catch (Exception e) {
                 context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
             }

@@ -5,6 +5,7 @@ import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.IRCCommandContext;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
+import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -57,7 +58,7 @@ public class IRCPlugin extends ListenerAdapter {
             try {
                 bot.startBot();
             } catch (Exception e) {
-                e.printStackTrace();
+                LoggerUtilities.error(e);
             }
         }).start();
 

@@ -182,7 +182,7 @@ public class Bot {
                     try {
                         listener.packetReceived(session, packet);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        logger.error(e);
                     }
                 }
 
@@ -270,7 +270,7 @@ public class Bot {
 
                 final Throwable cause = disconnectedEvent.getCause();
 
-                if (printDisconnectedCause && cause != null) cause.printStackTrace();
+                if (printDisconnectedCause && cause != null) logger.error(cause);
 
                 // lazy fix #69420
                 if (cause instanceof OutOfMemoryError) System.exit(1);

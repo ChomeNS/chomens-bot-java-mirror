@@ -130,7 +130,7 @@ public class ComponentUtilities {
                     return builder.toString();
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                LoggerUtilities.error(e);
                 return "";
             }
         }

@@ -50,7 +50,7 @@ public class TeamJoinerPlugin extends TickPlugin.Listener {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            bot.logger.error(e);
         }
     }
 

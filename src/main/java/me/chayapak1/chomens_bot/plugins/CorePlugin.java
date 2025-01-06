@@ -126,7 +126,7 @@ public class CorePlugin extends PositionPlugin.Listener {
                     forceRunPlaceBlock(clonedQueue.get(0));
                     placeBlockQueue.remove(0);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    bot.logger.error(e);
                 }
             }
         });
@@ -237,7 +237,7 @@ public class CorePlugin extends PositionPlugin.Listener {
         try {
             placeBlockQueue.add(command);
         } catch (Exception e) {
-            e.printStackTrace();
+            bot.logger.error(e);
         }
     }
 

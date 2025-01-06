@@ -4,7 +4,7 @@ import io.netty.buffer.Unpooled;
 import me.chayapak1.chomens_bot.data.voiceChat.RawUdpPacket;
 import me.chayapak1.chomens_bot.util.AESUtilities;
 import me.chayapak1.chomens_bot.util.FriendlyByteBuf;
-import me.chayapak1.chomens_bot.voiceChat.packets.*;
+import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import me.chayapak1.chomens_bot.voiceChat.packets.*;
 
 import javax.crypto.BadPaddingException;
@@ -67,7 +67,7 @@ public class NetworkMessage {
         try {
             decrypt = AESUtilities.decrypt(secret, encryptedPayload);
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtilities.error(e);
             return null;
         }
 

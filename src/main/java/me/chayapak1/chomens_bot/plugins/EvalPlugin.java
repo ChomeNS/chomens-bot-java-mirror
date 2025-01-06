@@ -41,7 +41,7 @@ public class EvalPlugin {
         try {
             socket = IO.socket(bot.config.eval.address);
         } catch (Exception e) {
-            e.printStackTrace();
+            bot.logger.error(e);
         }
 
         socket.on(Socket.EVENT_CONNECT, (args) -> {

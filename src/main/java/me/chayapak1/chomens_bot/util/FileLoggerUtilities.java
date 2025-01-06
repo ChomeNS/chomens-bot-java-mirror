@@ -54,11 +54,11 @@ public class FileLoggerUtilities {
                 try {
                     tick();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LoggerUtilities.error(e);
                 }
             }, 0, 50, TimeUnit.MILLISECONDS);
         } catch (IOException e) {
-            e.printStackTrace();
+            LoggerUtilities.error(e);
         }
     }
 
@@ -72,7 +72,7 @@ public class FileLoggerUtilities {
                 compressLogFile();
                 makeNewLogFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                LoggerUtilities.error(e);
             }
         }
     }
@@ -162,7 +162,7 @@ public class FileLoggerUtilities {
                 spamLevel += 2;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LoggerUtilities.error(e);
         }
     }
     public static String getTimePrefix() {

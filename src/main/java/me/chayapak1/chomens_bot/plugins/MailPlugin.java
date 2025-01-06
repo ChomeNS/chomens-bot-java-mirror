@@ -5,6 +5,7 @@ import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.data.Mail;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
+import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -26,7 +27,7 @@ public class MailPlugin extends PlayersPlugin.Listener {
                 try {
                     Main.database.execute(CREATE_TABLE);
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    LoggerUtilities.error(e);
                 }
             });
         }
@@ -84,7 +85,7 @@ public class MailPlugin extends PlayersPlugin.Listener {
 
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            bot.logger.error(e);
         }
     }
 
@@ -96,7 +97,7 @@ public class MailPlugin extends PlayersPlugin.Listener {
 
             statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            bot.logger.error(e);
         }
     }
 
@@ -118,7 +119,7 @@ public class MailPlugin extends PlayersPlugin.Listener {
                 output.add(mail);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            bot.logger.error(e);
         }
 
         return output;

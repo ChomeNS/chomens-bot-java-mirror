@@ -93,8 +93,6 @@ public class SeenCommand extends Command {
                 ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)));
             } catch (CommandException e) {
                 context.sendOutput(e.message.color(NamedTextColor.RED));
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         });
 

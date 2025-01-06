@@ -141,7 +141,7 @@ public class Main {
 
             for (Bot bot : bots) bot.connect();
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtilities.error(e);
 
             System.exit(1);
         }

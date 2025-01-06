@@ -400,8 +400,8 @@ public class DiscordPlugin {
         if (queue) {
             logChannel.sendMessage(message).queue(
                     (msg) -> doneSendingInLogs.put(channelId, true),
-                    (err) -> {
-                        err.printStackTrace();
+                    (e) -> {
+                        LoggerUtilities.error(e);
 
                         doneSendingInLogs.put(channelId, false);
                     }

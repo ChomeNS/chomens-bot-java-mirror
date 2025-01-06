@@ -196,7 +196,7 @@ public class CommandHandlerPlugin {
         } catch (CommandException e) {
             return e.message.color(NamedTextColor.RED);
         } catch (Exception e) {
-            e.printStackTrace();
+            bot.logger.error(e);
 
             final String stackTrace = ExceptionUtilities.getStacktrace(e);
             if (inGame) {

@@ -232,7 +232,7 @@ public class ChatPlugin extends Bot.Listener {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            bot.logger.error(e);
         }
     }
 

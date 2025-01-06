@@ -90,7 +90,7 @@ public class SongLoaderThread extends Thread {
           showAddedToQueue();
         }
       } catch (IOException e) {
-        e.printStackTrace();
+        bot.logger.error(e);
       }
     } else processFile();
   }
@@ -127,7 +127,7 @@ public class SongLoaderThread extends Thread {
       try {
         song = converter.getSongFromBytes(bytes, name, bot);
       } catch (Exception e) {
-        e.printStackTrace();
+        bot.logger.error(e);
       }
     }
 
@@ -164,7 +164,7 @@ public class SongLoaderThread extends Thread {
   }
 
   private void failed() {
-    exception.printStackTrace();
+    bot.logger.error(exception);
     bot.chat.tellraw(Component.translatable("Failed to load song: %s", exception.message).color(NamedTextColor.RED));
     bot.music.loaderThread = null;
   }

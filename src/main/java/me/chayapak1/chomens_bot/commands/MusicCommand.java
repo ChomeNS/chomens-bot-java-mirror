@@ -138,12 +138,8 @@ public class MusicCommand extends Command {
                         final String file = matchedArray[0];
 
                         player.loadSong(Path.of(realPath.toString(), file), context.sender);
-                    } catch (CommandException e) {
-                        throw e;
                     } catch (NoSuchFileException e) {
                         throw new CommandException(Component.text("Directory does not exist"));
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
                 } else {
                     try (DirectoryStream<Path> stream = Files.newDirectoryStream(root)) {
@@ -164,12 +160,8 @@ public class MusicCommand extends Command {
                         final String file = matchedArray[0];
 
                         player.loadSong(Path.of(root.toString(), file), context.sender);
-                    } catch (CommandException e) {
-                        throw e;
                     } catch (NoSuchFileException e) {
                         throw new CommandException(Component.text("this will never happen ok??"));
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
                 }
             }
@@ -329,10 +321,8 @@ public class MusicCommand extends Command {
                 index += eachSize;
                 list.clear();
             }
-        } catch (NoSuchFileException e) {
-            throw new CommandException(Component.text("Directory doesn't exist"));
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new CommandException(Component.text("Directory doesn't exist"));
         }
 
         return null;

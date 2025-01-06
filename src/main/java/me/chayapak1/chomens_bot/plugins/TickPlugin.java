@@ -23,7 +23,7 @@ public class TickPlugin {
                 listener.onAlwaysTick();
             } catch (Exception e) {
                 bot.logger.error("Caught exception in an always tick listener!");
-                e.printStackTrace();
+                bot.logger.error(e);
             }
         }
 
@@ -34,7 +34,7 @@ public class TickPlugin {
                 listener.onTick();
             } catch (Exception e) {
                 bot.logger.error("Caught exception in a tick listener!");
-                e.printStackTrace();
+                bot.logger.error(e);
             }
         }
     }

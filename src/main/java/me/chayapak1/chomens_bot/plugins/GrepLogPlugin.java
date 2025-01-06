@@ -145,7 +145,7 @@ public class GrepLogPlugin {
             running = false;
             throw new CommandException(Component.text("An I/O error has occurred"));
         } catch (Exception e) {
-            e.printStackTrace();
+            bot.logger.error(e);
         }
 
         running = false;

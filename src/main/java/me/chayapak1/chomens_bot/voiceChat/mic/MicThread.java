@@ -100,7 +100,7 @@ public class MicThread extends Thread {
 //            try {
 //                join(100);
 //            } catch (InterruptedException e) {
-//                e.printStackTrace();
+//                bot.logger.error(e);
 //            }
 //        }
 //
@@ -125,7 +125,7 @@ public class MicThread extends Thread {
 //                stopPacketSent = false;
 //            }
 //        } catch (Exception e) {
-//            e.printStackTrace();
+//            bot.logger.error(e);
 //        }
 //        try {
 //            if (client != null && client.getRecorder() != null) {
@@ -149,7 +149,7 @@ public class MicThread extends Thread {
 //            connection.sendToServer(new NetworkMessage(new MicPacket(new byte[0], false, sequenceNumber.getAndIncrement())));
 //            stopPacketSent = true;
 //        } catch (Exception e) {
-//            e.printStackTrace();
+//            bot.logger.error(e);
 //        }
 //    }
 }

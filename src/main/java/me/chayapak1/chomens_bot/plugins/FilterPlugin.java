@@ -6,6 +6,7 @@ import me.chayapak1.chomens_bot.data.FilteredPlayer;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
 import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
+import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -34,7 +35,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
                 try {
                     Main.database.execute(CREATE_TABLE);
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    LoggerUtilities.error(e);
                 }
             });
 
@@ -87,7 +88,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
                 output.add(filteredPlayer);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LoggerUtilities.error(e);
         }
 
         localList = output;
@@ -232,7 +233,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
 
             list();
         } catch (SQLException e) {
-            e.printStackTrace();
+            bot.logger.error(e);
         }
 
         final PlayerEntry target = bot.players.getEntry(playerName); // fix not working for regex and ignorecase
@@ -252,7 +253,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
 
             list();
         } catch (SQLException e) {
-            e.printStackTrace();
+            bot.logger.error(e);
         }
     }
 
@@ -262,7 +263,7 @@ public class FilterPlugin extends PlayersPlugin.Listener {
 
             list();
         } catch (SQLException e) {
-            e.printStackTrace();
+            bot.logger.error(e);
         }
     }
 }

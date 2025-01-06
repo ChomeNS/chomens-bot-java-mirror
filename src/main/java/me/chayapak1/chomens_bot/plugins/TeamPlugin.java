@@ -10,9 +10,13 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.scoreboard.
 import java.util.*;
 
 public class TeamPlugin extends Bot.Listener {
+    private final Bot bot;
+
     public final List<Team> teams = Collections.synchronizedList(new ArrayList<>());
 
     public TeamPlugin (Bot bot) {
+        this.bot = bot;
+
         bot.addListener(this);
     }
 
@@ -99,7 +103,7 @@ public class TeamPlugin extends Bot.Listener {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            bot.logger.error(e);
         }
     }
 }

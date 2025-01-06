@@ -3,6 +3,7 @@ package me.chayapak1.chomens_bot.plugins;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
+import me.chayapak1.chomens_bot.util.LoggerUtilities;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,7 +28,7 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
                 try {
                     Main.database.execute(CREATE_TABLE);
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    LoggerUtilities.error(e);
                 }
             });
 
@@ -78,7 +79,7 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
 
             while (result.next()) output.add(result.getString("ip"));
         } catch (SQLException e) {
-            e.printStackTrace();
+            LoggerUtilities.error(e);
         }
 
         localList = output;
@@ -96,7 +97,7 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
 
             list();
         } catch (SQLException e) {
-            e.printStackTrace();
+            bot.logger.error(e);
         }
 
         checkAllPlayers();
@@ -120,7 +121,7 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
 
             list();
         } catch (SQLException e) {
-            e.printStackTrace();
+            bot.logger.error(e);
         }
     }
 
@@ -130,7 +131,7 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
 
             list();
         } catch (SQLException e) {
-            e.printStackTrace();
+            bot.logger.error(e);
         }
     }
 

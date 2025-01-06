@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
+import me.chayapak1.chomens_bot.util.LoggerUtilities;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,7 +35,7 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
                 try {
                     Main.database.execute(CREATE_TABLE);
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    LoggerUtilities.error(e);
                 }
             });
         }
@@ -64,7 +65,7 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
 
             return objectMapper.readTree(stringJson);
         } catch (SQLException | JsonProcessingException e) {
-            e.printStackTrace();
+            bot.logger.error(e);
             return null;
         }
     }
@@ -84,7 +85,7 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
 
             return output;
         } catch (SQLException e) {
-            e.printStackTrace();
+            bot.logger.error(e);
             return null;
         }
     }
@@ -128,13 +129,13 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
 
                         updatePlayerStatement.executeUpdate();
                     } catch (SQLException | JsonProcessingException e) {
-                        e.printStackTrace();
+                        bot.logger.error(e);
                     }
 
                     return output;
                 });
             } catch (SQLException | JsonProcessingException e) {
-                e.printStackTrace();
+                bot.logger.error(e);
             }
         });
     }
@@ -158,7 +159,7 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
 
                 updatePlayerStatement.executeUpdate();
             } catch (SQLException | JsonProcessingException e) {
-                e.printStackTrace();
+                bot.logger.error(e);
             }
         });
     }

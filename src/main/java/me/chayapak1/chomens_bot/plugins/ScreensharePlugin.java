@@ -34,7 +34,7 @@ public class ScreensharePlugin {
         try {
             robot = new Robot();
         } catch (AWTException e) {
-            e.printStackTrace();
+            bot.logger.error(e);
         }
     }
 
@@ -46,7 +46,7 @@ public class ScreensharePlugin {
 //        try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber("/tmp/rick.mp4")) {
 //            this.grabber = grabber;
 //        } catch (Exception e) {
-//            e.printStackTrace();
+//            bot.logger.error(e);
 //        }
 //
 //        try { grabber.start(); } catch (Exception ignored) {}
@@ -88,7 +88,7 @@ public class ScreensharePlugin {
             screen.draw();
 //        } catch (Exception e) {
 //            System.err.println("EXCEPTION ::::");
-//            e.printStackTrace();
+//            bot.logger.error(e);
 //        }
     }
 
