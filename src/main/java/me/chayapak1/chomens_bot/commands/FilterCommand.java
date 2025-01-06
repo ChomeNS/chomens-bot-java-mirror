@@ -59,7 +59,7 @@ public class FilterCommand extends Command {
         switch (action) {
             case "add" -> {
                 final String player = context.getString(false, true);
-                final String reason = context.getString(false, false);
+                final String reason = context.getString(true, false);
 
                 if (
                         FilterPlugin.localList.stream()
