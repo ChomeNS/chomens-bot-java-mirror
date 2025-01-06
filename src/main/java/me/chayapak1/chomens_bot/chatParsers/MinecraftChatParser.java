@@ -39,7 +39,7 @@ public class MinecraftChatParser implements ChatParser {
         final String key = message.key();
         if (args.size() < 2 || !keys.contains(key)) return null;
 
-        final Component senderComponent = args.get(0).asComponent();
+        final Component senderComponent = args.getFirst().asComponent();
         final Component contents = args.get(1).asComponent();
 
         PlayerEntry sender;

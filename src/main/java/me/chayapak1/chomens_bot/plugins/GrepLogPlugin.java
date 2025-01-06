@@ -103,7 +103,7 @@ public class GrepLogPlugin {
                             )
                     )
                     .queue(message -> {
-                        final String url = message.getAttachments().get(0).getUrl();
+                        final String url = message.getAttachments().getFirst().getUrl();
 
                         final DecimalFormat formatter = new DecimalFormat("#,###");
 

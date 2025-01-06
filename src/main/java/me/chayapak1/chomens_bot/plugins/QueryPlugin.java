@@ -46,9 +46,9 @@ public class QueryPlugin extends Bot.Listener {
 
             if (children.size() > 2) return false;
 
-            if (!(children.get(0) instanceof TextComponent)) return true;
+            if (!(children.getFirst() instanceof TextComponent)) return true;
 
-            final long transactionId = Integer.parseInt(((TextComponent) children.get(0)).content());
+            final long transactionId = Integer.parseInt(((TextComponent) children.getFirst()).content());
 
             if (!transactions.containsKey(transactionId)) return true;
 

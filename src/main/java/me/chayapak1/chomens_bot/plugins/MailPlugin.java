@@ -64,8 +64,8 @@ public class MailPlugin extends PlayersPlugin.Listener {
                                 "Run %s or %s to read",
                         Component.text(sendToTargetSize).color(NamedTextColor.GREEN),
                         Component.text((sendToTargetSize > 1) ? "s" : ""),
-                        Component.text(bot.config.commandSpyPrefixes.get(0) + "mail read").color(ColorUtilities.getColorByString(bot.config.colorPalette.primary)),
-                        Component.text(bot.config.prefixes.get(0) + "mail read").color(ColorUtilities.getColorByString(bot.config.colorPalette.primary))
+                        Component.text(bot.config.commandSpyPrefixes.getFirst() + "mail read").color(ColorUtilities.getColorByString(bot.config.colorPalette.primary)),
+                        Component.text(bot.config.prefixes.getFirst() + "mail read").color(ColorUtilities.getColorByString(bot.config.colorPalette.primary))
                 ).color(NamedTextColor.GOLD);
 
                 bot.chat.tellraw(component, target.profile.getId());

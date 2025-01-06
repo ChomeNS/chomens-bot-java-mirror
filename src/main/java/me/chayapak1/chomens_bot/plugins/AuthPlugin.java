@@ -98,9 +98,9 @@ public class AuthPlugin extends PlayersPlugin.Listener {
 
             if (children.size() != 1) return true;
 
-            if (!(children.get(0) instanceof TextComponent)) return true;
+            if (!(children.getFirst() instanceof TextComponent)) return true;
 
-            final String inputHash = ((TextComponent) children.get(0)).content();
+            final String inputHash = ((TextComponent) children.getFirst()).content();
 
             final long time = System.currentTimeMillis() / 10_000;
 

@@ -68,7 +68,7 @@ public class FormatCheckerPlugin extends ChatPlugin.Listener {
 
         if (!name.equals(bot.config.ownerName)) return false;
 
-        final Object prefix = format.arguments().get(0).value();
+        final Object prefix = format.arguments().getFirst().value();
 
         if (
                 ((prefix instanceof TextComponent text) && text.content().equals(bot.username + " Console")) || // ohio
@@ -77,7 +77,7 @@ public class FormatCheckerPlugin extends ChatPlugin.Listener {
 
         if (!(prefix instanceof TranslatableComponent translatablePrefix)) return true;
 
-        final Object userHash = translatablePrefix.arguments().get(0).value();
+        final Object userHash = translatablePrefix.arguments().getFirst().value();
 
         if (!(userHash instanceof TextComponent userHashComponent)) return true;
 

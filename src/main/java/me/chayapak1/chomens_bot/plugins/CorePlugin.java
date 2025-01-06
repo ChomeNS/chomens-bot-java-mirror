@@ -123,7 +123,7 @@ public class CorePlugin extends PositionPlugin.Listener {
                         return;
                     }
 
-                    forceRunPlaceBlock(clonedQueue.get(0));
+                    forceRunPlaceBlock(clonedQueue.getFirst());
                     placeBlockQueue.remove(0);
                 } catch (Exception e) {
                     bot.logger.error(e);

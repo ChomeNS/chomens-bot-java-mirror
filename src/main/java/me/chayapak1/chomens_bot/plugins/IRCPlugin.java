@@ -197,7 +197,7 @@ public class IRCPlugin extends ListenerAdapter {
 
                 if (logs.isEmpty()) continue;
 
-                final String firstLog = logs.get(0);
+                final String firstLog = logs.getFirst();
 
                 logs.remove(0);
 

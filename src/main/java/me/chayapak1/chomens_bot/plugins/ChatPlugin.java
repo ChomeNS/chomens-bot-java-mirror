@@ -241,7 +241,7 @@ public class ChatPlugin extends Bot.Listener {
 
         if (queue.isEmpty()) return;
 
-        final String message = queue.get(0);
+        final String message = queue.getFirst();
 
         if (message.startsWith("/")) {
             String removedMessage = message.substring(1);

@@ -224,7 +224,7 @@ public class NBSConverter implements Converter {
 
           final List<String> outputTitles = LevenshteinUtilities.searchTitles(name, subtitles.values());
 
-          final String bestMatch = outputTitles.isEmpty() ? "" : outputTitles.get(0);
+          final String bestMatch = outputTitles.isEmpty() ? "" : outputTitles.getFirst();
 
           for (Map.Entry<String, String> entry : subtitles.entrySet()) {
             if (!entry.getValue().equals(bestMatch)) continue;

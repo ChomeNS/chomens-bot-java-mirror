@@ -39,7 +39,7 @@ public class CommandSpyPlugin extends ChatPlugin.Listener {
                             children.size() < 2
             ) return true;
 
-            if (!((TextComponent) children.get(0)).content().equals(": ")) return true;
+            if (!((TextComponent) children.getFirst()).content().equals(": ")) return true;
 
             final String username = textComponent.content();
             final String command = ComponentUtilities.stringify(children.get(1));

@@ -31,7 +31,7 @@ public class KaboomChatParser implements ChatParser {
 
         if (!message.content().isEmpty() || !message.style().isEmpty() || children.size() < 3) return null;
 
-        final Component prefix = children.get(0);
+        final Component prefix = children.getFirst();
         Component displayName = Component.empty();
         Component contents = Component.empty();
 

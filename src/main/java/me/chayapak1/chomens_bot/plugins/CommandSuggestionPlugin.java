@@ -30,7 +30,7 @@ public class CommandSuggestionPlugin extends ChatPlugin.Listener {
 
             if (children.size() != 1) return true;
 
-            final String player = ((TextComponent) children.get(0)).content();
+            final String player = ((TextComponent) children.getFirst()).content();
 
             final List<Component> output = new ArrayList<>();
             output.add(Component.text(id));
