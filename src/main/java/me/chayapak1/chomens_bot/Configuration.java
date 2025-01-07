@@ -48,8 +48,8 @@ public class Configuration {
 
     public static class OwnerAuthentication {
         public boolean enabled = false;
-        public String key = "";
-        public int timeout = 6000;
+        public String muteReason = "";
+        public Map<String, String> ips = new HashMap<>();
     }
 
     public static class Backup {

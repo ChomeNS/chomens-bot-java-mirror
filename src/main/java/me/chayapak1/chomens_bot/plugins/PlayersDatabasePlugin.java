@@ -50,6 +50,8 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
     }
 
     public JsonNode getPlayerData (String username) {
+        if (bot.database == null || bot.database.connection == null) return null;
+
         try {
             final PreparedStatement statement = bot.database.connection.prepareStatement(GET_DATA);
 
