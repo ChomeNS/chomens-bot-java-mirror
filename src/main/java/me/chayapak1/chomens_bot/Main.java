@@ -183,11 +183,6 @@ public class Main {
 
         if (database != null) database.stop();
 
-        try {
-            final boolean ignoredExecutorDone = executor.awaitTermination(5, TimeUnit.SECONDS);
-            final boolean ignoredExecutorServiceDone = executorService.awaitTermination(5, TimeUnit.SECONDS);
-        } catch (InterruptedException ignored) {}
-
         ArrayList<Bot> copiedList;
         synchronized (bots) {
             copiedList = new ArrayList<>(bots);
