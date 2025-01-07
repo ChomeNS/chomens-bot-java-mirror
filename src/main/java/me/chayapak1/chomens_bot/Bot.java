@@ -216,7 +216,7 @@ public class Bot {
                                     skinParts,
                                     HandPreference.RIGHT_HAND,
                                     false,
-                                    true, // should this be false lol so only real players are displayed
+                                    false,
                                     ParticleStatus.ALL
                             )
                     );
