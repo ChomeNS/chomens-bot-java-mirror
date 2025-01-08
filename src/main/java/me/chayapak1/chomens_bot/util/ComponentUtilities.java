@@ -301,29 +301,31 @@ public class ComponentUtilities {
                 } else {
                     final String idxStr = matcher.group(1);
 
-                    int idx = idxStr == null ? i++ : (Integer.parseInt(idxStr) - 1);
+                    try {
+                        int idx = idxStr == null ? i++ : (Integer.parseInt(idxStr) - 1);
 
-                    if (idx >= 0 && idx < message.arguments().size()) {
-                        final ComponentParser parser = new ComponentParser();
+                        if (idx >= 0 && idx < message.arguments().size()) {
+                            final ComponentParser parser = new ComponentParser();
 
-                        parser.lastStyle = lastStyle + color + style;
-                        parser.depth = depth;
-                        parser.isSubParsing = true;
+                            parser.lastStyle = lastStyle + color + style;
+                            parser.depth = depth;
+                            parser.isSubParsing = true;
 
-                        matcher.appendReplacement(
-                                sb,
-                                Matcher.quoteReplacement(
-                                        parser.stringify(
-                                                message.arguments()
-                                                        .get(idx)
-                                                        .asComponent(),
-                                                type
-                                        ) + lastStyle + color + style // IMPORTANT!!!!
-                                )
-                        );
-                    } else {
-                        matcher.appendReplacement(sb, "");
-                    }
+                            matcher.appendReplacement(
+                                    sb,
+                                    Matcher.quoteReplacement(
+                                            parser.stringify(
+                                                    message.arguments()
+                                                            .get(idx)
+                                                            .asComponent(),
+                                                    type
+                                            ) + lastStyle + color + style // IMPORTANT!!!!
+                                    )
+                            );
+                        } else {
+                            matcher.appendReplacement(sb, "");
+                        }
+                    } catch (NumberFormatException ignored) {} // is this a good idea?
                 }
             }
 
