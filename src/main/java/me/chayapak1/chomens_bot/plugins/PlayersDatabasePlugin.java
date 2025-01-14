@@ -23,7 +23,8 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
     private static final String INSERT_PLAYER = "INSERT IGNORE INTO players (username, data) VALUES (?, ?);";
     private static final String UPDATE_PLAYER = "UPDATE players SET data = JSON_SET(data, ?, JSON_MERGE_PATCH(data -> ?, ?)) WHERE username = ?;";
     private static final String GET_DATA = "SELECT data FROM players WHERE username = ?;";
-    private static final String FIND_ALTS = "SELECT username FROM players WHERE JSON_CONTAINS(data -> '$.ips', JSON_OBJECT(?, ?));";
+    private static final String FIND_ALTS_SINGLE_SERVER = "SELECT username FROM players WHERE JSON_CONTAINS(data -> '$.ips', JSON_OBJECT(?, ?));";
+    private static final String FIND_ALTS_ALL_SERVERS = "SELECT username FROM players WHERE JSON_SEARCH(data->'$.ips', 'one', ?);"; // 'one' means case-sensitive
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -72,14 +73,23 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
         }
     }
 
-    public List<String> findPlayerAlts (String ip) {
+    public List<String> findPlayerAlts (String ip) { return findPlayerAlts(ip, false); }
+    public List<String> findPlayerAlts (String ip, boolean allServer) {
         try {
             final List<String> output = new ArrayList<>();
 
-            final PreparedStatement statement = bot.database.connection.prepareStatement(FIND_ALTS);
+            PreparedStatement statement;
 
-            statement.setString(1, bot.host + ":" + bot.port);
-            statement.setString(2, ip);
+            if (allServer) {
+                statement = bot.database.connection.prepareStatement(FIND_ALTS_ALL_SERVERS);
+
+                statement.setString(1, ip);
+            } else {
+                statement = bot.database.connection.prepareStatement(FIND_ALTS_SINGLE_SERVER);
+
+                statement.setString(1, bot.host + ":" + bot.port);
+                statement.setString(2, ip);
+            }
 
             final ResultSet result = statement.executeQuery();
 

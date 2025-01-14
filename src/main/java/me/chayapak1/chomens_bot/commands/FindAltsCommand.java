@@ -17,7 +17,7 @@ public class FindAltsCommand extends Command {
         super(
                 "findalts",
                 "Finds players with the same IP address",
-                new String[] { "<player>", "<ip>" },
+                new String[] { "-allserver <player|ip>", "<player|ip>" },
                 new String[] { "alts", "sameip" },
                 TrustLevel.PUBLIC,
                 false
@@ -30,18 +30,26 @@ public class FindAltsCommand extends Command {
 
         if (bot.database == null) throw new CommandException(Component.text("Database is not enabled in the bot's config"));
 
-        final String player = context.getString(true, true);
+        final String flag = context.getString(false, true);
+
+        final boolean allServer = flag.equals("-allserver");
+
+        String player = !allServer ? flag : ""; // adds the first argument if no flag
+
+        player += context.getString(true, false);
 
         final PlayerEntry playerEntry = bot.players.getEntry(player);
 
-        if (playerEntry == null) return handle(bot, player, true, player);
+        if (playerEntry == null) return handle(bot, player, true, player, allServer);
         else {
             final CompletableFuture<String> future = bot.players.getPlayerIP(playerEntry);
 
             if (future == null) return null;
 
+            final String tempFinalPlayer = player;
+
             future.thenApplyAsync(targetIP -> {
-                context.sendOutput(handle(bot, targetIP, false, player));
+                context.sendOutput(handle(bot, targetIP, false, tempFinalPlayer, allServer));
 
                 return targetIP;
             });
@@ -50,8 +58,8 @@ public class FindAltsCommand extends Command {
         return null;
     }
 
-    private Component handle (Bot bot, String targetIP, boolean argumentIsIP, String player) {
-        final List<String> alts = bot.playersDatabase.findPlayerAlts(targetIP);
+    private Component handle (Bot bot, String targetIP, boolean argumentIsIP, String player, boolean allServer) {
+        final List<String> alts = bot.playersDatabase.findPlayerAlts(targetIP, allServer);
 
         final Component playerComponent = Component
                 .text(player)
