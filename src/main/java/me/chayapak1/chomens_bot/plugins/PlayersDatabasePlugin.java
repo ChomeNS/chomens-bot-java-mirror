@@ -103,7 +103,10 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
                 final ObjectNode baseObject = JsonNodeFactory.instance.objectNode();
                 baseObject.put("uuid", target.profile.getIdAsString());
                 baseObject.set("ips", JsonNodeFactory.instance.objectNode());
-                baseObject.set("lastSeen", JsonNodeFactory.instance.objectNode());
+                // ||| this will be replaced after the player leaves, it is here
+                // ||| in case the bot leaves before the player leaves it will
+                // VVV prevent the last seen entry being empty
+                baseObject.set("lastSeen", getLastSeenObject());
 
                 insertPlayerStatement.setString(2, objectMapper.writeValueAsString(baseObject));
 
@@ -151,11 +154,9 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
                 updatePlayerStatement.setString(1, "$.lastSeen");
                 updatePlayerStatement.setString(2, "$.lastSeen");
 
-                final ObjectNode object = JsonNodeFactory.instance.objectNode();
-                object.put("time", Instant.now().toEpochMilli());
-                object.put("server", bot.host + ":" + bot.port);
+                final ObjectNode lastSeenObject = getLastSeenObject();
 
-                updatePlayerStatement.setString(3, objectMapper.writeValueAsString(object));
+                updatePlayerStatement.setString(3, objectMapper.writeValueAsString(lastSeenObject));
 
                 updatePlayerStatement.setString(4, target.profile.getName());
 
@@ -164,5 +165,14 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
                 bot.logger.error(e);
             }
         });
+    }
+
+    private ObjectNode getLastSeenObject () {
+        final ObjectNode object = JsonNodeFactory.instance.objectNode();
+
+        object.put("time", Instant.now().toEpochMilli());
+        object.put("server", bot.host + ":" + bot.port);
+
+        return object;
     }
 }
