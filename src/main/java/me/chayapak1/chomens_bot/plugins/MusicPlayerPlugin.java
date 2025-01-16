@@ -383,7 +383,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                 final Vector3f blockPosition = getBlockPosition(note);
 
-                final double notShiftedFloatingPitch = Math.pow(2.0, ((note.pitch + (pitch / 10)) - 12) / 12.0);
+                final float notShiftedFloatingPitch = (float) Math.pow(2.0, ((note.pitch + (pitch / 10)) - 12) / 12.0);
 
                 key += 33;
 
@@ -405,7 +405,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
                                     " record @s ^" + blockPosition.getX() + " ^" + blockPosition.getY() + " ^" + blockPosition.getZ() + " " +
                                     volume +
                                     " " +
-                                    0
+                                    0 +
+                                    " 1"
                     );
                 }
 
@@ -416,7 +417,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                 key -= 33;
 
-                double floatingPitch = Math.pow(2.0, ((key + (pitch / 10)) - 12) / 12.0);
+                float floatingPitch = (float) (0.5 * Math.pow(2, (key + (pitch / 10)) / 12));
 
                 for (int i = 0; i < amplify; i++) {
                     bot.core.run(
@@ -427,7 +428,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
                                     " record @s ^" + blockPosition.getX() + " ^" + blockPosition.getY() + " ^" + blockPosition.getZ() + " " +
                                     volume +
                                     " " +
-                                    MathUtilities.clamp(floatingPitch, 0, 2)
+                                    MathUtilities.clamp(floatingPitch, 0, 2) +
+                                    " 1"
                     );
                 }
             }
@@ -449,7 +451,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
             else if (average == 100) pos = 0;
             else pos = (float) ((average - 100) * -1) / 100;
 
-            blockPosition = Vector3f.from(pos * 5, 0, 0);
+            blockPosition = Vector3f.from(pos * 2, 0, 0);
         } else {
             // i wrote this part
 

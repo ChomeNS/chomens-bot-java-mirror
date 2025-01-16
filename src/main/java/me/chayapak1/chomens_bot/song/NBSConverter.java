@@ -185,7 +185,7 @@ public class NBSConverter implements Converter {
       if (note.instrument < instrumentIndex.length) {
         instrument = instrumentIndex[note.instrument];
 
-        key = note.key + (note.pitch / 100);
+        key = note.key + note.pitch / 100;
       } else {
         int index = note.instrument - instrumentIndex.length;
 
