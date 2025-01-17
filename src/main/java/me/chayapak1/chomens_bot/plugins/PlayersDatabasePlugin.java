@@ -14,8 +14,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
@@ -23,8 +23,8 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
     private static final String INSERT_PLAYER = "INSERT IGNORE INTO players (username, data) VALUES (?, ?);";
     private static final String UPDATE_PLAYER = "UPDATE players SET data = JSON_SET(data, ?, JSON_MERGE_PATCH(data -> ?, ?)) WHERE username = ?;";
     private static final String GET_DATA = "SELECT data FROM players WHERE username = ?;";
-    private static final String FIND_ALTS_SINGLE_SERVER = "SELECT username FROM players WHERE JSON_CONTAINS(data -> '$.ips', JSON_OBJECT(?, ?));";
-    private static final String FIND_ALTS_ALL_SERVERS = "SELECT username FROM players WHERE JSON_SEARCH(data->'$.ips', 'one', ?);"; // 'one' means case-sensitive
+    private static final String FIND_ALTS_SINGLE_SERVER = "SELECT * FROM players WHERE JSON_CONTAINS(data -> '$.ips', JSON_OBJECT(?, ?));";
+    private static final String FIND_ALTS_ALL_SERVERS = "SELECT * FROM players WHERE JSON_SEARCH(data->'$.ips', 'one', ?);"; // 'one' means case-sensitive
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -73,10 +73,10 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
         }
     }
 
-    public List<String> findPlayerAlts (String ip) { return findPlayerAlts(ip, false); }
-    public List<String> findPlayerAlts (String ip, boolean allServer) {
+    public Map<String, JsonNode> findPlayerAlts (String ip) { return findPlayerAlts(ip, false); }
+    public Map<String, JsonNode> findPlayerAlts (String ip, boolean allServer) {
         try {
-            final List<String> output = new ArrayList<>();
+            final Map<String, JsonNode> output = new HashMap<>();
 
             PreparedStatement statement;
 
@@ -93,10 +93,15 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
 
             final ResultSet result = statement.executeQuery();
 
-            while (result.next()) output.add(result.getString("username"));
+            while (result.next()) {
+                output.put(
+                        result.getString("username"),
+                        objectMapper.readTree(result.getString("data"))
+                );
+            }
 
             return output;
-        } catch (SQLException e) {
+        } catch (SQLException | JsonProcessingException e) {
             bot.logger.error(e);
             return null;
         }

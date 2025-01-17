@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.commands;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
@@ -10,6 +11,7 @@ import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class FindAltsCommand extends Command {
@@ -59,7 +61,7 @@ public class FindAltsCommand extends Command {
     }
 
     private Component handle (Bot bot, String targetIP, boolean argumentIsIP, String player, boolean allServer) {
-        final List<String> alts = bot.playersDatabase.findPlayerAlts(targetIP, allServer);
+        final Map<String, JsonNode> altsMap = bot.playersDatabase.findPlayerAlts(targetIP, allServer);
 
         final Component playerComponent = Component
                 .text(player)
@@ -82,8 +84,36 @@ public class FindAltsCommand extends Command {
                 )
                 .appendNewline();
 
+        final List<String> sorted = altsMap.entrySet().stream()
+                .limit(200) // only find 200 alts because more than this is simply too many
+                .sorted((a, b) -> {
+                    // a
+
+                    final JsonNode aLastSeen = a.getValue().get("lastSeen");
+
+                    if (aLastSeen == null || aLastSeen.isNull()) return 0;
+
+                    final JsonNode aTimeNode = aLastSeen.get("time");
+
+                    if (aTimeNode == null || aTimeNode.isNull()) return 0;
+
+                    // b
+
+                    final JsonNode bLastSeen = b.getValue().get("lastSeen");
+
+                    if (bLastSeen == null || bLastSeen.isNull()) return 0;
+
+                    final JsonNode bTimeNode = bLastSeen.get("time");
+
+                    if (bTimeNode == null || bTimeNode.isNull()) return 0;
+
+                    return Long.compare(bTimeNode.asLong(), aTimeNode.asLong());
+                })
+                .map(Map.Entry::getKey)
+                .toList();
+
         int i = 0;
-        for (String username : alts) {
+        for (String username : sorted) {
             component = component
                     .append(
                             Component
