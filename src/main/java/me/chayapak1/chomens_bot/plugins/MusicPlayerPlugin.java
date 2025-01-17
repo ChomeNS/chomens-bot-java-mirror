@@ -3,7 +3,10 @@ package me.chayapak1.chomens_bot.plugins;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.BotBossBar;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
-import me.chayapak1.chomens_bot.song.*;
+import me.chayapak1.chomens_bot.song.Loop;
+import me.chayapak1.chomens_bot.song.Note;
+import me.chayapak1.chomens_bot.song.Song;
+import me.chayapak1.chomens_bot.song.SongLoaderThread;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import me.chayapak1.chomens_bot.util.MathUtilities;
@@ -18,7 +21,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -28,8 +30,6 @@ public class MusicPlayerPlugin extends Bot.Listener {
     public static final String SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic,tag=!custompitch]";
     public static final String CUSTOM_PITCH_SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic,tag=custompitch]";
     public static final String BOTH_SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic]";
-
-    private static final DecimalFormat DECIMAL_FORMATTER = new DecimalFormat("#,###");
 
     private final Bot bot;
 
