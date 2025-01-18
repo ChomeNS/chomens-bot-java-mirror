@@ -57,7 +57,7 @@ public class InfoCommand extends Command {
                         "botlogintime",
                         "uptime"
                 },
-                new String[] {},
+                new String[] { "creator", "discord", "botuser", "uptime" },
                 TrustLevel.PUBLIC,
                 false
         );
@@ -69,7 +69,9 @@ public class InfoCommand extends Command {
 
         final Bot bot = context.bot;
 
-        final String action = context.getString(false, false, true);
+        final String action = !context.userInputCommandName.equals(this.name) ? // if the input command is not `info`
+                context.userInputCommandName : // use that as the action (e.g. "discord", "creator")
+                context.getString(false, false, true); // else just take the argument of `info`
 
         switch (action) {
             case "creator" -> {
