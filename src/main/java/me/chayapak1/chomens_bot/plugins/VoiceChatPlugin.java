@@ -17,7 +17,6 @@ import me.chayapak1.chomens_bot.voiceChat.NetworkMessage;
 import me.chayapak1.chomens_bot.voiceChat.customPayload.JoinGroupPacket;
 import me.chayapak1.chomens_bot.voiceChat.customPayload.SecretPacket;
 import me.chayapak1.chomens_bot.voiceChat.packets.*;
-import me.chayapak1.chomens_bot.voiceChat.packets.*;
 
 import java.net.*;
 import java.util.ArrayList;
