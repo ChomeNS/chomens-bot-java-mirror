@@ -216,8 +216,7 @@ public class ComponentUtilities {
                         // gets the closest color to the hex
 
                         final int rgb = Integer.parseInt(code.substring(1), 16);
-
-                        final String chatColor = ColorUtilities.getClosestChatColor(rgb);
+                        final String chatColor = Character.toString(ColorUtilities.getClosestChatColor(rgb));
 
                         ansiCode = ansiMap.get(chatColor);
                     } else {
