@@ -29,10 +29,14 @@ public class PlayersPlugin extends Bot.Listener {
 
     private final List<Listener> listeners = new ArrayList<>();
 
+    private final List<PlayerEntry> tabCompleteQueue = new ArrayList<>();
+
     public PlayersPlugin (Bot bot) {
         this.bot = bot;
 
         bot.addListener(this);
+
+        bot.executor.scheduleAtFixedRate(this::onTabCompleteTick, 0, 500, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -162,6 +166,42 @@ public class PlayersPlugin extends Bot.Listener {
         return getEntry(other.getProfileId());
     }
 
+    private void onTabCompleteTick () {
+        if (tabCompleteQueue.isEmpty()) return;
+
+        bot.tabComplete.tabComplete("/minecraft:scoreboard players add ").thenApplyAsync(packet -> {
+            final String[] matches = packet.getMatches();
+            final Component[] tooltips = packet.getTooltips();
+
+            for (PlayerEntry entry : tabCompleteQueue) {
+                final String username = entry.profile.getName();
+
+                boolean left = true;
+
+                for (int i = 0; i < matches.length; i++) {
+                    if (tooltips[i] != null || !matches[i].equals(username)) continue;
+
+                    entry.listed = false;
+
+                    for (Listener listener : listeners) { listener.playerVanished(entry); }
+
+                    left = false;
+                }
+
+                if (left) {
+                    list.remove(entry);
+
+                    for (Listener listener : listeners) { listener.playerLeft(entry); }
+                }
+
+            }
+
+            tabCompleteQueue.clear();
+
+            return packet;
+        });
+    }
+
     private void initializeChat (PlayerListEntry newEntry) {
         final PlayerEntry target = getEntry(newEntry);
         if (target == null) return;
@@ -248,26 +288,10 @@ public class PlayersPlugin extends Bot.Listener {
 
     private void removePlayer (UUID uuid) {
         final PlayerEntry target = getEntry(uuid);
+
         if (target == null) return;
 
-        bot.tabComplete.tabComplete("/minecraft:scoreboard players add ").thenApplyAsync(packet -> {
-            final String[] matches = packet.getMatches();
-            final Component[] tooltips = packet.getTooltips();
-            final String username = target.profile.getName();
-
-            for (int i = 0; i < matches.length; i++) {
-                if (tooltips[i] != null || !matches[i].equals(username)) continue;
-                target.listed = false;
-                for (Listener listener : listeners) { listener.playerVanished(target); }
-                return packet;
-            }
-
-            list.remove(target);
-
-            for (Listener listener : listeners) { listener.playerLeft(target); }
-
-            return packet;
-        });
+        tabCompleteQueue.add(target);
     }
 
     @Override
