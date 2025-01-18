@@ -7,6 +7,7 @@ import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.tuple.Pair;
+import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,6 +24,13 @@ public class FilterManagerPlugin extends PlayersPlugin.Listener {
         this.bot = bot;
 
         bot.players.addListener(this);
+
+        bot.addListener(new Bot.Listener() {
+            @Override
+            public void disconnected(DisconnectedEvent event) {
+                list.clear();
+            }
+        });
 
         bot.chat.addListener(new ChatPlugin.Listener() {
             @Override
