@@ -143,6 +143,11 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
     }
 
     private void handleFilterManager (String ip, PlayerEntry entry) {
+        // this can break other filters for this player (if they are filtered)
+        // but for now it will fix a case when someone removes an ip and that
+        // player will still get filtered
+        if (!localList.contains(ip)) bot.filterManager.remove(entry.profile.getName());
+
         for (String eachIP : localList) {
             if (!eachIP.equals(ip)) continue;
 
