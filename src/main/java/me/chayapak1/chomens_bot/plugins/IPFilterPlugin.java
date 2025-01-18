@@ -45,11 +45,20 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
 
         bot.players.addListener(this);
 
-        bot.executor.scheduleAtFixedRate(this::checkAllPlayers, 0, 10, TimeUnit.SECONDS);
+        bot.core.addListener(new CorePlugin.Listener() {
+            @Override
+            public void ready() {
+                IPFilterPlugin.this.coreReady();
+            }
+        });
+
+        bot.executor.scheduleAtFixedRate(this::checkAllPlayers, 5, 15, TimeUnit.SECONDS);
     }
 
+    private void coreReady () { checkAllPlayers(); }
+
     @Override
-    public void playerJoined(PlayerEntry target) {
+    public void playerJoined (PlayerEntry target) {
         if (localList.isEmpty()) return;
 
         check(target);
@@ -63,13 +72,11 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
         if (future == null) return;
 
         future.thenApplyAsync(output -> {
-            handleIP(output, target);
+            handleFilterManager(output, target);
 
             return output;
         });
     }
-
-
 
     public static List<String> list () {
         final List<String> output = new ArrayList<>();
@@ -135,13 +142,13 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
         }
     }
 
-    private void handleIP (String ip, PlayerEntry entry) {
+    private void handleFilterManager (String ip, PlayerEntry entry) {
         for (String eachIP : localList) {
             if (!eachIP.equals(ip)) continue;
 
-            if (entry.profile.getId().equals(bot.profile.getId())) continue;
+            if (entry.profile.equals(bot.profile)) continue;
 
-            bot.filter.doAll(entry);
+            bot.filterManager.add(entry, "");
         }
     }
 }

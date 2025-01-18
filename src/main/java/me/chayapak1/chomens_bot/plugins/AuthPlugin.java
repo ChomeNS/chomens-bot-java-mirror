@@ -51,7 +51,7 @@ public class AuthPlugin extends PlayersPlugin.Listener {
                         target.profile.getId()
                 );
             } else {
-                bot.filter.doAll(target, bot.config.ownerAuthentication.muteReason);
+                bot.filterManager.doAll(target, bot.config.ownerAuthentication.muteReason);
             }
 
             return ip;

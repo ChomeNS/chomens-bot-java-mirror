@@ -7,7 +7,7 @@ import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.FilteredPlayer;
 import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
-import me.chayapak1.chomens_bot.plugins.FilterPlugin;
+import me.chayapak1.chomens_bot.plugins.PlayerFilterPlugin;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
@@ -62,7 +62,7 @@ public class FilterCommand extends Command {
                 final String reason = context.getString(true, false);
 
                 if (
-                        FilterPlugin.localList.stream()
+                        PlayerFilterPlugin.localList.stream()
                                 .map(filteredPlayer -> filteredPlayer.playerName)
                                 .toList()
                                 .contains(player)
@@ -78,7 +78,7 @@ public class FilterCommand extends Command {
                 final boolean finalRegex = regex;
                 final boolean finalIgnoreCase = ignoreCase;
 
-                DatabasePlugin.executorService.submit(() -> bot.filter.add(player, reason, finalRegex, finalIgnoreCase));
+                DatabasePlugin.executorService.submit(() -> bot.playerFilter.add(player, reason, finalRegex, finalIgnoreCase));
 
                 if (reason.isEmpty()) {
                     return Component.translatable(
@@ -98,11 +98,11 @@ public class FilterCommand extends Command {
 
                 final int index = context.getInteger(true);
 
-                final FilteredPlayer player = FilterPlugin.localList.get(index);
+                final FilteredPlayer player = PlayerFilterPlugin.localList.get(index);
 
                 if (player == null) throw new CommandException(Component.text("Invalid index"));
 
-                DatabasePlugin.executorService.submit(() -> bot.filter.remove(player.playerName));
+                DatabasePlugin.executorService.submit(() -> bot.playerFilter.remove(player.playerName));
 
                 return Component.translatable(
                         "Removed %s from the filters",
@@ -112,7 +112,7 @@ public class FilterCommand extends Command {
             case "clear" -> {
                 context.checkOverloadArgs(1);
 
-                DatabasePlugin.executorService.submit(() -> bot.filter.clear());
+                DatabasePlugin.executorService.submit(() -> bot.playerFilter.clear());
                 return Component.text("Cleared the filter").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "list" -> {
@@ -121,7 +121,7 @@ public class FilterCommand extends Command {
                 final List<Component> filtersComponents = new ArrayList<>();
 
                 int index = 0;
-                for (FilteredPlayer player : FilterPlugin.localList) {
+                for (FilteredPlayer player : PlayerFilterPlugin.localList) {
                     Component options = Component.empty().color(NamedTextColor.DARK_GRAY);
 
                     if (player.ignoreCase || player.regex) {
@@ -171,7 +171,7 @@ public class FilterCommand extends Command {
                 return Component.empty()
                         .append(Component.text("Filtered players ").color(NamedTextColor.GREEN))
                         .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
-                        .append(Component.text(FilterPlugin.localList.size()).color(NamedTextColor.GRAY))
+                        .append(Component.text(PlayerFilterPlugin.localList.size()).color(NamedTextColor.GRAY))
                         .append(Component.text(")").color(NamedTextColor.DARK_GRAY))
                         .append(Component.newline())
                         .append(

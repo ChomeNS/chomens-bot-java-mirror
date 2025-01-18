@@ -81,7 +81,8 @@ public class Bot {
     public BruhifyPlugin bruhify;
     public CloopPlugin cloop;
     public ExploitsPlugin exploits;
-    public FilterPlugin filter;
+    public FilterManagerPlugin filterManager;
+    public PlayerFilterPlugin playerFilter;
     public CommandSuggestionPlugin commandSuggestion;
     public MailPlugin mail;
     public PacketSnifferPlugin packetSniffer;
@@ -132,7 +133,8 @@ public class Bot {
         this.bruhify = new BruhifyPlugin(this);
         this.cloop = new CloopPlugin(this);
         this.exploits = new ExploitsPlugin(this);
-        this.filter = new FilterPlugin(this);
+        this.filterManager = new FilterManagerPlugin(this);
+        this.playerFilter = new PlayerFilterPlugin(this);
         this.commandSuggestion = new CommandSuggestionPlugin(this);
         this.mail = new MailPlugin(this);
         this.packetSniffer = new PacketSnifferPlugin(this);

@@ -2,7 +2,6 @@ package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.PlayerEntry;
-import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,22 +17,6 @@ public class WhitelistPlugin extends PlayersPlugin.Listener {
         this.bot = bot;
 
         bot.players.addListener(this);
-
-        bot.chat.addListener(new ChatPlugin.Listener() {
-            @Override
-            public boolean playerMessageReceived(PlayerMessage message) {
-                WhitelistPlugin.this.playerMessageReceived(message);
-
-                return true;
-            }
-        });
-
-        bot.commandSpy.addListener(new CommandSpyPlugin.Listener() {
-            @Override
-            public void commandReceived(PlayerEntry sender, String command) {
-                WhitelistPlugin.this.commandReceived(sender, command);
-            }
-        });
     }
 
     public void enable () {
@@ -43,49 +26,57 @@ public class WhitelistPlugin extends PlayersPlugin.Listener {
             if (list.contains(entry.profile.getName())) continue;
 
             list.add(entry.profile.getName());
+
+            bot.filterManager.remove(entry.profile.getName());
         }
     }
 
     public void disable () {
         enabled = false;
+
+        for (PlayerEntry entry : bot.players.list) {
+            bot.filterManager.remove(entry.profile.getName());
+        }
     }
 
-    public void add (String player) { list.add(player); }
-    public String remove (int index) { return list.remove(index); }
+    public void add (String player) {
+        list.add(player);
+
+        bot.filterManager.remove(player);
+    }
+
+    public String remove (int index) {
+        final String removed = list.remove(index);
+
+        checkAndAddToFilterManager(removed);
+
+        return removed;
+    }
+
     public void clear () {
         list.removeIf(eachPlayer -> !eachPlayer.equals(bot.profile.getName()));
+
+        for (PlayerEntry entry : bot.players.list) {
+            if (entry.profile.equals(bot.profile)) continue;
+
+            bot.filterManager.add(entry, "");
+        }
+    }
+
+    public boolean isBlacklisted (String name) { return !list.contains(name); }
+
+    private void checkAndAddToFilterManager (String player) {
+        final PlayerEntry entry = bot.players.getEntry(player);
+
+        if (entry == null) return;
+
+        bot.filterManager.add(entry, "");
     }
 
     @Override
-    public void playerJoined(PlayerEntry target) {
-        handle(target);
-    }
+    public void playerJoined (PlayerEntry target) {
+        if (!enabled) return;
 
-    public void playerMessageReceived (PlayerMessage message) {
-        handle(message.sender);
-    }
-
-    public void commandReceived (PlayerEntry entry, String command) {
-        if (!enabled || list.contains(entry.profile.getName()) || entry.profile.equals(bot.profile)) return;
-
-        if (
-                command.startsWith("mute") ||
-                        command.startsWith("silence") ||
-                        command.startsWith("emute") ||
-                        command.startsWith("esilence") ||
-                        command.startsWith("essentials:mute") ||
-                        command.startsWith("essentials:silence") ||
-                        command.startsWith("essentials:emute") ||
-                        command.startsWith("essentials:esilence")
-        ) bot.filter.mute(entry);
-        bot.filter.deOp(entry);
-        bot.filter.gameMode(entry);
-        bot.exploits.kick(entry.profile.getId());
-    }
-
-    private void handle (PlayerEntry entry) {
-        if (!enabled || list.contains(entry.profile.getName()) || entry.profile.equals(bot.profile)) return;
-
-        bot.filter.doAll(entry);
+        if (isBlacklisted(target.profile.getName())) bot.filterManager.add(target, "");
     }
 }
