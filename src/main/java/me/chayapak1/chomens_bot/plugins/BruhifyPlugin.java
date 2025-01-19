@@ -1,9 +1,9 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.util.HSVLike;
 
 public class BruhifyPlugin extends TickPlugin.Listener {
     private final Bot bot;
@@ -12,7 +12,7 @@ public class BruhifyPlugin extends TickPlugin.Listener {
 
     private int startHue = 0;
 
-    public BruhifyPlugin (Bot bot) {
+    public BruhifyPlugin(Bot bot) {
         this.bot = bot;
 
         bot.tick.addListener(this);
@@ -29,8 +29,8 @@ public class BruhifyPlugin extends TickPlugin.Listener {
         Component component = Component.empty();
 
         for (char character : displayName.toCharArray()) {
-            String color = String.format("#%06x", ColorUtilities.hsvToRgb(hue, 100, 100));
-            component = component.append(Component.text(character).color(TextColor.fromHexString(color)));
+            component = component.append(Component.text(character)
+                    .color(TextColor.color(HSVLike.hsvLike(hue / 360.0f, 1, 1))));
             hue = (hue + increment) % 360;
         }
 

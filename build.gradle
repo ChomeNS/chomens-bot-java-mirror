@@ -110,6 +110,10 @@ application {
     mainClass = 'me.chayapak1.chomens_bot.Main'
 }
 
+run {
+    standardInput = System.in
+}
+
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }

@@ -17,7 +17,6 @@ import me.chayapak1.chomens_bot.voiceChat.NetworkMessage;
 import me.chayapak1.chomens_bot.voiceChat.customPayload.JoinGroupPacket;
 import me.chayapak1.chomens_bot.voiceChat.customPayload.SecretPacket;
 import me.chayapak1.chomens_bot.voiceChat.packets.*;
-import me.chayapak1.chomens_bot.voiceChat.packets.*;
 
 import java.net.*;
 import java.util.ArrayList;
@@ -69,17 +68,11 @@ public class VoiceChatPlugin extends Bot.Listener {
         if (_packet.getChannel().equals(Key.key("voicechat:secret"))) { // fard
             final byte[] bytes = _packet.getData();
             final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
-
             final SecretPacket secretPacket = new SecretPacket().fromBytes(buf);
+            initializationData = new InitializationData(secretPacket);
 
-            initializationData = new InitializationData(bot.session.getHost(), secretPacket);
-
-            try {
-                final InetAddress address = InetAddress.getByName(bot.session.getHost());
-                socketAddress = new InetSocketAddress(address, initializationData.serverPort);
-            } catch (UnknownHostException e) {
-                throw new RuntimeException(e);
-            }
+            final InetSocketAddress mcAddress = (InetSocketAddress) bot.session.getRemoteAddress();
+            socketAddress = new InetSocketAddress(mcAddress.getAddress(), initializationData.serverPort);
 
             socket = new ClientVoiceChatSocket();
             try {

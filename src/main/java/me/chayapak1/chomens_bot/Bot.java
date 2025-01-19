@@ -6,10 +6,11 @@ import me.chayapak1.chomens_bot.util.RandomStringUtilities;
 import net.kyori.adventure.key.Key;
 import org.geysermc.mcprotocollib.auth.GameProfile;
 import org.geysermc.mcprotocollib.network.BuiltinFlags;
+import org.geysermc.mcprotocollib.network.ClientSession;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.event.session.*;
+import org.geysermc.mcprotocollib.network.factory.ClientNetworkSessionFactory;
 import org.geysermc.mcprotocollib.network.packet.Packet;
-import org.geysermc.mcprotocollib.network.tcp.TcpClientSession;
 import org.geysermc.mcprotocollib.protocol.MinecraftProtocol;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.HandPreference;
 import org.geysermc.mcprotocollib.protocol.data.game.setting.ChatVisibility;
@@ -42,7 +43,7 @@ public class Bot {
 
     public GameProfile profile;
 
-    public Session session;
+    public ClientSession session;
 
     public boolean printDisconnectedCause = false;
 
@@ -167,7 +168,10 @@ public class Bot {
         if (_username == null) username = RandomStringUtilities.generate(8);
         else username = _username;
 
-        Session session = new TcpClientSession(host, port, new MinecraftProtocol(username), null);
+        final ClientSession session = ClientNetworkSessionFactory.factory()
+                .setAddress(host, port)
+                .setProtocol(new MinecraftProtocol(username))
+                .create();
 
         this.session = session;
 

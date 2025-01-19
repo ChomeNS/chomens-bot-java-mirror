@@ -6,7 +6,6 @@ import me.chayapak1.chomens_bot.voiceChat.customPayload.SecretPacket;
 import java.util.UUID;
 
 public class InitializationData {
-    public final String serverIP;
     public final int serverPort;
     public final UUID playerUUID;
     public final UUID secret;
@@ -17,8 +16,7 @@ public class InitializationData {
     public final boolean groupsEnabled;
     public final boolean allowRecording;
 
-    public InitializationData(String serverIP, SecretPacket secretPacket) {
-        this.serverIP = serverIP;
+    public InitializationData(SecretPacket secretPacket) {
         this.serverPort = secretPacket.serverPort;
         this.playerUUID = secretPacket.playerUUID;
         this.secret = secretPacket.secret;
