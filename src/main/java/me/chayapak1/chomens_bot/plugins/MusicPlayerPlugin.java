@@ -394,7 +394,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                         note.pitch != note.shiftedPitch ||
                                 note.shiftedInstrument != note.instrument;
 
-                final double volume = note.volume * 2;
+                final double volume = note.volume;
 
                 if (shouldCustomPitch) {
                     bot.core.run(
