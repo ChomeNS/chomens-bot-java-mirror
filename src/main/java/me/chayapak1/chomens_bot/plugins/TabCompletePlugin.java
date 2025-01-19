@@ -21,6 +21,8 @@ public class TabCompletePlugin extends Bot.Listener {
     }
 
     public CompletableFuture<ClientboundCommandSuggestionsPacket> tabComplete (String command) {
+        if (!bot.loggedIn) return null;
+
         final int transactionId = nextTransactionId++;
 
         bot.session.send(new ServerboundCommandSuggestionPacket(transactionId, command));

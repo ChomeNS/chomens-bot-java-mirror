@@ -12,6 +12,7 @@ import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.data.game.PlayerListEntry;
 import org.geysermc.mcprotocollib.protocol.data.game.PlayerListEntryAction;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundCommandSuggestionsPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundPlayerInfoRemovePacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundPlayerInfoUpdatePacket;
 
@@ -167,9 +168,15 @@ public class PlayersPlugin extends Bot.Listener {
     }
 
     private void onTabCompleteTick () {
-        if (tabCompleteQueue.isEmpty()) return;
+        if (!bot.loggedIn || tabCompleteQueue.isEmpty()) return;
 
-        bot.tabComplete.tabComplete("/minecraft:scoreboard players add ").thenApplyAsync(packet -> {
+        final CompletableFuture<ClientboundCommandSuggestionsPacket> future = bot.tabComplete.tabComplete(
+                "/minecraft:scoreboard players add "
+        );
+
+        if (future == null) return;
+
+        future.thenApplyAsync(packet -> {
             final String[] matches = packet.getMatches();
             final Component[] tooltips = packet.getTooltips();
 
