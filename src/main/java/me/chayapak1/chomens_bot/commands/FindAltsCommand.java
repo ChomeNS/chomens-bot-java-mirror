@@ -12,6 +12,7 @@ import net.kyori.adventure.text.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class FindAltsCommand extends Command {
@@ -87,25 +88,16 @@ public class FindAltsCommand extends Command {
         final List<String> sorted = altsMap.entrySet().stream()
                 .limit(200) // only find 200 alts because more than this is simply too many
                 .sorted((a, b) -> {
-                    // a
+                    final JsonNode aTimeNode = Optional.ofNullable(a.getValue().get("lastSeen"))
+                            .map(node -> node.get("time"))
+                            .orElse(null);
+                    final JsonNode bTimeNode = Optional.ofNullable(b.getValue().get("lastSeen"))
+                            .map(node -> node.get("time"))
+                            .orElse(null);
 
-                    final JsonNode aLastSeen = a.getValue().get("lastSeen");
-
-                    if (aLastSeen == null || aLastSeen.isNull()) return 0;
-
-                    final JsonNode aTimeNode = aLastSeen.get("time");
-
-                    if (aTimeNode == null || aTimeNode.isNull()) return 0;
-
-                    // b
-
-                    final JsonNode bLastSeen = b.getValue().get("lastSeen");
-
-                    if (bLastSeen == null || bLastSeen.isNull()) return 0;
-
-                    final JsonNode bTimeNode = bLastSeen.get("time");
-
-                    if (bTimeNode == null || bTimeNode.isNull()) return 0;
+                    if (aTimeNode == null && bTimeNode == null) return 0;
+                    if (aTimeNode == null) return 1;
+                    if (bTimeNode == null) return -1;
 
                     return Long.compare(bTimeNode.asLong(), aTimeNode.asLong());
                 })
