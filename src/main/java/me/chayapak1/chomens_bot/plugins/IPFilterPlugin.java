@@ -8,19 +8,19 @@ import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class IPFilterPlugin extends PlayersPlugin.Listener {
-    private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ipFilters (ip VARCHAR(255) PRIMARY KEY);";
+    private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ipFilters (ip VARCHAR(255) PRIMARY KEY, reason VARCHAR(255));";
     private static final String LIST_FILTERS = "SELECT * FROM ipFilters;";
-    private static final String INSERT_FILTER = "INSERT INTO ipFilters (ip) VALUES (?);";
+    private static final String INSERT_FILTER = "INSERT INTO ipFilters (ip, reason) VALUES (?, ?);";
     private static final String REMOVE_FILTER = "DELETE FROM ipFilters WHERE ip = ?;";
     private static final String CLEAR_FILTER = "DELETE FROM ipFilters;";
 
-    public static List<String> localList = new ArrayList<>();
+    public static Map<String, String> localList = new LinkedHashMap<>();
 
     static {
         if (Main.database != null) {
@@ -78,13 +78,15 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
         });
     }
 
-    public static List<String> list () {
-        final List<String> output = new ArrayList<>();
+    public static Map<String, String> list () {
+        final Map<String, String> output = new LinkedHashMap<>();
 
         try (ResultSet result = Main.database.query(LIST_FILTERS)) {
             if (result == null) return output;
 
-            while (result.next()) output.add(result.getString("ip"));
+            while (result.next()) {
+                output.put(result.getString("ip"), result.getString("reason"));
+            }
         } catch (SQLException e) {
             LoggerUtilities.error(e);
         }
@@ -94,11 +96,12 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
         return output;
     }
 
-    public void add (String ip) {
+    public void add (String ip, String reason) {
         try {
             final PreparedStatement statement = bot.database.connection.prepareStatement(INSERT_FILTER);
 
             statement.setString(1, ip);
+            statement.setString(2, reason);
 
             statement.executeUpdate();
 
@@ -143,12 +146,15 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
     }
 
     private void handleFilterManager (String ip, PlayerEntry entry) {
-        for (String eachIP : localList) {
+        for (Map.Entry<String, String> ipEntry : localList.entrySet()) {
+            final String eachIP = ipEntry.getKey();
+            final String reason = ipEntry.getValue();
+
             if (!eachIP.equals(ip)) continue;
 
             if (entry.profile.equals(bot.profile)) continue;
 
-            bot.filterManager.add(entry, "");
+            bot.filterManager.add(entry, reason);
         }
     }
 }

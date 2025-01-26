@@ -14,6 +14,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class IPFilterCommand extends Command {
     public IPFilterCommand() {
@@ -21,7 +22,7 @@ public class IPFilterCommand extends Command {
                 "ipfilter",
                 "Filters IPs",
                 new String[] {
-                        "add <ip>",
+                        "add <ip> [reason]",
                         "remove <index>",
                         "clear",
                         "list"
@@ -41,9 +42,10 @@ public class IPFilterCommand extends Command {
 
         switch (action) {
             case "add" -> {
-                final String ip = context.getString(true, true);
+                final String ip = context.getString(false, true);
+                final String reason = context.getString(true, false);
 
-                if (IPFilterPlugin.localList.contains(ip)) {
+                if (IPFilterPlugin.localList.containsKey(ip)) {
                     throw new CommandException(
                             Component.translatable(
                                     "The IP %s is already in the filters",
@@ -52,18 +54,27 @@ public class IPFilterCommand extends Command {
                     );
                 }
 
-                DatabasePlugin.executorService.submit(() -> bot.ipFilter.add(ip));
-                return Component.translatable(
-                        "Added %s to the filters",
-                        Component.text(ip).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
-                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                DatabasePlugin.executorService.submit(() -> bot.ipFilter.add(ip, reason));
+
+                if (reason.isEmpty()) {
+                    return Component.translatable(
+                            "Added %s to the filters",
+                            Component.text(ip).color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
+                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                } else {
+                    return Component.translatable(
+                            "Added %s to the filters with reason %s",
+                            Component.text(ip).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
+                            Component.text(reason).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                }
             }
             case "remove" -> {
                 context.checkOverloadArgs(2);
 
                 final int index = context.getInteger(true);
 
-                final String targetIP = IPFilterPlugin.localList.get(index);
+                final String targetIP = new ArrayList<>(IPFilterPlugin.localList.keySet()).get(index);
 
                 if (targetIP == null) throw new CommandException(Component.text("Invalid index"));
 
@@ -71,7 +82,7 @@ public class IPFilterCommand extends Command {
 
                 return Component.translatable(
                         "Removed %s from the filters",
-                        Component.text(targetIP).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
+                        Component.text(targetIP).color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
                 ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "clear" -> {
@@ -86,12 +97,30 @@ public class IPFilterCommand extends Command {
                 final List<Component> filtersComponents = new ArrayList<>();
 
                 int index = 0;
-                for (String ip : IPFilterPlugin.localList) {
+                for (Map.Entry<String, String> entry : IPFilterPlugin.localList.entrySet()) {
+                    final String ip = entry.getKey();
+                    final String reason = entry.getValue();
+
+                    Component reasonComponent = Component.empty().color(NamedTextColor.DARK_GRAY);
+
+                    if (!reason.isEmpty()) {
+                        reasonComponent = reasonComponent
+                                .append(Component.text("("))
+                                .append(Component.text("reason: ").color(NamedTextColor.GRAY))
+                                .append(
+                                        Component
+                                                .text(reason)
+                                                .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                                )
+                                .append(Component.text(")"));
+                    }
+
                     filtersComponents.add(
                             Component.translatable(
-                                    "%s › %s",
+                                    "%s › %s %s",
                                     Component.text(index).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
-                                    Component.text(ip).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
+                                    Component.text(ip).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)),
+                                    reasonComponent
                             ).color(NamedTextColor.DARK_GRAY)
                     );
 
