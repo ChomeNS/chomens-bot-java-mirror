@@ -124,7 +124,7 @@ public class CorePlugin extends PositionPlugin.Listener {
                     }
 
                     forceRunPlaceBlock(clonedQueue.getFirst());
-                    placeBlockQueue.remove(0);
+                    placeBlockQueue.removeFirst();
                 } catch (Exception e) {
                     bot.logger.error(e);
                 }
@@ -241,7 +241,7 @@ public class CorePlugin extends PositionPlugin.Listener {
         }
     }
 
-    private void forceRunPlaceBlock (String command) {
+    public void forceRunPlaceBlock (String command) {
         if (!ready || !bot.options.useCore) return;
 
         final NbtMapBuilder blockEntityTagBuilder = NbtMap.builder();

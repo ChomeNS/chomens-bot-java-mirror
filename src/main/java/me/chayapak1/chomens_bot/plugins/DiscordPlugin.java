@@ -89,7 +89,9 @@ public class DiscordPlugin {
                         public void onAlwaysTick () {
                             try {
                                 onDiscordTick(channelId);
-                            } catch (Exception ignored) {}
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
 
