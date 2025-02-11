@@ -19,7 +19,9 @@ import org.geysermc.mcprotocollib.protocol.data.game.setting.SkinPart;
 import org.geysermc.mcprotocollib.protocol.packet.common.serverbound.ServerboundClientInformationPacket;
 import org.geysermc.mcprotocollib.protocol.packet.common.serverbound.ServerboundCustomPayloadPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
+import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundCustomQueryPacket;
 import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginFinishedPacket;
+import org.geysermc.mcprotocollib.protocol.packet.login.serverbound.ServerboundCustomQueryAnswerPacket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -234,11 +236,18 @@ public class Bot {
                     ));
 
                     if (options.creayun) chat.send("/server creative");
-                } else if (packet instanceof ClientboundLoginFinishedPacket) packetReceived((ClientboundLoginFinishedPacket) packet);
+                }
+                else if (packet instanceof ClientboundLoginFinishedPacket t_packet) packetReceived(t_packet);
+                else if (packet instanceof ClientboundCustomQueryPacket t_packet) packetReceived(t_packet);
             }
 
             public void packetReceived(ClientboundLoginFinishedPacket packet) {
                 profile = packet.getProfile();
+            }
+
+            // replicates notchian clients behavior
+            public void packetReceived(ClientboundCustomQueryPacket packet) {
+                session.send(new ServerboundCustomQueryAnswerPacket(packet.getMessageId(), null));
             }
 
             @Override
