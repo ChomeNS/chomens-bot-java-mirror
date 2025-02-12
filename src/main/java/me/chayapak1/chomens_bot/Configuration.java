@@ -35,6 +35,8 @@ public class Configuration {
     public ImposterFormatChecker imposterFormatChecker = new ImposterFormatChecker();
 
     public OwnerAuthentication ownerAuthentication = new OwnerAuthentication();
+
+    public boolean announceClearChatUsername = false;
     
     public List<String> trusted = new ArrayList<>();
     public SelfCare selfCare = new SelfCare();

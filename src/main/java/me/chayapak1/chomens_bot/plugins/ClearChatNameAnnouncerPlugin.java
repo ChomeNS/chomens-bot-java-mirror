@@ -11,6 +11,8 @@ public class ClearChatNameAnnouncerPlugin extends CommandSpyPlugin.Listener {
     public ClearChatNameAnnouncerPlugin (Bot bot) {
         this.bot = bot;
 
+        if (!bot.config.announceClearChatUsername) return;
+
         bot.commandSpy.addListener(this);
     }
 

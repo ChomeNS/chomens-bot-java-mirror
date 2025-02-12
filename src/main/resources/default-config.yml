@@ -79,6 +79,10 @@ ownerAuthentication:
   ips:
     localhost:25565: '127.0.0.1'
 
+# if this is enabled when someone does a clear chat command the bot
+# will tellraw `{player} cleared the chat`
+announceClearChatUsername: false
+
 trusted:
   - 'player name'
 
