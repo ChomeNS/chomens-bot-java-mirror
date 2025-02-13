@@ -57,7 +57,7 @@ public class InfoCommand extends Command {
                         "botlogintime",
                         "uptime"
                 },
-                new String[] { "creator", "discord", "botuser", "uptime" },
+                new String[] { "creator", "discord", "botuser", "botlogintime", "uptime" },
                 TrustLevel.PUBLIC,
                 false
         );
