@@ -233,7 +233,14 @@ public class DiscordPlugin {
                         .append(
                                 Component
                                         .text("[Attachment]")
-                                        .clickEvent(ClickEvent.openUrl(attachment.getProxyUrl()))
+                                        .clickEvent(ClickEvent.openUrl(attachment.getUrl()))
+                                        .hoverEvent(
+                                                HoverEvent.showText(
+                                                        Component
+                                                                .text(attachment.getFileName())
+                                                                .color(NamedTextColor.GREEN)
+                                                )
+                                        )
                                         .color(NamedTextColor.GREEN)
                         )
                         .append(Component.space());
@@ -242,7 +249,7 @@ public class DiscordPlugin {
 
         Component embedsComponent = Component.empty();
         if (!message.getEmbeds().isEmpty()) {
-            if (message.getAttachments().isEmpty() || !message.getContentDisplay().isEmpty()) embedsComponent = embedsComponent.append(Component.space());
+            if (!message.getContentDisplay().isEmpty()) embedsComponent = embedsComponent.append(Component.space());
 
             for (MessageEmbed embed : message.getEmbeds()) {
                 final Component hoverEvent = Component.translatable(
