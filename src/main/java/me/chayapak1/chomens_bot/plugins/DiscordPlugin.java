@@ -77,7 +77,7 @@ public class DiscordPlugin {
         jda.getPresence().setPresence(Activity.playing(config.discord.statusMessage), false);
 
         for (Bot bot : Main.bots) {
-            final String channelId = servers.get(bot.host + ":" + bot.port);
+            final String channelId = servers.get(bot.getServerString());
 
             totalConnects.put(channelId, 0); // is this necessary?
 

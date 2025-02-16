@@ -77,9 +77,9 @@ public class ConsolePlugin implements Completer {
         if (line == null) return;
 
         for (Bot bot : allBots) {
-            final String hostAndPort = bot.host + ":" + bot.port;
+            final String server = bot.getServerString();
 
-            if (!hostAndPort.equals(consoleServer) && !consoleServer.equals("all")) continue;
+            if (!server.equals(consoleServer) && !consoleServer.equals("all")) continue;
 
             if (line.startsWith(prefix)) {
                 final ConsoleCommandContext context = new ConsoleCommandContext(bot, prefix);

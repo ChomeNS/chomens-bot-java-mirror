@@ -29,18 +29,18 @@ public class NetMessageCommand extends Command {
         final Bot bot = context.bot;
         final List<Bot> bots = bot.bots;
 
-        final String hostAndPort = bot.host + ":" + bot.port;
+        final String originServer = bot.getServerString();
 
         final Component component = Component.translatable(
                 "[%s]%s%s%s› %s",
                 Component
-                        .text(hostAndPort)
+                        .text(originServer)
                         .color(NamedTextColor.GRAY)
-                        .clickEvent(ClickEvent.copyToClipboard(hostAndPort))
+                        .clickEvent(ClickEvent.copyToClipboard(originServer))
                         .hoverEvent(
                                 HoverEvent.showText(
                                         Component.empty()
-                                                .append(Component.text(hostAndPort).color(NamedTextColor.GRAY))
+                                                .append(Component.text(originServer).color(NamedTextColor.GRAY))
                                                 .append(Component.newline())
                                                 .append(Component.text("Click here to copy the server host and port to your clipboard").color(NamedTextColor.GREEN))
                                 )

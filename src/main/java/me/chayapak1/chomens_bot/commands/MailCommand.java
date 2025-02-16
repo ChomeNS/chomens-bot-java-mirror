@@ -55,7 +55,7 @@ public class MailCommand extends Command {
                                     sender.profile.getName(),
                                     context.getString(false, true),
                                     Instant.now().toEpochMilli(),
-                                    bot.host + ":" + bot.port,
+                                    bot.getServerString(),
                                     context.getString(true, true)
                             )
                     );
@@ -86,7 +86,7 @@ public class MailCommand extends Command {
                                                 sender.profile.getName(),
                                                 context.getString(true, true),
                                                 Instant.now().toEpochMilli(),
-                                                bot.host + ":" + bot.port,
+                                                bot.getServerString(),
                                                 output
                                         )
                                 );

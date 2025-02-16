@@ -209,7 +209,7 @@ public class IRCPlugin extends ListenerAdapter {
     }
 
     private void addMessageToQueue (Bot bot, String message) {
-        final String channel = servers.get(bot.host + ":" + bot.port);
+        final String channel = servers.get(bot.getServerString());
 
         addMessageToQueue(channel, message);
     }
@@ -227,7 +227,7 @@ public class IRCPlugin extends ListenerAdapter {
     }
 
     public void sendMessage (Bot bot, String message) {
-        final String hostAndPort = bot.host + ":" + bot.port;
+        final String hostAndPort = bot.getServerString();
 
         final String channel = servers.get(hostAndPort);
 

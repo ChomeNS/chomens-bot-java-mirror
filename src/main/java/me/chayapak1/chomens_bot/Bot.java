@@ -311,6 +311,10 @@ public class Bot {
         session.connect(false);
     }
 
+    public String getServerString () {
+        return host + ":" + port;
+    }
+
     public void stop () {
         session.disconnect("Received stop signal");
         Main.bots.remove(this);

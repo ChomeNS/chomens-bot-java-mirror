@@ -197,7 +197,7 @@ public class Main {
         for (Bot bot : copiedList) {
             try {
                 if (discordEnabled) {
-                    final String channelId = bot.discord.servers.get(bot.host + ":" + bot.port);
+                    final String channelId = bot.discord.servers.get(bot.getServerString());
 
                     final MessageCreateAction messageAction = bot.discord.sendMessageInstantly(stoppingMessage, channelId, false);
 

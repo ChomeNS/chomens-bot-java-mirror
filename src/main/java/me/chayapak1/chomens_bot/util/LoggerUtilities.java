@@ -52,7 +52,7 @@ public class LoggerUtilities {
             final String formattedMessage = bot == null ? "" :
                     String.format(
                         "[%s] %s",
-                        bot.host + ":" + bot.port,
+                        bot.getServerString(),
                         message
                     );
 

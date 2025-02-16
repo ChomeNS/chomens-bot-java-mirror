@@ -68,7 +68,7 @@ public class LoggerPlugin extends ChatPlugin.Listener {
 
                 final Component reason = event.getReason();
 
-                final String message = "Disconnected from " + bot.host + ":" + bot.port + ", reason: ";
+                final String message = "Disconnected from " + bot.getServerString() + ", reason: ";
 
                 final String string = ComponentUtilities.stringify(reason);
 
