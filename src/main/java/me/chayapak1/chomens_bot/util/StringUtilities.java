@@ -56,6 +56,10 @@ public class StringUtilities {
         return false;
     }
 
+    public static String addPluralS (long amount, String unit) {
+        return amount > 1 ? unit + "s" : unit;
+    }
+
     public static boolean isNotNullAndNotBlank (String text) {
         return text != null && !text.isBlank();
     }

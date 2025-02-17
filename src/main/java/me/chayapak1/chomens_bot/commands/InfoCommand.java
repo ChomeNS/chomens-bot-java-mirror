@@ -6,6 +6,7 @@ import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
+import me.chayapak1.chomens_bot.util.StringUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -236,11 +237,15 @@ public class InfoCommand extends Command {
                 return Component.translatable(
                         "The bots uptime is: %s",
                         Component.translatable(
-                                "%s days, %s hours, %s minutes, %s seconds",
+                                "%s %s, %s %s, %s %s, %s %s",
                                 Component.text(days),
+                                Component.text(StringUtilities.addPluralS(days, "day")),
                                 Component.text(hours),
+                                Component.text(StringUtilities.addPluralS(hours, "hour")),
                                 Component.text(minutes),
-                                Component.text(seconds)
+                                Component.text(StringUtilities.addPluralS(minutes, "minute")),
+                                Component.text(seconds),
+                                Component.text(StringUtilities.addPluralS(seconds, "second"))
                         ).color(NamedTextColor.GREEN)
                 ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
