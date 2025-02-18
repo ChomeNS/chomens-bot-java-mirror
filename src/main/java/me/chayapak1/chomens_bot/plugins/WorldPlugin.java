@@ -8,6 +8,7 @@ import org.geysermc.mcprotocollib.protocol.packet.configuration.clientbound.Clie
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundRespawnPacket;
 import me.chayapak1.chomens_bot.Bot;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundSetSimulationDistancePacket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,8 @@ import java.util.List;
 public class WorldPlugin extends Bot.Listener {
     public int minY = 0;
     public int maxY = 256;
+
+    public int simulationDistance = 8;
 
     public List<RegistryEntry> registry = null;
 
@@ -26,9 +29,10 @@ public class WorldPlugin extends Bot.Listener {
 
     @Override
     public void packetReceived(Session session, Packet packet) {
-        if (packet instanceof ClientboundLoginPacket) packetReceived((ClientboundLoginPacket) packet);
-        else if (packet instanceof ClientboundRespawnPacket) packetReceived((ClientboundRespawnPacket) packet);
-        else if (packet instanceof ClientboundRegistryDataPacket) packetReceived((ClientboundRegistryDataPacket) packet);
+        if (packet instanceof ClientboundLoginPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundRespawnPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundRegistryDataPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundSetSimulationDistancePacket t_packet) packetReceived(t_packet);
     }
 
     private void worldChanged (String dimension) {
@@ -56,11 +60,17 @@ public class WorldPlugin extends Bot.Listener {
     }
 
     public void packetReceived (ClientboundLoginPacket packet) {
+        simulationDistance = packet.getSimulationDistance();
+
         worldChanged(packet.getCommonPlayerSpawnInfo().getWorldName().asString());
     }
 
     public void packetReceived (ClientboundRespawnPacket packet) {
         worldChanged(packet.getCommonPlayerSpawnInfo().getWorldName().asString());
+    }
+
+    public void packetReceived (ClientboundSetSimulationDistancePacket packet) {
+        simulationDistance = packet.getSimulationDistance();
     }
 
     public static class Listener {
