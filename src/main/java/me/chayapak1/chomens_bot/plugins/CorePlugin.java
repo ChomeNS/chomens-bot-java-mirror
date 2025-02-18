@@ -18,6 +18,7 @@ import org.geysermc.mcprotocollib.protocol.data.game.entity.player.PlayerAction;
 import org.geysermc.mcprotocollib.protocol.data.game.item.ItemStack;
 import org.geysermc.mcprotocollib.protocol.data.game.item.component.DataComponent;
 import org.geysermc.mcprotocollib.protocol.data.game.item.component.DataComponentType;
+import org.geysermc.mcprotocollib.protocol.data.game.item.component.DataComponentTypes;
 import org.geysermc.mcprotocollib.protocol.data.game.item.component.DataComponents;
 import org.geysermc.mcprotocollib.protocol.data.game.level.block.BlockChangeEntry;
 import org.geysermc.mcprotocollib.protocol.data.game.level.block.CommandBlockMode;
@@ -256,7 +257,7 @@ public class CorePlugin extends PositionPlugin.Listener {
 
         final Map<DataComponentType<?>, DataComponent<?, ?>> map = new HashMap<>();
 
-        map.put(DataComponentType.BLOCK_ENTITY_DATA, DataComponentType.BLOCK_ENTITY_DATA.getDataComponentFactory().create(DataComponentType.BLOCK_ENTITY_DATA, blockEntityTag));
+        map.put(DataComponentTypes.BLOCK_ENTITY_DATA, DataComponentTypes.BLOCK_ENTITY_DATA.getDataComponentFactory().create(DataComponentTypes.BLOCK_ENTITY_DATA, blockEntityTag));
 
         final DataComponents dataComponents = new DataComponents(map);
 
@@ -367,20 +368,33 @@ public class CorePlugin extends PositionPlugin.Listener {
     public void positionChange (Vector3d position) {
         if (bot.position.isGoingDownFromHeightLimit) return;
 
-        from = Vector3i.from(
-                (int) (fromSize.getX() + Math.floor(bot.position.position.getX() / 16) * 16),
-                MathUtilities.clamp(fromSize.getY(), bot.world.minY, bot.world.maxY),
-                (int) (fromSize.getZ() + Math.floor(bot.position.position.getZ() / 16) * 16)
-        );
+        final int coreChunkPosX = from == null ? -1 : (int) Math.floor((double) from.getX() / 16);
+        final int coreChunkPosZ = from == null ? -1 : (int) Math.floor((double) from.getZ() / 16);
 
-        to = Vector3i.from(
-                (int) (toSize.getX() + Math.floor(bot.position.position.getX() / 16) * 16),
-                MathUtilities.clamp(toSize.getY(), bot.world.minY, bot.world.maxY),
-                (int) (toSize.getZ() + Math.floor(bot.position.position.getZ() / 16) * 16)
-        );
+        final int botChunkPosX = (int) Math.floor(bot.position.position.getX() / 16);
+        final int botChunkPosZ = (int) Math.floor(bot.position.position.getZ() / 16);
 
-        reset();
-        refill();
+        // only relocate the core when it really needs to
+        if (
+                from == null || to == null ||
+                        Math.abs(botChunkPosX - coreChunkPosX) > bot.world.simulationDistance ||
+                        Math.abs(botChunkPosZ - coreChunkPosZ) > bot.world.simulationDistance
+        ) {
+            from = Vector3i.from(
+                    fromSize.getX() + botChunkPosX * 16,
+                    MathUtilities.clamp(fromSize.getY(), bot.world.minY, bot.world.maxY),
+                    fromSize.getZ() + botChunkPosZ * 16
+            );
+
+            to = Vector3i.from(
+                    toSize.getX() + botChunkPosX * 16,
+                    MathUtilities.clamp(toSize.getY(), bot.world.minY, bot.world.maxY),
+                    toSize.getZ() + botChunkPosZ * 16
+            );
+
+            reset();
+            refill();
+        }
 
         if (!ready) {
             ready = true;
