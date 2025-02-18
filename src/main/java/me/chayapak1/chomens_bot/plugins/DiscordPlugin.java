@@ -87,11 +87,7 @@ public class DiscordPlugin {
                     bot.tick.addListener(new TickPlugin.Listener() {
                         @Override
                         public void onAlwaysTick () {
-                            try {
-                                onDiscordTick(channelId);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                            onDiscordTick(channelId);
                         }
                     });
 
