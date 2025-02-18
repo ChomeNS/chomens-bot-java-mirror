@@ -11,7 +11,6 @@ import org.cloudburstmc.nbt.NbtMap;
 import org.cloudburstmc.nbt.NbtMapBuilder;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
-import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.object.Direction;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.Hand;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.PlayerAction;
@@ -20,11 +19,7 @@ import org.geysermc.mcprotocollib.protocol.data.game.item.component.DataComponen
 import org.geysermc.mcprotocollib.protocol.data.game.item.component.DataComponentType;
 import org.geysermc.mcprotocollib.protocol.data.game.item.component.DataComponentTypes;
 import org.geysermc.mcprotocollib.protocol.data.game.item.component.DataComponents;
-import org.geysermc.mcprotocollib.protocol.data.game.level.block.BlockChangeEntry;
 import org.geysermc.mcprotocollib.protocol.data.game.level.block.CommandBlockMode;
-import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundBlockUpdatePacket;
-import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundLevelChunkWithLightPacket;
-import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundSectionBlocksUpdatePacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.inventory.ServerboundSetCommandBlockPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.inventory.ServerboundSetCreativeModeSlotPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundPlayerActionPacket;
@@ -87,6 +82,8 @@ public class CorePlugin extends PositionPlugin.Listener {
         }
 
         bot.executor.scheduleAtFixedRate(() -> {
+            checkCoreTick();
+
             if (!shouldRefill) return;
 
             refill();
@@ -101,13 +98,6 @@ public class CorePlugin extends PositionPlugin.Listener {
                 refillTask.cancel(false);
 
                 reset();
-            }
-
-            @Override
-            public void packetReceived(Session session, Packet packet) {
-                if (packet instanceof ClientboundBlockUpdatePacket) CorePlugin.this.packetReceived((ClientboundBlockUpdatePacket) packet);
-                else if (packet instanceof ClientboundSectionBlocksUpdatePacket) CorePlugin.this.packetReceived((ClientboundSectionBlocksUpdatePacket) packet);
-                else if (packet instanceof ClientboundLevelChunkWithLightPacket) CorePlugin.this.packetReceived((ClientboundLevelChunkWithLightPacket) packet);
             }
         });
 
@@ -217,7 +207,7 @@ public class CorePlugin extends PositionPlugin.Listener {
         final CompletableFuture<String> future = bot.query.block(coreBlock, "LastOutput");
 
         future.thenApplyAsync(output -> {
-            if (output == null) return output;
+            if (output == null) return null;
 
             trackedFuture.complete(
                     Component.join(
@@ -284,29 +274,24 @@ public class CorePlugin extends PositionPlugin.Listener {
         session.send(new ServerboundUseItemOnPacket(temporaryBlockPosition, Direction.UP, Hand.MAIN_HAND, 0.5f, 0.5f, 0.5f, false, false, 1));
     }
 
-    public void packetReceived (ClientboundBlockUpdatePacket packet) {
-        final BlockChangeEntry entry = packet.getEntry();
+    public boolean isCoreComplete () {
+        if (!ready) return false;
 
-        final Vector3i position = entry.getPosition();
+        for (int x = from.getX(); x <= to.getX(); x++) {
+            for (int y = from.getY(); y <= to.getY(); y++) {
+                for (int z = from.getZ(); z <= to.getZ(); z++) {
+                    final int block = bot.world.getBlock(x, y, z);
 
-        if (isCore(position) && !isCommandBlockState(entry.getBlock())) shouldRefill = true;
-    }
-
-    public void packetReceived (ClientboundSectionBlocksUpdatePacket packet) {
-        final BlockChangeEntry[] entries = packet.getEntries();
-
-        for (BlockChangeEntry entry : entries) {
-            final Vector3i position = entry.getPosition();
-
-            if (isCore(position) && !isCommandBlockState(entry.getBlock())) {
-                shouldRefill = true;
-                break;
+                    if (!isCommandBlockState(block)) return false;
+                }
             }
         }
+
+        return true;
     }
 
-    public void packetReceived (ClientboundLevelChunkWithLightPacket packet) {
-        shouldRefill = true; // worst fix
+    private void checkCoreTick () {
+        if (!isCoreComplete()) shouldRefill = true;
     }
 
     private boolean isCommandBlockState (int blockState) {
