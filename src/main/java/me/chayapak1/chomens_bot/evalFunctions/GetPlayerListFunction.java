@@ -3,7 +3,7 @@ package me.chayapak1.chomens_bot.evalFunctions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.data.PlayerEntry;
+import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.data.eval.EvalFunction;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 

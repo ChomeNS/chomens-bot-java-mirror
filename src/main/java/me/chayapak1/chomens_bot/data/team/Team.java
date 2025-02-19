@@ -1,4 +1,4 @@
-package me.chayapak1.chomens_bot.data;
+package me.chayapak1.chomens_bot.data.team;
 
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;

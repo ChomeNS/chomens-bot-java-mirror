@@ -2,7 +2,7 @@ package me.chayapak1.chomens_bot.plugins;
 
 import com.google.common.hash.Hashing;
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.data.PlayerEntry;
+import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;

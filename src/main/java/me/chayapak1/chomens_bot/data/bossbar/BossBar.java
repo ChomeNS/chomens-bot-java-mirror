@@ -1,4 +1,4 @@
-package me.chayapak1.chomens_bot.data;
+package me.chayapak1.chomens_bot.data.bossbar;
 
 import org.geysermc.mcprotocollib.protocol.data.game.BossBarColor;
 import org.geysermc.mcprotocollib.protocol.data.game.BossBarDivision;

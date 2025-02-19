@@ -1,4 +1,4 @@
-package me.chayapak1.chomens_bot.data;
+package me.chayapak1.chomens_bot.data.bossbar;
 
 import me.chayapak1.chomens_bot.Bot;
 import net.kyori.adventure.text.Component;

@@ -1,4 +1,4 @@
-package me.chayapak1.chomens_bot.data;
+package me.chayapak1.chomens_bot.data.mail;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

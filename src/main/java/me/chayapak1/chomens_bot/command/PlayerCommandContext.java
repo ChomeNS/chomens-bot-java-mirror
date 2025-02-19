@@ -1,6 +1,6 @@
 package me.chayapak1.chomens_bot.command;
 
-import me.chayapak1.chomens_bot.data.PlayerEntry;
+import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.Bot;
 import net.kyori.adventure.text.Component;
 

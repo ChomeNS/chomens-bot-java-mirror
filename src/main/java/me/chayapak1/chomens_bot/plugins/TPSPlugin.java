@@ -7,7 +7,7 @@ import org.geysermc.mcprotocollib.protocol.data.game.BossBarDivision;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundSetTimePacket;
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.data.BotBossBar;
+import me.chayapak1.chomens_bot.data.bossbar.BotBossBar;
 import me.chayapak1.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

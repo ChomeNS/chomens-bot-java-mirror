@@ -1,9 +1,9 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.data.BossBar;
-import me.chayapak1.chomens_bot.data.BotBossBar;
-import me.chayapak1.chomens_bot.data.PlayerEntry;
+import me.chayapak1.chomens_bot.data.bossbar.BossBar;
+import me.chayapak1.chomens_bot.data.bossbar.BotBossBar;
+import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;

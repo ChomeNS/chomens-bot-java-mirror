@@ -5,7 +5,7 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
-import me.chayapak1.chomens_bot.data.FilteredPlayer;
+import me.chayapak1.chomens_bot.data.filter.FilteredPlayer;
 import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
 import me.chayapak1.chomens_bot.plugins.PlayerFilterPlugin;
 import me.chayapak1.chomens_bot.util.ColorUtilities;

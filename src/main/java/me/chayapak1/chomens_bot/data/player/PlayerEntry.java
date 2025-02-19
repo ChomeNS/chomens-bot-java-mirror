@@ -1,4 +1,4 @@
-package me.chayapak1.chomens_bot.data;
+package me.chayapak1.chomens_bot.data.player;
 
 import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.auth.GameProfile;

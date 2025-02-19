@@ -1,7 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.data.CommandLoop;
+import me.chayapak1.chomens_bot.data.cloop.CommandLoop;
 
 import java.util.ArrayList;
 import java.util.List;

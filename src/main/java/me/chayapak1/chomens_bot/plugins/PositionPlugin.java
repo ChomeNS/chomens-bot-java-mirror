@@ -1,8 +1,8 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.data.PlayerEntry;
-import me.chayapak1.chomens_bot.data.Rotation;
+import me.chayapak1.chomens_bot.data.player.PlayerEntry;
+import me.chayapak1.chomens_bot.data.entity.Rotation;
 import me.chayapak1.chomens_bot.util.MathUtilities;
 import org.cloudburstmc.math.vector.Vector3d;
 import org.cloudburstmc.math.vector.Vector3f;

@@ -1,7 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.data.Team;
+import me.chayapak1.chomens_bot.data.team.Team;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
 
