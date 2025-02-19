@@ -332,8 +332,6 @@ public class Bot {
                     listener.disconnected(disconnectedEvent);
                 }
 
-                if (session.getFlag(BuiltinFlags.CLIENT_TRANSFERRING)) return;
-
                 int reconnectDelay = options.reconnectDelay;
 
                 final String stringMessage = ComponentUtilities.stringify(disconnectedEvent.getReason());
