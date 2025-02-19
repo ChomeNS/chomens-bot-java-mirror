@@ -28,6 +28,8 @@ public class ChunkColumn {
     }
 
     public int getBlock (int x, int y, int z) {
+        if (chunks == null) return 0;
+
         int yIndex = (y - minY) >> 4;
 
         if (chunks[yIndex] == null) return 0;
@@ -36,6 +38,8 @@ public class ChunkColumn {
     }
 
     public void setBlock (int x, int y, int z, int id) {
+        if (chunks == null) return;
+
         int yIndex = (y - minY) >> 4;
 
         if (chunks[yIndex] == null) {

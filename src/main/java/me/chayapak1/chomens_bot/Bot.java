@@ -4,6 +4,7 @@ import me.chayapak1.chomens_bot.plugins.*;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.RandomStringUtilities;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.auth.GameProfile;
 import org.geysermc.mcprotocollib.network.BuiltinFlags;
 import org.geysermc.mcprotocollib.network.ClientSession;
@@ -11,20 +12,25 @@ import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.event.session.*;
 import org.geysermc.mcprotocollib.network.factory.ClientNetworkSessionFactory;
 import org.geysermc.mcprotocollib.network.packet.Packet;
+import org.geysermc.mcprotocollib.network.session.ClientNetworkSession;
 import org.geysermc.mcprotocollib.protocol.MinecraftProtocol;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.HandPreference;
 import org.geysermc.mcprotocollib.protocol.data.game.setting.ChatVisibility;
 import org.geysermc.mcprotocollib.protocol.data.game.setting.ParticleStatus;
 import org.geysermc.mcprotocollib.protocol.data.game.setting.SkinPart;
+import org.geysermc.mcprotocollib.protocol.packet.common.clientbound.ClientboundStoreCookiePacket;
+import org.geysermc.mcprotocollib.protocol.packet.common.clientbound.ClientboundTransferPacket;
 import org.geysermc.mcprotocollib.protocol.packet.common.serverbound.ServerboundClientInformationPacket;
 import org.geysermc.mcprotocollib.protocol.packet.common.serverbound.ServerboundCustomPayloadPacket;
+import org.geysermc.mcprotocollib.protocol.packet.cookie.clientbound.ClientboundCookieRequestPacket;
+import org.geysermc.mcprotocollib.protocol.packet.cookie.serverbound.ServerboundCookieResponsePacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
 import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundCustomQueryPacket;
 import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginFinishedPacket;
 import org.geysermc.mcprotocollib.protocol.packet.login.serverbound.ServerboundCustomQueryAnswerPacket;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.net.InetSocketAddress;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -46,6 +52,8 @@ public class Bot {
     public GameProfile profile;
 
     public ClientSession session;
+
+    private final Map<Key, byte[]> cookies = new HashMap<>();
 
     public boolean printDisconnectedCause = false;
 
@@ -177,8 +185,8 @@ public class Bot {
 
         this.session = session;
 
-        // this replicates the minecraft behavior of not resolving SRV records.
-        // some servers check for this, so that's why i have it here
+        // newer versions of MCProtocolLib already follow minecraft's behavior,
+        // this is for backwards compatibility
         session.setFlag(BuiltinFlags.ATTEMPT_SRV_RESOLVE, options.resolveSRV);
 
         session.addListener(new SessionAdapter() {
@@ -239,15 +247,45 @@ public class Bot {
                 }
                 else if (packet instanceof ClientboundLoginFinishedPacket t_packet) packetReceived(t_packet);
                 else if (packet instanceof ClientboundCustomQueryPacket t_packet) packetReceived(t_packet);
+                else if (packet instanceof ClientboundCookieRequestPacket t_packet) packetReceived(t_packet);
+                else if (packet instanceof ClientboundTransferPacket t_packet) packetReceived(t_packet);
+                else if (packet instanceof ClientboundStoreCookiePacket t_packet) packetReceived(t_packet);
             }
 
-            public void packetReceived(ClientboundLoginFinishedPacket packet) {
+            public void packetReceived (ClientboundLoginFinishedPacket packet) {
                 profile = packet.getProfile();
             }
 
-            // replicates notchian clients behavior
-            public void packetReceived(ClientboundCustomQueryPacket packet) {
+            public void packetReceived (ClientboundCustomQueryPacket packet) {
                 session.send(new ServerboundCustomQueryAnswerPacket(packet.getMessageId(), null));
+            }
+
+            public void packetReceived (ClientboundCookieRequestPacket packet) {
+                session.send(
+                        new ServerboundCookieResponsePacket(
+                                packet.getKey(),
+                                cookies.get(packet.getKey())
+                        )
+                );
+            }
+
+            public void packetReceived (ClientboundStoreCookiePacket packet) {
+                cookies.put(packet.getKey(), packet.getPayload());
+            }
+
+            public void packetReceived (ClientboundTransferPacket packet) {
+                final ClientNetworkSession newSession = new ClientNetworkSession(
+                        InetSocketAddress.createUnresolved(packet.getHost(), packet.getPort()),
+                        session.getPacketProtocol(),
+                        session.getPacketHandlerExecutor(),
+                        null,
+                        session.getProxy()
+                );
+                newSession.addListener(this);
+                newSession.setFlags(session.getFlags());
+                newSession.setFlag(BuiltinFlags.CLIENT_TRANSFERRING, true);
+                session.disconnect(Component.translatable("disconnect.transfer"));
+                newSession.connect(false);
             }
 
             @Override
@@ -290,6 +328,12 @@ public class Bot {
                 // lazy fix #69420
                 if (cause instanceof OutOfMemoryError) System.exit(1);
 
+                for (SessionListener listener : listeners) {
+                    listener.disconnected(disconnectedEvent);
+                }
+
+                if (session.getFlag(BuiltinFlags.CLIENT_TRANSFERRING)) return;
+
                 int reconnectDelay = options.reconnectDelay;
 
                 final String stringMessage = ComponentUtilities.stringify(disconnectedEvent.getReason());
@@ -301,10 +345,6 @@ public class Bot {
                 ) reconnectDelay = 1000 * (5 + 2); // 2 seconds extra delay just in case
 
                 executor.schedule(() -> reconnect(), reconnectDelay, TimeUnit.MILLISECONDS);
-
-                for (SessionListener listener : listeners) {
-                    listener.disconnected(disconnectedEvent);
-                }
             }
         });
 
