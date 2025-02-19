@@ -17,8 +17,11 @@ public class ChunkColumn {
         this.pos = chunkPos;
         this.minY = minY;
 
+        final int absoluteWorldHeight = Math.abs(worldHeight);
+        final int absoluteMinY = Math.abs(minY);
+
         final ByteBuf in = Unpooled.wrappedBuffer(data);
-        final int numSections = -Math.floorDiv(-worldHeight, 16);
+        final int numSections = -Math.floorDiv(-(absoluteWorldHeight + absoluteMinY), 16);
 
         chunks = new ChunkSection[numSections];
 
