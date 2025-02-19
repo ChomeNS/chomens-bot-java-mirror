@@ -328,10 +328,6 @@ public class Bot {
                 // lazy fix #69420
                 if (cause instanceof OutOfMemoryError) System.exit(1);
 
-                for (SessionListener listener : listeners) {
-                    listener.disconnected(disconnectedEvent);
-                }
-
                 int reconnectDelay = options.reconnectDelay;
 
                 final String stringMessage = ComponentUtilities.stringify(disconnectedEvent.getReason());
@@ -343,6 +339,10 @@ public class Bot {
                 ) reconnectDelay = 1000 * (5 + 2); // 2 seconds extra delay just in case
 
                 executor.schedule(() -> reconnect(), reconnectDelay, TimeUnit.MILLISECONDS);
+
+                for (SessionListener listener : listeners) {
+                    listener.disconnected(disconnectedEvent);
+                }
             }
         });
 
