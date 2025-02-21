@@ -59,31 +59,58 @@ public class ComponentUtilities {
 
         public static final long MAX_TIME = 100; // this is actually more than we need
 
-        public static final Map<String, String> ansiMap = new HashMap<>();
+        public static final Map<String, String> ANSI_MAP = new HashMap<>();
         static {
             // map totallynotskidded™ from https://github.com/PrismarineJS/prismarine-chat/blob/master/index.js#L10
-            ansiMap.put("0", "\u001b[30m");
-            ansiMap.put("1", "\u001b[34m");
-            ansiMap.put("2", "\u001b[32m");
-            ansiMap.put("3", "\u001b[36m");
-            ansiMap.put("4", "\u001b[31m");
-            ansiMap.put("5", "\u001b[35m");
-            ansiMap.put("6", "\u001b[33m");
-            ansiMap.put("7", "\u001b[37m");
-            ansiMap.put("8", "\u001b[90m");
-            ansiMap.put("9", "\u001b[94m");
-            ansiMap.put("a", "\u001b[92m");
-            ansiMap.put("b", "\u001b[96m");
-            ansiMap.put("c", "\u001b[91m");
-            ansiMap.put("d", "\u001b[95m");
-            ansiMap.put("e", "\u001b[93m");
-            ansiMap.put("f", "\u001b[97m");
-            ansiMap.put("l", "\u001b[1m");
-            ansiMap.put("o", "\u001b[3m");
-            ansiMap.put("n", "\u001b[4m");
-            ansiMap.put("m", "\u001b[9m");
-            ansiMap.put("k", "\u001b[6m");
-            ansiMap.put("r", "\u001b[0m");
+            ANSI_MAP.put("0", "\u001b[38;2;0;0;0m");
+            ANSI_MAP.put("1", "\u001b[38;2;0;0;170m");
+            ANSI_MAP.put("2", "\u001b[38;2;0;170;0m");
+            ANSI_MAP.put("3", "\u001b[38;2;0;170;170m");
+            ANSI_MAP.put("4", "\u001b[38;2;170;0;0m");
+            ANSI_MAP.put("5", "\u001b[38;2;170;0;170m");
+            ANSI_MAP.put("6", "\u001b[38;2;255;170;0m");
+            ANSI_MAP.put("7", "\u001b[38;2;170;170;170m");
+            ANSI_MAP.put("8", "\u001b[38;2;85;85;85m");
+            ANSI_MAP.put("9", "\u001b[38;2;85;85;255m");
+            ANSI_MAP.put("a", "\u001b[38;2;85;255;85m");
+            ANSI_MAP.put("b", "\u001b[38;2;85;255;255m");
+            ANSI_MAP.put("c", "\u001b[38;2;255;85;85m");
+            ANSI_MAP.put("d", "\u001b[38;2;255;85;255m");
+            ANSI_MAP.put("e", "\u001b[38;2;255;255;85m");
+            ANSI_MAP.put("f", "\u001b[38;2;255;255;255m");
+            ANSI_MAP.put("l", "\u001b[1m");
+            ANSI_MAP.put("o", "\u001b[3m");
+            ANSI_MAP.put("n", "\u001b[4m");
+            ANSI_MAP.put("m", "\u001b[9m");
+            ANSI_MAP.put("k", "\u001b[6m");
+            ANSI_MAP.put("r", "\u001b[0m");
+        }
+
+        public static final Map<String, String> DISCORD_ANSI_MAP = new HashMap<>();
+        static {
+            // map totallynotskidded™ from https://github.com/PrismarineJS/prismarine-chat/blob/master/index.js#L10
+            DISCORD_ANSI_MAP.put("0", "\u001b[30m");
+            DISCORD_ANSI_MAP.put("1", "\u001b[34m");
+            DISCORD_ANSI_MAP.put("2", "\u001b[32m");
+            DISCORD_ANSI_MAP.put("3", "\u001b[36m");
+            DISCORD_ANSI_MAP.put("4", "\u001b[31m");
+            DISCORD_ANSI_MAP.put("5", "\u001b[35m");
+            DISCORD_ANSI_MAP.put("6", "\u001b[33m");
+            DISCORD_ANSI_MAP.put("7", "\u001b[37m");
+            DISCORD_ANSI_MAP.put("8", "\u001b[90m");
+            DISCORD_ANSI_MAP.put("9", "\u001b[94m");
+            DISCORD_ANSI_MAP.put("a", "\u001b[92m");
+            DISCORD_ANSI_MAP.put("b", "\u001b[96m");
+            DISCORD_ANSI_MAP.put("c", "\u001b[91m");
+            DISCORD_ANSI_MAP.put("d", "\u001b[95m");
+            DISCORD_ANSI_MAP.put("e", "\u001b[93m");
+            DISCORD_ANSI_MAP.put("f", "\u001b[97m");
+            DISCORD_ANSI_MAP.put("l", "\u001b[1m");
+            DISCORD_ANSI_MAP.put("o", "\u001b[3m");
+            DISCORD_ANSI_MAP.put("n", "\u001b[4m");
+            DISCORD_ANSI_MAP.put("m", "\u001b[9m");
+            DISCORD_ANSI_MAP.put("k", "\u001b[6m");
+            DISCORD_ANSI_MAP.put("r", "\u001b[0m");
         }
 
         private ParseType type;
@@ -121,7 +148,7 @@ public class ComponentUtilities {
                         !isSubParsing &&
                                 (type == ParseType.ANSI || type == ParseType.DISCORD_ANSI)
                 ) {
-                    builder.append(ansiMap.get("r"));
+                    builder.append(DISCORD_ANSI_MAP.get("r"));
                 }
 
                 if (type == ParseType.DISCORD_ANSI) {
@@ -157,13 +184,13 @@ public class ComponentUtilities {
 
                 if (state == TextDecoration.State.NOT_SET || state == TextDecoration.State.FALSE) continue;
 
-                if (type == ParseType.ANSI) {
+                if (type == ParseType.ANSI) { // right now discord doesn't care about styling
                     switch (decoration) {
-                        case BOLD -> style.append(ansiMap.get("l"));
-                        case ITALIC -> style.append(ansiMap.get("o"));
-                        case OBFUSCATED -> style.append(ansiMap.get("k"));
-                        case UNDERLINED -> style.append(ansiMap.get("n"));
-                        case STRIKETHROUGH -> style.append(ansiMap.get("m"));
+                        case BOLD -> style.append(ANSI_MAP.get("l"));
+                        case ITALIC -> style.append(ANSI_MAP.get("o"));
+                        case OBFUSCATED -> style.append(ANSI_MAP.get("k"));
+                        case UNDERLINED -> style.append(ANSI_MAP.get("n"));
+                        case STRIKETHROUGH -> style.append(ANSI_MAP.get("m"));
                     }
                 } else if (type == ParseType.SECTION_SIGNS) {
                     switch (decoration) {
@@ -182,7 +209,7 @@ public class ComponentUtilities {
         public String getColor (TextColor color) {
             if (color == null) return "";
 
-            // map totallynotskidded™ too from https://github.com/PrismarineJS/prismarine-chat/blob/master/index.js#L299
+            // map totallynotskidded™ from https://github.com/PrismarineJS/prismarine-chat/blob/master/index.js#L299
             String code;
             if (color == NamedTextColor.BLACK) code = "0";
             else if (color == NamedTextColor.DARK_BLUE) code = "1";
@@ -211,7 +238,9 @@ public class ComponentUtilities {
             if (type == ParseType.SECTION_SIGNS) {
                 return "§" + code;
             } else if (type == ParseType.ANSI || type == ParseType.DISCORD_ANSI) {
-                String ansiCode = ansiMap.get(code);
+                String ansiCode = type == ParseType.ANSI ?
+                        ANSI_MAP.get(code) :
+                        DISCORD_ANSI_MAP.get(code);
                 if (ansiCode == null) {
                     if (type == ParseType.DISCORD_ANSI) {
                         // gets the closest color to the hex
@@ -219,7 +248,7 @@ public class ComponentUtilities {
                         final int rgb = Integer.parseInt(code.substring(1), 16);
                         final String chatColor = Character.toString(ColorUtilities.getClosestChatColor(rgb));
 
-                        ansiCode = ansiMap.get(chatColor);
+                        ansiCode = DISCORD_ANSI_MAP.get(chatColor);
                     } else {
                         ansiCode = "\u001b[38;2;" +
                                 color.red() +
@@ -241,7 +270,7 @@ public class ComponentUtilities {
             if (type == ParseType.PLAIN) return originalResult;
 
             String resetCode;
-            if (type == ParseType.ANSI || type == ParseType.DISCORD_ANSI) resetCode = ansiMap.get("r");
+            if (type == ParseType.ANSI || type == ParseType.DISCORD_ANSI) resetCode = ANSI_MAP.get("r");
             else resetCode = "§r";
 
             final String result =
@@ -271,7 +300,9 @@ public class ComponentUtilities {
                             .replaceAll(m -> {
                                 final String code = m.group(0).substring(1);
 
-                                if (!code.equals("r")) return ansiMap.get(code);
+                                if (!code.equals("r")) return type == ParseType.ANSI ?
+                                        ANSI_MAP.get(code) :
+                                        DISCORD_ANSI_MAP.get(code);
                                 else return color;
                             });
                 } catch (Exception ignored) {}
