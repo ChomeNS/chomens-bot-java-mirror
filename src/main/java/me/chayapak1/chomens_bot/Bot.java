@@ -11,6 +11,7 @@ import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.event.session.*;
 import org.geysermc.mcprotocollib.network.factory.ClientNetworkSessionFactory;
 import org.geysermc.mcprotocollib.network.packet.Packet;
+import org.geysermc.mcprotocollib.protocol.MinecraftConstants;
 import org.geysermc.mcprotocollib.protocol.MinecraftProtocol;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.HandPreference;
 import org.geysermc.mcprotocollib.protocol.data.game.setting.ChatVisibility;
@@ -186,6 +187,8 @@ public class Bot {
 
         this.session = session;
 
+        session.setFlag(MinecraftConstants.FOLLOW_TRANSFERS, false); // we have our own transfer handler
+
         session.setFlag(BuiltinFlags.ATTEMPT_SRV_RESOLVE, options.resolveSRV);
 
         if (transfer) {
@@ -323,7 +326,7 @@ public class Bot {
                 // lazy fix #69420
                 if (cause instanceof OutOfMemoryError) System.exit(1);
 
-                if (session.getFlag(BuiltinFlags.CLIENT_TRANSFERRING)) return;
+                if (session.getFlag(BuiltinFlags.CLIENT_TRANSFERRING, false)) return;
 
                 cookies.clear();
 
