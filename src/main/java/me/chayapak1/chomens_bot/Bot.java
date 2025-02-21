@@ -4,7 +4,6 @@ import me.chayapak1.chomens_bot.plugins.*;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.RandomStringUtilities;
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.auth.GameProfile;
 import org.geysermc.mcprotocollib.network.BuiltinFlags;
 import org.geysermc.mcprotocollib.network.ClientSession;
@@ -12,7 +11,6 @@ import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.event.session.*;
 import org.geysermc.mcprotocollib.network.factory.ClientNetworkSessionFactory;
 import org.geysermc.mcprotocollib.network.packet.Packet;
-import org.geysermc.mcprotocollib.network.session.ClientNetworkSession;
 import org.geysermc.mcprotocollib.protocol.MinecraftProtocol;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.HandPreference;
 import org.geysermc.mcprotocollib.protocol.data.game.setting.ChatVisibility;
@@ -22,6 +20,7 @@ import org.geysermc.mcprotocollib.protocol.packet.common.clientbound.Clientbound
 import org.geysermc.mcprotocollib.protocol.packet.common.clientbound.ClientboundTransferPacket;
 import org.geysermc.mcprotocollib.protocol.packet.common.serverbound.ServerboundClientInformationPacket;
 import org.geysermc.mcprotocollib.protocol.packet.common.serverbound.ServerboundCustomPayloadPacket;
+import org.geysermc.mcprotocollib.protocol.packet.configuration.clientbound.ClientboundFinishConfigurationPacket;
 import org.geysermc.mcprotocollib.protocol.packet.cookie.clientbound.ClientboundCookieRequestPacket;
 import org.geysermc.mcprotocollib.protocol.packet.cookie.serverbound.ServerboundCookieResponsePacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
@@ -29,7 +28,6 @@ import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundC
 import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginFinishedPacket;
 import org.geysermc.mcprotocollib.protocol.packet.login.serverbound.ServerboundCustomQueryAnswerPacket;
 
-import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
@@ -166,17 +164,20 @@ public class Bot {
         reconnect();
     }
 
-    private void reconnect () {
+    private void reconnect () { reconnect(false); }
+    private void reconnect (boolean transfer) {
         if (session != null) session = null; // does this do nothing?
 
         for (Listener listener : listeners) {
             listener.connecting();
         }
 
-        final String _username = options.username;
+        if (!transfer) {
+            final String _username = options.username;
 
-        if (_username == null) username = RandomStringUtilities.generate(8);
-        else username = _username;
+            if (_username == null) username = RandomStringUtilities.generate(8);
+            else username = _username;
+        }
 
         final ClientSession session = ClientNetworkSessionFactory.factory()
                 .setAddress(host, port)
@@ -185,9 +186,11 @@ public class Bot {
 
         this.session = session;
 
-        // newer versions of MCProtocolLib already follow minecraft's behavior,
-        // this is for backwards compatibility
         session.setFlag(BuiltinFlags.ATTEMPT_SRV_RESOLVE, options.resolveSRV);
+
+        if (transfer) {
+            session.setFlag(BuiltinFlags.CLIENT_TRANSFERRING, true);
+        }
 
         session.addListener(new SessionAdapter() {
             // fard
@@ -210,34 +213,12 @@ public class Bot {
                         listener.connected(new ConnectedEvent(session));
                     }
 
-                    // this enables all the skin parts (by default they are ALL DISABLED
-                    // which is why most bots when they use someone's skin they are just
-                    // kinda broken)
-                    final List<SkinPart> skinParts = new ArrayList<>(Arrays.asList(SkinPart.VALUES));
-
-                    // we also set other stuffs here
-                    session.send(
-                            new ServerboundClientInformationPacket(
-                                    ComponentUtilities.LANGUAGE.getOrDefault("language.code", "en-us"),
-                                    16,
-                                    ChatVisibility.FULL,
-                                    true,
-                                    skinParts,
-                                    HandPreference.RIGHT_HAND,
-                                    false,
-                                    false,
-                                    ParticleStatus.ALL
-                            )
-                    );
-
-                    // for voicechat
-                    session.send(new ServerboundCustomPayloadPacket(
-                            Key.key("minecraft:brand"),
-                            "\u0006fabric".getBytes() // should i use fabric here?
-                    ));
+                    // !!! important or the bot can't reconnect (see the if statement at `disconnected`)
+                    session.setFlag(BuiltinFlags.CLIENT_TRANSFERRING, false);
 
                     if (options.creayun) chat.send("/server creative");
                 }
+                else if (packet instanceof ClientboundFinishConfigurationPacket t_packet) packetReceived(t_packet);
                 else if (packet instanceof ClientboundLoginFinishedPacket t_packet) packetReceived(t_packet);
                 else if (packet instanceof ClientboundCustomQueryPacket t_packet) packetReceived(t_packet);
                 else if (packet instanceof ClientboundCookieRequestPacket t_packet) packetReceived(t_packet);
@@ -266,19 +247,40 @@ public class Bot {
                 cookies.put(packet.getKey(), packet.getPayload());
             }
 
-            public void packetReceived (ClientboundTransferPacket packet) {
-                final ClientNetworkSession newSession = new ClientNetworkSession(
-                        InetSocketAddress.createUnresolved(packet.getHost(), packet.getPort()),
-                        session.getPacketProtocol(),
-                        session.getPacketHandlerExecutor(),
-                        null,
-                        session.getProxy()
+            public void packetReceived (ClientboundTransferPacket ignoredPacket) {
+                // for now, it's going to transfer to the same server instead of,
+                // other servers
+                reconnect(true);
+            }
+
+            // we're not meant to send client information at finish configuration,
+            // but if it works it works™
+            public void packetReceived (ClientboundFinishConfigurationPacket ignoredPacket) {
+                // for voicechat
+                session.send(new ServerboundCustomPayloadPacket(
+                        Key.key("minecraft:brand"),
+                        "\u0006fabric".getBytes() // should i use fabric here?
+                ));
+
+                // this enables all the skin parts (by default they are ALL DISABLED
+                // which is why most bots when they use someone's skin they are just
+                // kinda broken)
+                final List<SkinPart> skinParts = new ArrayList<>(Arrays.asList(SkinPart.VALUES));
+
+                // we also set other stuffs here
+                session.send(
+                        new ServerboundClientInformationPacket(
+                                ComponentUtilities.LANGUAGE.getOrDefault("language.code", "en_us"),
+                                16,
+                                ChatVisibility.FULL,
+                                true,
+                                skinParts,
+                                HandPreference.RIGHT_HAND,
+                                false,
+                                false,
+                                ParticleStatus.ALL
+                        )
                 );
-                newSession.addListener(this);
-                newSession.setFlags(session.getFlags());
-                newSession.setFlag(BuiltinFlags.CLIENT_TRANSFERRING, true);
-                session.disconnect(Component.translatable("disconnect.transfer"));
-                newSession.connect(false);
             }
 
             @Override
@@ -320,6 +322,10 @@ public class Bot {
 
                 // lazy fix #69420
                 if (cause instanceof OutOfMemoryError) System.exit(1);
+
+                if (session.getFlag(BuiltinFlags.CLIENT_TRANSFERRING)) return;
+
+                cookies.clear();
 
                 int reconnectDelay = options.reconnectDelay;
 
