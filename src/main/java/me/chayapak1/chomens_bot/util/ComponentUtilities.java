@@ -57,7 +57,7 @@ public class ComponentUtilities {
     private static class ComponentParser {
         public static final Pattern ARG_PATTERN = Pattern.compile("%(?:(\\d+)\\$)?([s%])");
 
-        public static final int MAX_DEPTH = 12;
+        public static final long MAX_TIME = 100; // this is actually more than we need
 
         public static final Map<String, String> ansiMap = new HashMap<>();
         static {
@@ -87,7 +87,8 @@ public class ComponentUtilities {
         }
 
         private ParseType type;
-        private int depth = 0;
+
+        private long parseStartTime = System.currentTimeMillis();
 
         private String lastStyle = "";
 
@@ -96,7 +97,7 @@ public class ComponentUtilities {
         private String stringify (Component message, ParseType type) {
             this.type = type;
 
-            if (depth > MAX_DEPTH) return "";
+            if (System.currentTimeMillis() > parseStartTime + MAX_TIME) return "";
 
             try {
                 final StringBuilder builder = new StringBuilder();
@@ -111,7 +112,7 @@ public class ComponentUtilities {
                 for (Component child : message.children()) {
                     final ComponentParser parser = new ComponentParser();
                     parser.lastStyle = lastStyle + color + style;
-                    parser.depth = depth;
+                    parser.parseStartTime = parseStartTime;
                     parser.isSubParsing = true;
                     builder.append(parser.stringify(child, type));
                 }
@@ -294,7 +295,7 @@ public class ComponentUtilities {
             // is INTENTIONAL and is a FEATURE
             int i = 0;
             while (matcher.find()) {
-                depth++;
+                parseStartTime++;
                 if (matcher.group().equals("%%")) {
                     matcher.appendReplacement(sb, "%");
                 } else {
@@ -307,7 +308,7 @@ public class ComponentUtilities {
                             final ComponentParser parser = new ComponentParser();
 
                             parser.lastStyle = lastStyle + color + style;
-                            parser.depth = depth;
+                            parser.parseStartTime = parseStartTime;
                             parser.isSubParsing = true;
 
                             matcher.appendReplacement(
