@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.sticker.StickerItem;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -271,6 +272,37 @@ public class DiscordPlugin {
             }
         }
 
+        Component stickersComponent = Component.empty();
+        if (!message.getStickers().isEmpty()) {
+            if (!message.getContentDisplay().isEmpty()) stickersComponent = stickersComponent.append(Component.space());
+
+            for (StickerItem sticker : message.getStickers()) {
+                stickersComponent = stickersComponent
+                        .append(
+                                Component
+                                        .translatable(
+                                                "[%s]",
+                                                Component
+                                                        .text(sticker.getName())
+                                                        .hoverEvent(
+                                                                HoverEvent.showText(
+                                                                        Component
+                                                                                .text(sticker.getId())
+                                                                                .color(NamedTextColor.GREEN)
+                                                                )
+                                                        )
+                                                        .clickEvent(
+                                                                ClickEvent.openUrl(
+                                                                        sticker.getIconUrl()
+                                                                )
+                                                        )
+                                        )
+                                        .color(NamedTextColor.GREEN)
+                        )
+                        .append(Component.space());
+            }
+        }
+
         final Member member = message.getMember();
 
         final String username = message.getAuthor().getName();
@@ -359,12 +391,13 @@ public class DiscordPlugin {
                 );
 
         final Component messageComponent = Component
-                .text("")
+                .empty()
                 .color(NamedTextColor.GRAY)
                 .append(
                         deserialized
                                 .append(attachmentsComponent)
                                 .append(embedsComponent)
+                                .append(stickersComponent)
                 );
 
         return Component.translatable(
