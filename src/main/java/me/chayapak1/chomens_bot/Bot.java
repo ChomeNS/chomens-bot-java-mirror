@@ -213,14 +213,7 @@ public class Bot {
                     // this enables all the skin parts (by default they are ALL DISABLED
                     // which is why most bots when they use someone's skin they are just
                     // kinda broken)
-                    final List<SkinPart> skinParts = new ArrayList<>();
-                    skinParts.add(SkinPart.CAPE);
-                    skinParts.add(SkinPart.JACKET);
-                    skinParts.add(SkinPart.LEFT_SLEEVE);
-                    skinParts.add(SkinPart.RIGHT_SLEEVE);
-                    skinParts.add(SkinPart.LEFT_PANTS_LEG);
-                    skinParts.add(SkinPart.RIGHT_PANTS_LEG);
-                    skinParts.add(SkinPart.HAT);
+                    final List<SkinPart> skinParts = new ArrayList<>(Arrays.asList(SkinPart.VALUES));
 
                     // we also set other stuffs here
                     session.send(
