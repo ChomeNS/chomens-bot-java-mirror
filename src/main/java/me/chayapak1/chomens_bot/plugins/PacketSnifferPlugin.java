@@ -15,14 +15,21 @@ import java.nio.file.StandardOpenOption;
 public class PacketSnifferPlugin extends Bot.Listener {
     private final Bot bot;
 
-    public final boolean enabled = false;
+    public boolean enabled = false;
 
     private BufferedWriter writer;
 
+    @SuppressWarnings("ConstantValue") // this can be set through servereval
     public PacketSnifferPlugin (Bot bot) {
         this.bot = bot;
 
-        if (!enabled) return;
+        if (enabled) enable();
+
+        bot.addListener(this);
+    }
+
+    public void enable () {
+        enabled = true;
 
         final String name = String.format(
                 "packets-%s-%s.log",
@@ -39,12 +46,24 @@ public class PacketSnifferPlugin extends Bot.Listener {
         } catch (IOException e) {
             bot.logger.error(e);
         }
+    }
 
-        bot.addListener(this);
+    @SuppressWarnings("unused")
+    public void disable () {
+        enabled = false;
+
+        try {
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            bot.logger.error(e);
+        }
     }
 
     @Override
     public void packetReceived(Session session, Packet packet) {
+        if (!enabled) return;
+
         try {
             writer.write(packet.toString() + "\n");
             writer.flush();
@@ -55,6 +74,8 @@ public class PacketSnifferPlugin extends Bot.Listener {
 
     @Override
     public void packetSending(PacketSendingEvent event) {
+        if (!enabled) return;
+
         try {
             writer.write(event.getPacket().toString() + "\n");
             writer.flush();
