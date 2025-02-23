@@ -12,7 +12,7 @@ import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import me.chayapak1.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.cloudburstmc.math.vector.Vector3f;
+import org.cloudburstmc.math.vector.Vector3d;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.protocol.data.game.BossBarColor;
 import org.geysermc.mcprotocollib.protocol.data.game.BossBarDivision;
@@ -379,11 +379,11 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                 if (note.volume == 0) continue;
 
-                float key = note.shiftedPitch;
+                double key = note.shiftedPitch;
 
-                final Vector3f blockPosition = getBlockPosition(note);
+                final Vector3d blockPosition = getBlockPosition(note);
 
-                final float notShiftedFloatingPitch = (float) Math.pow(2.0, ((note.pitch + (pitch / 10)) - 12) / 12.0);
+                final double notShiftedFloatingPitch = Math.pow(2.0, ((note.pitch + (pitch / 10)) - 12) / 12.0);
 
                 key += 33;
 
@@ -417,7 +417,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                 key -= 33;
 
-                float floatingPitch = (float) (0.5 * Math.pow(2, (key + (pitch / 10)) / 12));
+                double floatingPitch = 0.5 * Math.pow(2, (key + (pitch / 10)) / 12);
 
                 for (int i = 0; i < amplify; i++) {
                     bot.core.run(
@@ -438,35 +438,38 @@ public class MusicPlayerPlugin extends Bot.Listener {
         }
     }
 
-    private Vector3f getBlockPosition (Note note) {
-        Vector3f blockPosition;
+    private Vector3d getBlockPosition (Note note) {
+        Vector3d blockPosition;
 
         if (currentSong.nbs) {
-            // https://github.com/OpenNBS/OpenNoteBlockStudio/blob/45f35ea193268fb541c1297d0b656f4964339d97/scripts/dat_generate/dat_generate.gml#L22C18-L22C31
-            final int average = (note.stereo + note.panning) / 2;
+            double value;
 
-            float pos;
+            if (note.stereo == 100 && note.panning != 100) value = note.panning;
+            else if (note.panning == 100 && note.stereo != 100) value = note.stereo;
+            else value = (double) (note.stereo + note.panning) / 2;
 
-            if (average > 100) pos = (float) (average - 100) / -100;
-            else if (average == 100) pos = 0;
-            else pos = (float) ((average - 100) * -1) / 100;
+            double pos;
 
-            blockPosition = Vector3f.from(pos * 2, 0, 0);
+            if (value > 100) pos = (value - 100) / -100;
+            else if (value == 100) pos = 0;
+            else pos = ((value - 100) * -1) / 100;
+
+            blockPosition = Vector3d.from(pos, 0, 0);
         } else {
             // i wrote this part
 
-            final int originalPitch = note.originalPitch;
+            final double originalPitch = note.originalPitch;
 
-            float xPos = -(float) originalPitch / 768;
+            double xPos = -(double) originalPitch / 768;
             if (originalPitch > 25) xPos = Math.abs(xPos);
 
-            float yPos = -(float) originalPitch / 35;
+            double yPos = -(double) originalPitch / 35;
             if (originalPitch < 75) yPos = -yPos;
 
-            float zPos = -(float) originalPitch / 40;
+            double zPos = -(double) originalPitch / 40;
             if (originalPitch < 75) zPos = -zPos;
 
-            blockPosition = Vector3f.from(xPos, yPos, zPos);
+            blockPosition = Vector3d.from(xPos, yPos, zPos);
         }
 
         return blockPosition;
