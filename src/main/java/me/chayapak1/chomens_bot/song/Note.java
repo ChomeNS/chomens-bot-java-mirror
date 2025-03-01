@@ -4,9 +4,9 @@ package me.chayapak1.chomens_bot.song;
 public class Note implements Comparable<Note> {
   public final Instrument instrument;
   public final Instrument shiftedInstrument;
-  public final int pitch;
-  public final int shiftedPitch;
-  public final int originalPitch;
+  public final double pitch;
+  public final double shiftedPitch;
+  public final double originalPitch;
   public final float volume;
   public final long time;
   public final int panning;
@@ -14,8 +14,8 @@ public class Note implements Comparable<Note> {
 
   public Note (
           Instrument instrument,
-          int pitch,
-          int originalPitch,
+          double pitch,
+          double originalPitch,
           float volume,
           long time,
           int panning,
@@ -35,9 +35,9 @@ public class Note implements Comparable<Note> {
   public Note (
           Instrument instrument,
           Instrument shiftedInstrument,
-          int pitch,
-          int shiftedPitch,
-          int originalPitch,
+          double pitch,
+          double shiftedPitch,
+          double originalPitch,
           float volume,
           long time,
           int panning,

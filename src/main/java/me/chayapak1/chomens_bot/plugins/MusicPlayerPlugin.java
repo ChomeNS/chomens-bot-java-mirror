@@ -405,8 +405,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                                     " record @s ^" + blockPosition.getX() + " ^" + blockPosition.getY() + " ^" + blockPosition.getZ() + " " +
                                     volume +
                                     " " +
-                                    0 +
-                                    " 1"
+                                    0
                     );
                 }
 
@@ -428,8 +427,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
                                     " record @s ^" + blockPosition.getX() + " ^" + blockPosition.getY() + " ^" + blockPosition.getZ() + " " +
                                     volume +
                                     " " +
-                                    MathUtilities.clamp(floatingPitch, 0, 2) +
-                                    " 1"
+                                    MathUtilities.clamp(floatingPitch, 0, 2)
                     );
                 }
             }
