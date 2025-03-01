@@ -18,16 +18,23 @@ public class ValidateCommand extends Command {
 
     @Override
     public Component execute(CommandContext context) throws CommandException {
+        // <red>Trusted - 1
+        // <dark_red>Admin - 2
+        // .......
+        final Component trustLevelComponent = context.trustLevel.component
+                .append(Component.text(" - "))
+                .append(Component.text(context.trustLevel.level));
+
         if (context instanceof DiscordCommandContext) return Component
                 .translatable("You are trusted! (%s)")
-                .arguments(Component.text(context.trustLevel.name()))
+                .arguments(trustLevelComponent)
                 .color(NamedTextColor.GREEN);
         else if (context instanceof ConsoleCommandContext) return Component
                 .text("You are the console! You have no trust level")
                 .color(NamedTextColor.GREEN);
         else return Component
                 .translatable("Valid hash (%s)")
-                .arguments(Component.text(context.trustLevel.name()))
+                .arguments(trustLevelComponent)
                 .color(NamedTextColor.GREEN);
     }
 }

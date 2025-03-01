@@ -12,6 +12,7 @@ import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,16 +55,20 @@ public class HelpCommand extends Command {
         list.addAll(getCommandListByTrustLevel(TrustLevel.ADMIN));
         list.addAll(getCommandListByTrustLevel(TrustLevel.OWNER));
 
+        final Component trustLevels = Component.join(
+                JoinConfiguration.spaces(),
+                Arrays.stream(TrustLevel.values())
+                        .map(level -> level.component)
+                        .toList()
+        );
+
         return Component.empty()
                         .append(Component.text("Commands ").color(NamedTextColor.GRAY))
                         .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
                         .append(Component.text(list.size()).color(NamedTextColor.GREEN))
                         .append(Component.text(") ").color(NamedTextColor.DARK_GRAY))
                         .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
-                        .append(Component.text("Public ").color(NamedTextColor.GREEN))
-                        .append(Component.text("Trusted ").color(NamedTextColor.RED))
-                        .append(Component.text("Admin ").color(NamedTextColor.DARK_RED))
-                        .append(Component.text("Owner").color(NamedTextColor.LIGHT_PURPLE))
+                        .append(Component.translatable("%s", trustLevels))
                         .append(Component.text(") - ").color(NamedTextColor.DARK_GRAY))
                         .append(Component.join(JoinConfiguration.separator(Component.space()), list));
     }
@@ -101,13 +106,8 @@ public class HelpCommand extends Command {
         return list;
     }
 
-    public NamedTextColor getColorByTrustLevel (TrustLevel trustLevel) {
-        return switch (trustLevel) {
-            case PUBLIC -> NamedTextColor.GREEN;
-            case TRUSTED -> NamedTextColor.RED;
-            case ADMIN -> NamedTextColor.DARK_RED;
-            case OWNER -> NamedTextColor.LIGHT_PURPLE;
-        };
+    public TextColor getColorByTrustLevel (TrustLevel trustLevel) {
+        return trustLevel.component.color();
     }
 
     public Component sendUsages (CommandContext context, String commandName) throws CommandException {
@@ -135,7 +135,11 @@ public class HelpCommand extends Command {
             usages.add(
                     Component.empty()
                             .append(Component.text("Trust level: ").color(NamedTextColor.GREEN))
-                            .append(Component.text(command.trustLevel.name()).color(NamedTextColor.YELLOW))
+                            .append(
+                                    command.trustLevel.component
+                                            .append(Component.text(" - "))
+                                            .append(Component.text(command.trustLevel.level))
+                            )
             );
 
             for (String usage : command.usages) {
