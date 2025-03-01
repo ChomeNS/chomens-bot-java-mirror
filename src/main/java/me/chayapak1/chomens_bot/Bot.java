@@ -26,6 +26,7 @@ import org.geysermc.mcprotocollib.protocol.packet.cookie.clientbound.Clientbound
 import org.geysermc.mcprotocollib.protocol.packet.cookie.serverbound.ServerboundCookieResponsePacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
 import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundCustomQueryPacket;
+import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginCompressionPacket;
 import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginFinishedPacket;
 import org.geysermc.mcprotocollib.protocol.packet.login.serverbound.ServerboundCustomQueryAnswerPacket;
 
@@ -98,7 +99,6 @@ public class Bot {
     public PacketSnifferPlugin packetSniffer;
     public VoiceChatPlugin voiceChat;
     public TeamJoinerPlugin teamJoiner;
-    public TagPlugin tag;
     public WorldPlugin world;
     public AuthPlugin auth;
     public ScreensharePlugin screenshare;
@@ -150,7 +150,6 @@ public class Bot {
         this.packetSniffer = new PacketSnifferPlugin(this);
         this.voiceChat = new VoiceChatPlugin(this);
         this.teamJoiner = new TeamJoinerPlugin(this);
-        this.tag = new TagPlugin(this);
         this.world = new WorldPlugin(this);
         this.auth = new AuthPlugin(this);
 //        this.screenshare = new ScreensharePlugin(this);
@@ -227,6 +226,7 @@ public class Bot {
                 else if (packet instanceof ClientboundCookieRequestPacket t_packet) packetReceived(t_packet);
                 else if (packet instanceof ClientboundTransferPacket t_packet) packetReceived(t_packet);
                 else if (packet instanceof ClientboundStoreCookiePacket t_packet) packetReceived(t_packet);
+                else if (packet instanceof ClientboundLoginCompressionPacket t_packet) packetReceived(t_packet);
             }
 
             public void packetReceived (ClientboundLoginFinishedPacket packet) {
@@ -284,6 +284,15 @@ public class Bot {
                                 ParticleStatus.ALL
                         )
                 );
+            }
+
+            // MCProtocolLib devs forgot
+            // "Negative values will disable compression, meaning the packet format should remain in the uncompressed packet format."
+            // https://minecraft.wiki/w/Java_Edition_protocol#Set_Compression
+            public void packetReceived (ClientboundLoginCompressionPacket packet) {
+                if (packet.getThreshold() < 0) {
+                    session.setCompression(null);
+                }
             }
 
             @Override
