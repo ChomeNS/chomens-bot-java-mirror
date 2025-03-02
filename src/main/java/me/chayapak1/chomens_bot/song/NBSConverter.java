@@ -115,13 +115,13 @@ public class NBSConverter implements Converter {
     while (true) {
       int tickJumps = buffer.getShort();
       if (tickJumps == 0) break;
-      tick += tickJumps;
+      tick += (short) tickJumps;
 
       short layer = -1;
       while (true) {
         int layerJumps = buffer.getShort();
         if (layerJumps == 0) break;
-        layer += layerJumps;
+        layer += (short) layerJumps;
         NBSNote note = new NBSNote();
         note.tick = tick;
         note.layer = layer;
@@ -181,11 +181,11 @@ public class NBSConverter implements Converter {
     }
     for (NBSNote note : nbsNotes) {
       Instrument instrument;
-      int key = note.key;
+      double key = note.key;
       if (note.instrument < instrumentIndex.length) {
         instrument = instrumentIndex[note.instrument];
 
-        key = note.key + note.pitch / 100;
+        key = (double) ((note.key * 100) + note.pitch) / 100;
       } else {
         int index = note.instrument - instrumentIndex.length;
 
@@ -239,7 +239,7 @@ public class NBSConverter implements Converter {
 
         instrument = Instrument.of(name);
 
-        key += (customInstrument.pitch + note.pitch) / 100;
+        key += (double) (customInstrument.pitch + note.pitch) / 100;
       }
 
       byte layerVolume = 100;
@@ -247,7 +247,7 @@ public class NBSConverter implements Converter {
         layerVolume = nbsLayers.get(note.layer).volume;
       }
 
-      int pitch = key-33;
+      double pitch = key - 33;
 
       try {
         song.add(new Note(instrument, pitch, key, (float) note.velocity * (float) layerVolume / 10000f, getMilliTime(note.tick, tempo), Byte.toUnsignedInt(note.panning), Byte.toUnsignedInt(nbsLayers.get(note.layer).stereo)));
