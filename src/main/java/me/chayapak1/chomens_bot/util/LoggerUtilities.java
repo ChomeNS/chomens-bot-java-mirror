@@ -45,8 +45,7 @@ public class LoggerUtilities {
     public static void log (Bot bot, String message, boolean logToFile, boolean logToConsole) {
         final String component = prefix(bot, Component.text("Log").color(NamedTextColor.GOLD), message);
 
-        if (logToConsole && bot != null) bot.console.reader.printAbove(component);
-        else if (logToConsole) System.out.println(component);
+        if (logToConsole) print(component);
 
         if (logToFile) {
             final String formattedMessage = bot == null ? "" :
@@ -66,7 +65,7 @@ public class LoggerUtilities {
     public static void info (Bot bot, String message) {
         final String component = prefix(bot, Component.text("Info").color(NamedTextColor.GREEN), message);
 
-        Main.console.reader.printAbove(component);
+        print(component);
     }
 
     public static void error (String message) { error(null, message); }
@@ -77,13 +76,18 @@ public class LoggerUtilities {
     public static void error (Bot bot, String message) {
         final String component = prefix(bot, Component.text("Error").color(NamedTextColor.RED), message);
 
-        Main.console.reader.printAbove(component);
+        print(component);
     }
 
     public static void custom (Component prefix, Component message) { custom(null, prefix, message); }
     public static void custom (Bot bot, Component prefix, Component _message) {
         final String message = prefix(bot, prefix, ComponentUtilities.stringifyAnsi(_message));
 
-        Main.console.reader.printAbove(message);
+        print(message);
+    }
+
+    private static void print (String message) {
+        if (Main.console == null) System.out.println(message);
+        else Main.console.reader.printAbove(message);
     }
 }
