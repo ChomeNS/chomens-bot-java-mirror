@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-// Author: _ChipMC_ or hhhzzzsss? also i modified it to use runnable
-// because thread = bad !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// Author: _ChipMC_ & hhhzzzsss
 public class SongLoaderThread extends Thread {
   // should the converters be here?
   public static final List<Converter> converters = new ArrayList<>();
@@ -81,14 +80,12 @@ public class SongLoaderThread extends Thread {
   public void run () {
     if (isFolder && !isUrl && !isItem) {
       try (Stream<Path> files = Files.list(songPath)) {
-        if (files != null) {
-          files.forEach((file) -> {
-            songPath = file;
-            processFile();
-          });
+        files.forEach((file) -> {
+          songPath = file;
+          processFile();
+        });
 
-          showAddedToQueue();
-        }
+        showAddedToQueue();
       } catch (IOException e) {
         bot.logger.error(e);
       }
@@ -126,9 +123,7 @@ public class SongLoaderThread extends Thread {
 
       try {
         song = converter.getSongFromBytes(bytes, name, bot);
-      } catch (Exception e) {
-        bot.logger.error(e);
-      }
+      } catch (Exception ignored) {}
     }
 
     if (song == null) {
