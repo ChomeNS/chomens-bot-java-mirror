@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.LevenshteinUtilities;
+import me.chayapak1.chomens_bot.util.StringUtilities;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,7 +23,7 @@ import java.util.Map;
 
 // Author: hhhzzzsss
 public class NBSConverter implements Converter {
-  public static final Instrument[] instrumentIndex = new Instrument[] {
+  public static final Instrument[] INSTRUMENT_INDEX = new Instrument[] {
     Instrument.HARP,
     Instrument.BASS,
     Instrument.BASEDRUM,
@@ -40,6 +41,19 @@ public class NBSConverter implements Converter {
     Instrument.BANJO,
     Instrument.PLING,
   };
+
+  public static final Map<String, String> CUSTOM_INSTRUMENT_REPLACEMENTS = new HashMap<>();
+
+  static {
+    CUSTOM_INSTRUMENT_REPLACEMENTS.put("entity\\.firework\\.", "entity.firework_rocket.");
+    CUSTOM_INSTRUMENT_REPLACEMENTS.put(".*glass.*", "block.glass.break");
+    CUSTOM_INSTRUMENT_REPLACEMENTS.put(".*door.*", "block.wooden_door.open");
+    CUSTOM_INSTRUMENT_REPLACEMENTS.put(".*anvil.*", "block.anvil.fall");
+    CUSTOM_INSTRUMENT_REPLACEMENTS.put(".*piston.*", "block.piston.extend");
+    CUSTOM_INSTRUMENT_REPLACEMENTS.put(".*explode|explosion.*", "entity.generic.explode");
+    CUSTOM_INSTRUMENT_REPLACEMENTS.put(".*eye.*", "block.end_portal_frame.fill");
+    CUSTOM_INSTRUMENT_REPLACEMENTS.put("fizz", "block.sand.break"); // not really sure what this exactly is, but it exists in some NBSes
+  }
 
   public static class NBSNote {
     public int tick;
@@ -182,46 +196,37 @@ public class NBSConverter implements Converter {
     for (NBSNote note : nbsNotes) {
       Instrument instrument;
       double key = note.key;
-      if (note.instrument < instrumentIndex.length) {
-        instrument = instrumentIndex[note.instrument];
+      if (note.instrument < INSTRUMENT_INDEX.length) {
+        instrument = INSTRUMENT_INDEX[note.instrument];
 
         key = (double) ((note.key * 100) + note.pitch) / 100;
       } else {
-        int index = note.instrument - instrumentIndex.length;
+        final int index = note.instrument - INSTRUMENT_INDEX.length;
 
         if (index >= customInstruments.size()) continue;
 
-        NBSCustomInstrument customInstrument = customInstruments.get(index);
+        final NBSCustomInstrument customInstrument = customInstruments.get(index);
 
-        String name = customInstrument.name.replace("entity.firework.", "entity.firework_rocket.");
-
+        String name = customInstrument.name;
         String file = Path.of(customInstrument.file).getFileName().toString();
+
+        // should i hardcode the extension like this?
         if (file.endsWith(".ogg")) file = file.substring(0, file.length() - ".ogg".length());
-        file = file.replace("entity.firework.", "entity.firework_rocket.");
 
         boolean replaced = false;
 
-        if (name.toLowerCase().contains("glass break") || name.toLowerCase().contains("glass broken")) {
-          name = "block.glass.break";
+        final String replacedName = StringUtilities.replaceAllWithMap(name.toLowerCase(), CUSTOM_INSTRUMENT_REPLACEMENTS);
+        final String replacedFile = StringUtilities.replaceAllWithMap(file.toLowerCase(), CUSTOM_INSTRUMENT_REPLACEMENTS);
+
+        if (!file.equals(replacedFile)) {
+          file = replacedFile;
           replaced = true;
-        } else if (name.toLowerCase().contains("door close") || name.toLowerCase().contains("door open")) {
-          name = "block.wooden_door.open";
-          replaced = true;
-        } else if (name.toLowerCase().contains("anvil")) {
-          name = "block.anvil.fall";
-          replaced = true;
-        } else if (name.toLowerCase().contains("piston extend")) {
-          name = "block.piston.extend";
-          replaced = true;
-        } else if (name.toLowerCase().contains("explosion")) {
-          name = "entity.generic.explode";
+        } else if (!name.equals(replacedName)) {
+          name = replacedName;
           replaced = true;
         }
 
         if (!sounds.contains(name) && !sounds.contains(file) && !replaced) {
-          name = name
-                  .replaceAll("Eye.*Fill", "Eye of Ender attaches");
-
           final List<String> outputTitles = LevenshteinUtilities.searchTitles(name, subtitles.values());
 
           final String bestMatch = outputTitles.isEmpty() ? "" : outputTitles.getFirst();

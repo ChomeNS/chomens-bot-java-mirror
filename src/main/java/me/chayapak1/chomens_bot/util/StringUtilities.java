@@ -6,6 +6,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 public class StringUtilities {
     // https://stackoverflow.com/a/8910767/18518424
@@ -62,5 +63,13 @@ public class StringUtilities {
 
     public static boolean isNotNullAndNotBlank (String text) {
         return text != null && !text.isBlank();
+    }
+
+    public static String replaceAllWithMap (String input, Map<String, String> replacements) {
+        String result = input;
+        for (Map.Entry<String, String> entry : replacements.entrySet()) {
+            result = result.replaceAll(entry.getKey(), entry.getValue());
+        }
+        return result;
     }
 }

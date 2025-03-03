@@ -446,16 +446,14 @@ public class MusicPlayerPlugin extends Bot.Listener {
             else if (note.panning == 100 && note.stereo != 100) value = note.stereo;
             else value = (double) (note.stereo + note.panning) / 2;
 
-            double pos;
+            double xPos;
 
-            if (value > 100) pos = (value - 100) / -100;
-            else if (value == 100) pos = 0;
-            else pos = ((value - 100) * -1) / 100;
+            if (value > 100) xPos = (value - 100) / -100;
+            else if (value == 100) xPos = 0;
+            else xPos = ((value - 100) * -1) / 100;
 
-            blockPosition = Vector3d.from(pos, 0, 0);
+            blockPosition = Vector3d.from(xPos, 0, 0);
         } else {
-            // i wrote this part
-
             final double originalPitch = note.originalPitch;
 
             double xPos = -(double) originalPitch / 768;
