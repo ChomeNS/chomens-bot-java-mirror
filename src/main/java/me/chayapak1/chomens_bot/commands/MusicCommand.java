@@ -405,7 +405,7 @@ public class MusicCommand extends Command {
 
         final Bot bot = context.bot;
 
-        final float pitch = context.getFloat(true);
+        final float pitch = context.getFloat(true, false);
 
         bot.music.pitch = pitch;
 
@@ -421,7 +421,7 @@ public class MusicCommand extends Command {
         final Bot bot = context.bot;
         final Song currentSong = bot.music.currentSong;
 
-        final float speed = context.getFloat(true);
+        final float speed = context.getFloat(true, false);
 
         if (speed > 5) throw new CommandException(Component.text("Too fast!"));
 

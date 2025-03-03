@@ -184,25 +184,31 @@ public class CommandContext {
         }
     }
 
-    public Double getDouble (boolean required) throws CommandException {
+    public Double getDouble (boolean required, boolean allowInfinite) throws CommandException {
         final String string = getString(false, required, "double");
 
         if (string.isEmpty()) return null;
 
         try {
-            return Double.parseDouble(string);
+            final double parsedDouble = Double.parseDouble(string);
+
+            if (!Double.isFinite(parsedDouble) && !allowInfinite) throw new NumberFormatException();
+            else return parsedDouble;
         } catch (NumberFormatException e) {
             throw new CommandException(Component.text("Invalid double"));
         }
     }
 
-    public Float getFloat (boolean required) throws CommandException {
+    public Float getFloat (boolean required, boolean allowInfinite) throws CommandException {
         final String string = getString(false, required, "float");
 
         if (string.isEmpty()) return null;
 
         try {
-            return Float.parseFloat(string);
+            final float parsedFloat = Float.parseFloat(string);
+
+            if (!Float.isFinite(parsedFloat) && !allowInfinite) throw new NumberFormatException();
+            else return parsedFloat;
         } catch (NumberFormatException e) {
             throw new CommandException(Component.text("Invalid float"));
         }

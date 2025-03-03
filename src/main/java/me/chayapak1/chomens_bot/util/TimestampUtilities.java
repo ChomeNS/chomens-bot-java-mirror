@@ -20,7 +20,7 @@ public class TimestampUtilities {
 
         if (hourString != null) time += (long) Integer.parseInt(hourString) * 60 * 60 * 1000;
         time += (long) Integer.parseInt(minuteString) * 60 * 1000;
-        time += Double.parseDouble(secondString) * 1000.0;
+        time += (long) (Double.parseDouble(secondString) * 1000.0);
 
         return time;
     }
