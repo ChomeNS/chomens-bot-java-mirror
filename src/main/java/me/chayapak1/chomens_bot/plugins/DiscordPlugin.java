@@ -68,6 +68,7 @@ public class DiscordPlugin {
 
         final JDABuilder builder = JDABuilder.createDefault(config.discord.token);
         builder.enableIntents(GatewayIntent.MESSAGE_CONTENT);
+        builder.setEnableShutdownHook(false);
         try {
             jda = builder.build();
             jda.awaitReady();

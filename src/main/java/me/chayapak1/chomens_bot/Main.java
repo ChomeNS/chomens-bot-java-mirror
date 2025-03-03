@@ -217,14 +217,14 @@ public class Main {
         }
 
         if (discordEnabled) {
-            discord.jda.shutdown();
-
             for (int i = 0; i < 150; i++) {
                 try {
                     if (!ArrayUtilities.isAllTrue(stoppedDiscord)) Thread.sleep(50);
                     else break;
                 } catch (InterruptedException ignored) {}
             }
+
+            discord.jda.shutdown();
         }
 
         if (callSystemExit) System.exit(exitCode);
