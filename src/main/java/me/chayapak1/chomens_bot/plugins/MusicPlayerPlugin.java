@@ -383,7 +383,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
                 final Vector3d blockPosition = getBlockPosition(note);
 
-                final double notShiftedFloatingPitch = Math.pow(2.0, ((note.pitch + (pitch / 10)) - 12) / 12.0);
+                final double notShiftedFloatingPitch = 0.5 * Math.pow(2, (note.pitch + (pitch / 10)) / 12);
 
                 key += 33;
 
