@@ -149,7 +149,8 @@ public class InfoCommand extends Command {
                                 CPU cores: %s
                                 CPU model: %s
                                 Threads: %s
-                                Heap memory usage: %s""",
+                                Heap memory usage: %s
+                                JVM memory usage: %s""",
                         Component.text(localHost == null ? "N/A" : localHost.getHostName()).color(color),
                         Component.text(System.getProperty("user.dir")).color(color),
                         Component.text(os.getArch()).color(color),
@@ -163,6 +164,12 @@ public class InfoCommand extends Command {
                                         "%s MB / %s MB",
                                         Component.text(heapUsage.getUsed() / 1024L / 1024L),
                                         Component.text(heapUsage.getMax() / 1024L / 1024L)
+                                ).color(color),
+                        Component
+                                .translatable(
+                                        "%s MB / %s MB",
+                                        Component.text((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024L / 1024L),
+                                        Component.text(Runtime.getRuntime().totalMemory() / 1024L / 1024L)
                                 ).color(color)
                 ).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary));
 
