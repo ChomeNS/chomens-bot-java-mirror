@@ -38,7 +38,7 @@ public class HashingPlugin {
                 hash;
     }
 
-    private boolean checkHash (String hash, String input, String prefix, PlayerEntry sender) {
+    private boolean checkHash (String hash, String input) {
         // removes reset section sign
         if (input.length() == (16 * 2 /* <-- don't forget, we have the section signs */) + 2 && input.endsWith("§r")) input = input.substring(0, input.length() - 2);
 
@@ -46,17 +46,17 @@ public class HashingPlugin {
     }
 
     public boolean isCorrectHash (String input, String prefix, PlayerEntry sender) {
-        return checkHash(getHash(prefix, sender, true), input, prefix, sender) ||
-                checkHash(getHash(prefix, sender, false), input, prefix, sender);
+        return checkHash(getHash(prefix, sender, true), input) ||
+                checkHash(getHash(prefix, sender, false), input);
     }
 
     public boolean isCorrectAdminHash (String input, String prefix, PlayerEntry sender) {
-        return checkHash(getAdminHash(prefix, sender, true), input, prefix, sender) ||
-                checkHash(getAdminHash(prefix, sender, false), input, prefix, sender);
+        return checkHash(getAdminHash(prefix, sender, true), input) ||
+                checkHash(getAdminHash(prefix, sender, false), input);
     }
 
     public boolean isCorrectOwnerHash (String input, String prefix, PlayerEntry sender) {
-        return checkHash(getOwnerHash(prefix, sender, true), input, prefix, sender) ||
-                checkHash(getOwnerHash(prefix, sender, false), input, prefix, sender);
+        return checkHash(getOwnerHash(prefix, sender, true), input) ||
+                checkHash(getOwnerHash(prefix, sender, false), input);
     }
 }
