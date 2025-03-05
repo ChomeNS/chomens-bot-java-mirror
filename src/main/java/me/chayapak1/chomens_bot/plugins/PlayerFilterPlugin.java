@@ -35,7 +35,7 @@ public class PlayerFilterPlugin extends PlayersPlugin.Listener {
                 }
             });
 
-            Main.executor.scheduleAtFixedRate(PlayerFilterPlugin::list, 3, 5, TimeUnit.SECONDS);
+            Main.executor.scheduleAtFixedRate(PlayerFilterPlugin::list, 5, 30, TimeUnit.SECONDS);
         }
     }
 

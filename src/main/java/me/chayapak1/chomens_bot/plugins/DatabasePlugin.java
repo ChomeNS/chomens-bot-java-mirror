@@ -13,8 +13,8 @@ import java.util.concurrent.Executors;
 public class DatabasePlugin {
     // is it OK to have a completely separate ExecutorService to do the executions?
     public static final ExecutorService executorService = Executors.newFixedThreadPool(
-            Runtime.getRuntime().availableProcessors(),
-            new ThreadFactoryBuilder().setNameFormat("ExecutorService (database) #%d").build()
+            1,
+            new ThreadFactoryBuilder().setNameFormat("ExecutorService (database)").build()
     );
 
     public Connection connection;

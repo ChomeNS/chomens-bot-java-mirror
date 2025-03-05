@@ -27,11 +27,11 @@ public class Main {
     public static final List<Bot> bots = new ArrayList<>();
 
     public static final ExecutorService executorService = Executors.newFixedThreadPool(
-            Runtime.getRuntime().availableProcessors(),
+            Math.max(1, Runtime.getRuntime().availableProcessors() / 2),
             new ThreadFactoryBuilder().setNameFormat("ExecutorService #%d").build()
     );
     public static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(
-            Runtime.getRuntime().availableProcessors(),
+            Math.max(1, Runtime.getRuntime().availableProcessors() / 2),
             new ThreadFactoryBuilder().setNameFormat("ScheduledExecutorService #%d").build()
     );
 

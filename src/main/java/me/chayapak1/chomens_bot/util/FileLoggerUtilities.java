@@ -1,8 +1,11 @@
 package me.chayapak1.chomens_bot.util;
 
-import me.chayapak1.chomens_bot.Main;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,6 +14,7 @@ import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
@@ -29,7 +33,11 @@ public class FileLoggerUtilities {
     public static String prevEntry = "";
     public static int duplicateCounter = 1;
 
-    public static final ScheduledExecutorService executor = Main.executor;
+    // we want a completely separate executor from the main one
+    public static final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(
+            new ThreadFactoryBuilder().setNameFormat("ScheduledExecutorService (logger)").build()
+    );
+
     public static int spamLevel = 0;
     public static long freezeTime = 0;
 

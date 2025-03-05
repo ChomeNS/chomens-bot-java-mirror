@@ -32,7 +32,7 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
                 }
             });
 
-            Main.executor.scheduleAtFixedRate(IPFilterPlugin::list, 3, 5, TimeUnit.SECONDS);
+            Main.executor.scheduleAtFixedRate(IPFilterPlugin::list, 5, 30, TimeUnit.SECONDS);
         }
     }
 
