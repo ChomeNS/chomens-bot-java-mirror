@@ -45,7 +45,6 @@ public class NBSConverter implements Converter {
     public static final Map<String, String> CUSTOM_INSTRUMENT_REPLACEMENTS = new HashMap<>();
 
     static {
-        CUSTOM_INSTRUMENT_REPLACEMENTS.put("entity\\.firework\\.", "entity.firework_rocket.");
         CUSTOM_INSTRUMENT_REPLACEMENTS.put(".*glass.*", "block.glass.break");
         CUSTOM_INSTRUMENT_REPLACEMENTS.put(".*door.*", "block.wooden_door.open");
         CUSTOM_INSTRUMENT_REPLACEMENTS.put(".*anvil.*", "block.anvil.fall");
@@ -207,36 +206,40 @@ public class NBSConverter implements Converter {
 
                 final NBSCustomInstrument customInstrument = customInstruments.get(index);
 
-                String name = customInstrument.name;
+                String name = customInstrument.name
+                        .replace("entity.firework.", "entity.firework_rocket."); // this one is special
+
                 String file = Path.of(customInstrument.file).getFileName().toString();
 
                 // should i hardcode the extension like this?
                 if (file.endsWith(".ogg")) file = file.substring(0, file.length() - ".ogg".length());
 
-                boolean replaced = false;
+                if (!sounds.contains(name) && !sounds.contains(file)) {
+                    boolean replaced = false;
 
-                final String replacedName = StringUtilities.replaceAllWithMap(name.toLowerCase(), CUSTOM_INSTRUMENT_REPLACEMENTS);
-                final String replacedFile = StringUtilities.replaceAllWithMap(file.toLowerCase(), CUSTOM_INSTRUMENT_REPLACEMENTS);
+                    final String replacedName = StringUtilities.replaceAllWithMap(name.toLowerCase(), CUSTOM_INSTRUMENT_REPLACEMENTS);
+                    final String replacedFile = StringUtilities.replaceAllWithMap(file.toLowerCase(), CUSTOM_INSTRUMENT_REPLACEMENTS);
 
-                if (!file.equals(replacedFile)) {
-                    file = replacedFile;
-                    replaced = true;
-                } else if (!name.equals(replacedName)) {
-                    name = replacedName;
-                    replaced = true;
-                }
+                    if (!file.equals(replacedFile)) {
+                        file = replacedFile;
+                        replaced = true;
+                    } else if (!name.equals(replacedName)) {
+                        name = replacedName;
+                        replaced = true;
+                    }
 
-                if (!sounds.contains(name) && !sounds.contains(file) && !replaced) {
-                    final List<String> outputTitles = LevenshteinUtilities.searchTitles(name, subtitles.values());
+                    if (!replaced) {
+                        final List<String> outputTitles = LevenshteinUtilities.searchTitles(name, subtitles.values());
 
-                    final String bestMatch = outputTitles.isEmpty() ? "" : outputTitles.getFirst();
+                        final String bestMatch = outputTitles.isEmpty() ? "" : outputTitles.getFirst();
 
-                    for (Map.Entry<String, String> entry : subtitles.entrySet()) {
-                        if (!entry.getValue().equals(bestMatch)) continue;
+                        for (Map.Entry<String, String> entry : subtitles.entrySet()) {
+                            if (!entry.getValue().equals(bestMatch)) continue;
 
-                        name = entry.getKey().substring("subtitles.".length());
+                            name = entry.getKey().substring("subtitles.".length());
 
-                        break;
+                            break;
+                        }
                     }
                 }
 
