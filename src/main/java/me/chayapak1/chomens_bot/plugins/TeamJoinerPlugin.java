@@ -60,7 +60,7 @@ public class TeamJoinerPlugin extends TickPlugin.Listener {
     }
 
     private void joinTeam () {
-        bot.core.run("minecraft:team join " + teamName + " " + UUIDUtilities.selector(bot.profile.getId()));
+        bot.core.run("minecraft:team join " + teamName + " " + bot.profile.getIdAsString());
     }
 
     private void excludeOthers () {

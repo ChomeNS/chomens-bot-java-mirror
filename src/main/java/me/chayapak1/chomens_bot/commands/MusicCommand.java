@@ -184,7 +184,7 @@ public class MusicCommand extends Command {
         final Bot bot = context.bot;
 
         final CompletableFuture<String> future = bot.query.entity(
-                UUIDUtilities.selector(context.sender.profile.getId()),
+                context.sender.profile.getIdAsString(),
                 "SelectedItem.tag.SongItemData.SongData"
         );
 

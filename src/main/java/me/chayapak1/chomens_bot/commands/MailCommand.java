@@ -9,7 +9,6 @@ import me.chayapak1.chomens_bot.data.mail.Mail;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
-import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -69,7 +68,7 @@ public class MailCommand extends Command {
                 context.checkOverloadArgs(2);
 
                 final CompletableFuture<String> future = bot.query.entity(
-                        UUIDUtilities.selector(context.sender.profile.getId()),
+                        context.sender.profile.getIdAsString(),
                         "SelectedItem.components.minecraft:custom_data.message"
                 );
 
