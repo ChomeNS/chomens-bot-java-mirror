@@ -25,12 +25,7 @@ public class FilterManagerPlugin extends PlayersPlugin.Listener {
 
         bot.players.addListener(this);
 
-        bot.tick.addListener(new TickPlugin.Listener() {
-            @Override
-            public void onAlwaysTick() {
-                FilterManagerPlugin.this.onAlwaysTick();
-            }
-        });
+        bot.executor.scheduleAtFixedRate(this::removeLeftPlayers, 0, 1, TimeUnit.SECONDS);
 
         bot.addListener(new Bot.Listener() {
             @Override
@@ -58,8 +53,8 @@ public class FilterManagerPlugin extends PlayersPlugin.Listener {
         bot.executor.scheduleAtFixedRate(this::kick, 0, 10, TimeUnit.SECONDS);
     }
 
-    private void onAlwaysTick () {
-        // remove from list if player is not on the server
+    private void removeLeftPlayers () {
+        // remove from list if player is not on the server anymore
         list.entrySet().removeIf(entry -> bot.players.getEntry(entry.getKey().profile.getId()) == null);
     }
 

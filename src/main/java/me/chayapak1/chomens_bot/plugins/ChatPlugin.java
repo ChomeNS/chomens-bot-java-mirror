@@ -26,6 +26,7 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.Serverbound
 
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,7 +40,7 @@ public class ChatPlugin extends Bot.Listener {
 
     private final List<ChatParser> chatParsers;
 
-    private final List<String> queue = Collections.synchronizedList(new ArrayList<>());
+    private final ConcurrentLinkedQueue<String> queue = new ConcurrentLinkedQueue<>();
 
     public final int queueDelay;
 
@@ -239,9 +240,9 @@ public class ChatPlugin extends Bot.Listener {
     private void sendChatTick () {
         if (queue.size() > 100) queue.clear(); // detects spam, like spamming *echo for example
 
-        if (queue.isEmpty()) return;
+        final String message = queue.poll();
 
-        final String message = queue.getFirst();
+        if (message == null) return;
 
         if (message.startsWith("/")) {
             String removedMessage = message.substring(1);
@@ -263,8 +264,6 @@ public class ChatPlugin extends Bot.Listener {
         } else {
             sendChatInstantly(message);
         }
-
-        queue.remove(0);
     }
 
     public void sendCommandInstantly (String command) {

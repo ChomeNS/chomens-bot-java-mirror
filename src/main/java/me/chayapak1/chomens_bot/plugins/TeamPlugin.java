@@ -10,13 +10,9 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.scoreboard.
 import java.util.*;
 
 public class TeamPlugin extends Bot.Listener {
-    private final Bot bot;
-
     public final List<Team> teams = Collections.synchronizedList(new ArrayList<>());
 
     public TeamPlugin (Bot bot) {
-        this.bot = bot;
-
         bot.addListener(this);
     }
 
@@ -47,63 +43,59 @@ public class TeamPlugin extends Bot.Listener {
     }
 
     public void packetReceived(ClientboundSetPlayerTeamPacket packet) {
-        try {
-            switch (packet.getAction()) {
-                case CREATE -> {
-                    final Team team = new Team(
-                            packet.getTeamName(),
-                            new ArrayList<>(),
-                            packet.getDisplayName(),
-                            packet.isFriendlyFire(),
-                            packet.isSeeFriendlyInvisibles(),
-                            packet.getNameTagVisibility(),
-                            packet.getCollisionRule(),
-                            packet.getColor(),
-                            packet.getPrefix(),
-                            packet.getSuffix()
-                    );
+        switch (packet.getAction()) {
+            case CREATE -> {
+                final Team team = new Team(
+                        packet.getTeamName(),
+                        new ArrayList<>(),
+                        packet.getDisplayName(),
+                        packet.isFriendlyFire(),
+                        packet.isSeeFriendlyInvisibles(),
+                        packet.getNameTagVisibility(),
+                        packet.getCollisionRule(),
+                        packet.getColor(),
+                        packet.getPrefix(),
+                        packet.getSuffix()
+                );
 
-                    teams.add(team);
-                }
-                case REMOVE -> {
-                    final Team team = findTeamByName(packet.getTeamName());
-
-                    if (team == null) return;
-
-                    teams.remove(team);
-                }
-                case UPDATE -> {
-                    final Team team = findTeamByName(packet.getTeamName());
-
-                    if (team == null) return;
-
-                    team.teamName = packet.getTeamName();
-                    team.displayName = packet.getDisplayName();
-                    team.friendlyFire = packet.isFriendlyFire();
-                    team.seeFriendlyInvisibles = packet.isSeeFriendlyInvisibles();
-                    team.nametagVisibility = packet.getNameTagVisibility();
-                    team.collisionRule = packet.getCollisionRule();
-                    team.color = packet.getColor();
-                    team.prefix = packet.getPrefix();
-                    team.suffix = packet.getSuffix();
-                }
-                case ADD_PLAYER -> {
-                    final Team team = findTeamByName(packet.getTeamName());
-
-                    if (team == null) return;
-
-                    team.players.addAll(Arrays.asList(packet.getPlayers()));
-                }
-                case REMOVE_PLAYER -> {
-                    final Team team = findTeamByName(packet.getTeamName());
-
-                    if (team == null) return;
-
-                    team.players.removeAll(Arrays.asList(packet.getPlayers()));
-                }
+                teams.add(team);
             }
-        } catch (Exception e) {
-            bot.logger.error(e);
+            case REMOVE -> {
+                final Team team = findTeamByName(packet.getTeamName());
+
+                if (team == null) return;
+
+                teams.remove(team);
+            }
+            case UPDATE -> {
+                final Team team = findTeamByName(packet.getTeamName());
+
+                if (team == null) return;
+
+                team.teamName = packet.getTeamName();
+                team.displayName = packet.getDisplayName();
+                team.friendlyFire = packet.isFriendlyFire();
+                team.seeFriendlyInvisibles = packet.isSeeFriendlyInvisibles();
+                team.nametagVisibility = packet.getNameTagVisibility();
+                team.collisionRule = packet.getCollisionRule();
+                team.color = packet.getColor();
+                team.prefix = packet.getPrefix();
+                team.suffix = packet.getSuffix();
+            }
+            case ADD_PLAYER -> {
+                final Team team = findTeamByName(packet.getTeamName());
+
+                if (team == null) return;
+
+                team.players.addAll(Arrays.asList(packet.getPlayers()));
+            }
+            case REMOVE_PLAYER -> {
+                final Team team = findTeamByName(packet.getTeamName());
+
+                if (team == null) return;
+
+                team.players.removeAll(Arrays.asList(packet.getPlayers()));
+            }
         }
     }
 }

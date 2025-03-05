@@ -5,10 +5,10 @@ import me.chayapak1.chomens_bot.data.team.Team;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
 
-import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 // the name might sound confusing but it just adds the bot into its own team
-public class TeamJoinerPlugin extends TickPlugin.Listener {
+public class TeamJoinerPlugin {
     public final String teamName;
 
     private final Bot bot;
@@ -24,16 +24,17 @@ public class TeamJoinerPlugin extends TickPlugin.Listener {
             }
         });
 
-        bot.tick.addListener(this);
+        bot.executor.scheduleAtFixedRate(this::check, 0, 500, TimeUnit.MILLISECONDS);
     }
 
     private void connected () {
         addTeam();
     }
 
-    @Override
-    public void onTick () {
+    public void check () {
         try {
+            if (!bot.loggedIn) return;
+
             final Team team = bot.team.findTeamByName(teamName);
 
             if (team == null) {
@@ -41,14 +42,15 @@ public class TeamJoinerPlugin extends TickPlugin.Listener {
                 return;
             }
 
-            if (!team.players.contains(bot.username)) joinTeam();
-
-            for (String player : new ArrayList<>(team.players)) {
-                if (!player.equals(bot.username)) {
-                    excludeOthers();
-                    break;
-                }
+            if (!team.players.contains(bot.username)) {
+                joinTeam();
+                return;
             }
+
+            // checks if ONLY the bot is in the team, and not anyone else
+            if (team.players.size() == 1 && team.players.getFirst().equals(bot.username)) return;
+
+            excludeOthers();
         } catch (Exception e) {
             bot.logger.error(e);
         }

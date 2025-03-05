@@ -27,6 +27,7 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.Serv
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -50,7 +51,7 @@ public class CorePlugin extends PositionPlugin.Listener {
 
     public Vector3i block = null;
 
-    public final List<String> placeBlockQueue = Collections.synchronizedList(new ArrayList<>());
+    public final ConcurrentLinkedQueue<String> placeBlockQueue = new ConcurrentLinkedQueue<>();
 
     private int commandsPerSecond = 0;
 
@@ -105,17 +106,16 @@ public class CorePlugin extends PositionPlugin.Listener {
             @Override
             public void onTick() {
                 try {
-                    final List<String> clonedQueue = new ArrayList<>(placeBlockQueue);
-
-                    if (clonedQueue.isEmpty()) return;
-
-                    if (clonedQueue.size() > 500) {
+                    if (placeBlockQueue.size() > 300) {
                         placeBlockQueue.clear();
                         return;
                     }
 
-                    forceRunPlaceBlock(clonedQueue.getFirst());
-                    placeBlockQueue.removeFirst();
+                    final String command = placeBlockQueue.poll();
+
+                    if (command == null) return;
+
+                    forceRunPlaceBlock(command);
                 } catch (Exception e) {
                     bot.logger.error(e);
                 }
