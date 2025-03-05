@@ -35,7 +35,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class Bot {
+public class Bot extends SessionAdapter {
     private final ArrayList<Listener> listeners = new ArrayList<>();
 
     public final String host;
@@ -173,10 +173,9 @@ public class Bot {
         }
 
         if (!transfer) {
-            final String _username = options.username;
-
-            if (_username == null) username = RandomStringUtilities.generate(8);
-            else username = _username;
+            username = options.username == null ?
+                    RandomStringUtilities.generate(8) :
+                    options.username;
         }
 
         final ClientSession session = ClientNetworkSessionFactory.factory()
@@ -194,170 +193,174 @@ public class Bot {
             session.setFlag(BuiltinFlags.CLIENT_TRANSFERRING, true);
         }
 
-        session.addListener(new SessionAdapter() {
-            // fard
-
-            @Override
-            public void packetReceived(Session session, Packet packet) {
-                for (SessionListener listener : listeners) {
-                    try {
-                        listener.packetReceived(session, packet);
-                    } catch (Exception e) {
-                        logger.error(e);
-                    }
-                }
-
-                if (packet instanceof ClientboundLoginPacket) {
-                    loggedIn = true;
-                    loginTime = System.currentTimeMillis();
-
-                    for (SessionListener listener : listeners) {
-                        listener.connected(new ConnectedEvent(session));
-                    }
-
-                    // !!! important or the bot can't reconnect (see the if statement at `disconnected`)
-                    session.setFlag(BuiltinFlags.CLIENT_TRANSFERRING, false);
-
-                    if (options.creayun) chat.send("/server creative");
-                }
-                else if (packet instanceof ClientboundFinishConfigurationPacket t_packet) packetReceived(t_packet);
-                else if (packet instanceof ClientboundLoginFinishedPacket t_packet) packetReceived(t_packet);
-                else if (packet instanceof ClientboundCustomQueryPacket t_packet) packetReceived(t_packet);
-                else if (packet instanceof ClientboundCookieRequestPacket t_packet) packetReceived(t_packet);
-                else if (packet instanceof ClientboundTransferPacket t_packet) packetReceived(t_packet);
-                else if (packet instanceof ClientboundStoreCookiePacket t_packet) packetReceived(t_packet);
-                else if (packet instanceof ClientboundLoginCompressionPacket t_packet) packetReceived(t_packet);
-            }
-
-            public void packetReceived (ClientboundLoginFinishedPacket packet) {
-                profile = packet.getProfile();
-            }
-
-            public void packetReceived (ClientboundCustomQueryPacket packet) {
-                session.send(new ServerboundCustomQueryAnswerPacket(packet.getMessageId(), null));
-            }
-
-            public void packetReceived (ClientboundCookieRequestPacket packet) {
-                session.send(
-                        new ServerboundCookieResponsePacket(
-                                packet.getKey(),
-                                cookies.get(packet.getKey())
-                        )
-                );
-            }
-
-            public void packetReceived (ClientboundStoreCookiePacket packet) {
-                cookies.put(packet.getKey(), packet.getPayload());
-            }
-
-            public void packetReceived (ClientboundTransferPacket ignoredPacket) {
-                // for now, it's going to transfer to the same server instead of,
-                // other servers
-                reconnect(true);
-            }
-
-            // we're not meant to send client information at finish configuration,
-            // but if it works it works™
-            public void packetReceived (ClientboundFinishConfigurationPacket ignoredPacket) {
-                // for voicechat
-                session.send(new ServerboundCustomPayloadPacket(
-                        Key.key("minecraft:brand"),
-                        "\u0006fabric".getBytes() // should i use fabric here?
-                ));
-
-                // this enables all the skin parts (by default they are ALL DISABLED
-                // which is why most bots when they use someone's skin they are just
-                // kinda broken)
-                final List<SkinPart> skinParts = new ArrayList<>(Arrays.asList(SkinPart.VALUES));
-
-                // we also set other stuffs here
-                session.send(
-                        new ServerboundClientInformationPacket(
-                                ComponentUtilities.LANGUAGE.getOrDefault("language.code", "en_us"),
-                                16,
-                                ChatVisibility.FULL,
-                                true,
-                                skinParts,
-                                HandPreference.RIGHT_HAND,
-                                false,
-                                false,
-                                ParticleStatus.ALL
-                        )
-                );
-            }
-
-            // MCProtocolLib devs forgot
-            // "Negative values will disable compression, meaning the packet format should remain in the uncompressed packet format."
-            // https://minecraft.wiki/w/Java_Edition_protocol#Set_Compression
-            public void packetReceived (ClientboundLoginCompressionPacket packet) {
-                if (packet.getThreshold() < 0) {
-                    session.setCompression(null);
-                }
-            }
-
-            @Override
-            public void packetSending(PacketSendingEvent packetSendingEvent) {
-                for (SessionListener listener : listeners) {
-                    listener.packetSending(packetSendingEvent);
-                }
-            }
-
-            @Override
-            public void packetSent(Session session, Packet packet) {
-                for (SessionListener listener : listeners) {
-                    listener.packetSent(session, packet);
-                }
-            }
-
-            @Override
-            public void packetError(PacketErrorEvent packetErrorEvent) {
-                for (SessionListener listener : listeners) {
-                    listener.packetError(packetErrorEvent);
-                }
-                packetErrorEvent.setSuppress(true); // fix the ohio sus exploit
-            }
-
-            @Override
-            public void disconnecting(DisconnectingEvent disconnectingEvent) {
-                for (SessionListener listener : listeners) {
-                    listener.disconnecting(disconnectingEvent);
-                }
-            }
-
-            @Override
-            public void disconnected(DisconnectedEvent disconnectedEvent) {
-                loggedIn = false;
-
-                final Throwable cause = disconnectedEvent.getCause();
-
-                if (printDisconnectedCause && cause != null) logger.error(cause);
-
-                // lazy fix #69420
-                if (cause instanceof OutOfMemoryError) System.exit(1);
-
-                if (session.getFlag(BuiltinFlags.CLIENT_TRANSFERRING, false)) return;
-
-                cookies.clear();
-
-                int reconnectDelay = options.reconnectDelay;
-
-                final String stringMessage = ComponentUtilities.stringify(disconnectedEvent.getReason());
-
-                if (
-                        stringMessage.equals("Wait 5 seconds before connecting, thanks! :)") ||
-                                stringMessage.equals("You are logging in too fast, try again later.") ||
-                                stringMessage.equals("Connection throttled! Please wait before reconnecting.")
-                ) reconnectDelay = 1000 * (5 + 2); // 2 seconds extra delay just in case
-
-                executor.schedule(() -> reconnect(), reconnectDelay, TimeUnit.MILLISECONDS);
-
-                for (SessionListener listener : listeners) {
-                    listener.disconnected(disconnectedEvent);
-                }
-            }
-        });
+        session.addListener(this);
 
         session.connect(false);
+    }
+
+    @Override
+    public void packetReceived(Session session, Packet packet) {
+        for (SessionListener listener : listeners) {
+            try {
+                listener.packetReceived(session, packet);
+            } catch (Exception e) {
+                logger.error(e);
+            }
+        }
+
+        if (packet instanceof ClientboundLoginPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundFinishConfigurationPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundLoginFinishedPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundCustomQueryPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundCookieRequestPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundTransferPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundStoreCookiePacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundLoginCompressionPacket t_packet) packetReceived(t_packet);
+    }
+
+    public void packetReceived (ClientboundLoginFinishedPacket packet) {
+        profile = packet.getProfile();
+    }
+
+    public void packetReceived (ClientboundLoginPacket ignoredPacket) {
+        loggedIn = true;
+        loginTime = System.currentTimeMillis();
+
+        for (SessionListener listener : listeners) {
+            listener.connected(new ConnectedEvent(session));
+        }
+
+        // !!! important or the bot can't reconnect (see the if statement at `disconnected`)
+        session.setFlag(BuiltinFlags.CLIENT_TRANSFERRING, false);
+
+        if (options.creayun) chat.send("/server creative");
+    }
+
+    public void packetReceived (ClientboundCustomQueryPacket packet) {
+        session.send(new ServerboundCustomQueryAnswerPacket(packet.getMessageId(), null));
+    }
+
+    public void packetReceived (ClientboundCookieRequestPacket packet) {
+        session.send(
+                new ServerboundCookieResponsePacket(
+                        packet.getKey(),
+                        cookies.get(packet.getKey())
+                )
+        );
+    }
+
+    public void packetReceived (ClientboundStoreCookiePacket packet) {
+        cookies.put(packet.getKey(), packet.getPayload());
+    }
+
+    public void packetReceived (ClientboundTransferPacket ignoredPacket) {
+        // for now, it's going to transfer to the same server instead of,
+        // other servers
+        reconnect(true);
+    }
+
+    // we're not meant to send client information at finish configuration,
+    // but if it works it works™
+    public void packetReceived (ClientboundFinishConfigurationPacket ignoredPacket) {
+        // for voicechat
+        session.send(new ServerboundCustomPayloadPacket(
+                Key.key("minecraft:brand"),
+                "\u0006fabric".getBytes() // should i use fabric here?
+        ));
+
+        // this enables all the skin parts (by default they are ALL DISABLED
+        // which is why most bots when they use someone's skin they are just
+        // kinda broken)
+        final List<SkinPart> skinParts = new ArrayList<>(Arrays.asList(SkinPart.VALUES));
+
+        // we also set other stuffs here
+        session.send(
+                new ServerboundClientInformationPacket(
+                        ComponentUtilities.LANGUAGE.getOrDefault("language.code", "en_us"),
+                        16,
+                        ChatVisibility.FULL,
+                        true,
+                        skinParts,
+                        HandPreference.RIGHT_HAND,
+                        false,
+                        false,
+                        ParticleStatus.ALL
+                )
+        );
+    }
+
+    // MCProtocolLib devs forgot
+    // "Negative values will disable compression, meaning the packet format should remain in the uncompressed packet format."
+    // https://minecraft.wiki/w/Java_Edition_protocol#Set_Compression
+
+    // they actually implemented this, but at this commit:
+    // https://github.com/GeyserMC/MCProtocolLib/commit/f8460356db2b92fbf7cb506757fe8f87a011a1f7#diff-a9066adbcb6d5503f5edefe3ec95465cf755f1585e02b732a6fa907afe7c7177R67-L103
+    // they removed it, for some reason
+    public void packetReceived (ClientboundLoginCompressionPacket packet) {
+        if (packet.getThreshold() < 0) {
+            session.setCompression(null);
+        }
+    }
+
+    @Override
+    public void packetSending(PacketSendingEvent packetSendingEvent) {
+        for (SessionListener listener : listeners) {
+            listener.packetSending(packetSendingEvent);
+        }
+    }
+
+    @Override
+    public void packetSent(Session session, Packet packet) {
+        for (SessionListener listener : listeners) {
+            listener.packetSent(session, packet);
+        }
+    }
+
+    @Override
+    public void packetError(PacketErrorEvent packetErrorEvent) {
+        for (SessionListener listener : listeners) {
+            listener.packetError(packetErrorEvent);
+        }
+        packetErrorEvent.setSuppress(true); // fix the ohio sus exploit
+    }
+
+    @Override
+    public void disconnecting(DisconnectingEvent disconnectingEvent) {
+        for (SessionListener listener : listeners) {
+            listener.disconnecting(disconnectingEvent);
+        }
+    }
+
+    @Override
+    public void disconnected(DisconnectedEvent disconnectedEvent) {
+        loggedIn = false;
+
+        final Throwable cause = disconnectedEvent.getCause();
+
+        if (printDisconnectedCause && cause != null) logger.error(cause);
+
+        // lazy fix #69420
+        if (cause instanceof OutOfMemoryError) System.exit(1);
+
+        if (session.getFlag(BuiltinFlags.CLIENT_TRANSFERRING, false)) return;
+
+        cookies.clear();
+
+        int reconnectDelay = options.reconnectDelay;
+
+        final String stringMessage = ComponentUtilities.stringify(disconnectedEvent.getReason());
+
+        if (
+                stringMessage.equals("Wait 5 seconds before connecting, thanks! :)") ||
+                        stringMessage.equals("You are logging in too fast, try again later.") ||
+                        stringMessage.equals("Connection throttled! Please wait before reconnecting.")
+        ) reconnectDelay = 1000 * (5 + 2); // 2 seconds extra delay just in case
+
+        executor.schedule(() -> reconnect(), reconnectDelay, TimeUnit.MILLISECONDS);
+
+        for (SessionListener listener : listeners) {
+            listener.disconnected(disconnectedEvent);
+        }
     }
 
     public String getServerString () { return getServerString(false); }
@@ -377,7 +380,7 @@ public class Bot {
     }
 
     @Override
-    public String toString() {
+    public String toString () {
         return "Bot{" +
                 "host='" + host + '\'' +
                 ", port=" + port +
