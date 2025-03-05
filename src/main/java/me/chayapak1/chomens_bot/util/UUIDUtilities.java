@@ -41,7 +41,13 @@ public class UUIDUtilities {
 
     public static String snbt (UUID uuid) {
         int[] array = intArray(uuid);
-        return "[I;" + array[0] + "," + array[1] + "," + array[2] + "," + array[3] + "]"; // TODO: improve lol
+        return String.format(
+                "[I;%d,%d,%d,%d]",
+                array[0],
+                array[1],
+                array[2],
+                array[3]
+        );
     }
 
     public static String selector (UUID uuid) { return selector(uuid, true); }
