@@ -51,7 +51,7 @@ public class NBSConverter implements Converter {
         CUSTOM_INSTRUMENT_REPLACEMENTS.put(".*piston.*", "block.piston.extend");
         CUSTOM_INSTRUMENT_REPLACEMENTS.put(".*explode|explosion.*", "entity.generic.explode");
         CUSTOM_INSTRUMENT_REPLACEMENTS.put(".*eye.*", "block.end_portal_frame.fill");
-        CUSTOM_INSTRUMENT_REPLACEMENTS.put("fizz", "block.sand.break"); // not really sure what this exactly is, but it exists in some NBSes
+        CUSTOM_INSTRUMENT_REPLACEMENTS.put("fizz", "block.fire.extinguish"); // not really sure what this exactly is, but it exists in some NBSes
     }
 
     public static class NBSNote {
