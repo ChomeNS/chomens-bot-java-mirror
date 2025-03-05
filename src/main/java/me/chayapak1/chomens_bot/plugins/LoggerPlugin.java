@@ -38,9 +38,8 @@ public class LoggerPlugin extends ChatPlugin.Listener {
 
                 log(
                         String.format(
-                                "Connecting to: %s:%s",
-                                bot.host,
-                                bot.port
+                                "Connecting to: %s",
+                                bot.getServerString(true)
                         )
                 );
             }
@@ -49,9 +48,8 @@ public class LoggerPlugin extends ChatPlugin.Listener {
             public void connected (ConnectedEvent event) {
                 log(
                         String.format(
-                                "Successfully connected to: %s:%s",
-                                bot.host,
-                                bot.port
+                                "Successfully connected to: %s",
+                                bot.getServerString(true)
                         )
                 );
 
@@ -68,7 +66,7 @@ public class LoggerPlugin extends ChatPlugin.Listener {
 
                 final Component reason = event.getReason();
 
-                final String message = "Disconnected from " + bot.getServerString() + ", reason: ";
+                final String message = "Disconnected from " + bot.getServerString(true) + ", reason: ";
 
                 final String string = ComponentUtilities.stringify(reason);
 

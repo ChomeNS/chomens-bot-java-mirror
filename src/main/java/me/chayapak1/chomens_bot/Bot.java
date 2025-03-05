@@ -360,8 +360,11 @@ public class Bot {
         session.connect(false);
     }
 
-    public String getServerString () {
-        return host + ":" + port;
+    public String getServerString () { return getServerString(false); }
+    public String getServerString (boolean bypassHidden) {
+        return options.hidden && !bypassHidden ?
+                options.serverName :
+                host + ":" + port;
     }
 
     public void stop () {

@@ -51,7 +51,7 @@ public class LoggerUtilities {
             final String formattedMessage = bot == null ? "" :
                     String.format(
                         "[%s] %s",
-                        bot.getServerString(),
+                        bot.getServerString(true),
                         message
                     );
 

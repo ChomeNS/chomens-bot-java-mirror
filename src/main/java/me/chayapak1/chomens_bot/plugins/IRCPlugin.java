@@ -97,7 +97,7 @@ public class IRCPlugin extends ListenerAdapter {
         for (Map.Entry<String, String> entry : servers.entrySet()) {
             if (entry.getValue().equals(event.getChannel().getName())) {
                 serverBot = Main.bots.stream()
-                        .filter(eachBot -> entry.getKey().equals(eachBot.host + ":" + eachBot.port))
+                        .filter(eachBot -> entry.getKey().equals(eachBot.getServerString(true)))
                         .findFirst()
                         .orElse(null);
 
@@ -179,9 +179,8 @@ public class IRCPlugin extends ListenerAdapter {
         sendMessage(
                 bot,
                 String.format(
-                        "Successfully connected to: %s:%s",
-                        bot.host,
-                        bot.port
+                        "Successfully connected to: %s",
+                        bot.getServerString()
                 )
         );
     }
@@ -209,7 +208,7 @@ public class IRCPlugin extends ListenerAdapter {
     }
 
     private void addMessageToQueue (Bot bot, String message) {
-        final String channel = servers.get(bot.getServerString());
+        final String channel = servers.get(bot.getServerString(true));
 
         addMessageToQueue(channel, message);
     }
@@ -227,7 +226,7 @@ public class IRCPlugin extends ListenerAdapter {
     }
 
     public void sendMessage (Bot bot, String message) {
-        final String hostAndPort = bot.getServerString();
+        final String hostAndPort = bot.getServerString(true);
 
         final String channel = servers.get(hostAndPort);
 

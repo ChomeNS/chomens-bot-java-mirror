@@ -88,7 +88,7 @@ public class GrepLogPlugin {
 
             if (matches == 0) throw new CommandException(Component.text("No matches has been found"));
 
-            final String channelId = bot.discord.servers.get(bot.getServerString());
+            final String channelId = bot.discord.servers.get(bot.getServerString(true));
             final TextChannel logChannel = bot.discord.jda.getTextChannelById(channelId);
 
             if (logChannel == null) return;

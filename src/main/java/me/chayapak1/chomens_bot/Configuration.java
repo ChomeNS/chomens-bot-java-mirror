@@ -176,6 +176,7 @@ public class Configuration {
         public String username;
         public boolean creayun = false;
         public String serverName;
+        public boolean hidden = false;
         public boolean useCore = true;
         public boolean useCorePlaceBlock = false;
         public boolean useChat = false;

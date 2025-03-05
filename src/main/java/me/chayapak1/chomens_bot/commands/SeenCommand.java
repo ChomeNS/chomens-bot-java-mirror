@@ -52,7 +52,7 @@ public class SeenCommand extends Command {
                         Component.empty()
                             .append(Component.text(player))
                             .append(Component.text(" is currently online on "))
-                            .append(Component.text(eachBot.host + ":" + eachBot.port))
+                            .append(Component.text(eachBot.getServerString()))
                             .color(NamedTextColor.RED)
                 );
             }

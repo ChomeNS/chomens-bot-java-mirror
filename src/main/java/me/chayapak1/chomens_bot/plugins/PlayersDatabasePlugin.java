@@ -87,7 +87,7 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
             } else {
                 statement = bot.database.connection.prepareStatement(FIND_ALTS_SINGLE_SERVER);
 
-                statement.setString(1, bot.getServerString());
+                statement.setString(1, bot.getServerString(true));
                 statement.setString(2, ip);
             }
 
@@ -141,7 +141,7 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
                         updatePlayerStatement.setString(2, "$.ips");
 
                         final ObjectNode ipsObject = JsonNodeFactory.instance.objectNode();
-                        ipsObject.put(bot.getServerString(), output);
+                        ipsObject.put(bot.getServerString(true), output);
 
                         updatePlayerStatement.setString(3, objectMapper.writeValueAsString(ipsObject));
 
@@ -186,7 +186,7 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
         final ObjectNode object = JsonNodeFactory.instance.objectNode();
 
         object.put("time", Instant.now().toEpochMilli());
-        object.put("server", bot.getServerString());
+        object.put("server", bot.getServerString(true));
 
         return object;
     }

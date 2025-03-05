@@ -77,7 +77,7 @@ public class PlayersPlugin extends Bot.Listener {
 
         if (ipsObject == null || ipsObject.isNull() || !ipsObject.isObject()) return null;
 
-        final JsonNode targetIP = ipsObject.get(bot.getServerString());
+        final JsonNode targetIP = ipsObject.get(bot.getServerString(true));
 
         if (targetIP == null || targetIP.isNull() || !targetIP.isTextual()) return null;
 

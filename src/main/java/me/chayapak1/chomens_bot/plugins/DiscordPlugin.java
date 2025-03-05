@@ -79,7 +79,7 @@ public class DiscordPlugin {
         jda.getPresence().setPresence(Activity.playing(config.discord.statusMessage), false);
 
         for (Bot bot : Main.bots) {
-            final String channelId = servers.get(bot.getServerString());
+            final String channelId = servers.get(bot.getServerString(true));
 
             totalConnects.put(channelId, 0); // is this necessary?
 
@@ -127,9 +127,8 @@ public class DiscordPlugin {
 
                     sendMessageInstantly(
                             String.format(
-                                    "Connecting to: `%s:%s`",
-                                    bot.host,
-                                    bot.port
+                                    "Connecting to: `%s`",
+                                    bot.getServerString()
                             ),
                             channelId
                     );
@@ -141,9 +140,8 @@ public class DiscordPlugin {
 
                     sendMessageInstantly(
                             String.format(
-                                    "Successfully connected to: `%s:%s`",
-                                    bot.host,
-                                    bot.port
+                                    "Successfully connected to: `%s`",
+                                    bot.getServerString()
                             ),
                             channelId
                     );

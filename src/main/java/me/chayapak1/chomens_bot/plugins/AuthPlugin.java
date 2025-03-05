@@ -16,7 +16,7 @@ public class AuthPlugin extends PlayersPlugin.Listener {
     public AuthPlugin (Bot bot) {
         this.bot = bot;
 
-        this.ownerIpForServer = bot.config.ownerAuthentication.ips.get(bot.getServerString());
+        this.ownerIpForServer = bot.config.ownerAuthentication.ips.get(bot.getServerString(true));
 
         if (!bot.config.ownerAuthentication.enabled || ownerIpForServer == null) return;
 

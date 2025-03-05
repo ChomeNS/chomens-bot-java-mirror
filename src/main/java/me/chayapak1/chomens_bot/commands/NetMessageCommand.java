@@ -29,25 +29,32 @@ public class NetMessageCommand extends Command {
         final Bot bot = context.bot;
         final List<Bot> bots = bot.bots;
 
-        final String originServer = bot.getServerString();
+        final String originServerName = bot.getServerString();
+        final String originServerAddress = bot.getServerString(false);
+
+        Component serverNameComponent = Component
+                .text(originServerName)
+                .color(NamedTextColor.GRAY);
+
+        if (!bot.options.hidden) serverNameComponent = serverNameComponent
+                .clickEvent(ClickEvent.copyToClipboard(originServerAddress))
+                .hoverEvent(
+                        HoverEvent.showText(
+                                Component.empty()
+                                        .append(Component.text(originServerAddress).color(NamedTextColor.GRAY))
+                                        .append(Component.newline())
+                                        .append(Component.text("Click here to copy the server host and port to your clipboard").color(NamedTextColor.GREEN))
+                        )
+                );
 
         final Component component = Component.translatable(
                 "[%s]%s%s%s› %s",
-                Component
-                        .text(originServer)
-                        .color(NamedTextColor.GRAY)
-                        .clickEvent(ClickEvent.copyToClipboard(originServer))
-                        .hoverEvent(
-                                HoverEvent.showText(
-                                        Component.empty()
-                                                .append(Component.text(originServer).color(NamedTextColor.GRAY))
-                                                .append(Component.newline())
-                                                .append(Component.text("Click here to copy the server host and port to your clipboard").color(NamedTextColor.GREEN))
-                                )
-                        ),
-                Component.text(" "),
-                context.sender.displayName == null ? Component.text(context.sender.profile.getName()).color(NamedTextColor.GRAY) : context.sender.displayName.color(NamedTextColor.GRAY),
-                Component.text(" "),
+                serverNameComponent,
+                Component.space(),
+                context.sender.displayName == null ?
+                        Component.text(context.sender.profile.getName()).color(NamedTextColor.GRAY) :
+                        context.sender.displayName.color(NamedTextColor.GRAY),
+                Component.space(),
                 Component.text(context.getString(true, true)).color(NamedTextColor.GRAY)
         ).color(NamedTextColor.DARK_GRAY);
 
