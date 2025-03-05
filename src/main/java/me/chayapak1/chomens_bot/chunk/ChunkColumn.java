@@ -35,15 +35,15 @@ public class ChunkColumn {
 
         int yIndex = (y - minY) >> 4;
 
-        if (chunks[yIndex] == null) return 0;
+        if (yIndex >= chunks.length) return 0;
 
         return chunks[yIndex].getBlock(x, y & 15, z);
     }
 
     public void setBlock (int x, int y, int z, int id) {
-        if (chunks == null) return;
-
         int yIndex = (y - minY) >> 4;
+
+        if (yIndex >= chunks.length) return;
 
         if (chunks[yIndex] == null) {
             chunks[yIndex] = new ChunkSection();
