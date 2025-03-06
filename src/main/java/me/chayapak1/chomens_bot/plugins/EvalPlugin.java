@@ -81,6 +81,8 @@ public class EvalPlugin {
             final CompletableFuture<EvalOutput> future = futures.get(id);
 
             future.complete(new EvalOutput(isError, output));
+
+            futures.remove(id);
         });
 
         socket.connect();

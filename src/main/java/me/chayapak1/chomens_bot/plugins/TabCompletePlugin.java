@@ -29,6 +29,7 @@ public class TabCompletePlugin extends Bot.Listener {
 
         final CompletableFuture<ClientboundCommandSuggestionsPacket> future = new CompletableFuture<>();
         transactions.put(transactionId, future);
+
         return future;
     }
 
@@ -38,6 +39,10 @@ public class TabCompletePlugin extends Bot.Listener {
     }
 
     public void packetReceived (ClientboundCommandSuggestionsPacket packet) {
-        transactions.get(packet.getTransactionId()).complete(packet);
+        final int id = packet.getTransactionId();
+
+        transactions.get(id).complete(packet);
+
+        transactions.remove(id);
     }
 }

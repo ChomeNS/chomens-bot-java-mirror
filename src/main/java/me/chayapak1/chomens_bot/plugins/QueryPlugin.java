@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
 public class QueryPlugin extends Bot.Listener {
     private final Bot bot;
 
-    private int nextTransactionId = 0;
+    private long nextTransactionId = 0;
     private final Map<Long, CompletableFuture<String>> transactions = new HashMap<>();
     private final List<UUID> ids = new ArrayList<>();
 
@@ -48,11 +48,13 @@ public class QueryPlugin extends Bot.Listener {
 
             if (!(children.getFirst() instanceof TextComponent)) return true;
 
-            final long transactionId = Integer.parseInt(((TextComponent) children.getFirst()).content());
+            final long transactionId = Long.parseLong(((TextComponent) children.getFirst()).content());
 
             if (!transactions.containsKey(transactionId)) return true;
 
             final CompletableFuture<String> future = transactions.get(transactionId);
+
+            transactions.remove(transactionId);
 
             if (children.size() == 1) {
                 future.complete(null);
