@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
+import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundCommandSuggestionsPacket;
 import me.chayapak1.chomens_bot.Bot;
 
@@ -24,7 +25,7 @@ public class ServerPluginsManagerPlugin extends Bot.Listener {
     }
 
     @Override
-    public void connected(ConnectedEvent event) {
+    public void connected (ConnectedEvent event) {
         final CompletableFuture<ClientboundCommandSuggestionsPacket> future = bot.tabComplete.tabComplete("/ver ");
 
         future.thenApplyAsync((packet) -> {
@@ -35,6 +36,11 @@ public class ServerPluginsManagerPlugin extends Bot.Listener {
 
             return packet;
         });
+    }
+
+    @Override
+    public void disconnected (DisconnectedEvent event) {
+        plugins.clear();
     }
 
     public boolean hasPlugin (String plugin) { return plugins.contains(plugin); }
