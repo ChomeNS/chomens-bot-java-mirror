@@ -23,6 +23,7 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
     private static final String INSERT_PLAYER = "INSERT IGNORE INTO players (username, data) VALUES (?, ?);";
     private static final String UPDATE_PLAYER = "UPDATE players SET data = JSON_SET(data, ?, JSON_MERGE_PATCH(data -> ?, ?)) WHERE username = ?;";
     private static final String GET_DATA = "SELECT data FROM players WHERE username = ?;";
+    private static final String GET_IP = "SELECT JSON_UNQUOTE(JSON_EXTRACT(data, ?)) AS ip FROM players WHERE username = ?;";
     private static final String FIND_ALTS_SINGLE_SERVER = "SELECT * FROM players WHERE JSON_CONTAINS(data -> '$.ips', JSON_OBJECT(?, ?));";
     private static final String FIND_ALTS_ALL_SERVERS = "SELECT * FROM players WHERE JSON_SEARCH(data->'$.ips', 'one', ?);"; // 'one' means case-sensitive
 
@@ -68,6 +69,30 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
 
             return objectMapper.readTree(stringJson);
         } catch (SQLException | JsonProcessingException e) {
+            bot.logger.error(e);
+            return null;
+        }
+    }
+
+    public String getPlayerIP (String username) {
+        if (bot.database == null || bot.database.connection == null) return null;
+
+        try {
+            final PreparedStatement statement = bot.database.connection.prepareStatement(GET_IP);
+
+            // this may be dangerous but the server address is configured only in the config
+            // so this should still be safe
+            statement.setString(1, "$.ips.\"" + bot.getServerString(true) + "\"");
+            statement.setString(2, username);
+
+            final ResultSet result = statement.executeQuery();
+
+            if (!result.isBeforeFirst()) return null; // no ip for player in this server
+
+            result.next();
+
+            return result.getString("ip");
+        } catch (SQLException e) {
             bot.logger.error(e);
             return null;
         }

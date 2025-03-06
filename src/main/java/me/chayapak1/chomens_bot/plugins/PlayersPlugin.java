@@ -1,6 +1,5 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
@@ -68,32 +67,18 @@ public class PlayersPlugin extends Bot.Listener {
         }
     }
 
-    public String getPlayerIPFromDatabase (PlayerEntry target) {
-        final JsonNode data = bot.playersDatabase.getPlayerData(target.profile.getName());
-
-        if (data == null) return null;
-
-        final JsonNode ipsObject = data.get("ips");
-
-        if (ipsObject == null || ipsObject.isNull() || !ipsObject.isObject()) return null;
-
-        final JsonNode targetIP = ipsObject.get(bot.getServerString(true));
-
-        if (targetIP == null || targetIP.isNull() || !targetIP.isTextual()) return null;
-
-        return targetIP.textValue();
-    }
-
     public CompletableFuture<String> getPlayerIP (PlayerEntry target) { return getPlayerIP(target, false); }
     public CompletableFuture<String> getPlayerIP (PlayerEntry target, boolean forceSeen) {
         final CompletableFuture<String> outputFuture = new CompletableFuture<>();
 
         DatabasePlugin.executorService.submit(() -> {
-            final String databaseIP = getPlayerIPFromDatabase(target);
+            if (!forceSeen) {
+                final String databaseIP = bot.playersDatabase.getPlayerIP(target.profile.getName());
 
-            if (databaseIP != null && !forceSeen) {
-                outputFuture.complete(databaseIP);
-                return;
+                if (databaseIP != null) {
+                    outputFuture.complete(databaseIP);
+                    return;
+                }
             }
 
             final CompletableFuture<Component> trackedCoreFuture = bot.core.runTracked("essentials:seen " + target.profile.getIdAsString());
