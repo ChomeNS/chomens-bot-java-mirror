@@ -27,7 +27,9 @@ public class GrepLogCommand extends Command {
     public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        if (bot.discord.jda == null) throw new CommandException(Component.text("The bot's Discord integration has to be enabled to use the command."));
+        if (bot.discord == null || bot.discord.jda == null) {
+            throw new CommandException(Component.text("The bot's Discord integration has to be enabled to use the command."));
+        }
 
         boolean ignoreCase = false;
         boolean regex = false;
