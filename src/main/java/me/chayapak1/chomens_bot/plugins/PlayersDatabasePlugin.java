@@ -19,13 +19,13 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
-    private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS players (username VARCHAR(255) PRIMARY KEY, data JSON);";
+    private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS players (username VARCHAR(255) PRIMARY KEY, data LONGTEXT);";
     private static final String INSERT_PLAYER = "INSERT IGNORE INTO players (username, data) VALUES (?, ?);";
-    private static final String UPDATE_PLAYER = "UPDATE players SET data = JSON_SET(data, ?, JSON_MERGE_PATCH(data -> ?, ?)) WHERE username = ?;";
+    private static final String UPDATE_PLAYER = "UPDATE players SET data = JSON_SET(data, ?, JSON_MERGE_PATCH(JSON_EXTRACT(data, ?), ?)) WHERE username = ?;";
     private static final String GET_DATA = "SELECT data FROM players WHERE username = ?;";
-    private static final String GET_IP = "SELECT JSON_UNQUOTE(JSON_EXTRACT(data, ?)) AS ip FROM players WHERE username = ?;";
-    private static final String FIND_ALTS_SINGLE_SERVER = "SELECT * FROM players WHERE JSON_CONTAINS(data -> '$.ips', JSON_OBJECT(?, ?));";
-    private static final String FIND_ALTS_ALL_SERVERS = "SELECT * FROM players WHERE JSON_SEARCH(data->'$.ips', 'one', ?);"; // 'one' means case-sensitive
+    private static final String GET_IP = "SELECT JSON_UNQUOTE(JSON_VALUE(data, ?)) AS ip FROM players WHERE username = ?;";
+    private static final String FIND_ALTS_SINGLE_SERVER = "SELECT * FROM players WHERE JSON_CONTAINS(JSON_EXTRACT(data, '$.ips'), JSON_OBJECT(?, ?));";
+    private static final String FIND_ALTS_ALL_SERVERS = "SELECT * FROM players WHERE JSON_SEARCH(JSON_EXTRACT(data, '$.ips'), 'one', ?) IS NOT NULL;";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 

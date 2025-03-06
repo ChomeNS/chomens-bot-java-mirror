@@ -11,7 +11,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class DatabasePlugin {
-    // is it OK to have a completely separate ExecutorService to do the executions?
     public static final ExecutorService executorService = Executors.newFixedThreadPool(
             1,
             new ThreadFactoryBuilder().setNameFormat("ExecutorService (database)").build()
@@ -22,7 +21,7 @@ public class DatabasePlugin {
     public DatabasePlugin (Configuration config) {
         try {
             connection = DriverManager.getConnection(
-                    "jdbc:mysql://" + config.database.address + "/chomens_bot",
+                    "jdbc:mariadb://" + config.database.address + "/chomens_bot",
                     config.database.username,
                     config.database.password
             );

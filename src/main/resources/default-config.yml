@@ -25,7 +25,7 @@ backup:
 
 database:
   enabled: false
-  address: 'localhost' # jdbc:mysql://<address>/chomens_bot
+  address: 'localhost' # jdbc:mariadb://<address>/chomens_bot
   username: 'chomens_bot'
   password: '123456'
 
