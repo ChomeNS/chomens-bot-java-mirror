@@ -51,7 +51,7 @@ public class UUIDUtilities {
     }
 
     public static String selector (UUID uuid) { return selector(uuid, true); }
-    public static String selector (UUID uuid, boolean end) { return "@a[limit=1,nbt={UUID:" + snbt(uuid) + "}" + (end ? "]" : ""); }
+    public static String selector (UUID uuid, boolean end) { return "@p[nbt={UUID:" + snbt(uuid) + "}" + (end ? "]" : ""); }
 
     public static String exclusiveSelector (UUID uuid) { return exclusiveSelector(uuid, true); }
     public static String exclusiveSelector (UUID uuid, boolean end) { return "@a[nbt=!{UUID:" + snbt(uuid) + "}" + (end ? "]" : ""); }
