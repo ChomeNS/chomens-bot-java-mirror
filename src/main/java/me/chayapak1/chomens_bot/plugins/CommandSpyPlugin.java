@@ -36,7 +36,7 @@ public class CommandSpyPlugin extends ChatPlugin.Listener {
                                     textComponent.color() != NamedTextColor.YELLOW ||
                                     textComponent.style().isEmpty()
                     ) &&
-                            children.size() < 2
+                            children.size() != 2
             ) return true;
 
             if (!((TextComponent) children.getFirst()).content().equals(": ")) return true;
