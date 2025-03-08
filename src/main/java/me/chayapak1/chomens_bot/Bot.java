@@ -4,6 +4,7 @@ import me.chayapak1.chomens_bot.plugins.*;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.RandomStringUtilities;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.auth.GameProfile;
 import org.geysermc.mcprotocollib.network.BuiltinFlags;
 import org.geysermc.mcprotocollib.network.ClientSession;
@@ -54,6 +55,8 @@ public class Bot extends SessionAdapter {
     public ClientSession session;
 
     private final Map<Key, byte[]> cookies = new HashMap<>();
+
+    private boolean isTransferring = false;
 
     public boolean printDisconnectedCause = false;
 
@@ -164,15 +167,14 @@ public class Bot extends SessionAdapter {
         reconnect();
     }
 
-    private void reconnect () { reconnect(false); }
-    private void reconnect (boolean transfer) {
+    private void reconnect () {
         if (session != null) session = null; // does this do nothing?
 
         for (Listener listener : listeners) {
             listener.connecting();
         }
 
-        if (!transfer) {
+        if (!isTransferring) {
             username = options.username == null ?
                     RandomStringUtilities.generate(8) :
                     options.username;
@@ -188,10 +190,6 @@ public class Bot extends SessionAdapter {
         session.setFlag(MinecraftConstants.FOLLOW_TRANSFERS, false); // we have our own transfer handler
 
         session.setFlag(BuiltinFlags.ATTEMPT_SRV_RESOLVE, options.resolveSRV);
-
-        if (transfer) {
-            session.setFlag(BuiltinFlags.CLIENT_TRANSFERRING, true);
-        }
 
         session.addListener(this);
 
@@ -220,6 +218,8 @@ public class Bot extends SessionAdapter {
 
     public void packetReceived (ClientboundLoginFinishedPacket packet) {
         profile = packet.getProfile();
+
+        session.setFlag(BuiltinFlags.CLIENT_TRANSFERRING, false);
     }
 
     public void packetReceived (ClientboundLoginPacket ignoredPacket) {
@@ -229,9 +229,6 @@ public class Bot extends SessionAdapter {
         for (SessionListener listener : listeners) {
             listener.connected(new ConnectedEvent(session));
         }
-
-        // !!! important or the bot can't reconnect (see the if statement at `disconnected`)
-        session.setFlag(BuiltinFlags.CLIENT_TRANSFERRING, false);
 
         if (options.creayun) chat.send("/server creative");
     }
@@ -254,9 +251,14 @@ public class Bot extends SessionAdapter {
     }
 
     public void packetReceived (ClientboundTransferPacket ignoredPacket) {
-        // for now, it's going to transfer to the same server instead of,
-        // other servers
-        reconnect(true);
+        this.isTransferring = true;
+
+        // this is still needed since MinecraftProtocol will use this flag to set the
+        // handshake intention to transfer, it will be set back to false at
+        // login success
+        session.setFlag(BuiltinFlags.CLIENT_TRANSFERRING, true);
+
+        session.disconnect(Component.translatable("disconnect.transfer"));
     }
 
     // we're not meant to send client information at finish configuration,
@@ -342,21 +344,28 @@ public class Bot extends SessionAdapter {
         // lazy fix #69420
         if (cause instanceof OutOfMemoryError) System.exit(1);
 
-        if (session.getFlag(BuiltinFlags.CLIENT_TRANSFERRING, false)) return;
-
-        cookies.clear();
+        if (!isTransferring) cookies.clear();
 
         int reconnectDelay = options.reconnectDelay;
 
-        final String stringMessage = ComponentUtilities.stringify(disconnectedEvent.getReason());
+        if (isTransferring) {
+            // for now, it's going to transfer to the same server instead of,
+            // other servers
 
-        if (
-                stringMessage.equals("Wait 5 seconds before connecting, thanks! :)") ||
-                        stringMessage.equals("You are logging in too fast, try again later.") ||
-                        stringMessage.equals("Connection throttled! Please wait before reconnecting.")
-        ) reconnectDelay = 1000 * (5 + 2); // 2 seconds extra delay just in case
+            reconnect(); // instantly reconnect
 
-        executor.schedule(() -> reconnect(), reconnectDelay, TimeUnit.MILLISECONDS);
+            isTransferring = false;
+        } else {
+            final String stringMessage = ComponentUtilities.stringify(disconnectedEvent.getReason());
+
+            if (
+                    stringMessage.equals("Wait 5 seconds before connecting, thanks! :)") ||
+                            stringMessage.equals("You are logging in too fast, try again later.") ||
+                            stringMessage.equals("Connection throttled! Please wait before reconnecting.")
+            ) reconnectDelay = 1000 * (5 + 2); // 2 seconds extra delay just in case
+
+            executor.schedule(this::reconnect, reconnectDelay, TimeUnit.MILLISECONDS);
+        }
 
         for (SessionListener listener : listeners) {
             listener.disconnected(disconnectedEvent);
