@@ -68,7 +68,7 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
             bot.session.send(
                     new ServerboundCustomPayloadPacket(
                             Key.key("minecraft", "register"),
-                            String.join("\u0000", channels).getBytes(StandardCharsets.UTF_8)
+                            String.join("\0", channels).getBytes(StandardCharsets.UTF_8)
                     )
             );
 
