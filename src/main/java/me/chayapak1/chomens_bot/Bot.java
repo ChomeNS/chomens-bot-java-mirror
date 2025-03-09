@@ -79,6 +79,7 @@ public class Bot extends SessionAdapter {
     public ServerPluginsManagerPlugin serverPluginsManager;
     public SelfCarePlugin selfCare;
     public QueryPlugin query;
+    public ExtrasMessengerPlugin extrasMessenger;
     public CorePlugin core;
     public TeamPlugin team;
     public PlayersPlugin players;
@@ -130,6 +131,7 @@ public class Bot extends SessionAdapter {
         this.serverPluginsManager = new ServerPluginsManagerPlugin(this);
         this.selfCare = new SelfCarePlugin(this);
         this.query = new QueryPlugin(this);
+        this.extrasMessenger = new ExtrasMessengerPlugin(this);
         this.core = new CorePlugin(this);
         this.team = new TeamPlugin(this);
         this.players = new PlayersPlugin(this);
