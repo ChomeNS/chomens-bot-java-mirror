@@ -4,6 +4,7 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.logging.LogType;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
+import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -26,17 +27,17 @@ public class TrustedPlugin extends PlayersPlugin.Listener {
     }
 
     public void broadcast (Component message, UUID exceptTarget) {
+        final Component component = Component.translatable(
+                "[%s] [%s] %s",
+                Component.text("ChomeNS Bot").color(ColorUtilities.getColorByString(this.bot.config.colorPalette.primary)),
+                Component.text(this.bot.options.serverName).color(NamedTextColor.GRAY),
+                message.color(NamedTextColor.WHITE)
+        ).color(NamedTextColor.DARK_GRAY);
+
+        LoggerUtilities.log(LogType.TRUSTED_BROADCAST, component);
+
         for (Bot bot : bot.bots) {
-            if (!bot.loggedIn) continue;
-
-            final Component component = Component.translatable(
-                    "[%s] [%s] %s",
-                    Component.text("ChomeNS Bot").color(ColorUtilities.getColorByString(bot.config.colorPalette.primary)),
-                    Component.text(this.bot.options.serverName).color(NamedTextColor.GRAY),
-                    message.color(NamedTextColor.WHITE)
-            ).color(NamedTextColor.DARK_GRAY);
-
-            bot.logger.log(LogType.TRUSTED_BROADCAST, component);
+            if (bot == this.bot || !bot.loggedIn) continue;
 
             for (String player : list) {
                 final PlayerEntry entry = bot.players.getEntry(player);
