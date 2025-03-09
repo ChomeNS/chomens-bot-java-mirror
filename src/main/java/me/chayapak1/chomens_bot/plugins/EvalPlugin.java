@@ -79,6 +79,8 @@ public class EvalPlugin {
                 final boolean isError = (boolean) args[1];
                 final String output = (String) args[2];
 
+                if (!futures.containsKey(id)) return;
+
                 final CompletableFuture<EvalOutput> future = futures.remove(id);
 
                 future.complete(new EvalOutput(isError, output));
