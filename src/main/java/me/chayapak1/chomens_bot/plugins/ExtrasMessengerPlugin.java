@@ -28,7 +28,7 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
 
     public ExtrasMessengerPlugin (Bot bot) {
         this.bot = bot;
-        this.chomens_namespace = bot.config.namespace + "_"; // Ex. chomens_bot_ (then it will be appended by channel)
+        this.chomens_namespace = bot.config.namespace + ":"; // Ex. chomens_bot: (then it will be appended by channel)
 
         bot.addListener(this);
     }
