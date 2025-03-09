@@ -5,17 +5,19 @@ import io.netty.buffer.Unpooled;
 import me.chayapak1.chomens_bot.Bot;
 import net.kyori.adventure.key.Key;
 import org.geysermc.mcprotocollib.network.Session;
-import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.packet.common.clientbound.ClientboundCustomPayloadPacket;
 import org.geysermc.mcprotocollib.protocol.packet.common.serverbound.ServerboundCustomPayloadPacket;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 public class ExtrasMessengerPlugin extends Bot.Listener {
+    private static final Key MINECRAFT_REGISTER_KEY = Key.key("minecraft", "register");
+
     private static final Key EXTRAS_REGISTER_KEY = Key.key("extras", "register");
     private static final Key EXTRAS_UNREGISTER_KEY = Key.key("extras", "unregister");
     private static final Key EXTRAS_MESSAGE_KEY = Key.key("extras", "message");
@@ -26,30 +28,13 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
 
     private final String chomens_namespace;
 
+    public final List<String> registeredChannels = new ArrayList<>();
+
     public ExtrasMessengerPlugin (Bot bot) {
         this.bot = bot;
         this.chomens_namespace = bot.config.namespace + ":"; // Ex. chomens_bot: (then it will be appended by channel)
 
         bot.addListener(this);
-    }
-
-    @Override
-    public void connected (ConnectedEvent event) {
-        // TODO: don't register these things on connected but on the
-        //       custom payload packet instead so it only registers
-        //       for servers that support this
-        final List<String> channels = new ArrayList<>();
-
-        channels.add(EXTRAS_REGISTER_KEY.asString());
-        channels.add(EXTRAS_UNREGISTER_KEY.asString());
-        channels.add(EXTRAS_MESSAGE_KEY.asString());
-
-        bot.session.send(
-                new ServerboundCustomPayloadPacket(
-                        Key.key("minecraft", "register"),
-                        String.join("\u0000", channels).getBytes(StandardCharsets.UTF_8)
-                )
-        );
     }
 
     @Override
@@ -60,19 +45,55 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
     public void packetReceived (ClientboundCustomPayloadPacket packet) {
         final Key packetChannel = packet.getChannel();
 
-        if (!packetChannel.equals(EXTRAS_MESSAGE_KEY)) return;
+        if (packetChannel.equals(MINECRAFT_REGISTER_KEY)) {
+            final String[] availableChannels = new String(packet.getData()).split("\u0000");
 
-        final ByteBuf buf = Unpooled.wrappedBuffer(packet.getData());
+            // need all channels !!!
+            if (
+                    availableChannels.length == 0 ||
+                    !Arrays.stream(availableChannels).allMatch(
+                            channel ->
+                                    channel.equals(EXTRAS_REGISTER_KEY.asString()) ||
+                                    channel.equals(EXTRAS_UNREGISTER_KEY.asString()) ||
+                                    channel.equals(EXTRAS_MESSAGE_KEY.asString())
+                    )
+            ) return;
 
-        final String channelName = readString(buf);
+            final List<String> channels = new ArrayList<>();
 
-        if (!channelName.startsWith(chomens_namespace)) return;
+            channels.add(EXTRAS_REGISTER_KEY.asString());
+            channels.add(EXTRAS_UNREGISTER_KEY.asString());
+            channels.add(EXTRAS_MESSAGE_KEY.asString());
 
-        final UUID uuid = readUUID(buf);
+            bot.session.send(
+                    new ServerboundCustomPayloadPacket(
+                            Key.key("minecraft", "register"),
+                            String.join("\u0000", channels).getBytes(StandardCharsets.UTF_8)
+                    )
+            );
 
-        final byte[] data = readByteArrayToEnd(buf);
+            // re-adds all the registered channels (since this minecraft register payload
+            // should be emitted once we connect)
+            final List<String> oldRegisteredChannels = new ArrayList<>(registeredChannels);
 
-        for (Listener listener : listeners) listener.onMessage(uuid, data);
+            registeredChannels.clear();
+
+            for (String channel : oldRegisteredChannels) {
+                registerChannel(channel);
+            }
+        } else if (packetChannel.equals(EXTRAS_MESSAGE_KEY)) {
+            final ByteBuf buf = Unpooled.wrappedBuffer(packet.getData());
+
+            final String channelName = readString(buf);
+
+            if (!channelName.startsWith(chomens_namespace)) return;
+
+            final UUID uuid = readUUID(buf);
+
+            final byte[] data = readByteArrayToEnd(buf);
+
+            for (Listener listener : listeners) listener.onMessage(uuid, data);
+        }
     }
 
     public void sendPayload (String name, byte[] data) {
@@ -91,7 +112,6 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
         );
     }
 
-    // TODO: automatically register the already registered channels on reconnect
     public void registerChannel (String channel) {
         final ByteBuf buf = Unpooled.buffer();
 
@@ -100,6 +120,25 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
         bot.session.send(
                 new ServerboundCustomPayloadPacket(
                         EXTRAS_REGISTER_KEY,
+                        readByteArrayToEnd(buf)
+                )
+        );
+
+        registeredChannels.add(channel);
+    }
+
+    public void unregisterChannel (String channel) {
+        final boolean removed = registeredChannels.remove(channel);
+
+        if (!removed) return;
+
+        final ByteBuf buf = Unpooled.buffer();
+
+        writeString(buf, chomens_namespace + channel);
+
+        bot.session.send(
+                new ServerboundCustomPayloadPacket(
+                        EXTRAS_UNREGISTER_KEY,
                         readByteArrayToEnd(buf)
                 )
         );
