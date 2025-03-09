@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.logging.LogType;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -32,10 +33,8 @@ public class AuthPlugin extends PlayersPlugin.Listener {
         future.completeOnTimeout("", 10, TimeUnit.SECONDS);
 
         future.thenApplyAsync(ip -> {
-            bot.logger.custom(
-                    Component
-                            .text("Auth")
-                            .color(NamedTextColor.RED),
+            bot.logger.log(
+                    LogType.AUTH,
                     Component.translatable(
                             "Authenticating with user IP %s and configured owner IP %s",
                             Component.text(ip),

@@ -72,7 +72,7 @@ public class Main {
             configWriter.write(defaultConfig);
             configWriter.close();
 
-            LoggerUtilities.info("config.yml file was not found, so the default one was created. Please modify it to your needs.");
+            LoggerUtilities.log("config.yml file was not found, so the default one was created. Please modify it to your needs.");
 
             System.exit(1);
         }
@@ -104,12 +104,12 @@ public class Main {
                     backupFailTimes++;
 
                     if (backupFailTimes > config.backup.failTimes) {
-                        LoggerUtilities.info("Main instance is down! Starting backup instance");
+                        LoggerUtilities.log("Main instance is down! Starting backup instance");
 
                         initializeBots();
                     }
                 } else if (reachable && alreadyStarted) {
-                    LoggerUtilities.info("Main instance is back up! Now stopping");
+                    LoggerUtilities.log("Main instance is back up! Now stopping");
 
                     // no need to reset backupFailTimes because we are stopping anyway
 
@@ -137,7 +137,7 @@ public class Main {
             if (config.discord.enabled) discord = new DiscordPlugin(config);
             if (config.irc.enabled) new IRCPlugin(config);
 
-            LoggerUtilities.info("Initialized all bots. Now connecting");
+            LoggerUtilities.log("Initialized all bots. Now connecting");
 
             for (Bot bot : bots) bot.connect();
         } catch (Exception e) {
@@ -175,7 +175,7 @@ public class Main {
                 reason != null ? reason : "No reason given"
         );
 
-        LoggerUtilities.info(stoppingMessage);
+        LoggerUtilities.log(stoppingMessage);
 
         executor.shutdown();
 

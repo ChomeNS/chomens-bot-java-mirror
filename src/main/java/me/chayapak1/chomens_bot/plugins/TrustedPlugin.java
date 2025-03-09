@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.logging.LogType;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
@@ -35,7 +36,7 @@ public class TrustedPlugin extends PlayersPlugin.Listener {
                     message.color(NamedTextColor.WHITE)
             ).color(NamedTextColor.DARK_GRAY);
 
-            bot.logger.custom(Component.text("Trusted Broadcast").color(NamedTextColor.AQUA), component);
+            bot.logger.log(LogType.TRUSTED_BROADCAST, component);
 
             for (String player : list) {
                 final PlayerEntry entry = bot.players.getEntry(player);

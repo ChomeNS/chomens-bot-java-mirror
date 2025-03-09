@@ -28,7 +28,7 @@ public class FileLoggerUtilities {
     public static OutputStreamWriter logWriter;
 
     public static LocalDate currentLogDate;
-    public static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("'['dd/MM/yyyy HH:mm:ss']' ");
+    public static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
     public static String prevEntry = "";
     public static int duplicateCounter = 1;
@@ -127,7 +127,7 @@ public class FileLoggerUtilities {
         return getLogDate(path).equals(date.toString());
     }
 
-    public static synchronized void log(String str) {
+    public static synchronized void log(String type, String str) {
         if (freezeTime > System.currentTimeMillis()) {
             return;
         }
@@ -161,7 +161,7 @@ public class FileLoggerUtilities {
                     logWriter.write("\n");
                 }
 
-                logWriter.write(getTimePrefix() + str.replaceAll("\\[(\\d+?)x](?=$|[\r\n])", "[/$1x]")); // the replaceAll will prevent conflicts with the duplicate counter
+                logWriter.write(getPrefix(type) + str.replaceAll("\\[(\\d+?)x](?=$|[\r\n])", "[/$1x]")); // the replaceAll will prevent conflicts with the duplicate counter
                 logWriter.flush();
 
                 duplicateCounter = 1;
@@ -173,8 +173,13 @@ public class FileLoggerUtilities {
             LoggerUtilities.error(e);
         }
     }
-    public static String getTimePrefix() {
+
+    public static String getPrefix(String type) {
         LocalDateTime dateTime = LocalDateTime.now();
-        return dateTime.format(dateTimeFormatter);
+        return String.format(
+                "[%s %s] ",
+                dateTime.format(dateTimeFormatter),
+                type
+        );
     }
 }

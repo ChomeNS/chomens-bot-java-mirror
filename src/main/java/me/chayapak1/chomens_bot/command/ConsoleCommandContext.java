@@ -1,7 +1,7 @@
 package me.chayapak1.chomens_bot.command;
 
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.util.ComponentUtilities;
+import me.chayapak1.chomens_bot.data.logging.LogType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -15,8 +15,7 @@ public class ConsoleCommandContext extends CommandContext {
 
     @Override
     public void sendOutput (Component component) {
-        final String message = ComponentUtilities.stringifyAnsi(component);
-        bot.logger.info(message);
+        bot.logger.log(LogType.COMMAND_OUTPUT, component);
     }
 
     @Override
