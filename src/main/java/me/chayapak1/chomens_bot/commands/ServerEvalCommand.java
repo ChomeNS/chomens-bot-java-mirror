@@ -5,14 +5,18 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
+import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.luaj.vm2.Globals;
-import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.lib.jse.CoerceJavaToLua;
-import org.luaj.vm2.lib.jse.JsePlatform;
+import party.iroiro.luajava.Lua;
+import party.iroiro.luajava.lua54.Lua54;
+import party.iroiro.luajava.value.LuaValue;
+
+import java.util.Arrays;
 
 public class ServerEvalCommand extends Command {
+    public Lua lua;
+
     public ServerEvalCommand () {
         super(
                 "servereval",
@@ -28,21 +32,29 @@ public class ServerEvalCommand extends Command {
     public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
+        final String code = context.getString(true, true);
+
+        if (code.equalsIgnoreCase("reset")) {
+            if (lua != null) lua.close();
+            lua = null;
+
+            return Component.text("Reset the Lua instance").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+        }
+
         bot.executorService.submit(() -> {
             try {
-                final Globals globals = JsePlatform.standardGlobals();
+                if (lua == null) lua = new Lua54();
 
-                globals.set("bot", CoerceJavaToLua.coerce(bot));
-                globals.set("class", CoerceJavaToLua.coerce(Class.class));
-                globals.set("context", CoerceJavaToLua.coerce(context));
+                lua.openLibraries();
 
-                LuaValue chunk = globals.load(context.getString(true, true));
+                lua.set("bot", bot);
+                lua.set("context", context);
 
-                final LuaValue output = chunk.call();
+                final LuaValue[] values = lua.eval(code);
 
-                context.sendOutput(Component.text(output.toString()).color(NamedTextColor.GREEN));
-            } catch (CommandException e) {
-                context.sendOutput(e.message.color(NamedTextColor.RED));
+                final String output = values.length < 1 ? Arrays.toString(values) : values[0].toString();
+
+                context.sendOutput(Component.text(output).color(NamedTextColor.GREEN));
             } catch (Exception e) {
                 context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
             }

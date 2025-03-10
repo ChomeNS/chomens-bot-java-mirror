@@ -52,7 +52,9 @@ dependencies {
     implementation 'com.github.pircbotx:pircbotx:2.3.1'
     implementation 'com.github.ricksbrown:cowsay:1.1.0'
     implementation 'org.yaml:snakeyaml:2.0'
-    implementation 'org.luaj:luaj-jse:3.0.1'
+    implementation 'party.iroiro.luajava:luajava:4.0.2'
+    implementation 'party.iroiro.luajava:lua54:4.0.2'
+    runtimeOnly 'party.iroiro.luajava:lua54-platform:4.0.2:natives-desktop' // what is this? is this necessary?
     implementation 'net.dv8tion:JDA:5.2.2'
     implementation 'net.kyori:adventure-text-serializer-legacy:4.15.0'
     implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.20.0'
