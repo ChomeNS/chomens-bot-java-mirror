@@ -22,6 +22,10 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
     private static final Key EXTRAS_UNREGISTER_KEY = Key.key("extras", "unregister");
     private static final Key EXTRAS_MESSAGE_KEY = Key.key("extras", "message");
 
+    private static final String MINECRAFT_CHANNEL_SEPARATOR = "\0";
+
+    private static final byte END_CHAR_MASK = (byte) 0x80;
+
     private final List<Listener> listeners = new ArrayList<>();
 
     private final Bot bot;
@@ -46,17 +50,16 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
         final Key packetChannel = packet.getChannel();
 
         if (packetChannel.equals(MINECRAFT_REGISTER_KEY)) {
-            final String[] availableChannels = new String(packet.getData()).split("\u0000");
+            final String[] availableChannels = new String(packet.getData()).split(MINECRAFT_CHANNEL_SEPARATOR);
 
-            // need all channels !!!
             if (
                     availableChannels.length == 0 ||
-                    !Arrays.stream(availableChannels).allMatch(
-                            channel ->
-                                    channel.equals(EXTRAS_REGISTER_KEY.asString()) ||
-                                    channel.equals(EXTRAS_UNREGISTER_KEY.asString()) ||
-                                    channel.equals(EXTRAS_MESSAGE_KEY.asString())
-                    )
+                            Arrays.stream(availableChannels).noneMatch(
+                                    channel ->
+                                            channel.equals(EXTRAS_REGISTER_KEY.asString()) ||
+                                            channel.equals(EXTRAS_UNREGISTER_KEY.asString()) ||
+                                            channel.equals(EXTRAS_MESSAGE_KEY.asString())
+                            )
             ) return;
 
             final List<String> channels = new ArrayList<>();
@@ -68,7 +71,7 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
             bot.session.send(
                     new ServerboundCustomPayloadPacket(
                             Key.key("minecraft", "register"),
-                            String.join("\0", channels).getBytes(StandardCharsets.UTF_8)
+                            String.join(MINECRAFT_CHANNEL_SEPARATOR, channels).getBytes(StandardCharsets.UTF_8)
                     )
             );
 
@@ -146,19 +149,28 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
 
     private void writeString (ByteBuf input, String string) {
         final byte[] bytesString = string.getBytes(StandardCharsets.US_ASCII);
+        bytesString[bytesString.length - 1] |= END_CHAR_MASK;
 
-        input.writeByte(bytesString.length);
         input.writeBytes(bytesString);
     }
 
-    private String readString (ByteBuf input) {
-        final int length = input.readUnsignedByte();
+    private String readString (ByteBuf byteBuf) {
+        final byte[] buf = new byte[255];
+        int idx = 0;
 
-        final byte[] buf = new byte[length];
+        for (;;) {
+            final byte input = byteBuf.readByte();
 
-        input.readBytes(buf);
+            if (idx == buf.length) break;
 
-        return new String(buf, StandardCharsets.US_ASCII);
+            final boolean isLast = (input & END_CHAR_MASK) == END_CHAR_MASK;
+
+            buf[idx++] = (byte) (input & ~END_CHAR_MASK);
+
+            if (isLast) break;
+        }
+
+        return new String(Arrays.copyOf(buf, idx), StandardCharsets.US_ASCII);
     }
 
     private UUID readUUID (ByteBuf input) {
