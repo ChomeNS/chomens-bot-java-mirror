@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import com.google.gson.JsonSyntaxException;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
@@ -241,13 +242,39 @@ public class CorePlugin extends PositionPlugin.Listener {
         blockEntityTagBuilder.putString("Command", command);
         blockEntityTagBuilder.putByte("auto", (byte) 1);
         blockEntityTagBuilder.putByte("TrackOutput", (byte) 1);
-        blockEntityTagBuilder.putString("CustomName", bot.config.core.customName);
 
         final NbtMap blockEntityTag = blockEntityTagBuilder.build();
 
         final Map<DataComponentType<?>, DataComponent<?, ?>> map = new HashMap<>();
 
-        map.put(DataComponentTypes.BLOCK_ENTITY_DATA, DataComponentTypes.BLOCK_ENTITY_DATA.getDataComponentFactory().create(DataComponentTypes.BLOCK_ENTITY_DATA, blockEntityTag));
+        // is there a better way to put these data component types into the map?
+
+        map.put(
+                DataComponentTypes.BLOCK_ENTITY_DATA,
+                DataComponentTypes.BLOCK_ENTITY_DATA
+                        .getDataComponentFactory()
+                        .create(
+                                DataComponentTypes.BLOCK_ENTITY_DATA,
+                                blockEntityTag
+                        )
+        );
+
+        try {
+            final Component customName = GsonComponentSerializer.gson().deserialize(bot.config.core.customName);
+
+            map.put(
+                    DataComponentTypes.CUSTOM_NAME,
+                    DataComponentTypes.CUSTOM_NAME
+                            .getDataComponentFactory()
+                            .create(
+                                    DataComponentTypes.CUSTOM_NAME,
+                                    customName
+                            )
+            );
+        } catch (JsonSyntaxException e) {
+            bot.logger.error("Error while parsing the core's custom name into Component! You might have an invalid syntax in the custom name.");
+            bot.logger.error(e);
+        }
 
         final DataComponents dataComponents = new DataComponents(map);
 
