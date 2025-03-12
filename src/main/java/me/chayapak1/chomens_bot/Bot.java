@@ -343,9 +343,6 @@ public class Bot extends SessionAdapter {
 
         if (printDisconnectedCause && cause != null) logger.error(cause);
 
-        // lazy fix #69420
-        if (cause instanceof OutOfMemoryError) System.exit(1);
-
         if (!isTransferring) cookies.clear();
 
         int reconnectDelay = options.reconnectDelay;
