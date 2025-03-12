@@ -84,7 +84,14 @@ public class ChatPlugin extends Bot.Listener {
             if (
                     key.equals("advMode.setCommand.success") ||
                             key.equals("advMode.notAllowed") ||
-                            key.equals("multiplayer.message_not_delivered")
+                            key.equals("multiplayer.message_not_delivered") ||
+
+                            // arabic kaboom clone be like
+
+                            // command set
+                            key.equals("قيادة المجموعة: %s") // i'm pretty sure the text direction will depend on what you are using to view this file right now
+
+                            // no other stuff because laziness
             ) return;
         }
 
