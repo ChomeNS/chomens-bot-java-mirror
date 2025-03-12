@@ -377,17 +377,17 @@ public class DiscordPlugin {
 
         if (nameComponent.color() == null) nameComponent = nameComponent.color(NamedTextColor.RED);
 
+        final String replacedMessageContent = message.getContentDisplay()
+                // replaces skull emoji
+                .replace("\uD83D\uDC80", "☠")
+                // replaces all ANSI codes (used when a user replies to the bot's log message) with nothing
+                .replaceAll("\u001B\\[[;\\d]*[ -/]*[@-~]", "")
+                // replaces all ZWSP with nothing
+                .replace("\u200b", "");
+
         final Component deserialized = LegacyComponentSerializer
                 .legacyAmpersand()
-                .deserialize(
-                        message.getContentDisplay()
-                                // replaces skull emoji
-                                .replace("\uD83D\uDC80", "☠")
-                                // replaces all ANSI codes (used when a user replies to the bot's log message) with nothing
-                                .replaceAll("\u001B\\[[;\\d]*[ -/]*[@-~]", "")
-                                // replaces all ZWSP with nothing
-                                .replace("\u200b", "")
-                );
+                .deserialize(replacedMessageContent);
 
         final Component messageComponent = Component
                 .empty()
@@ -397,6 +397,18 @@ public class DiscordPlugin {
                                 .append(attachmentsComponent)
                                 .append(embedsComponent)
                                 .append(stickersComponent)
+                )
+                .hoverEvent(
+                        HoverEvent.showText(
+                                Component
+                                        .text("Click here to copy the message to your clipboard")
+                                        .color(NamedTextColor.GREEN)
+                        )
+                )
+                .clickEvent(
+                        ClickEvent.copyToClipboard(
+                                replacedMessageContent
+                        )
                 );
 
         return Component.translatable(
