@@ -18,6 +18,8 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.*;
 import java.util.*;
 
 public class WorldPlugin extends Bot.Listener {
+    private final Bot bot;
+
     public int minY = 0;
     public int maxY = 256;
 
@@ -30,6 +32,8 @@ public class WorldPlugin extends Bot.Listener {
     private final List<Listener> listeners = new ArrayList<>();
 
     public WorldPlugin (Bot bot) {
+        this.bot = bot;
+
         bot.addListener(this);
     }
 
@@ -90,7 +94,7 @@ public class WorldPlugin extends Bot.Listener {
 
     private void packetReceived (ClientboundLevelChunkWithLightPacket packet) {
         final ChunkPos pos = new ChunkPos(packet.getX(), packet.getZ());
-        final ChunkColumn column = new ChunkColumn(pos, packet.getChunkData(), maxY, minY);
+        final ChunkColumn column = new ChunkColumn(bot, pos, packet.getChunkData(), maxY, minY);
         chunks.put(pos, column);
     }
 
