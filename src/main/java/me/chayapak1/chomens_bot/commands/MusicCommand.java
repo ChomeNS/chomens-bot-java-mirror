@@ -10,7 +10,6 @@ import me.chayapak1.chomens_bot.song.Song;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.PathUtilities;
 import me.chayapak1.chomens_bot.util.TimestampUtilities;
-import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -114,7 +113,7 @@ public class MusicCommand extends Command {
                     final String[] pathSplitted = _path.split(separator);
 
                     final List<String> pathSplittedClone = new ArrayList<>(Arrays.stream(pathSplitted.clone()).toList());
-                    pathSplittedClone.remove(pathSplittedClone.size() - 1);
+                    pathSplittedClone.removeLast();
 
                     final Path realPath = Path.of(root.toString(), String.join(separator, pathSplittedClone));
 
@@ -185,13 +184,13 @@ public class MusicCommand extends Command {
 
         final CompletableFuture<String> future = bot.query.entity(
                 context.sender.profile.getIdAsString(),
-                "SelectedItem.tag.SongItemData.SongData"
+                "SelectedItem.components.minecraft:custom_data.SongItemData.SongData"
         );
 
         future.thenApplyAsync(output -> {
             if (output == null) {
-                context.sendOutput(Component.text("Player has no `SongItemData.SongData` NBT tag in their selected item").color(NamedTextColor.RED));
-                return output;
+                context.sendOutput(Component.text("Player has no `SongItemData.SongData` NBT tag in their selected item's minecraft:custom_data").color(NamedTextColor.RED));
+                return null;
             }
 
             try {
