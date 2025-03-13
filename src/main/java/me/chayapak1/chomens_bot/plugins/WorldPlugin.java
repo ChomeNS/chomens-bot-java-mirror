@@ -131,6 +131,8 @@ public class WorldPlugin extends Bot.Listener {
         chunks.get(chunkPos).setBlock(x & 15, y, z & 15, id);
     }
 
+    public void addListener (Listener listener) { listeners.add(listener); }
+
     public static class Listener {
         public void worldChanged (String dimension) {}
     }

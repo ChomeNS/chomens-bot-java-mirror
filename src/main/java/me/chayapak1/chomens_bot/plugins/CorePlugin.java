@@ -26,7 +26,10 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.inventory.S
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundPlayerActionPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundUseItemOnPacket;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledFuture;
@@ -100,6 +103,13 @@ public class CorePlugin extends PositionPlugin.Listener {
                 refillTask.cancel(false);
 
                 reset();
+            }
+        });
+
+        bot.world.addListener(new WorldPlugin.Listener() {
+            @Override
+            public void worldChanged (String dimension) {
+                CorePlugin.this.worldChanged();
             }
         });
 
@@ -392,18 +402,6 @@ public class CorePlugin extends PositionPlugin.Listener {
                         Math.abs(botChunkPosX - coreChunkPosX) > bot.world.simulationDistance ||
                         Math.abs(botChunkPosZ - coreChunkPosZ) > bot.world.simulationDistance
         ) {
-            from = Vector3i.from(
-                    fromSize.getX() + botChunkPosX * 16,
-                    MathUtilities.clamp(fromSize.getY(), bot.world.minY, bot.world.maxY),
-                    fromSize.getZ() + botChunkPosZ * 16
-            );
-
-            to = Vector3i.from(
-                    toSize.getX() + botChunkPosX * 16,
-                    MathUtilities.clamp(toSize.getY(), bot.world.minY, bot.world.maxY),
-                    toSize.getZ() + botChunkPosZ * 16
-            );
-
             reset();
             refill();
         }
@@ -416,7 +414,27 @@ public class CorePlugin extends PositionPlugin.Listener {
         }
     }
 
+    public void worldChanged () {
+        reset();
+        refill();
+    }
+
     public void reset () {
+        final int botChunkPosX = (int) Math.floor(bot.position.position.getX() / 16);
+        final int botChunkPosZ = (int) Math.floor(bot.position.position.getZ() / 16);
+
+        from = Vector3i.from(
+                fromSize.getX() + botChunkPosX * 16,
+                MathUtilities.clamp(fromSize.getY(), bot.world.minY, bot.world.maxY),
+                fromSize.getZ() + botChunkPosZ * 16
+        );
+
+        to = Vector3i.from(
+                toSize.getX() + botChunkPosX * 16,
+                MathUtilities.clamp(toSize.getY(), bot.world.minY, bot.world.maxY),
+                toSize.getZ() + botChunkPosZ * 16
+        );
+
         block = Vector3i.from(from);
     }
 

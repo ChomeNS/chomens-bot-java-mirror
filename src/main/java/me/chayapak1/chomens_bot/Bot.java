@@ -80,6 +80,7 @@ public class Bot extends SessionAdapter {
     public SelfCarePlugin selfCare;
     public QueryPlugin query;
     public ExtrasMessengerPlugin extrasMessenger;
+    public WorldPlugin world;
     public CorePlugin core;
     public TeamPlugin team;
     public PlayersPlugin players;
@@ -103,7 +104,6 @@ public class Bot extends SessionAdapter {
     public PacketSnifferPlugin packetSniffer;
     public VoiceChatPlugin voiceChat;
     public TeamJoinerPlugin teamJoiner;
-    public WorldPlugin world;
     public AuthPlugin auth;
     public ScreensharePlugin screenshare;
     public FormatCheckerPlugin formatChecker;
@@ -132,6 +132,7 @@ public class Bot extends SessionAdapter {
         this.selfCare = new SelfCarePlugin(this);
         this.query = new QueryPlugin(this);
         this.extrasMessenger = new ExtrasMessengerPlugin(this);
+        this.world = new WorldPlugin(this);
         this.core = new CorePlugin(this);
         this.team = new TeamPlugin(this);
         this.players = new PlayersPlugin(this);
@@ -155,7 +156,6 @@ public class Bot extends SessionAdapter {
         this.packetSniffer = new PacketSnifferPlugin(this);
         this.voiceChat = new VoiceChatPlugin(this);
         this.teamJoiner = new TeamJoinerPlugin(this);
-        this.world = new WorldPlugin(this);
         this.auth = new AuthPlugin(this);
 //        this.screenshare = new ScreensharePlugin(this);
         this.formatChecker = new FormatCheckerPlugin(this);
