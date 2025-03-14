@@ -61,16 +61,19 @@ public class ChunkColumn {
             // passing bot just for debugging? really?
             bot.logger.error(
                     Component.translatable(
-                            "Failed to set block at %s %s %s with state %s!",
+                            "Failed to set block at %s %s %s in chunk %s %s with state %s!",
 
                             Component.text(x),
                             Component.text(y),
                             Component.text(z),
 
+                            Component.text(pos.x()),
+                            Component.text(pos.z()),
+
                             Component.text(id)
                     )
             );
-            bot.logger.error(e);
+            // bot.logger.error(e);
         }
     }
 }
