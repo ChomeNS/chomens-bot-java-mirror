@@ -361,26 +361,20 @@ public class CorePlugin extends PositionPlugin.Listener {
     }
 
     private void incrementBlock () {
-        int x = block.getX();
+        int x = block.getX() + 1;
         int y = block.getY();
         int z = block.getZ();
-
-        x++;
 
         if (x > to.getX()) {
             x = from.getX();
             z++;
-        }
-
-        if (z > to.getZ()) {
-            z = from.getZ();
-            y++;
-        }
-
-        if (y > to.getY()) {
-            x = from.getX();
-            y = from.getY();
-            z = from.getZ();
+            if (z > to.getZ()) {
+                z = from.getZ();
+                y++;
+                if (y > to.getY()) {
+                    y = from.getY();
+                }
+            }
         }
 
         block = Vector3i.from(x, y, z);
