@@ -9,6 +9,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class CoreFunction extends EvalFunction {
+    private long lastExecutionTime = System.currentTimeMillis();
+
     public CoreFunction (Bot bot) {
         super("core", bot);
     }
@@ -16,6 +18,10 @@ public class CoreFunction extends EvalFunction {
     @Override
     public Output execute(Object... args) throws Exception {
         if (args.length == 0) return null;
+
+        // prevent 69 DDOS exploit !!!
+        if (System.currentTimeMillis() - lastExecutionTime < 50) return null;
+        lastExecutionTime = System.currentTimeMillis();
 
         final String command = (String) args[0];
 
