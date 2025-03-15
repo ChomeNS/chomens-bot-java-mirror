@@ -11,13 +11,14 @@ import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class QueryPlugin extends Bot.Listener {
     private final Bot bot;
 
-    private long nextTransactionId = 0;
-    private final Map<Long, CompletableFuture<String>> transactions = new HashMap<>();
-    private final List<UUID> ids = new ArrayList<>();
+    public long nextTransactionId = 0;
+    public final Map<Long, CompletableFuture<String>> transactions = new HashMap<>();
+    public final List<UUID> ids = new ArrayList<>();
 
     public QueryPlugin (Bot bot) {
         this.bot = bot;
@@ -59,7 +60,11 @@ public class QueryPlugin extends Bot.Listener {
             if (children.size() == 1) {
                 future.complete(null);
             } else {
-                if (!(children.get(1) instanceof TextComponent)) return true;
+                if (!(children.get(1) instanceof TextComponent)) {
+                    future.complete(null);
+
+                    return true;
+                }
 
                 final String stringOutput = ((TextComponent) children.get(1)).content();
 
@@ -80,6 +85,12 @@ public class QueryPlugin extends Bot.Listener {
 
         final UUID id = UUID.randomUUID();
         ids.add(id);
+
+        // prevent memory leak in case the command returns no output
+        bot.executor.schedule(() -> {
+            transactions.remove(transactionId);
+            ids.remove(id);
+        }, 5, TimeUnit.SECONDS);
 
         return Triple.of(future, transactionId, id);
     }
