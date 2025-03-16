@@ -75,8 +75,6 @@ public class Configuration {
     }
 
     public static class Core {
-        public Position start = new Position();
-        public Position end = new Position();
         public int refillInterval = (60 * 5) * 1000; // 5 minutes
         public String customName = "{\"text\":\"@\"}";
     }

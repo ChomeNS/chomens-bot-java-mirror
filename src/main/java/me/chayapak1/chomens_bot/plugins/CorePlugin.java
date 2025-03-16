@@ -48,7 +48,7 @@ public class CorePlugin extends PositionPlugin.Listener {
     private ScheduledFuture<?> refillTask;
 
     public final Vector3i fromSize;
-    public final Vector3i toSize;
+    public Vector3i toSize;
 
     public Vector3i from;
     public Vector3i to;
@@ -57,6 +57,7 @@ public class CorePlugin extends PositionPlugin.Listener {
 
     public final ConcurrentLinkedQueue<String> placeBlockQueue = new ConcurrentLinkedQueue<>();
 
+    private int commandsPerTick = 0;
     private int commandsPerSecond = 0;
 
     private boolean shouldRefill = false;
@@ -65,14 +66,14 @@ public class CorePlugin extends PositionPlugin.Listener {
         this.bot = bot;
 
         this.fromSize = Vector3i.from(
-                bot.config.core.start.x,
-                bot.config.core.start.y,
-                bot.config.core.start.z
+                0,
+                -64,
+                0
         );
         this.toSize = Vector3i.from(
-                bot.config.core.end.x,
-                bot.config.core.end.y,
-                bot.config.core.end.z
+                15,
+                -64,
+                15
         );
 
         bot.position.addListener(this);
@@ -88,6 +89,8 @@ public class CorePlugin extends PositionPlugin.Listener {
 
         bot.executor.scheduleAtFixedRate(() -> {
             checkCoreTick();
+
+            resizeTick();
 
             if (!shouldRefill) return;
 
@@ -116,6 +119,8 @@ public class CorePlugin extends PositionPlugin.Listener {
         bot.tick.addListener(new TickPlugin.Listener() {
             @Override
             public void onTick() {
+                if (commandsPerTick > 0) commandsPerTick--;
+
                 try {
                     if (placeBlockQueue.size() > 300) {
                         placeBlockQueue.clear();
@@ -147,6 +152,12 @@ public class CorePlugin extends PositionPlugin.Listener {
     }
 
     private void forceRun (String command) {
+        // if the core isn't ready yet, it is still pretty useless
+        // to still run the command, even if forced.
+        if (!ready || command.length() > 32767) return;
+
+        commandsPerTick++;
+
         if (bot.serverPluginsManager.hasPlugin(ServerPluginsManagerPlugin.EXTRAS)) {
             bot.session.send(new ServerboundSetCommandBlockPacket(
                     block,
@@ -311,12 +322,39 @@ public class CorePlugin extends PositionPlugin.Listener {
         session.send(new ServerboundUseItemOnPacket(temporaryBlockPosition, Direction.UP, Hand.MAIN_HAND, 0.5f, 0.5f, 0.5f, false, false, 1));
     }
 
+    private void resizeTick () {
+        if (!ready) return;
+
+        // fixes a bug where the Y positions are more than the ones in toSize
+        if (to.getY() > toSize.getY() || from.getY() > toSize.getY()) recalculateRelativePositions();
+
+        final Vector3i oldSize = toSize;
+
+        int x = toSize.getX();
+        int y = -64;
+        int z = toSize.getZ();
+
+        while (commandsPerTick > (16 * 16)) {
+            y++;
+            commandsPerTick -= 16 * 16;
+        }
+
+        toSize = Vector3i.from(x, y, z);
+
+        if (oldSize.getY() != toSize.getY()) {
+            recalculateRelativePositions();
+
+            // this will be run just after this function finishes, since it runs in the same interval
+            shouldRefill = true;
+        }
+    }
+
     public boolean isCoreComplete () {
         if (!ready) return false;
 
-        for (int x = from.getX(); x <= to.getX(); x++) {
-            for (int y = from.getY(); y <= to.getY(); y++) {
-                for (int z = from.getZ(); z <= to.getZ(); z++) {
+        for (int y = from.getY(); y <= to.getY(); y++) {
+            for (int z = from.getZ(); z <= to.getZ(); z++) {
+                for (int x = from.getX(); x <= to.getX(); x++) {
                     final int block = bot.world.getBlock(x, y, z);
 
                     if (!isCommandBlockState(block)) return false;
@@ -413,7 +451,7 @@ public class CorePlugin extends PositionPlugin.Listener {
         refill();
     }
 
-    public void reset () {
+    public void recalculateRelativePositions() {
         final int botChunkPosX = (int) Math.floor(bot.position.position.getX() / 16);
         final int botChunkPosZ = (int) Math.floor(bot.position.position.getZ() / 16);
 
@@ -428,6 +466,10 @@ public class CorePlugin extends PositionPlugin.Listener {
                 MathUtilities.clamp(toSize.getY(), bot.world.minY, bot.world.maxY),
                 toSize.getZ() + botChunkPosZ * 16
         );
+    }
+
+    public void reset () {
+        recalculateRelativePositions();
 
         block = Vector3i.from(from);
     }
@@ -435,25 +477,43 @@ public class CorePlugin extends PositionPlugin.Listener {
     public void refill () {
         if (!ready) return;
 
-        final String command = String.format(
-                "minecraft:fill %s %s %s %s %s %s minecraft:command_block{CustomName:'%s'}",
+        final Map<Integer, Boolean> refilledMap = new HashMap<>();
 
-                from.getX(),
-                from.getY(),
-                from.getZ(),
+        for (int y = from.getY(); y <= to.getY(); y++) {
+            for (int z = from.getZ(); z <= to.getZ(); z++) {
+                for (int x = from.getX(); x <= to.getX(); x++) {
+                    final int block = bot.world.getBlock(x, y, z);
 
-                to.getX(),
-                to.getY(),
-                to.getZ(),
+                    final Boolean refilled = refilledMap.get(y);
 
-                bot.config.core.customName
-        );
+                    if (isCommandBlockState(block) || (refilled != null && refilled)) continue;
 
-//        bot.chat.send(command);
+                    final String command = String.format(
+                            "minecraft:fill %s %s %s %s %s %s minecraft:command_block{CustomName:'%s'}",
 
-        runPlaceBlock(command);
+                            from.getX(),
+                            y,
+                            from.getZ(),
 
-        for (Listener listener : listeners) listener.refilled();
+                            to.getX(),
+                            y,
+                            to.getZ(),
+
+                            bot.config.core.customName
+                    );
+
+                    //        bot.chat.send(command);
+
+                    runPlaceBlock(command);
+
+                    refilledMap.put(y, true);
+                }
+            }
+        }
+
+        if (refilledMap.containsValue(true)) {
+            for (Listener listener : listeners) listener.refilled();
+        }
     }
 
     public static class Listener {
