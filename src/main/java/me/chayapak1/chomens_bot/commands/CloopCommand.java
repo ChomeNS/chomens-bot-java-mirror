@@ -13,13 +13,14 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class CloopCommand extends Command {
     public CloopCommand () {
         super(
                 "cloop",
-                "Loop commands",
-                new String[] { "add <interval> <command>", "remove <index>", "clear", "list" },
+                "Loops commands",
+                new String[] { "add <interval> <TimeUnit> <command>", "remove <index>", "clear", "list" },
                 new String[] { "commandloop" },
                 TrustLevel.TRUSTED,
                 false
@@ -37,14 +38,17 @@ public class CloopCommand extends Command {
                 int interval = context.getInteger(true);
                 if (interval < 1) interval = 1;
 
+                final TimeUnit unit = context.getEnum(TimeUnit.class);
+
                 final String command = context.getString(true, true);
 
-                bot.cloop.add(interval, command);
+                bot.cloop.add(unit, interval, command);
 
                 return Component.translatable(
-                        "Added %s with interval %s to the cloops",
+                        "Added %s with interval %s %s to the cloops",
                         Component.text(command).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
-                        Component.text(interval).color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
+                        Component.text(interval).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
+                        Component.text(unit.toString()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
                 ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "remove" -> {
@@ -78,10 +82,11 @@ public class CloopCommand extends Command {
                 for (CommandLoop command : bot.cloop.loops) {
                     cloopsComponent.add(
                             Component.translatable(
-                                    "%s › %s (%s)",
+                                    "%s › %s (%s %s)",
                                     Component.text(index).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
                                     Component.text(command.command()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
-                                    Component.text(command.interval()).color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
+                                    Component.text(command.interval()).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
+                                    Component.text(command.unit().toString()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
                             ).color(NamedTextColor.DARK_GRAY)
                     );
                     index++;

@@ -232,7 +232,15 @@ public class CommandContext {
         try {
             return Enum.valueOf(enumClass, string.toUpperCase());
         } catch (IllegalArgumentException | NullPointerException e) {
-            throw new CommandException(Component.text("Invalid enum"));
+            final T[] values = enumClass.getEnumConstants();
+
+            throw new CommandException(
+                    Component.translatable(
+                            "Invalid %s. Possible values are: %s",
+                            Component.text(enumClass.getSimpleName()),
+                            Component.text(Arrays.toString(values))
+                    )
+            );
         }
     }
 

@@ -18,19 +18,18 @@ public class CloopPlugin {
         this.bot = bot;
     }
 
-    public void add (int interval, String command) {
+    public void add (TimeUnit unit, int interval, String command) {
         Runnable loopTask = () -> bot.core.run(command);
 
-        loops.add(new CommandLoop(command, interval)); // mabe,.,..
-        // should i use 50 or 0?
-        loopTasks.add(bot.executor.scheduleAtFixedRate(loopTask, 0, interval, TimeUnit.MILLISECONDS));
+        loops.add(new CommandLoop(command, interval, unit));
+        loopTasks.add(bot.executor.scheduleAtFixedRate(loopTask, 0, interval, unit));
     }
 
     public CommandLoop remove (int index) {
         ScheduledFuture<?> loopTask = loopTasks.remove(index);
 
         if (loopTask != null) {
-            loopTask.cancel(true);
+            loopTask.cancel(false);
         }
 
         return loops.remove(index);
@@ -38,7 +37,7 @@ public class CloopPlugin {
 
     public void clear () {
         for (ScheduledFuture<?> loopTask : loopTasks) {
-            loopTask.cancel(true);
+            loopTask.cancel(false);
         }
 
         loopTasks.clear();
