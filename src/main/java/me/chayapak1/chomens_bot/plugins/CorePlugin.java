@@ -326,7 +326,7 @@ public class CorePlugin extends PositionPlugin.Listener {
         if (!ready) return;
 
         // fixes a bug where the Y positions are more than the ones in toSize
-        if (to.getY() > toSize.getY() || from.getY() > toSize.getY()) recalculateRelativePositions();
+        if (to.getY() > toSize.getY() || from.getY() > toSize.getY()) reset();
 
         final Vector3i oldSize = toSize;
 
