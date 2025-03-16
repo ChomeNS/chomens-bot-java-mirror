@@ -38,6 +38,8 @@ public class SeenCommand extends Command {
 
         if (bot.database == null) throw new CommandException(Component.text("Database is not enabled in the bot's config"));
 
+        bot.database.checkOverloaded();
+
         final String player = context.getString(true, true);
 
         boolean online = false;

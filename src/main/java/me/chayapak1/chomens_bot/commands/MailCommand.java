@@ -40,6 +40,8 @@ public class MailCommand extends Command {
 
         if (bot.database == null) throw new CommandException(Component.text("Database is not enabled in the bot's config"));
 
+        bot.database.checkOverloaded();
+
         final PlayerEntry sender = context.sender;
 
         // kinda messy ngl

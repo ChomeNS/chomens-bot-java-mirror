@@ -4,11 +4,14 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.Main;
+import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
+import net.kyori.adventure.text.Component;
 
 import java.sql.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class DatabasePlugin {
     public static final ExecutorService executorService = Executors.newFixedThreadPool(
@@ -31,6 +34,14 @@ public class DatabasePlugin {
         }
 
         for (Bot bot : Main.bots) bot.database = this;
+    }
+
+    public void checkOverloaded () throws CommandException {
+        final ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executorService;
+
+        if (threadPoolExecutor.getQueue().size() > 20) throw new CommandException(
+                Component.text("The executor service is filled with requests!")
+        );
     }
 
     public boolean execute (String query) throws SQLException {

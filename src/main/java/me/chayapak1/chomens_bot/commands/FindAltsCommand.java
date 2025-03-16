@@ -33,6 +33,8 @@ public class FindAltsCommand extends Command {
 
         if (bot.database == null) throw new CommandException(Component.text("Database is not enabled in the bot's config"));
 
+        bot.database.checkOverloaded();
+
         final String flag = context.getString(false, true);
 
         final boolean allServer = flag.equals("-allserver");
