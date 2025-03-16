@@ -10,15 +10,19 @@ import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.data.game.ClientCommand;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.EntityEvent;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
+import org.geysermc.mcprotocollib.protocol.data.game.entity.player.PlayerState;
 import org.geysermc.mcprotocollib.protocol.data.game.level.notify.GameEvent;
 import org.geysermc.mcprotocollib.protocol.data.game.level.notify.GameEventValue;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundEntityEventPacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundSetPassengersPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.inventory.ClientboundOpenScreenPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundGameEventPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.ServerboundClientCommandPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.inventory.ServerboundContainerClosePacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundPlayerCommandPacket;
 
+import java.util.Arrays;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -140,6 +144,7 @@ public class SelfCarePlugin extends Bot.Listener {
         else if (packet instanceof ClientboundGameEventPacket) packetReceived((ClientboundGameEventPacket) packet);
         else if (packet instanceof ClientboundEntityEventPacket) packetReceived((ClientboundEntityEventPacket) packet);
         else if (packet instanceof ClientboundOpenScreenPacket) packetReceived((ClientboundOpenScreenPacket) packet);
+        else if (packet instanceof ClientboundSetPassengersPacket) packetReceived((ClientboundSetPassengersPacket) packet);
     }
 
     public void packetReceived (ClientboundLoginPacket packet) {
@@ -194,6 +199,24 @@ public class SelfCarePlugin extends Bot.Listener {
         bot.session.send(
                 new ServerboundContainerClosePacket(
                         packet.getContainerId()
+                )
+        );
+    }
+
+    public void packetReceived (ClientboundSetPassengersPacket packet) {
+        if (
+                Arrays.stream(packet.getPassengerIds())
+                        .noneMatch(id -> id == entityId)
+        ) return;
+
+        // automatically unmount when mounting
+        // eg. player `/ride`s you
+        // the server will automatically dismount for you,
+        // so that's why we don't have to send PlayerState.STOP_SNEAKING
+        bot.session.send(
+                new ServerboundPlayerCommandPacket(
+                        entityId,
+                        PlayerState.START_SNEAKING
                 )
         );
     }
