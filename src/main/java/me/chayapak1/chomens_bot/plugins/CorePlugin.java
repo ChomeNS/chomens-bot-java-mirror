@@ -325,8 +325,8 @@ public class CorePlugin extends PositionPlugin.Listener {
     private void resizeTick () {
         if (!ready) return;
 
-        // fixes a bug where the Y positions are more than the ones in toSize
-        if (to.getY() > toSize.getY() || from.getY() > toSize.getY()) reset();
+        // fixes a bug where the block positions are more than the ones in from and to
+        if (!isCore(block)) reset();
 
         final Vector3i oldSize = toSize;
 
