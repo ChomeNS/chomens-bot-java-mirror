@@ -86,11 +86,14 @@ public class QueryPlugin extends Bot.Listener {
         final UUID id = UUID.randomUUID();
         ids.add(id);
 
-        // prevent memory leak in case the command returns no output
+        // this probably doesn't do much, since even if the command returns
+        // no output, the tracker will still tellraw to the bot that this command has
+        // completed no matter what, but just in case, we'll remove the
+        // transactions and the ids here after 30 seconds
         bot.executor.schedule(() -> {
             transactions.remove(transactionId);
             ids.remove(id);
-        }, 5, TimeUnit.SECONDS);
+        }, 30, TimeUnit.SECONDS);
 
         return Triple.of(future, transactionId, id);
     }
