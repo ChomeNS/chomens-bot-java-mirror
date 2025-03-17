@@ -34,6 +34,8 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
 
     public final List<String> registeredChannels = new ArrayList<>();
 
+    public boolean isSupported = false;
+
     public ExtrasMessengerPlugin (Bot bot) {
         this.bot = bot;
         this.chomens_namespace = bot.config.namespace + ":"; // Ex. chomens_bot: (then it will be appended by channel)
@@ -60,7 +62,12 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
                                             channel.equals(EXTRAS_UNREGISTER_KEY.asString()) ||
                                             channel.equals(EXTRAS_MESSAGE_KEY.asString())
                             )
-            ) return;
+            ) {
+                isSupported = false;
+                return;
+            }
+
+            isSupported = true;
 
             final List<String> channels = new ArrayList<>();
 
