@@ -119,7 +119,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
                                 "Loading %s",
                                 Component.text(songName, ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
                         )
-                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
+                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)),
+                BOTH_SELECTOR
         );
 
         this.loaderThread.start();
@@ -145,7 +146,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
                         Component.translatable(
                                 "Now playing %s",
                                 Component.empty().append(Component.text(currentSong.name)).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
-                        ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
+                        ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)),
+                        BOTH_SELECTOR
                 );
                 currentSong.play();
             }
@@ -181,7 +183,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
                         Component.translatable(
                                 "Finished playing %s",
                                 Component.empty().append(Component.text(currentSong.name)).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
-                        ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
+                        ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)),
+                        BOTH_SELECTOR
                 );
 
                 if (loop == Loop.ALL) {
