@@ -81,61 +81,48 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     public void loadSong (Path location, PlayerEntry sender) {
-        if (songQueue.size() > 500) return;
-
-        loaderThread = new SongLoaderThread(location, bot, sender.profile.getName());
-
-        bot.chat.tellraw(
-                Component
-                        .translatable(
-                                "Loading %s",
-                                Component.text(location.getFileName().toString(), ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
-                        )
-                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
+        startLoadingSong(
+                location.getFileName().toString(),
+                new SongLoaderThread(location, bot, sender.profile.getName())
         );
-
-        loaderThread.start();
-    }
-
-    public void loadSong (URL location, PlayerEntry sender) {
-        if (songQueue.size() > 500) return;
-
-        urlLimit++;
-
-        if (urlLimit > bot.config.music.urlRatelimit.limit) {
-            bot.chat.tellraw(Component.text("ohio").color(NamedTextColor.RED));
-            return;
-        }
-
-        loaderThread = new SongLoaderThread(location, bot, sender.profile.getName());
-
-        bot.chat.tellraw(
-                Component
-                        .translatable(
-                                "Loading %s",
-                                Component.text(location.toString(), ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
-                        )
-                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
-        );
-
-        loaderThread.start();
     }
 
     public void loadSong (byte[] data, PlayerEntry sender) {
+        startLoadingSong(
+                sender.profile.getName() + "'s song item",
+                new SongLoaderThread(data, bot, sender.profile.getName())
+        );
+    }
+
+    public void loadSong (URL location, PlayerEntry sender) {
+        if (urlLimit >= bot.config.music.urlRatelimit.limit) {
+            bot.chat.tellraw(Component.text("URL loading is being rate limited!").color(NamedTextColor.RED));
+            return;
+        }
+
+        urlLimit++;
+
+        startLoadingSong(
+                location.toString(),
+                new SongLoaderThread(location, bot, sender.profile.getName())
+        );
+    }
+
+    private void startLoadingSong (String songName, SongLoaderThread loaderThread) {
         if (songQueue.size() > 500) return;
 
-        loaderThread = new SongLoaderThread(data, bot, sender.profile.getName());
+        this.loaderThread = loaderThread;
 
         bot.chat.tellraw(
                 Component
                         .translatable(
                                 "Loading %s",
-                                Component.text(sender.profile.getName() + "'s song item", ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                                Component.text(songName, ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
                         )
                         .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
         );
 
-        loaderThread.start();
+        this.loaderThread.start();
     }
 
     private void onCoreReady () {
