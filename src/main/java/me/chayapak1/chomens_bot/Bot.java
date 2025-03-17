@@ -165,7 +165,7 @@ public class Bot extends SessionAdapter {
         this.playersDatabase = new PlayersDatabasePlugin(this);
         this.ipFilter = new IPFilterPlugin(this);
 
-        for (Listener listener : listeners) listener.loadedPlugins();
+        for (Listener listener : listeners) listener.loadedPlugins(this);
 
         reconnect();
     }
@@ -402,6 +402,6 @@ public class Bot extends SessionAdapter {
 
     public static class Listener extends SessionAdapter {
         public void connecting () {}
-        public void loadedPlugins () {}
+        public void loadedPlugins (Bot bot) {}
     }
 }

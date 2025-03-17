@@ -69,7 +69,7 @@ public class LoggerPlugin extends ChatPlugin.Listener {
             }
 
             @Override
-            public void loadedPlugins() {
+            public void loadedPlugins (Bot bot) {
                 bot.chat.addListener(LoggerPlugin.this);
             }
         });

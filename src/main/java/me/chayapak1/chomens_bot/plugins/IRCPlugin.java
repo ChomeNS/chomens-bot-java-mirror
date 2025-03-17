@@ -70,7 +70,7 @@ public class IRCPlugin extends ListenerAdapter {
                 }
 
                 @Override
-                public void loadedPlugins() {
+                public void loadedPlugins (Bot bot) {
                     bot.chat.addListener(new ChatPlugin.Listener() {
                         @Override
                         public boolean systemMessageReceived(Component component, String string, String ansi) {
@@ -198,7 +198,7 @@ public class IRCPlugin extends ListenerAdapter {
 
                 final String firstLog = logs.getFirst();
 
-                logs.remove(0);
+                logs.removeFirst();
 
                 final String withIRCColors = ColorUtilities.convertAnsiToIrc(firstLog);
 

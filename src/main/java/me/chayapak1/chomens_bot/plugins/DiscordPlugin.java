@@ -85,7 +85,7 @@ public class DiscordPlugin {
 
             bot.addListener(new Bot.Listener() {
                 @Override
-                public void loadedPlugins() {
+                public void loadedPlugins (Bot bot) {
                     bot.tick.addListener(new TickPlugin.Listener() {
                         @Override
                         public void onAlwaysTick () {
