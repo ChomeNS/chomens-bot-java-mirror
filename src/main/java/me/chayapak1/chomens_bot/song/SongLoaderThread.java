@@ -158,8 +158,7 @@ public class SongLoaderThread extends Thread {
         }
     }
 
-    private void failed() {
-        bot.logger.error(exception);
+    private void failed () {
         bot.chat.tellraw(Component.translatable("Failed to load song: %s", exception.message).color(NamedTextColor.RED));
         bot.music.loaderThread = null;
     }
