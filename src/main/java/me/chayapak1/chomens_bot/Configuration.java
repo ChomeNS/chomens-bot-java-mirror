@@ -88,7 +88,7 @@ public class Configuration {
     public static class ColorPalette {
         public String primary = "yellow";
         public String secondary = "gold";
-        public String defaultColor = "white";
+        public String defaultColor = "gray";
         public String username = "gold";
         public String uuid = "aqua";
         public String string = "aqua";

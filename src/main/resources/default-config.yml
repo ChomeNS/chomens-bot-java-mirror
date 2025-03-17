@@ -59,7 +59,7 @@ music:
 colorPalette:
   primary: 'yellow'
   secondary: 'gold'
-  defaultColor: 'white' # ig java has the `default` keyword so i need to use defaultColor
+  defaultColor: 'gray' # ig java has the `default` keyword so i need to use defaultColor
   username: 'gold'
   uuid: 'aqua'
   string: 'aqua'
