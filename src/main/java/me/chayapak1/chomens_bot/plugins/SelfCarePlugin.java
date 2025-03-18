@@ -125,21 +125,18 @@ public class SelfCarePlugin extends Bot.Listener {
         // core
         else if (selfCares.icu.enabled && positionPacketsPerSecond > selfCares.icu.positionPacketsPerSecond) bot.core.run("essentials:sudo * icu stop");
         else if (hasEssentials) {
-            // TODO: improve lol, this is ohio
+            final String usernameOrBlank = !bot.options.useChat ?
+                    bot.username + " " :
+                    "";
 
             if (selfCares.vanish && !vanish && !visibility && !creayun) {
-                if (bot.options.useChat) bot.chat.sendCommandInstantly("essentials:vanish enable");
-                else bot.core.run("essentials:vanish " + bot.username + " enable");
+                runEssentialsCommand("essentials:vanish " + usernameOrBlank + "enable");
             } else if (selfCares.nickname && !nickname) {
-                if (bot.options.useChat) bot.chat.sendCommandInstantly("essentials:nick off");
-                else bot.core.run("essentials:nickname " + bot.username + " off");
+                runEssentialsCommand("essentials:nickname " + usernameOrBlank + "off");
             } else if (selfCares.socialspy && !socialspy && !creayun) {
-                if (bot.options.useChat) bot.chat.sendCommandInstantly("essentials:socialspy enable");
-                else bot.core.run("essentials:socialspy " + bot.username + " enable");
+                runEssentialsCommand("essentials:socialspy " + usernameOrBlank + "enable");
             } else if (selfCares.mute && muted && !creayun) {
-                if (bot.options.useChat) bot.chat.sendCommandInstantly("essentials:mute " + bot.profile.getIdAsString());
-                else bot.core.run("essentials:mute " + bot.profile.getIdAsString());
-
+                runEssentialsCommand("essentials:mute " + bot.profile.getIdAsString());
                 muted = false;
             }
         }
@@ -230,6 +227,11 @@ public class SelfCarePlugin extends Bot.Listener {
 
     public void positionChange () {
         positionPacketsPerSecond++;
+    }
+
+    private void runEssentialsCommand (String command) {
+        if (bot.options.useChat) bot.chat.sendCommandInstantly(command);
+        else bot.core.run(command);
     }
 
     @Override
