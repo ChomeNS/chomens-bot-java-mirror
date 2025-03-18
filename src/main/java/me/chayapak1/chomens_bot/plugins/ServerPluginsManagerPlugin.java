@@ -26,7 +26,7 @@ public class ServerPluginsManagerPlugin extends Bot.Listener {
 
     @Override
     public void connected (ConnectedEvent event) {
-        final CompletableFuture<ClientboundCommandSuggestionsPacket> future = bot.tabComplete.tabComplete("/ver ");
+        final CompletableFuture<ClientboundCommandSuggestionsPacket> future = bot.tabComplete.tabComplete("ver ");
 
         future.thenApplyAsync((packet) -> {
             final String[] matches = packet.getMatches();

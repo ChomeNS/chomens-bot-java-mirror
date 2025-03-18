@@ -156,7 +156,7 @@ public class PlayersPlugin extends Bot.Listener {
         if (!bot.loggedIn || tabCompleteQueue.isEmpty()) return;
 
         final CompletableFuture<ClientboundCommandSuggestionsPacket> future = bot.tabComplete.tabComplete(
-                "/minecraft:scoreboard players add "
+                "scoreboard players add "
         );
 
         if (future == null) return;
