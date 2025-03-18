@@ -11,16 +11,16 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class CloopCommand extends Command {
     public CloopCommand () {
         super(
                 "cloop",
                 "Loops commands",
-                new String[] { "add <interval> <ChronoUnit> <command>", "remove <index>", "clear", "list" },
+                new String[] { "add <interval> <TimeUnit> <command>", "remove <index>", "clear", "list" },
                 new String[] { "commandloop" },
                 TrustLevel.TRUSTED,
                 false
@@ -38,7 +38,7 @@ public class CloopCommand extends Command {
                 int interval = context.getInteger(true);
                 if (interval < 1) interval = 1;
 
-                final ChronoUnit unit = context.getEnum(ChronoUnit.class);
+                final TimeUnit unit = context.getEnum(TimeUnit.class);
 
                 final String command = context.getString(true, true);
 

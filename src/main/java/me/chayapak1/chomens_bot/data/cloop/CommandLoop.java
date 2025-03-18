@@ -1,10 +1,10 @@
 package me.chayapak1.chomens_bot.data.cloop;
 
-import java.time.temporal.ChronoUnit;
+import java.util.concurrent.TimeUnit;
 
 public record CommandLoop (
     String command,
     int interval,
-    ChronoUnit unit
+    TimeUnit unit
 ) {}
 

@@ -3,7 +3,6 @@ package me.chayapak1.chomens_bot.plugins;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.cloop.CommandLoop;
 
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
@@ -19,11 +18,11 @@ public class CloopPlugin {
         this.bot = bot;
     }
 
-    public void add (ChronoUnit unit, int interval, String command) {
+    public void add (TimeUnit unit, int interval, String command) {
         Runnable loopTask = () -> bot.core.run(command);
 
         loops.add(new CommandLoop(command, interval, unit));
-        loopTasks.add(bot.executor.scheduleAtFixedRate(loopTask, 0, interval, TimeUnit.of(unit)));
+        loopTasks.add(bot.executor.scheduleAtFixedRate(loopTask, 0, interval, unit));
     }
 
     public CommandLoop remove (int index) {
