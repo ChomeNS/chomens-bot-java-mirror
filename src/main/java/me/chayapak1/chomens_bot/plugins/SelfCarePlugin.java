@@ -36,7 +36,10 @@ public class SelfCarePlugin extends Bot.Listener {
     private int entityId;
     private GameMode gamemode;
     private int permissionLevel;
+
     private int positionPacketsPerSecond = 0;
+    private long usernameStartTime = System.currentTimeMillis();
+
     private boolean cspy = false;
     private boolean vanish = false;
     private boolean nickname = false;
@@ -78,8 +81,12 @@ public class SelfCarePlugin extends Bot.Listener {
                 else if (string.equals("Something went wrong while saving the prefix. Please check console.")) prefix = true; // Parker2991
 
                 else if (string.equals("Successfully set your username to \"" + bot.username + "\"")) username = true;
-                else if (string.startsWith("You already have the username \"")) username = true;
-                else if (string.startsWith("Successfully set your username to \"")) username = false;
+                else if (string.startsWith("Successfully set your username to \"")) {
+                    username = false;
+                    usernameStartTime = System.currentTimeMillis();
+                }
+                else if (string.startsWith("You already have the username \"" + bot.username + "\"")) username = true;
+                else if (string.startsWith("You already have the username \"")) username = false;
 
                 return true;
             }
@@ -113,7 +120,7 @@ public class SelfCarePlugin extends Bot.Listener {
 
         // back to chat only
         else if (selfCares.prefix.enabled && !prefix && kaboom && !bot.options.creayun) bot.chat.send("/extras:prefix " + bot.config.selfCare.prefix.prefix);
-        else if (selfCares.username && !username && kaboom) bot.chat.send("/extras:username " + bot.username);
+        else if (selfCares.username && (System.currentTimeMillis() - usernameStartTime) >= 2 * 1000 && !username && kaboom) bot.chat.send("/extras:username " + bot.username);
 
         // core
         else if (selfCares.icu.enabled && positionPacketsPerSecond > selfCares.icu.positionPacketsPerSecond) bot.core.run("essentials:sudo * icu stop");
@@ -133,7 +140,7 @@ public class SelfCarePlugin extends Bot.Listener {
                 if (bot.options.useChat) bot.chat.sendCommandInstantly("essentials:mute " + bot.profile.getIdAsString());
                 else bot.core.run("essentials:mute " + bot.profile.getIdAsString());
 
-                muted = false; // too lazy fix
+                muted = false;
             }
         }
     }
