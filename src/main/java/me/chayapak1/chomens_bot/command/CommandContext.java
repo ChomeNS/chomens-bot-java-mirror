@@ -3,7 +3,6 @@ package me.chayapak1.chomens_bot.command;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
-import me.chayapak1.chomens_bot.util.StringUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -261,7 +260,9 @@ public class CommandContext {
 
         final String quotesReplaced = joined.replaceAll("([\"'])(?:\\.|(?!\1).)*\1", "i");
 
-        final int count = StringUtilities.countCharacters(quotesReplaced, ' ');
+        final int count = quotesReplaced.isBlank() ?
+                0 :
+                quotesReplaced.split("\\s+").length;
 
         if (count > maximumArgs) throw new CommandException(
                 Component.translatable(
