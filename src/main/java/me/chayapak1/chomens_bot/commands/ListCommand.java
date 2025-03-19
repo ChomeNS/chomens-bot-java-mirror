@@ -40,24 +40,60 @@ public class ListCommand extends Command {
 
         for (PlayerEntry entry : list) {
             if (entry == null) continue;
+
+            // chayapak
+            // b58cac19-066b-307b-97b1-d6e19ed08d7c
+            //
+            // Usernames: foo, bar, baz or No other usernames associated
+            // Vanished: false
+            //
+            // Click to copy the username to your clipboard
+            // Shift+Click to insert the UUID into your chat box
+            final Component hoverEvent = Component
+                    .text(entry.profile.getName())
+                    .append(Component.newline())
+                    .append(Component.text(entry.profile.getIdAsString()).color(ColorUtilities.getColorByString(bot.config.colorPalette.uuid)))
+                    .append(Component.newline())
+                    .append(Component.newline())
+                    .append(
+                            entry.usernames.isEmpty() ?
+                                    Component
+                                            .text("No other usernames associated")
+                                            .color(NamedTextColor.GRAY) :
+                                    Component.translatable(
+                                            "Usernames: %s",
+                                            Component
+                                                    .join(
+                                                            JoinConfiguration.commas(true),
+                                                            entry.usernames
+                                                                    .stream()
+                                                                    .map(Component::text)
+                                                                    .toList()
+                                                    )
+                                                    .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                    )
+                    .append(Component.newline())
+                    .append(
+                            Component.translatable(
+                                    "Vanished: %s",
+                                    Component
+                                            .text(!entry.listed)
+                                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                            ).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                    )
+                    .append(Component.newline())
+                    .append(Component.newline())
+                    .append(Component.text("Click to copy the username to your clipboard").color(NamedTextColor.GREEN))
+                    .append(Component.newline())
+                    .append(Component.text("Shift+Click to insert the UUID into your chat box").color(NamedTextColor.GREEN));
+
             playersComponent.add(
                     Component.translatable(
-                            "%s › %s",
+                            "%s",
                             entry.displayName == null ?
-                                    Component.text(entry.profile.getName()).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)) :
-                                    entry.displayName
-                                    .hoverEvent(
-                                            HoverEvent.showText(
-                                                    Component
-                                                            .text(entry.profile.getName())
-                                                            .append(Component.newline())
-                                                            .append(Component.text("Click here to copy the username to your clipboard").color(NamedTextColor.GREEN))
-                                            )
-                                    )
-                                    .clickEvent(
-                                            ClickEvent.copyToClipboard(entry.profile.getName())
-                                    )
-                                    .color(NamedTextColor.WHITE),
+                                    Component.text(entry.profile.getName()) :
+                                    entry.displayName,
                             Component
                                     .text(entry.profile.getIdAsString())
                                     .hoverEvent(
@@ -69,7 +105,14 @@ public class ListCommand extends Command {
                                             ClickEvent.copyToClipboard(entry.profile.getIdAsString())
                                     )
                                     .color(ColorUtilities.getColorByString(bot.config.colorPalette.uuid))
-                    ).color(NamedTextColor.DARK_GRAY)
+                    )
+                    .hoverEvent(
+                            HoverEvent.showText(hoverEvent)
+                    )
+                    .clickEvent(
+                            ClickEvent.copyToClipboard(entry.profile.getName())
+                    )
+                    .insertion(entry.profile.getIdAsString())
             );
         }
 

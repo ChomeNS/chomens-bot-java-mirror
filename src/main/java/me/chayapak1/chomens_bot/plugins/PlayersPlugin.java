@@ -182,6 +182,8 @@ public class PlayersPlugin extends Bot.Listener {
         if (duplicate != null) {
             list.remove(duplicate);
 
+            target.listed = true;
+
             target.usernames.addAll(duplicate.usernames);
 
             list.add(target);
@@ -267,6 +269,8 @@ public class PlayersPlugin extends Bot.Listener {
             } else {
                 for (PlayerEntry leftPlayers : new ArrayList<>(pendingLeftPlayers)) {
                     if (!target.equals(leftPlayers)) continue;
+
+                    target.listed = false;
 
                     for (Listener listener : listeners) listener.playerVanished(target);
 
