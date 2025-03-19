@@ -542,7 +542,8 @@ public class MusicCommand extends Command {
                             1,
                             i * 50,
                             -1,
-                            100
+                            100,
+                            false
                     )
             );
 

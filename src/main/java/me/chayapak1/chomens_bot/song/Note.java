@@ -11,6 +11,7 @@ public class Note implements Comparable<Note> {
     public final long time;
     public final int panning;
     public final int stereo;
+    public final boolean isRainbowToggle;
 
     public Note (
             Instrument instrument,
@@ -19,7 +20,8 @@ public class Note implements Comparable<Note> {
             float volume,
             long time,
             int panning,
-            int stereo
+            int stereo,
+            boolean isRainbowToggle
     ) {
         this.instrument = instrument;
         this.shiftedInstrument = this.instrument;
@@ -30,6 +32,7 @@ public class Note implements Comparable<Note> {
         this.time = time;
         this.panning = panning;
         this.stereo = stereo;
+        this.isRainbowToggle = isRainbowToggle;
     }
 
     public Note (
@@ -52,6 +55,7 @@ public class Note implements Comparable<Note> {
         this.time = time;
         this.panning = panning;
         this.stereo = stereo;
+        this.isRainbowToggle = false;
     }
 
     @Override

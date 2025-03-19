@@ -54,7 +54,7 @@ public class SongPlayerConverter implements Converter {
             int noteId = buffer.getShort();
             if (noteId >= 0 && noteId < 400) {
                 time += getVarLong(buffer);
-                song.add(new Note(Instrument.fromId(noteId / 25), noteId % 25, noteId % 25, 1, time, -1, 100));
+                song.add(new Note(Instrument.fromId(noteId / 25), noteId % 25, noteId % 25, 1, time, -1, 100, false));
             }
             else if ((noteId & 0xFFFF) == 0xFFFF) {
                 break;

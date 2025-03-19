@@ -241,7 +241,7 @@ public class MidiConverter implements Converter {
             Instrument instrument = Instrument.fromId(noteId / 25);
             long time = microTime / 1000L;
 
-            return new Note(instrument, pitch, midiPitch, volume, time, (int) ((panning - 64) / (float) 64) * 100, 100);
+            return new Note(instrument, pitch, midiPitch, volume, time, (int) ((panning - 64) / (float) 64) * 100, 100, false);
         }
         return null;
     }

@@ -63,7 +63,8 @@ public class TextFileConverter implements Converter {
                             volume,
                             time,
                             -1,
-                            100
+                            100,
+                            false
                     )
             );
         }

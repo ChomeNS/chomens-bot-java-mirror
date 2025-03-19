@@ -12,6 +12,8 @@ import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import me.chayapak1.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.util.HSVLike;
 import org.cloudburstmc.math.vector.Vector3d;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.protocol.data.game.BossBarColor;
@@ -52,6 +54,9 @@ public class MusicPlayerPlugin extends Bot.Listener {
     public float speed = 1;
 
     public int amplify = 1;
+
+    public boolean rainbow = false; // nbs easter egg
+    private float rainbowHue = 0F;
 
     public String instrument = "off";
 
@@ -228,6 +233,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
     public BotBossBar addBossBar () {
         if (currentSong == null) return null;
 
+        rainbow = false;
+
         final BotBossBar bossBar = new BotBossBar(
                 Component.empty(),
                 BOTH_SELECTOR,
@@ -293,8 +300,15 @@ public class MusicPlayerPlugin extends Bot.Listener {
     }
 
     public Component generateBossBar () {
-        NamedTextColor nameColor;
-        if (pitch > 0) {
+        TextColor nameColor;
+
+        if (rainbow) {
+            final int increment = 360 / 20;
+            nameColor = TextColor.color(HSVLike.hsvLike(rainbowHue / 360.0f, 1, 1));
+            rainbowHue = (rainbowHue + increment) % 360;
+
+            bossBarColor = BossBarColor.YELLOW;
+        } else if (pitch > 0) {
             nameColor = NamedTextColor.LIGHT_PURPLE;
             bossBarColor = BossBarColor.PURPLE;
         } else if (pitch < 0) {
@@ -366,6 +380,11 @@ public class MusicPlayerPlugin extends Bot.Listener {
             currentSong.advanceTime();
             while (currentSong.reachedNextNote()) {
                 final Note note = currentSong.getNextNote();
+
+                if (note.isRainbowToggle) {
+                    rainbow = !rainbow;
+                    continue;
+                }
 
                 if (note.volume == 0) continue;
 

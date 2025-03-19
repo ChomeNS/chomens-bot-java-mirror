@@ -103,7 +103,7 @@ public class NBSConverter implements Converter {
         String songAuthor = getString(buffer, bytes.length);
         String songOriginalAuthor = getString(buffer, bytes.length);
         String songDescription = getString(buffer, bytes.length);
-        short tempo = buffer.getShort();
+        double tempo = buffer.getShort();
         byte autoSaving = buffer.get();
         byte autoSavingDuration = buffer.get();
         byte timeSignature = buffer.get();
@@ -193,6 +193,7 @@ public class NBSConverter implements Converter {
 //      song.loopCount = maxLoopCount;
         }
         for (NBSNote note : nbsNotes) {
+            boolean isRainbowToggle = false;
             Instrument instrument;
             double key = note.key;
             if (note.instrument < INSTRUMENT_INDEX.length) {
@@ -209,12 +210,22 @@ public class NBSConverter implements Converter {
                 String name = customInstrument.name
                         .replace("entity.firework.", "entity.firework_rocket."); // this one is special
 
+                boolean isTempoChanger = false;
+
+                if (name.equals("Tempo Changer")) {
+                    isTempoChanger = true;
+
+                    tempo = (double) Math.abs(note.pitch) * 100 / 15;
+                } else if (name.equals("Toggle Rainbow")) {
+                    isRainbowToggle = true;
+                }
+
                 String file = Path.of(customInstrument.file).getFileName().toString();
 
                 // should i hardcode the extension like this?
                 if (file.endsWith(".ogg")) file = file.substring(0, file.length() - ".ogg".length());
 
-                if (!sounds.contains(name) && !sounds.contains(file)) {
+                if (!sounds.contains(name) && !sounds.contains(file) && !isTempoChanger) {
                     boolean replaced = false;
 
                     final String replacedName = StringUtilities.replaceAllWithMap(name.toLowerCase(), CUSTOM_INSTRUMENT_REPLACEMENTS);
@@ -257,11 +268,18 @@ public class NBSConverter implements Converter {
 
             double pitch = key - 33;
 
-            try {
-                song.add(new Note(instrument, pitch, key, (float) note.velocity * (float) layerVolume / 10000f, getMilliTime(note.tick, tempo), Byte.toUnsignedInt(note.panning), Byte.toUnsignedInt(nbsLayers.get(note.layer).stereo)));
-            } catch (Exception e) {
-                song.add(new Note(instrument, pitch, key, (float) note.velocity * (float) layerVolume / 10000f, getMilliTime(note.tick, tempo), -1, 100));
-            }
+            song.add(
+                    new Note(
+                            instrument,
+                            pitch,
+                            key,
+                            (float) note.velocity * (float) layerVolume / 10000f,
+                            getMilliTime(note.tick, tempo),
+                            Byte.toUnsignedInt(note.panning),
+                            Byte.toUnsignedInt(nbsLayers.get(note.layer).stereo),
+                            isRainbowToggle
+                    )
+            );
         }
 
         song.length = song.get(song.size()-1).time + 50;
@@ -279,8 +297,8 @@ public class NBSConverter implements Converter {
         return new String(arr, StandardCharsets.UTF_8);
     }
 
-    private static int getMilliTime(int tick, int tempo) {
-        return 1000 * tick * 100 / tempo;
+    private static long getMilliTime (int tick, double tempo) {
+        return (long) (1000L * tick * 100 / tempo);
     }
 
     private static final Map<String, String> subtitles = new HashMap<>();
