@@ -26,7 +26,6 @@ public class RandomStringUtilities {
 
     private static final SecureRandom random = new SecureRandom();
 
-    // TODO: mabe support stuff than alpha-numeric
     public static String generate (int length) {
         buf = new char[length];
 
