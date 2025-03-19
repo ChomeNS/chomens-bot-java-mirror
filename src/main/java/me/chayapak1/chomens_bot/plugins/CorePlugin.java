@@ -220,7 +220,7 @@ public class CorePlugin extends PositionPlugin.Listener {
             return null;
         }
 
-        final Vector3i coreBlock = block;
+        final Vector3i coreBlock = block.clone();
 
         run(command);
 
@@ -228,7 +228,7 @@ public class CorePlugin extends PositionPlugin.Listener {
 
         final CompletableFuture<String> future = bot.query.block(coreBlock, "LastOutput");
 
-        future.thenApplyAsync(output -> {
+        future.thenApply(output -> {
             if (output == null) return null;
 
             trackedFuture.complete(

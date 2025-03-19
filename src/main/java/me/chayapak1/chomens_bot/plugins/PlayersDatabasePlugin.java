@@ -156,7 +156,7 @@ public class PlayersDatabasePlugin extends PlayersPlugin.Listener {
 
                 if (future == null) return;
 
-                future.thenApplyAsync(output -> {
+                future.thenApply(output -> {
                     if (output == null) return null;
 
                     try {

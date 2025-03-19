@@ -32,7 +32,7 @@ public class AuthPlugin extends PlayersPlugin.Listener {
 
         future.completeOnTimeout("", 10, TimeUnit.SECONDS);
 
-        future.thenApplyAsync(ip -> {
+        future.thenApply(ip -> {
             bot.logger.log(
                     LogType.AUTH,
                     Component.translatable(

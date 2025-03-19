@@ -71,7 +71,7 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
 
         if (future == null) return;
 
-        future.thenApplyAsync(output -> {
+        future.thenApply(output -> {
             handleFilterManager(output, target);
 
             return output;

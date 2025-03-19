@@ -74,7 +74,7 @@ public class MailCommand extends Command {
                         "SelectedItem.components.minecraft:custom_data.message"
                 );
 
-                future.thenApplyAsync(output -> {
+                future.thenApply(output -> {
                     try {
                         if (output == null) {
                             throw new CommandException(Component.text("Player has no `message` NBT tag in their selected item's minecraft:custom_data"));

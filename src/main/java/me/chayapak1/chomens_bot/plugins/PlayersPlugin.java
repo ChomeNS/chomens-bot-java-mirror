@@ -90,7 +90,7 @@ public class PlayersPlugin extends Bot.Listener {
 
             trackedCoreFuture.completeOnTimeout(null, 5, TimeUnit.SECONDS);
 
-            trackedCoreFuture.thenApplyAsync(output -> {
+            trackedCoreFuture.thenApply(output -> {
                 final List<Component> children = output.children();
 
                 String stringified = ComponentUtilities.stringify(Component.join(JoinConfiguration.separator(Component.empty()), children));
@@ -236,7 +236,7 @@ public class PlayersPlugin extends Bot.Listener {
     private void check (PlayerEntry target) {
         final CompletableFuture<String> future = getLastKnownName(target.profile.getIdAsString());
 
-        future.thenApplyAsync(lastKnownName -> {
+        future.thenApply(lastKnownName -> {
             if (lastKnownName == null) {
                 list.remove(target);
 

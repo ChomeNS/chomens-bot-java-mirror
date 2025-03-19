@@ -107,7 +107,7 @@ public class CommandBlockCommand extends Command {
 
             if (future == null) return;
 
-            future.thenApplyAsync(output -> {
+            future.thenApply(output -> {
                 if (player == null) context.sendOutput(output);
                 else {
                     final Component component = Component
