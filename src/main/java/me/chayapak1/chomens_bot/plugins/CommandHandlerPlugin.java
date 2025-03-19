@@ -126,63 +126,48 @@ public class CommandHandlerPlugin {
 
                 final List<Role> roles = member.getRoles();
 
-                final boolean hasTrustedRole = roles.stream().anyMatch(role -> role.getName().equalsIgnoreCase(bot.config.discord.trustedRoleName));
-                final boolean hasAdminRole = roles.stream().anyMatch(role -> role.getName().equalsIgnoreCase(bot.config.discord.adminRoleName));
-                final boolean hasOwnerRole = roles.stream().anyMatch(role -> role.getName().equalsIgnoreCase(bot.config.discord.ownerRoleName));
+                TrustLevel userTrustLevel = TrustLevel.PUBLIC;
 
-                if (
-                        command.trustLevel == TrustLevel.TRUSTED &&
-                                !hasTrustedRole &&
-                                !hasAdminRole &&
-                                !hasOwnerRole
-                ) return Component.text("You're not in the trusted role!").color(NamedTextColor.RED);
+                for (Role role : roles) {
+                    if (role.getName().equalsIgnoreCase(bot.config.discord.ownerRoleName)) {
+                        userTrustLevel = TrustLevel.OWNER;
+                        break;
+                    } else if (role.getName().equalsIgnoreCase(bot.config.discord.adminRoleName)) {
+                        userTrustLevel = TrustLevel.ADMIN;
+                        break;
+                    } else if (role.getName().equalsIgnoreCase(bot.config.discord.trustedRoleName)) {
+                        userTrustLevel = TrustLevel.TRUSTED;
+                        break;
+                    }
+                }
 
-                if (
-                        command.trustLevel == TrustLevel.ADMIN &&
-                                !hasAdminRole &&
-                                !hasOwnerRole
-                ) return Component.text("You're not in the admin role!").color(NamedTextColor.RED);
+                if (trustLevel.level > userTrustLevel.level) {
+                    return Component
+                            .translatable(
+                                    "Your current roles don't allow you to execute %s commands!",
+                                    Component.text(trustLevel.name())
+                            )
+                            .color(NamedTextColor.RED);
+                }
 
-                if (
-                        command.trustLevel == TrustLevel.OWNER &&
-                                !hasOwnerRole
-                ) return Component.text("You're not in the owner role!").color(NamedTextColor.RED);
-
-                context.trustLevel = hasOwnerRole ? TrustLevel.OWNER :
-                                hasAdminRole ? TrustLevel.ADMIN :
-                                hasTrustedRole ? TrustLevel.TRUSTED :
-                                TrustLevel.PUBLIC;
+                context.trustLevel = userTrustLevel;
             } else {
-                final boolean correctHash = bot.hashing.isCorrectHash(userHash, splitInput[0], context.sender);
-                final boolean correctAdminHash = bot.hashing.isCorrectAdminHash(userHash, splitInput[0], context.sender);
-                final boolean correctOwnerHash = bot.hashing.isCorrectOwnerHash(userHash, splitInput[0], context.sender);
+                final TrustLevel userTrustLevel = bot.hashing.getTrustLevel(userHash, splitInput[0], context.sender);
 
-                if (
-                        command.trustLevel == TrustLevel.TRUSTED &&
-                                !correctHash &&
-                                !correctAdminHash &&
-                                !correctOwnerHash
-                ) return Component.text("Invalid hash").color(NamedTextColor.RED);
+                if (trustLevel.level > userTrustLevel.level) {
+                    return Component
+                            .translatable(
+                                    "Invalid %s hash",
+                                    Component.text(trustLevel.name())
+                            )
+                            .color(NamedTextColor.RED);
+                }
 
-                if (
-                        command.trustLevel == TrustLevel.ADMIN &&
-                                !correctAdminHash &&
-                                !correctOwnerHash
-                ) return Component.text("Invalid admin hash").color(NamedTextColor.RED);
-
-                if (
-                        command.trustLevel == TrustLevel.OWNER &&
-                                !correctOwnerHash
-                ) return Component.text("Invalid owner hash").color(NamedTextColor.RED);
-
-                context.trustLevel = correctOwnerHash ? TrustLevel.OWNER :
-                                correctAdminHash ? TrustLevel.ADMIN :
-                                correctHash ? TrustLevel.TRUSTED :
-                                TrustLevel.PUBLIC;
+                context.trustLevel = userTrustLevel;
             }
         }
 
-        if (!console && command.consoleOnly) return Component.text("This command can only be ran via console").color(NamedTextColor.RED);
+        if (!console && command.consoleOnly) return Component.text("This command can only be run via console").color(NamedTextColor.RED);
 
         // should these be here?
         context.fullArgs = fullArgs;

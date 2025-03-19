@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.plugins;
 
 import com.google.common.hash.Hashing;
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 
 import java.nio.charset.StandardCharsets;
@@ -58,5 +59,12 @@ public class HashingPlugin {
     public boolean isCorrectOwnerHash (String input, String prefix, PlayerEntry sender) {
         return checkHash(getOwnerHash(prefix, sender, true), input) ||
                 checkHash(getOwnerHash(prefix, sender, false), input);
+    }
+
+    public TrustLevel getTrustLevel (String input, String prefix, PlayerEntry sender) {
+        if (isCorrectOwnerHash(input, prefix, sender)) return TrustLevel.OWNER;
+        else if (isCorrectAdminHash(input, prefix, sender)) return TrustLevel.ADMIN;
+        else if (isCorrectHash(input, prefix, sender)) return TrustLevel.TRUSTED;
+        else return TrustLevel.PUBLIC;
     }
 }

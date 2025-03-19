@@ -33,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.util.List;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 // please ignore my ohio code
 // also this is one of the classes which has >100 lines or actually >400 LMAO
@@ -81,18 +82,13 @@ public class DiscordPlugin {
         for (Bot bot : Main.bots) {
             final String channelId = servers.get(bot.getServerString(true));
 
+            bot.executor.scheduleAtFixedRate(() -> onDiscordTick(channelId), 0, 50, TimeUnit.MILLISECONDS);
+
             totalConnects.put(channelId, 0); // is this necessary?
 
             bot.addListener(new Bot.Listener() {
                 @Override
                 public void loadedPlugins (Bot bot) {
-                    bot.tick.addListener(new TickPlugin.Listener() {
-                        @Override
-                        public void onAlwaysTick () {
-                            onDiscordTick(channelId);
-                        }
-                    });
-
                     bot.chat.addListener(new ChatPlugin.Listener() {
                         @Override
                         public boolean systemMessageReceived (Component component, String string, String _ansi) {
@@ -165,7 +161,6 @@ public class DiscordPlugin {
             jda.addEventListener(new ListenerAdapter() {
                 @Override
                 public void onMessageReceived(@NotNull MessageReceivedEvent event) {
-                    // TODO: IMPROVE this code
                     if (
                             !event.getChannel().getId().equals(channelId) ||
                                     event.getAuthor().getId().equals(jda.getSelfUser().getId()) ||
@@ -218,6 +213,8 @@ public class DiscordPlugin {
     }
 
     private Component getMessageComponent (Bot bot, Message message) {
+        // TODO: IMPROVE this code
+
         // ignore my very very ohio code,..,,.
 
         Component attachmentsComponent = Component.empty();
