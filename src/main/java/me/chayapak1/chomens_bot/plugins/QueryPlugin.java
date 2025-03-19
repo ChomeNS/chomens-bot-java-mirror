@@ -89,11 +89,11 @@ public class QueryPlugin extends Bot.Listener {
         // this probably doesn't do much, since even if the command returns
         // no output, the tracker will still tellraw to the bot that this command has
         // completed no matter what, but just in case, we'll remove the
-        // transactions and the ids here after 30 seconds
+        // transactions and the ids here after 5 minutes
         bot.executor.schedule(() -> {
             transactions.remove(transactionId);
             ids.remove(id);
-        }, 30, TimeUnit.SECONDS);
+        }, 5, TimeUnit.MINUTES);
 
         return Triple.of(future, transactionId, id);
     }
