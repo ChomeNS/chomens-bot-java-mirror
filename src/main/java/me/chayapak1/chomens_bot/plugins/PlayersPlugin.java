@@ -5,13 +5,13 @@ import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
+import org.geysermc.mcprotocollib.auth.GameProfile;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.data.game.PlayerListEntry;
 import org.geysermc.mcprotocollib.protocol.data.game.PlayerListEntryAction;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
-import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundCommandSuggestionsPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundPlayerInfoRemovePacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundPlayerInfoUpdatePacket;
 
@@ -29,14 +29,14 @@ public class PlayersPlugin extends Bot.Listener {
 
     private final List<Listener> listeners = new ArrayList<>();
 
-    private final List<PlayerEntry> tabCompleteQueue = new ArrayList<>();
+    private final List<PlayerEntry> pendingLeftPlayers = new ArrayList<>();
 
     public PlayersPlugin (Bot bot) {
         this.bot = bot;
 
         bot.addListener(this);
 
-        bot.executor.scheduleAtFixedRate(this::onTabCompleteTick, 0, 500, TimeUnit.MILLISECONDS);
+        bot.executor.scheduleAtFixedRate(this::onLastKnownNameTick, 0, 5, TimeUnit.SECONDS);
     }
 
     @Override
@@ -152,48 +152,6 @@ public class PlayersPlugin extends Bot.Listener {
         return getEntry(other.getProfileId());
     }
 
-    private void onTabCompleteTick () {
-        if (!bot.loggedIn || tabCompleteQueue.isEmpty()) return;
-
-        final CompletableFuture<ClientboundCommandSuggestionsPacket> future = bot.tabComplete.tabComplete(
-                "scoreboard players add "
-        );
-
-        if (future == null) return;
-
-        future.thenApplyAsync(packet -> {
-            final String[] matches = packet.getMatches();
-            final Component[] tooltips = packet.getTooltips();
-
-            for (PlayerEntry entry : tabCompleteQueue) {
-                final String username = entry.profile.getName();
-
-                boolean left = true;
-
-                for (int i = 0; i < matches.length; i++) {
-                    if (tooltips[i] != null || !matches[i].equals(username)) continue;
-
-                    entry.listed = false;
-
-                    for (Listener listener : listeners) { listener.playerVanished(entry); }
-
-                    left = false;
-                }
-
-                if (left) {
-                    list.remove(entry);
-
-                    for (Listener listener : listeners) { listener.playerLeft(entry); }
-                }
-
-            }
-
-            tabCompleteQueue.clear();
-
-            return packet;
-        });
-    }
-
     private void initializeChat (PlayerListEntry newEntry) {
         final PlayerEntry target = getEntry(newEntry);
         if (target == null) return;
@@ -208,40 +166,31 @@ public class PlayersPlugin extends Bot.Listener {
         target.listed = newEntry.isListed();
     }
 
-    private String getName(PlayerEntry target) {
-        return bot.options.creayun ? target.profile.getName().replaceAll("§.", "") : target.profile.getName();
+    private String getName (PlayerEntry target) {
+        return bot.options.creayun ?
+                target.profile.getName().replaceAll("§.", "") :
+                target.profile.getName();
     }
 
     private void addPlayer (PlayerListEntry newEntry) {
         final PlayerEntry duplicate = getEntry(newEntry);
 
-        boolean isUsernameChange = false;
-        boolean isUnVanish = false;
-
         final PlayerEntry target = new PlayerEntry(newEntry);
 
+        if (duplicate != null && !duplicate.profile.getName().equals(target.profile.getName())) return;
+
         if (duplicate != null) {
-            if (!duplicate.profile.getName().equals(target.profile.getName())) {
-                isUsernameChange = true;
+            list.remove(duplicate);
 
-                target.usernames = duplicate.usernames;
+            target.usernames.addAll(duplicate.usernames);
 
-                target.usernames.add(target.profile.getName());
-            } else {
-                isUnVanish = true;
+            list.add(target);
 
-                list.remove(duplicate);
-            }
-        }
-
-        list.add(target);
-
-        if (!isUsernameChange && !isUnVanish) {
-            for (Listener listener : listeners) { listener.playerJoined(target); }
-        } else if (isUnVanish) {
-            for (Listener listener : listeners) { listener.playerUnVanished(target); }
+            for (Listener listener : listeners) listener.playerUnVanished(target);
         } else {
-            for (Listener listener : listeners) { listener.playerChangedUsername(target); }
+            list.add(target);
+
+            for (Listener listener : listeners) listener.playerJoined(target);
         }
     }
 
@@ -278,12 +227,73 @@ public class PlayersPlugin extends Bot.Listener {
         for (Listener listener : listeners) { listener.playerDisplayNameUpdated(target, displayName); }
     }
 
+    private CompletableFuture<String> getLastKnownName (String uuid) {
+        return bot.query.entity(uuid, "bukkit.lastKnownName");
+    }
+
+    private void check (PlayerEntry target) {
+        final CompletableFuture<String> future = getLastKnownName(target.profile.getIdAsString());
+
+        future.thenApplyAsync(lastKnownName -> {
+            if (lastKnownName == null) {
+                list.remove(target);
+
+                pendingLeftPlayers.remove(target);
+
+                for (Listener listener : listeners) listener.playerLeft(target);
+            } else if (!lastKnownName.equals(target.profile.getName())) {
+                final PlayerEntry newTarget = new PlayerEntry(
+                        new GameProfile(
+                                target.profile.getId(),
+                                lastKnownName
+                        ),
+                        target.gamemode,
+                        target.latency,
+                        target.displayName,
+                        target.expiresAt,
+                        target.publicKey,
+                        target.keySignature,
+                        target.listed
+                );
+
+                newTarget.usernames.addAll(target.usernames);
+                newTarget.usernames.addLast(target.profile.getName());
+
+                list.add(newTarget);
+
+                list.remove(target);
+
+                for (Listener listener : listeners) listener.playerChangedUsername(newTarget);
+            } else {
+                for (PlayerEntry leftPlayers : new ArrayList<>(pendingLeftPlayers)) {
+                    if (!target.equals(leftPlayers)) continue;
+
+                    for (Listener listener : listeners) listener.playerVanished(target);
+
+                    pendingLeftPlayers.remove(leftPlayers);
+                }
+            }
+
+            return null;
+        });
+    }
+
+    private void onLastKnownNameTick () {
+        if (!bot.loggedIn) return;
+
+        for (PlayerEntry target : new ArrayList<>(list)) {
+            check(target);
+        }
+    }
+
     private void removePlayer (UUID uuid) {
         final PlayerEntry target = getEntry(uuid);
 
         if (target == null) return;
 
-        tabCompleteQueue.add(target);
+        pendingLeftPlayers.add(target);
+
+        check(target);
     }
 
     @Override
@@ -293,6 +303,7 @@ public class PlayersPlugin extends Bot.Listener {
 
     public void addListener (Listener listener) { listeners.add(listener); }
 
+    @SuppressWarnings("unused")
     public static class Listener {
         public void playerJoined (PlayerEntry target) {}
         public void playerUnVanished (PlayerEntry target) {}

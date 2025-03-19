@@ -38,8 +38,6 @@ public class PlayerEntry {
         this.publicKey = publicKey;
         this.keySignature = keySignature;
         this.listed = listed;
-
-        this.usernames.add(this.profile.getName());
     }
 
     public PlayerEntry (PlayerListEntry entry) {
