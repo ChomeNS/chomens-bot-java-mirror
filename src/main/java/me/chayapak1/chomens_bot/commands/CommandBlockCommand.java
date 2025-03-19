@@ -134,7 +134,10 @@ public class CommandBlockCommand extends Command {
                                             )
                                             .clickEvent(ClickEvent.copyToClipboard(player.profile.getName()))
                                             .insertion(player.profile.getIdAsString()),
-                                    output.color(NamedTextColor.WHITE)
+                                    Component
+                                            .empty()
+                                            .append(output)
+                                            .color(NamedTextColor.WHITE)
                             )
                             .color(NamedTextColor.DARK_GRAY);
 
