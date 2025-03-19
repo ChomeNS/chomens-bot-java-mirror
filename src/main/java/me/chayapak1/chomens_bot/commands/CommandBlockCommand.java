@@ -6,7 +6,11 @@ import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
+import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
@@ -38,12 +42,12 @@ public class CommandBlockCommand extends Command {
     public Component execute(CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        runCommand(bot, context, context.getString(true, true));
+        runCommand(bot, context, context.getString(true, true), null);
 
         return null;
     }
 
-    private void runCommand (Bot bot, CommandContext context, String command) {
+    private void runCommand (Bot bot, CommandContext context, String command, PlayerEntry player) {
         final Matcher userMatcher = USER_PATTERN.matcher(command);
         final Matcher uuidMatcher = UUID_PATTERN.matcher(command);
 
@@ -77,7 +81,7 @@ public class CommandBlockCommand extends Command {
                                 !USER_PATTERN.matcher(username).find() &&
                                 !UUID_PATTERN.matcher(username).find()
                 ) {
-                    runCommand(bot, context, replacedCommand);
+                    runCommand(bot, context, replacedCommand, entry);
                 }
             }
         } else if (command.contains("{username}") || command.contains("{uuid}")) {
@@ -91,11 +95,11 @@ public class CommandBlockCommand extends Command {
 
                 if (
                         !replacedCommand.contains("{username}") &&
-                                !replacedCommand.contains("{Uuuid}") &&
+                                !replacedCommand.contains("{uuid}") &&
                                 !USER_PATTERN.matcher(username).find() &&
                                 !UUID_PATTERN.matcher(username).find()
                 ) {
-                    runCommand(bot, context, replacedCommand);
+                    runCommand(bot, context, replacedCommand, entry);
                 }
             }
         } else {
@@ -104,7 +108,38 @@ public class CommandBlockCommand extends Command {
             if (future == null) return;
 
             future.thenApplyAsync(output -> {
-                context.sendOutput(output);
+                if (player == null) context.sendOutput(output);
+                else {
+                    final Component component = Component
+                            .translatable(
+                                    "[%s] %s",
+                                    Component
+                                            .text(player.profile.getName())
+                                            .color(NamedTextColor.GRAY)
+                                            .hoverEvent(
+                                                    HoverEvent.showText(
+                                                            Component
+                                                                    .text(player.profile.getName())
+                                                                    .append(Component.newline())
+                                                                    .append(
+                                                                            Component
+                                                                                    .text(player.profile.getIdAsString())
+                                                                                    .color(ColorUtilities.getColorByString(bot.config.colorPalette.uuid))
+                                                                    )
+                                                                    .append(Component.newline())
+                                                                    .append(Component.text("Click to copy the username to your clipboard").color(NamedTextColor.GREEN))
+                                                                    .append(Component.newline())
+                                                                    .append(Component.text("Shift+Click to insert the UUID into your chat box").color(NamedTextColor.GREEN))
+                                                    )
+                                            )
+                                            .clickEvent(ClickEvent.copyToClipboard(player.profile.getName()))
+                                            .insertion(player.profile.getIdAsString()),
+                                    output.color(NamedTextColor.WHITE)
+                            )
+                            .color(NamedTextColor.DARK_GRAY);
+
+                    context.sendOutput(component);
+                }
 
                 return output;
             });
