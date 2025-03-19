@@ -184,6 +184,18 @@ public class CommandContext {
         }
     }
 
+    public Long getLong (boolean required) throws CommandException {
+        final String string = getString(false, required, "long");
+
+        if (string.isEmpty()) return null;
+
+        try {
+            return Long.parseLong(string);
+        } catch (NumberFormatException e) {
+            throw new CommandException(Component.text("Invalid long"));
+        }
+    }
+
     public Double getDouble (boolean required, boolean allowInfinite) throws CommandException {
         final String string = getString(false, required, "double");
 

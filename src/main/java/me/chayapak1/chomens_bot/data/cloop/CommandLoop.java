@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 public record CommandLoop (
     String command,
-    int interval,
+    long interval,
     TimeUnit unit
 ) {}
 

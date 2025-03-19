@@ -18,7 +18,7 @@ public class CloopPlugin {
         this.bot = bot;
     }
 
-    public void add (TimeUnit unit, int interval, String command) {
+    public void add (TimeUnit unit, long interval, String command) {
         Runnable loopTask = () -> bot.core.run(command);
 
         loops.add(new CommandLoop(command, interval, unit));

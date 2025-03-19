@@ -35,7 +35,7 @@ public class CloopCommand extends Command {
 
         switch (action) {
             case "add" -> {
-                int interval = context.getInteger(true);
+                long interval = context.getLong(true);
                 if (interval < 1) interval = 1;
 
                 final TimeUnit unit = context.getEnum(TimeUnit.class);
