@@ -182,7 +182,7 @@ public class PositionPlugin extends Bot.Listener {
         if (y > maxY + 500 || y < minY) {
             String command = "/";
 
-            if (bot.serverPluginsManager.hasPlugin(ServerPluginsManagerPlugin.ESSENTIALS)) command += "essentials:";
+            if (bot.serverFeatures.hasEssentials) command += "essentials:";
 
             command += String.format("tp ~ %s ~", maxY);
 

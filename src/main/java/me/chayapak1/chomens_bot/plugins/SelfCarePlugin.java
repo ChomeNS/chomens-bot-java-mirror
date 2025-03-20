@@ -34,8 +34,8 @@ public class SelfCarePlugin extends Bot.Listener {
     public boolean visibility = false;
 
     private int entityId;
-    private GameMode gamemode;
-    private int permissionLevel;
+    public GameMode gamemode;
+    public int permissionLevel;
 
     private int positionPacketsPerSecond = 0;
     private long usernameStartTime = System.currentTimeMillis();
@@ -103,8 +103,8 @@ public class SelfCarePlugin extends Bot.Listener {
     public void check () {
         final Configuration.SelfCare selfCares = bot.config.selfCare;
 
-        final boolean kaboom = bot.serverPluginsManager.hasPlugin(ServerPluginsManagerPlugin.EXTRAS);
-        final boolean hasEssentials = bot.serverPluginsManager.hasPlugin(ServerPluginsManagerPlugin.ESSENTIALS);
+        final boolean kaboom = bot.serverFeatures.hasExtras;
+        final boolean hasEssentials = bot.serverFeatures.hasEssentials;
 
         final boolean creayun = bot.options.creayun;
 

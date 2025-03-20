@@ -37,7 +37,6 @@ import java.util.concurrent.TimeUnit;
 
 public class CorePlugin extends PositionPlugin.Listener {
     public static final int COMMAND_BLOCK_ID = 418;
-    public static final int REPEATING_COMMAND_BLOCK_ID = 537;
 
     private final Bot bot;
 
@@ -158,7 +157,7 @@ public class CorePlugin extends PositionPlugin.Listener {
 
         commandsPerTick++;
 
-        if (bot.serverPluginsManager.hasPlugin(ServerPluginsManagerPlugin.EXTRAS)) {
+        if (bot.serverFeatures.hasExtras) {
             bot.session.send(new ServerboundSetCommandBlockPacket(
                     block,
                     command,
@@ -310,9 +309,7 @@ public class CorePlugin extends PositionPlugin.Listener {
                 new ServerboundSetCreativeModeSlotPacket(
                         (short) 36,
                         new ItemStack(
-                                bot.serverPluginsManager.hasPlugin(ServerPluginsManagerPlugin.EXTRAS) ?
-                                        REPEATING_COMMAND_BLOCK_ID :
-                                        COMMAND_BLOCK_ID,
+                                COMMAND_BLOCK_ID,
                                 64,
                                 dataComponents
                         )

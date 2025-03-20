@@ -77,7 +77,7 @@ public class Bot extends SessionAdapter {
     public CommandSpyPlugin commandSpy;
     public PositionPlugin position;
     public DatabasePlugin database;
-    public ServerPluginsManagerPlugin serverPluginsManager;
+    public ServerFeaturesPlugin serverFeatures;
     public SelfCarePlugin selfCare;
     public QueryPlugin query;
     public ExtrasMessengerPlugin extrasMessenger;
@@ -129,7 +129,7 @@ public class Bot extends SessionAdapter {
         this.chat = new ChatPlugin(this);
         this.commandSpy = new CommandSpyPlugin(this);
         this.position = new PositionPlugin(this);
-        this.serverPluginsManager = new ServerPluginsManagerPlugin(this);
+        this.serverFeatures = new ServerFeaturesPlugin(this);
         this.selfCare = new SelfCarePlugin(this);
         this.query = new QueryPlugin(this);
         this.extrasMessenger = new ExtrasMessengerPlugin(this);
