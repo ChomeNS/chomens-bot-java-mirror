@@ -39,7 +39,7 @@ public class ConsoleCommand extends Command {
                 final List<String> servers = new ArrayList<>();
 
                 for (Bot eachBot : bot.bots) {
-                    servers.add(bot.getServerString(true));
+                    servers.add(eachBot.getServerString(true));
                 }
 
                 final String server = context.getString(true, true);
