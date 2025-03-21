@@ -93,7 +93,7 @@ public class CorePlugin extends PositionPlugin.Listener {
 
             if (!shouldRefill) return;
 
-            refill();
+            refill(false);
             shouldRefill = false;
         }, 0, 1, TimeUnit.SECONDS);
 
@@ -432,7 +432,7 @@ public class CorePlugin extends PositionPlugin.Listener {
                         Math.abs(botChunkPosZ - coreChunkPosZ) > bot.world.simulationDistance
         ) {
             reset();
-            refill();
+            refill(false);
         }
 
         if (!ready) {
@@ -471,7 +471,8 @@ public class CorePlugin extends PositionPlugin.Listener {
         block = Vector3i.from(from);
     }
 
-    public void refill () {
+    public void refill () { refill(true); }
+    public void refill (boolean force) {
         if (!ready) return;
 
         final Map<Integer, Boolean> refilledMap = new HashMap<>();
@@ -483,7 +484,10 @@ public class CorePlugin extends PositionPlugin.Listener {
 
                     final Boolean refilled = refilledMap.get(y);
 
-                    if (isCommandBlockState(block) || (refilled != null && refilled)) continue;
+                    if (
+                            (!force && isCommandBlockState(block)) ||
+                                    (refilled != null && refilled)
+                    ) continue;
 
                     final String command = String.format(
                             "minecraft:fill %s %s %s %s %s %s minecraft:command_block{CustomName:'%s'}",
