@@ -1,18 +1,14 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.data.entity.Rotation;
+import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.MathUtilities;
 import org.cloudburstmc.math.vector.Vector3d;
-import org.cloudburstmc.math.vector.Vector3f;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.type.EntityType;
-import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundMoveEntityPosPacket;
-import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundMoveEntityPosRotPacket;
-import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundMoveEntityRotPacket;
-import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.ClientboundRemoveEntitiesPacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.*;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.player.ClientboundPlayerPositionPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.spawn.ClientboundAddEntityPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.level.ServerboundAcceptTeleportationPacket;
@@ -35,7 +31,7 @@ public class PositionPlugin extends Bot.Listener {
     public boolean isGoingDownFromHeightLimit = false; // cool variable name
 
     private final Map<Integer, PlayerEntry> entityIdMap = new HashMap<>();
-    private final Map<Integer, Vector3f> positionMap = new HashMap<>();
+    private final Map<Integer, Vector3d> positionMap = new HashMap<>();
     private final Map<Integer, Rotation> rotationMap = new HashMap<>();
 
     public PositionPlugin (Bot bot) {
@@ -66,12 +62,13 @@ public class PositionPlugin extends Bot.Listener {
 
     @Override
     public void packetReceived (Session session, Packet packet) {
-        if (packet instanceof ClientboundPlayerPositionPacket) packetReceived((ClientboundPlayerPositionPacket) packet);
-        else if (packet instanceof ClientboundAddEntityPacket) packetReceived((ClientboundAddEntityPacket) packet);
-        else if (packet instanceof ClientboundRemoveEntitiesPacket) packetReceived((ClientboundRemoveEntitiesPacket) packet);
-        else if (packet instanceof ClientboundMoveEntityRotPacket) packetReceived((ClientboundMoveEntityRotPacket) packet);
-        else if (packet instanceof ClientboundMoveEntityPosPacket) packetReceived((ClientboundMoveEntityPosPacket) packet);
-        else if (packet instanceof ClientboundMoveEntityPosRotPacket) packetReceived((ClientboundMoveEntityPosRotPacket) packet);
+        if (packet instanceof ClientboundPlayerPositionPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundAddEntityPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundRemoveEntitiesPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundMoveEntityRotPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundMoveEntityPosPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundMoveEntityPosRotPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundEntityPositionSyncPacket t_packet) packetReceived(t_packet);
     }
 
     public void packetReceived (ClientboundPlayerPositionPacket packet) {
@@ -94,7 +91,7 @@ public class PositionPlugin extends Bot.Listener {
         rotationMap.remove(packet.getEntityId());
 
         entityIdMap.put(packet.getEntityId(), entry);
-        positionMap.put(packet.getEntityId(), Vector3f.from(packet.getX(), packet.getY(), packet.getZ()));
+        positionMap.put(packet.getEntityId(), Vector3d.from(packet.getX(), packet.getY(), packet.getZ()));
         rotationMap.put(packet.getEntityId(), new Rotation(packet.getYaw(), packet.getPitch()));
     }
 
@@ -106,6 +103,23 @@ public class PositionPlugin extends Bot.Listener {
             positionMap.remove(id);
             rotationMap.remove(id);
         }
+    }
+
+    public void packetReceived (ClientboundEntityPositionSyncPacket packet) {
+        final PlayerEntry player = entityIdMap.get(packet.getId());
+
+        if (player == null) return;
+
+        positionMap.remove(packet.getId());
+        rotationMap.remove(packet.getId());
+
+        final Vector3d position = packet.getPosition().add(packet.getDeltaMovement());
+        final Rotation rotation = new Rotation(packet.getXRot(), packet.getYRot());
+
+        positionMap.put(packet.getId(), position);
+        rotationMap.put(packet.getId(), rotation);
+
+        for (Listener listener : listeners) listener.playerMoved(player, position, rotation);
     }
 
     public void packetReceived (ClientboundMoveEntityRotPacket packet) {
@@ -125,15 +139,20 @@ public class PositionPlugin extends Bot.Listener {
 
         if (player == null) return;
 
-        final Vector3f lastPosition = positionMap.get(packet.getEntityId());
+        final Vector3d lastPosition = positionMap.get(packet.getEntityId());
 
         positionMap.remove(packet.getEntityId());
 
-        final Vector3f position = Vector3f.from(
-                packet.getMoveX() + lastPosition.getX(),
-                packet.getMoveY() + lastPosition.getY(),
-                packet.getMoveZ() + lastPosition.getZ()
-        );
+        // code ported straight from minecraft
+        Vector3d position = lastPosition;
+
+        if (packet.getMoveX() != 0 || packet.getMoveY() != 0 || packet.getMoveZ() != 0) {
+            position = position.add(
+                    packet.getMoveX() == 0 ? 0 : packet.getMoveX(),
+                    packet.getMoveY() == 0 ? 0 : packet.getMoveY(),
+                    packet.getMoveZ() == 0 ? 0 : packet.getMoveZ()
+            );
+        }
 
         positionMap.put(packet.getEntityId(), position);
 
@@ -145,16 +164,20 @@ public class PositionPlugin extends Bot.Listener {
 
         if (player == null) return;
 
-        final Vector3f lastPosition = positionMap.get(packet.getEntityId());
+        final Vector3d lastPosition = positionMap.get(packet.getEntityId());
 
         positionMap.remove(packet.getEntityId());
         rotationMap.remove(packet.getEntityId());
 
-        final Vector3f position = Vector3f.from(
-                packet.getMoveX() + lastPosition.getX(),
-                packet.getMoveY() + lastPosition.getY(),
-                packet.getMoveZ() + lastPosition.getZ()
-        );
+        Vector3d position = lastPosition;
+
+        if (packet.getMoveX() != 0 || packet.getMoveY() != 0 || packet.getMoveZ() != 0) {
+            position = position.add(
+                    packet.getMoveX() == 0 ? 0 : packet.getMoveX(),
+                    packet.getMoveY() == 0 ? 0 : packet.getMoveY(),
+                    packet.getMoveZ() == 0 ? 0 : packet.getMoveZ()
+            );
+        }
 
         final Rotation rotation = new Rotation(packet.getYaw(), packet.getPitch());
 
@@ -211,7 +234,7 @@ public class PositionPlugin extends Bot.Listener {
         ));
     }
 
-    public Vector3f getPlayerPosition (String playerName) {
+    public Vector3d getPlayerPosition (String playerName) {
         int entityId = -1;
         for (Map.Entry<Integer, PlayerEntry> entry : entityIdMap.entrySet()) {
             if (entry.getValue().profile.getName().equals(playerName)) entityId = entry.getKey();
@@ -219,7 +242,7 @@ public class PositionPlugin extends Bot.Listener {
 
         if (entityId == -1) return null;
 
-        for (Map.Entry<Integer, Vector3f> entry : positionMap.entrySet()) {
+        for (Map.Entry<Integer, Vector3d> entry : positionMap.entrySet()) {
             if (entry.getKey() == entityId) return entry.getValue();
         }
 
@@ -243,8 +266,9 @@ public class PositionPlugin extends Bot.Listener {
 
     public void addListener (Listener listener) { listeners.add(listener); }
 
+    @SuppressWarnings("unused")
     public static class Listener {
         public void positionChange (Vector3d position) {}
-        public void playerMoved (PlayerEntry player, Vector3f position, Rotation rotation) {}
+        public void playerMoved (PlayerEntry player, Vector3d position, Rotation rotation) {}
     }
 }
