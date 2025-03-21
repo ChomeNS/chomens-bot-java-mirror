@@ -1,10 +1,7 @@
 package me.chayapak1.chomens_bot.commands;
 
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.command.Command;
-import me.chayapak1.chomens_bot.command.CommandContext;
-import me.chayapak1.chomens_bot.command.CommandException;
-import me.chayapak1.chomens_bot.command.TrustLevel;
+import me.chayapak1.chomens_bot.command.*;
 import me.chayapak1.chomens_bot.plugins.CommandHandlerPlugin;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
@@ -12,7 +9,6 @@ import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,29 +27,25 @@ public class HelpCommand extends Command {
         );
     }
 
-    private CommandContext context;
-
     @Override
-    public Component execute(CommandContext context) throws CommandException {
+    public Component execute (CommandContext context) throws CommandException {
         context.checkOverloadArgs(1);
-
-        this.context = context;
 
         final String commandName = context.getString(false, false);
 
-        if (commandName.isEmpty()) {
-            return sendCommandList();
+        if (commandName.isBlank()) {
+            return getCommandList(context);
         } else {
-            return sendUsages(context, commandName);
+            return getUsages(context, commandName);
         }
     }
 
-    public Component sendCommandList () throws CommandException {
+    public Component getCommandList (CommandContext context) throws CommandException {
         final List<Component> list = new ArrayList<>();
-        list.addAll(getCommandListByTrustLevel(TrustLevel.PUBLIC));
-        list.addAll(getCommandListByTrustLevel(TrustLevel.TRUSTED));
-        list.addAll(getCommandListByTrustLevel(TrustLevel.ADMIN));
-        list.addAll(getCommandListByTrustLevel(TrustLevel.OWNER));
+
+        for (TrustLevel level : TrustLevel.values()) {
+            list.addAll(getCommandListByTrustLevel(context, level));
+        }
 
         final Component trustLevels = Component.join(
                 JoinConfiguration.spaces(),
@@ -73,13 +65,13 @@ public class HelpCommand extends Command {
                         .append(Component.join(JoinConfiguration.separator(Component.space()), list));
     }
 
-    public List<Component> getCommandListByTrustLevel(TrustLevel trustLevel) throws CommandException {
+    public List<Component> getCommandListByTrustLevel (CommandContext context, TrustLevel trustLevel) throws CommandException {
         final List<Component> list = new ArrayList<>();
 
         List<String> commandNames = new ArrayList<>();
 
         for (Command command : CommandHandlerPlugin.commands) {
-            if (command.trustLevel != trustLevel || command.consoleOnly) continue;
+            if (command.trustLevel != trustLevel || (command.consoleOnly && !(context instanceof ConsoleCommandContext))) continue;
 
             commandNames.add(command.name);
         }
@@ -90,14 +82,14 @@ public class HelpCommand extends Command {
             list.add(
                     Component
                             .text(name)
-                            .color(getColorByTrustLevel(trustLevel))
+                            .color(trustLevel.component.color())
                             .clickEvent(
                                     ClickEvent.suggestCommand(context.prefix + name) // *command
                             )
                             .insertion(context.prefix + this.name + " " + name) // *help <command>
                             .hoverEvent(
                                     HoverEvent.showText(
-                                            sendUsages(context, name)
+                                            getUsages(context, name)
                                     )
                             )
             );
@@ -106,17 +98,16 @@ public class HelpCommand extends Command {
         return list;
     }
 
-    public TextColor getColorByTrustLevel (TrustLevel trustLevel) {
-        return trustLevel.component.color();
-    }
-
-    public Component sendUsages (CommandContext context, String commandName) throws CommandException {
+    public Component getUsages (CommandContext context, String commandName) throws CommandException {
         final Bot bot = context.bot;
 
         final String prefix = context.prefix;
 
         for (Command command : CommandHandlerPlugin.commands) {
-            if (!command.name.equalsIgnoreCase(commandName) && !Arrays.stream(command.aliases).toList().contains(commandName.toLowerCase())) continue;
+            if (
+                    !command.name.equalsIgnoreCase(commandName) &&
+                            !Arrays.stream(command.aliases).toList().contains(commandName.toLowerCase())
+            ) continue;
 
             final String actualCommandName = command.name.toLowerCase();
             final List<Component> usages = new ArrayList<>();
