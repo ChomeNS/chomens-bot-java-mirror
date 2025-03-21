@@ -36,6 +36,7 @@ public class PlayersPlugin extends Bot.Listener {
 
         bot.addListener(this);
 
+        bot.executor.scheduleAtFixedRate(this::queryPlayersIP, 0, 1, TimeUnit.SECONDS);
         bot.executor.scheduleAtFixedRate(this::onLastKnownNameTick, 0, 5, TimeUnit.SECONDS);
     }
 
@@ -65,6 +66,15 @@ public class PlayersPlugin extends Bot.Listener {
         for (UUID uuid : uuids) {
             removePlayer(uuid);
         }
+    }
+
+    private void queryPlayersIP () { for (PlayerEntry target : list) queryPlayersIP(target); }
+    private void queryPlayersIP (PlayerEntry target) {
+        if (target.ip != null) return;
+
+        final CompletableFuture<String> future = getPlayerIP(target, true);
+
+        future.thenApply(ip -> target.ip = ip);
     }
 
     public CompletableFuture<String> getPlayerIP (PlayerEntry target) { return getPlayerIP(target, false); }
@@ -185,12 +195,15 @@ public class PlayersPlugin extends Bot.Listener {
             target.listed = true;
 
             target.usernames.addAll(duplicate.usernames);
+            target.ip = duplicate.ip;
 
             list.add(target);
 
             for (Listener listener : listeners) listener.playerUnVanished(target);
         } else {
             list.add(target);
+
+            queryPlayersIP(target);
 
             for (Listener listener : listeners) listener.playerJoined(target);
         }
@@ -260,6 +273,8 @@ public class PlayersPlugin extends Bot.Listener {
 
                 newTarget.usernames.addAll(target.usernames);
                 newTarget.usernames.addLast(target.profile.getName());
+
+                newTarget.ip = target.ip;
 
                 list.add(newTarget);
 

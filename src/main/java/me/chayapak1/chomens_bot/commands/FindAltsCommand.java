@@ -46,8 +46,11 @@ public class FindAltsCommand extends Command {
 
         final PlayerEntry playerEntry = bot.players.getEntry(player);
 
-        if (playerEntry == null) return handle(bot, player, true, player, allServer);
-        else {
+        if (playerEntry == null) {
+            return handle(bot, player, true, player, allServer);
+        } else if (playerEntry.ip != null) {
+            return handle(bot, playerEntry.ip, false, player, allServer);
+        } else {
             final CompletableFuture<String> future = bot.players.getPlayerIP(playerEntry);
 
             if (future == null) return null;

@@ -19,6 +19,7 @@ public class PlayerEntry {
     public PublicKey publicKey;
     public final byte[] keySignature;
     public boolean listed;
+    public String ip;
 
     public PlayerEntry(
             GameProfile profile,

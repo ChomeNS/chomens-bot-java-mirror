@@ -10,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public class IPFilterPlugin extends PlayersPlugin.Listener {
@@ -67,15 +66,11 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
     private void check (PlayerEntry target) {
         if (bot.options.useCorePlaceBlock) return; // it will spam the place block core so i ignored this
 
-        final CompletableFuture<String> future = bot.players.getPlayerIP(target);
+        final String ip = target.ip;
 
-        if (future == null) return;
+        if (ip == null) return;
 
-        future.thenApply(output -> {
-            handleFilterManager(output, target);
-
-            return output;
-        });
+        handleFilterManager(ip, target);
     }
 
     public static Map<String, String> list () {
