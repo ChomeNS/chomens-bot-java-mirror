@@ -200,7 +200,7 @@ public class Bot extends SessionAdapter {
     }
 
     @Override
-    public void packetReceived(Session session, Packet packet) {
+    public void packetReceived (Session session, Packet packet) {
         for (SessionListener listener : listeners) {
             try {
                 listener.packetReceived(session, packet);

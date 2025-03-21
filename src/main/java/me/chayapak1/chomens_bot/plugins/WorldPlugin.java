@@ -39,14 +39,14 @@ public class WorldPlugin extends Bot.Listener {
 
     @Override
     public void packetReceived(Session session, Packet packet) {
-        if (packet instanceof ClientboundLoginPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundRespawnPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundRegistryDataPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundSetSimulationDistancePacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundLevelChunkWithLightPacket t_packet) packetReceived(t_packet);
+        if (packet instanceof ClientboundLevelChunkWithLightPacket t_packet) packetReceived(t_packet);
         else if (packet instanceof ClientboundForgetLevelChunkPacket t_packet) packetReceived(t_packet);
         else if (packet instanceof ClientboundBlockUpdatePacket t_packet) packetReceived(t_packet);
         else if (packet instanceof ClientboundSectionBlocksUpdatePacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundLoginPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundRespawnPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundRegistryDataPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundSetSimulationDistancePacket t_packet) packetReceived(t_packet);
     }
 
     @Override
