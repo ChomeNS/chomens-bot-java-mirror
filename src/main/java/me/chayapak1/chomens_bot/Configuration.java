@@ -32,6 +32,8 @@ public class Configuration {
     
     public String ownerName = "chayapak"; // mabe mabe
 
+    public String consoleChatFormat = "{\"translate\":\"chat.type.text\",\"with\":[\"OWNER_NAME\",\"MESSAGE\"]}";
+
     public ImposterFormatChecker imposterFormatChecker = new ImposterFormatChecker();
 
     public OwnerAuthentication ownerAuthentication = new OwnerAuthentication();

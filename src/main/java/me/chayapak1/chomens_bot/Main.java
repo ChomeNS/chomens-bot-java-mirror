@@ -131,7 +131,7 @@ public class Main {
             }
 
             // initialize plugins
-            console = new ConsolePlugin();
+            console = new ConsolePlugin(config);
             LoggerPlugin.init();
             if (config.database.enabled) database = new DatabasePlugin(config);
             if (config.discord.enabled) discord = new DiscordPlugin(config);

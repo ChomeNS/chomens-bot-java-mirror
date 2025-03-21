@@ -69,6 +69,8 @@ colorPalette:
 # you HAVE TO CHANGE THIS if you are hosting another instance of my bot.
 ownerName: 'XxChange_mexX'
 
+consoleChatFormat: '{"translate":"chat.type.text","with":["OWNER_NAME","MESSAGE"]}'
+
 imposterFormatChecker:
   enabled: false
   key: ''
