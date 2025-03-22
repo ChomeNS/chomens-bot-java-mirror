@@ -105,6 +105,8 @@ public class ConsolePlugin implements Completer {
                 continue;
             }
 
+            if (!bot.loggedIn) continue;
+
             final Component stylizedMessage = LEGACY.deserialize(line);
 
             final Component rendered = RENDERER.render(
