@@ -39,10 +39,19 @@ public class FindAltsCommand extends Command {
 
         final boolean allServer = flag.equals("-allserver");
 
-        // ohio code
-        String player = !allServer ? flag : ""; // adds the first argument if no flag
-        final String restPlayer = context.getString(true, false);
-        if (!restPlayer.isEmpty()) player += " " + restPlayer;
+        String player;
+
+        if (allServer) {
+            player = context.getString(true, true);
+        } else {
+            final String rest = context.getString(true, false);
+            player = flag +
+                    (
+                            rest.isEmpty() ?
+                                    "" :
+                                    " " + rest
+                    );
+        }
 
         final PlayerEntry playerEntry = bot.players.getEntry(player);
 
