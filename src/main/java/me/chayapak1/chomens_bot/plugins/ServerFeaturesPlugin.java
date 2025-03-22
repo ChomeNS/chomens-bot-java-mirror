@@ -11,6 +11,8 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.Clientbound
 public class ServerFeaturesPlugin extends Bot.Listener {
     private final Bot bot;
 
+    public boolean hasNamespaces = false;
+
     public boolean hasEssentials = false;
     public boolean hasExtras = false;
 
@@ -31,7 +33,11 @@ public class ServerFeaturesPlugin extends Bot.Listener {
 
             final String name = node.getName();
 
-            if (name == null || !name.contains(":")) continue;
+            if (name == null) continue;
+
+            if (name.contains(":")) hasNamespaces = true;
+
+            if (!name.contains(":")) continue;
 
             // 4 or 2?
             if (bot.selfCare.permissionLevel < 4) {
@@ -56,6 +62,7 @@ public class ServerFeaturesPlugin extends Bot.Listener {
 
     @Override
     public void disconnected (DisconnectedEvent event) {
+        hasNamespaces = false;
         hasEssentials = false;
         hasExtras = false;
     }

@@ -6,9 +6,28 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Map;
 
 public class StringUtilities {
+    public static String removeNamespace (String command) {
+        String removedCommand = command;
+
+        final String[] splittedSpace = removedCommand.split("\\s+"); // [minecraft:test, arg1, arg2, ...]
+        final String[] splittedColon = splittedSpace[0].split(":"); // [minecraft, test]
+
+        if (splittedColon.length >= 2) {
+            removedCommand = String.join(":", Arrays.copyOfRange(splittedColon, 1, splittedColon.length));
+
+            if (splittedSpace.length > 1) {
+                removedCommand += " ";
+                removedCommand += String.join(" ", Arrays.copyOfRange(splittedSpace, 1, splittedSpace.length));
+            }
+        }
+
+        return removedCommand;
+    }
+
     // https://stackoverflow.com/a/35148974/18518424
     public static String truncateToFitUtf8ByteLength (String s, int maxBytes) {
         if (s == null) {

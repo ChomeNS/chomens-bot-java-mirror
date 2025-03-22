@@ -298,7 +298,7 @@ public class PlayersPlugin extends Bot.Listener {
     }
 
     private void onLastKnownNameTick () {
-        if (!bot.loggedIn) return;
+        if (!bot.loggedIn || !bot.serverFeatures.hasNamespaces) return; // hasNamespaces also means vanilla/non-bukkit
 
         for (PlayerEntry target : new ArrayList<>(list)) {
             check(target);
@@ -310,9 +310,15 @@ public class PlayersPlugin extends Bot.Listener {
 
         if (target == null) return;
 
-        pendingLeftPlayers.add(target);
+        if (!bot.serverFeatures.hasNamespaces) {
+            list.remove(target);
 
-        check(target);
+            for (Listener listener : listeners) listener.playerLeft(target);
+        } else {
+            pendingLeftPlayers.add(target);
+
+            check(target);
+        }
     }
 
     @Override

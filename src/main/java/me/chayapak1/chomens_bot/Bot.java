@@ -18,6 +18,7 @@ import org.geysermc.mcprotocollib.protocol.data.game.entity.player.HandPreferenc
 import org.geysermc.mcprotocollib.protocol.data.game.setting.ChatVisibility;
 import org.geysermc.mcprotocollib.protocol.data.game.setting.ParticleStatus;
 import org.geysermc.mcprotocollib.protocol.data.game.setting.SkinPart;
+import org.geysermc.mcprotocollib.protocol.packet.common.clientbound.ClientboundCustomPayloadPacket;
 import org.geysermc.mcprotocollib.protocol.packet.common.clientbound.ClientboundStoreCookiePacket;
 import org.geysermc.mcprotocollib.protocol.packet.common.clientbound.ClientboundTransferPacket;
 import org.geysermc.mcprotocollib.protocol.packet.common.serverbound.ServerboundClientInformationPacket;
@@ -32,6 +33,7 @@ import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundL
 import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginFinishedPacket;
 import org.geysermc.mcprotocollib.protocol.packet.login.serverbound.ServerboundCustomQueryAnswerPacket;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
@@ -217,6 +219,7 @@ public class Bot extends SessionAdapter {
         else if (packet instanceof ClientboundTransferPacket t_packet) packetReceived(t_packet);
         else if (packet instanceof ClientboundStoreCookiePacket t_packet) packetReceived(t_packet);
         else if (packet instanceof ClientboundLoginCompressionPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundCustomPayloadPacket t_packet) packetReceived(t_packet);
     }
 
     public void packetReceived (ClientboundLoginFinishedPacket packet) {
@@ -240,6 +243,17 @@ public class Bot extends SessionAdapter {
 
     public void packetReceived (ClientboundCustomQueryPacket packet) {
         session.send(new ServerboundCustomQueryAnswerPacket(packet.getMessageId(), null));
+    }
+
+    public void packetReceived (ClientboundCustomPayloadPacket packet) {
+        if (!packet.getChannel().asString().equals("minecraft:register")) return;
+
+        session.send(
+                new ServerboundCustomPayloadPacket(
+                        Key.key("minecraft", "register"),
+                        "\0".getBytes(StandardCharsets.UTF_8)
+                )
+        );
     }
 
     public void packetReceived (ClientboundCookieRequestPacket packet) {

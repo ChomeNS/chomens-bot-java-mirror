@@ -3,6 +3,7 @@ package me.chayapak1.chomens_bot.plugins;
 import com.google.gson.JsonSyntaxException;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.util.MathUtilities;
+import me.chayapak1.chomens_bot.util.StringUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -26,10 +27,7 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.inventory.S
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundPlayerActionPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundUseItemOnPacket;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledFuture;
@@ -157,6 +155,8 @@ public class CorePlugin extends PositionPlugin.Listener {
 
         commandsPerTick++;
 
+        if (!bot.serverFeatures.hasNamespaces) command = StringUtilities.removeNamespace(command);
+
         if (bot.serverFeatures.hasExtras) {
             bot.session.send(new ServerboundSetCommandBlockPacket(
                     block,
@@ -255,6 +255,8 @@ public class CorePlugin extends PositionPlugin.Listener {
 
     public void forceRunPlaceBlock (String command) {
         if (!ready || !bot.options.useCore) return;
+
+        if (!bot.serverFeatures.hasNamespaces) command = StringUtilities.removeNamespace(command);
 
         final NbtMapBuilder blockEntityTagBuilder = NbtMap.builder();
 

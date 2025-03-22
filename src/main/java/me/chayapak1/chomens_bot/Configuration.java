@@ -183,7 +183,6 @@ public class Configuration {
         public boolean coreCommandSpy = false;
         public boolean resolveSRV = true;
         public int reconnectDelay = 2000;
-        public boolean removeNamespaces = false;
         public int chatQueueDelay = 125;
         public EssentialsMessages essentialsMessages = new EssentialsMessages();
         public CoreRateLimit coreRateLimit = new CoreRateLimit();

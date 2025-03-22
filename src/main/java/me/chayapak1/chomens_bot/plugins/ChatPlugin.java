@@ -254,7 +254,7 @@ public class ChatPlugin extends Bot.Listener {
         if (message.startsWith("/")) {
             String removedMessage = message.substring(1);
 
-            if (bot.options.removeNamespaces) {
+            if (!bot.serverFeatures.hasNamespaces) {
                 final String[] splittedSpace = removedMessage.split("\\s+"); // [minecraft:test, arg1, arg2, ...]
                 final String[] splittedColon = splittedSpace[0].split(":"); // [minecraft, test]
                 if (splittedColon.length >= 2) {
