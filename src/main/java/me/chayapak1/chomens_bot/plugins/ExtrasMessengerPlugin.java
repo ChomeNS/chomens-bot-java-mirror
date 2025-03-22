@@ -67,8 +67,6 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
                 return;
             }
 
-            System.out.println("YES. supported");
-
             isSupported = true;
 
             final List<String> channels = new ArrayList<>();
