@@ -198,9 +198,7 @@ public class AuthPlugin extends PlayersPlugin.Listener {
                             .color(NamedTextColor.GREEN),
                     target.profile.getId()
             );
-        } catch (Exception e) {
-            bot.logger.error(e);
-        }
+        } catch (Exception ignored) {}
 
         return false;
     }
