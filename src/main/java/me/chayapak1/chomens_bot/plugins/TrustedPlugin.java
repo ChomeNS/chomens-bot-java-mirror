@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
-public class TrustedPlugin extends PlayersPlugin.Listener {
+public class TrustedPlugin implements PlayersPlugin.Listener {
     private final Bot bot;
 
     public final List<String> list;

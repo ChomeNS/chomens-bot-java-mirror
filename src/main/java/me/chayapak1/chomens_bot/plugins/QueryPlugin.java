@@ -13,7 +13,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-public class QueryPlugin extends Bot.Listener {
+public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener {
     private final Bot bot;
 
     public long nextTransactionId = 0;
@@ -24,16 +24,11 @@ public class QueryPlugin extends Bot.Listener {
         this.bot = bot;
 
         bot.addListener(this);
-
-        bot.chat.addListener(new ChatPlugin.Listener() {
-            @Override
-            public boolean systemMessageReceived(Component component, String string, String ansi) {
-                return QueryPlugin.this.systemMessageReceived(component);
-            }
-        });
+        bot.chat.addListener(this);
     }
 
-    private boolean systemMessageReceived (Component component) {
+    @Override
+    public boolean systemMessageReceived (Component component, String string, String ansi) {
         if (!(component instanceof TextComponent textComponent)) return true;
 
         try {

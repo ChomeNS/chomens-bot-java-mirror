@@ -27,13 +27,19 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.inventory.S
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundPlayerActionPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundUseItemOnPacket;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class CorePlugin extends PositionPlugin.Listener {
+public class CorePlugin
+        extends Bot.Listener
+        implements PositionPlugin.Listener, WorldPlugin.Listener, TickPlugin.Listener
+{
     public static final int COMMAND_BLOCK_ID = 418;
 
     private final Bot bot;
@@ -95,45 +101,29 @@ public class CorePlugin extends PositionPlugin.Listener {
             shouldRefill = false;
         }, 0, 1, TimeUnit.SECONDS);
 
-        bot.addListener(new Bot.Listener() {
-            @Override
-            public void disconnected (DisconnectedEvent event) {
-                ready = false;
+        bot.addListener(this);
+        bot.world.addListener(this);
+        bot.tick.addListener(this);
+    }
 
-                refillTask.cancel(false);
+    @Override
+    public void onTick () {
+        if (commandsPerTick > 0) commandsPerTick--;
 
-                reset();
+        try {
+            if (placeBlockQueue.size() > 300) {
+                placeBlockQueue.clear();
+                return;
             }
-        });
 
-        bot.world.addListener(new WorldPlugin.Listener() {
-            @Override
-            public void worldChanged (String dimension) {
-                CorePlugin.this.worldChanged();
-            }
-        });
+            final String command = placeBlockQueue.poll();
 
-        bot.tick.addListener(new TickPlugin.Listener() {
-            @Override
-            public void onTick() {
-                if (commandsPerTick > 0) commandsPerTick--;
+            if (command == null) return;
 
-                try {
-                    if (placeBlockQueue.size() > 300) {
-                        placeBlockQueue.clear();
-                        return;
-                    }
-
-                    final String command = placeBlockQueue.poll();
-
-                    if (command == null) return;
-
-                    forceRunPlaceBlock(command);
-                } catch (Exception e) {
-                    bot.logger.error(e);
-                }
-            }
-        });
+            forceRunPlaceBlock(command);
+        } catch (Exception e) {
+            bot.logger.error(e);
+        }
     }
 
     public boolean hasRateLimit () {
@@ -441,13 +431,23 @@ public class CorePlugin extends PositionPlugin.Listener {
             ready = true;
 
             refillTask = bot.executor.scheduleAtFixedRate(this::refill, 0, bot.config.core.refillInterval, TimeUnit.MILLISECONDS);
-            for (Listener listener : listeners) listener.ready();
+            for (Listener listener : listeners) listener.coreReady();
         }
     }
 
-    public void worldChanged () {
+    @Override
+    public void worldChanged (String dimension) {
         reset();
         refill();
+    }
+
+    @Override
+    public void disconnected (DisconnectedEvent event) {
+        ready = false;
+
+        refillTask.cancel(false);
+
+        reset();
     }
 
     public void recalculateRelativePositions() {
@@ -515,13 +515,13 @@ public class CorePlugin extends PositionPlugin.Listener {
         }
 
         if (refilledMap.containsValue(true)) {
-            for (Listener listener : listeners) listener.refilled();
+            for (Listener listener : listeners) listener.coreRefilled();
         }
     }
 
-    public static class Listener {
-        public void ready () {}
-        public void refilled () {}
+    public interface Listener {
+        default void coreReady () {}
+        default void coreRefilled () {}
     }
 
     public void addListener (Listener listener) { listeners.add(listener); }

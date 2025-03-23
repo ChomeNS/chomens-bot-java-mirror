@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 // Author: _ChipMC_ & chayapak <3
-public class MusicPlayerPlugin extends Bot.Listener {
+public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listener {
     public static final String SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic,tag=!custompitch]";
     public static final String CUSTOM_PITCH_SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic,tag=custompitch]";
     public static final String BOTH_SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic]";
@@ -74,12 +74,7 @@ public class MusicPlayerPlugin extends Bot.Listener {
 
         bot.addListener(this);
 
-        bot.core.addListener(new CorePlugin.Listener() {
-            @Override
-            public void ready() {
-                onCoreReady();
-            }
-        });
+        bot.core.addListener(this);
 
         bot.executor.scheduleAtFixedRate(this::onTick, 0, 50, TimeUnit.MILLISECONDS);
         bot.executor.scheduleAtFixedRate(() -> urlLimit = 0, 0, bot.config.music.urlRatelimit.seconds, TimeUnit.SECONDS);
@@ -131,7 +126,8 @@ public class MusicPlayerPlugin extends Bot.Listener {
         this.loaderThread.start();
     }
 
-    private void onCoreReady () {
+    @Override
+    public void coreReady () {
         if (currentSong != null) currentSong.play();
     }
 

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-public class PlayerFilterPlugin extends PlayersPlugin.Listener {
+public class PlayerFilterPlugin implements PlayersPlugin.Listener {
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS filters (name VARCHAR(255) PRIMARY KEY, reason VARCHAR(255), regex BOOLEAN, ignoreCase BOOLEAN);";
     private static final String LIST_FILTERS = "SELECT * FROM filters;";
     private static final String INSERT_FILTER = "INSERT INTO filters (name, reason, regex, ignoreCase) VALUES (?, ?, ?, ?);";

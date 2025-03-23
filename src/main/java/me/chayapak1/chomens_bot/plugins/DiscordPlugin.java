@@ -31,13 +31,13 @@ import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 // please ignore my ohio code
 // also this is one of the classes which has >100 lines or actually >400 LMAO
-public class DiscordPlugin {
+public class DiscordPlugin extends ListenerAdapter {
     public JDA jda;
 
     public final Map<String, String> servers;
@@ -78,6 +78,8 @@ public class DiscordPlugin {
         if (jda == null) return;
 
         jda.getPresence().setPresence(Activity.playing(config.discord.statusMessage), false);
+
+        jda.addEventListener(this);
 
         for (Bot bot : Main.bots) {
             final String channelId = servers.get(bot.getServerString(true));
@@ -152,63 +154,60 @@ public class DiscordPlugin {
                             "Disconnected: \n" +
                                     "```ansi\n" +
                                     reason.replace("`", "\\`") +
-                                    "\n```"
-                            , channelId
+                                    "\n```",
+                            channelId
                     );
                 }
             });
 
-            jda.addEventListener(new ListenerAdapter() {
-                @Override
-                public void onMessageReceived(@NotNull MessageReceivedEvent event) {
-                    if (
-                            !event.getChannel().getId().equals(channelId) ||
-                                    event.getAuthor().getId().equals(jda.getSelfUser().getId()) ||
-                                    !bot.loggedIn
-                    ) return;
-
-                    final Message messageEvent = event.getMessage();
-                    final String message = messageEvent.getContentDisplay();
-
-                    if (message.startsWith(prefix)) {
-                        final DiscordCommandContext context = new DiscordCommandContext(bot, prefix, event);
-
-                        final Component output = bot.commandHandler.executeCommand(message.substring(prefix.length()), context, event);
-
-                        if (output != null) {
-                            context.sendOutput(output);
-                        }
-
-                        return;
-                    }
-
-                    Component output = Component.empty();
-
-                    final Message reference = event.getMessage().getReferencedMessage();
-
-                    if (reference != null) {
-                        output = output
-                                .append(
-                                        Component.empty()
-                                                .append(Component.text("Replying to ").color(NamedTextColor.GRAY))
-                                                .append(getMessageComponent(bot, reference))
-                                                .decorate(TextDecoration.ITALIC)
-                                )
-                                .append(Component.newline());
-                    }
-
-                    output = output.append(getMessageComponent(bot, event.getMessage()));
-
-                    bot.chat.tellraw(output);
-                }
-
-                @Override
-                public void onShutdown(@NotNull ShutdownEvent event) {
-                    shuttedDown = true;
-                }
-            });
-
             bot.discord = this;
+        }
+    }
+
+    @Override
+    public void onMessageReceived (@NotNull MessageReceivedEvent event) {
+        for (Bot bot : Main.bots) {
+            final String channelId = servers.get(bot.getServerString(true));
+
+            if (
+                    !bot.loggedIn ||
+                            !event.getChannel().getId().equals(channelId) ||
+                            event.getAuthor().getId().equals(jda.getSelfUser().getId())
+            ) continue;
+
+            final Message messageEvent = event.getMessage();
+            final String message = messageEvent.getContentDisplay();
+
+            if (message.startsWith(prefix)) {
+                final DiscordCommandContext context = new DiscordCommandContext(bot, prefix, event);
+
+                final Component output = bot.commandHandler.executeCommand(message.substring(prefix.length()), context, event);
+
+                if (output != null) {
+                    context.sendOutput(output);
+                }
+
+                return;
+            }
+
+            Component output = Component.empty();
+
+            final Message reference = event.getMessage().getReferencedMessage();
+
+            if (reference != null) {
+                output = output
+                        .append(
+                                Component.empty()
+                                        .append(Component.text("Replying to ").color(NamedTextColor.GRAY))
+                                        .append(getMessageComponent(bot, reference))
+                                        .decorate(TextDecoration.ITALIC)
+                        )
+                        .append(Component.newline());
+            }
+
+            output = output.append(getMessageComponent(bot, event.getMessage()));
+
+            bot.chat.tellraw(output);
         }
     }
 
@@ -495,5 +494,10 @@ public class DiscordPlugin {
 
             sendMessageInstantly("```ansi\n" + message + "\n```", channelId);
         }
+    }
+
+    @Override
+    public void onShutdown (@NotNull ShutdownEvent event) {
+        shuttedDown = true;
     }
 }

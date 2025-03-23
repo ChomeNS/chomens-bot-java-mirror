@@ -9,7 +9,7 @@ import net.kyori.adventure.text.TextComponent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandSuggestionPlugin extends ChatPlugin.Listener {
+public class CommandSuggestionPlugin implements ChatPlugin.Listener {
     private final Bot bot;
 
     public final String id = "chomens_bot_request_command_suggestion";

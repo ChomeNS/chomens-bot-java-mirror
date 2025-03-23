@@ -12,7 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class IPFilterPlugin extends PlayersPlugin.Listener {
+public class IPFilterPlugin implements PlayersPlugin.Listener, CorePlugin.Listener {
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ipFilters (ip VARCHAR(255) PRIMARY KEY, reason VARCHAR(255));";
     private static final String LIST_FILTERS = "SELECT * FROM ipFilters;";
     private static final String INSERT_FILTER = "INSERT INTO ipFilters (ip, reason) VALUES (?, ?);";
@@ -43,18 +43,15 @@ public class IPFilterPlugin extends PlayersPlugin.Listener {
         if (Main.database == null) return;
 
         bot.players.addListener(this);
-
-        bot.core.addListener(new CorePlugin.Listener() {
-            @Override
-            public void ready() {
-                IPFilterPlugin.this.coreReady();
-            }
-        });
+        bot.core.addListener(this);
 
         bot.executor.scheduleAtFixedRate(this::checkAllPlayers, 5, 15, TimeUnit.SECONDS);
     }
 
-    private void coreReady () { checkAllPlayers(); }
+    @Override
+    public void coreReady () {
+        checkAllPlayers();
+    }
 
     @Override
     public void playerJoined (PlayerEntry target) {

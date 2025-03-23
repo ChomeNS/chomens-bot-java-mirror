@@ -10,7 +10,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandSpyPlugin extends ChatPlugin.Listener {
+public class CommandSpyPlugin implements ChatPlugin.Listener {
     private final Bot bot;
 
     private final List<Listener> listeners = new ArrayList<>();
@@ -56,7 +56,7 @@ public class CommandSpyPlugin extends ChatPlugin.Listener {
 
     public void addListener (Listener listener) { listeners.add(listener); }
 
-    public static class Listener {
-        public void commandReceived (PlayerEntry sender, String command) {}
+    public interface Listener {
+        default void commandReceived (PlayerEntry sender, String command) {}
     }
 }

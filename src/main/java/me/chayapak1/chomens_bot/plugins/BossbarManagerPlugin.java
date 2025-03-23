@@ -18,7 +18,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 // yes this has been rewritten to be not spammy
-public class BossbarManagerPlugin extends Bot.Listener {
+public class BossbarManagerPlugin extends Bot.Listener implements PlayersPlugin.Listener {
     private final Bot bot;
 
     public final Map<UUID, BossBar> serverBossBars = new HashMap<>();
@@ -35,13 +35,7 @@ public class BossbarManagerPlugin extends Bot.Listener {
 
         bot.addListener(this);
 
-        bot.players.addListener(new PlayersPlugin.Listener() {
-            @Override
-            public void playerJoined(PlayerEntry target) {
-                BossbarManagerPlugin.this.playerJoined();
-            }
-        });
-
+        bot.players.addListener(this);
         bot.executor.scheduleAtFixedRate(this::check, 0, 600, TimeUnit.MILLISECONDS);
     }
 
@@ -170,7 +164,8 @@ public class BossbarManagerPlugin extends Bot.Listener {
         serverBossBars.clear();
     }
 
-    private void playerJoined () {
+    @Override
+    public void playerJoined (PlayerEntry target) {
         if (!enabled || actionBar || !bot.options.useCore) return;
 
         for (Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {

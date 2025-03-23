@@ -329,14 +329,14 @@ public class PlayersPlugin extends Bot.Listener {
     public void addListener (Listener listener) { listeners.add(listener); }
 
     @SuppressWarnings("unused")
-    public static class Listener {
-        public void playerJoined (PlayerEntry target) {}
-        public void playerUnVanished (PlayerEntry target) {}
-        public void playerGameModeUpdated (PlayerEntry target, GameMode gameMode) {}
-        public void playerLatencyUpdated (PlayerEntry target, int ping) {}
-        public void playerDisplayNameUpdated (PlayerEntry target, Component displayName) {}
-        public void playerLeft (PlayerEntry target) {}
-        public void playerVanished (PlayerEntry target) {}
-        public void playerChangedUsername (PlayerEntry target) {}
+    public interface Listener {
+        default void playerJoined (PlayerEntry target) {}
+        default void playerUnVanished (PlayerEntry target) {}
+        default void playerGameModeUpdated (PlayerEntry target, GameMode gameMode) {}
+        default void playerLatencyUpdated (PlayerEntry target, int ping) {}
+        default void playerDisplayNameUpdated (PlayerEntry target, Component displayName) {}
+        default void playerLeft (PlayerEntry target) {}
+        default void playerVanished (PlayerEntry target) {}
+        default void playerChangedUsername (PlayerEntry target) {}
     }
 }

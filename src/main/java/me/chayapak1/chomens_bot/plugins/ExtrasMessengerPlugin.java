@@ -197,7 +197,7 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
 
     public void addListener (Listener listener) { listeners.add(listener); }
 
-    public static class Listener {
-        public void onMessage (UUID sender, byte[] message) {}
+    public interface Listener {
+        default void onMessage (UUID sender, byte[] message) {}
     }
 }

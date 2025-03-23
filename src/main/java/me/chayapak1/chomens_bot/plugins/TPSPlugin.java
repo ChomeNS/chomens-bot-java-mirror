@@ -16,7 +16,7 @@ import java.text.DecimalFormat;
 import java.util.Arrays;
 
 // totallynotskidded™ from meteor client (https://github.com/MeteorDevelopment/meteor-client/blob/master/src/main/java/meteordevelopment/meteorclient/utils/world/TickRate.java)
-public class TPSPlugin extends Bot.Listener {
+public class TPSPlugin extends Bot.Listener implements TickPlugin.Listener {
     private final Bot bot;
 
     private boolean enabled = false;
@@ -32,19 +32,7 @@ public class TPSPlugin extends Bot.Listener {
         this.bot = bot;
 
         bot.addListener(this);
-
-        bot.core.addListener(new CorePlugin.Listener() {
-               @Override
-               public void ready() {
-                   bot.tick.addListener(new TickPlugin.Listener() {
-                       @Override
-                       public void onTick() {
-                           updateTPSBar();
-                       }
-                   });
-               }
-           }
-        );
+        bot.tick.addListener(this);
     }
 
     public void on () {
@@ -74,6 +62,11 @@ public class TPSPlugin extends Bot.Listener {
         if (bossBar != null) bossBar.setTitle(Component.text("TPSBar is currently disabled"));
 
         bot.bossbar.remove(bossbarName);
+    }
+
+    @Override
+    public void onTick () {
+        updateTPSBar();
     }
 
     private void updateTPSBar () {

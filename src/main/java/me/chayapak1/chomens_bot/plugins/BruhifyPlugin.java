@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.util.HSVLike;
 
-public class BruhifyPlugin extends TickPlugin.Listener {
+public class BruhifyPlugin implements TickPlugin.Listener {
     private final Bot bot;
 
     public String bruhifyText = "";

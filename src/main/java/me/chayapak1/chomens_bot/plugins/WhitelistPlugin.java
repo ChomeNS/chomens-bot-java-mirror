@@ -6,7 +6,7 @@ import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WhitelistPlugin extends PlayersPlugin.Listener {
+public class WhitelistPlugin implements PlayersPlugin.Listener {
     private final Bot bot;
 
     public final List<String> list = new ArrayList<>();

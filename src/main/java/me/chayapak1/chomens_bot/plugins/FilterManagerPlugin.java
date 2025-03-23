@@ -1,8 +1,8 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
+import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
@@ -15,7 +15,10 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-public class FilterManagerPlugin extends PlayersPlugin.Listener {
+public class FilterManagerPlugin
+        extends Bot.Listener
+        implements PlayersPlugin.Listener, ChatPlugin.Listener, CommandSpyPlugin.Listener
+{
     private final Bot bot;
 
     public final Map<PlayerEntry, String> list = Collections.synchronizedMap(new HashMap<>());
@@ -26,31 +29,11 @@ public class FilterManagerPlugin extends PlayersPlugin.Listener {
         bot.players.addListener(this);
 
         bot.executor.scheduleAtFixedRate(this::removeLeftPlayers, 0, 1, TimeUnit.SECONDS);
-
-        bot.addListener(new Bot.Listener() {
-            @Override
-            public void disconnected(DisconnectedEvent event) {
-                list.clear();
-            }
-        });
-
-        bot.chat.addListener(new ChatPlugin.Listener() {
-            @Override
-            public boolean playerMessageReceived(PlayerMessage message) {
-                FilterManagerPlugin.this.playerMessageReceived(message);
-
-                return true;
-            }
-        });
-
-        bot.commandSpy.addListener(new CommandSpyPlugin.Listener() {
-            @Override
-            public void commandReceived(PlayerEntry sender, String command) {
-                FilterManagerPlugin.this.commandSpyMessageReceived(sender, command);
-            }
-        });
-
         bot.executor.scheduleAtFixedRate(this::kick, 0, 10, TimeUnit.SECONDS);
+
+        bot.addListener(this);
+        bot.chat.addListener(this);
+        bot.commandSpy.addListener(this);
     }
 
     private void removeLeftPlayers () {
@@ -71,35 +54,44 @@ public class FilterManagerPlugin extends PlayersPlugin.Listener {
         if (stringifiedDisplayName.startsWith("[OP] ")) deOp(target);
     }
 
-    public void commandSpyMessageReceived (PlayerEntry entry, String command) {
-        final Pair<PlayerEntry, String> player = getFilteredFromName(entry.profile.getName());
+    @Override
+    public void commandReceived (PlayerEntry sender, String command) {
+        final Pair<PlayerEntry, String> player = getFilteredFromName(sender.profile.getName());
 
         if (player == null) return;
 
         if (
                 command.startsWith("/mute") ||
-                        command.startsWith("/emute") ||
-                        command.startsWith("/silence") ||
-                        command.startsWith("/esilence") ||
-                        command.startsWith("/essentials:mute") ||
-                        command.startsWith("/essentials:emute") ||
-                        command.startsWith("/essentials:silence") ||
-                        command.startsWith("/essentials:esilence")
-        ) mute(entry, player.getRight());
+                command.startsWith("/emute") ||
+                command.startsWith("/silence") ||
+                command.startsWith("/esilence") ||
+                command.startsWith("/essentials:mute") ||
+                command.startsWith("/essentials:emute") ||
+                command.startsWith("/essentials:silence") ||
+                command.startsWith("/essentials:esilence")
+        ) mute(sender, player.getRight());
 
-        deOp(entry);
-        gameMode(entry);
-        bot.exploits.kick(entry.profile.getId());
+        deOp(sender);
+        gameMode(sender);
+        bot.exploits.kick(sender.profile.getId());
     }
 
-    public void playerMessageReceived (PlayerMessage message) {
-        if (message.sender.profile.getName() == null) return;
+    @Override
+    public boolean playerMessageReceived (PlayerMessage message) {
+        if (message.sender.profile.getName() == null) return true;
 
         final Pair<PlayerEntry, String> player = getFilteredFromName(message.sender.profile.getName());
 
-        if (player == null || message.sender.profile.getId().equals(new UUID(0L, 0L))) return;
+        if (player == null || message.sender.profile.getId().equals(new UUID(0L, 0L))) return true;
 
         doAll(message.sender, player.getRight());
+
+        return true;
+    }
+
+    @Override
+    public void disconnected (DisconnectedEvent event) {
+        list.clear();
     }
 
     public void doAll (PlayerEntry entry) { doAll(entry, ""); }

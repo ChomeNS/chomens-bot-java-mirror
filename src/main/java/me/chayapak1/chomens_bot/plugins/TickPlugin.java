@@ -43,8 +43,8 @@ public class TickPlugin {
         listeners.add(listener);
     }
 
-    public static class Listener {
-        public void onTick () {}
-        public void onAlwaysTick () {}
+    public interface Listener {
+        default void onTick () {}
+        default void onAlwaysTick () {}
     }
 }

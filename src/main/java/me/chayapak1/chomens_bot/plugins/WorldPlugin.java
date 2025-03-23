@@ -137,7 +137,7 @@ public class WorldPlugin extends Bot.Listener {
 
     public void addListener (Listener listener) { listeners.add(listener); }
 
-    public static class Listener {
-        public void worldChanged (String dimension) {}
+    public interface Listener {
+        default void worldChanged (String dimension) {}
     }
 }

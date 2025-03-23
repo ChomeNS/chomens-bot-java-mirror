@@ -9,7 +9,7 @@ import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 
-public class LoggerPlugin extends ChatPlugin.Listener {
+public class LoggerPlugin implements ChatPlugin.Listener {
     public static void init () {
         for (Bot bot : Main.bots) new LoggerPlugin(bot);
     }

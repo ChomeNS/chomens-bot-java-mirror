@@ -14,7 +14,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public class FormatCheckerPlugin extends ChatPlugin.Listener {
+public class FormatCheckerPlugin implements ChatPlugin.Listener, PlayersPlugin.Listener {
     private final Bot bot;
 
     private int totalFormat = 0;
@@ -23,24 +23,23 @@ public class FormatCheckerPlugin extends ChatPlugin.Listener {
         this.bot = bot;
 
         bot.chat.addListener(this);
-
-        bot.players.addListener(new PlayersPlugin.Listener() {
-            @Override
-            public void playerJoined(PlayerEntry target) {
-                reset(target);
-            }
-
-            @Override
-            public void playerLeft(PlayerEntry target) {
-                reset(target);
-            }
-        });
+        bot.players.addListener(this);
     }
 
     private void reset (PlayerEntry entry) {
         if (!entry.profile.getName().equals(bot.config.ownerName)) return;
 
         totalFormat = 0;
+    }
+
+    @Override
+    public void playerJoined(PlayerEntry target) {
+        reset(target);
+    }
+
+    @Override
+    public void playerLeft(PlayerEntry target) {
+        reset(target);
     }
 
     @Override

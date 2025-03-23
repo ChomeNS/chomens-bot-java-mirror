@@ -22,7 +22,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
-public class AuthPlugin extends PlayersPlugin.Listener {
+public class AuthPlugin implements PlayersPlugin.Listener, ChatPlugin.Listener {
     private static final String ID = "chomens_bot_verify";
 
     private static PrivateKey PRIVATE_KEY;
@@ -106,13 +106,7 @@ public class AuthPlugin extends PlayersPlugin.Listener {
             }
         });
 
-        bot.chat.addListener(new ChatPlugin.Listener() {
-            @Override
-            public boolean systemMessageReceived (Component component, String string, String ansi) {
-                return AuthPlugin.this.systemMessageReceived(component);
-            }
-        });
-
+        bot.chat.addListener(this);
         bot.players.addListener(this);
     }
 
@@ -155,7 +149,8 @@ public class AuthPlugin extends PlayersPlugin.Listener {
         isAuthenticating = true;
     }
 
-    private boolean systemMessageReceived (Component component) {
+    @Override
+    public boolean systemMessageReceived (Component component, String string, String ansi) {
         if (!bot.config.ownerAuthentication.enabled) return true;
 
         if (!(component instanceof TextComponent textComponent)) return true;

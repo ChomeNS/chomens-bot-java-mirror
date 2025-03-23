@@ -15,7 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MailPlugin extends PlayersPlugin.Listener {
+public class MailPlugin implements PlayersPlugin.Listener {
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS mails (sentBy VARCHAR(255), sentTo VARCHAR(255), timeSent BIGINT, server VARCHAR(255), contents TEXT);";
     private static final String INSERT_MAIL = "INSERT INTO mails (sentBy, sentTo, timeSent, server, contents) VALUES (?, ?, ?, ?, ?);";
     private static final String LIST_MAILS = "SELECT * FROM mails;";

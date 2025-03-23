@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class SelfCarePlugin extends Bot.Listener {
+public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener, PositionPlugin.Listener {
     private final Bot bot;
 
     private ScheduledFuture<?> checkTask;
@@ -51,53 +51,46 @@ public class SelfCarePlugin extends Bot.Listener {
     public SelfCarePlugin (Bot bot) {
         this.bot = bot;
 
-        bot.addListener(this);
-
         bot.executor.scheduleAtFixedRate(() -> positionPacketsPerSecond = 0, 0, 1, TimeUnit.SECONDS);
 
-        bot.chat.addListener(new ChatPlugin.Listener() {
-            @Override
-            public boolean systemMessageReceived(Component component, String string, String ansi) {
-                if (string.equals("Successfully enabled CommandSpy")) cspy = true;
-                else if (string.equals("Successfully disabled CommandSpy")) cspy = false;
+        bot.addListener(this);
+        bot.chat.addListener(this);
+        bot.position.addListener(this);
+    }
 
-                else if (string.equals(String.format(bot.options.essentialsMessages.vanishEnable1, bot.username))) vanish = true;
-                else if (string.equals(bot.options.essentialsMessages.vanishEnable2)) vanish = true;
-                else if (string.equals(String.format(bot.options.essentialsMessages.vanishDisable, bot.username))) vanish = false;
+    @Override
+    public boolean systemMessageReceived(Component component, String string, String ansi) {
+        if (string.equals("Successfully enabled CommandSpy")) cspy = true;
+        else if (string.equals("Successfully disabled CommandSpy")) cspy = false;
 
-                else if (string.equals(bot.options.essentialsMessages.nickNameRemove)) nickname = true;
-                else if (string.startsWith(bot.options.essentialsMessages.nickNameSet)) nickname = false;
+        else if (string.equals(String.format(bot.options.essentialsMessages.vanishEnable1, bot.username))) vanish = true;
+        else if (string.equals(bot.options.essentialsMessages.vanishEnable2)) vanish = true;
+        else if (string.equals(String.format(bot.options.essentialsMessages.vanishDisable, bot.username))) vanish = false;
 
-                else if (string.equals(bot.options.essentialsMessages.socialSpyEnable)) socialspy = true;
-                else if (string.equals(bot.options.essentialsMessages.socialSpyDisable)) socialspy = false;
+        else if (string.equals(bot.options.essentialsMessages.nickNameRemove)) nickname = true;
+        else if (string.startsWith(bot.options.essentialsMessages.nickNameSet)) nickname = false;
 
-                else if (string.startsWith(bot.options.essentialsMessages.muted)) muted = true;
-                else if (string.equals(bot.options.essentialsMessages.unmuted)) muted = false;
+        else if (string.equals(bot.options.essentialsMessages.socialSpyEnable)) socialspy = true;
+        else if (string.equals(bot.options.essentialsMessages.socialSpyDisable)) socialspy = false;
 
-                else if (string.equals("You now have the tag: " + bot.config.selfCare.prefix.prefix)) prefix = true;
-                else if (string.startsWith("You no longer have a tag")) prefix = false;
-                else if (string.startsWith("You now have the tag: ")) prefix = false;
-                // prefix = true as a workaround to prevent spamming
-                else if (string.equals("Something went wrong while saving the prefix. Please check console.")) prefix = true; // Parker2991
+        else if (string.startsWith(bot.options.essentialsMessages.muted)) muted = true;
+        else if (string.equals(bot.options.essentialsMessages.unmuted)) muted = false;
 
-                else if (string.equals("Successfully set your username to \"" + bot.username + "\"")) username = true;
-                else if (string.startsWith("Successfully set your username to \"")) {
-                    username = false;
-                    usernameStartTime = System.currentTimeMillis();
-                }
-                else if (string.startsWith("You already have the username \"" + bot.username + "\"")) username = true;
-                else if (string.startsWith("You already have the username \"")) username = false;
+        else if (string.equals("You now have the tag: " + bot.config.selfCare.prefix.prefix)) prefix = true;
+        else if (string.startsWith("You no longer have a tag")) prefix = false;
+        else if (string.startsWith("You now have the tag: ")) prefix = false;
+            // prefix = true as a workaround to prevent spamming
+        else if (string.equals("Something went wrong while saving the prefix. Please check console.")) prefix = true; // Parker2991
 
-                return true;
-            }
-        });
+        else if (string.equals("Successfully set your username to \"" + bot.username + "\"")) username = true;
+        else if (string.startsWith("Successfully set your username to \"")) {
+            username = false;
+            usernameStartTime = System.currentTimeMillis();
+        }
+        else if (string.startsWith("You already have the username \"" + bot.username + "\"")) username = true;
+        else if (string.startsWith("You already have the username \"")) username = false;
 
-        bot.position.addListener(new PositionPlugin.Listener() {
-            @Override
-            public void positionChange(Vector3d position) {
-                SelfCarePlugin.this.positionChange();
-            }
-        });
+        return true;
     }
 
     public void check () {
@@ -214,7 +207,7 @@ public class SelfCarePlugin extends Bot.Listener {
         ) return;
 
         // automatically unmount when mounting
-        // eg. player `/ride`s you
+        // e.g. player `/ride`s you
         // the server will automatically dismount for you,
         // so that's why we don't have to send PlayerState.STOP_SNEAKING
         bot.session.send(
@@ -225,7 +218,8 @@ public class SelfCarePlugin extends Bot.Listener {
         );
     }
 
-    public void positionChange () {
+    @Override
+    public void positionChange(Vector3d position) {
         positionPacketsPerSecond++;
     }
 

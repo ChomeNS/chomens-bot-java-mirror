@@ -6,24 +6,20 @@ import me.chayapak1.chomens_bot.plugins.ChatPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
-public class GetLatestChatMessageFunction extends EvalFunction {
+public class GetLatestChatMessageFunction extends EvalFunction implements ChatPlugin.Listener {
     private String latestMessage = "";
 
     public GetLatestChatMessageFunction (Bot bot) {
         super("getLatestChatMessage", bot);
 
-        bot.chat.addListener(new ChatPlugin.Listener() {
-            @Override
-            public boolean systemMessageReceived(Component component, String string, String ansi) {
-                messageReceived(component);
-
-                return true;
-            }
-        });
+        bot.chat.addListener(this);
     }
 
-    private void messageReceived (Component component) {
+    @Override
+    public boolean systemMessageReceived (Component component, String string, String ansi) {
         latestMessage = GsonComponentSerializer.gson().serialize(component);
+
+        return true;
     }
 
     @Override

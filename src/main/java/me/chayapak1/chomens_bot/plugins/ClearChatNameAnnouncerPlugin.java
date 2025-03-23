@@ -5,7 +5,7 @@ import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-public class ClearChatNameAnnouncerPlugin extends CommandSpyPlugin.Listener {
+public class ClearChatNameAnnouncerPlugin implements CommandSpyPlugin.Listener {
     private final Bot bot;
 
     public ClearChatNameAnnouncerPlugin (Bot bot) {

@@ -367,8 +367,8 @@ public class ChatPlugin extends Bot.Listener {
 
     public void addListener (Listener listener) { listeners.add(listener); }
 
-    public static class Listener {
-        public boolean playerMessageReceived (PlayerMessage message) { return true; }
-        public boolean systemMessageReceived (Component component, String string, String ansi) { return true; }
+    public interface Listener {
+        default boolean playerMessageReceived (PlayerMessage message) { return true; }
+        default boolean systemMessageReceived (Component component, String string, String ansi) { return true; }
     }
 }

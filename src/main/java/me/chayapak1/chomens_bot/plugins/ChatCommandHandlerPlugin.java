@@ -10,7 +10,7 @@ import net.kyori.adventure.text.Component;
 
 import java.util.List;
 
-public class ChatCommandHandlerPlugin extends ChatPlugin.Listener {
+public class ChatCommandHandlerPlugin implements ChatPlugin.Listener, CommandSpyPlugin.Listener {
     public final Bot bot;
 
     public final List<String> prefixes;
@@ -23,13 +23,7 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.Listener {
         this.commandSpyPrefixes = bot.config.commandSpyPrefixes;
 
         bot.chat.addListener(this);
-
-        bot.commandSpy.addListener(new CommandSpyPlugin.Listener() {
-            @Override
-            public void commandReceived(PlayerEntry sender, String command) {
-                ChatCommandHandlerPlugin.this.commandSpyMessageReceived(sender, command);
-            }
-        });
+        bot.commandSpy.addListener(this);
     }
 
     @Override
@@ -49,7 +43,8 @@ public class ChatCommandHandlerPlugin extends ChatPlugin.Listener {
         return true;
     }
 
-    public void commandSpyMessageReceived (PlayerEntry sender, String command) {
+    @Override
+    public void commandReceived (PlayerEntry sender, String command) {
         if (
                 sender.profile != null &&
                         bot.profile != null &&
