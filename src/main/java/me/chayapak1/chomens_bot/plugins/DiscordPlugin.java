@@ -12,9 +12,9 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.messages.MessageSnapshot;
 import net.dv8tion.jda.api.entities.sticker.StickerItem;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.session.ShutdownEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
@@ -35,8 +35,7 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-// please ignore my ohio code
-// also this is one of the classes which has >100 lines or actually >400 LMAO
+// this is one of the classes which has >500 lines LMAO
 public class DiscordPlugin extends ListenerAdapter {
     public JDA jda;
 
@@ -49,8 +48,6 @@ public class DiscordPlugin extends ListenerAdapter {
     public final String discordUrl;
 
     private final Map<String, Integer> totalConnects = new HashMap<>();
-
-    public boolean shuttedDown = false;
 
     public DiscordPlugin (Configuration config) {
         final Configuration.Discord options = config.discord;
@@ -190,117 +187,90 @@ public class DiscordPlugin extends ListenerAdapter {
                 return;
             }
 
+            final boolean isForwarded = !messageEvent.getMessageSnapshots().isEmpty();
+
             Component output = Component.empty();
 
-            final Message reference = event.getMessage().getReferencedMessage();
+            if (isForwarded) {
+                for (MessageSnapshot snapshot : messageEvent.getMessageSnapshots()) {
+                    final List<Component> extraComponents = new ArrayList<>();
 
-            if (reference != null) {
-                output = output
-                        .append(
-                                Component.empty()
-                                        .append(Component.text("Replying to ").color(NamedTextColor.GRAY))
-                                        .append(getMessageComponent(bot, reference))
-                                        .decorate(TextDecoration.ITALIC)
-                        )
-                        .append(Component.newline());
+                    addExtraComponents(
+                            extraComponents,
+                            snapshot.getAttachments(),
+                            snapshot.getEmbeds(),
+                            snapshot.getStickers(),
+                            bot
+                    );
+
+                    Component messageComponent = Component.text(snapshot.getContentRaw());
+
+                    if (!extraComponents.isEmpty()) {
+                        messageComponent = messageComponent
+                                .append(
+                                        Component.join(
+                                                JoinConfiguration.spaces(),
+                                                extraComponents
+                                        )
+                                );
+                    }
+
+                    output = Component
+                            .translatable(
+                                    "[%s] %s › %s",
+                                    this.messagePrefix,
+                                    Component
+                                            .translatable(
+                                                    "%s forwarded",
+                                                    Component.text(
+                                                            messageEvent.getMember() == null ?
+                                                                    messageEvent.getAuthor().getName() :
+                                                                    messageEvent.getMember().getEffectiveName()
+                                                    ).color(NamedTextColor.RED)
+                                            )
+                                            .color(NamedTextColor.GRAY),
+                                    messageComponent.color(NamedTextColor.GRAY)
+                            )
+                            .color(NamedTextColor.DARK_GRAY);
+                }
+            } else {
+                final Message reference = event.getMessage().getReferencedMessage();
+
+                if (reference != null) {
+                    output = output
+                            .append(
+                                    Component.empty()
+                                            .append(Component.text("Replying to ").color(NamedTextColor.GRAY))
+                                            .append(getMessageComponent(bot, reference))
+                                            .decorate(TextDecoration.ITALIC)
+                            )
+                            .append(Component.newline());
+                }
+
+                output = output.append(getMessageComponent(bot, event.getMessage()));
             }
-
-            output = output.append(getMessageComponent(bot, event.getMessage()));
 
             bot.chat.tellraw(output);
         }
     }
 
-    private Component getMessageComponent (Bot bot, Message message) {
-        // TODO: IMPROVE this code
+    private Component getMessageComponent (
+            Bot bot,
+            Message message
+    ) {
+        final List<Component> extraComponents = new ArrayList<>();
 
-        // ignore my very very ohio code,..,,.
-
-        Component attachmentsComponent = Component.empty();
-        if (!message.getAttachments().isEmpty()) {
-            if (!message.getContentDisplay().isEmpty()) attachmentsComponent = attachmentsComponent.append(Component.space());
-
-            for (Message.Attachment attachment : message.getAttachments()) {
-                attachmentsComponent = attachmentsComponent
-                        .append(
-                                Component
-                                        .text("[Attachment]")
-                                        .clickEvent(ClickEvent.openUrl(attachment.getUrl()))
-                                        .hoverEvent(
-                                                HoverEvent.showText(
-                                                        Component
-                                                                .text(attachment.getFileName())
-                                                                .color(NamedTextColor.GREEN)
-                                                )
-                                        )
-                                        .color(NamedTextColor.GREEN)
-                        )
-                        .append(Component.space());
-            }
-        }
-
-        Component embedsComponent = Component.empty();
-        if (!message.getEmbeds().isEmpty()) {
-            if (!message.getContentDisplay().isEmpty()) embedsComponent = embedsComponent.append(Component.space());
-
-            for (MessageEmbed embed : message.getEmbeds()) {
-                final Component hoverEvent = Component.translatable(
-                        """
-                                Title: %s
-                                %s""",
-                        embed.getTitle() == null ?
-                                Component.text("No title").color(NamedTextColor.GRAY) :
-                                Component.text(embed.getTitle()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
-                        embed.getDescription() == null ?
-                                Component.text("No description").color(NamedTextColor.GRAY) :
-                                Component.text(embed.getDescription()).color(NamedTextColor.WHITE)
-                ).color(NamedTextColor.GREEN);
-
-                embedsComponent = embedsComponent
-                        .append(
-                                Component
-                                        .text("[Embed]")
-                                        .hoverEvent(HoverEvent.showText(hoverEvent))
-                                        .color(NamedTextColor.GREEN)
-                        )
-                        .append(Component.space());
-            }
-        }
-
-        Component stickersComponent = Component.empty();
-        if (!message.getStickers().isEmpty()) {
-            if (!message.getContentDisplay().isEmpty()) stickersComponent = stickersComponent.append(Component.space());
-
-            for (StickerItem sticker : message.getStickers()) {
-                stickersComponent = stickersComponent
-                        .append(
-                                Component
-                                        .translatable(
-                                                "[%s]",
-                                                Component
-                                                        .text(sticker.getName())
-                                                        .hoverEvent(
-                                                                HoverEvent.showText(
-                                                                        Component
-                                                                                .text(sticker.getId())
-                                                                                .color(NamedTextColor.GREEN)
-                                                                )
-                                                        )
-                                                        .clickEvent(
-                                                                ClickEvent.openUrl(
-                                                                        sticker.getIconUrl()
-                                                                )
-                                                        )
-                                        )
-                                        .color(NamedTextColor.GREEN)
-                        )
-                        .append(Component.space());
-            }
-        }
-
-        final Member member = message.getMember();
+        addExtraComponents(
+                extraComponents,
+                message.getAttachments(),
+                message.getEmbeds(),
+                message.getStickers(),
+                bot
+        );
 
         final String username = message.getAuthor().getName();
+        final Member member = message.getMember();
+
         final String displayName = member == null ? username : member.getEffectiveName();
 
         final List<Role> roles = member == null ? Collections.emptyList() : member.getRoles();
@@ -354,7 +324,6 @@ public class DiscordPlugin extends ListenerAdapter {
                         )
                 );
 
-        // too ohio
         for (Role role : roles) {
             final Color color = role.getColor();
 
@@ -381,19 +350,25 @@ public class DiscordPlugin extends ListenerAdapter {
                 // replaces all ZWSP with nothing
                 .replace("\u200b", "");
 
-        final Component deserialized = LegacyComponentSerializer
+        Component actualMessage = LegacyComponentSerializer
                 .legacyAmpersand()
                 .deserialize(replacedMessageContent);
 
-        final Component messageComponent = Component
-                .empty()
+        if (!extraComponents.isEmpty()) {
+            if (!replacedMessageContent.isBlank()) actualMessage = actualMessage.append(Component.space());
+
+            actualMessage = actualMessage
+                    .append(
+                            Component.join(
+                                    JoinConfiguration.spaces(),
+                                    extraComponents
+                            )
+                    );
+        }
+
+        final Component messageComponent = Component.empty()
                 .color(NamedTextColor.GRAY)
-                .append(
-                        deserialized
-                                .append(attachmentsComponent)
-                                .append(embedsComponent)
-                                .append(stickersComponent)
-                )
+                .append(actualMessage)
                 .hoverEvent(
                         HoverEvent.showText(
                                 Component
@@ -413,6 +388,85 @@ public class DiscordPlugin extends ListenerAdapter {
                 nameComponent,
                 messageComponent
         ).color(NamedTextColor.DARK_GRAY);
+    }
+
+    private void addExtraComponents (
+            List<Component> extraComponents,
+            List<Message.Attachment> attachments,
+            List<MessageEmbed> embeds,
+            List<StickerItem> stickers,
+            Bot bot
+    ) {
+        addAttachmentsComponent(attachments, extraComponents);
+        addEmbedsComponent(embeds, extraComponents, bot);
+        addStickersComponent(stickers, extraComponents);
+    }
+
+    private void addAttachmentsComponent (List<Message.Attachment> attachments, List<Component> extraComponents) {
+        for (Message.Attachment attachment : attachments) {
+            extraComponents.add(
+                    Component
+                            .text("[Attachment]")
+                            .clickEvent(ClickEvent.openUrl(attachment.getUrl()))
+                            .hoverEvent(
+                                    HoverEvent.showText(
+                                            Component
+                                                    .text(attachment.getFileName())
+                                                    .color(NamedTextColor.GREEN)
+                                    )
+                            )
+                            .color(NamedTextColor.GREEN)
+            );
+        }
+    }
+
+    private void addEmbedsComponent (List<MessageEmbed> embeds, List<Component> extraComponents, Bot bot) {
+        for (MessageEmbed embed : embeds) {
+            final Component hoverEvent = Component.translatable(
+                    """
+                            Title: %s
+                            %s""",
+                    embed.getTitle() == null ?
+                            Component.text("No title").color(NamedTextColor.GRAY) :
+                            Component.text(embed.getTitle()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                    embed.getDescription() == null ?
+                            Component.text("No description").color(NamedTextColor.GRAY) :
+                            Component.text(embed.getDescription()).color(NamedTextColor.WHITE)
+            ).color(NamedTextColor.GREEN);
+
+            extraComponents.add(
+                    Component
+                            .text("[Embed]")
+                            .hoverEvent(HoverEvent.showText(hoverEvent))
+                            .color(NamedTextColor.GREEN)
+            );
+        }
+    }
+
+    private void addStickersComponent (List<StickerItem> stickers, List<Component> extraComponents) {
+        for (StickerItem sticker : stickers) {
+            extraComponents.add(
+                    Component
+                            .translatable(
+                                    "[%s]",
+                                    Component
+                                            .text(sticker.getName())
+                                            .hoverEvent(
+                                                    HoverEvent.showText(
+                                                            Component
+                                                                    .text(sticker.getId())
+                                                                    .color(NamedTextColor.GREEN)
+                                                    )
+                                            )
+                                            .clickEvent(
+                                                    ClickEvent.openUrl(
+                                                            sticker.getIconUrl()
+                                                    )
+                                            )
+                            )
+                            .color(NamedTextColor.GREEN)
+            );
+        }
     }
 
     // totallynotskidded™️ from HBot (and changed a bit)
@@ -494,10 +548,5 @@ public class DiscordPlugin extends ListenerAdapter {
 
             sendMessageInstantly("```ansi\n" + message + "\n```", channelId);
         }
-    }
-
-    @Override
-    public void onShutdown (@NotNull ShutdownEvent event) {
-        shuttedDown = true;
     }
 }
