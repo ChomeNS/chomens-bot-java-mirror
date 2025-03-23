@@ -52,8 +52,7 @@ public class Configuration {
 
     public static class OwnerAuthentication {
         public boolean enabled = false;
-        public String muteReason = "";
-        public Map<String, String> ips = new HashMap<>();
+        public int timeout = 10 * 1000;
     }
 
     public static class Backup {

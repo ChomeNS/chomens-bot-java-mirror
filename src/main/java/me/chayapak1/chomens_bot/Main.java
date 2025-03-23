@@ -133,6 +133,7 @@ public class Main {
             // initialize plugins
             console = new ConsolePlugin(config);
             LoggerPlugin.init();
+            AuthPlugin.init(config);
             if (config.database.enabled) database = new DatabasePlugin(config);
             if (config.discord.enabled) discord = new DiscordPlugin(config);
             if (config.irc.enabled) new IRCPlugin(config);

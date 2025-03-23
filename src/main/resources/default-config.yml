@@ -77,9 +77,7 @@ imposterFormatChecker:
 
 ownerAuthentication:
   enabled: false
-  muteReason: ''
-  ips:
-    localhost:25565: '127.0.0.1'
+  timeout: 10000 # 10 seconds - 10 * 1000
 
 # if this is enabled when someone does a clear chat command the bot
 # will tellraw `{player} cleared the chat`
