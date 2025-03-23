@@ -96,10 +96,11 @@ public class FilterManagerPlugin
 
     public void doAll (PlayerEntry entry) { doAll(entry, ""); }
     public void doAll (PlayerEntry entry, String reason) {
+        bot.exploits.kick(entry.profile.getId());
         mute(entry, reason);
         deOp(entry);
         gameMode(entry);
-        bot.exploits.kick(entry.profile.getId());
+        clear(entry);
     }
 
     public void mute (PlayerEntry target) { mute(target, ""); }
@@ -112,7 +113,11 @@ public class FilterManagerPlugin
     }
 
     public void gameMode (PlayerEntry target) {
-        bot.core.run("minecraft:gamemode adventure " + UUIDUtilities.selector(target.profile.getId()));
+        bot.core.run("minecraft:gamemode spectator " + UUIDUtilities.selector(target.profile.getId()));
+    }
+
+    public void clear (PlayerEntry target) {
+        bot.core.run("minecraft:clear " + UUIDUtilities.selector(target.profile.getId()));
     }
 
     public void kick () {
