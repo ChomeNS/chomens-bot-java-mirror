@@ -70,7 +70,7 @@ public class InfoCommand extends Command {
 
         final Bot bot = context.bot;
 
-        final String action = !context.userInputCommandName.equals(this.name) ? // if the input command is not `info`
+        final String action = !context.userInputCommandName.equalsIgnoreCase(this.name) ? // if the input command is not `info`
                 context.userInputCommandName : // use that as the action (e.g. "discord", "creator")
                 context.getString(false, false, true); // else just take the argument of `info`
 
