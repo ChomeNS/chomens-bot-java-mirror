@@ -7,6 +7,7 @@ import me.chayapak1.chomens_bot.song.Instrument;
 import me.chayapak1.chomens_bot.song.Loop;
 import me.chayapak1.chomens_bot.song.Note;
 import me.chayapak1.chomens_bot.song.Song;
+import me.chayapak1.chomens_bot.util.Ascii85;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.PathUtilities;
 import me.chayapak1.chomens_bot.util.TimestampUtilities;
@@ -91,11 +92,11 @@ public class MusicCommand extends Command {
 
         if (player.loaderThread != null) throw new CommandException(Component.text("Already loading a song"));
 
-        String stringPath;
-        Path path;
-        try {
-            stringPath = context.getString(true, true);
+        final String stringPath = context.getString(true, true);
 
+        Path path;
+
+        try {
             path = Path.of(ROOT.toString(), stringPath);
 
             if (path.toString().contains("http")) player.loadSong(new URI(stringPath).toURL(), context.sender);
@@ -196,7 +197,14 @@ public class MusicCommand extends Command {
                         context.sender
                 );
             } catch (IllegalArgumentException e) {
-                context.sendOutput(Component.text("Invalid base64 in the selected item").color(NamedTextColor.RED));
+                try {
+                    bot.music.loadSong(
+                            Ascii85.decode(output),
+                            context.sender
+                    );
+                } catch (IllegalArgumentException e2) {
+                    context.sendOutput(Component.text("Invalid Base64 or Ascii85 in the selected item").color(NamedTextColor.RED));
+                }
             }
 
             return output;
