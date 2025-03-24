@@ -29,7 +29,7 @@ import java.util.concurrent.CompletableFuture;
 import static me.chayapak1.chomens_bot.util.StringUtilities.isNotNullAndNotBlank;
 
 public class MusicCommand extends Command {
-    private Path root;
+    private static final Path ROOT = MusicPlayerPlugin.SONG_DIR;
 
     public MusicCommand () {
         super(
@@ -65,7 +65,6 @@ public class MusicCommand extends Command {
 
         final String action = context.getAction();
 
-        root = MusicPlayerPlugin.SONG_DIR;
         return switch (action) {
             case "play", "playurl", "playnbs", "playnbsurl" -> play(context);
             case "playfromitem", "playitem", "playsongplayer" -> playFromItem(context);
@@ -73,7 +72,7 @@ public class MusicCommand extends Command {
             case "loop" -> loop(context);
             case "list" -> list(context);
             case "skip" -> skip(context);
-            case "nowplaying" -> nowplaying(context);
+            case "nowplaying" -> nowPlaying(context);
             case "queue" -> queue(context);
             case "goto" -> goTo(context);
             case "pitch" -> pitch(context);
@@ -92,30 +91,28 @@ public class MusicCommand extends Command {
 
         if (player.loaderThread != null) throw new CommandException(Component.text("Already loading a song"));
 
-        String _path;
+        String stringPath;
         Path path;
         try {
-            _path = context.getString(true, true);
+            stringPath = context.getString(true, true);
 
-//            if (_path.isBlank()) throw new CommandException(Component.text("No song specified"));
+            path = Path.of(ROOT.toString(), stringPath);
 
-            path = Path.of(root.toString(), _path);
-
-            if (path.toString().contains("http")) player.loadSong(new URI(_path).toURL(), context.sender);
+            if (path.toString().contains("http")) player.loadSong(new URI(stringPath).toURL(), context.sender);
             else {
                 // among us protection!!!11
-                if (!path.normalize().startsWith(root.toString())) throw new CommandException(Component.text("no"));
+                if (!path.normalize().startsWith(ROOT.toString())) throw new CommandException(Component.text("no"));
 
                 // ignore my ohio code for autocomplete
                 final String separator = FileSystems.getDefault().getSeparator();
 
-                if (_path.contains(separator) && !_path.isEmpty()) {
-                    final String[] pathSplitted = _path.split(separator);
+                if (stringPath.contains(separator) && !stringPath.isEmpty()) {
+                    final String[] splitPath = stringPath.split(separator);
 
-                    final List<String> pathSplittedClone = new ArrayList<>(Arrays.stream(pathSplitted.clone()).toList());
-                    pathSplittedClone.removeLast();
+                    final List<String> splitPathClone = new ArrayList<>(Arrays.stream(splitPath).toList());
+                    splitPathClone.removeLast();
 
-                    final Path realPath = Path.of(root.toString(), String.join(separator, pathSplittedClone));
+                    final Path realPath = Path.of(ROOT.toString(), String.join(separator, splitPathClone));
 
                     try (DirectoryStream<Path> stream = Files.newDirectoryStream(realPath)) {
                         final List<Path> songsPaths = new ArrayList<>();
@@ -126,7 +123,7 @@ public class MusicCommand extends Command {
                         final List<String> songs = new ArrayList<>();
                         for (Path eachPath : songsPaths) songs.add(eachPath.getFileName().toString());
 
-                        final String lowerCaseFile = pathSplitted[pathSplitted.length - 1].toLowerCase();
+                        final String lowerCaseFile = splitPath[splitPath.length - 1].toLowerCase();
 
                         final String[] matchedArray = songs.stream()
                                 .filter(song -> song.equalsIgnoreCase(lowerCaseFile) || song.toLowerCase().contains(lowerCaseFile))
@@ -141,7 +138,7 @@ public class MusicCommand extends Command {
                         throw new CommandException(Component.text("Directory does not exist"));
                     }
                 } else {
-                    try (DirectoryStream<Path> stream = Files.newDirectoryStream(root)) {
+                    try (DirectoryStream<Path> stream = Files.newDirectoryStream(ROOT)) {
                         final List<Path> songsPaths = new ArrayList<>();
                         for (Path eachPath : stream) songsPaths.add(eachPath);
 
@@ -151,14 +148,14 @@ public class MusicCommand extends Command {
                         for (Path eachPath : songsPaths) songs.add(eachPath.getFileName().toString());
 
                         final String[] matchedArray = songs.stream()
-                                .filter(song -> song.equalsIgnoreCase(_path) || song.toLowerCase().contains(_path.toLowerCase()))
+                                .filter(song -> song.equalsIgnoreCase(stringPath) || song.toLowerCase().contains(stringPath.toLowerCase()))
                                 .toArray(String[]::new);
 
                         if (matchedArray.length == 0) throw new CommandException(Component.text("Song not found"));
 
                         final String file = matchedArray[0];
 
-                        player.loadSong(Path.of(root.toString(), file), context.sender);
+                        player.loadSong(Path.of(ROOT.toString(), file), context.sender);
                     } catch (NoSuchFileException e) {
                         throw new CommandException(Component.text("this will never happen ok??"));
                     }
@@ -261,11 +258,11 @@ public class MusicCommand extends Command {
         final String stringPathIfExists = context.getString(true, false);
 
         final Path path = Path.of(
-                root.toString(),
+                ROOT.toString(),
                 stringPathIfExists
         );
 
-        if (!path.normalize().startsWith(root.toString())) throw new CommandException(Component.text("no"));
+        if (!path.normalize().startsWith(ROOT.toString())) throw new CommandException(Component.text("no"));
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
             final List<Path> paths = new ArrayList<>();
@@ -285,7 +282,7 @@ public class MusicCommand extends Command {
                     location = Paths.get(""); // wtf mabe
                 }
 
-                final String joinedPath = location.equals(root) ?
+                final String joinedPath = location.equals(ROOT) ?
                         eachPath.getFileName().toString() :
                         Paths.get(
                                 location.getFileName().toString(),
@@ -346,7 +343,7 @@ public class MusicCommand extends Command {
         return null;
     }
 
-    public Component nowplaying (CommandContext context) throws CommandException {
+    public Component nowPlaying (CommandContext context) throws CommandException {
         context.checkOverloadArgs(1);
 
         final Bot bot = context.bot;
