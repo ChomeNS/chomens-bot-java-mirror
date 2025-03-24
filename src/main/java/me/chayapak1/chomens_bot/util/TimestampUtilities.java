@@ -18,8 +18,8 @@ public class TimestampUtilities {
         final String minuteString = matcher.group(2);
         final String secondString = matcher.group(3);
 
-        if (hourString != null) time += (long) Integer.parseInt(hourString) * 60 * 60 * 1000;
-        time += (long) Integer.parseInt(minuteString) * 60 * 1000;
+        if (hourString != null) time += Long.parseLong(hourString) * 60 * 60 * 1000;
+        time += Long.parseLong(minuteString) * 60 * 1000;
         time += (long) (Double.parseDouble(secondString) * 1000.0);
 
         return time;
