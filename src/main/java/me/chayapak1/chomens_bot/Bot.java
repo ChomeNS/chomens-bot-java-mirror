@@ -107,6 +107,7 @@ public class Bot extends SessionAdapter {
     public PacketSnifferPlugin packetSniffer;
     public VoiceChatPlugin voiceChat;
     public TeamJoinerPlugin teamJoiner;
+    public ChomeNSModIntegrationPlugin chomeNSMod;
     public AuthPlugin auth;
     public ScreensharePlugin screenshare;
     public FormatCheckerPlugin formatChecker;
@@ -159,6 +160,7 @@ public class Bot extends SessionAdapter {
         this.packetSniffer = new PacketSnifferPlugin(this);
         this.voiceChat = new VoiceChatPlugin(this);
         this.teamJoiner = new TeamJoinerPlugin(this);
+        this.chomeNSMod = new ChomeNSModIntegrationPlugin(this);
         this.auth = new AuthPlugin(this);
 //        this.screenshare = new ScreensharePlugin(this);
         this.formatChecker = new FormatCheckerPlugin(this);
