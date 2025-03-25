@@ -86,7 +86,8 @@ public class CommandHandlerPlugin {
     ) {
         final boolean inGame = context instanceof PlayerCommandContext;
         final boolean discord = context instanceof DiscordCommandContext;
-        final boolean console = context instanceof ConsoleCommandContext;
+
+        final boolean bypass = context instanceof ConsoleCommandContext || context instanceof ChomeNSModCommandContext;
 
         if (commandPerSecond > 100) return null;
 
@@ -105,7 +106,7 @@ public class CommandHandlerPlugin {
         if (command == null && !inGame) return Component.text("Unknown command: " + commandName).color(NamedTextColor.RED);
         else if (command == null) return null;
 
-        if (!console && disabled) return Component.text("ChomeNS Bot is currently disabled").color(NamedTextColor.RED);
+        if (!bypass && disabled) return Component.text("ChomeNS Bot is currently disabled").color(NamedTextColor.RED);
 
         final TrustLevel trustLevel = command.trustLevel;
 
@@ -118,7 +119,7 @@ public class CommandHandlerPlugin {
 
         final String[] args = Arrays.copyOfRange(splitInput, (trustLevel != TrustLevel.PUBLIC && inGame) ? 2 : 1, splitInput.length);
 
-        if (command.trustLevel != TrustLevel.PUBLIC && !console) {
+        if (command.trustLevel != TrustLevel.PUBLIC && !bypass) {
             if (discord) {
                 final Member member = event.getMember();
 
@@ -167,7 +168,8 @@ public class CommandHandlerPlugin {
             }
         }
 
-        if (!console && command.consoleOnly) return Component.text("This command can only be run via console").color(NamedTextColor.RED);
+        // should i give access to all bypass contexts instead of only console?
+        if (!bypass && command.consoleOnly) return Component.text("This command can only be run via console").color(NamedTextColor.RED);
 
         // should these be here?
         context.fullArgs = fullArgs;

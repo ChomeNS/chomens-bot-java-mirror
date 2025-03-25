@@ -3,14 +3,15 @@ package me.chayapak1.chomens_bot.plugins;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.chomeNSMod.Packet;
+import me.chayapak1.chomens_bot.chomeNSMod.PacketHandler;
 import me.chayapak1.chomens_bot.chomeNSMod.Types;
-import me.chayapak1.chomens_bot.chomeNSMod.clientboundPackets.ClientboundCoreOutputPacket;
-import me.chayapak1.chomens_bot.chomeNSMod.clientboundPackets.ClientboundSuccessfulHandshakePacket;
-import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundHandshakePacket;
+import me.chayapak1.chomens_bot.chomeNSMod.clientboundPackets.ClientboundHandshakePacket;
+import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundRunCommandPacket;
 import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundRunCoreCommandPacket;
+import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundSuccessfulHandshakePacket;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
+import me.chayapak1.chomens_bot.util.Ascii85;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -27,19 +28,19 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 // This is inspired from the ChomeNS Bot Proxy which is in the JavaScript version of ChomeNS Bot.
-// Right now it is not really used anywhere, so you'll see duplicate codes from AuthPlugin
 public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, PlayersPlugin.Listener {
     private static final String ID = "chomens_mod";
 
     public static final List<Class<? extends Packet>> SERVERBOUND_PACKETS = new ArrayList<>();
 
     static {
-        SERVERBOUND_PACKETS.add(ServerboundHandshakePacket.class);
+        SERVERBOUND_PACKETS.add(ServerboundSuccessfulHandshakePacket.class);
         SERVERBOUND_PACKETS.add(ServerboundRunCoreCommandPacket.class);
+        SERVERBOUND_PACKETS.add(ServerboundRunCommandPacket.class);
     }
 
     private static PrivateKey PRIVATE_KEY;
@@ -56,9 +57,7 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
     private static final String BEGIN_PUBLIC_KEY = "-----BEGIN CHOMENS BOT PUBLIC KEY-----";
     private static final String END_PUBLIC_KEY = "-----END CHOMENS BOT PUBLIC KEY-----";
 
-    public static void init (Configuration config) {
-        if (!config.ownerAuthentication.enabled) return;
-
+    public static void init () {
         try {
             // let's only check for the private key here
             if (!Files.exists(PRIVATE_KEY_PATH)) {
@@ -132,15 +131,20 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
     private final Bot bot;
 
+    private final PacketHandler handler;
+
     private final List<Listener> listeners = new ArrayList<>();
 
     public final List<PlayerEntry> connectedPlayers = new ArrayList<>();
 
     public ChomeNSModIntegrationPlugin (Bot bot) {
         this.bot = bot;
+        this.handler = new PacketHandler(bot);
 
         bot.chat.addListener(this);
         bot.players.addListener(this);
+
+        bot.executor.scheduleAtFixedRate(this::tryHandshaking, 1, 1, TimeUnit.SECONDS);
     }
 
     public byte[] decrypt (byte[] data) throws Exception {
@@ -160,11 +164,11 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
         final byte[] encryptedBytes = cipher.doFinal(data);
 
-        return Base64.getEncoder().encodeToString(encryptedBytes);
+        return Ascii85.encode(encryptedBytes);
     }
 
     public void send (PlayerEntry target, Packet packet) {
-        if (!connectedPlayers.contains(target)) return;
+        if (!connectedPlayers.contains(target) && !(packet instanceof ClientboundHandshakePacket)) return; // LoL sus check
 
         final ByteBuf buf = Unpooled.buffer();
 
@@ -177,11 +181,13 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
         try {
             final String encrypted = encrypt(target.profile.getName(), bytes);
 
-            final Component component = Component
-                    .text(ID)
-                    .append(Component.text(encrypted));
+            final Component component = Component.translatable(
+                    "",
+                    Component.text(ID),
+                    Component.text(encrypted)
+            );
 
-            bot.chat.tellraw(component, target.profile.getId());
+            bot.chat.actionBar(component, target.profile.getId());
         } catch (Exception ignored) {}
     }
 
@@ -222,7 +228,7 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
         final String data = dataComponent.content();
 
         try {
-            final byte[] decrypted = decrypt(Base64.getDecoder().decode(data));
+            final byte[] decrypted = decrypt(Ascii85.decode(data));
 
             final Pair<PlayerEntry, Packet> deserialized = deserialize(decrypted);
 
@@ -232,72 +238,31 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
             final Packet packet = deserialized.getValue();
 
             handlePacket(player, packet);
-
-//            isAuthenticating = false;
-//
-//            bot.logger.log(
-//                    LogType.AUTH,
-//                    Component
-//                            .text("Player has been verified")
-//                            .color(NamedTextColor.GREEN)
-//            );
-//
-//            final PlayerEntry target = bot.players.getEntry(bot.config.ownerName);
-//
-//            if (target == null) return false; // sad :(
-//
-//            bot.chat.tellraw(
-//                    Component
-//                            .text("You have been verified")
-//                            .color(NamedTextColor.GREEN),
-//                    target.profile.getId()
-//            );
         } catch (Exception ignored) {}
 
         return false;
     }
 
+    private void tryHandshaking () {
+        // is looping through the usernames from the client public keys list a good idea?
+        for (String username : CLIENT_PUBLIC_KEYS.keySet()) {
+            final PlayerEntry target = bot.players.getEntry(username);
+
+            if (target == null || connectedPlayers.contains(target)) continue;
+
+            send(target, new ClientboundHandshakePacket());
+        }
+    }
+
     private void handlePacket (PlayerEntry player, Packet packet) {
-        if (packet instanceof ServerboundHandshakePacket t_packet) handlePacket(player, t_packet);
-        else if (packet instanceof ServerboundRunCoreCommandPacket t_packet) handlePacket(player, t_packet);
-
-        for (Listener listener : listeners) listener.packetReceived(player, packet);
-    }
-
-    private void handlePacket (PlayerEntry player, ServerboundHandshakePacket ignoredPacket) {
-        connectedPlayers.remove(player);
-
-        connectedPlayers.add(player);
-
-        send(player, new ClientboundSuccessfulHandshakePacket());
-    }
-
-    private void handlePacket (PlayerEntry player, ServerboundRunCoreCommandPacket packet) {
-        final CompletableFuture<Component> future = bot.core.runTracked(packet.command);
-
-        if (future == null) {
-            send(
-                    player,
-                    new ClientboundCoreOutputPacket(
-                            packet.runID,
-                            Component.empty()
-                    )
-            );
-
-            return;
+        if (packet instanceof ServerboundSuccessfulHandshakePacket) {
+            connectedPlayers.remove(player);
+            connectedPlayers.add(player);
         }
 
-        future.thenApply(output -> {
-            send(
-                    player,
-                    new ClientboundCoreOutputPacket(
-                            packet.runID,
-                            output
-                    )
-            );
+        handler.handlePacket(player, packet);
 
-            return null;
-        });
+        for (Listener listener : listeners) listener.packetReceived(player, packet);
     }
 
     @Override
