@@ -14,9 +14,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-public class CommandHandlerPlugin {
+public class CommandHandlerPlugin implements TickPlugin.Listener {
     public static final List<Command> commands = new ArrayList<>();
 
     static {
@@ -61,6 +60,10 @@ public class CommandHandlerPlugin {
         registerCommand(new RestartCommand());
     }
 
+    public static void registerCommand (Command command) {
+        commands.add(command);
+    }
+
     public boolean disabled = false;
 
     private final Bot bot;
@@ -70,11 +73,12 @@ public class CommandHandlerPlugin {
     public CommandHandlerPlugin (Bot bot) {
         this.bot = bot;
 
-        bot.executor.scheduleAtFixedRate(() -> commandPerSecond = 0, 0, 1, TimeUnit.SECONDS);
+        bot.tick.addListener(this);
     }
 
-    public static void registerCommand (Command command) {
-        commands.add(command);
+    @Override
+    public void onSecondTick () {
+        commandPerSecond = 0;
     }
 
     // BETTER QUALITY than the js version

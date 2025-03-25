@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener, PositionPlugin.Listener {
+public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener, PositionPlugin.Listener, TickPlugin.Listener {
     private final Bot bot;
 
     private ScheduledFuture<?> checkTask;
@@ -51,11 +51,15 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener,
     public SelfCarePlugin (Bot bot) {
         this.bot = bot;
 
-        bot.executor.scheduleAtFixedRate(() -> positionPacketsPerSecond = 0, 0, 1, TimeUnit.SECONDS);
-
         bot.addListener(this);
         bot.chat.addListener(this);
         bot.position.addListener(this);
+        bot.tick.addListener(this);
+    }
+
+    @Override
+    public void onSecondTick () {
+        positionPacketsPerSecond = 0;
     }
 
     @Override

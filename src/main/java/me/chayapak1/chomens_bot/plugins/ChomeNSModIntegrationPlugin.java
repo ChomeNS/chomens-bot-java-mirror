@@ -28,11 +28,10 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 // This is inspired from the ChomeNS Bot Proxy which is in the JavaScript version of ChomeNS Bot.
-public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, PlayersPlugin.Listener {
+public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, PlayersPlugin.Listener, TickPlugin.Listener {
     private static final String ID = "chomens_mod";
 
     public static final List<Class<? extends Packet>> SERVERBOUND_PACKETS = new ArrayList<>();
@@ -143,8 +142,12 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
         bot.chat.addListener(this);
         bot.players.addListener(this);
+        bot.tick.addListener(this);
+    }
 
-        bot.executor.scheduleAtFixedRate(this::tryHandshaking, 1, 1, TimeUnit.SECONDS);
+    @Override
+    public void onSecondTick () {
+        tryHandshaking();
     }
 
     public byte[] decrypt (byte[] data) throws Exception {

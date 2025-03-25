@@ -90,17 +90,6 @@ public class CorePlugin
             );
         }
 
-        bot.executor.scheduleAtFixedRate(() -> {
-            checkCoreTick();
-
-            resizeTick();
-
-            if (!shouldRefill) return;
-
-            refill(false);
-            shouldRefill = false;
-        }, 0, 1, TimeUnit.SECONDS);
-
         bot.addListener(this);
         bot.world.addListener(this);
         bot.tick.addListener(this);
@@ -124,6 +113,18 @@ public class CorePlugin
         } catch (Exception e) {
             bot.logger.error(e);
         }
+    }
+
+    @Override
+    public void onSecondTick () {
+        checkCoreTick();
+
+        resizeTick();
+
+        if (!shouldRefill) return;
+
+        refill(false);
+        shouldRefill = false;
     }
 
     public boolean hasRateLimit () {

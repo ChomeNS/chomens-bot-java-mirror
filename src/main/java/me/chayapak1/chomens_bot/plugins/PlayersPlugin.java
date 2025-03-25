@@ -22,7 +22,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-public class PlayersPlugin extends Bot.Listener {
+public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
     private final Bot bot;
 
     public final List<PlayerEntry> list = new ArrayList<>();
@@ -34,10 +34,15 @@ public class PlayersPlugin extends Bot.Listener {
     public PlayersPlugin (Bot bot) {
         this.bot = bot;
 
-        bot.addListener(this);
-
-        bot.executor.scheduleAtFixedRate(this::queryPlayersIP, 0, 1, TimeUnit.SECONDS);
         bot.executor.scheduleAtFixedRate(this::onLastKnownNameTick, 0, 5, TimeUnit.SECONDS);
+
+        bot.addListener(this);
+        bot.tick.addListener(this);
+    }
+
+    @Override
+    public void onSecondTick () {
+        queryPlayersIP();
     }
 
     @Override

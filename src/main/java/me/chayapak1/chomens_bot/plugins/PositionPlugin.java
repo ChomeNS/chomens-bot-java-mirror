@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 // some part of the code used to be in a test plugin but i thought it would be useful in the future so i moved it here
 public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener {
@@ -37,26 +36,27 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
     public PositionPlugin (Bot bot) {
         this.bot = bot;
 
-        // notchian clients also does this, sends the position packet every second
-        bot.executor.scheduleAtFixedRate(() -> {
-            if (!bot.loggedIn || isGoingDownFromHeightLimit) return;
-
-            bot.session.send(new ServerboundMovePlayerPosPacket(
-                    false,
-                    false,
-                    position.getX(),
-                    position.getY(),
-                    position.getZ()
-            ));
-        }, 0, 1, TimeUnit.SECONDS);
-
         bot.addListener(this);
         bot.tick.addListener(this);
     }
 
     @Override
-    public void onTick() {
+    public void onTick () {
         handleHeightLimit();
+    }
+
+    // notchian clients also does this, where it sends the current position to the server every second
+    @Override
+    public void onSecondTick () {
+        if (isGoingDownFromHeightLimit) return;
+
+        bot.session.send(new ServerboundMovePlayerPosPacket(
+                false,
+                false,
+                position.getX(),
+                position.getY(),
+                position.getZ()
+        ));
     }
 
     @Override

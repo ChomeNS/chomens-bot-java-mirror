@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 public class FilterManagerPlugin
         extends Bot.Listener
-        implements PlayersPlugin.Listener, ChatPlugin.Listener, CommandSpyPlugin.Listener
+        implements PlayersPlugin.Listener, ChatPlugin.Listener, CommandSpyPlugin.Listener, TickPlugin.Listener
 {
     private final Bot bot;
 
@@ -26,14 +26,18 @@ public class FilterManagerPlugin
     public FilterManagerPlugin (Bot bot) {
         this.bot = bot;
 
-        bot.players.addListener(this);
-
-        bot.executor.scheduleAtFixedRate(this::removeLeftPlayers, 0, 1, TimeUnit.SECONDS);
         bot.executor.scheduleAtFixedRate(this::kick, 0, 10, TimeUnit.SECONDS);
 
         bot.addListener(this);
+        bot.players.addListener(this);
+        bot.tick.addListener(this);
         bot.chat.addListener(this);
         bot.commandSpy.addListener(this);
+    }
+
+    @Override
+    public void onSecondTick () {
+        removeLeftPlayers();
     }
 
     private void removeLeftPlayers () {
