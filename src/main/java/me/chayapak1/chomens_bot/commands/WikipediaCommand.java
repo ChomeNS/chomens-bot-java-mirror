@@ -10,6 +10,7 @@ import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
+import me.chayapak1.chomens_bot.util.HTMLUtilities;
 import me.chayapak1.chomens_bot.util.HttpUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -23,7 +24,7 @@ import java.nio.charset.StandardCharsets;
 
 public class WikipediaCommand extends Command {
     public static final String pageIDStringURL = "https://en.wikipedia.org/w/api.php?prop=info%%7Cpageprops&inprop=url&ppprop=disambiguation&titles=%s&format=json&redirects=&action=query&origin=*&";
-    public static final String outputStringURL = "https://en.wikipedia.org/w/api.php?prop=extracts&explaintext=&exintro=&pageids=%d&format=json&redirects=&action=query&origin=*&";
+    public static final String outputStringURL = "https://en.wikipedia.org/w/api.php?prop=extracts&exintro=&pageids=%d&format=json&redirects=&action=query&origin=*&";
 
     public WikipediaCommand () {
         super(
@@ -80,8 +81,12 @@ public class WikipediaCommand extends Command {
                 final int pageID = Integer.parseInt(pages.entrySet().iterator().next().getKey());
 
                 if (pageID == -1) {
-                    context.sendOutput(Component.text("Cannot find page: " + page).color(NamedTextColor.RED));
-                    return;
+                    throw new CommandException(
+                            Component.translatable(
+                                    "Cannot find page: %s",
+                                    Component.text(page)
+                            )
+                    );
                 }
 
                 final URL outputUrl = new URI(String.format(outputStringURL, pageID)).toURL();
@@ -94,7 +99,9 @@ public class WikipediaCommand extends Command {
                         .getAsJsonObject(String.valueOf(pageID));
 
                 final String title = pageOutput.get("title").getAsString();
-                final String extract = pageOutput.get("extract").getAsString();
+                final String extracted = HTMLUtilities.toFormattingCodes(pageOutput.get("extract").getAsString());
+
+                if (extracted == null) throw new CommandException(Component.text("No contents found"));
 
                 component = component
                         .append(
@@ -107,12 +114,14 @@ public class WikipediaCommand extends Command {
                                         )
                         )
                         .append(Component.newline())
-                        .append(Component.text(extract).color(NamedTextColor.GREEN));
+                        .append(Component.text(extracted).color(NamedTextColor.GREEN));
 
                 context.sendOutput(component);
             } catch (NumberFormatException e) {
                 context.sendOutput(Component.text("Failed parsing page ID").color(NamedTextColor.RED));
                 bot.logger.error(e);
+            } catch (CommandException e) {
+                context.sendOutput(e.message.color(NamedTextColor.RED));
             } catch (Exception e) {
                 context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
             }
