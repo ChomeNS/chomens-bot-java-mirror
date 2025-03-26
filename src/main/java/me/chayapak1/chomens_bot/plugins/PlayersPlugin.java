@@ -96,6 +96,11 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
                 }
             }
 
+            if (!bot.serverFeatures.hasEssentials) {
+                outputFuture.complete(null);
+                return;
+            }
+
             final CompletableFuture<Component> trackedCoreFuture = bot.core.runTracked("essentials:seen " + target.profile.getIdAsString());
 
             if (trackedCoreFuture == null) {
