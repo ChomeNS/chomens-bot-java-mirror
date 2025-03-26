@@ -22,34 +22,29 @@ public class CommandSpyPlugin implements ChatPlugin.Listener {
     }
 
     @Override
-    public boolean systemMessageReceived(Component component, String string, String ansi) {
-        TextComponent textComponent;
+    public boolean systemMessageReceived (Component component, String string, String ansi) {
+        final List<Component> children = component.children();
 
-        try {
-            textComponent = (TextComponent) component;
+        if (
+                !(component instanceof TextComponent textComponent) ||
+                        children.size() != 2 ||
+                        textComponent.style().isEmpty() ||
+                        (
+                                textComponent.color() != NamedTextColor.AQUA &&
+                                textComponent.color() != NamedTextColor.YELLOW
+                        ) ||
+                        !(children.getFirst() instanceof TextComponent) ||
+                        !(children.getLast() instanceof TextComponent)
+        ) return true;
 
-            final List<Component> children = textComponent.children();
+        final String username = textComponent.content();
+        final String command = ComponentUtilities.stringify(children.getLast());
 
-            if (
-                    (
-                            textComponent.color() != NamedTextColor.AQUA ||
-                                    textComponent.color() != NamedTextColor.YELLOW ||
-                                    textComponent.style().isEmpty()
-                    ) &&
-                            children.size() != 2
-            ) return true;
+        final PlayerEntry sender = bot.players.getEntry(username);
 
-            if (!((TextComponent) children.getFirst()).content().equals(": ")) return true;
+        if (sender == null) return true;
 
-            final String username = textComponent.content();
-            final String command = ComponentUtilities.stringify(children.get(1));
-
-            final PlayerEntry sender = bot.players.getEntry(username);
-
-            if (sender == null) return true;
-
-            for (Listener listener : listeners) listener.commandReceived(sender, command);
-        } catch (ClassCastException ignored) {}
+        for (Listener listener : listeners) listener.commandReceived(sender, command);
 
         return true;
     }

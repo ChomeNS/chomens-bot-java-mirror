@@ -31,22 +31,23 @@ public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener {
     public boolean systemMessageReceived (Component component, String string, String ansi) {
         if (!(component instanceof TextComponent textComponent)) return true;
 
+        final UUID inputId = UUIDUtilities.tryParse(textComponent.content());
+
+        if (inputId == null || !ids.contains(inputId)) return true;
+
+        ids.remove(inputId);
+
+        final List<Component> children = component.children();
+
+        if (
+                children.size() > 2 ||
+                        !(children.getFirst() instanceof TextComponent firstChild)
+        ) return false;
+
         try {
-            final UUID inputId = UUIDUtilities.tryParse(textComponent.content());
-            
-            if (inputId == null || !ids.contains(inputId)) return true;
+            final long transactionId = Long.parseLong(firstChild.content());
 
-            ids.remove(inputId);
-
-            final List<Component> children = component.children();
-
-            if (children.size() > 2) return false;
-
-            if (!(children.getFirst() instanceof TextComponent)) return true;
-
-            final long transactionId = Long.parseLong(((TextComponent) children.getFirst()).content());
-
-            if (!transactions.containsKey(transactionId)) return true;
+            if (!transactions.containsKey(transactionId)) return false;
 
             final CompletableFuture<String> future = transactions.get(transactionId);
 
@@ -67,9 +68,9 @@ public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener {
             }
 
             return false;
-        } catch (ClassCastException | NumberFormatException ignored) {}
-
-        return true;
+        } catch (NumberFormatException e) {
+            return true;
+        }
     }
 
     private Triple<CompletableFuture<String>, Long, UUID> getFutureAndId () {

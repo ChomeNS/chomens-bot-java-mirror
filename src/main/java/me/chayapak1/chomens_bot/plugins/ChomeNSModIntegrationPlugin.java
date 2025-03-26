@@ -222,11 +222,11 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
         final String id = textComponent.content();
 
-        if (!id.equals(ID)) return true;
-
-        if (component.children().size() != 1) return true;
-
-        if (!(component.children().getFirst() instanceof TextComponent dataComponent)) return true;
+        if (
+                !id.equals(ID) ||
+                        component.children().size() != 1 ||
+                        !(component.children().getFirst() instanceof TextComponent dataComponent)
+        ) return true;
 
         final String data = dataComponent.content();
 

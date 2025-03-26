@@ -10,53 +10,51 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandSuggestionPlugin implements ChatPlugin.Listener {
-    private final Bot bot;
+    public static final String ID = "chomens_bot_request_command_suggestion";
 
-    public final String id = "chomens_bot_request_command_suggestion";
+    private final Bot bot;
 
     public CommandSuggestionPlugin (Bot bot) {
         this.bot = bot;
+
         bot.chat.addListener(this);
     }
 
     @Override
     public boolean systemMessageReceived(Component component, String string, String ansi) {
-        if (!(component instanceof TextComponent idComponent)) return true;
+        final List<Component> children = component.children();
 
-        if (!idComponent.content().equals(id)) return true;
+        if (
+                !(component instanceof TextComponent idComponent) ||
+                        !idComponent.content().equals(ID) ||
+                        children.size() != 1 ||
+                        !(children.getFirst() instanceof TextComponent playerComponent)
+        ) return true;
 
-        try {
-            final List<Component> children = component.children();
+        final String player = playerComponent.content();
 
-            if (children.size() != 1) return true;
+        final List<Component> output = new ArrayList<>();
+        output.add(Component.text(ID));
 
-            final String player = ((TextComponent) children.getFirst()).content();
+        for (Command command : CommandHandlerPlugin.commands) {
+            if (command.consoleOnly) continue;
 
-            final List<Component> output = new ArrayList<>();
-            output.add(Component.text(id));
+            final boolean hasAliases = command.aliases.length != 0;
 
-            for (Command command : CommandHandlerPlugin.commands) {
-                if (command.consoleOnly) continue;
+            Component outputComponent = Component
+                    .text(command.name)
+                    .append(Component.text(command.trustLevel.name()))
+                    .append(Component.text(hasAliases));
 
-                final boolean hasAliases = command.aliases.length != 0;
-
-                Component outputComponent = Component
-                        .text(command.name)
-                        .append(Component.text(command.trustLevel.name()))
-                        .append(Component.text(hasAliases));
-
-                if (hasAliases) {
-                    for (String alias : command.aliases) outputComponent = outputComponent.append(Component.text(alias));
-                }
-
-                output.add(outputComponent);
+            if (hasAliases) {
+                for (String alias : command.aliases) outputComponent = outputComponent.append(Component.text(alias));
             }
 
-            bot.chat.tellraw(Component.join(JoinConfiguration.noSeparators(), output), player);
+            output.add(outputComponent);
+        }
 
-            return false;
-        } catch (Exception ignored) {}
+        bot.chat.tellraw(Component.join(JoinConfiguration.noSeparators(), output), player);
 
-        return true;
+        return false;
     }
 }
