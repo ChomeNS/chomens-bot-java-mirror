@@ -21,8 +21,9 @@ public class Types {
     }
 
     public static void writeString (ByteBuf buf, String string) {
-        buf.writeInt(string.length());
-        buf.writeBytes(string.getBytes(StandardCharsets.UTF_8));
+        final byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
+        buf.writeInt(bytes.length);
+        buf.writeBytes(bytes);
     }
 
     public static String readString (ByteBuf buf) {

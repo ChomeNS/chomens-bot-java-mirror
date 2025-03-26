@@ -136,6 +136,8 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
     public final List<PlayerEntry> connectedPlayers = new ArrayList<>();
 
+    private int chunkID = 0;
+
     public ChomeNSModIntegrationPlugin (Bot bot) {
         this.bot = bot;
         this.handler = new PacketHandler(bot);
@@ -181,17 +183,49 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
         final byte[] bytes = new byte[buf.readableBytes()];
         buf.readBytes(bytes);
 
-        try {
-            final String encrypted = encrypt(target.profile.getName(), bytes);
+        // split
+        final int length = bytes.length;
+        final int chunkSize = 245 - (6 * 3);
 
-            final Component component = Component.translatable(
-                    "",
-                    Component.text(ID),
-                    Component.text(encrypted)
-            );
+        final List<byte[]> chunks = new ArrayList<>();
 
-            bot.chat.actionBar(component, target.profile.getId());
-        } catch (Exception ignored) {}
+        for (int i = 0; i < length; i += chunkSize) {
+            final int end = Math.min(length, i + chunkSize);
+            final byte[] chunk = Arrays.copyOfRange(bytes, i, end);
+
+            chunks.add(chunk);
+        }
+
+        final int currentChunkID = chunkID++;
+
+        int fullBytesIndex = 0;
+        for (byte[] chunk : chunks) {
+            final ByteBuf finalBuf = Unpooled.buffer();
+
+            finalBuf.writeInt(currentChunkID);
+            finalBuf.writeInt(chunks.size());
+            finalBuf.writeInt(fullBytesIndex);
+            finalBuf.writeInt(length);
+
+            finalBuf.writeBytes(chunk);
+
+            final byte[] finalBytes = new byte[finalBuf.readableBytes()];
+            finalBuf.readBytes(finalBytes);
+
+            try {
+                final String encrypted = encrypt(target.profile.getName(), finalBytes);
+
+                final Component component = Component.translatable(
+                        "",
+                        Component.text(ID),
+                        Component.text(encrypted)
+                );
+
+                bot.chat.actionBar(component, target.profile.getId());
+            } catch (Exception ignored) {}
+
+            fullBytesIndex += chunk.length;
+        }
     }
 
     private Pair<PlayerEntry, Packet> deserialize (byte[] data) {
@@ -275,6 +309,7 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
         connectedPlayers.remove(target);
     }
 
+    @SuppressWarnings("unused")
     public interface Listener {
         default void packetReceived (PlayerEntry player, Packet packet) {}
     }
