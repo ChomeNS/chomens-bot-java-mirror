@@ -194,6 +194,11 @@ public class Bot extends SessionAdapter {
 
         this.session = session;
 
+        // this is still needed since MinecraftProtocol will use this flag to set the
+        // handshake intention to transfer, it will be set back to false at
+        // login success
+        session.setFlag(BuiltinFlags.CLIENT_TRANSFERRING, isTransferring);
+
         session.setFlag(MinecraftConstants.FOLLOW_TRANSFERS, false); // we have our own transfer handler
 
         session.setFlag(BuiltinFlags.ATTEMPT_SRV_RESOLVE, options.resolveSRV);
@@ -273,11 +278,6 @@ public class Bot extends SessionAdapter {
 
     public void packetReceived (ClientboundTransferPacket ignoredPacket) {
         this.isTransferring = true;
-
-        // this is still needed since MinecraftProtocol will use this flag to set the
-        // handshake intention to transfer, it will be set back to false at
-        // login success
-        session.setFlag(BuiltinFlags.CLIENT_TRANSFERRING, true);
 
         session.disconnect(Component.translatable("disconnect.transfer"));
     }
