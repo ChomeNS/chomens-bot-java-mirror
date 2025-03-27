@@ -27,14 +27,12 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.inventory.S
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundPlayerActionPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundUseItemOnPacket;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CorePlugin
         extends Bot.Listener
@@ -46,7 +44,7 @@ public class CorePlugin
 
     private final List<Listener> listeners = new ArrayList<>();
 
-    public boolean ready = false;
+    public volatile boolean ready = false;
 
     private ScheduledFuture<?> refillTask;
 
@@ -56,12 +54,12 @@ public class CorePlugin
     public Vector3i from;
     public Vector3i to;
 
-    public Vector3i block = null;
+    public volatile Vector3i block = null;
 
-    public final ConcurrentLinkedQueue<String> placeBlockQueue = new ConcurrentLinkedQueue<>();
+    public final Queue<String> placeBlockQueue = new ConcurrentLinkedQueue<>();
 
-    private int commandsPerTick = 0;
-    private int commandsPerSecond = 0;
+    private final AtomicInteger commandsPerTick = new AtomicInteger(0);
+    private final AtomicInteger commandsPerSecond = new AtomicInteger(0);
 
     private boolean shouldRefill = false;
 
@@ -83,7 +81,7 @@ public class CorePlugin
 
         if (hasRateLimit() && hasReset()) {
             bot.executor.scheduleAtFixedRate(
-                    () -> commandsPerSecond = 0,
+                    () -> commandsPerSecond.set(0),
                     0,
                     bot.options.coreRateLimit.reset,
                     TimeUnit.MILLISECONDS
@@ -97,22 +95,18 @@ public class CorePlugin
 
     @Override
     public void onTick () {
-        if (commandsPerTick > 0) commandsPerTick--;
+        if (commandsPerTick.get() > 0) commandsPerTick.decrementAndGet();
 
-        try {
-            if (placeBlockQueue.size() > 300) {
-                placeBlockQueue.clear();
-                return;
-            }
-
-            final String command = placeBlockQueue.poll();
-
-            if (command == null) return;
-
-            forceRunPlaceBlock(command);
-        } catch (Exception e) {
-            bot.logger.error(e);
+        if (placeBlockQueue.size() > 300) {
+            placeBlockQueue.clear();
+            return;
         }
+
+        final String command = placeBlockQueue.poll();
+
+        if (command == null) return;
+
+        forceRunPlaceBlock(command);
     }
 
     @Override
@@ -136,7 +130,7 @@ public class CorePlugin
     }
 
     public boolean isRateLimited () {
-        return commandsPerSecond > bot.options.coreRateLimit.limit;
+        return commandsPerSecond.get() > bot.options.coreRateLimit.limit;
     }
 
     private void forceRun (String command) {
@@ -144,7 +138,7 @@ public class CorePlugin
         // to still run the command, even if forced.
         if (!ready || command.length() > 32767) return;
 
-        commandsPerTick++;
+        commandsPerTick.incrementAndGet();
 
         if (!bot.serverFeatures.hasNamespaces) command = StringUtilities.removeNamespace(command);
 
@@ -193,7 +187,7 @@ public class CorePlugin
 
             forceRun(command);
 
-            if (hasRateLimit()) commandsPerSecond++;
+            if (hasRateLimit()) commandsPerSecond.incrementAndGet();
         } else if (command.length() < 256) {
             bot.chat.send("/" + command);
         }
@@ -324,9 +318,9 @@ public class CorePlugin
         int y = -64;
         int z = toSize.getZ();
 
-        while (commandsPerTick > (16 * 16)) {
+        while (commandsPerTick.get() > 16 * 16) {
             y++;
-            commandsPerTick -= 16 * 16;
+            commandsPerTick.getAndAdd(-(16 * 16));
         }
 
         toSize = Vector3i.from(x, y, z);
@@ -388,7 +382,7 @@ public class CorePlugin
                         position.getZ() >= from.getZ() && position.getZ() <= to.getZ();
     }
 
-    private void incrementBlock () {
+    private synchronized void incrementBlock () {
         int x = block.getX() + 1;
         int y = block.getY();
         int z = block.getZ();
@@ -451,7 +445,7 @@ public class CorePlugin
         reset();
     }
 
-    public void recalculateRelativePositions() {
+    public void recalculateRelativePositions () {
         final int botChunkPosX = (int) Math.floor(bot.position.position.getX() / 16);
         final int botChunkPosZ = (int) Math.floor(bot.position.position.getZ() / 16);
 

@@ -53,7 +53,7 @@ public class ChatPlugin extends Bot.Listener {
 
     public final List<Component> chatTypes = new ArrayList<>();
 
-    private final ConcurrentLinkedQueue<String> queue = new ConcurrentLinkedQueue<>();
+    private final Queue<String> queue = new ConcurrentLinkedQueue<>();
 
     public final int queueDelay;
 

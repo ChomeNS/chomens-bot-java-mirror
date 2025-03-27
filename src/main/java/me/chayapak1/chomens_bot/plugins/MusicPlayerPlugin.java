@@ -23,11 +23,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-// Author: _ChipMC_ & chayapak <3
+// Author: _ChipMC_ & hhhzzzsss
 public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listener {
     public static final String SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic,tag=!custompitch]";
     public static final String CUSTOM_PITCH_SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic,tag=custompitch]";
@@ -45,7 +46,7 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
     }
 
     public Song currentSong;
-    public final List<Song> songQueue = new ArrayList<>();
+    public final List<Song> songQueue = Collections.synchronizedList(new LinkedList<>());
     public SongLoaderThread loaderThread = null;
     public Loop loop = Loop.OFF;
 
