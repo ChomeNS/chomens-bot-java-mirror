@@ -11,21 +11,22 @@ import java.util.Map;
 
 public class StringUtilities {
     public static String removeNamespace (String command) {
-        String removedCommand = command;
+        final StringBuilder removedCommand = new StringBuilder(command);
 
-        final String[] splittedSpace = removedCommand.split("\\s+"); // [minecraft:test, arg1, arg2, ...]
-        final String[] splittedColon = splittedSpace[0].split(":"); // [minecraft, test]
+        final String[] splitSpace = command.split("\\s+"); // [minecraft:test, arg1, arg2, ...]
+        final String[] splitColon = splitSpace[0].split(":"); // [minecraft, test]
 
-        if (splittedColon.length >= 2) {
-            removedCommand = String.join(":", Arrays.copyOfRange(splittedColon, 1, splittedColon.length));
+        if (splitColon.length >= 2) {
+            removedCommand.setLength(0);
+            removedCommand.append(String.join(":", Arrays.copyOfRange(splitColon, 1, splitColon.length)));
 
-            if (splittedSpace.length > 1) {
-                removedCommand += " ";
-                removedCommand += String.join(" ", Arrays.copyOfRange(splittedSpace, 1, splittedSpace.length));
+            if (splitSpace.length > 1) {
+                removedCommand.append(' ');
+                removedCommand.append(String.join(" ", Arrays.copyOfRange(splitSpace, 1, splitSpace.length)));
             }
         }
 
-        return removedCommand;
+        return removedCommand.toString();
     }
 
     // https://stackoverflow.com/a/35148974/18518424

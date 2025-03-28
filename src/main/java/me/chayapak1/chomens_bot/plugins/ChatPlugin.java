@@ -11,6 +11,7 @@ import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.data.team.Team;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.IllegalCharactersUtilities;
+import me.chayapak1.chomens_bot.util.StringUtilities;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -154,24 +155,37 @@ public class ChatPlugin extends Bot.Listener {
         }
     }
 
-    private Component getComponentByChatType (int chatType, Component name, Component message) {
+    private Component getComponentByChatType (int chatType, Component sender, Component content) {
         final Component type = chatTypes.get(chatType);
         if (type == null) return null;
 
-        final Team botTeam = bot.team.findTeamByMember(bot.profile.getName());
-        final Component botTeamDisplayName = botTeam == null ?
-                Component.empty() :
-                Component
-                        .translatable("chat.square_brackets")
-                        .arguments(botTeam.displayName)
-                        .style(botTeam.colorToStyle());
+        Component target;
+
+        // minecraft has the /msg target as the player target,
+        // that actually makes sense but i don't know how to
+        // properly implement this lol
+        if (
+                type instanceof TranslatableComponent translatableComponent &&
+                        translatableComponent.key().equals("commands.message.display.outgoing")
+        ) {
+            target = sender;
+        } else {
+            final Team botTeam = bot.team.findTeamByMember(bot.profile.getName());
+
+            target = botTeam == null ?
+                    Component.empty() :
+                    Component
+                            .translatable("chat.square_brackets")
+                            .arguments(botTeam.displayName)
+                            .style(botTeam.colorToStyle());
+        }
 
         return CHAT_TYPE_COMPONENT_RENDERER.render(
                 type,
                 new ChatTypeContext(
-                        botTeamDisplayName,
-                        name,
-                        message
+                        target,
+                        sender,
+                        content
                 )
         );
     }
@@ -268,20 +282,12 @@ public class ChatPlugin extends Bot.Listener {
         if (message == null) return;
 
         if (message.startsWith("/")) {
-            String removedMessage = message.substring(1);
+            final String slashRemoved = message.substring(1);
 
-            if (!bot.serverFeatures.hasNamespaces) {
-                final String[] splittedSpace = removedMessage.split("\\s+"); // [minecraft:test, arg1, arg2, ...]
-                final String[] splittedColon = splittedSpace[0].split(":"); // [minecraft, test]
-                if (splittedColon.length >= 2) {
-                    removedMessage = String.join(":", Arrays.copyOfRange(splittedColon, 1, splittedColon.length));
-
-                    if (splittedSpace.length > 1) {
-                        removedMessage += " ";
-                        removedMessage += String.join(" ", Arrays.copyOfRange(splittedSpace, 1, splittedSpace.length));
-                    }
-                }
-            }
+            final String removedMessage =
+                    bot.serverFeatures.hasNamespaces ?
+                            slashRemoved :
+                            StringUtilities.removeNamespace(slashRemoved);
 
             sendCommandInstantly(removedMessage);
         } else {
