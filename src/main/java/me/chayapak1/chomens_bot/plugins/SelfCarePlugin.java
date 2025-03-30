@@ -2,8 +2,8 @@ package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Configuration;
+import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import net.kyori.adventure.text.Component;
-import org.cloudburstmc.math.vector.Vector3d;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.network.packet.Packet;
@@ -26,7 +26,10 @@ import java.util.Arrays;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener, PositionPlugin.Listener, TickPlugin.Listener {
+public class SelfCarePlugin
+        extends Bot.Listener
+        implements ChatPlugin.Listener, CommandSpyPlugin.Listener, PositionPlugin.Listener
+{
     private final Bot bot;
 
     private ScheduledFuture<?> checkTask;
@@ -37,7 +40,6 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener,
     public GameMode gamemode;
     public int permissionLevel;
 
-    private int positionPacketsPerSecond = 0;
     private long usernameStartTime = System.currentTimeMillis();
 
     private boolean cspy = false;
@@ -53,17 +55,12 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener,
 
         bot.addListener(this);
         bot.chat.addListener(this);
+        bot.commandSpy.addListener(this);
         bot.position.addListener(this);
-        bot.tick.addListener(this);
     }
 
     @Override
-    public void onSecondTick () {
-        positionPacketsPerSecond = 0;
-    }
-
-    @Override
-    public boolean systemMessageReceived(Component component, String string, String ansi) {
+    public boolean systemMessageReceived (Component component, String string, String ansi) {
         if (string.equals("Successfully enabled CommandSpy")) cspy = true;
         else if (string.equals("Successfully disabled CommandSpy")) cspy = false;
 
@@ -97,6 +94,23 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener,
         return true;
     }
 
+    @Override
+    public void commandReceived (PlayerEntry sender, String command) {
+        final String trimmedCommand = command.trim();
+
+        final String controlPart = " control " + bot.profile.getName();
+
+        if (
+                !bot.config.selfCare.icu.enabled ||
+                        (
+                                !trimmedCommand.equals("/icontrolu:icu" + controlPart) &&
+                                        !trimmedCommand.equals("/icu" + controlPart)
+                        )
+        ) return;
+
+        bot.core.run("essentials:sudo " + sender.profile.getIdAsString() + " icu stop");
+    }
+
     public void check () {
         final Configuration.SelfCare selfCares = bot.config.selfCare;
 
@@ -120,7 +134,6 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener,
         else if (selfCares.username && (System.currentTimeMillis() - usernameStartTime) >= 2 * 1000 && !username && kaboom) bot.chat.send("/extras:username " + bot.username);
 
         // core
-        else if (selfCares.icu.enabled && positionPacketsPerSecond > selfCares.icu.positionPacketsPerSecond) bot.core.run("essentials:sudo * icu stop");
         else if (hasEssentials) {
             final String usernameOrBlank = !bot.options.useChat ?
                     bot.username + " " :
@@ -158,7 +171,6 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener,
         socialspy = false;
         muted = false;
         prefix = false;
-        positionPacketsPerSecond = 0;
 
         final Runnable task = () -> {
             if (!bot.loggedIn) return;
@@ -220,11 +232,6 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener,
                         PlayerState.START_SNEAKING
                 )
         );
-    }
-
-    @Override
-    public void positionChange(Vector3d position) {
-        positionPacketsPerSecond++;
     }
 
     private void runEssentialsCommand (String command) {
