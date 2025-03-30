@@ -96,7 +96,9 @@ public class SelfCarePlugin
 
     @Override
     public void commandReceived (PlayerEntry sender, String command) {
-        final String trimmedCommand = command.trim();
+        final String trimmedCommand = command
+                .trim()
+                .replaceAll("\\s+", " ");
 
         final String controlPart = " control " + bot.profile.getName();
 
