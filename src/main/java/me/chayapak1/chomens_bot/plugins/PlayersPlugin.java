@@ -257,7 +257,10 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
         final CompletableFuture<String> future = getLastKnownName(target.profile.getIdAsString());
 
         future.thenApply(lastKnownName -> {
-            if (lastKnownName == null) {
+            // checking for empty string means
+            // we did get the output from the server, and
+            // the player doesn't exist or the NBT path doesn't exist
+            if (lastKnownName.isEmpty()) {
                 final boolean removed = list.remove(target);
 
                 // checking if removed prevents the event from being called twice
@@ -297,7 +300,7 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
     }
 
     private void onLastKnownNameTick () {
-        if (!bot.loggedIn || !bot.serverFeatures.hasNamespaces) return; // hasNamespaces also means vanilla/non-bukkit
+        if (!bot.loggedIn || !bot.core.ready || !bot.serverFeatures.hasNamespaces) return; // hasNamespaces also means vanilla/non-bukkit
 
         for (PlayerEntry target : new ArrayList<>(list)) {
             check(target);

@@ -52,7 +52,9 @@ public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener {
 
             transactions.remove(transactionId);
 
-            if (children.size() == 1 || !(children.get(1) instanceof TextComponent)) {
+            if (children.size() == 1) {
+                future.complete("");
+            } else if (!(children.get(1) instanceof TextComponent)) {
                 future.complete(null);
             } else {
                 final String stringOutput = ((TextComponent) children.get(1)).content();
