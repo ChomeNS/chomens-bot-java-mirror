@@ -101,7 +101,7 @@ public class SelfCarePlugin
         final String controlPart = " control " + bot.profile.getName();
 
         if (
-                !bot.config.selfCare.icu.enabled ||
+                !bot.config.selfCare.icu ||
                         (
                                 !trimmedCommand.equals("/icontrolu:icu" + controlPart) &&
                                         !trimmedCommand.equals("/icu" + controlPart)

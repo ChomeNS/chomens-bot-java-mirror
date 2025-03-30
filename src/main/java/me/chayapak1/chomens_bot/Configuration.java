@@ -152,12 +152,7 @@ public class Configuration {
 
         public boolean cspy = true;
 
-        public Icu icu = new Icu();
-
-        public static class Icu {
-            public boolean enabled = true;
-            public int positionPacketsPerSecond = 10;
-        }
+        public boolean icu = true;
 
         public Prefix prefix = new Prefix();
 

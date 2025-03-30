@@ -123,14 +123,13 @@ selfCare:
   cspy: true
 
   # icu (icontrolUwU)
-  icu:
-    enabled: true
-    positionPacketsPerSecond: 10 # 10 seems to be the best number for me
+  icu: true
 
   # extras
   prefix:
     enabled: true
     prefix: '&8[&eChomeNS Bot&8]'
+
   username: true # MIGHT cause problem(s) if set to false (not tested,.,.)
 
 bots:
