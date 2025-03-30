@@ -31,7 +31,7 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener,
 
     private ScheduledFuture<?> checkTask;
 
-    public boolean visibility = false;
+    public boolean visible = false;
 
     private int entityId;
     public GameMode gamemode;
@@ -126,8 +126,8 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener,
                     bot.username + " " :
                     "";
 
-            if (selfCares.vanish && !vanish && !visibility && !creayun) {
-                runEssentialsCommand("essentials:vanish " + usernameOrBlank + "enable");
+            if (selfCares.vanish && visible == vanish && !creayun) {
+                runEssentialsCommand("essentials:vanish " + usernameOrBlank + (visible ? "disable" : "enable"));
             } else if (selfCares.nickname && !nickname) {
                 runEssentialsCommand("essentials:nickname " + usernameOrBlank + "off");
             } else if (selfCares.socialspy && !socialspy && !creayun) {
