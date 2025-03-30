@@ -27,7 +27,7 @@ public class ComponentUtilities {
                     .builder()
                     .match(Pattern
                             .compile("((https?://(ww(w|\\d)\\.)?|ww(w|\\d))[-a-zA-Z0-9@:%._+~#=]{1,256}"
-                                    + "\\.[a-zA-Z0-9]{2,6}\\b([-a-zA-Z0-9@:%_+.~#?&/=]*))"))
+                                    + "\\.[a-zA-Z0-9]{1,63}\\b([-a-zA-Z0-9@:%_+.~#?&/=]*))"))
                     .replacement((b, c) -> {
                         if (c == null) {
                             return null;
