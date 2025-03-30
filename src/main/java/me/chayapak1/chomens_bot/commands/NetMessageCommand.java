@@ -53,15 +53,7 @@ public class NetMessageCommand extends Command {
 
         final Component stylizedMessage = LegacyComponentSerializer.legacyAmpersand()
                 .deserialize(rawMessage)
-                .replaceText(ComponentUtilities.URL_REPLACEMENT_CONFIG)
-                .clickEvent(ClickEvent.copyToClipboard(rawMessage))
-                .hoverEvent(
-                        HoverEvent.showText(
-                                Component
-                                        .text("Click here to copy the message to your clipboard")
-                                        .color(NamedTextColor.GREEN)
-                        )
-                );
+                .replaceText(ComponentUtilities.URL_REPLACEMENT_CONFIG);
 
         final Component component = Component.translatable(
                 "[%s]%s%s%s› %s",
@@ -74,6 +66,14 @@ public class NetMessageCommand extends Command {
                 Component.empty()
                         .append(stylizedMessage)
                         .color(NamedTextColor.GRAY)
+                        .clickEvent(ClickEvent.copyToClipboard(rawMessage))
+                        .hoverEvent(
+                                HoverEvent.showText(
+                                        Component
+                                                .text("Click here to copy the message to your clipboard")
+                                                .color(NamedTextColor.GREEN)
+                                )
+                        )
         ).color(NamedTextColor.DARK_GRAY);
 
         for (Bot eachBot : bots) {
