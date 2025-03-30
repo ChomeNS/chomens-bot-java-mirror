@@ -11,7 +11,6 @@ import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener {
     private final Bot bot;
@@ -53,15 +52,9 @@ public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener {
 
             transactions.remove(transactionId);
 
-            if (children.size() == 1) {
+            if (children.size() == 1 || !(children.get(1) instanceof TextComponent)) {
                 future.complete(null);
             } else {
-                if (!(children.get(1) instanceof TextComponent)) {
-                    future.complete(null);
-
-                    return true;
-                }
-
                 final String stringOutput = ((TextComponent) children.get(1)).content();
 
                 future.complete(stringOutput);
@@ -82,15 +75,6 @@ public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener {
         final UUID id = UUID.randomUUID();
         ids.add(id);
 
-        // this probably doesn't do much, since even if the command returns
-        // no output, the tracker will still tellraw to the bot that this command has
-        // completed no matter what, but just in case, we'll remove the
-        // transactions and the ids here after 5 minutes
-        bot.executor.schedule(() -> {
-            transactions.remove(transactionId);
-            ids.remove(id);
-        }, 5, TimeUnit.MINUTES);
-
         return Triple.of(future, transactionId, id);
     }
 
@@ -108,11 +92,10 @@ public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener {
                                 Component.blockNBT(
                                         path,
 
-                                        // is there a better way of doing this?
-                                        BlockNBTComponent.Pos.fromString(
-                                                location.getX() + " " +
-                                                        location.getY() + " " +
-                                                        location.getZ()
+                                        BlockNBTComponent.WorldPos.worldPos(
+                                                BlockNBTComponent.WorldPos.Coordinate.absolute(location.getX()),
+                                                BlockNBTComponent.WorldPos.Coordinate.absolute(location.getY()),
+                                                BlockNBTComponent.WorldPos.Coordinate.absolute(location.getZ())
                                         )
                                 )
                         ),
