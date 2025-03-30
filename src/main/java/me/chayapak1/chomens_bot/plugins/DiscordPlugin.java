@@ -352,7 +352,8 @@ public class DiscordPlugin extends ListenerAdapter {
 
         Component actualMessage = LegacyComponentSerializer
                 .legacyAmpersand()
-                .deserialize(replacedMessageContent);
+                .deserialize(replacedMessageContent)
+                .replaceText(ComponentUtilities.URL_REPLACEMENT_CONFIG);
 
         if (!extraComponents.isEmpty()) {
             if (!replacedMessageContent.isBlank()) actualMessage = actualMessage.append(Component.space());

@@ -5,6 +5,7 @@ import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.ConsoleCommandContext;
+import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentBuilder;
 import net.kyori.adventure.text.SelectorComponent;
@@ -107,7 +108,9 @@ public class ConsolePlugin implements Completer {
 
             if (!bot.loggedIn) continue;
 
-            final Component stylizedMessage = LEGACY.deserialize(line);
+            final Component stylizedMessage = LEGACY
+                    .deserialize(line)
+                    .replaceText(ComponentUtilities.URL_REPLACEMENT_CONFIG);
 
             final Component rendered = RENDERER.render(
                     format,

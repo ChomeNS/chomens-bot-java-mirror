@@ -5,10 +5,12 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
+import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.List;
 
@@ -47,6 +49,20 @@ public class NetMessageCommand extends Command {
                         )
                 );
 
+        final String rawMessage = context.getString(true, true);
+
+        final Component stylizedMessage = LegacyComponentSerializer.legacyAmpersand()
+                .deserialize(rawMessage)
+                .replaceText(ComponentUtilities.URL_REPLACEMENT_CONFIG)
+                .clickEvent(ClickEvent.copyToClipboard(rawMessage))
+                .hoverEvent(
+                        HoverEvent.showText(
+                                Component
+                                        .text("Click here to copy the message to your clipboard")
+                                        .color(NamedTextColor.GREEN)
+                        )
+                );
+
         final Component component = Component.translatable(
                 "[%s]%s%s%s› %s",
                 serverNameComponent,
@@ -55,7 +71,9 @@ public class NetMessageCommand extends Command {
                         Component.text(context.sender.profile.getName()).color(NamedTextColor.GRAY) :
                         context.sender.displayName.color(NamedTextColor.GRAY),
                 Component.space(),
-                Component.text(context.getString(true, true)).color(NamedTextColor.GRAY)
+                Component.empty()
+                        .append(stylizedMessage)
+                        .color(NamedTextColor.GRAY)
         ).color(NamedTextColor.DARK_GRAY);
 
         for (Bot eachBot : bots) {
