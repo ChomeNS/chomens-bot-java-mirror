@@ -111,8 +111,8 @@ public class TPSPlugin extends Bot.Listener implements TickPlugin.Listener {
 
     @Override
     public void packetReceived (Session session, Packet packet) {
-        if (packet instanceof ClientboundSetTimePacket) packetReceived((ClientboundSetTimePacket) packet);
-        else if (packet instanceof ClientboundLoginPacket) packetReceived((ClientboundLoginPacket) packet);
+        if (packet instanceof ClientboundSetTimePacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundLoginPacket t_packet) packetReceived(t_packet);
     }
 
     public void packetReceived (ClientboundSetTimePacket ignoredPacket) {

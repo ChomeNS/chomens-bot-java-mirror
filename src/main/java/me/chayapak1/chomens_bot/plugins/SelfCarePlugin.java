@@ -141,11 +141,11 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener,
 
     @Override
     public void packetReceived (Session session, Packet packet) {
-        if (packet instanceof ClientboundLoginPacket) packetReceived((ClientboundLoginPacket) packet);
-        else if (packet instanceof ClientboundGameEventPacket) packetReceived((ClientboundGameEventPacket) packet);
-        else if (packet instanceof ClientboundEntityEventPacket) packetReceived((ClientboundEntityEventPacket) packet);
-        else if (packet instanceof ClientboundOpenScreenPacket) packetReceived((ClientboundOpenScreenPacket) packet);
-        else if (packet instanceof ClientboundSetPassengersPacket) packetReceived((ClientboundSetPassengersPacket) packet);
+        if (packet instanceof ClientboundLoginPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundGameEventPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundEntityEventPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundOpenScreenPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundSetPassengersPacket t_packet) packetReceived(t_packet);
     }
 
     public void packetReceived (ClientboundLoginPacket packet) {

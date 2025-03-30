@@ -39,7 +39,7 @@ public class TeamPlugin extends Bot.Listener {
 
     @Override
     public void packetReceived(Session session, Packet packet) {
-        if (packet instanceof ClientboundSetPlayerTeamPacket) packetReceived((ClientboundSetPlayerTeamPacket) packet);
+        if (packet instanceof ClientboundSetPlayerTeamPacket t_packet) packetReceived(t_packet);
     }
 
     public void packetReceived(ClientboundSetPlayerTeamPacket packet) {

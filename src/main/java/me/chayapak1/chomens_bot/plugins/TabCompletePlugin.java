@@ -35,7 +35,7 @@ public class TabCompletePlugin extends Bot.Listener {
 
     @Override
     public void packetReceived (Session session, Packet packet) {
-        if (packet instanceof ClientboundCommandSuggestionsPacket) packetReceived((ClientboundCommandSuggestionsPacket) packet);
+        if (packet instanceof ClientboundCommandSuggestionsPacket t_packet) packetReceived(t_packet);
     }
 
     public void packetReceived (ClientboundCommandSuggestionsPacket packet) {

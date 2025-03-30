@@ -41,7 +41,7 @@ public class BossbarManagerPlugin extends Bot.Listener implements PlayersPlugin.
 
     @Override
     public void packetReceived(Session session, Packet packet) {
-        if (packet instanceof ClientboundBossEventPacket) packetReceived((ClientboundBossEventPacket) packet);
+        if (packet instanceof ClientboundBossEventPacket t_packet) packetReceived(t_packet);
     }
 
     public void packetReceived(ClientboundBossEventPacket packet) {

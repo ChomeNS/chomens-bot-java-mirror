@@ -44,8 +44,8 @@ public class VoiceChatPlugin extends Bot.Listener {
 
     @Override
     public void packetReceived(Session session, Packet packet) {
-        if (packet instanceof ClientboundLoginPacket) packetReceived((ClientboundLoginPacket) packet);
-        else if (packet instanceof ClientboundCustomPayloadPacket) packetReceived((ClientboundCustomPayloadPacket) packet);
+        if (packet instanceof ClientboundLoginPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof ClientboundCustomPayloadPacket t_packet) packetReceived(t_packet);
     }
 
     public void packetReceived(ClientboundLoginPacket ignored) {
