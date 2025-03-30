@@ -46,6 +46,8 @@ public class ListCommand extends Command {
             //
             // Usernames: foo, bar, baz or No other usernames associated
             // Vanished: false
+            // Latency: 32
+            // Game Mode: CREATIVE
             //
             // Click to copy the username to your clipboard
             // Shift+Click to insert the UUID into your chat box
@@ -79,6 +81,25 @@ public class ListCommand extends Command {
                                     "Vanished: %s",
                                     Component
                                             .text(!entry.listed)
+                                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                            ).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                    )
+                    .append(Component.newline())
+                    .append(
+                            Component.translatable(
+                                    "Latency: %s",
+                                    Component
+                                            .text(entry.latency)
+                                            .append(Component.text("ms"))
+                                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.string)) // using number color palette will not blend in (GOLD)
+                            ).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                    )
+                    .append(Component.newline())
+                    .append(
+                            Component.translatable(
+                                    "Game Mode: %s",
+                                    Component
+                                            .text(entry.gamemode.name())
                                             .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
                             ).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
                     )
