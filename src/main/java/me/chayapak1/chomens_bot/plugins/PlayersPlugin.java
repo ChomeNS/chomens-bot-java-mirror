@@ -260,7 +260,8 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
             // checking for empty string means
             // we did get the output from the server, and
             // the player doesn't exist or the NBT path doesn't exist
-            if (lastKnownName.isEmpty()) {
+            // i also check for empty target name for the empty string username kind of people
+            if (lastKnownName.isEmpty() && !target.profile.getName().isEmpty()) {
                 final boolean removed = list.remove(target);
 
                 // checking if removed prevents the event from being called twice
@@ -312,7 +313,7 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
 
         if (target == null) return;
 
-        if (!bot.serverFeatures.hasNamespaces) {
+        if (!bot.serverFeatures.hasNamespaces || target.profile.getName().isEmpty() /* LoL empty string username lazy fix */) {
             final boolean removed = list.remove(target);
 
             if (removed) {
