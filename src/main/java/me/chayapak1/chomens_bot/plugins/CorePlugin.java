@@ -415,8 +415,8 @@ public class CorePlugin
         // only relocate the core when it really needs to
         if (
                 from == null || to == null ||
-                        Math.abs(botChunkPosX - coreChunkPosX) > bot.world.simulationDistance ||
-                        Math.abs(botChunkPosZ - coreChunkPosZ) > bot.world.simulationDistance
+                        Math.abs(botChunkPosX - coreChunkPosX) >= bot.world.simulationDistance ||
+                        Math.abs(botChunkPosZ - coreChunkPosZ) >= bot.world.simulationDistance
         ) {
             reset();
             refill(false);
