@@ -203,7 +203,7 @@ public class DiscordPlugin extends ListenerAdapter {
                             bot
                     );
 
-                    Component messageComponent = Component.text(snapshot.getContentRaw());
+                    Component messageComponent = Component.text(replaceMessageContent(snapshot.getContentRaw()));
 
                     if (!extraComponents.isEmpty()) {
                         messageComponent = messageComponent
@@ -342,13 +342,7 @@ public class DiscordPlugin extends ListenerAdapter {
 
         if (nameComponent.color() == null) nameComponent = nameComponent.color(NamedTextColor.RED);
 
-        final String replacedMessageContent = message.getContentDisplay()
-                // replaces skull emoji
-                .replace("\uD83D\uDC80", "☠")
-                // replaces all ANSI codes (used when a user replies to the bot's log message) with nothing
-                .replaceAll("\u001B\\[[;\\d]*[ -/]*[@-~]", "")
-                // replaces all ZWSP with nothing
-                .replace("\u200b", "");
+        final String replacedMessageContent = replaceMessageContent(message.getContentDisplay());
 
         Component actualMessage = LegacyComponentSerializer
                 .legacyAmpersand()
@@ -389,6 +383,16 @@ public class DiscordPlugin extends ListenerAdapter {
                 nameComponent,
                 messageComponent
         ).color(NamedTextColor.DARK_GRAY);
+    }
+
+    private String replaceMessageContent (String content) {
+        return ComponentUtilities
+                // replaces the ANSI codes (from the bot) with section signs corresponding to the color/style
+                .deserializeFromDiscordAnsi(content)
+                // replaces skull emoji
+                .replace("\uD83D\uDC80", "☠")
+                // replaces all ZWSP with nothing
+                .replace("\u200b", "");
     }
 
     private void addExtraComponents (

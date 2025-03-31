@@ -99,6 +99,8 @@ public class ComponentUtilities {
     public static String stringifyAnsi (Component message) { return new ComponentParser().stringify(message, ComponentParser.ParseType.ANSI); }
     public static String stringifyDiscordAnsi (Component message) { return new ComponentParser().stringify(message, ComponentParser.ParseType.DISCORD_ANSI); }
 
+    public static String deserializeFromDiscordAnsi (String original) { return new ComponentParser().deserializeFromDiscordAnsi(original); }
+
     private static class ComponentParser {
         public static final Pattern ARG_PATTERN = Pattern.compile("%(?:(\\d+)\\$)?([s%])");
 
@@ -106,7 +108,6 @@ public class ComponentUtilities {
 
         public static final Map<String, String> ANSI_MAP = new HashMap<>();
         static {
-            // map totallynotskidded™ from https://github.com/PrismarineJS/prismarine-chat/blob/master/index.js#L10
             ANSI_MAP.put("0", "\u001b[38;2;0;0;0m");
             ANSI_MAP.put("1", "\u001b[38;2;0;0;170m");
             ANSI_MAP.put("2", "\u001b[38;2;0;170;0m");
@@ -134,6 +135,15 @@ public class ComponentUtilities {
         public static final Map<String, String> DISCORD_ANSI_MAP = new HashMap<>();
         static {
             // map totallynotskidded™ from https://github.com/PrismarineJS/prismarine-chat/blob/master/index.js#L10
+
+            // these bright colors have to come first because of deserialization
+            DISCORD_ANSI_MAP.put("a", "\u001b[32m");
+            DISCORD_ANSI_MAP.put("b", "\u001b[36m");
+            DISCORD_ANSI_MAP.put("c", "\u001b[31m");
+            DISCORD_ANSI_MAP.put("d", "\u001b[35m");
+            DISCORD_ANSI_MAP.put("e", "\u001b[33m");
+            DISCORD_ANSI_MAP.put("f", "\u001b[37m");
+
             DISCORD_ANSI_MAP.put("0", "\u001b[30m");
             DISCORD_ANSI_MAP.put("1", "\u001b[34m");
             DISCORD_ANSI_MAP.put("2", "\u001b[32m");
@@ -142,14 +152,9 @@ public class ComponentUtilities {
             DISCORD_ANSI_MAP.put("5", "\u001b[35m");
             DISCORD_ANSI_MAP.put("6", "\u001b[33m");
             DISCORD_ANSI_MAP.put("7", "\u001b[37m");
-            DISCORD_ANSI_MAP.put("8", "\u001b[90m");
-            DISCORD_ANSI_MAP.put("9", "\u001b[94m");
-            DISCORD_ANSI_MAP.put("a", "\u001b[92m");
-            DISCORD_ANSI_MAP.put("b", "\u001b[96m");
-            DISCORD_ANSI_MAP.put("c", "\u001b[91m");
-            DISCORD_ANSI_MAP.put("d", "\u001b[95m");
-            DISCORD_ANSI_MAP.put("e", "\u001b[93m");
-            DISCORD_ANSI_MAP.put("f", "\u001b[97m");
+            DISCORD_ANSI_MAP.put("8", "\u001b[30m");
+            DISCORD_ANSI_MAP.put("9", "\u001b[34m");
+
             DISCORD_ANSI_MAP.put("l", "\u001b[1m");
             DISCORD_ANSI_MAP.put("o", "\u001b[3m");
             DISCORD_ANSI_MAP.put("n", "\u001b[4m");
@@ -158,6 +163,9 @@ public class ComponentUtilities {
             DISCORD_ANSI_MAP.put("r", "\u001b[0m");
         }
 
+        // we only focus on the discord ones that we made
+        private static final Pattern DISCORD_ANSI_PATTERN = Pattern.compile("(\\u001b\\[\\d+m)");
+
         private ParseType type;
 
         private long parseStartTime = System.currentTimeMillis();
@@ -165,6 +173,33 @@ public class ComponentUtilities {
         private String lastStyle = "";
 
         private boolean isSubParsing = false;
+
+        public String deserializeFromDiscordAnsi (String original) {
+            final Matcher matcher = DISCORD_ANSI_PATTERN.matcher(original);
+            final StringBuilder builder = new StringBuilder();
+
+            while (matcher.find()) {
+                final String match = matcher.group();
+
+                boolean replaced = false;
+
+                for (Map.Entry<String, String> entry : DISCORD_ANSI_MAP.entrySet()) {
+                    if (!entry.getValue().equals(match)) continue;
+
+                    matcher.appendReplacement(builder, "§" + entry.getKey());
+
+                    replaced = true;
+
+                    break;
+                }
+
+                if (!replaced) matcher.appendReplacement(builder, match);
+            }
+
+            matcher.appendTail(builder);
+
+            return builder.toString();
+        }
 
         private String stringify (Component message, ParseType type) {
             this.type = type;
@@ -193,15 +228,10 @@ public class ComponentUtilities {
                         !isSubParsing &&
                                 (type == ParseType.ANSI || type == ParseType.DISCORD_ANSI)
                 ) {
-                    builder.append(DISCORD_ANSI_MAP.get("r"));
+                    builder.append(ANSI_MAP.get("r"));
                 }
 
-                if (type == ParseType.DISCORD_ANSI) {
-                    // as of the time writing this (2024-12-28) discord doesn't support the bright colors yet
-                    return builder.toString().replace("\u001b[9", "\u001b[3");
-                } else {
-                    return builder.toString();
-                }
+                return builder.toString();
             } catch (Exception e) {
                 LoggerUtilities.error(e);
                 return "";
@@ -214,7 +244,7 @@ public class ComponentUtilities {
                 case TranslatableComponent t_component -> stringifyPartially(t_component, color, style);
                 case SelectorComponent t_component -> stringifyPartially(t_component, color, style);
                 case KeybindComponent t_component -> stringifyPartially(t_component, color, style);
-                default -> "";
+                default -> String.format("[Component type %s not implemented!]", message.getClass().getSimpleName());
             };
         }
 
@@ -229,13 +259,17 @@ public class ComponentUtilities {
 
                 if (state == TextDecoration.State.NOT_SET || state == TextDecoration.State.FALSE) continue;
 
-                if (type == ParseType.ANSI) { // right now discord doesn't care about styling
+                if (type == ParseType.ANSI || type == ParseType.DISCORD_ANSI) {
+                    final Map<String, String> map = type == ParseType.ANSI ?
+                            ANSI_MAP :
+                            DISCORD_ANSI_MAP;
+
                     switch (decoration) {
-                        case BOLD -> style.append(ANSI_MAP.get("l"));
-                        case ITALIC -> style.append(ANSI_MAP.get("o"));
-                        case OBFUSCATED -> style.append(ANSI_MAP.get("k"));
-                        case UNDERLINED -> style.append(ANSI_MAP.get("n"));
-                        case STRIKETHROUGH -> style.append(ANSI_MAP.get("m"));
+                        case BOLD -> style.append(map.get("l"));
+                        case ITALIC -> style.append(map.get("o"));
+                        case OBFUSCATED -> style.append(map.get("k"));
+                        case UNDERLINED -> style.append(map.get("n"));
+                        case STRIKETHROUGH -> style.append(map.get("m"));
                     }
                 } else if (type == ParseType.SECTION_SIGNS) {
                     switch (decoration) {
