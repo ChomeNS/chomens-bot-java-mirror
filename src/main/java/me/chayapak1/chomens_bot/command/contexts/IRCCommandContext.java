@@ -1,5 +1,6 @@
-package me.chayapak1.chomens_bot.command;
+package me.chayapak1.chomens_bot.command.contexts;
 
+import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import org.geysermc.mcprotocollib.auth.GameProfile;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;

@@ -1,6 +1,7 @@
-package me.chayapak1.chomens_bot.command;
+package me.chayapak1.chomens_bot.command.contexts;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.data.logging.LogType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

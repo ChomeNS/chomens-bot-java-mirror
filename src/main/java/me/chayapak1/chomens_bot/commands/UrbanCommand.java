@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.*;
+import me.chayapak1.chomens_bot.command.contexts.DiscordCommandContext;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.HttpUtilities;
 import net.kyori.adventure.text.Component;

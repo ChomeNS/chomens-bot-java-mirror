@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.commands;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.*;
+import me.chayapak1.chomens_bot.command.contexts.ConsoleCommandContext;
 import me.chayapak1.chomens_bot.plugins.CommandHandlerPlugin;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;

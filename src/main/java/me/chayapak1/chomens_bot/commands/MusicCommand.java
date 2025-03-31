@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.commands;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.*;
+import me.chayapak1.chomens_bot.command.contexts.ConsoleCommandContext;
 import me.chayapak1.chomens_bot.plugins.MusicPlayerPlugin;
 import me.chayapak1.chomens_bot.song.Instrument;
 import me.chayapak1.chomens_bot.song.Loop;

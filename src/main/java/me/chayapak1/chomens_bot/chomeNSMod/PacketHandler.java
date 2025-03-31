@@ -4,7 +4,7 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.chomeNSMod.clientboundPackets.ClientboundCoreOutputPacket;
 import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundRunCommandPacket;
 import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundRunCoreCommandPacket;
-import me.chayapak1.chomens_bot.command.ChomeNSModCommandContext;
+import me.chayapak1.chomens_bot.command.contexts.ChomeNSModCommandContext;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import net.kyori.adventure.text.Component;
 

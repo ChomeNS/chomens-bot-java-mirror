@@ -3,7 +3,7 @@ package me.chayapak1.chomens_bot.plugins;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.Main;
-import me.chayapak1.chomens_bot.command.IRCCommandContext;
+import me.chayapak1.chomens_bot.command.contexts.IRCCommandContext;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.kyori.adventure.text.Component;

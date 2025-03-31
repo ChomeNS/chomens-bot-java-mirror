@@ -1,7 +1,8 @@
-package me.chayapak1.chomens_bot.command;
+package me.chayapak1.chomens_bot.command.contexts;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.chomeNSMod.clientboundPackets.ClientboundCommandOutputPacket;
+import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import net.kyori.adventure.text.Component;
 

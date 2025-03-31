@@ -2,6 +2,10 @@ package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.*;
+import me.chayapak1.chomens_bot.command.contexts.ChomeNSModCommandContext;
+import me.chayapak1.chomens_bot.command.contexts.ConsoleCommandContext;
+import me.chayapak1.chomens_bot.command.contexts.DiscordCommandContext;
+import me.chayapak1.chomens_bot.command.contexts.PlayerCommandContext;
 import me.chayapak1.chomens_bot.commands.*;
 import me.chayapak1.chomens_bot.util.ExceptionUtilities;
 import net.dv8tion.jda.api.entities.Member;

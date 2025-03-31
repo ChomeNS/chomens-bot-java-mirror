@@ -1,6 +1,8 @@
 package me.chayapak1.chomens_bot.commands;
 
 import me.chayapak1.chomens_bot.command.*;
+import me.chayapak1.chomens_bot.command.contexts.ConsoleCommandContext;
+import me.chayapak1.chomens_bot.command.contexts.DiscordCommandContext;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 

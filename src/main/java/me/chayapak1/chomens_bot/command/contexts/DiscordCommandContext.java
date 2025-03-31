@@ -1,6 +1,7 @@
-package me.chayapak1.chomens_bot.command;
+package me.chayapak1.chomens_bot.command.contexts;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.CodeBlockUtilities;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;

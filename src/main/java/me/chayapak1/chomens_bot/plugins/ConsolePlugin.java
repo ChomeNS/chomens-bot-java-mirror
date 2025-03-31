@@ -4,7 +4,7 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.Command;
-import me.chayapak1.chomens_bot.command.ConsoleCommandContext;
+import me.chayapak1.chomens_bot.command.contexts.ConsoleCommandContext;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentBuilder;
