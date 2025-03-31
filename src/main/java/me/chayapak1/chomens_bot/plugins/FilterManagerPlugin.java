@@ -82,13 +82,13 @@ public class FilterManagerPlugin
 
     @Override
     public boolean playerMessageReceived (PlayerMessage message) {
-        if (message.sender.profile.getName() == null) return true;
+        if (message.sender().profile.getName() == null) return true;
 
-        final Pair<PlayerEntry, String> player = getFilteredFromName(message.sender.profile.getName());
+        final Pair<PlayerEntry, String> player = getFilteredFromName(message.sender().profile.getName());
 
-        if (player == null || message.sender.profile.getId().equals(new UUID(0L, 0L))) return true;
+        if (player == null || message.sender().profile.getId().equals(new UUID(0L, 0L))) return true;
 
-        doAll(message.sender, player.getRight());
+        doAll(message.sender(), player.getRight());
 
         return true;
     }

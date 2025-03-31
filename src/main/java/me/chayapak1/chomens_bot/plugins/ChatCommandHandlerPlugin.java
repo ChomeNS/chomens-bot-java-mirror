@@ -29,16 +29,16 @@ public class ChatCommandHandlerPlugin implements ChatPlugin.Listener, CommandSpy
     @Override
     public boolean playerMessageReceived (PlayerMessage message) {
         if (
-                message.sender != null &&
+                message.sender() != null &&
                         bot.profile != null &&
-                        message.sender.profile.getId().equals(bot.profile.getId())
+                        message.sender().profile.getId().equals(bot.profile.getId())
         ) return true;
 
-        final Component displayNameComponent = message.displayName;
-        final Component messageComponent = message.contents;
+        final Component displayNameComponent = message.displayName();
+        final Component messageComponent = message.contents();
         if (displayNameComponent == null || messageComponent == null) return true;
 
-        handle(displayNameComponent, messageComponent, message.sender, "@a", prefixes);
+        handle(displayNameComponent, messageComponent, message.sender(), "@a", prefixes);
 
         return true;
     }
