@@ -48,7 +48,7 @@ public class VoiceChatPlugin extends Bot.Listener {
         else if (packet instanceof ClientboundCustomPayloadPacket t_packet) packetReceived(t_packet);
     }
 
-    public void packetReceived(ClientboundLoginPacket ignored) {
+    private void packetReceived (ClientboundLoginPacket ignored) {
         // totally didn't use a real minecraft client with voicechat mod to get this
 
         bot.session.send(new ServerboundCustomPayloadPacket(
@@ -64,7 +64,7 @@ public class VoiceChatPlugin extends Bot.Listener {
         running = true;
     }
 
-    public void packetReceived(ClientboundCustomPayloadPacket _packet) {
+    private void packetReceived (ClientboundCustomPayloadPacket _packet) {
         if (_packet.getChannel().equals(Key.key("voicechat:secret"))) { // fard
             final byte[] bytes = _packet.getData();
             final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));

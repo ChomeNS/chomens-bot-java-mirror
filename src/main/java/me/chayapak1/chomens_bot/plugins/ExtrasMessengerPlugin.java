@@ -48,7 +48,7 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
         if (packet instanceof ClientboundCustomPayloadPacket t_packet) packetReceived(t_packet);
     }
 
-    public void packetReceived (ClientboundCustomPayloadPacket packet) {
+    private void packetReceived (ClientboundCustomPayloadPacket packet) {
         final Key packetChannel = packet.getChannel();
 
         if (packetChannel.equals(MINECRAFT_REGISTER_KEY)) {

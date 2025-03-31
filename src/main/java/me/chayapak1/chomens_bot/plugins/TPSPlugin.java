@@ -115,7 +115,7 @@ public class TPSPlugin extends Bot.Listener implements TickPlugin.Listener {
         else if (packet instanceof ClientboundLoginPacket t_packet) packetReceived(t_packet);
     }
 
-    public void packetReceived (ClientboundSetTimePacket ignoredPacket) {
+    private void packetReceived (ClientboundSetTimePacket ignoredPacket) {
         long now = System.currentTimeMillis();
         float timeElapsed = (float) (now - timeLastTimeUpdate) / 1000.0F;
         tickRates[nextIndex] = MathUtilities.clamp(20.0f / timeElapsed, 0.0f, 20.0f);
@@ -123,7 +123,7 @@ public class TPSPlugin extends Bot.Listener implements TickPlugin.Listener {
         timeLastTimeUpdate = now;
     }
 
-    public void packetReceived (ClientboundLoginPacket ignoredPacket) {
+    private void packetReceived (ClientboundLoginPacket ignoredPacket) {
         Arrays.fill(tickRates, 0);
         nextIndex = 0;
         timeGameJoined = timeLastTimeUpdate = System.currentTimeMillis();

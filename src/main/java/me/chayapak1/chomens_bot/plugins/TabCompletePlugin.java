@@ -38,7 +38,7 @@ public class TabCompletePlugin extends Bot.Listener {
         if (packet instanceof ClientboundCommandSuggestionsPacket t_packet) packetReceived(t_packet);
     }
 
-    public void packetReceived (ClientboundCommandSuggestionsPacket packet) {
+    private void packetReceived (ClientboundCommandSuggestionsPacket packet) {
         final int id = packet.getTransactionId();
 
         if (!transactions.containsKey(id)) return;

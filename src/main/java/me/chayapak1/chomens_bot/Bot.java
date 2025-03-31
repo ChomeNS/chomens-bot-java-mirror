@@ -229,13 +229,13 @@ public class Bot extends SessionAdapter {
         else if (packet instanceof ClientboundCustomPayloadPacket t_packet) packetReceived(t_packet);
     }
 
-    public void packetReceived (ClientboundLoginFinishedPacket packet) {
+    private void packetReceived (ClientboundLoginFinishedPacket packet) {
         profile = packet.getProfile();
 
         session.setFlag(BuiltinFlags.CLIENT_TRANSFERRING, false);
     }
 
-    public void packetReceived (ClientboundLoginPacket ignoredPacket) {
+    private void packetReceived (ClientboundLoginPacket ignoredPacket) {
         loggedIn = true;
         loginTime = System.currentTimeMillis();
 
@@ -248,11 +248,11 @@ public class Bot extends SessionAdapter {
         if (options.creayun) chat.send("/server creative");
     }
 
-    public void packetReceived (ClientboundCustomQueryPacket packet) {
+    private void packetReceived (ClientboundCustomQueryPacket packet) {
         session.send(new ServerboundCustomQueryAnswerPacket(packet.getMessageId(), null));
     }
 
-    public void packetReceived (ClientboundCustomPayloadPacket packet) {
+    private void packetReceived (ClientboundCustomPayloadPacket packet) {
         if (!packet.getChannel().asString().equals("minecraft:register")) return;
 
         session.send(
@@ -263,7 +263,7 @@ public class Bot extends SessionAdapter {
         );
     }
 
-    public void packetReceived (ClientboundCookieRequestPacket packet) {
+    private void packetReceived (ClientboundCookieRequestPacket packet) {
         session.send(
                 new ServerboundCookieResponsePacket(
                         packet.getKey(),
@@ -272,11 +272,11 @@ public class Bot extends SessionAdapter {
         );
     }
 
-    public void packetReceived (ClientboundStoreCookiePacket packet) {
+    private void packetReceived (ClientboundStoreCookiePacket packet) {
         cookies.put(packet.getKey(), packet.getPayload());
     }
 
-    public void packetReceived (ClientboundTransferPacket ignoredPacket) {
+    private void packetReceived (ClientboundTransferPacket ignoredPacket) {
         this.isTransferring = true;
 
         session.disconnect(Component.translatable("disconnect.transfer"));
@@ -284,7 +284,7 @@ public class Bot extends SessionAdapter {
 
     // we're not meant to send client information at finish configuration,
     // but if it works it works™
-    public void packetReceived (ClientboundFinishConfigurationPacket ignoredPacket) {
+    private void packetReceived (ClientboundFinishConfigurationPacket ignoredPacket) {
         // for voicechat
         session.send(new ServerboundCustomPayloadPacket(
                 Key.key("minecraft:brand"),
@@ -319,7 +319,7 @@ public class Bot extends SessionAdapter {
     // they actually implemented this, but at this commit:
     // https://github.com/GeyserMC/MCProtocolLib/commit/f8460356db2b92fbf7cb506757fe8f87a011a1f7#diff-a9066adbcb6d5503f5edefe3ec95465cf755f1585e02b732a6fa907afe7c7177R67-L103
     // they removed it, for some reason
-    public void packetReceived (ClientboundLoginCompressionPacket packet) {
+    private void packetReceived (ClientboundLoginCompressionPacket packet) {
         if (packet.getThreshold() < 0) {
             session.setCompression(null);
         }

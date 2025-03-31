@@ -84,7 +84,7 @@ public class ChatPlugin extends Bot.Listener {
         else if (packet instanceof ClientboundRegistryDataPacket t_packet) packetReceived(t_packet);
     }
 
-    public void packetReceived (ClientboundSystemChatPacket packet) {
+    private void packetReceived (ClientboundSystemChatPacket packet) {
         final Component component = packet.getContent();
 
         if (
@@ -169,7 +169,7 @@ public class ChatPlugin extends Bot.Listener {
         );
     }
 
-    public void packetReceived (ClientboundPlayerChatPacket packet) {
+    private void packetReceived (ClientboundPlayerChatPacket packet) {
         final UUID senderUUID = packet.getSender();
 
         final PlayerEntry entry = bot.players.getEntry(senderUUID);
@@ -208,7 +208,7 @@ public class ChatPlugin extends Bot.Listener {
         }
     }
 
-    public void packetReceived (ClientboundDisguisedChatPacket packet) {
+    private void packetReceived (ClientboundDisguisedChatPacket packet) {
         final Component component = packet.getMessage();
 
         PlayerMessage parsedFromMessage = null;

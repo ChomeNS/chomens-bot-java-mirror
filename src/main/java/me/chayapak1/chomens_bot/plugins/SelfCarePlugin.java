@@ -163,7 +163,7 @@ public class SelfCarePlugin
         else if (packet instanceof ClientboundSetPassengersPacket t_packet) packetReceived(t_packet);
     }
 
-    public void packetReceived (ClientboundLoginPacket packet) {
+    private void packetReceived (ClientboundLoginPacket packet) {
         this.entityId = packet.getEntityId();
         this.gamemode = packet.getCommonPlayerSpawnInfo().getGameMode();
 
@@ -183,7 +183,7 @@ public class SelfCarePlugin
         checkTask = bot.executor.scheduleAtFixedRate(task, 0, bot.config.selfCare.delay, TimeUnit.MILLISECONDS);
     }
 
-    public void packetReceived (ClientboundGameEventPacket packet) {
+    private void packetReceived (ClientboundGameEventPacket packet) {
         final GameEvent notification = packet.getNotification();
         final GameEventValue value = packet.getValue();
 
@@ -195,7 +195,7 @@ public class SelfCarePlugin
         if (notification == GameEvent.CHANGE_GAMEMODE) gamemode = (GameMode) value;
     }
 
-    public void packetReceived (ClientboundEntityEventPacket packet) {
+    private void packetReceived (ClientboundEntityEventPacket packet) {
         final EntityEvent event = packet.getEvent();
         final int id = packet.getEntityId();
 
@@ -208,7 +208,7 @@ public class SelfCarePlugin
         else if (event == EntityEvent.PLAYER_OP_PERMISSION_LEVEL_4) permissionLevel = 4;
     }
 
-    public void packetReceived (ClientboundOpenScreenPacket packet) {
+    private void packetReceived (ClientboundOpenScreenPacket packet) {
         // instantly closes the window when received the packet
         // also should this be in self care?
         bot.session.send(
@@ -218,7 +218,7 @@ public class SelfCarePlugin
         );
     }
 
-    public void packetReceived (ClientboundSetPassengersPacket packet) {
+    private void packetReceived (ClientboundSetPassengersPacket packet) {
         if (
                 Arrays.stream(packet.getPassengerIds())
                         .noneMatch(id -> id == entityId)

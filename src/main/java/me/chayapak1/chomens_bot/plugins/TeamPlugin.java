@@ -42,7 +42,7 @@ public class TeamPlugin extends Bot.Listener {
         if (packet instanceof ClientboundSetPlayerTeamPacket t_packet) packetReceived(t_packet);
     }
 
-    public void packetReceived(ClientboundSetPlayerTeamPacket packet) {
+    private void packetReceived (ClientboundSetPlayerTeamPacket packet) {
         switch (packet.getAction()) {
             case CREATE -> {
                 final Team team = new Team(

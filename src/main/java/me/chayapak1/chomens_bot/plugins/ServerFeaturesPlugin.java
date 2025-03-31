@@ -27,7 +27,7 @@ public class ServerFeaturesPlugin extends Bot.Listener {
         if (packet instanceof ClientboundCommandsPacket t_packet) packetReceived(t_packet);
     }
 
-    public void packetReceived (ClientboundCommandsPacket packet) {
+    private void packetReceived (ClientboundCommandsPacket packet) {
         for (CommandNode node : packet.getNodes()) {
             if (!node.isExecutable() || node.getType() != CommandType.LITERAL) continue;
 

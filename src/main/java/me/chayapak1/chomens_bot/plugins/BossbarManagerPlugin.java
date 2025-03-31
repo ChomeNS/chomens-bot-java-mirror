@@ -40,11 +40,11 @@ public class BossbarManagerPlugin extends Bot.Listener implements PlayersPlugin.
     }
 
     @Override
-    public void packetReceived(Session session, Packet packet) {
+    public void packetReceived (Session session, Packet packet) {
         if (packet instanceof ClientboundBossEventPacket t_packet) packetReceived(t_packet);
     }
 
-    public void packetReceived(ClientboundBossEventPacket packet) {
+    private void packetReceived (ClientboundBossEventPacket packet) {
         if (!enabled || actionBar || !bot.options.useCore) return;
 
         try {

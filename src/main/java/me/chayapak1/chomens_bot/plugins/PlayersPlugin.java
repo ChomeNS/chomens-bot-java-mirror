@@ -49,7 +49,7 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
         else if (packet instanceof ClientboundPlayerInfoRemovePacket t_packet) packetReceived(t_packet);
     }
 
-    public void packetReceived (ClientboundPlayerInfoUpdatePacket packet) {
+    private void packetReceived (ClientboundPlayerInfoUpdatePacket packet) {
         final EnumSet<PlayerListEntryAction> actions = packet.getActions();
 
         for (PlayerListEntryAction action : actions) {
@@ -64,7 +64,7 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
         }
     }
 
-    public void packetReceived (ClientboundPlayerInfoRemovePacket packet) {
+    private void packetReceived (ClientboundPlayerInfoRemovePacket packet) {
         final List<UUID> uuids = packet.getProfileIds();
 
         for (UUID uuid : uuids) removePlayer(uuid);

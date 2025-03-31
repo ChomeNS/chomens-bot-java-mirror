@@ -70,7 +70,7 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
         else if (packet instanceof ClientboundEntityPositionSyncPacket t_packet) packetReceived(t_packet);
     }
 
-    public void packetReceived (ClientboundPlayerPositionPacket packet) {
+    private void packetReceived (ClientboundPlayerPositionPacket packet) {
         if (bot.session != null) bot.session.send(new ServerboundAcceptTeleportationPacket(packet.getId()));
 
         position = packet.getPosition();
@@ -78,7 +78,7 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
         for (Listener listener : listeners) { listener.positionChange(position); }
     }
 
-    public void packetReceived (ClientboundAddEntityPacket packet) {
+    private void packetReceived (ClientboundAddEntityPacket packet) {
         if (packet.getType() != EntityType.PLAYER) return;
 
         final PlayerEntry entry = bot.players.getEntry(packet.getUuid());
@@ -94,7 +94,7 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
         rotationMap.put(packet.getEntityId(), new Rotation(packet.getYaw(), packet.getPitch()));
     }
 
-    public void packetReceived (ClientboundRemoveEntitiesPacket packet) {
+    private void packetReceived (ClientboundRemoveEntitiesPacket packet) {
         final int[] ids = packet.getEntityIds();
 
         for (int id : ids) {
@@ -104,7 +104,7 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
         }
     }
 
-    public void packetReceived (ClientboundEntityPositionSyncPacket packet) {
+    private void packetReceived (ClientboundEntityPositionSyncPacket packet) {
         final PlayerEntry player = entityIdMap.get(packet.getId());
 
         if (player == null) return;
@@ -121,7 +121,7 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
         for (Listener listener : listeners) listener.playerMoved(player, position, rotation);
     }
 
-    public void packetReceived (ClientboundMoveEntityRotPacket packet) {
+    private void packetReceived (ClientboundMoveEntityRotPacket packet) {
         final PlayerEntry player = entityIdMap.get(packet.getEntityId());
 
         if (player == null) return;
@@ -133,7 +133,7 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
         for (Listener listener : listeners) listener.playerMoved(player, getPlayerPosition(player.profile.getName()), rotation);
     }
 
-    public void packetReceived (ClientboundMoveEntityPosPacket packet) {
+    private void packetReceived (ClientboundMoveEntityPosPacket packet) {
         final PlayerEntry player = entityIdMap.get(packet.getEntityId());
 
         if (player == null) return;
@@ -158,7 +158,7 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
         for (Listener listener : listeners) listener.playerMoved(player, position, getPlayerRotation(player.profile.getName()));
     }
 
-    public void packetReceived (ClientboundMoveEntityPosRotPacket packet) {
+    private void packetReceived (ClientboundMoveEntityPosRotPacket packet) {
         final PlayerEntry player = entityIdMap.get(packet.getEntityId());
 
         if (player == null) return;
