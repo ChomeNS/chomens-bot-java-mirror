@@ -29,6 +29,8 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
 
     public boolean isGoingDownFromHeightLimit = false; // cool variable name
 
+    private long tpCommandCooldownTime = 0;
+
     private final Map<Integer, PlayerEntry> entityIdMap = new HashMap<>();
     private final Map<Integer, Vector3d> positionMap = new HashMap<>();
     private final Map<Integer, Rotation> rotationMap = new HashMap<>();
@@ -205,13 +207,16 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
         isGoingDownFromHeightLimit = true;
 
         if (y > maxY + 500 || y < minY) {
-            String command = "/";
+            if ((System.currentTimeMillis() - tpCommandCooldownTime) < 400) return;
 
-            if (bot.serverFeatures.hasEssentials) command += "essentials:";
+            tpCommandCooldownTime = System.currentTimeMillis();
 
-            command += String.format("tp ~ %s ~", maxY);
+            final StringBuilder command = new StringBuilder();
 
-            bot.chat.send(command);
+            if (bot.serverFeatures.hasEssentials) command.append("essentials:");
+            command.append(String.format("tp ~ %s ~", maxY));
+
+            bot.chat.sendCommandInstantly(command.toString());
 
             return;
         }
