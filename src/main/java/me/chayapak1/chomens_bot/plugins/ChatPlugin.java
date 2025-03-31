@@ -8,7 +8,6 @@ import me.chayapak1.chomens_bot.chatParsers.U203aChatParser;
 import me.chayapak1.chomens_bot.data.chat.ChatParser;
 import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
-import me.chayapak1.chomens_bot.data.team.Team;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.IllegalCharactersUtilities;
 import me.chayapak1.chomens_bot.util.StringUtilities;
@@ -155,30 +154,10 @@ public class ChatPlugin extends Bot.Listener {
         }
     }
 
-    private Component getComponentByChatType (int chatType, Component sender, Component content) {
+    private Component getComponentByChatType (int chatType, Component target, Component sender, Component content) {
         final Component type = chatTypes.get(chatType);
+
         if (type == null) return null;
-
-        Component target;
-
-        // minecraft has the /msg target as the player target,
-        // that actually makes sense but i don't know how to
-        // properly implement this lol
-        if (
-                type instanceof TranslatableComponent translatableComponent &&
-                        translatableComponent.key().equals("commands.message.display.outgoing")
-        ) {
-            target = sender;
-        } else {
-            final Team botTeam = bot.team.findTeamByMember(bot.profile.getName());
-
-            target = botTeam == null ?
-                    Component.empty() :
-                    Component
-                            .translatable("chat.square_brackets")
-                            .arguments(botTeam.displayName)
-                            .style(botTeam.colorToStyle());
-        }
 
         return CHAT_TYPE_COMPONENT_RENDERER.render(
                 type,
@@ -208,7 +187,12 @@ public class ChatPlugin extends Bot.Listener {
         for (Listener listener : listeners) {
             if (!listener.playerMessageReceived(playerMessage)) break;
 
-            final Component chatTypeComponent = getComponentByChatType(packet.getChatType().id(), playerMessage.displayName, playerMessage.contents);
+            final Component chatTypeComponent = getComponentByChatType(
+                    packet.getChatType().id(),
+                    packet.getTargetName(),
+                    packet.getName(),
+                    playerMessage.contents()
+            );
 
             if (chatTypeComponent != null && unsignedContent == null) {
                 final String string = ComponentUtilities.stringify(chatTypeComponent);
@@ -225,52 +209,61 @@ public class ChatPlugin extends Bot.Listener {
     }
 
     public void packetReceived (ClientboundDisguisedChatPacket packet) {
-        try {
-            final Component component = packet.getMessage();
+        final Component component = packet.getMessage();
 
-            PlayerMessage parsedFromMessage = null;
+        PlayerMessage parsedFromMessage = null;
 
-            for (ChatParser parser : chatParsers) {
-                parsedFromMessage = parser.parse(component);
-                if (parsedFromMessage != null) break;
+        for (ChatParser parser : chatParsers) {
+            parsedFromMessage = parser.parse(component);
+            if (parsedFromMessage != null) break;
+        }
+
+        final Component chatTypeComponent = getComponentByChatType(
+                packet.getChatType().id(),
+                packet.getTargetName(),
+                packet.getName(),
+                packet.getMessage()
+        );
+
+        if (chatTypeComponent != null && parsedFromMessage == null) {
+            final String string = ComponentUtilities.stringify(chatTypeComponent);
+            final String ansi = ComponentUtilities.stringifyAnsi(chatTypeComponent);
+
+            for (Listener listener : listeners) {
+                if (!listener.systemMessageReceived(chatTypeComponent, string, ansi)) break;
             }
 
-            final Component chatTypeComponent = getComponentByChatType(packet.getChatType().id(), packet.getName(), packet.getMessage());
+            for (ChatParser parser : chatParsers) {
+                final PlayerMessage parsed = parser.parse(chatTypeComponent);
 
-            if (chatTypeComponent != null && parsedFromMessage == null) {
-                final String string = ComponentUtilities.stringify(chatTypeComponent);
-                final String ansi = ComponentUtilities.stringifyAnsi(chatTypeComponent);
+                if (parsed == null) continue;
 
-                for (Listener listener : listeners) {
-                    if (!listener.systemMessageReceived(chatTypeComponent, string, ansi)) break;
-                }
-
-                for (ChatParser parser : chatParsers) {
-                    final PlayerMessage parsed = parser.parse(chatTypeComponent);
-
-                    if (parsed == null) continue;
-
-                    final PlayerMessage playerMessage = new PlayerMessage(parsed.sender, packet.getName(), parsed.contents);
-
-                    for (Listener listener : listeners) {
-                        if (!listener.playerMessageReceived(playerMessage)) break;
-                    }
-                }
-            } else {
-                if (parsedFromMessage == null) return;
-
-                final PlayerMessage playerMessage = new PlayerMessage(parsedFromMessage.sender, packet.getName(), parsedFromMessage.contents);
-
-                final String string = ComponentUtilities.stringify(component);
-                final String ansi = ComponentUtilities.stringifyAnsi(component);
+                final PlayerMessage playerMessage = new PlayerMessage(
+                        parsed.sender(),
+                        packet.getName(),
+                        parsed.contents()
+                );
 
                 for (Listener listener : listeners) {
                     if (!listener.playerMessageReceived(playerMessage)) break;
-                    if (!listener.systemMessageReceived(component, string, ansi)) break;
                 }
             }
-        } catch (Exception e) {
-            bot.logger.error(e);
+        } else {
+            if (parsedFromMessage == null) return;
+
+            final PlayerMessage playerMessage = new PlayerMessage(
+                    parsedFromMessage.sender(),
+                    packet.getName(),
+                    parsedFromMessage.contents()
+            );
+
+            final String string = ComponentUtilities.stringify(component);
+            final String ansi = ComponentUtilities.stringifyAnsi(component);
+
+            for (Listener listener : listeners) {
+                if (!listener.playerMessageReceived(playerMessage)) break;
+                if (!listener.systemMessageReceived(component, string, ansi)) break;
+            }
         }
     }
 
