@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.commands;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
@@ -44,22 +45,26 @@ public class ConsoleCommand extends Command {
 
                 final String server = context.getString(true, true);
 
-                for (Bot eachBot : bot.bots) {
-                    if (server.equalsIgnoreCase("all")) {
-                        eachBot.console.consoleServer = "all";
+                if (server.equalsIgnoreCase("all")) {
+                    Main.console.consoleServer = "all";
+                    return Component.text(
+                            "Set the console server to all servers"
+                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                }
 
-                        continue;
-                    }
+                try {
+                    // servers.find(server => server.toLowerCase().includes(args.join(' '))) in js i guess
+                    Main.console.consoleServer = servers.stream()
+                            .filter(eachServer -> eachServer.toLowerCase().contains(server))
+                            .findFirst()
+                            .orElse("all");
 
-                    try {
-                        // servers.find(server => server.toLowerCase().includes(args.join(' '))) in js i guess
-                        eachBot.console.consoleServer = servers.stream()
-                                .filter(eachServer -> eachServer.toLowerCase().contains(server))
-                                .findFirst()
-                                .orElse("all");
-                    } catch (ArrayIndexOutOfBoundsException e) {
-                        throw new CommandException(Component.text("Invalid server: " + server));
-                    }
+                    return Component.translatable(
+                            "Set the console server to %s",
+                            Component.text(Main.console.consoleServer)
+                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    throw new CommandException(Component.text("Invalid server: " + server));
                 }
             }
             case "logtoconsole" -> {

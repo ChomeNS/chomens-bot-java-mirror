@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.commands;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
@@ -31,10 +32,10 @@ public class FindAltsCommand extends Command {
     public Component execute (CommandContext context) throws Exception {
         final Bot bot = context.bot;
 
-        if (bot.database == null)
+        if (Main.database == null)
             throw new CommandException(Component.text("Database is not enabled in the bot's config"));
 
-        bot.database.checkOverloaded();
+        Main.database.checkOverloaded();
 
         final String flag = context.getString(false, true);
 

@@ -90,7 +90,7 @@ public class IPFilterPlugin implements PlayersPlugin.Listener, CorePlugin.Listen
 
     public void add (String ip, String reason) {
         try {
-            final PreparedStatement statement = bot.database.connection.prepareStatement(INSERT_FILTER);
+            final PreparedStatement statement = Main.database.connection.prepareStatement(INSERT_FILTER);
 
             statement.setString(1, ip);
             statement.setString(2, reason);
@@ -115,7 +115,7 @@ public class IPFilterPlugin implements PlayersPlugin.Listener, CorePlugin.Listen
 
     public void remove (String ip) {
         try {
-            final PreparedStatement statement = bot.database.connection.prepareStatement(REMOVE_FILTER);
+            final PreparedStatement statement = Main.database.connection.prepareStatement(REMOVE_FILTER);
 
             statement.setString(1, ip);
 
@@ -129,7 +129,7 @@ public class IPFilterPlugin implements PlayersPlugin.Listener, CorePlugin.Listen
 
     public void clear () {
         try {
-            bot.database.update(CLEAR_FILTER);
+            Main.database.update(CLEAR_FILTER);
 
             list();
         } catch (SQLException e) {

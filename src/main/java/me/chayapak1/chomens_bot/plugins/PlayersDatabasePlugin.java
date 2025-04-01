@@ -52,10 +52,10 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
     }
 
     public JsonNode getPlayerData (String username) {
-        if (bot.database == null || bot.database.connection == null) return null;
+        if (Main.database == null || Main.database.connection == null) return null;
 
         try {
-            final PreparedStatement statement = bot.database.connection.prepareStatement(GET_DATA);
+            final PreparedStatement statement = Main.database.connection.prepareStatement(GET_DATA);
 
             statement.setString(1, username);
 
@@ -75,10 +75,10 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
     }
 
     public String getPlayerIP (String username) {
-        if (bot.database == null || bot.database.connection == null) return null;
+        if (Main.database == null || Main.database.connection == null) return null;
 
         try {
-            final PreparedStatement statement = bot.database.connection.prepareStatement(GET_IP);
+            final PreparedStatement statement = Main.database.connection.prepareStatement(GET_IP);
 
             // this may be dangerous but the server address is configured only in the config
             // so this should still be safe
@@ -107,11 +107,11 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
             PreparedStatement statement;
 
             if (allServer) {
-                statement = bot.database.connection.prepareStatement(FIND_ALTS_ALL_SERVERS);
+                statement = Main.database.connection.prepareStatement(FIND_ALTS_ALL_SERVERS);
 
                 statement.setString(1, ip);
             } else {
-                statement = bot.database.connection.prepareStatement(FIND_ALTS_SINGLE_SERVER);
+                statement = Main.database.connection.prepareStatement(FIND_ALTS_SINGLE_SERVER);
 
                 statement.setString(1, bot.getServerString(true));
                 statement.setString(2, ip);
@@ -137,7 +137,7 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
     public void playerJoined (PlayerEntry target) {
         DatabasePlugin.executorService.submit(() -> {
             try {
-                final PreparedStatement insertPlayerStatement = bot.database.connection.prepareStatement(INSERT_PLAYER);
+                final PreparedStatement insertPlayerStatement = Main.database.connection.prepareStatement(INSERT_PLAYER);
 
                 insertPlayerStatement.setString(1, target.profile.getName());
 
@@ -161,7 +161,7 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
                     if (output == null) return null;
 
                     try {
-                        final PreparedStatement updatePlayerStatement = bot.database.connection.prepareStatement(UPDATE_PLAYER);
+                        final PreparedStatement updatePlayerStatement = Main.database.connection.prepareStatement(UPDATE_PLAYER);
 
                         updatePlayerStatement.setString(1, "$.ips");
                         updatePlayerStatement.setString(2, "$.ips");
@@ -190,7 +190,7 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
     public void playerLeft (PlayerEntry target) {
         DatabasePlugin.executorService.submit(() -> {
             try {
-                final PreparedStatement updatePlayerStatement = bot.database.connection.prepareStatement(UPDATE_PLAYER);
+                final PreparedStatement updatePlayerStatement = Main.database.connection.prepareStatement(UPDATE_PLAYER);
 
                 updatePlayerStatement.setString(1, "$.lastSeen");
                 updatePlayerStatement.setString(2, "$.lastSeen");

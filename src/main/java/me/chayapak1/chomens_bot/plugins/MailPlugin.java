@@ -75,7 +75,7 @@ public class MailPlugin implements PlayersPlugin.Listener {
 
     public void send (Mail mail) {
         try {
-            final PreparedStatement statement = bot.database.connection.prepareStatement(INSERT_MAIL);
+            final PreparedStatement statement = Main.database.connection.prepareStatement(INSERT_MAIL);
 
             statement.setString(1, mail.sentBy());
             statement.setString(2, mail.sentTo());
@@ -91,7 +91,7 @@ public class MailPlugin implements PlayersPlugin.Listener {
 
     public void clear (String sentTo) {
         try {
-            final PreparedStatement statement = bot.database.connection.prepareStatement(REMOVE_MAIL);
+            final PreparedStatement statement = Main.database.connection.prepareStatement(REMOVE_MAIL);
 
             statement.setString(1, sentTo);
 
@@ -104,7 +104,7 @@ public class MailPlugin implements PlayersPlugin.Listener {
     public List<Mail> list () {
         final List<Mail> output = new ArrayList<>();
 
-        try (ResultSet result = bot.database.query(LIST_MAILS)) {
+        try (ResultSet result = Main.database.query(LIST_MAILS)) {
             if (result == null) return output;
 
             while (result.next()) {

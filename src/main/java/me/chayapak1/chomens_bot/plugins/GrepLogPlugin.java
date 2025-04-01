@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
@@ -88,8 +89,8 @@ public class GrepLogPlugin {
 
             if (matches == 0) throw new CommandException(Component.text("No matches has been found"));
 
-            final String channelId = bot.discord.servers.get(bot.getServerString(true));
-            final TextChannel logChannel = bot.discord.jda.getTextChannelById(channelId);
+            final String channelId = Main.discord.servers.get(bot.getServerString(true));
+            final TextChannel logChannel = Main.discord.jda.getTextChannelById(channelId);
 
             if (logChannel == null) return;
 

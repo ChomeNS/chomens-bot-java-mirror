@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.commands;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
@@ -27,8 +28,8 @@ public class GrepLogCommand extends Command {
     public Component execute (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        if (bot.discord == null || bot.discord.jda == null) {
-            throw new CommandException(Component.text("The bot's Discord integration has to be enabled to use the command."));
+        if (Main.discord == null || Main.discord.jda == null) {
+            throw new CommandException(Component.text("The bot's Discord integration has to be enabled to use this command."));
         }
 
         boolean ignoreCase = false;

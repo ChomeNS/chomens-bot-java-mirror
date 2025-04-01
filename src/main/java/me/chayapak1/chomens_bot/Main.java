@@ -196,15 +196,17 @@ public class Main {
         final boolean ircEnabled = config.irc.enabled;
         final boolean discordEnabled = config.discord.enabled;
 
+        if (ircEnabled) irc.quit(stoppingMessage);
+
         final boolean[] stoppedDiscord = new boolean[copiedList.size()];
 
         int botIndex = 0;
         for (Bot bot : copiedList) {
             try {
                 if (discordEnabled) {
-                    final String channelId = bot.discord.servers.get(bot.getServerString(true));
+                    final String channelId = Main.discord.servers.get(bot.getServerString(true));
 
-                    final MessageCreateAction messageAction = bot.discord.sendMessageInstantly(stoppingMessage, channelId, false);
+                    final MessageCreateAction messageAction = Main.discord.sendMessageInstantly(stoppingMessage, channelId, false);
 
                     final int finalBotIndex = botIndex;
                     messageAction.queue(
@@ -212,8 +214,6 @@ public class Main {
                             (error) -> stoppedDiscord[finalBotIndex] = true // should i also set this to true on fail?
                     );
                 }
-
-                if (ircEnabled) bot.irc.quit(stoppingMessage);
 
                 bot.stop();
             } catch (Exception ignored) { }

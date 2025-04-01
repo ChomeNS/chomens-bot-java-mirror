@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.command.contexts;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
@@ -38,7 +39,7 @@ public class IRCCommandContext extends CommandContext {
 
     @Override
     public void sendOutput (Component component) {
-        bot.irc.sendMessage(bot, ComponentUtilities.stringifyAnsi(component));
+        Main.irc.sendMessage(bot, ComponentUtilities.stringifyAnsi(component));
     }
 
     @Override

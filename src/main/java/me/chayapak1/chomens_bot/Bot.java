@@ -69,11 +69,6 @@ public class Bot extends SessionAdapter {
     public final ExecutorService executorService = Main.executorService;
     public final ScheduledExecutorService executor = Main.executor;
 
-    public ConsolePlugin console = Main.console;
-    public DatabasePlugin database = Main.database;
-    public DiscordPlugin discord = Main.discord;
-    public IRCPlugin irc = Main.irc;
-
     public LoggerPlugin logger;
     public TickPlugin tick;
     public ChatPlugin chat;

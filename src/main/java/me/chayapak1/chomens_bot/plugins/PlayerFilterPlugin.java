@@ -137,7 +137,7 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
 
     public void add (String playerName, String reason, boolean regex, boolean ignoreCase) {
         try {
-            final PreparedStatement statement = bot.database.connection.prepareStatement(INSERT_FILTER);
+            final PreparedStatement statement = Main.database.connection.prepareStatement(INSERT_FILTER);
 
             statement.setString(1, playerName);
             statement.setString(2, reason);
@@ -166,7 +166,7 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
         bot.filterManager.remove(playerName);
 
         try {
-            final PreparedStatement statement = bot.database.connection.prepareStatement(REMOVE_FILTER);
+            final PreparedStatement statement = Main.database.connection.prepareStatement(REMOVE_FILTER);
 
             statement.setString(1, playerName);
 
@@ -182,7 +182,7 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
         for (FilteredPlayer player : localList) bot.filterManager.remove(player.playerName);
 
         try {
-            bot.database.update(CLEAR_FILTER);
+            Main.database.update(CLEAR_FILTER);
 
             list();
         } catch (SQLException e) {

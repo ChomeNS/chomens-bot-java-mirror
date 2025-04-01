@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.commands;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
@@ -38,10 +39,10 @@ public class MailCommand extends Command {
     public Component execute (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        if (bot.database == null)
+        if (Main.database == null)
             throw new CommandException(Component.text("Database is not enabled in the bot's config"));
 
-        bot.database.checkOverloaded();
+        Main.database.checkOverloaded();
 
         final PlayerEntry sender = context.sender;
 

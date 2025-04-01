@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.plugins;
 
 import com.google.common.hash.Hashing;
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -71,7 +72,7 @@ public class FormatCheckerPlugin implements ChatPlugin.Listener, PlayersPlugin.L
 
         if (
                 ((prefix instanceof TextComponent text) && text.content().equals(bot.username + " Console")) || // ohio
-                        (bot.discord != null && prefix.equals(bot.discord.messagePrefix))
+                        (Main.discord != null && prefix.equals(Main.discord.messagePrefix))
         ) return false;
 
         if (!(prefix instanceof TranslatableComponent translatablePrefix)) return true;
