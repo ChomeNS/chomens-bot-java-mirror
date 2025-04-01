@@ -156,8 +156,6 @@ public class DiscordPlugin extends ListenerAdapter {
                     );
                 }
             });
-
-            bot.discord = this;
         }
     }
 

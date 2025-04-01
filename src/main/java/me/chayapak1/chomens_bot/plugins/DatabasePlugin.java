@@ -1,9 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Configuration;
-import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.kyori.adventure.text.Component;
@@ -30,10 +28,7 @@ public class DatabasePlugin {
             );
         } catch (SQLException e) {
             LoggerUtilities.error(e);
-            return;
         }
-
-        for (Bot bot : Main.bots) bot.database = this;
     }
 
     public void checkOverloaded () throws CommandException {

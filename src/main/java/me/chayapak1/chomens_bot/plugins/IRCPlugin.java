@@ -83,8 +83,6 @@ public class IRCPlugin extends ListenerAdapter {
                     });
                 }
             });
-
-            bot.irc = this;
         }
 
         Main.executor.scheduleAtFixedRate(this::queueTick, 0, 100, TimeUnit.MILLISECONDS);

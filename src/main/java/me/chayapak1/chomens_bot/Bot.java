@@ -69,16 +69,16 @@ public class Bot extends SessionAdapter {
     public final ExecutorService executorService = Main.executorService;
     public final ScheduledExecutorService executor = Main.executor;
 
-    public ConsolePlugin console;
-    public LoggerPlugin logger; // in ConsolePlugin
-    public DiscordPlugin discord; // same for this one too
-    public IRCPlugin irc; // AND same for this one too
+    public ConsolePlugin console = Main.console;
+    public DatabasePlugin database = Main.database;
+    public DiscordPlugin discord = Main.discord;
+    public IRCPlugin irc = Main.irc;
 
+    public LoggerPlugin logger;
     public TickPlugin tick;
     public ChatPlugin chat;
     public CommandSpyPlugin commandSpy;
     public PositionPlugin position;
-    public DatabasePlugin database;
     public ServerFeaturesPlugin serverFeatures;
     public SelfCarePlugin selfCare;
     public QueryPlugin query;
@@ -128,6 +128,7 @@ public class Bot extends SessionAdapter {
     }
 
     public void connect () {
+        this.logger = new LoggerPlugin(this);
         this.tick = new TickPlugin(this);
         this.chat = new ChatPlugin(this);
         this.commandSpy = new CommandSpyPlugin(this);
@@ -344,7 +345,7 @@ public class Bot extends SessionAdapter {
         for (SessionListener listener : listeners) {
             listener.packetError(packetErrorEvent);
         }
-        packetErrorEvent.setSuppress(true); // fix the ohio sus exploit
+        packetErrorEvent.setSuppress(true); // fixes the ohio sus exploit
     }
 
     @Override
@@ -367,7 +368,7 @@ public class Bot extends SessionAdapter {
         int reconnectDelay = options.reconnectDelay;
 
         if (isTransferring) {
-            // for now, it's going to transfer to the same server instead of,
+            // for now, it's going to transfer to the same server instead of
             // other servers
 
             reconnect(); // instantly reconnect

@@ -45,7 +45,8 @@ public class Main {
 
     public static ConsolePlugin console;
     public static DatabasePlugin database;
-    private static DiscordPlugin discord;
+    public static DiscordPlugin discord;
+    public static IRCPlugin irc;
 
     public static void main (String[] args) throws IOException {
         final Path configPath = Path.of("config.yml");
@@ -132,11 +133,10 @@ public class Main {
 
             // initialize plugins
             console = new ConsolePlugin(config);
-            LoggerPlugin.init();
             ChomeNSModIntegrationPlugin.init();
             if (config.database.enabled) database = new DatabasePlugin(config);
             if (config.discord.enabled) discord = new DiscordPlugin(config);
-            if (config.irc.enabled) new IRCPlugin(config);
+            if (config.irc.enabled) irc = new IRCPlugin(config);
 
             LoggerUtilities.log("Initialized all bots. Now connecting");
 

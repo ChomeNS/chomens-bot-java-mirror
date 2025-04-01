@@ -46,8 +46,6 @@ public class ConsolePlugin implements Completer {
 
         reader.option(LineReader.Option.DISABLE_EVENT_EXPANSION, true);
 
-        for (Bot bot : allBots) bot.console = this;
-
         final String prompt = "> ";
 
         final Thread thread = new Thread(() -> {
