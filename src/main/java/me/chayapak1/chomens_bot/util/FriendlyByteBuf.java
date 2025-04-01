@@ -17,6 +17,7 @@ import java.nio.channels.GatheringByteChannel;
 import java.nio.channels.ScatteringByteChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.UUID;
 
 public class FriendlyByteBuf extends ByteBuf {
@@ -141,11 +142,13 @@ public class FriendlyByteBuf extends ByteBuf {
     }
 
     @Override
+    @Deprecated
     public ByteOrder order () {
         return buf.order();
     }
 
     @Override
+    @Deprecated
     public ByteBuf order (ByteOrder byteOrder) {
         return buf.order(byteOrder);
     }
@@ -986,8 +989,10 @@ public class FriendlyByteBuf extends ByteBuf {
     }
 
     @Override
-    public boolean equals (Object object) {
-        return buf.equals(object);
+    public boolean equals (final Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        final FriendlyByteBuf that = (FriendlyByteBuf) o;
+        return Objects.equals(buf, that.buf);
     }
 
     @Override
