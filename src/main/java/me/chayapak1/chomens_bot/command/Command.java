@@ -6,9 +6,9 @@ import java.util.Arrays;
 
 public abstract class Command {
     public final String name;
-    public String description;
+    public final String description;
     public String[] usages;
-    public String[] aliases;
+    public final String[] aliases;
     public final TrustLevel trustLevel;
     public final boolean consoleOnly;
 

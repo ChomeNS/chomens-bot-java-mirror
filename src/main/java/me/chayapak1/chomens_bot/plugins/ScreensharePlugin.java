@@ -108,11 +108,11 @@ public class ScreensharePlugin {
         private final Bot bot;
 
         public String[][] screen;
-        public int width;
-        public int height;
-        public Vector3i pos;
+        public final int width;
+        public final int height;
+        public final Vector3i pos;
 
-        public ArrayList<String> tags = new ArrayList<>();
+        public final ArrayList<String> tags = new ArrayList<>();
 
         public Screen (Bot bot, int width, int height, Vector3i pos) {
             screen = new String[width][height];

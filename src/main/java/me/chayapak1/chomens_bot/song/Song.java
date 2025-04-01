@@ -29,7 +29,7 @@ public class Song {
     public String songOriginalAuthor;
     public String songDescription;
 
-    public String tracks;
+    public final String tracks;
 
     public final boolean nbs;
 

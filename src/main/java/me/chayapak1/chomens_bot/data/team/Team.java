@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Team {
     public String teamName;
-    public List<String> players;
+    public final List<String> players;
     public Component displayName;
     public boolean friendlyFire;
     public boolean seeFriendlyInvisibles;

@@ -66,7 +66,7 @@ public class EvalPlugin {
 
                     if (output == null) return;
 
-                    socket.emit("functionOutput:" + function.name, output.message, output.parseJSON);
+                    socket.emit("functionOutput:" + function.name, output.message(), output.parseJSON());
                 } catch (Exception ignored) { }
             }).start());
         }

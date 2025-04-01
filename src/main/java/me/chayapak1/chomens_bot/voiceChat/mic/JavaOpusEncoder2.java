@@ -5,11 +5,11 @@ import org.concentus.OpusEncoder;
 
 public class JavaOpusEncoder2 {
     public OpusEncoder opusEncoder;
-    public byte[] buffer;
-    public int sampleRate;
-    public int frameSize;
-    public int maxPayloadSize;
-    public OpusApplication application;
+    public final byte[] buffer;
+    public final int sampleRate;
+    public final int frameSize;
+    public final int maxPayloadSize;
+    public final OpusApplication application;
 
     public JavaOpusEncoder2 (int sampleRate, int frameSize, int maxPayloadSize, OpusApplication application) {
         this.sampleRate = sampleRate;

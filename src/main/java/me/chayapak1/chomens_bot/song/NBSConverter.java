@@ -317,6 +317,7 @@ public class NBSConverter implements Converter {
         List<String> list = new ArrayList<>();
 
         InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(name);
+        assert is != null;
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         JsonArray json = JsonParser.parseReader(reader).getAsJsonArray();
 

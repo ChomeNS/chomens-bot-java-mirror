@@ -5,10 +5,10 @@ import org.concentus.OpusException;
 
 public class JavaOpusDecoder {
     protected OpusDecoder opusDecoder;
-    protected short[] buffer;
-    protected int sampleRate;
-    protected int frameSize;
-    protected int maxPayloadSize;
+    protected final short[] buffer;
+    protected final int sampleRate;
+    protected final int frameSize;
+    protected final int maxPayloadSize;
 
     public JavaOpusDecoder (int sampleRate, int frameSize, int maxPayloadSize) {
         this.sampleRate = sampleRate;

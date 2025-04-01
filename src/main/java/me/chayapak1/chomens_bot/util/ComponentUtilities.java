@@ -73,6 +73,7 @@ public class ComponentUtilities {
         Map<String, String> map = new HashMap<>();
 
         InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(name);
+        assert is != null;
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
 

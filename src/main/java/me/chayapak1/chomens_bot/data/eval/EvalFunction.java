@@ -17,13 +17,6 @@ public class EvalFunction {
 
     public Output execute (Object... args) throws Exception { return null; }
 
-    public static class Output {
-        public final String message;
-        public final boolean parseJSON;
-
-        public Output (String message, boolean parseJSON) {
-            this.message = message;
-            this.parseJSON = parseJSON;
-        }
+    public record Output(String message, boolean parseJSON) {
     }
 }

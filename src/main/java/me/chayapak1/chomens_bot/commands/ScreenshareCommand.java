@@ -84,9 +84,7 @@ public class ScreenshareCommand extends Command {
                             .append(Component.text(fps).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)))
                             .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
                 }
-                default -> {
-                    throw new CommandException(Component.text("Invalid action"));
-                }
+                default -> throw new CommandException(Component.text("Invalid action"));
             }
         } catch (NumberFormatException e) {
             throw new CommandException(Component.text("Invalid integer"));

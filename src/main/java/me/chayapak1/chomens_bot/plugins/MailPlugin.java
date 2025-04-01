@@ -53,7 +53,7 @@ public class MailPlugin implements PlayersPlugin.Listener {
             final List<Mail> mails = list();
 
             for (Mail mail : mails) {
-                if (!mail.sentTo.equals(name)) continue;
+                if (!mail.sentTo().equals(name)) continue;
 
                 sendToTargetSize++;
             }
@@ -77,11 +77,11 @@ public class MailPlugin implements PlayersPlugin.Listener {
         try {
             final PreparedStatement statement = bot.database.connection.prepareStatement(INSERT_MAIL);
 
-            statement.setString(1, mail.sentBy);
-            statement.setString(2, mail.sentTo);
-            statement.setLong(3, mail.timeSent);
-            statement.setString(4, mail.server);
-            statement.setString(5, mail.contents);
+            statement.setString(1, mail.sentBy());
+            statement.setString(2, mail.sentTo());
+            statement.setLong(3, mail.timeSent());
+            statement.setString(4, mail.server());
+            statement.setString(5, mail.contents());
 
             statement.executeUpdate();
         } catch (SQLException e) {

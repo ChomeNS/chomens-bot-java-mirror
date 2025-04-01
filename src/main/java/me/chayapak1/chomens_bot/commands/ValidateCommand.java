@@ -2,7 +2,6 @@ package me.chayapak1.chomens_bot.commands;
 
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
-import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.command.contexts.ConsoleCommandContext;
 import me.chayapak1.chomens_bot.command.contexts.DiscordCommandContext;
@@ -22,7 +21,7 @@ public class ValidateCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (CommandContext context) {
         // <red>Trusted - 1
         // <dark_red>Admin - 2
         // .......

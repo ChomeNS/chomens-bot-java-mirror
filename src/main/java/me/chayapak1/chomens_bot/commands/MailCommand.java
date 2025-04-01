@@ -116,7 +116,7 @@ public class MailCommand extends Command {
 
                     int senderMailSize = 0;
                     for (Mail mail : mails) {
-                        if (!mail.sentTo.equals(sender.profile.getName())) continue;
+                        if (!mail.sentTo().equals(sender.profile.getName())) continue;
                         senderMailSize++;
                     }
 
@@ -130,9 +130,9 @@ public class MailCommand extends Command {
 
                     int count = 1;
                     for (Mail mail : mails) {
-                        if (!mail.sentTo.equals(sender.profile.getName())) continue;
+                        if (!mail.sentTo().equals(sender.profile.getName())) continue;
 
-                        final Instant instant = Instant.ofEpochMilli(mail.timeSent);
+                        final Instant instant = Instant.ofEpochMilli(mail.timeSent());
                         final ZoneId zoneId = ZoneId.systemDefault();
                         final OffsetDateTime localDateTime = OffsetDateTime.ofInstant(instant, zoneId);
 
@@ -148,7 +148,7 @@ public class MailCommand extends Command {
                                         Component.text(count).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
                                         Component.text("-").color(NamedTextColor.DARK_GRAY),
 
-                                        Component.text(mail.sentBy).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)),
+                                        Component.text(mail.sentBy()).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)),
                                         Component
                                                 .text("[Hover here for more info]")
                                                 .color(NamedTextColor.GREEN)
@@ -159,11 +159,11 @@ public class MailCommand extends Command {
                                                                                 Time sent: %s
                                                                                 Server: %s""",
                                                                         Component.text(formattedTime).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
-                                                                        Component.text(mail.server).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                                                                        Component.text(mail.server()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
                                                                 ).color(NamedTextColor.GREEN)
                                                         )
                                                 ),
-                                        Component.text(mail.contents).color(NamedTextColor.WHITE)
+                                        Component.text(mail.contents()).color(NamedTextColor.WHITE)
                                 ).color(NamedTextColor.GREEN)
                         );
 

@@ -43,7 +43,7 @@ public class DiscordPlugin extends ListenerAdapter {
 
     public final String prefix;
 
-    public Component messagePrefix;
+    public final Component messagePrefix;
 
     public final String discordUrl;
 

@@ -44,9 +44,7 @@ public class TPSBarCommand extends Command {
                         .append(Component.text("disabled").color(NamedTextColor.RED))
                         .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
-            default -> {
-                throw new CommandException(Component.text("Invalid action"));
-            }
+            default -> throw new CommandException(Component.text("Invalid action"));
         }
     }
 }

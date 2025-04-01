@@ -3,13 +3,7 @@ package me.chayapak1.chomens_bot.data.mail;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Mail {
-    public final String sentBy;
-    public final String sentTo;
-    public final long timeSent;
-    public final String server;
-    public final String contents;
-
+public record Mail(String sentBy, String sentTo, long timeSent, String server, String contents) {
     @JsonCreator
     public Mail (
             @JsonProperty("sentBy") String sentBy,

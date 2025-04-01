@@ -14,7 +14,7 @@ public class PlayerEntry {
     public GameMode gamemode;
     public int latency;
     public Component displayName;
-    public List<String> usernames = new ArrayList<>();
+    public final List<String> usernames = new ArrayList<>();
     public final long expiresAt;
     public PublicKey publicKey;
     public final byte[] keySignature;
