@@ -70,7 +70,7 @@ public class DiscordPlugin extends ListenerAdapter {
         try {
             jda = builder.build();
             jda.awaitReady();
-        } catch (InterruptedException ignored) {}
+        } catch (InterruptedException ignored) { }
 
         if (jda == null) return;
 
@@ -108,7 +108,7 @@ public class DiscordPlugin extends ListenerAdapter {
                 }
 
                 @Override
-                public void connecting() {
+                public void connecting () {
                     final int newTotalConnects = totalConnects.get(channelId) + 1;
 
                     totalConnects.put(channelId, newTotalConnects);
@@ -143,7 +143,7 @@ public class DiscordPlugin extends ListenerAdapter {
                 }
 
                 @Override
-                public void disconnected(DisconnectedEvent event) {
+                public void disconnected (DisconnectedEvent event) {
                     if (totalConnects.get(channelId) >= 6) return;
 
                     final String reason = ComponentUtilities.stringifyAnsi(event.getReason());
@@ -479,7 +479,7 @@ public class DiscordPlugin extends ListenerAdapter {
     final Map<String, Long> nextLogTimes = new HashMap<>();
     final Map<String, Boolean> doneSendingInLogs = new HashMap<>();
 
-    public void sendMessage(String message, String channelId) {
+    public void sendMessage (String message, String channelId) {
         synchronized (logMessages) {
             if (!logMessages.containsKey(channelId)) {
                 logMessages.put(channelId, new StringBuilder());
@@ -495,6 +495,7 @@ public class DiscordPlugin extends ListenerAdapter {
     }
 
     public void sendMessageInstantly (String message, String channelId) { sendMessageInstantly(message, channelId, true); }
+
     public MessageCreateAction sendMessageInstantly (String message, String channelId, boolean queue) {
         if (jda == null) return null;
 
@@ -521,7 +522,7 @@ public class DiscordPlugin extends ListenerAdapter {
         }
     }
 
-    public void onDiscordTick(String channelId) {
+    public void onDiscordTick (String channelId) {
         synchronized (logMessages) {
             if (!logMessages.containsKey(channelId) || logMessages.get(channelId).isEmpty()) {
                 return;
@@ -540,7 +541,7 @@ public class DiscordPlugin extends ListenerAdapter {
                 message = logMessage.toString().replace(".", "\u200b.\u200b"); // the ZWSP fixes discord.gg showing invite
                 final int maxLength = 2_000 - ("""
                         ```ansi
-
+                        
                         ```"""
                 ).length(); // kinda sus
                 if (message.length() >= maxLength) {

@@ -119,7 +119,7 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
                                     username,
                                     clientKeyFactory.generatePublic(new X509EncodedKeySpec(publicKeyBytes))
                             );
-                        } catch (Exception ignored) {}
+                        } catch (Exception ignored) { }
                     }
                 }
             }
@@ -173,7 +173,8 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
     }
 
     public void send (PlayerEntry target, Packet packet) {
-        if (!connectedPlayers.contains(target) && !(packet instanceof ClientboundHandshakePacket)) return; // LoL sus check
+        if (!connectedPlayers.contains(target) && !(packet instanceof ClientboundHandshakePacket))
+            return; // LoL sus check
 
         final ByteBuf buf = Unpooled.buffer();
 
@@ -222,7 +223,7 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
                 );
 
                 bot.chat.actionBar(component, target.profile.getId());
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) { }
 
             fullBytesIndex += chunk.length;
         }
@@ -245,7 +246,8 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
         try {
             return Pair.of(player, packetClass.getDeclaredConstructor(ByteBuf.class).newInstance(buf));
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
+                 IllegalAccessException e) {
             return null;
         }
     }
@@ -275,7 +277,7 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
             final Packet packet = deserialized.getValue();
 
             handlePacket(player, packet);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) { }
 
         return false;
     }
@@ -311,6 +313,6 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
     @SuppressWarnings("unused")
     public interface Listener {
-        default void packetReceived (PlayerEntry player, Packet packet) {}
+        default void packetReceived (PlayerEntry player, Packet packet) { }
     }
 }

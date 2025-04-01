@@ -162,7 +162,7 @@ public class Bot extends SessionAdapter {
         this.teamJoiner = new TeamJoinerPlugin(this);
         this.chomeNSMod = new ChomeNSModIntegrationPlugin(this);
         this.auth = new AuthPlugin(this);
-//        this.screenshare = new ScreensharePlugin(this);
+        //        this.screenshare = new ScreensharePlugin(this);
         this.formatChecker = new FormatCheckerPlugin(this);
         this.clearChatNameAnnouncer = new ClearChatNameAnnouncerPlugin(this);
         this.whitelist = new WhitelistPlugin(this);
@@ -326,21 +326,21 @@ public class Bot extends SessionAdapter {
     }
 
     @Override
-    public void packetSending(PacketSendingEvent packetSendingEvent) {
+    public void packetSending (PacketSendingEvent packetSendingEvent) {
         for (SessionListener listener : listeners) {
             listener.packetSending(packetSendingEvent);
         }
     }
 
     @Override
-    public void packetSent(Session session, Packet packet) {
+    public void packetSent (Session session, Packet packet) {
         for (SessionListener listener : listeners) {
             listener.packetSent(session, packet);
         }
     }
 
     @Override
-    public void packetError(PacketErrorEvent packetErrorEvent) {
+    public void packetError (PacketErrorEvent packetErrorEvent) {
         for (SessionListener listener : listeners) {
             listener.packetError(packetErrorEvent);
         }
@@ -348,14 +348,14 @@ public class Bot extends SessionAdapter {
     }
 
     @Override
-    public void disconnecting(DisconnectingEvent disconnectingEvent) {
+    public void disconnecting (DisconnectingEvent disconnectingEvent) {
         for (SessionListener listener : listeners) {
             listener.disconnecting(disconnectingEvent);
         }
     }
 
     @Override
-    public void disconnected(DisconnectedEvent disconnectedEvent) {
+    public void disconnected (DisconnectedEvent disconnectedEvent) {
         loggedIn = false;
 
         final Throwable cause = disconnectedEvent.getCause();
@@ -391,6 +391,7 @@ public class Bot extends SessionAdapter {
     }
 
     public String getServerString () { return getServerString(false); }
+
     public String getServerString (boolean bypassHidden) {
         return options.hidden && !bypassHidden ?
                 options.serverName :
@@ -417,7 +418,8 @@ public class Bot extends SessionAdapter {
     }
 
     public static class Listener extends SessionAdapter {
-        public void connecting () {}
-        public void loadedPlugins (Bot bot) {}
+        public void connecting () { }
+
+        public void loadedPlugins (Bot bot) { }
     }
 }

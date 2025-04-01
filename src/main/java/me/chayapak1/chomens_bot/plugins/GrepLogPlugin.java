@@ -153,7 +153,8 @@ public class GrepLogPlugin {
 
     private StringBuilder process (BufferedReader bufferedReader, String input, boolean ignoreCase, boolean regex) throws IOException, PatternSyntaxException {
         if (regex && pattern == null) {
-            if (ignoreCase) pattern = Pattern.compile(input, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
+            if (ignoreCase)
+                pattern = Pattern.compile(input, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
             else pattern = Pattern.compile(input, Pattern.UNICODE_CHARACTER_CLASS);
         }
 
@@ -163,7 +164,7 @@ public class GrepLogPlugin {
         while ((line = bufferedReader.readLine()) != null) {
             if (
                     (regex && pattern.matcher(line).find()) || // *greplog -regex text OR *greplog -ignorecase -regex text
-                    (!ignoreCase && !regex && line.contains(input)) || // *greplog text
+                            (!ignoreCase && !regex && line.contains(input)) || // *greplog text
                             (ignoreCase && StringUtilities.containsIgnoreCase(line, input)) // *greplog -ignorecase
             ) {
                 result.append(line).append("\n");

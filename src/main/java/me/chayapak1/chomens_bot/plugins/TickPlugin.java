@@ -58,8 +58,10 @@ public class TickPlugin {
     }
 
     public interface Listener {
-        default void onTick () {}
-        default void onAlwaysTick () {}
-        default void onSecondTick () {}
+        default void onTick () { }
+
+        default void onAlwaysTick () { }
+
+        default void onSecondTick () { }
     }
 }

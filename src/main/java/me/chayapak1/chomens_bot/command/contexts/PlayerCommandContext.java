@@ -1,8 +1,8 @@
 package me.chayapak1.chomens_bot.command.contexts;
 
+import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
-import me.chayapak1.chomens_bot.Bot;
 import net.kyori.adventure.text.Component;
 
 public class PlayerCommandContext extends CommandContext {

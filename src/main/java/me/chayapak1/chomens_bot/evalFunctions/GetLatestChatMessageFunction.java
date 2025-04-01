@@ -23,7 +23,7 @@ public class GetLatestChatMessageFunction extends EvalFunction implements ChatPl
     }
 
     @Override
-    public Output execute(Object... args) {
+    public Output execute (Object... args) {
         return new Output(latestMessage, true);
     }
 }

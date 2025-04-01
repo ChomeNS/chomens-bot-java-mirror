@@ -41,7 +41,7 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
 
     private final Bot bot;
 
-    public PlayerFilterPlugin(Bot bot) {
+    public PlayerFilterPlugin (Bot bot) {
         this.bot = bot;
 
         if (Main.database == null) return;

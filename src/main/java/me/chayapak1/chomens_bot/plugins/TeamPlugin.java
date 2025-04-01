@@ -7,7 +7,10 @@ import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.scoreboard.ClientboundSetPlayerTeamPacket;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class TeamPlugin extends Bot.Listener {
     public final List<Team> teams = Collections.synchronizedList(new ArrayList<>());
@@ -17,7 +20,7 @@ public class TeamPlugin extends Bot.Listener {
     }
 
     @Override
-    public void disconnected(DisconnectedEvent event) {
+    public void disconnected (DisconnectedEvent event) {
         teams.clear();
     }
 
@@ -38,7 +41,7 @@ public class TeamPlugin extends Bot.Listener {
     }
 
     @Override
-    public void packetReceived(Session session, Packet packet) {
+    public void packetReceived (Session session, Packet packet) {
         if (packet instanceof ClientboundSetPlayerTeamPacket t_packet) packetReceived(t_packet);
     }
 

@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class FindAltsCommand extends Command {
-    public FindAltsCommand() {
+    public FindAltsCommand () {
         super(
                 "findalts",
                 "Finds players with the same IP address",
@@ -28,10 +28,11 @@ public class FindAltsCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context) throws Exception {
+    public Component execute (CommandContext context) throws Exception {
         final Bot bot = context.bot;
 
-        if (bot.database == null) throw new CommandException(Component.text("Database is not enabled in the bot's config"));
+        if (bot.database == null)
+            throw new CommandException(Component.text("Database is not enabled in the bot's config"));
 
         bot.database.checkOverloaded();
 

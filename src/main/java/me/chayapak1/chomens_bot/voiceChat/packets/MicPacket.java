@@ -8,7 +8,7 @@ public class MicPacket implements Packet<MicPacket> {
     public boolean whispering;
     public long sequenceNumber;
 
-    public MicPacket() {}
+    public MicPacket () { }
 
     public MicPacket (
             byte[] data,
@@ -21,7 +21,7 @@ public class MicPacket implements Packet<MicPacket> {
     }
 
     @Override
-    public MicPacket fromBytes(FriendlyByteBuf buf) {
+    public MicPacket fromBytes (FriendlyByteBuf buf) {
         MicPacket soundPacket = new MicPacket();
         soundPacket.data = buf.readByteArray();
         soundPacket.sequenceNumber = buf.readLong();
@@ -30,7 +30,7 @@ public class MicPacket implements Packet<MicPacket> {
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes (FriendlyByteBuf buf) {
         buf.writeByteArray(data);
         buf.writeLong(sequenceNumber);
         buf.writeBoolean(whispering);

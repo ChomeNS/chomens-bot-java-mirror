@@ -2,7 +2,10 @@ package me.chayapak1.chomens_bot.song;
 
 import me.chayapak1.chomens_bot.Bot;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static me.chayapak1.chomens_bot.util.StringUtilities.isNotNullAndNotBlank;
 
@@ -30,8 +33,8 @@ public class Song {
 
     public final boolean nbs;
 
-//  public int loopCount = 0; // Number of times to loop
-//  public int currentLoop = 0; // Number of loops so far
+    //  public int loopCount = 0; // Number of times to loop
+    //  public int currentLoop = 0; // Number of loops so far
 
     private final Bot bot;
 
@@ -48,7 +51,7 @@ public class Song {
         updateName();
     }
 
-    public void updateName() {
+    public void updateName () {
         String authorPart = null;
 
         if (isNotNullAndNotBlank(songOriginalAuthor) && isNotNullAndNotBlank(songAuthor)) {

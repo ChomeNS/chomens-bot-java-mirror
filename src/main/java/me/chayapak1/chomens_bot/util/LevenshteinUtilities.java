@@ -10,7 +10,7 @@ import java.util.Map;
 // stolen from https://github.com/MeteorDevelopment/meteor-client/blob/master/src/main/java/meteordevelopment/meteorclient/utils/Utils.java#L253
 // and https://github.com/MeteorDevelopment/meteor-client/blob/master/src/main/java/meteordevelopment/meteorclient/systems/modules/Modules.java#L170
 public class LevenshteinUtilities {
-    public static List<String> searchTitles(String text, Collection<String> texts) {
+    public static List<String> searchTitles (String text, Collection<String> texts) {
         final Map<String, Integer> output = new ValueComparableMap<>(Ordering.natural());
 
         for (String eachText : texts) {
@@ -21,11 +21,11 @@ public class LevenshteinUtilities {
         return output.keySet().stream().toList();
     }
 
-    public static int searchLevenshteinDefault(String text, String filter, boolean caseSensitive) {
+    public static int searchLevenshteinDefault (String text, String filter, boolean caseSensitive) {
         return levenshteinDistance(caseSensitive ? filter : filter.toLowerCase(), caseSensitive ? text : text.toLowerCase(), 1, 8, 8);
     }
 
-    public static int searchInWords(String text, String filter) {
+    public static int searchInWords (String text, String filter) {
         if (filter.isEmpty()) return 1;
 
         int wordsFound = 0;
@@ -40,7 +40,7 @@ public class LevenshteinUtilities {
         return wordsFound;
     }
 
-    public static int levenshteinDistance(String from, String to, int insCost, int subCost, int delCost) {
+    public static int levenshteinDistance (String from, String to, int insCost, int subCost, int delCost) {
         int textLength = from.length();
         int filterLength = to.length();
 
@@ -61,9 +61,9 @@ public class LevenshteinUtilities {
         // Find best route
         for (int i = 1; i <= textLength; i++) {
             for (int j = 1; j <= filterLength; j++) {
-                int sCost = d[i-1][j-1] + (from.charAt(i-1) == to.charAt(j-1) ? 0 : subCost);
-                int dCost = d[i-1][j] + delCost;
-                int iCost = d[i][j-1] + insCost;
+                int sCost = d[i - 1][j - 1] + (from.charAt(i - 1) == to.charAt(j - 1) ? 0 : subCost);
+                int dCost = d[i - 1][j] + delCost;
+                int iCost = d[i][j - 1] + insCost;
                 d[i][j] = Math.min(Math.min(dCost, iCost), sCost);
             }
         }

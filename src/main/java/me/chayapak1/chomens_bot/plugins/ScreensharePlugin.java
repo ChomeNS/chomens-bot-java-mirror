@@ -26,7 +26,7 @@ public class ScreensharePlugin {
 
     public Robot robot;
 
-//    public FFmpegFrameGrabber grabber;
+    //    public FFmpegFrameGrabber grabber;
 
     public ScreensharePlugin (Bot bot) {
         this.bot = bot;
@@ -43,13 +43,13 @@ public class ScreensharePlugin {
 
         screen.update();
 
-//        try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber("/tmp/rick.mp4")) {
-//            this.grabber = grabber;
-//        } catch (Exception e) {
-//            bot.logger.error(e);
-//        }
-//
-//        try { grabber.start(); } catch (Exception ignored) {}
+        //        try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber("/tmp/rick.mp4")) {
+        //            this.grabber = grabber;
+        //        } catch (Exception e) {
+        //            bot.logger.error(e);
+        //        }
+        //
+        //        try { grabber.start(); } catch (Exception ignored) {}
 
         future = bot.executor.scheduleAtFixedRate(this::drawScreen, 0, 1000 / fps, TimeUnit.MILLISECONDS); // frame. per. second.
     }
@@ -65,35 +65,35 @@ public class ScreensharePlugin {
 
         BufferedImage capture = robot.createScreenCapture(screenRect);
 
-//        try (Java2DFrameConverter frameConverter = new Java2DFrameConverter()) {
-//            final Frame grabbed = grabber.grab();
+        //        try (Java2DFrameConverter frameConverter = new Java2DFrameConverter()) {
+        //            final Frame grabbed = grabber.grab();
 
-//            final BufferedImage capture = frameConverter.convert(grabbed);
+        //            final BufferedImage capture = frameConverter.convert(grabbed);
 
-            if (capture == null) return;
+        if (capture == null) return;
 
-            BufferedImage resized = resize(capture, screen.width, screen.height);
+        BufferedImage resized = resize(capture, screen.width, screen.height);
 
-            for (int y = 0; y < resized.getHeight(); y++) {
-                for (int x = 0; x < resized.getWidth(); x++) {
-                    int rgba = resized.getRGB(x, y);
-                    int red = (rgba >> 16) & 255;
-                    int green = (rgba >> 8) & 255;
-                    int blue = rgba & 255;
+        for (int y = 0; y < resized.getHeight(); y++) {
+            for (int x = 0; x < resized.getWidth(); x++) {
+                int rgba = resized.getRGB(x, y);
+                int red = (rgba >> 16) & 255;
+                int green = (rgba >> 8) & 255;
+                int blue = rgba & 255;
 
-                    screen.screen[x][y] = String.format("#%02x%02x%02x", red, green, blue);
-                }
+                screen.screen[x][y] = String.format("#%02x%02x%02x", red, green, blue);
             }
+        }
 
-            screen.draw();
-//        } catch (Exception e) {
-//            System.err.println("EXCEPTION ::::");
-//            bot.logger.error(e);
-//        }
+        screen.draw();
+        //        } catch (Exception e) {
+        //            System.err.println("EXCEPTION ::::");
+        //            bot.logger.error(e);
+        //        }
     }
 
     // move this to util?
-    private BufferedImage resize(BufferedImage img, int newW, int newH) {
+    private BufferedImage resize (BufferedImage img, int newW, int newH) {
         Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
         BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
 
@@ -114,7 +114,7 @@ public class ScreensharePlugin {
 
         public ArrayList<String> tags = new ArrayList<>();
 
-        public Screen(Bot bot, int width, int height, Vector3i pos) {
+        public Screen (Bot bot, int width, int height, Vector3i pos) {
             screen = new String[width][height];
 
             this.bot = bot;
@@ -146,14 +146,14 @@ public class ScreensharePlugin {
         }
 
         public void kill () {
-            for(String i : tags) {
+            for (String i : tags) {
                 bot.core.run("minecraft:kill @e[tag=" + i + "]");
             }
 
             tags.clear();
         }
 
-        public void update() {
+        public void update () {
             double startY = pos.getY();
 
             kill();
@@ -176,9 +176,9 @@ public class ScreensharePlugin {
             }
         }
 
-        public void setPixel(String hexColor, int x, int y) { screen[x][y] = hexColor; }
+        public void setPixel (String hexColor, int x, int y) { screen[x][y] = hexColor; }
 
-        public void setRow(String[] hexColor, int row) {
+        public void setRow (String[] hexColor, int row) {
             for (int x = 0; x < width; x++) {
                 screen[x][row] = hexColor[x];
             }

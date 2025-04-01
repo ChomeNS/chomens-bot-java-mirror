@@ -27,7 +27,7 @@ public class ColorUtilities {
         }
     }
 
-    public static char getClosestChatColor(int rgb) {
+    public static char getClosestChatColor (int rgb) {
         final NamedTextColor closestNamed = NamedTextColor.nearestTo(TextColor.color(rgb));
         return formatToLegacyMap.get(closestNamed);
     }
@@ -69,7 +69,7 @@ public class ColorUtilities {
         ansiStyleToIrcMap.put(4, "\u001f"); // Underlined
     }
 
-    public static String convertAnsiToIrc(String input) {
+    public static String convertAnsiToIrc (String input) {
         StringBuilder result = new StringBuilder();
         boolean insideEscape = false;
         StringBuilder ansiCode = new StringBuilder();

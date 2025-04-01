@@ -29,7 +29,7 @@ public class ServerEvalCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context) throws CommandException {
+    public Component execute (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         final String code = context.getString(true, true);

@@ -16,7 +16,7 @@ public class CoreFunction extends EvalFunction {
     }
 
     @Override
-    public Output execute(Object... args) throws Exception {
+    public Output execute (Object... args) throws Exception {
         if (args.length == 0) return null;
 
         // prevent 69 DDOS exploit !!!

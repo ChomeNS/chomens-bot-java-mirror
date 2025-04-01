@@ -35,10 +35,11 @@ public class MailCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context) throws CommandException {
+    public Component execute (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        if (bot.database == null) throw new CommandException(Component.text("Database is not enabled in the bot's config"));
+        if (bot.database == null)
+            throw new CommandException(Component.text("Database is not enabled in the bot's config"));
 
         bot.database.checkOverloaded();
 

@@ -20,7 +20,7 @@ public class HttpUtilities {
 
     public static String getRequest (URL url) throws NoSuchAlgorithmException, KeyManagementException, IOException {
         SSLContext ctx = SSLContext.getInstance("TLS");
-        ctx.init(new KeyManager[0], new TrustManager[] {new DownloadUtilities.DefaultTrustManager()}, new SecureRandom());
+        ctx.init(new KeyManager[0], new TrustManager[] { new DownloadUtilities.DefaultTrustManager() }, new SecureRandom());
         SSLContext.setDefault(ctx);
 
         URLConnection conn = url.openConnection();
@@ -42,7 +42,7 @@ public class HttpUtilities {
 
     public static String postRequest (URL url, String contentType, String requestBody) throws Exception {
         SSLContext ctx = SSLContext.getInstance("TLS");
-        ctx.init(new KeyManager[0], new TrustManager[] {new DownloadUtilities.DefaultTrustManager()}, new SecureRandom());
+        ctx.init(new KeyManager[0], new TrustManager[] { new DownloadUtilities.DefaultTrustManager() }, new SecureRandom());
         SSLContext.setDefault(ctx);
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();

@@ -9,7 +9,7 @@ public class ChatFunction extends EvalFunction {
     }
 
     @Override
-    public Output execute(Object... args) {
+    public Output execute (Object... args) {
         if (args.length == 0) return null;
 
         final String message = (String) args[0];

@@ -47,7 +47,7 @@ public class Main {
     public static DatabasePlugin database;
     private static DiscordPlugin discord;
 
-    public static void main(String[] args) throws IOException {
+    public static void main (String[] args) throws IOException {
         final Path configPath = Path.of("config.yml");
 
         final Constructor constructor = new Constructor(Configuration.class, new LoaderOptions());
@@ -119,7 +119,7 @@ public class Main {
         }
     }
 
-    public static void initializeBots() {
+    public static void initializeBots () {
         alreadyStarted = true;
 
         try {
@@ -154,7 +154,7 @@ public class Main {
         if (Files.exists(stopReasonFilePath)) {
             try {
                 reason = new String(Files.readAllBytes(stopReasonFilePath)).trim();
-            } catch (IOException ignored) {}
+            } catch (IOException ignored) { }
         }
 
         stop(0, reason, false);
@@ -162,9 +162,13 @@ public class Main {
 
     // most of these are stolen from HBot
     public static void stop (int exitCode) { stop(exitCode, null, null, true); }
+
     public static void stop (int exitCode, String reason) { stop(exitCode, reason, null, true); }
+
     public static void stop (int exitCode, String reason, String type) { stop(exitCode, reason, type, true); }
+
     public static void stop (int exitCode, String reason, boolean callSystemExit) { stop(exitCode, reason, null, callSystemExit); }
+
     public static void stop (int exitCode, String reason, String type, boolean callSystemExit) {
         if (stopping) return;
 
@@ -212,7 +216,7 @@ public class Main {
                 if (ircEnabled) bot.irc.quit(stoppingMessage);
 
                 bot.stop();
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) { }
 
             botIndex++;
         }
@@ -222,7 +226,7 @@ public class Main {
                 try {
                     if (!ArrayUtilities.isAllTrue(stoppedDiscord)) Thread.sleep(50);
                     else break;
-                } catch (InterruptedException ignored) {}
+                } catch (InterruptedException ignored) { }
             }
 
             discord.jda.shutdown();

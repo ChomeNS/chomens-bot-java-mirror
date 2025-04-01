@@ -26,8 +26,8 @@ public class ComponentUtilities {
             TextReplacementConfig
                     .builder()
                     .match(Pattern
-                            .compile("((https?://(ww(w|\\d)\\.)?|ww(w|\\d))[-a-zA-Z0-9@:%._+~#=]{1,256}"
-                                    + "\\.[a-zA-Z0-9]{1,63}\\b([-a-zA-Z0-9@:%_+.~#?&/=]*))"))
+                                   .compile("((https?://(ww(w|\\d)\\.)?|ww(w|\\d))[-a-zA-Z0-9@:%._+~#=]{1,256}"
+                                                    + "\\.[a-zA-Z0-9]{1,63}\\b([-a-zA-Z0-9@:%_+.~#?&/=]*))"))
                     .replacement((b, c) -> {
                         if (c == null) {
                             return null;
@@ -95,8 +95,11 @@ public class ComponentUtilities {
     }
 
     public static String stringify (Component message) { return new ComponentParser().stringify(message, ComponentParser.ParseType.PLAIN); }
+
     public static String stringifySectionSign (Component message) { return new ComponentParser().stringify(message, ComponentParser.ParseType.SECTION_SIGNS); }
+
     public static String stringifyAnsi (Component message) { return new ComponentParser().stringify(message, ComponentParser.ParseType.ANSI); }
+
     public static String stringifyDiscordAnsi (Component message) { return new ComponentParser().stringify(message, ComponentParser.ParseType.DISCORD_ANSI); }
 
     public static String deserializeFromDiscordAnsi (String original) { return new ComponentParser().deserializeFromDiscordAnsi(original); }
@@ -107,6 +110,7 @@ public class ComponentUtilities {
         public static final long MAX_TIME = 100; // this is actually more than we need
 
         public static final Map<String, String> ANSI_MAP = new HashMap<>();
+
         static {
             ANSI_MAP.put("0", "\u001b[38;2;0;0;0m");
             ANSI_MAP.put("1", "\u001b[38;2;0;0;170m");
@@ -133,6 +137,7 @@ public class ComponentUtilities {
         }
 
         public static final Map<String, String> DISCORD_ANSI_MAP = new HashMap<>();
+
         static {
             // map totallynotskidded™ from https://github.com/PrismarineJS/prismarine-chat/blob/master/index.js#L10
 
@@ -354,8 +359,8 @@ public class ComponentUtilities {
 
             final String result =
                     lastStyle + color + style +
-                    originalResult +
-                    (lastStyle.isEmpty() ? resetCode : "");
+                            originalResult +
+                            (lastStyle.isEmpty() ? resetCode : "");
 
             lastStyle = color + style;
 
@@ -384,7 +389,7 @@ public class ComponentUtilities {
                                         DISCORD_ANSI_MAP.get(code);
                                 else return color;
                             });
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) { }
             }
 
             return getPartialResultAndSetLastColor(replacedContent, color, style);
@@ -435,7 +440,7 @@ public class ComponentUtilities {
                         } else {
                             matcher.appendReplacement(sb, "");
                         }
-                    } catch (NumberFormatException ignored) {} // is this a good idea?
+                    } catch (NumberFormatException ignored) { } // is this a good idea?
                 }
             }
 

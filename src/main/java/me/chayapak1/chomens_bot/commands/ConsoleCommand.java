@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConsoleCommand extends Command {
-    public ConsoleCommand() {
+    public ConsoleCommand () {
         super(
                 "console",
                 "Controls stuff about console",
@@ -29,7 +29,7 @@ public class ConsoleCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context) throws CommandException {
+    public Component execute (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         final String action = context.getString(false, true, true);

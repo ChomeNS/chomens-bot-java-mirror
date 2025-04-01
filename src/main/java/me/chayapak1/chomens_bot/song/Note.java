@@ -59,7 +59,7 @@ public class Note implements Comparable<Note> {
     }
 
     @Override
-    public int compareTo(Note other) {
+    public int compareTo (Note other) {
         return Long.compare(time, other.time);
     }
 }

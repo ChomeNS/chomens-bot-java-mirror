@@ -1,12 +1,5 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import net.kyori.adventure.key.Key;
-import org.geysermc.mcprotocollib.network.Session;
-import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
-import org.geysermc.mcprotocollib.network.packet.Packet;
-import org.geysermc.mcprotocollib.protocol.packet.common.clientbound.ClientboundCustomPayloadPacket;
-import org.geysermc.mcprotocollib.protocol.packet.common.serverbound.ServerboundCustomPayloadPacket;
-import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
 import io.netty.buffer.Unpooled;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.voiceChat.ClientGroup;
@@ -17,6 +10,13 @@ import me.chayapak1.chomens_bot.voiceChat.NetworkMessage;
 import me.chayapak1.chomens_bot.voiceChat.customPayload.JoinGroupPacket;
 import me.chayapak1.chomens_bot.voiceChat.customPayload.SecretPacket;
 import me.chayapak1.chomens_bot.voiceChat.packets.*;
+import net.kyori.adventure.key.Key;
+import org.geysermc.mcprotocollib.network.Session;
+import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
+import org.geysermc.mcprotocollib.network.packet.Packet;
+import org.geysermc.mcprotocollib.protocol.packet.common.clientbound.ClientboundCustomPayloadPacket;
+import org.geysermc.mcprotocollib.protocol.packet.common.serverbound.ServerboundCustomPayloadPacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
 
 import java.net.*;
 import java.util.ArrayList;
@@ -36,14 +36,14 @@ public class VoiceChatPlugin extends Bot.Listener {
 
     public final List<ClientGroup> groups = new ArrayList<>();
 
-    public VoiceChatPlugin(Bot bot) {
+    public VoiceChatPlugin (Bot bot) {
         this.bot = bot;
 
         bot.addListener(this);
     }
 
     @Override
-    public void packetReceived(Session session, Packet packet) {
+    public void packetReceived (Session session, Packet packet) {
         if (packet instanceof ClientboundLoginPacket t_packet) packetReceived(t_packet);
         else if (packet instanceof ClientboundCustomPayloadPacket t_packet) packetReceived(t_packet);
     }
@@ -90,9 +90,12 @@ public class VoiceChatPlugin extends Bot.Listener {
 
                         if (message == null) continue;
 
-                        if (message.packet instanceof PingPacket pingPacket) sendToServer(new NetworkMessage(pingPacket));
-                        else if (message.packet instanceof KeepAlivePacket) sendToServer(new NetworkMessage(new KeepAlivePacket()));
-                        else if (message.packet instanceof AuthenticateAckPacket) sendToServer(new NetworkMessage(new ConnectionCheckPacket()));
+                        if (message.packet instanceof PingPacket pingPacket)
+                            sendToServer(new NetworkMessage(pingPacket));
+                        else if (message.packet instanceof KeepAlivePacket)
+                            sendToServer(new NetworkMessage(new KeepAlivePacket()));
+                        else if (message.packet instanceof AuthenticateAckPacket)
+                            sendToServer(new NetworkMessage(new ConnectionCheckPacket()));
                     } catch (Exception e) {
                         if (running) bot.logger.error(e);
                         else break; // is this neccessary?
@@ -177,7 +180,7 @@ public class VoiceChatPlugin extends Bot.Listener {
     }
 
     @Override
-    public void disconnected(DisconnectedEvent event) {
+    public void disconnected (DisconnectedEvent event) {
         socket.close();
 
         groups.clear();
@@ -188,25 +191,25 @@ public class VoiceChatPlugin extends Bot.Listener {
     private class ClientVoiceChatSocket extends VoiceChatSocketBase {
         private DatagramSocket socket;
 
-        public void open() throws SocketException {
+        public void open () throws SocketException {
             this.socket = new DatagramSocket();
         }
 
-        public RawUdpPacket read() {
+        public RawUdpPacket read () {
             if (socket == null) {
                 throw new IllegalStateException("Socket not opened yet");
             }
             return read(socket);
         }
 
-        public void send(byte[] data, SocketAddress address) throws Exception {
+        public void send (byte[] data, SocketAddress address) throws Exception {
             if (socket == null) {
                 return; // Ignoring packet sending when socket isn't open yet
             }
             socket.send(new DatagramPacket(data, data.length, address));
         }
 
-        public void close() {
+        public void close () {
             if (socket != null) {
                 socket.close();
                 socket = null;

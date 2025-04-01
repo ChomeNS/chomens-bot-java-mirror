@@ -23,19 +23,19 @@ public class Ascii85 {
             85,
             85 * 85,
             85 * 85 * 85,
-            85 * 85 * 85 *85
+            85 * 85 * 85 * 85
     };
 
     private static final Pattern REMOVE_WHITESPACE = Pattern.compile("\\s+");
 
-    private Ascii85 () {}
+    private Ascii85 () { }
 
-    public static String encode(byte[] payload) {
+    public static String encode (byte[] payload) {
         if (payload == null) {
             throw new IllegalArgumentException("You must provide a non-null input");
         }
         // By using five ASCII characters to represent four bytes of binary data the encoded size ¹⁄₄ is larger than the original
-        StringBuilder stringBuff = new StringBuilder(payload.length * 5/4);
+        StringBuilder stringBuff = new StringBuilder(payload.length * 5 / 4);
         // We break the payload into int (4 bytes)
         byte[] chunk = new byte[4];
         int chunkIndex = 0;
@@ -59,10 +59,10 @@ public class Ascii85 {
         //If we didn't end on 0, then we need some padding
         if (chunkIndex > 0) {
             int numPadded = chunk.length - chunkIndex;
-            Arrays.fill(chunk, chunkIndex, chunk.length, (byte)0);
+            Arrays.fill(chunk, chunkIndex, chunk.length, (byte) 0);
             int value = byteToInt(chunk);
             char[] encodedChunk = encodeChunk(value);
-            for(int i = 0 ; i < encodedChunk.length - numPadded; i++) {
+            for (int i = 0; i < encodedChunk.length - numPadded; i++) {
                 stringBuff.append(encodedChunk[i]);
             }
         }
@@ -70,11 +70,11 @@ public class Ascii85 {
         return stringBuff.toString();
     }
 
-    private static char[] encodeChunk(int value) {
+    private static char[] encodeChunk (int value) {
         //transform value to unsigned long
         long longValue = value & 0x00000000ffffffffL;
         char[] encodedChunk = new char[5];
-        for(int i = 0 ; i < encodedChunk.length; i++) {
+        for (int i = 0; i < encodedChunk.length; i++) {
             encodedChunk[i] = (char) ((longValue / BASE85_POW[4 - i]) + ASCII_SHIFT);
             longValue = longValue % BASE85_POW[4 - i];
         }
@@ -84,11 +84,12 @@ public class Ascii85 {
     /**
      * This is a very simple base85 decoder. It respects the 'z' optimization for empty chunks, and
      * strips whitespace between characters to respect line limits.
-     * @see <a href="https://en.wikipedia.org/wiki/Ascii85">Ascii85</a>
+     *
      * @param chars The input characters that are base85 encoded.
      * @return The binary data decoded from the input
+     * @see <a href="https://en.wikipedia.org/wiki/Ascii85">Ascii85</a>
      */
-    public static byte[] decode(String chars) {
+    public static byte[] decode (String chars) {
         if (chars == null) {
             throw new IllegalArgumentException("You must provide a non-null input");
         }
@@ -145,18 +146,18 @@ public class Ascii85 {
         // If we didn't end on 0, then we need some padding
         if (chunkIndex > 0) {
             int numPadded = chunk.length - chunkIndex;
-            Arrays.fill(chunk, chunkIndex, chunk.length, (byte)'u');
+            Arrays.fill(chunk, chunkIndex, chunk.length, (byte) 'u');
             byte[] paddedDecode = decodeChunk(chunk);
-            for(int i = 0 ; i < paddedDecode.length - numPadded; i++) {
+            for (int i = 0; i < paddedDecode.length - numPadded; i++) {
                 bytebuff.put(paddedDecode[i]);
             }
         }
 
         bytebuff.flip();
-        return Arrays.copyOf(bytebuff.array(),bytebuff.limit());
+        return Arrays.copyOf(bytebuff.array(), bytebuff.limit());
     }
 
-    private static byte[] decodeChunk(byte[] chunk) {
+    private static byte[] decodeChunk (byte[] chunk) {
         if (chunk.length != 5) {
             throw new IllegalArgumentException("You can only decode chunks of size 5.");
         }
@@ -172,14 +173,14 @@ public class Ascii85 {
         return intToByte(value);
     }
 
-    private static int byteToInt(byte[] value) {
+    private static int byteToInt (byte[] value) {
         if (value == null || value.length != 4) {
             throw new IllegalArgumentException("You cannot create an int without exactly 4 bytes.");
         }
         return ByteBuffer.wrap(value).getInt();
     }
 
-    private static byte[] intToByte(int value) {
+    private static byte[] intToByte (int value) {
         return new byte[] {
                 (byte) (value >>> 24),
                 (byte) (value >>> 16),

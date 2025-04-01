@@ -4,10 +4,10 @@ import io.netty.buffer.ByteBuf;
 import me.chayapak1.chomens_bot.chomeNSMod.Packet;
 
 public class ClientboundHandshakePacket implements Packet {
-    public ClientboundHandshakePacket() {
+    public ClientboundHandshakePacket () {
     }
 
-    public ClientboundHandshakePacket(ByteBuf buf) {
+    public ClientboundHandshakePacket (ByteBuf buf) {
     }
 
     @Override

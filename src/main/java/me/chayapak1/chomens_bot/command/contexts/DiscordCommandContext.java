@@ -22,7 +22,7 @@ public class DiscordCommandContext extends CommandContext {
 
     private final Bot bot;
 
-    public DiscordCommandContext(Bot bot, String prefix, MessageReceivedEvent event) {
+    public DiscordCommandContext (Bot bot, String prefix, MessageReceivedEvent event) {
         super(
                 bot,
                 prefix,

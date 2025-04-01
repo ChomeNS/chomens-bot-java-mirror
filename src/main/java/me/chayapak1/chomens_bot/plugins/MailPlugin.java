@@ -44,7 +44,7 @@ public class MailPlugin implements PlayersPlugin.Listener {
     }
 
     @Override
-    public void playerJoined(PlayerEntry target) {
+    public void playerJoined (PlayerEntry target) {
         DatabasePlugin.executorService.submit(() -> {
             final String name = target.profile.getName();
 

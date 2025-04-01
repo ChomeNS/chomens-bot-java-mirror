@@ -3,8 +3,8 @@ package me.chayapak1.chomens_bot.util;
 import org.cloudburstmc.nbt.NbtMap;
 import org.cloudburstmc.nbt.NbtMapBuilder;
 
-import java.util.UUID;
 import java.nio.ByteBuffer;
+import java.util.UUID;
 
 // Author: _ChipMC_ for int array and selector stuff
 public class UUIDUtilities {
@@ -51,8 +51,10 @@ public class UUIDUtilities {
     }
 
     public static String selector (UUID uuid) { return selector(uuid, true); }
+
     public static String selector (UUID uuid, boolean end) { return "@p[nbt={UUID:" + snbt(uuid) + "}" + (end ? "]" : ""); }
 
     public static String exclusiveSelector (UUID uuid) { return exclusiveSelector(uuid, true); }
+
     public static String exclusiveSelector (UUID uuid, boolean end) { return "@a[nbt=!{UUID:" + snbt(uuid) + "}" + (end ? "]" : ""); }
 }

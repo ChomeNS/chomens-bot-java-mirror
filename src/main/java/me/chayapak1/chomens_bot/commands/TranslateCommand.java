@@ -31,7 +31,7 @@ public class TranslateCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context) throws CommandException {
+    public Component execute (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         final String from = context.getString(false, true);
@@ -69,11 +69,11 @@ public class TranslateCommand extends Command {
 
                 context.sendOutput(
                         Component
-                            .translatable(
-                                    "Result: %s",
-                                    Component.text(output).color(NamedTextColor.GREEN)
-                            )
-                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                                .translatable(
+                                        "Result: %s",
+                                        Component.text(output).color(NamedTextColor.GREEN)
+                                )
+                                .color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
                 );
             } catch (Exception e) {
                 context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));

@@ -68,7 +68,7 @@ public class ConsolePlugin implements Completer {
     }
 
     @Override
-    public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
+    public void complete (LineReader reader, ParsedLine line, List<Candidate> candidates) {
         if (!line.line().startsWith(prefix)) return;
 
         final String command = line.line().substring(prefix.length());
@@ -131,7 +131,7 @@ public class ConsolePlugin implements Completer {
 
     // Everything below is from https://code.chipmunk.land/ChomeNS/chipmunkmod/src/branch/1.21.4/src/main/java/land/chipmunk/chipmunkmod/modules/custom_chat
     // Thank you, Amy!
-    private record ConsoleFormatContext (String uuid, Component message, Map<String, String> args) {}
+    private record ConsoleFormatContext(String uuid, Component message, Map<String, String> args) { }
 
     private final static class ConsoleFormatRenderer extends TranslatableComponentRenderer<ConsoleFormatContext> {
         @Override

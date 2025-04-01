@@ -1,7 +1,10 @@
 package me.chayapak1.chomens_bot.commands;
 
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.command.*;
+import me.chayapak1.chomens_bot.command.Command;
+import me.chayapak1.chomens_bot.command.CommandContext;
+import me.chayapak1.chomens_bot.command.CommandException;
+import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.command.contexts.ConsoleCommandContext;
 import me.chayapak1.chomens_bot.plugins.CommandHandlerPlugin;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
@@ -56,14 +59,14 @@ public class HelpCommand extends Command {
         );
 
         return Component.empty()
-                        .append(Component.text("Commands ").color(NamedTextColor.GRAY))
-                        .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
-                        .append(Component.text(list.size()).color(NamedTextColor.GREEN))
-                        .append(Component.text(") ").color(NamedTextColor.DARK_GRAY))
-                        .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
-                        .append(Component.translatable("%s", trustLevels))
-                        .append(Component.text(") - ").color(NamedTextColor.DARK_GRAY))
-                        .append(Component.join(JoinConfiguration.separator(Component.space()), list));
+                .append(Component.text("Commands ").color(NamedTextColor.GRAY))
+                .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
+                .append(Component.text(list.size()).color(NamedTextColor.GREEN))
+                .append(Component.text(") ").color(NamedTextColor.DARK_GRAY))
+                .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
+                .append(Component.translatable("%s", trustLevels))
+                .append(Component.text(") - ").color(NamedTextColor.DARK_GRAY))
+                .append(Component.join(JoinConfiguration.separator(Component.space()), list));
     }
 
     public List<Component> getCommandListByTrustLevel (CommandContext context, TrustLevel trustLevel) throws CommandException {
@@ -72,7 +75,8 @@ public class HelpCommand extends Command {
         List<String> commandNames = new ArrayList<>();
 
         for (Command command : CommandHandlerPlugin.commands) {
-            if (command.trustLevel != trustLevel || (command.consoleOnly && !(context instanceof ConsoleCommandContext))) continue;
+            if (command.trustLevel != trustLevel || (command.consoleOnly && !(context instanceof ConsoleCommandContext)))
+                continue;
 
             commandNames.add(command.name);
         }

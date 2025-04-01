@@ -12,14 +12,14 @@ public class BruhifyPlugin implements TickPlugin.Listener {
 
     private int startHue = 0;
 
-    public BruhifyPlugin(Bot bot) {
+    public BruhifyPlugin (Bot bot) {
         this.bot = bot;
 
         bot.tick.addListener(this);
     }
 
     @Override
-    public void onTick() {
+    public void onTick () {
         if (bruhifyText.isEmpty()) return;
 
         int hue = startHue;
@@ -30,7 +30,7 @@ public class BruhifyPlugin implements TickPlugin.Listener {
 
         for (char character : displayName.toCharArray()) {
             component = component.append(Component.text(character)
-                    .color(TextColor.color(HSVLike.hsvLike(hue / 360.0f, 1, 1))));
+                                                 .color(TextColor.color(HSVLike.hsvLike(hue / 360.0f, 1, 1))));
             hue = (hue + increment) % 360;
         }
 

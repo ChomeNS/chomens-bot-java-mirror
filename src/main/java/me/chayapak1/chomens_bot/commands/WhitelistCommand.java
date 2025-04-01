@@ -26,7 +26,7 @@ public class WhitelistCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context) throws CommandException {
+    public Component execute (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         final String action = context.getAction();

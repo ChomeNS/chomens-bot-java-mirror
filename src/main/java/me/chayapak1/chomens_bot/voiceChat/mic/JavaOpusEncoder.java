@@ -10,7 +10,7 @@ public class JavaOpusEncoder {
     public int frameSize;
     public de.maxhenkel.opus4j.OpusEncoder.Application application;
 
-    public JavaOpusEncoder(int sampleRate, int frameSize, int maxPayloadSize, de.maxhenkel.opus4j.OpusEncoder.Application application) {
+    public JavaOpusEncoder (int sampleRate, int frameSize, int maxPayloadSize, de.maxhenkel.opus4j.OpusEncoder.Application application) {
         this.sampleRate = sampleRate;
         this.frameSize = frameSize;
         this.application = application;
@@ -18,7 +18,7 @@ public class JavaOpusEncoder {
         open();
     }
 
-    private void open() {
+    private void open () {
         if (opusEncoder != null) {
             return;
         }
@@ -29,7 +29,7 @@ public class JavaOpusEncoder {
         }
     }
 
-    public byte[] encode(short[] rawAudio) {
+    public byte[] encode (short[] rawAudio) {
         if (isClosed()) {
             throw new IllegalStateException("Encoder is closed");
         }
@@ -50,25 +50,25 @@ public class JavaOpusEncoder {
         return audio;
     }
 
-    public void resetState() {
+    public void resetState () {
         if (isClosed()) {
             throw new IllegalStateException("Encoder is closed");
         }
         opusEncoder.resetState();
     }
 
-    public boolean isClosed() {
+    public boolean isClosed () {
         return opusEncoder == null;
     }
 
-    public void close() {
+    public void close () {
         if (isClosed()) {
             return;
         }
         opusEncoder = null;
     }
 
-    public static OpusApplication getApplication(de.maxhenkel.opus4j.OpusEncoder.Application application) {
+    public static OpusApplication getApplication (de.maxhenkel.opus4j.OpusEncoder.Application application) {
         return switch (application) {
             case AUDIO -> OpusApplication.OPUS_APPLICATION_AUDIO;
             case LOW_DELAY -> OpusApplication.OPUS_APPLICATION_RESTRICTED_LOWDELAY;

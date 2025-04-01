@@ -9,7 +9,7 @@ public class JoinGroupPacket implements Packet<JoinGroupPacket> {
     public UUID group;
     public String password;
 
-    public JoinGroupPacket () {}
+    public JoinGroupPacket () { }
 
     public JoinGroupPacket (UUID group, String password) {
         this.group = group;
@@ -17,7 +17,7 @@ public class JoinGroupPacket implements Packet<JoinGroupPacket> {
     }
 
     @Override
-    public JoinGroupPacket fromBytes(FriendlyByteBuf buf) {
+    public JoinGroupPacket fromBytes (FriendlyByteBuf buf) {
         group = buf.readUUID();
         if (buf.readBoolean()) {
             password = buf.readUtf(512);
@@ -26,7 +26,7 @@ public class JoinGroupPacket implements Packet<JoinGroupPacket> {
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes (FriendlyByteBuf buf) {
         buf.writeUUID(group);
         buf.writeBoolean(password != null);
         if (password != null) {

@@ -33,10 +33,11 @@ public class SeenCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context) throws CommandException {
+    public Component execute (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        if (bot.database == null) throw new CommandException(Component.text("Database is not enabled in the bot's config"));
+        if (bot.database == null)
+            throw new CommandException(Component.text("Database is not enabled in the bot's config"));
 
         bot.database.checkOverloaded();
 
@@ -52,10 +53,10 @@ public class SeenCommand extends Command {
 
                 onlineComponents.add(
                         Component.empty()
-                            .append(Component.text(player))
-                            .append(Component.text(" is currently online on "))
-                            .append(Component.text(eachBot.getServerString()))
-                            .color(NamedTextColor.RED)
+                                .append(Component.text(player))
+                                .append(Component.text(" is currently online on "))
+                                .append(Component.text(eachBot.getServerString()))
+                                .color(NamedTextColor.RED)
                 );
             }
         }
@@ -72,11 +73,13 @@ public class SeenCommand extends Command {
 
                 final ObjectNode lastSeen = (ObjectNode) playerElement.get("lastSeen");
 
-                if (lastSeen == null || lastSeen.isNull()) throw new CommandException(Component.text("This player doesn't seem to have the last seen entry in the database for some reason."));
+                if (lastSeen == null || lastSeen.isNull())
+                    throw new CommandException(Component.text("This player doesn't seem to have the last seen entry in the database for some reason."));
 
                 final JsonNode time = lastSeen.get("time");
 
-                if (time == null || time.isNull()) throw new CommandException(Component.text("This player doesn't seem to have the `lastSeen.time` entry in the database for some reason."));
+                if (time == null || time.isNull())
+                    throw new CommandException(Component.text("This player doesn't seem to have the `lastSeen.time` entry in the database for some reason."));
 
                 final Instant instant = Instant.ofEpochMilli(time.asLong());
                 final ZoneId zoneId = ZoneId.of("UTC"); // should i be doing this?

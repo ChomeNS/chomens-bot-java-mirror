@@ -4,5 +4,6 @@ import io.netty.buffer.ByteBuf;
 
 public interface Packet {
     int getId ();
+
     void serialize (ByteBuf buf);
 }

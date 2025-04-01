@@ -38,7 +38,7 @@ public class WorldPlugin extends Bot.Listener {
     }
 
     @Override
-    public void packetReceived(Session session, Packet packet) {
+    public void packetReceived (Session session, Packet packet) {
         if (packet instanceof ClientboundLevelChunkWithLightPacket t_packet) packetReceived(t_packet);
         else if (packet instanceof ClientboundForgetLevelChunkPacket t_packet) packetReceived(t_packet);
         else if (packet instanceof ClientboundBlockUpdatePacket t_packet) packetReceived(t_packet);
@@ -119,7 +119,9 @@ public class WorldPlugin extends Bot.Listener {
     }
 
     public ChunkColumn getChunk (int x, int z) { return chunks.get(new ChunkPos(x, z)); }
+
     public ChunkColumn getChunk (ChunkPos pos) { return chunks.get(pos); }
+
     public Collection<ChunkColumn> getChunks () { return chunks.values(); }
 
     public int getBlock (int x, int y, int z) {
@@ -138,6 +140,6 @@ public class WorldPlugin extends Bot.Listener {
     public void addListener (Listener listener) { listeners.add(listener); }
 
     public interface Listener {
-        default void worldChanged (String dimension) {}
+        default void worldChanged (String dimension) { }
     }
 }

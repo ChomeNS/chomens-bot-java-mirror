@@ -12,7 +12,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class GrepLogCommand extends Command {
     private Thread thread;
 
-    public GrepLogCommand() {
+    public GrepLogCommand () {
         super(
                 "greplog",
                 "Queries the bot's logs",
@@ -24,7 +24,7 @@ public class GrepLogCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context) throws CommandException {
+    public Component execute (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         if (bot.discord == null || bot.discord.jda == null) {

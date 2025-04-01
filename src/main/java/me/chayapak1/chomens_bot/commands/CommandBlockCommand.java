@@ -39,7 +39,7 @@ public class CommandBlockCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context) throws CommandException {
+    public Component execute (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         runCommand(bot, context, context.getString(true, true), null);
@@ -68,8 +68,10 @@ public class CommandBlockCommand extends Command {
 
                 String replacedCommand;
 
-                if (userFound) replacedCommand = new StringBuilder(command).replace(userMatcher.start(), userMatcher.end(), username).toString();
-                else replacedCommand = new StringBuilder(command).replace(uuidMatcher.start(), uuidMatcher.end(), uuid).toString();
+                if (userFound)
+                    replacedCommand = new StringBuilder(command).replace(userMatcher.start(), userMatcher.end(), username).toString();
+                else
+                    replacedCommand = new StringBuilder(command).replace(uuidMatcher.start(), uuidMatcher.end(), uuid).toString();
 
                 replacedCommand = replacedCommand
                         .replace("{username}", username)

@@ -15,7 +15,7 @@ public class EvalFunction {
         this.bot = bot;
     }
 
-    public Output execute (Object ...args) throws Exception { return null; }
+    public Output execute (Object... args) throws Exception { return null; }
 
     public static class Output {
         public final String message;

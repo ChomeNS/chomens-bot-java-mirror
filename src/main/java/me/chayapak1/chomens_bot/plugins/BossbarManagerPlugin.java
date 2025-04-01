@@ -151,7 +151,7 @@ public class BossbarManagerPlugin extends Bot.Listener implements PlayersPlugin.
     }
 
     @Override
-    public void connected(ConnectedEvent event) {
+    public void connected (ConnectedEvent event) {
         for (Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
             final BotBossBar bossBar = _bossBar.getValue();
 
@@ -190,6 +190,7 @@ public class BossbarManagerPlugin extends Bot.Listener implements PlayersPlugin.
     private void addBossBar (String name, BotBossBar bossBar) {
         addBossBar(name, bossBar, false);
     }
+
     private void addBossBar (String name, BotBossBar bossBar, boolean secret) {
         if (actionBar) return;
 

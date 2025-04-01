@@ -19,7 +19,7 @@ public class TeamJoinerPlugin {
 
         bot.addListener(new Bot.Listener() {
             @Override
-            public void connected(ConnectedEvent event) {
+            public void connected (ConnectedEvent event) {
                 TeamJoinerPlugin.this.connected();
             }
         });

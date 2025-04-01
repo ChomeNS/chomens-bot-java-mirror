@@ -31,7 +31,7 @@ public abstract class Command {
     public abstract Component execute (CommandContext context) throws Exception;
 
     @Override
-    public String toString() {
+    public String toString () {
         return "Command{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +

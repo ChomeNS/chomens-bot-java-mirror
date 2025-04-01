@@ -20,7 +20,7 @@ public class JavaOpusEncoder2 {
         open();
     }
 
-    private void open() {
+    private void open () {
         if (opusEncoder != null) {
             return;
         }
@@ -31,7 +31,7 @@ public class JavaOpusEncoder2 {
         }
     }
 
-    public byte[] encode(short[] rawAudio) {
+    public byte[] encode (short[] rawAudio) {
         if (isClosed()) {
             throw new IllegalStateException("Encoder is closed");
         }
@@ -52,18 +52,18 @@ public class JavaOpusEncoder2 {
         return audio;
     }
 
-    public void resetState() {
+    public void resetState () {
         if (isClosed()) {
             throw new IllegalStateException("Encoder is closed");
         }
         opusEncoder.resetState();
     }
 
-    public boolean isClosed() {
+    public boolean isClosed () {
         return opusEncoder == null;
     }
 
-    public void close() {
+    public void close () {
         if (isClosed()) {
             return;
         }

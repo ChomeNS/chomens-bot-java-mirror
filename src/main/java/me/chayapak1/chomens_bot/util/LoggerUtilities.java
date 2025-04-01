@@ -39,11 +39,17 @@ public class LoggerUtilities {
     }
 
     public static void log (String message) { log(LogType.INFO, null, Component.text(message), true, true); }
+
     public static void log (Component message) { log(LogType.INFO, null, message, true, true); }
+
     public static void log (LogType type, String message) { log(type, null, Component.text(message), true, true); }
+
     public static void log (LogType type, Component message) { log(type, null, message, true, true); }
+
     public static void log (Bot bot, Component message) { log(LogType.INFO, bot, message, true, true); }
+
     public static void log (Bot bot, String message) { log(LogType.INFO, bot, Component.text(message), true, true); }
+
     public static void log (LogType type, Bot bot, Component message, boolean logToFile, boolean logToConsole) {
         final Component component = getPrefix(bot, type.component, message);
 
@@ -52,9 +58,9 @@ public class LoggerUtilities {
         if (logToFile) {
             final String formattedMessage = bot == null ? ComponentUtilities.stringify(message) :
                     String.format(
-                        "[%s] %s",
-                        bot.getServerString(true),
-                        ComponentUtilities.stringify(message)
+                            "[%s] %s",
+                            bot.getServerString(true),
+                            ComponentUtilities.stringify(message)
                     );
 
             FileLoggerUtilities.log(ComponentUtilities.stringify(type.component), formattedMessage);
@@ -62,7 +68,9 @@ public class LoggerUtilities {
     }
 
     public static void error (String message) { log(LogType.ERROR, message); }
+
     public static void error (Component message) { log(LogType.ERROR, message); }
+
     public static void error (Throwable throwable) { log(LogType.ERROR, ExceptionUtilities.getStacktrace(throwable)); }
 
     private static void print (String message) {

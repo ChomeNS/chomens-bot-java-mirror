@@ -79,7 +79,7 @@ public class NBSConverter implements Converter {
     }
 
     @Override
-    public Song getSongFromBytes(byte[] bytes, String fileName, Bot bot) throws IOException {
+    public Song getSongFromBytes (byte[] bytes, String fileName, Bot bot) throws IOException {
         ByteBuffer buffer = ByteBuffer.wrap(bytes);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
 
@@ -151,7 +151,7 @@ public class NBSConverter implements Converter {
 
         ArrayList<NBSLayer> nbsLayers = new ArrayList<>();
         if (buffer.hasRemaining()) {
-            for (int i=0; i<layerCount; i++) {
+            for (int i = 0; i < layerCount; i++) {
                 NBSLayer layer = new NBSLayer();
                 layer.name = getString(buffer, bytes.length);
                 if (format >= 4) {
@@ -190,7 +190,7 @@ public class NBSConverter implements Converter {
         Song song = new Song(!songName.isBlank() ? songName : fileName, bot, songName, songAuthor, songOriginalAuthor, songDescription, stringLayerNames.substring(0, stringLayerNames.length() - 1), true);
         if (loop > 0) {
             song.loopPosition = getMilliTime(loopStartTick, tempo);
-//      song.loopCount = maxLoopCount;
+            //      song.loopCount = maxLoopCount;
         }
         for (NBSNote note : nbsNotes) {
             boolean isRainbowToggle = false;
@@ -282,7 +282,7 @@ public class NBSConverter implements Converter {
             );
         }
 
-        song.length = song.get(song.size()-1).time + 50;
+        song.length = song.get(song.size() - 1).time + 50;
 
         return song;
     }

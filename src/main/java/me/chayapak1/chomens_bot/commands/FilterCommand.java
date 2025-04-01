@@ -37,7 +37,7 @@ public class FilterCommand extends Command {
 
     // most of these codes are from cloop and greplog
     @Override
-    public Component execute(CommandContext context) throws CommandException {
+    public Component execute (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         boolean ignoreCase = false;

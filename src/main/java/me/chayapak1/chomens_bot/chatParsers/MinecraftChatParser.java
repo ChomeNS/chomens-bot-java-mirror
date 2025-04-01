@@ -2,20 +2,23 @@ package me.chayapak1.chomens_bot.chatParsers;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.chat.ChatParser;
-import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
+import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.event.HoverEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class MinecraftChatParser implements ChatParser {
     private final Bot bot;
 
     private static final List<String> keys = new ArrayList<>();
+
     static {
         keys.add("chat.type.text");
         keys.add("chat.type.announcement");

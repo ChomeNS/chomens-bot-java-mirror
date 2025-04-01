@@ -38,14 +38,18 @@ public class CommandContext {
     }
 
     public Component displayName () { return Component.empty(); }
-    public void sendOutput (Component component) {}
+
+    public void sendOutput (Component component) { }
 
     // args parsing stuff
     private int argsPosition = 0;
 
     public String getString (boolean greedy, boolean required) throws CommandException { return getString(greedy, required, "string"); }
+
     public String getString (boolean greedy, boolean required, boolean returnLowerCase) throws CommandException { return getString(greedy, returnLowerCase, required, "string"); }
+
     private String getString (boolean greedy, boolean required, String type) throws CommandException { return getString(greedy, false, required, type); }
+
     private String getString (boolean greedy, boolean returnLowerCase, boolean required, String type) throws CommandException {
         if (argsPosition >= args.length || args[argsPosition] == null) {
             if (required) {
@@ -88,7 +92,7 @@ public class CommandContext {
             string.append(greedyString);
         } else if (
                 greedyString.length() > 1 &&
-                (greedyString.startsWith("'") || greedyString.startsWith("\""))
+                        (greedyString.startsWith("'") || greedyString.startsWith("\""))
         ) {
             // parses arguments with quotes
 

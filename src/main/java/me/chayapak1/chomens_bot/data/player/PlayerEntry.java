@@ -21,7 +21,7 @@ public class PlayerEntry {
     public boolean listed;
     public String ip;
 
-    public PlayerEntry(
+    public PlayerEntry (
             GameProfile profile,
             GameMode gamemode,
             int latency,
@@ -46,7 +46,7 @@ public class PlayerEntry {
     }
 
     @Override
-    public String toString() {
+    public String toString () {
         return "PlayerEntry{" +
                 "gamemode=" + gamemode +
                 ", latency=" + latency +

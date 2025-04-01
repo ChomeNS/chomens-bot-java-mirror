@@ -20,7 +20,7 @@ public class EchoCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context) throws CommandException {
+    public Component execute (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         bot.chat.send(context.getString(true, true));

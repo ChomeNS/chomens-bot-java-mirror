@@ -1,13 +1,13 @@
 package me.chayapak1.chomens_bot.command.contexts;
 
-import me.chayapak1.chomens_bot.command.CommandContext;
-import me.chayapak1.chomens_bot.util.UUIDUtilities;
-import org.geysermc.mcprotocollib.auth.GameProfile;
-import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
+import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
+import org.geysermc.mcprotocollib.auth.GameProfile;
+import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
 
 public class IRCCommandContext extends CommandContext {
     private final Bot bot;

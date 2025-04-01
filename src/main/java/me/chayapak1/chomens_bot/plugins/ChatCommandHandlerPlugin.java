@@ -2,8 +2,8 @@ package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.contexts.PlayerCommandContext;
-import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
+import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
@@ -16,7 +16,7 @@ public class ChatCommandHandlerPlugin implements ChatPlugin.Listener, CommandSpy
     public final List<String> prefixes;
     public final List<String> commandSpyPrefixes;
 
-    public ChatCommandHandlerPlugin(Bot bot) {
+    public ChatCommandHandlerPlugin (Bot bot) {
         this.bot = bot;
 
         this.prefixes = bot.config.prefixes;

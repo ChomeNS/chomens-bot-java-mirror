@@ -1,8 +1,8 @@
 package me.chayapak1.chomens_bot.data.bossbar;
 
+import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.protocol.data.game.BossBarColor;
 import org.geysermc.mcprotocollib.protocol.data.game.BossBarDivision;
-import net.kyori.adventure.text.Component;
 
 import java.util.UUID;
 
@@ -29,7 +29,7 @@ public class BossBar {
     }
 
     @Override
-    public String toString() {
+    public String toString () {
         return "BossBar{" +
                 "uuid=" + uuid +
                 ", title=" + title +

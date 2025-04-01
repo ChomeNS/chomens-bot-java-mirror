@@ -51,7 +51,7 @@ public class StringUtilities {
     }
 
     // https://stackoverflow.com/a/25379180/18518424
-    public static boolean containsIgnoreCase(String src, String what) {
+    public static boolean containsIgnoreCase (String src, String what) {
         final int length = what.length();
         if (length == 0)
             return true; // Empty string is contained

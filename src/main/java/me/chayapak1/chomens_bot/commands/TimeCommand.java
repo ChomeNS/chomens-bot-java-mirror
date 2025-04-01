@@ -27,7 +27,7 @@ public class TimeCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context) throws CommandException {
+    public Component execute (CommandContext context) throws CommandException {
         try {
             final Bot bot = context.bot;
 

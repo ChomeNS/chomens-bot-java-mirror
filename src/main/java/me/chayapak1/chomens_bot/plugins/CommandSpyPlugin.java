@@ -31,7 +31,7 @@ public class CommandSpyPlugin implements ChatPlugin.Listener {
                         textComponent.style().isEmpty() ||
                         (
                                 textComponent.color() != NamedTextColor.AQUA &&
-                                textComponent.color() != NamedTextColor.YELLOW
+                                        textComponent.color() != NamedTextColor.YELLOW
                         ) ||
                         !(children.getFirst() instanceof TextComponent) ||
                         !(children.getLast() instanceof TextComponent)
@@ -52,6 +52,6 @@ public class CommandSpyPlugin implements ChatPlugin.Listener {
     public void addListener (Listener listener) { listeners.add(listener); }
 
     public interface Listener {
-        default void commandReceived (PlayerEntry sender, String command) {}
+        default void commandReceived (PlayerEntry sender, String command) { }
     }
 }

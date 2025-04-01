@@ -16,7 +16,7 @@ public class InitializationData {
     public final boolean groupsEnabled;
     public final boolean allowRecording;
 
-    public InitializationData(SecretPacket secretPacket) {
+    public InitializationData (SecretPacket secretPacket) {
         this.serverPort = secretPacket.serverPort;
         this.playerUUID = secretPacket.playerUUID;
         this.secret = secretPacket.secret;

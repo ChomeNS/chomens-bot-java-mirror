@@ -17,7 +17,7 @@ public class ClearChatNameAnnouncerPlugin implements CommandSpyPlugin.Listener {
     }
 
     @Override
-    public void commandReceived(PlayerEntry sender, String command) {
+    public void commandReceived (PlayerEntry sender, String command) {
         if (
                 command.equals("/clearchat") ||
                         command.equals("/cc") ||

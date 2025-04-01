@@ -18,24 +18,24 @@ public class AESUtilities {
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final String CIPHER = "AES/CBC/PKCS5Padding";
 
-    public static byte[] getBytesFromUUID(UUID uuid) {
+    public static byte[] getBytesFromUUID (UUID uuid) {
         ByteBuffer buffer = ByteBuffer.wrap(new byte[16]);
         buffer.putLong(uuid.getMostSignificantBits());
         buffer.putLong(uuid.getLeastSignificantBits());
         return buffer.array();
     }
 
-    private static byte[] generateIV() {
+    private static byte[] generateIV () {
         byte[] iv = new byte[16];
         RANDOM.nextBytes(iv);
         return iv;
     }
 
-    private static SecretKeySpec createKeySpec(UUID secret) {
+    private static SecretKeySpec createKeySpec (UUID secret) {
         return new SecretKeySpec(getBytesFromUUID(secret), "AES");
     }
 
-    public static byte[] encrypt(UUID secret, byte[] data) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+    public static byte[] encrypt (UUID secret, byte[] data) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         byte[] iv = generateIV();
         IvParameterSpec ivSpec = new IvParameterSpec(iv);
         Cipher cipher = Cipher.getInstance(CIPHER);
@@ -47,7 +47,7 @@ public class AESUtilities {
         return payload;
     }
 
-    public static byte[] decrypt(UUID secret, byte[] payload) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+    public static byte[] decrypt (UUID secret, byte[] payload) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         byte[] iv = new byte[16];
         System.arraycopy(payload, 0, iv, 0, iv.length);
         byte[] data = new byte[payload.length - iv.length];

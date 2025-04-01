@@ -10,7 +10,7 @@ import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 
 public class RestartCommand extends Command {
-    public RestartCommand() {
+    public RestartCommand () {
         super(
                 "restart",
                 "Gracefully restarts the bot",
@@ -22,7 +22,7 @@ public class RestartCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context) throws CommandException {
+    public Component execute (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         final String reason = context.getString(true, false);

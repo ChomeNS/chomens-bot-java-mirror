@@ -13,11 +13,11 @@ import java.util.zip.GZIPInputStream;
 
 // Author: hhhzzzsss (i ported it from songplayer)
 public class SongPlayerConverter implements Converter {
-    public static final byte[] FILE_TYPE_SIGNATURE = {-53, 123, -51, -124, -122, -46, -35, 38};
+    public static final byte[] FILE_TYPE_SIGNATURE = { -53, 123, -51, -124, -122, -46, -35, 38 };
     public static final long MAX_UNCOMPRESSED_SIZE = 50 * 1024 * 1024;
 
     @Override
-    public Song getSongFromBytes(byte[] bytes, String fileName, Bot bot) throws Exception {
+    public Song getSongFromBytes (byte[] bytes, String fileName, Bot bot) throws Exception {
         InputStream is = new LimitedSizeInputStream(new GZIPInputStream(new ByteArrayInputStream(bytes)), MAX_UNCOMPRESSED_SIZE);
         bytes = is.readAllBytes();
         is.close();
@@ -45,8 +45,8 @@ public class SongPlayerConverter implements Converter {
 
         Song song = new Song(fileName, bot, !songName.trim().isEmpty() ? songName : null, null, null, null, null, false);
         song.length = songLength;
-//        song.looping = loop > 0;
-//        song.loopCount = loopCount;
+        //        song.looping = loop > 0;
+        //        song.loopCount = loopCount;
         song.loopPosition = loopPosition;
 
         long time = 0;
@@ -55,11 +55,9 @@ public class SongPlayerConverter implements Converter {
             if (noteId >= 0 && noteId < 400) {
                 time += getVarLong(buffer);
                 song.add(new Note(Instrument.fromId(noteId / 25), noteId % 25, noteId % 25, 1, time, -1, 100, false));
-            }
-            else if ((noteId & 0xFFFF) == 0xFFFF) {
+            } else if ((noteId & 0xFFFF) == 0xFFFF) {
                 break;
-            }
-            else {
+            } else {
                 throw new IOException("Song contains invalid note id of " + noteId);
             }
         }
@@ -67,7 +65,7 @@ public class SongPlayerConverter implements Converter {
         return song;
     }
 
-    private static String getString(ByteBuffer buffer, int maxSize) throws IOException {
+    private static String getString (ByteBuffer buffer, int maxSize) throws IOException {
         int length = buffer.getInt();
         if (length > maxSize) {
             throw new IOException("String is too large");
@@ -77,7 +75,7 @@ public class SongPlayerConverter implements Converter {
         return new String(arr, StandardCharsets.UTF_8);
     }
 
-    private static long getVarLong(ByteBuffer buffer) {
+    private static long getVarLong (ByteBuffer buffer) {
         long val = 0;
         long mult = 1;
         int flag = 1;
@@ -95,33 +93,33 @@ public class SongPlayerConverter implements Converter {
         private final long maxSize;
         private long total;
 
-        public LimitedSizeInputStream(InputStream original, long maxSize) {
+        public LimitedSizeInputStream (InputStream original, long maxSize) {
             this.original = original;
             this.maxSize = maxSize;
         }
 
         @Override
-        public int read() throws IOException {
+        public int read () throws IOException {
             int i = original.read();
-            if (i>=0) incrementCounter(1);
+            if (i >= 0) incrementCounter(1);
             return i;
         }
 
         @Override
-        public int read(byte @NotNull [] b) throws IOException {
+        public int read (byte @NotNull [] b) throws IOException {
             return read(b, 0, b.length);
         }
 
         @Override
-        public int read(byte @NotNull [] b, int off, int len) throws IOException {
+        public int read (byte @NotNull [] b, int off, int len) throws IOException {
             int i = original.read(b, off, len);
-            if (i>=0) incrementCounter(i);
+            if (i >= 0) incrementCounter(i);
             return i;
         }
 
-        private void incrementCounter(int size) throws IOException {
+        private void incrementCounter (int size) throws IOException {
             total += size;
-            if (total>maxSize) throw new IOException("Input stream exceeded maximum size of " + maxSize + " bytes");
+            if (total > maxSize) throw new IOException("Input stream exceeded maximum size of " + maxSize + " bytes");
         }
     }
 }

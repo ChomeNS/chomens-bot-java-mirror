@@ -17,8 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 public class FilterManagerPlugin
         extends Bot.Listener
-        implements PlayersPlugin.Listener, ChatPlugin.Listener, CommandSpyPlugin.Listener, TickPlugin.Listener
-{
+        implements PlayersPlugin.Listener, ChatPlugin.Listener, CommandSpyPlugin.Listener, TickPlugin.Listener {
     private final Bot bot;
 
     public final Map<PlayerEntry, String> list = Collections.synchronizedMap(new HashMap<>());
@@ -66,13 +65,13 @@ public class FilterManagerPlugin
 
         if (
                 command.startsWith("/mute") ||
-                command.startsWith("/emute") ||
-                command.startsWith("/silence") ||
-                command.startsWith("/esilence") ||
-                command.startsWith("/essentials:mute") ||
-                command.startsWith("/essentials:emute") ||
-                command.startsWith("/essentials:silence") ||
-                command.startsWith("/essentials:esilence")
+                        command.startsWith("/emute") ||
+                        command.startsWith("/silence") ||
+                        command.startsWith("/esilence") ||
+                        command.startsWith("/essentials:mute") ||
+                        command.startsWith("/essentials:emute") ||
+                        command.startsWith("/essentials:silence") ||
+                        command.startsWith("/essentials:esilence")
         ) mute(sender, player.getRight());
 
         deOp(sender);
@@ -99,6 +98,7 @@ public class FilterManagerPlugin
     }
 
     public void doAll (PlayerEntry entry) { doAll(entry, ""); }
+
     public void doAll (PlayerEntry entry, String reason) {
         bot.exploits.kick(entry.profile.getId());
         mute(entry, reason);
@@ -108,6 +108,7 @@ public class FilterManagerPlugin
     }
 
     public void mute (PlayerEntry target) { mute(target, ""); }
+
     public void mute (PlayerEntry target, String reason) {
         bot.core.run("essentials:mute " + target.profile.getIdAsString() + " 10y " + reason);
     }
@@ -133,7 +134,7 @@ public class FilterManagerPlugin
     public void add (PlayerEntry entry, String reason) {
         if (
                 getFilteredFromName(entry.profile.getName()) != null || // prevent already existing filters
-                entry.profile.equals(bot.profile) // prevent self-harm !!!!!!
+                        entry.profile.equals(bot.profile) // prevent self-harm !!!!!!
         ) return;
 
         list.put(entry, reason);

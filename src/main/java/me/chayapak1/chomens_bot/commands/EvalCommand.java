@@ -25,7 +25,7 @@ public class EvalCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context) throws CommandException {
+    public Component execute (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         if (!bot.eval.connected) throw new CommandException(Component.text("Eval server is not online"));

@@ -26,7 +26,7 @@ public class Mail {
     }
 
     @Override
-    public String toString() {
+    public String toString () {
         return "Mail{" +
                 "sentBy='" + sentBy + '\'' +
                 ", sentTo='" + sentTo + '\'' +

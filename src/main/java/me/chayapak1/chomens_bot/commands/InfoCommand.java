@@ -42,7 +42,7 @@ public class InfoCommand extends Command {
     static {
         try (final InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("application.properties")) {
             BUILD_INFO.load(input);
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) { }
     }
 
     public InfoCommand () {
@@ -65,7 +65,7 @@ public class InfoCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context) throws CommandException {
+    public Component execute (CommandContext context) throws CommandException {
         context.checkOverloadArgs(1);
 
         final Bot bot = context.bot;
@@ -121,7 +121,7 @@ public class InfoCommand extends Command {
 
                     channel.close();
                     file.close();
-                } catch (IOException ignored) {}
+                } catch (IOException ignored) { }
 
                 final TextColor color = ColorUtilities.getColorByString(bot.config.colorPalette.string);
 
@@ -137,7 +137,7 @@ public class InfoCommand extends Command {
 
                 try {
                     localHost = InetAddress.getLocalHost();
-                } catch (UnknownHostException ignored) {}
+                } catch (UnknownHostException ignored) { }
 
                 component = Component.translatable(
                         """

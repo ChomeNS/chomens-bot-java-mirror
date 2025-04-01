@@ -30,7 +30,7 @@ public class BotBossBar extends BossBar {
     private long max;
     private int value;
 
-    public BotBossBar(
+    public BotBossBar (
             Component title,
             String players,
             BossBarColor color,
@@ -47,13 +47,14 @@ public class BotBossBar extends BossBar {
         this.bot = bot;
     }
 
-    public Component title() {
+    public Component title () {
         return title;
     }
 
     public void setTitle (Component title) {
         setTitle(title, false);
     }
+
     public void setTitle (Component title, boolean force) {
         if (!gotSecret) return;
 
@@ -71,16 +72,18 @@ public class BotBossBar extends BossBar {
 
         bot.core.run("minecraft:bossbar set " + id + " name " + serialized);
 
-        if (!bot.core.hasRateLimit()) bot.core.run("minecraft:execute as @e[type=minecraft:text_display,tag=" + bot.config.namespace + "_" + onlyName + "] run data modify entity @s text set value '" + serialized.replace("\\", "\\\\").replace("'", "\\'") + "'");
+        if (!bot.core.hasRateLimit())
+            bot.core.run("minecraft:execute as @e[type=minecraft:text_display,tag=" + bot.config.namespace + "_" + onlyName + "] run data modify entity @s text set value '" + serialized.replace("\\", "\\\\").replace("'", "\\'") + "'");
     }
 
-    public BossBarColor color(BossBarColor color) {
+    public BossBarColor color (BossBarColor color) {
         return color;
     }
 
     public void setColor (BossBarColor color) {
         setColor(color, false);
     }
+
     public void setColor (BossBarColor color, boolean force) {
         if (!gotSecret) return;
 
@@ -98,6 +101,7 @@ public class BotBossBar extends BossBar {
     }
 
     public void setPlayers (String players) { setPlayers(players, false); }
+
     public void setPlayers (String players, boolean force) {
         if (!gotSecret) return;
 
@@ -111,9 +115,11 @@ public class BotBossBar extends BossBar {
     }
 
     public BossBarDivision division () { return division; }
+
     public void setDivision (BossBarDivision division) {
         setDivision(division, false);
     }
+
     public void setDivision (BossBarDivision _division, boolean force) {
         if (!gotSecret) return;
 
@@ -137,9 +143,11 @@ public class BotBossBar extends BossBar {
     }
 
     public int value () { return value; }
+
     public void setValue (int value) {
         setValue(value, false);
     }
+
     public void setValue (int value, boolean force) {
         if (!gotSecret) return;
 
@@ -153,6 +161,7 @@ public class BotBossBar extends BossBar {
     }
 
     public boolean visible () { return visible; }
+
     public void setVisible (boolean visible) {
         if (!gotSecret) return;
 
@@ -166,9 +175,11 @@ public class BotBossBar extends BossBar {
     }
 
     public long max () { return max; }
+
     public void setMax (long max) {
         setMax(max, false);
     }
+
     public void setMax (long max, boolean force) {
         if (!gotSecret) return;
 

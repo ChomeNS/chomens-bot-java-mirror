@@ -61,7 +61,7 @@ public class PacketSnifferPlugin extends Bot.Listener {
     }
 
     @Override
-    public void packetReceived(Session session, Packet packet) {
+    public void packetReceived (Session session, Packet packet) {
         if (!enabled) return;
 
         try {
@@ -73,7 +73,7 @@ public class PacketSnifferPlugin extends Bot.Listener {
     }
 
     @Override
-    public void packetSending(PacketSendingEvent event) {
+    public void packetSending (PacketSendingEvent event) {
         if (!enabled) return;
 
         try {

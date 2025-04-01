@@ -105,7 +105,7 @@ public class ChatPlugin extends Bot.Listener {
                             // command set
                             key.equals("قيادة المجموعة: %s") // i'm pretty sure the text direction will depend on what you are using to view this file right now
 
-                            // no other stuff because laziness
+                // no other stuff because laziness
             ) return;
         }
 
@@ -334,7 +334,8 @@ public class ChatPlugin extends Bot.Listener {
 
                 final Matcher colorCodeEndMatcher = COLOR_CODE_END_PATTERN.matcher(strippedMessage);
 
-                if (colorCodeEndMatcher.find()) strippedMessage = strippedMessage.substring(0, strippedMessage.length() - 2);
+                if (colorCodeEndMatcher.find())
+                    strippedMessage = strippedMessage.substring(0, strippedMessage.length() - 2);
 
                 if (!isFirst) {
                     final Matcher colorCodeEndMatcher2 = COLOR_CODE_END_PATTERN.matcher(message);
@@ -384,10 +385,11 @@ public class ChatPlugin extends Bot.Listener {
 
     public interface Listener {
         default boolean playerMessageReceived (PlayerMessage message) { return true; }
+
         default boolean systemMessageReceived (Component component, String string, String ansi) { return true; }
     }
 
-    private record ChatTypeContext (Component target, Component sender, Component content) {}
+    private record ChatTypeContext(Component target, Component sender, Component content) { }
 
     private static class ChatTypeComponentRenderer extends TranslatableComponentRenderer<ChatTypeContext> {
         @Override

@@ -29,7 +29,7 @@ public class ListCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context) throws CommandException {
+    public Component execute (CommandContext context) throws CommandException {
         context.checkOverloadArgs(0);
 
         final Bot bot = context.bot;
@@ -111,29 +111,29 @@ public class ListCommand extends Command {
 
             playersComponent.add(
                     Component.translatable(
-                            "%s",
-                            entry.displayName == null ?
-                                    Component.text(entry.profile.getName()) :
-                                    entry.displayName,
-                            Component
-                                    .text(entry.profile.getIdAsString())
-                                    .hoverEvent(
-                                            HoverEvent.showText(
-                                                    Component.text("Click here to copy the UUID to your clipboard").color(NamedTextColor.GREEN)
+                                    "%s",
+                                    entry.displayName == null ?
+                                            Component.text(entry.profile.getName()) :
+                                            entry.displayName,
+                                    Component
+                                            .text(entry.profile.getIdAsString())
+                                            .hoverEvent(
+                                                    HoverEvent.showText(
+                                                            Component.text("Click here to copy the UUID to your clipboard").color(NamedTextColor.GREEN)
+                                                    )
                                             )
-                                    )
-                                    .clickEvent(
-                                            ClickEvent.copyToClipboard(entry.profile.getIdAsString())
-                                    )
-                                    .color(ColorUtilities.getColorByString(bot.config.colorPalette.uuid))
-                    )
-                    .hoverEvent(
-                            HoverEvent.showText(hoverEvent)
-                    )
-                    .clickEvent(
-                            ClickEvent.copyToClipboard(entry.profile.getName())
-                    )
-                    .insertion(entry.profile.getIdAsString())
+                                            .clickEvent(
+                                                    ClickEvent.copyToClipboard(entry.profile.getIdAsString())
+                                            )
+                                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.uuid))
+                            )
+                            .hoverEvent(
+                                    HoverEvent.showText(hoverEvent)
+                            )
+                            .clickEvent(
+                                    ClickEvent.copyToClipboard(entry.profile.getName())
+                            )
+                            .insertion(entry.profile.getIdAsString())
             );
         }
 

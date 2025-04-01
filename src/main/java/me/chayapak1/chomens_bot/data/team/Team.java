@@ -1,12 +1,12 @@
 package me.chayapak1.chomens_bot.data.team;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.geysermc.mcprotocollib.protocol.data.game.scoreboard.CollisionRule;
 import org.geysermc.mcprotocollib.protocol.data.game.scoreboard.NameTagVisibility;
 import org.geysermc.mcprotocollib.protocol.data.game.scoreboard.TeamColor;
-import net.kyori.adventure.text.Component;
 
 import java.util.List;
 
@@ -74,7 +74,7 @@ public class Team {
     }
 
     @Override
-    public String toString() {
+    public String toString () {
         return "Team{" +
                 "teamName='" + teamName + '\'' +
                 ", players=" + players +

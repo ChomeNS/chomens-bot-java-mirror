@@ -1,16 +1,16 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.bossbar.BotBossBar;
+import me.chayapak1.chomens_bot.util.MathUtilities;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.data.game.BossBarColor;
 import org.geysermc.mcprotocollib.protocol.data.game.BossBarDivision;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundSetTimePacket;
-import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.data.bossbar.BotBossBar;
-import me.chayapak1.chomens_bot.util.MathUtilities;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -129,7 +129,7 @@ public class TPSPlugin extends Bot.Listener implements TickPlugin.Listener {
         timeGameJoined = timeLastTimeUpdate = System.currentTimeMillis();
     }
 
-    public double getTickRate() {
+    public double getTickRate () {
         if (System.currentTimeMillis() - timeGameJoined < 4000) return 20;
 
         int numTicks = 0;

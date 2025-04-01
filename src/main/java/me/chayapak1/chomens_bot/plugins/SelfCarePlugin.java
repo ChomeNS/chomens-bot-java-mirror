@@ -28,8 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 public class SelfCarePlugin
         extends Bot.Listener
-        implements ChatPlugin.Listener, CommandSpyPlugin.Listener, PositionPlugin.Listener
-{
+        implements ChatPlugin.Listener, CommandSpyPlugin.Listener, PositionPlugin.Listener {
     private final Bot bot;
 
     private ScheduledFuture<?> checkTask;
@@ -64,9 +63,11 @@ public class SelfCarePlugin
         if (string.equals("Successfully enabled CommandSpy")) cspy = true;
         else if (string.equals("Successfully disabled CommandSpy")) cspy = false;
 
-        else if (string.equals(String.format(bot.options.essentialsMessages.vanishEnable1, bot.username))) vanish = true;
+        else if (string.equals(String.format(bot.options.essentialsMessages.vanishEnable1, bot.username)))
+            vanish = true;
         else if (string.equals(bot.options.essentialsMessages.vanishEnable2)) vanish = true;
-        else if (string.equals(String.format(bot.options.essentialsMessages.vanishDisable, bot.username))) vanish = false;
+        else if (string.equals(String.format(bot.options.essentialsMessages.vanishDisable, bot.username)))
+            vanish = false;
 
         else if (string.equals(bot.options.essentialsMessages.nickNameRemove)) nickname = true;
         else if (string.startsWith(bot.options.essentialsMessages.nickNameSet)) nickname = false;
@@ -81,14 +82,14 @@ public class SelfCarePlugin
         else if (string.startsWith("You no longer have a tag")) prefix = false;
         else if (string.startsWith("You now have the tag: ")) prefix = false;
             // prefix = true as a workaround to prevent spamming
-        else if (string.equals("Something went wrong while saving the prefix. Please check console.")) prefix = true; // Parker2991
+        else if (string.equals("Something went wrong while saving the prefix. Please check console."))
+            prefix = true; // Parker2991
 
         else if (string.equals("Successfully set your username to \"" + bot.username + "\"")) username = true;
         else if (string.startsWith("Successfully set your username to \"")) {
             username = false;
             usernameStartTime = System.currentTimeMillis();
-        }
-        else if (string.startsWith("You already have the username \"" + bot.username + "\"")) username = true;
+        } else if (string.startsWith("You already have the username \"" + bot.username + "\"")) username = true;
         else if (string.startsWith("You already have the username \"")) username = false;
 
         return true;
@@ -123,19 +124,23 @@ public class SelfCarePlugin
 
         // chat only
         if (selfCares.op && permissionLevel < 2) bot.chat.send("/minecraft:op @s[type=player]");
-        else if (selfCares.gamemode && gamemode != GameMode.CREATIVE && !bot.options.creayun) bot.chat.send("/minecraft:gamemode creative @s[type=player]");
+        else if (selfCares.gamemode && gamemode != GameMode.CREATIVE && !bot.options.creayun)
+            bot.chat.send("/minecraft:gamemode creative @s[type=player]");
 
-        // core
+            // core
         else if (selfCares.cspy && !cspy && kaboom) {
-            if (bot.options.useChat || !bot.options.coreCommandSpy) bot.chat.sendCommandInstantly("commandspy:commandspy on");
+            if (bot.options.useChat || !bot.options.coreCommandSpy)
+                bot.chat.sendCommandInstantly("commandspy:commandspy on");
             else bot.core.run("commandspy:commandspy " + bot.username + " on");
         }
 
         // back to chat only
-        else if (selfCares.prefix.enabled && !prefix && kaboom && !bot.options.creayun) bot.chat.send("/extras:prefix " + bot.config.selfCare.prefix.prefix);
-        else if (selfCares.username && (System.currentTimeMillis() - usernameStartTime) >= 2 * 1000 && !username && kaboom) bot.chat.send("/extras:username " + bot.username);
+        else if (selfCares.prefix.enabled && !prefix && kaboom && !bot.options.creayun)
+            bot.chat.send("/extras:prefix " + bot.config.selfCare.prefix.prefix);
+        else if (selfCares.username && (System.currentTimeMillis() - usernameStartTime) >= 2 * 1000 && !username && kaboom)
+            bot.chat.send("/extras:username " + bot.username);
 
-        // core
+            // core
         else if (hasEssentials) {
             final String usernameOrBlank = !bot.options.useChat ?
                     bot.username + " " :

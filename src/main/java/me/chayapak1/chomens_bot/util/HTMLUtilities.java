@@ -10,7 +10,7 @@ public class HTMLUtilities {
     private static final String CODE_COLOR = "§2";
     private static final String DEFAULT_COLOR = "§a";
 
-    public static String toFormattingCodes (String html) {        
+    public static String toFormattingCodes (String html) {
         Matcher matcher = HTML_TAG_PATTERN.matcher(html);
         StringBuilder raw = new StringBuilder();
 

@@ -5,7 +5,7 @@ import java.security.SecureRandom;
 // https://stackoverflow.com/questions/41107/how-to-generate-a-random-alpha-numeric-string
 // but modified
 public class RandomStringUtilities {
-    private static String nextString() {
+    private static String nextString () {
         // fard
         for (int i = 0; i < buf.length; i++)
             buf[i] = symbols[random.nextInt(symbols.length)];

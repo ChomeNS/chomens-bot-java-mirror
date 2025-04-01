@@ -46,7 +46,7 @@ public class SongLoaderThread extends Thread {
 
     private boolean isFolder = false;
 
-    public SongLoaderThread(URL location, Bot bot, String requester) {
+    public SongLoaderThread (URL location, Bot bot, String requester) {
         this.bot = bot;
         this.requester = requester;
         isUrl = true;
@@ -55,7 +55,7 @@ public class SongLoaderThread extends Thread {
         fileName = location.getFile();
     }
 
-    public SongLoaderThread(Path location, Bot bot, String requester) {
+    public SongLoaderThread (Path location, Bot bot, String requester) {
         this.bot = bot;
         this.requester = requester;
         isUrl = false;
@@ -123,7 +123,7 @@ public class SongLoaderThread extends Thread {
 
             try {
                 song = converter.getSongFromBytes(bytes, name, bot);
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) { }
         }
 
         if (song == null) {

@@ -1,6 +1,9 @@
 package me.chayapak1.chomens_bot.commands;
 
-import me.chayapak1.chomens_bot.command.*;
+import me.chayapak1.chomens_bot.command.Command;
+import me.chayapak1.chomens_bot.command.CommandContext;
+import me.chayapak1.chomens_bot.command.CommandException;
+import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.command.contexts.ConsoleCommandContext;
 import me.chayapak1.chomens_bot.command.contexts.DiscordCommandContext;
 import net.kyori.adventure.text.Component;
@@ -19,7 +22,7 @@ public class ValidateCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context) throws CommandException {
+    public Component execute (CommandContext context) throws CommandException {
         // <red>Trusted - 1
         // <dark_red>Admin - 2
         // .......
@@ -35,8 +38,8 @@ public class ValidateCommand extends Command {
                 .text("You are the console! You have no trust level")
                 .color(NamedTextColor.GREEN);
         else return Component
-                .translatable("Valid hash (%s)")
-                .arguments(trustLevelComponent)
-                .color(NamedTextColor.GREEN);
+                    .translatable("Valid hash (%s)")
+                    .arguments(trustLevelComponent)
+                    .color(NamedTextColor.GREEN);
     }
 }

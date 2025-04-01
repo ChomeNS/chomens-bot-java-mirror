@@ -59,8 +59,8 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
                             Arrays.stream(availableChannels).noneMatch(
                                     channel ->
                                             channel.equals(EXTRAS_REGISTER_KEY.asString()) ||
-                                            channel.equals(EXTRAS_UNREGISTER_KEY.asString()) ||
-                                            channel.equals(EXTRAS_MESSAGE_KEY.asString())
+                                                    channel.equals(EXTRAS_UNREGISTER_KEY.asString()) ||
+                                                    channel.equals(EXTRAS_MESSAGE_KEY.asString())
                             )
             ) {
                 isSupported = false;
@@ -165,7 +165,7 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
         final byte[] buf = new byte[255];
         int idx = 0;
 
-        for (;;) {
+        for (; ; ) {
             final byte input = byteBuf.readByte();
 
             if (idx == buf.length) break;
@@ -198,6 +198,6 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
     public void addListener (Listener listener) { listeners.add(listener); }
 
     public interface Listener {
-        default void onMessage (UUID sender, byte[] message) {}
+        default void onMessage (UUID sender, byte[] message) { }
     }
 }

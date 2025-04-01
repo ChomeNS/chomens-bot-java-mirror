@@ -25,7 +25,7 @@ public class LoggerPlugin implements ChatPlugin.Listener {
 
         bot.addListener(new Bot.Listener() {
             @Override
-            public void connecting() {
+            public void connecting () {
                 totalConnects++;
 
                 if (totalConnects > 20) return;
@@ -86,11 +86,15 @@ public class LoggerPlugin implements ChatPlugin.Listener {
     }
 
     public void log (Component message) { log(LogType.INFO, message); }
+
     public void log (String message) { log(LogType.INFO, Component.text(message)); }
+
     public void log (LogType type, String message) { log(type, Component.text(message)); }
 
     public void error (Component message) { log(LogType.ERROR, message); }
+
     public void error (String message) { log(LogType.ERROR, Component.text(message)); }
+
     public void error (Throwable throwable) { log(LogType.ERROR, ExceptionUtilities.getStacktrace(throwable)); }
 
     @Override

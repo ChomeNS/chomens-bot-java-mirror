@@ -5,11 +5,11 @@ import me.chayapak1.chomens_bot.voiceChat.Packet;
 
 public class KeepAlivePacket implements Packet<KeepAlivePacket> {
     @Override
-    public KeepAlivePacket fromBytes(FriendlyByteBuf buf) {
+    public KeepAlivePacket fromBytes (FriendlyByteBuf buf) {
         return new KeepAlivePacket();
     }
 
     @Override
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes (FriendlyByteBuf buf) {
     }
 }

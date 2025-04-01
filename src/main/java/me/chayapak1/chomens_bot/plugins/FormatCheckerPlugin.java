@@ -33,17 +33,17 @@ public class FormatCheckerPlugin implements ChatPlugin.Listener, PlayersPlugin.L
     }
 
     @Override
-    public void playerJoined(PlayerEntry target) {
+    public void playerJoined (PlayerEntry target) {
         reset(target);
     }
 
     @Override
-    public void playerLeft(PlayerEntry target) {
+    public void playerLeft (PlayerEntry target) {
         reset(target);
     }
 
     @Override
-    public boolean systemMessageReceived(Component component, String string, String ansi) {
+    public boolean systemMessageReceived (Component component, String string, String ansi) {
         if (!isImposterFormat(component)) return true;
 
         bot.chat.tellraw(Component.text("Possible fake ChomeNS custom chat").style(Style.style(TextDecoration.ITALIC)).color(NamedTextColor.GRAY));

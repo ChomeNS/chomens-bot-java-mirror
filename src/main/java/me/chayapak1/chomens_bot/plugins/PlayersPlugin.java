@@ -71,6 +71,7 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
     }
 
     private void queryPlayersIP () { for (PlayerEntry target : list) queryPlayersIP(target); }
+
     private void queryPlayersIP (PlayerEntry target) {
         if (target.ip != null) return;
 
@@ -80,6 +81,7 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
     }
 
     public CompletableFuture<String> getPlayerIP (PlayerEntry target) { return getPlayerIP(target, false); }
+
     public CompletableFuture<String> getPlayerIP (PlayerEntry target, boolean forceSeen) {
         final CompletableFuture<String> outputFuture = new CompletableFuture<>();
 
@@ -301,7 +303,8 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
     }
 
     private void onLastKnownNameTick () {
-        if (!bot.loggedIn || !bot.core.ready || !bot.serverFeatures.hasNamespaces) return; // hasNamespaces also means vanilla/non-bukkit
+        if (!bot.loggedIn || !bot.core.ready || !bot.serverFeatures.hasNamespaces)
+            return; // hasNamespaces also means vanilla/non-bukkit
 
         for (PlayerEntry target : new ArrayList<>(list)) {
             check(target);
@@ -325,7 +328,7 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
     }
 
     @Override
-    public void disconnected(DisconnectedEvent event) {
+    public void disconnected (DisconnectedEvent event) {
         list.clear();
     }
 
@@ -333,13 +336,20 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
 
     @SuppressWarnings("unused")
     public interface Listener {
-        default void playerJoined (PlayerEntry target) {}
-        default void playerUnVanished (PlayerEntry target) {}
-        default void playerGameModeUpdated (PlayerEntry target, GameMode gameMode) {}
-        default void playerLatencyUpdated (PlayerEntry target, int ping) {}
-        default void playerDisplayNameUpdated (PlayerEntry target, Component displayName) {}
-        default void playerLeft (PlayerEntry target) {}
-        default void playerVanished (PlayerEntry target) {}
-        default void playerChangedUsername (PlayerEntry target) {}
+        default void playerJoined (PlayerEntry target) { }
+
+        default void playerUnVanished (PlayerEntry target) { }
+
+        default void playerGameModeUpdated (PlayerEntry target, GameMode gameMode) { }
+
+        default void playerLatencyUpdated (PlayerEntry target, int ping) { }
+
+        default void playerDisplayNameUpdated (PlayerEntry target, Component displayName) { }
+
+        default void playerLeft (PlayerEntry target) { }
+
+        default void playerVanished (PlayerEntry target) { }
+
+        default void playerChangedUsername (PlayerEntry target) { }
     }
 }

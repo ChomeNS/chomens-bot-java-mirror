@@ -26,12 +26,12 @@ public class NetworkMessage {
     public Packet<? extends Packet<?>> packet;
     public SocketAddress address;
 
-    public NetworkMessage(Packet<?> packet) {
+    public NetworkMessage (Packet<?> packet) {
         this(System.currentTimeMillis());
         this.packet = packet;
     }
 
-    private NetworkMessage(long timestamp) {
+    private NetworkMessage (long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -40,9 +40,9 @@ public class NetworkMessage {
     static {
         packetRegistry = new HashMap<>();
         packetRegistry.put((byte) 0x1, MicPacket.class);
-//        packetRegistry.put((byte) 0x2, PlayerSoundPacket.class);
-//        packetRegistry.put((byte) 0x3, GroupSoundPacket.class);
-//        packetRegistry.put((byte) 0x4, LocationSoundPacket.class);
+        //        packetRegistry.put((byte) 0x2, PlayerSoundPacket.class);
+        //        packetRegistry.put((byte) 0x3, GroupSoundPacket.class);
+        //        packetRegistry.put((byte) 0x4, LocationSoundPacket.class);
         packetRegistry.put((byte) 0x5, AuthenticatePacket.class);
         packetRegistry.put((byte) 0x6, AuthenticateAckPacket.class);
         packetRegistry.put((byte) 0x7, PingPacket.class);
@@ -62,7 +62,7 @@ public class NetworkMessage {
         return readFromBytes(packet.socketAddress(), initializationData.secret, b.readByteArray(), System.currentTimeMillis());
     }
 
-    private static NetworkMessage readFromBytes(SocketAddress socketAddress, UUID secret, byte[] encryptedPayload, long timestamp) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    private static NetworkMessage readFromBytes (SocketAddress socketAddress, UUID secret, byte[] encryptedPayload, long timestamp) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         byte[] decrypt;
         try {
             decrypt = AESUtilities.decrypt(secret, encryptedPayload);
@@ -84,7 +84,7 @@ public class NetworkMessage {
         return message;
     }
 
-    private static byte getPacketType(Packet<? extends Packet<?>> packet) {
+    private static byte getPacketType (Packet<? extends Packet<?>> packet) {
         for (Map.Entry<Byte, Class<? extends Packet<?>>> entry : packetRegistry.entrySet()) {
             if (packet.getClass().equals(entry.getValue())) {
                 return entry.getKey();
@@ -93,7 +93,7 @@ public class NetworkMessage {
         return -1;
     }
 
-    public byte[] writeClient(InitializationData data) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public byte[] writeClient (InitializationData data) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         byte[] payload = write(data.secret);
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer(1 + 16 + payload.length));
         buffer.writeByte(MAGIC_BYTE);
@@ -105,7 +105,7 @@ public class NetworkMessage {
         return bytes;
     }
 
-    public byte[] write(UUID secret) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public byte[] write (UUID secret) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
 
         byte type = getPacketType(packet);

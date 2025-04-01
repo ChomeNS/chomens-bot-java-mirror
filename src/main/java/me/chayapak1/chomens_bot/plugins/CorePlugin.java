@@ -36,8 +36,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class CorePlugin
         extends Bot.Listener
-        implements PositionPlugin.Listener, WorldPlugin.Listener, TickPlugin.Listener
-{
+        implements PositionPlugin.Listener, WorldPlugin.Listener, TickPlugin.Listener {
     public static final int COMMAND_BLOCK_ID = 418;
 
     private final Bot bot;
@@ -469,6 +468,7 @@ public class CorePlugin
     }
 
     public void refill () { refill(true); }
+
     public void refill (boolean force) {
         if (!ready) return;
 
@@ -515,8 +515,9 @@ public class CorePlugin
     }
 
     public interface Listener {
-        default void coreReady () {}
-        default void coreRefilled () {}
+        default void coreReady () { }
+
+        default void coreRefilled () { }
     }
 
     public void addListener (Listener listener) { listeners.add(listener); }

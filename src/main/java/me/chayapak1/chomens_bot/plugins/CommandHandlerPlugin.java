@@ -1,7 +1,10 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.command.*;
+import me.chayapak1.chomens_bot.command.Command;
+import me.chayapak1.chomens_bot.command.CommandContext;
+import me.chayapak1.chomens_bot.command.CommandException;
+import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.command.contexts.ChomeNSModCommandContext;
 import me.chayapak1.chomens_bot.command.contexts.ConsoleCommandContext;
 import me.chayapak1.chomens_bot.command.contexts.DiscordCommandContext;
@@ -54,7 +57,7 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
         registerCommand(new EvalCommand());
         registerCommand(new InfoCommand());
         registerCommand(new ConsoleCommand());
-//        registerCommand(new ScreenshareCommand());
+        //        registerCommand(new ScreenshareCommand());
         registerCommand(new WhitelistCommand());
         registerCommand(new SeenCommand());
         registerCommand(new IPFilterCommand());
@@ -111,14 +114,16 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
 
         // I think this is kinda annoying when you correct spelling mistakes or something,
         // so I made it return nothing if it's in game
-        if (command == null && !inGame) return Component.text("Unknown command: " + commandName).color(NamedTextColor.RED);
+        if (command == null && !inGame)
+            return Component.text("Unknown command: " + commandName).color(NamedTextColor.RED);
         else if (command == null) return null;
 
         if (!bypass && disabled) return Component.text("ChomeNS Bot is currently disabled").color(NamedTextColor.RED);
 
         final TrustLevel trustLevel = command.trustLevel;
 
-        if (trustLevel != TrustLevel.PUBLIC && splitInput.length < 2 && inGame) return Component.text("Please provide a hash").color(NamedTextColor.RED);
+        if (trustLevel != TrustLevel.PUBLIC && splitInput.length < 2 && inGame)
+            return Component.text("Please provide a hash").color(NamedTextColor.RED);
 
         String userHash = "";
         if (trustLevel != TrustLevel.PUBLIC && inGame) userHash = splitInput[1];
@@ -177,7 +182,8 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
         }
 
         // should i give access to all bypass contexts instead of only console?
-        if (!bypass && command.consoleOnly) return Component.text("This command can only be run via console").color(NamedTextColor.RED);
+        if (!bypass && command.consoleOnly)
+            return Component.text("This command can only be run via console").color(NamedTextColor.RED);
 
         // should these be here?
         context.fullArgs = fullArgs;
@@ -194,7 +200,8 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
 
             final String stackTrace = ExceptionUtilities.getStacktrace(e);
             if (inGame) {
-                if (bot.options.useChat || !bot.options.useCore) return Component.text(e.toString()).color(NamedTextColor.RED);
+                if (bot.options.useChat || !bot.options.useCore)
+                    return Component.text(e.toString()).color(NamedTextColor.RED);
                 return Component
                         .text("An error occurred while trying to execute the command, hover here for stacktrace", NamedTextColor.RED)
                         .hoverEvent(

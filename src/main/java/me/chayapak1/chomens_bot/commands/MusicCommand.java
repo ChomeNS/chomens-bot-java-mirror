@@ -1,7 +1,10 @@
 package me.chayapak1.chomens_bot.commands;
 
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.command.*;
+import me.chayapak1.chomens_bot.command.Command;
+import me.chayapak1.chomens_bot.command.CommandContext;
+import me.chayapak1.chomens_bot.command.CommandException;
+import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.command.contexts.ConsoleCommandContext;
 import me.chayapak1.chomens_bot.plugins.MusicPlayerPlugin;
 import me.chayapak1.chomens_bot.song.Instrument;
@@ -62,8 +65,9 @@ public class MusicCommand extends Command {
     }
 
     @Override
-    public Component execute(CommandContext context) throws CommandException {
-        if (context.bot.music.locked && !(context instanceof ConsoleCommandContext)) throw new CommandException(Component.text("Managing music is currently locked"));
+    public Component execute (CommandContext context) throws CommandException {
+        if (context.bot.music.locked && !(context instanceof ConsoleCommandContext))
+            throw new CommandException(Component.text("Managing music is currently locked"));
 
         final String action = context.getAction();
 
@@ -236,9 +240,9 @@ public class MusicCommand extends Command {
         switch (loop) {
             case OFF -> {
                 return Component.empty()
-                            .append(Component.text("Looping is now "))
-                            .append(Component.text("disabled").color(NamedTextColor.RED))
-                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                        .append(Component.text("Looping is now "))
+                        .append(Component.text("disabled").color(NamedTextColor.RED))
+                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case CURRENT -> {
                 if (bot.music.currentSong != null) {
@@ -342,9 +346,9 @@ public class MusicCommand extends Command {
 
         context.sendOutput(
                 Component.empty()
-                    .append(Component.text("Skipping "))
-                    .append(Component.text(music.currentSong.name).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
-                    .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
+                        .append(Component.text("Skipping "))
+                        .append(Component.text(music.currentSong.name).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
+                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
         );
 
         music.skip();
@@ -395,7 +399,8 @@ public class MusicCommand extends Command {
 
         if (currentSong == null) throw new CommandException(Component.text("No song is currently playing"));
 
-        if (timestamp < 0 || timestamp > currentSong.length) throw new CommandException(Component.text("Invalid timestamp"));
+        if (timestamp < 0 || timestamp > currentSong.length)
+            throw new CommandException(Component.text("Invalid timestamp"));
 
         currentSong.setTime(timestamp);
 
@@ -508,13 +513,19 @@ public class MusicCommand extends Command {
         final TextColor keyColor = ColorUtilities.getColorByString(bot.config.colorPalette.secondary);
         final TextColor valueColor = ColorUtilities.getColorByString(bot.config.colorPalette.string);
 
-        if (isNotNullAndNotBlank(currentSong.name)) components.add(Component.translatable("Title/Filename: %s", Component.text(currentSong.name).color(valueColor)).color(keyColor));
-        if (isNotNullAndNotBlank(currentSong.requester)) components.add(Component.translatable("Requester: %s", Component.text(currentSong.requester).color(valueColor)).color(keyColor));
-        if (isNotNullAndNotBlank(currentSong.songAuthor)) components.add(Component.translatable("Author: %s", Component.text(currentSong.songAuthor).color(valueColor)).color(keyColor));
-        if (isNotNullAndNotBlank(currentSong.songOriginalAuthor)) components.add(Component.translatable("Original author: %s", Component.text(currentSong.songOriginalAuthor).color(valueColor)).color(keyColor));
-        if (isNotNullAndNotBlank(currentSong.tracks)) components.add(Component.translatable("Tracks: %s", Component.text(currentSong.tracks).color(valueColor)).color(keyColor));
+        if (isNotNullAndNotBlank(currentSong.name))
+            components.add(Component.translatable("Title/Filename: %s", Component.text(currentSong.name).color(valueColor)).color(keyColor));
+        if (isNotNullAndNotBlank(currentSong.requester))
+            components.add(Component.translatable("Requester: %s", Component.text(currentSong.requester).color(valueColor)).color(keyColor));
+        if (isNotNullAndNotBlank(currentSong.songAuthor))
+            components.add(Component.translatable("Author: %s", Component.text(currentSong.songAuthor).color(valueColor)).color(keyColor));
+        if (isNotNullAndNotBlank(currentSong.songOriginalAuthor))
+            components.add(Component.translatable("Original author: %s", Component.text(currentSong.songOriginalAuthor).color(valueColor)).color(keyColor));
+        if (isNotNullAndNotBlank(currentSong.tracks))
+            components.add(Component.translatable("Tracks: %s", Component.text(currentSong.tracks).color(valueColor)).color(keyColor));
         components.add(Component.translatable("Notes: %s", Component.text(currentSong.size()).color(valueColor)).color(keyColor));
-        if (isNotNullAndNotBlank(currentSong.songDescription)) components.add(Component.translatable("Description: %s", Component.text(currentSong.songDescription).color(valueColor)).color(keyColor));
+        if (isNotNullAndNotBlank(currentSong.songDescription))
+            components.add(Component.translatable("Description: %s", Component.text(currentSong.songDescription).color(valueColor)).color(keyColor));
 
         return Component.join(JoinConfiguration.newlines(), components);
     }

@@ -132,7 +132,8 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
 
         rotationMap.put(packet.getEntityId(), rotation);
 
-        for (Listener listener : listeners) listener.playerMoved(player, getPlayerPosition(player.profile.getName()), rotation);
+        for (Listener listener : listeners)
+            listener.playerMoved(player, getPlayerPosition(player.profile.getName()), rotation);
     }
 
     private void packetReceived (ClientboundMoveEntityPosPacket packet) {
@@ -157,7 +158,8 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
 
         positionMap.put(packet.getEntityId(), position);
 
-        for (Listener listener : listeners) listener.playerMoved(player, position, getPlayerRotation(player.profile.getName()));
+        for (Listener listener : listeners)
+            listener.playerMoved(player, position, getPlayerRotation(player.profile.getName()));
     }
 
     private void packetReceived (ClientboundMoveEntityPosRotPacket packet) {
@@ -272,7 +274,8 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
 
     @SuppressWarnings("unused")
     public interface Listener {
-        default void positionChange (Vector3d position) {}
-        default void playerMoved (PlayerEntry player, Vector3d position, Rotation rotation) {}
+        default void positionChange (Vector3d position) { }
+
+        default void playerMoved (PlayerEntry player, Vector3d position, Rotation rotation) { }
     }
 }

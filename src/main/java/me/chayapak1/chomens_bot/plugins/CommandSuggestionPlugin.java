@@ -21,7 +21,7 @@ public class CommandSuggestionPlugin implements ChatPlugin.Listener {
     }
 
     @Override
-    public boolean systemMessageReceived(Component component, String string, String ansi) {
+    public boolean systemMessageReceived (Component component, String string, String ansi) {
         final List<Component> children = component.children();
 
         if (

@@ -99,6 +99,7 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
     }
 
     public Map<String, JsonNode> findPlayerAlts (String ip) { return findPlayerAlts(ip, false); }
+
     public Map<String, JsonNode> findPlayerAlts (String ip, boolean allServer) {
         try {
             final Map<String, JsonNode> output = new HashMap<>();
@@ -186,7 +187,7 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
     }
 
     @Override
-    public void playerLeft(PlayerEntry target) {
+    public void playerLeft (PlayerEntry target) {
         DatabasePlugin.executorService.submit(() -> {
             try {
                 final PreparedStatement updatePlayerStatement = bot.database.connection.prepareStatement(UPDATE_PLAYER);

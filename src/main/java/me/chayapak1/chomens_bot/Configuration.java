@@ -29,7 +29,7 @@ public class Configuration {
     public Eval eval = new Eval();
 
     public ColorPalette colorPalette = new ColorPalette();
-    
+
     public String ownerName = "chayapak"; // mabe mabe
 
     public String consoleChatFormat = "{\"translate\":\"chat.type.text\",\"with\":[\"OWNER_NAME\",\"MESSAGE\"]}";
@@ -39,11 +39,11 @@ public class Configuration {
     public OwnerAuthentication ownerAuthentication = new OwnerAuthentication();
 
     public boolean announceClearChatUsername = false;
-    
+
     public List<String> trusted = new ArrayList<>();
     public SelfCare selfCare = new SelfCare();
 
-    public BotOption[] bots = new BotOption[]{};
+    public BotOption[] bots = new BotOption[] {};
 
     public static class ImposterFormatChecker {
         public boolean enabled = false;

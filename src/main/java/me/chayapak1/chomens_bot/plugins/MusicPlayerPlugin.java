@@ -37,6 +37,7 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
     private final Bot bot;
 
     public static final Path SONG_DIR = Path.of("songs");
+
     static {
         try {
             if (!Files.exists(SONG_DIR)) Files.createDirectory(SONG_DIR);
@@ -253,42 +254,42 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
         // midi lyrics are very weird
         // i need some karaoke players to see how this works
 
-//        final Map<Long, String> lyrics = currentSong.lyrics;
-//
-//        if (lyrics.isEmpty()) return;
-//
-//        final List<String> lyricsList = new ArrayList<>();
-//
-//        for (Map.Entry<Long, String> entry : lyrics.entrySet()) {
-//            final long time = entry.getKey();
-//            String _lyric = entry.getValue();
-//
-//            if (time > currentSong.time) continue;
-//
-////            StringBuilder lyric = new StringBuilder();
-////
-////            for (char character : _lyric.toCharArray()) {
-////                if ((character != '\n' && character != '\r' && character < ' ') || character == '�') continue;
-////
-////                lyric.append(character);
-////            }
-////
-////            String stringLyric = lyric.toString();
-////
-////            if (stringLyric.startsWith("\\") || stringLyric.startsWith("/")) {
-////                lyricsList.clear();
-////
-////                stringLyric = stringLyric.substring(1);
-////            }
-//
-//            lyricsList.add(_lyric);
-//        }
-//
-//        final String joined = String.join("", lyricsList);
-//        currentLyrics = joined.substring(Math.max(0, joined.length() - 25));
+        //        final Map<Long, String> lyrics = currentSong.lyrics;
+        //
+        //        if (lyrics.isEmpty()) return;
+        //
+        //        final List<String> lyricsList = new ArrayList<>();
+        //
+        //        for (Map.Entry<Long, String> entry : lyrics.entrySet()) {
+        //            final long time = entry.getKey();
+        //            String _lyric = entry.getValue();
+        //
+        //            if (time > currentSong.time) continue;
+        //
+        ////            StringBuilder lyric = new StringBuilder();
+        ////
+        ////            for (char character : _lyric.toCharArray()) {
+        ////                if ((character != '\n' && character != '\r' && character < ' ') || character == '�') continue;
+        ////
+        ////                lyric.append(character);
+        ////            }
+        ////
+        ////            String stringLyric = lyric.toString();
+        ////
+        ////            if (stringLyric.startsWith("\\") || stringLyric.startsWith("/")) {
+        ////                lyricsList.clear();
+        ////
+        ////                stringLyric = stringLyric.substring(1);
+        ////            }
+        //
+        //            lyricsList.add(_lyric);
+        //        }
+        //
+        //        final String joined = String.join("", lyricsList);
+        //        currentLyrics = joined.substring(Math.max(0, joined.length() - 25));
     }
 
-    public void removeBossBar() {
+    public void removeBossBar () {
         final BotBossBar bossBar = bot.bossbar.get(bossBarName);
 
         if (bossBar != null) bossBar.setTitle(Component.text("No song is currently playing"));
@@ -322,8 +323,8 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
                 .append(
                         Component
                                 .translatable("%s / %s",
-                                        formatTime((long) (currentSong.time * speed)).color(NamedTextColor.GRAY),
-                                        formatTime((long) (currentSong.length * speed)).color(NamedTextColor.GRAY)).color(NamedTextColor.DARK_GRAY)
+                                              formatTime((long) (currentSong.time * speed)).color(NamedTextColor.GRAY),
+                                              formatTime((long) (currentSong.length * speed)).color(NamedTextColor.GRAY)).color(NamedTextColor.DARK_GRAY)
                 );
 
         if (!bot.core.hasRateLimit() && !currentLyrics.isEmpty()) {

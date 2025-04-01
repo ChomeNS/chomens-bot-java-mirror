@@ -9,7 +9,7 @@ public class AuthenticatePacket implements Packet<AuthenticatePacket> {
     public UUID playerUUID;
     public UUID secret;
 
-    public AuthenticatePacket () {}
+    public AuthenticatePacket () { }
 
     public AuthenticatePacket (
             UUID playerUUID,

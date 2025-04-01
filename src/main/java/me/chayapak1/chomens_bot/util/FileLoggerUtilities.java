@@ -45,7 +45,7 @@ public class FileLoggerUtilities {
         init();
     }
 
-    public static void init() {
+    public static void init () {
         try {
             if (!Files.exists(logDirectory)) Files.createDirectory(logDirectory);
 
@@ -70,7 +70,7 @@ public class FileLoggerUtilities {
         }
     }
 
-    private static void tick() {
+    private static void tick () {
         if (freezeTime <= System.currentTimeMillis() && spamLevel > 0) {
             spamLevel--;
         }
@@ -85,19 +85,19 @@ public class FileLoggerUtilities {
         }
     }
 
-    public static synchronized void makeNewLogFile() throws IOException {
+    public static synchronized void makeNewLogFile () throws IOException {
         currentLogDate = LocalDate.now();
         logWriter = new OutputStreamWriter(Files.newOutputStream(logPath, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING), StandardCharsets.UTF_8);
         logWriter.write(currentLogDate.toString() + '\n');
         logWriter.flush();
     }
 
-    public static synchronized void openLogFile() throws IOException {
+    public static synchronized void openLogFile () throws IOException {
         currentLogDate = LocalDate.parse(getLogDate(logPath));
         logWriter = new OutputStreamWriter(Files.newOutputStream(logPath, StandardOpenOption.CREATE, StandardOpenOption.APPEND), StandardCharsets.UTF_8);
     }
 
-    public static synchronized void compressLogFile() throws IOException {
+    public static synchronized void compressLogFile () throws IOException {
         if (Files.size(logPath) > 100 * 1024 * 1024) { // Will not save because log file is too big
             return;
         }
@@ -122,12 +122,12 @@ public class FileLoggerUtilities {
         }
     }
 
-    public static synchronized boolean logIsCurrent(Path path) throws IOException {
+    public static synchronized boolean logIsCurrent (Path path) throws IOException {
         LocalDate date = LocalDate.now();
         return getLogDate(path).equals(date.toString());
     }
 
-    public static synchronized void log(String type, String str) {
+    public static synchronized void log (String type, String str) {
         if (freezeTime > System.currentTimeMillis()) {
             return;
         }
@@ -174,7 +174,7 @@ public class FileLoggerUtilities {
         }
     }
 
-    public static String getPrefix(String type) {
+    public static String getPrefix (String type) {
         LocalDateTime dateTime = LocalDateTime.now();
         return String.format(
                 "[%s %s] ",

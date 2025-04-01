@@ -16,7 +16,9 @@ public class HashingPlugin {
     }
 
     public String getHash (String prefix, PlayerEntry sender, boolean sectionSigns) { return getGenericHash(bot.config.keys.trustedKey, prefix, sender, sectionSigns); }
+
     public String getAdminHash (String prefix, PlayerEntry sender, boolean sectionSigns) { return getGenericHash(bot.config.keys.adminKey, prefix, sender, sectionSigns); }
+
     public String getOwnerHash (String prefix, PlayerEntry sender, boolean sectionSigns) { return getGenericHash(bot.config.keys.ownerKey, prefix, sender, sectionSigns); }
 
     // should this be public?
@@ -32,16 +34,17 @@ public class HashingPlugin {
 
         return sectionSigns ?
                 String.join("",
-                        Arrays.stream(hash.split(""))
-                            .map((letter) -> "§" + letter)
-                            .toArray(String[]::new)
+                            Arrays.stream(hash.split(""))
+                                    .map((letter) -> "§" + letter)
+                                    .toArray(String[]::new)
                 ) :
                 hash;
     }
 
     private boolean checkHash (String hash, String input) {
         // removes reset section sign
-        if (input.length() == (16 * 2 /* <-- don't forget, we have the section signs */) + 2 && input.endsWith("§r")) input = input.substring(0, input.length() - 2);
+        if (input.length() == (16 * 2 /* <-- don't forget, we have the section signs */) + 2 && input.endsWith("§r"))
+            input = input.substring(0, input.length() - 2);
 
         return input.equals(hash);
     }

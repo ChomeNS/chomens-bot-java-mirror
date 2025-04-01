@@ -18,7 +18,7 @@ public class JavaOpusDecoder {
         open();
     }
 
-    private void open() {
+    private void open () {
         if (opusDecoder != null) {
             return;
         }
@@ -29,7 +29,7 @@ public class JavaOpusDecoder {
         }
     }
 
-    public short[] decode(byte[] data) {
+    public short[] decode (byte[] data) {
         if (isClosed()) {
             throw new IllegalStateException("Decoder is closed");
         }
@@ -50,18 +50,18 @@ public class JavaOpusDecoder {
         return audio;
     }
 
-    public boolean isClosed() {
+    public boolean isClosed () {
         return opusDecoder == null;
     }
 
-    public void close() {
+    public void close () {
         if (opusDecoder == null) {
             return;
         }
         opusDecoder = null;
     }
 
-    public void resetState() {
+    public void resetState () {
         if (isClosed()) {
             throw new IllegalStateException("Decoder is closed");
         }

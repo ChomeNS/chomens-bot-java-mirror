@@ -46,9 +46,11 @@ public class IRCPlugin extends ListenerAdapter {
                 .setMessageDelay(new StaticReadonlyDelay(50))
                 .addListener(this);
 
-        if (!ircConfig.password.isEmpty()) builder.addCapHandler(new SASLCapHandler(ircConfig.name, ircConfig.password, true));
+        if (!ircConfig.password.isEmpty())
+            builder.addCapHandler(new SASLCapHandler(ircConfig.name, ircConfig.password, true));
 
-        for (Map.Entry<String, String> entry : ircConfig.servers.entrySet()) builder.addAutoJoinChannel(entry.getValue());
+        for (Map.Entry<String, String> entry : ircConfig.servers.entrySet())
+            builder.addAutoJoinChannel(entry.getValue());
 
         final org.pircbotx.Configuration configuration = builder.buildConfiguration();
 
@@ -65,7 +67,7 @@ public class IRCPlugin extends ListenerAdapter {
         for (Bot bot : Main.bots) {
             bot.addListener(new Bot.Listener() {
                 @Override
-                public void connected(ConnectedEvent event) {
+                public void connected (ConnectedEvent event) {
                     IRCPlugin.this.connected(bot);
                 }
 
@@ -73,7 +75,7 @@ public class IRCPlugin extends ListenerAdapter {
                 public void loadedPlugins (Bot bot) {
                     bot.chat.addListener(new ChatPlugin.Listener() {
                         @Override
-                        public boolean systemMessageReceived(Component component, String string, String ansi) {
+                        public boolean systemMessageReceived (Component component, String string, String ansi) {
                             IRCPlugin.this.systemMessageReceived(bot, ansi);
 
                             return true;
@@ -85,11 +87,11 @@ public class IRCPlugin extends ListenerAdapter {
             bot.irc = this;
         }
 
-         Main.executor.scheduleAtFixedRate(this::queueTick, 0, 100, TimeUnit.MILLISECONDS);
+        Main.executor.scheduleAtFixedRate(this::queueTick, 0, 100, TimeUnit.MILLISECONDS);
     }
 
     @Override
-    public void onMessage(MessageEvent event) {
+    public void onMessage (MessageEvent event) {
         Bot serverBot = null;
 
         String targetChannel = null;
@@ -204,7 +206,7 @@ public class IRCPlugin extends ListenerAdapter {
 
                 bot.sendIRC().message(entry.getKey(), withIRCColors);
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) { }
     }
 
     private void addMessageToQueue (Bot bot, String message) {

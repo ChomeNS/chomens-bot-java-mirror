@@ -23,7 +23,7 @@ public class FilteredPlayer {
     }
 
     @Override
-    public String toString() {
+    public String toString () {
         return "FilteredPlayer{" +
                 "playerName='" + playerName + '\'' +
                 ", reason='" + reason + '\'' +

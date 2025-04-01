@@ -67,7 +67,7 @@ public class EvalPlugin {
                     if (output == null) return;
 
                     socket.emit("functionOutput:" + function.name, output.message, output.parseJSON);
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) { }
             }).start());
         }
 
@@ -84,7 +84,7 @@ public class EvalPlugin {
                 final CompletableFuture<EvalOutput> future = futures.remove(id);
 
                 future.complete(new EvalOutput(isError, output));
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) { }
         });
 
         socket.connect();

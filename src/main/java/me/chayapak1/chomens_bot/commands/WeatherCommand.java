@@ -40,7 +40,7 @@ public class WeatherCommand extends Command {
             final URL url = new URI(
                     "https://api.weatherapi.com/v1/current.json?key=" + bot.config.weatherApiKey + "&q=" +
                             URLEncoder.encode(
-                                location,
+                                    location,
                                     StandardCharsets.UTF_8
                             )
             ).toURL();

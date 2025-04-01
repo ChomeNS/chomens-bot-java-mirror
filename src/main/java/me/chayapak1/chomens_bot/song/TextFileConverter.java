@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets;
 
 public class TextFileConverter implements Converter {
     @Override
-    public Song getSongFromBytes(byte[] bytes, String fileName, Bot bot) {
+    public Song getSongFromBytes (byte[] bytes, String fileName, Bot bot) {
         final String data = new String(bytes, StandardCharsets.UTF_8);
 
         if (!data.contains(":")) return null;
@@ -44,7 +44,7 @@ public class TextFileConverter implements Converter {
             int intInstrument = -1;
             try {
                 intInstrument = Integer.parseInt(instrument);
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) { }
 
             float volume = 1;
             if (split.length > 3) volume = Float.parseFloat(split[3]);

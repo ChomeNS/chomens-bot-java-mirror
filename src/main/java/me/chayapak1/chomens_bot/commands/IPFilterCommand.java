@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class IPFilterCommand extends Command {
-    public IPFilterCommand() {
+    public IPFilterCommand () {
         super(
                 "ipfilter",
                 "Filters IPs",
@@ -35,7 +35,7 @@ public class IPFilterCommand extends Command {
 
     // most of these codes are from cloop and greplog
     @Override
-    public Component execute(CommandContext context) throws CommandException {
+    public Component execute (CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         final String action = context.getAction();

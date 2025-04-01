@@ -6,7 +6,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Main;
-import me.chayapak1.chomens_bot.command.*;
+import me.chayapak1.chomens_bot.command.Command;
+import me.chayapak1.chomens_bot.command.CommandContext;
+import me.chayapak1.chomens_bot.command.CommandException;
+import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.command.contexts.DiscordCommandContext;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.HttpUtilities;
@@ -152,11 +155,11 @@ public class UrbanCommand extends Command {
                     if (discord) {
                         discordComponent = discordComponent
                                 .append(
-                                    Component.translatable(
-                                            "%s - %s",
-                                            Component.text(word).color(NamedTextColor.GRAY),
-                                            definitionComponent
-                                    ).color(NamedTextColor.DARK_GRAY)
+                                        Component.translatable(
+                                                "%s - %s",
+                                                Component.text(word).color(NamedTextColor.GRAY),
+                                                definitionComponent
+                                        ).color(NamedTextColor.DARK_GRAY)
                                 )
                                 .append(Component.newline());
 
