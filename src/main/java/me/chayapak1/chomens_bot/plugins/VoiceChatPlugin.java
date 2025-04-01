@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.plugins;
 
 import io.netty.buffer.Unpooled;
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.logging.LogType;
 import me.chayapak1.chomens_bot.data.voiceChat.ClientGroup;
 import me.chayapak1.chomens_bot.data.voiceChat.RawUdpPacket;
 import me.chayapak1.chomens_bot.util.FriendlyByteBuf;
@@ -11,6 +12,7 @@ import me.chayapak1.chomens_bot.voiceChat.customPayload.JoinGroupPacket;
 import me.chayapak1.chomens_bot.voiceChat.customPayload.SecretPacket;
 import me.chayapak1.chomens_bot.voiceChat.packets.*;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.network.packet.Packet;
@@ -25,7 +27,11 @@ import java.util.UUID;
 
 // ALMOST ALL of these codes are from the simple voice chat mod itself including the other voicechat classes
 // mic packet exists but is never sent because i am too lazy to implement the player + evilbot already has a voicechat music player
-public class VoiceChatPlugin extends Bot.Listener {
+public class VoiceChatPlugin extends Bot.Listener implements Runnable {
+    private static final Key SECRET_KEY = Key.key("voicechat:secret");
+    private static final Key ADD_GROUP_KEY = Key.key("voicechat:add_group");
+    private static final Key REMOVE_GROUP_KEY = Key.key("voicechat:remove_group");
+
     private final Bot bot;
 
     private InitializationData initializationData;
@@ -64,64 +70,83 @@ public class VoiceChatPlugin extends Bot.Listener {
         running = true;
     }
 
-    private void packetReceived (ClientboundCustomPayloadPacket _packet) {
-        if (_packet.getChannel().equals(Key.key("voicechat:secret"))) { // fard
-            final byte[] bytes = _packet.getData();
+    private void packetReceived (ClientboundCustomPayloadPacket packet) {
+        if (packet.getChannel().equals(SECRET_KEY)) {
+            final byte[] bytes = packet.getData();
             final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
+
             final SecretPacket secretPacket = new SecretPacket().fromBytes(buf);
-            initializationData = new InitializationData(secretPacket);
+            this.initializationData = new InitializationData(secretPacket);
 
-            final InetSocketAddress mcAddress = (InetSocketAddress) bot.session.getRemoteAddress();
-            socketAddress = new InetSocketAddress(mcAddress.getAddress(), initializationData.serverPort);
+            this.socketAddress = new InetSocketAddress(
+                    secretPacket.voiceHost.isBlank() ?
+                            bot.options.host :
+                            secretPacket.voiceHost,
+                    initializationData.serverPort
+            );
 
-            socket = new ClientVoiceChatSocket();
+            this.socket = new ClientVoiceChatSocket();
+
             try {
                 socket.open();
             } catch (Exception e) {
+                bot.logger.error("Failed to create Simple Voice Chat connection!");
                 bot.logger.error(e);
+                return;
             }
 
-            final Thread thread = new Thread(() -> {
-                sendToServer(new NetworkMessage(new AuthenticatePacket(initializationData.playerUUID, initializationData.secret)));
-
-                while (running) {
-                    try {
-                        final NetworkMessage message = NetworkMessage.readPacket(socket.read(), initializationData);
-
-                        if (message == null) continue;
-
-                        if (message.packet instanceof PingPacket pingPacket)
-                            sendToServer(new NetworkMessage(pingPacket));
-                        else if (message.packet instanceof KeepAlivePacket)
-                            sendToServer(new NetworkMessage(new KeepAlivePacket()));
-                        else if (message.packet instanceof AuthenticateAckPacket)
-                            sendToServer(new NetworkMessage(new ConnectionCheckPacket()));
-                    } catch (Exception e) {
-                        if (running) bot.logger.error(e);
-                        else break; // is this neccessary?
-                    }
-                }
-            });
-
-            thread.setName("Simple Voice Chat Thread");
+            final Thread thread = new Thread(this, "Simple Voice Chat Thread");
             thread.start();
-        } else if (_packet.getChannel().equals(Key.key("voicechat:add_group"))) {
-            final byte[] bytes = _packet.getData();
+        } else if (packet.getChannel().equals(ADD_GROUP_KEY)) {
+            final byte[] bytes = packet.getData();
             final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
 
             final ClientGroup group = ClientGroup.fromBytes(buf);
 
             groups.add(group);
-        } else if (_packet.getChannel().equals(Key.key("voicechat:remove_group"))) {
-            final byte[] bytes = _packet.getData();
+        } else if (packet.getChannel().equals(REMOVE_GROUP_KEY)) {
+            final byte[] bytes = packet.getData();
             final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
 
             final UUID id = buf.readUUID();
 
-            groups.removeIf((group) -> group.id().equals(id));
+            groups.removeIf(group -> group.id().equals(id));
         }
     }
 
+    @Override
+    public void run () {
+        sendToServer(new NetworkMessage(new AuthenticatePacket(initializationData.playerUUID, initializationData.secret)));
+
+        while (running) {
+            try {
+                final NetworkMessage message = NetworkMessage.readPacket(socket.read(), initializationData);
+
+                if (message == null) continue;
+
+                if (message.packet instanceof PingPacket pingPacket)
+                    sendToServer(new NetworkMessage(pingPacket));
+                else if (message.packet instanceof KeepAlivePacket)
+                    sendToServer(new NetworkMessage(new KeepAlivePacket()));
+                else if (message.packet instanceof AuthenticateAckPacket) {
+                    sendToServer(new NetworkMessage(new ConnectionCheckPacket()));
+
+                    bot.logger.log(
+                            LogType.SIMPLE_VOICE_CHAT,
+                            Component.translatable(
+                                    "Successfully connected to Simple Voice Chat address: %s",
+                                    Component.text(socketAddress.toString())
+                            )
+                    );
+                }
+            } catch (Exception e) {
+                if (running) bot.logger.error(e);
+                else break; // stop the thread
+            }
+        }
+    }
+
+    @SuppressWarnings("unused") // can be set through ServerEvalCommand
     public void joinGroup (String group, String password) {
         final ClientGroup[] clientGroups = groups
                 .stream()
@@ -182,7 +207,6 @@ public class VoiceChatPlugin extends Bot.Listener {
     @Override
     public void disconnected (DisconnectedEvent event) {
         socket.close();
-
         groups.clear();
 
         running = false;
