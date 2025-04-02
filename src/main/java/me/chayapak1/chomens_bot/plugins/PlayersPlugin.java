@@ -15,10 +15,7 @@ import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundPlayerInfoRemovePacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundPlayerInfoUpdatePacket;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -28,6 +25,8 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
     public final List<PlayerEntry> list = new ArrayList<>();
 
     private final List<Listener> listeners = new ArrayList<>();
+
+    private final List<PlayerEntry> pendingLeftPlayers = Collections.synchronizedList(new ArrayList<>());
 
     public PlayersPlugin (Bot bot) {
         this.bot = bot;
@@ -256,6 +255,13 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
     }
 
     private void check (PlayerEntry target) {
+        final PlayerEntry pending = pendingLeftPlayers.stream()
+                .filter(player -> player.equals(target))
+                .findAny()
+                .orElse(null);
+
+        if (pending != null) pendingLeftPlayers.remove(pending);
+
         final CompletableFuture<String> future = getLastKnownName(target.profile.getIdAsString());
 
         future.thenApply(lastKnownName -> {
@@ -296,6 +302,13 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
                 list.remove(target);
 
                 for (Listener listener : listeners) listener.playerChangedUsername(newTarget);
+            } else if (pending != null) {
+                // we already passed all the left and username check,
+                // so the only one left is vanish
+
+                target.listed = false;
+
+                for (Listener listener : listeners) listener.playerVanished(target);
             }
 
             return null;
@@ -303,8 +316,9 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
     }
 
     private void onLastKnownNameTick () {
+        // hasNamespaces also means vanilla/non-bukkit
         if (!bot.loggedIn || !bot.core.ready || !bot.serverFeatures.hasNamespaces)
-            return; // hasNamespaces also means vanilla/non-bukkit
+            return;
 
         for (PlayerEntry target : new ArrayList<>(list)) {
             check(target);
@@ -323,6 +337,8 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
                 for (Listener listener : listeners) listener.playerLeft(target);
             }
         } else {
+            pendingLeftPlayers.add(target);
+
             check(target);
         }
     }
