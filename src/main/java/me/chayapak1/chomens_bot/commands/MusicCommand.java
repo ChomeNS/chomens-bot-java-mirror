@@ -224,6 +224,7 @@ public class MusicCommand extends Command {
         final Bot bot = context.bot;
         bot.music.stopPlaying();
         bot.music.songQueue.clear();
+        bot.music.loaderThread = null;
 
         return Component.text("Cleared the song queue").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }

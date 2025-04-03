@@ -369,6 +369,7 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
     @Override
     public void disconnected (DisconnectedEvent event) {
         if (currentSong != null) currentSong.pause(); // nice.
+        loaderThread = null;
     }
 
     public void handlePlaying () {
