@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CommandHandlerPlugin implements TickPlugin.Listener {
-    public static final List<Command> commands = new ArrayList<>();
+    public static final List<Command> COMMANDS = new ArrayList<>();
 
     static {
         registerCommand(new CommandBlockCommand());
@@ -68,7 +68,22 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
     }
 
     public static void registerCommand (Command command) {
-        commands.add(command);
+        COMMANDS.add(command);
+    }
+
+    public static Command findCommand (String searchTerm) {
+        if (searchTerm.isBlank()) return null;
+
+        for (Command command : COMMANDS) {
+            if (
+                    command.name.equals(searchTerm.toLowerCase()) ||
+                            Arrays.stream(command.aliases).toList().contains(searchTerm.toLowerCase())
+            ) {
+                return command;
+            }
+        }
+
+        return null;
     }
 
     public boolean disabled = false;
@@ -110,7 +125,7 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
 
         final String commandName = splitInput[0];
 
-        final Command command = findCommand(commands, commandName);
+        final Command command = findCommand(commandName);
 
         // I think this is kinda annoying when you correct spelling mistakes or something,
         // so I made it return nothing if it's in game
@@ -216,20 +231,5 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
                 return Component.text(stackTrace).color(NamedTextColor.RED);
             }
         }
-    }
-
-    public Command findCommand (List<Command> commands, String searchTerm) {
-        for (Command command : commands) {
-            if (
-                    (
-                            command.name.equals(searchTerm.toLowerCase()) ||
-                                    Arrays.stream(command.aliases).toList().contains(searchTerm.toLowerCase())
-                    ) &&
-                            !searchTerm.isEmpty() // ig yup
-            ) {
-                return command;
-            }
-        }
-        return null;
     }
 }

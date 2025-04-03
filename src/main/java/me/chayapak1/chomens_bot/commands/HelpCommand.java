@@ -74,7 +74,7 @@ public class HelpCommand extends Command {
 
         List<String> commandNames = new ArrayList<>();
 
-        for (Command command : CommandHandlerPlugin.commands) {
+        for (Command command : CommandHandlerPlugin.COMMANDS) {
             if (command.trustLevel != trustLevel || (command.consoleOnly && !(context instanceof ConsoleCommandContext)))
                 continue;
 
@@ -108,7 +108,7 @@ public class HelpCommand extends Command {
 
         final String prefix = context.prefix;
 
-        for (Command command : CommandHandlerPlugin.commands) {
+        for (Command command : CommandHandlerPlugin.COMMANDS) {
             if (
                     !command.name.equalsIgnoreCase(commandName) &&
                             !Arrays.stream(command.aliases).toList().contains(commandName.toLowerCase())

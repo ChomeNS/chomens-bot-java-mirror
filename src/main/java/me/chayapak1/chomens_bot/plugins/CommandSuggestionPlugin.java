@@ -36,7 +36,7 @@ public class CommandSuggestionPlugin implements ChatPlugin.Listener {
         final List<Component> output = new ArrayList<>();
         output.add(Component.text(ID));
 
-        for (Command command : CommandHandlerPlugin.commands) {
+        for (Command command : CommandHandlerPlugin.COMMANDS) {
             if (command.consoleOnly) continue;
 
             final boolean hasAliases = command.aliases.length != 0;
