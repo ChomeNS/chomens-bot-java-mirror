@@ -58,8 +58,6 @@ public class PacketHandler {
                 player
         );
 
-        final Component component = bot.commandHandler.executeCommand(input, context, null);
-
-        if (component != null) context.sendOutput(component);
+        bot.commandHandler.executeCommand(input, context, null);
     }
 }

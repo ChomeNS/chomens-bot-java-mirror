@@ -105,7 +105,10 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
 
     // BETTER QUALITY than the js version
     // BUT still not the best
-    public Component executeCommand (
+    // and also not really optimized
+    // (sometimes execution time can be as high as 19 ms,
+    // though it can also be as low as 4000 ns)
+    public void executeCommand (
             String input,
             CommandContext context,
             MessageReceivedEvent event
@@ -115,30 +118,37 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
 
         final boolean bypass = context instanceof ConsoleCommandContext || context instanceof ChomeNSModCommandContext;
 
-        if (commandPerSecond > 100) return null;
+        if (commandPerSecond > 100) return;
 
         commandPerSecond++;
 
         final String[] splitInput = input.trim().split("\\s+");
 
-        if (splitInput.length == 0) return null;
+        if (splitInput.length == 0) return;
 
         final String commandName = splitInput[0];
 
         final Command command = findCommand(commandName);
 
         // I think this is kinda annoying when you correct spelling mistakes or something,
-        // so I made it return nothing if it's in game
-        if (command == null && !inGame)
-            return Component.text("Unknown command: " + commandName).color(NamedTextColor.RED);
-        else if (command == null) return null;
+        // so I made it return nothing if we're in game
+        if (command == null) {
+            if (!inGame) context.sendOutput(Component.text("Unknown command: " + commandName).color(NamedTextColor.RED));
 
-        if (!bypass && disabled) return Component.text("ChomeNS Bot is currently disabled").color(NamedTextColor.RED);
+            return;
+        }
+
+        if (!bypass && disabled) {
+            context.sendOutput(Component.text("ChomeNS Bot is currently disabled").color(NamedTextColor.RED));
+            return;
+        }
 
         final TrustLevel trustLevel = command.trustLevel;
 
-        if (trustLevel != TrustLevel.PUBLIC && splitInput.length < 2 && inGame)
-            return Component.text("Please provide a hash").color(NamedTextColor.RED);
+        if (trustLevel != TrustLevel.PUBLIC && splitInput.length < 2 && inGame) {
+            context.sendOutput(Component.text("Please provide a hash").color(NamedTextColor.RED));
+            return;
+        }
 
         String userHash = "";
         if (trustLevel != TrustLevel.PUBLIC && inGame) userHash = splitInput[1];
@@ -151,7 +161,7 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
             if (discord) {
                 final Member member = event.getMember();
 
-                if (member == null) return null;
+                if (member == null) return;
 
                 final List<Role> roles = member.getRoles();
 
@@ -171,12 +181,15 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
                 }
 
                 if (trustLevel.level > userTrustLevel.level) {
-                    return Component
-                            .translatable(
-                                    "Your current roles don't allow you to execute %s commands!",
-                                    Component.text(trustLevel.name())
-                            )
-                            .color(NamedTextColor.RED);
+                    context.sendOutput(
+                            Component
+                                    .translatable(
+                                            "Your current roles don't allow you to execute %s commands!",
+                                            Component.text(trustLevel.name())
+                                    )
+                                    .color(NamedTextColor.RED)
+                    );
+                    return;
                 }
 
                 context.trustLevel = userTrustLevel;
@@ -184,12 +197,15 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
                 final TrustLevel userTrustLevel = bot.hashing.getTrustLevel(userHash, splitInput[0], context.sender);
 
                 if (trustLevel.level > userTrustLevel.level) {
-                    return Component
-                            .translatable(
-                                    "Invalid %s hash",
-                                    Component.text(trustLevel.name())
-                            )
-                            .color(NamedTextColor.RED);
+                    context.sendOutput(
+                            Component
+                                    .translatable(
+                                            "Invalid %s hash",
+                                            Component.text(trustLevel.name())
+                                    )
+                                    .color(NamedTextColor.RED)
+                    );
+                    return;
                 }
 
                 context.trustLevel = userTrustLevel;
@@ -197,8 +213,10 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
         }
 
         // should i give access to all bypass contexts instead of only console?
-        if (!bypass && command.consoleOnly)
-            return Component.text("This command can only be run via console").color(NamedTextColor.RED);
+        if (!bypass && command.consoleOnly) {
+            context.sendOutput(Component.text("This command can only be run via console").color(NamedTextColor.RED));
+            return;
+        }
 
         // should these be here?
         context.fullArgs = fullArgs;
@@ -207,28 +225,33 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
         context.userInputCommandName = commandName;
 
         try {
-            return command.execute(context);
+            final Component output = command.execute(context);
+
+            if (output != null) context.sendOutput(output);
         } catch (CommandException e) {
-            return e.message.color(NamedTextColor.RED);
+            context.sendOutput(e.message.color(NamedTextColor.RED));
         } catch (Exception e) {
             bot.logger.error(e);
 
             final String stackTrace = ExceptionUtilities.getStacktrace(e);
             if (inGame) {
                 if (bot.options.useChat || !bot.options.useCore)
-                    return Component.text(e.toString()).color(NamedTextColor.RED);
-                return Component
-                        .text("An error occurred while trying to execute the command, hover here for stacktrace", NamedTextColor.RED)
-                        .hoverEvent(
-                                HoverEvent.showText(
-                                        Component
-                                                .text(stackTrace)
-                                                .color(NamedTextColor.RED)
-                                )
-                        )
-                        .color(NamedTextColor.RED);
+                    context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
+                else
+                    context.sendOutput(
+                            Component
+                                    .text("An error occurred while trying to execute the command, hover here for stacktrace", NamedTextColor.RED)
+                                    .hoverEvent(
+                                            HoverEvent.showText(
+                                                    Component
+                                                            .text(stackTrace)
+                                                            .color(NamedTextColor.RED)
+                                            )
+                                    )
+                                    .color(NamedTextColor.RED)
+                    );
             } else {
-                return Component.text(stackTrace).color(NamedTextColor.RED);
+                context.sendOutput(Component.text(stackTrace).color(NamedTextColor.RED));
             }
         }
     }

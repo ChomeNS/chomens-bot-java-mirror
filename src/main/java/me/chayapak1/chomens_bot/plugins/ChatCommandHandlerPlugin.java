@@ -82,8 +82,6 @@ public class ChatCommandHandlerPlugin implements ChatPlugin.Listener, CommandSpy
 
         final PlayerCommandContext context = new PlayerCommandContext(bot, displayName, prefix, selector, sender);
 
-        final Component output = bot.commandHandler.executeCommand(commandString, context, null);
-
-        if (output != null) context.sendOutput(output);
+        bot.commandHandler.executeCommand(commandString, context, null);
     }
 }

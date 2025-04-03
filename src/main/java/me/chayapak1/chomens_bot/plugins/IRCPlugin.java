@@ -123,9 +123,7 @@ public class IRCPlugin extends ListenerAdapter {
 
             final IRCCommandContext context = new IRCCommandContext(serverBot, commandPrefix, name);
 
-            final Component output = serverBot.commandHandler.executeCommand(noPrefix, context, null);
-
-            if (output != null) context.sendOutput(output);
+            serverBot.commandHandler.executeCommand(noPrefix, context, null);
 
             return;
         }

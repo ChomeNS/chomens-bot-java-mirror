@@ -176,11 +176,7 @@ public class DiscordPlugin extends ListenerAdapter {
             if (message.startsWith(prefix)) {
                 final DiscordCommandContext context = new DiscordCommandContext(bot, prefix, event);
 
-                final Component output = bot.commandHandler.executeCommand(message.substring(prefix.length()), context, event);
-
-                if (output != null) {
-                    context.sendOutput(output);
-                }
+                bot.commandHandler.executeCommand(message.substring(prefix.length()), context, event);
 
                 return;
             }
