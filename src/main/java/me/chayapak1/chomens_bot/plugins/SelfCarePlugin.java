@@ -60,23 +60,23 @@ public class SelfCarePlugin
 
     @Override
     public boolean systemMessageReceived (Component component, String string, String ansi) {
+        final Configuration.BotOption.EssentialsMessages essentialsMessages = bot.options.essentialsMessages;
+        
         if (string.equals("Successfully enabled CommandSpy")) cspy = true;
         else if (string.equals("Successfully disabled CommandSpy")) cspy = false;
 
-        else if (string.equals(String.format(bot.options.essentialsMessages.vanishEnable1, bot.username)))
-            vanish = true;
-        else if (string.equals(bot.options.essentialsMessages.vanishEnable2)) vanish = true;
-        else if (string.equals(String.format(bot.options.essentialsMessages.vanishDisable, bot.username)))
-            vanish = false;
+        else if (string.equals(String.format(essentialsMessages.vanishEnable1, bot.username))) vanish = true;
+        else if (string.equals(essentialsMessages.vanishEnable2)) vanish = true;
+        else if (string.equals(String.format(essentialsMessages.vanishDisable, bot.username))) vanish = false;
 
-        else if (string.equals(bot.options.essentialsMessages.nickNameRemove)) nickname = true;
-        else if (string.startsWith(bot.options.essentialsMessages.nickNameSet)) nickname = false;
+        else if (string.equals(essentialsMessages.nickNameRemove)) nickname = true;
+        else if (string.startsWith(essentialsMessages.nickNameSet)) nickname = false;
 
-        else if (string.equals(bot.options.essentialsMessages.socialSpyEnable)) socialspy = true;
-        else if (string.equals(bot.options.essentialsMessages.socialSpyDisable)) socialspy = false;
+        else if (string.equals(String.format(essentialsMessages.socialSpyEnable, bot.username))) socialspy = true;
+        else if (string.equals(String.format(essentialsMessages.socialSpyDisable, bot.username))) socialspy = false;
 
-        else if (string.startsWith(bot.options.essentialsMessages.muted)) muted = true;
-        else if (string.equals(bot.options.essentialsMessages.unmuted)) muted = false;
+        else if (string.startsWith(essentialsMessages.muted)) muted = true;
+        else if (string.equals(essentialsMessages.unmuted)) muted = false;
 
         else if (string.equals("You now have the tag: " + bot.config.selfCare.prefix.prefix)) prefix = true;
         else if (string.startsWith("You no longer have a tag")) prefix = false;
@@ -127,7 +127,7 @@ public class SelfCarePlugin
         else if (selfCares.gamemode && gamemode != GameMode.CREATIVE && !bot.options.creayun)
             bot.chat.send("/minecraft:gamemode creative @s[type=player]");
 
-            // core
+        // core
         else if (selfCares.cspy && !cspy && kaboom) {
             if (bot.options.useChat || !bot.options.coreCommandSpy)
                 bot.chat.sendCommandInstantly("commandspy:commandspy on");
@@ -150,7 +150,7 @@ public class SelfCarePlugin
             if (selfCares.vanish && visible == vanish && !creayun) {
                 runEssentialsCommand("essentials:vanish " + usernameOrBlank + (visible ? "disable" : "enable"));
             } else if (selfCares.nickname && !nickname) {
-                runEssentialsCommand("essentials:nickname " + uuid + "off");
+                runEssentialsCommand("essentials:nickname " + uuid + " off");
             } else if (selfCares.socialspy && !socialspy && !creayun) {
                 runEssentialsCommand("essentials:socialspy " + usernameOrBlank + "enable");
             } else if (selfCares.mute && muted && !creayun) {
