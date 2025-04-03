@@ -145,15 +145,16 @@ public class SelfCarePlugin
             final String usernameOrBlank = !bot.options.useChat ?
                     bot.username + " " :
                     "";
+            final String uuid = bot.profile.getIdAsString();
 
             if (selfCares.vanish && visible == vanish && !creayun) {
                 runEssentialsCommand("essentials:vanish " + usernameOrBlank + (visible ? "disable" : "enable"));
             } else if (selfCares.nickname && !nickname) {
-                runEssentialsCommand("essentials:nickname " + usernameOrBlank + "off");
+                runEssentialsCommand("essentials:nickname " + uuid + "off");
             } else if (selfCares.socialspy && !socialspy && !creayun) {
                 runEssentialsCommand("essentials:socialspy " + usernameOrBlank + "enable");
             } else if (selfCares.mute && muted && !creayun) {
-                runEssentialsCommand("essentials:mute " + bot.profile.getIdAsString());
+                runEssentialsCommand("essentials:mute " + uuid);
                 muted = false;
             }
         }
