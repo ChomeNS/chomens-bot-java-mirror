@@ -12,7 +12,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class DatabasePlugin {
-    public static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor(
+    public static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(
+            1,
             new ThreadFactoryBuilder()
                     .setNameFormat("ExecutorService (database)")
                     .build()
