@@ -85,7 +85,7 @@ public class IRCPlugin extends ListenerAdapter {
             });
         }
 
-        Main.executor.scheduleAtFixedRate(this::queueTick, 0, 100, TimeUnit.MILLISECONDS);
+        Main.EXECUTOR.scheduleAtFixedRate(this::queueTick, 0, 100, TimeUnit.MILLISECONDS);
     }
 
     @Override

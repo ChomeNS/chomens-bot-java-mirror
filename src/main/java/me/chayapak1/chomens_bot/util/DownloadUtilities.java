@@ -34,7 +34,7 @@ public class DownloadUtilities {
     private static int limit = 0;
 
     static {
-        Main.executor.scheduleAtFixedRate(() -> limit = 0, 0, 1, TimeUnit.SECONDS);
+        Main.EXECUTOR.scheduleAtFixedRate(() -> limit = 0, 0, 1, TimeUnit.SECONDS);
     }
 
     public static byte[] DownloadToByteArray (URL url, int maxSize) throws IOException, KeyManagementException, NoSuchAlgorithmException {

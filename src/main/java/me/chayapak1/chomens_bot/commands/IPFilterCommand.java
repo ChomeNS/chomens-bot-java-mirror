@@ -54,7 +54,7 @@ public class IPFilterCommand extends Command {
                     );
                 }
 
-                DatabasePlugin.executorService.submit(() -> bot.ipFilter.add(ip, reason));
+                DatabasePlugin.EXECUTOR_SERVICE.submit(() -> bot.ipFilter.add(ip, reason));
 
                 if (reason.isEmpty()) {
                     return Component.translatable(
@@ -78,7 +78,7 @@ public class IPFilterCommand extends Command {
 
                 if (targetIP == null) throw new CommandException(Component.text("Invalid index"));
 
-                DatabasePlugin.executorService.submit(() -> bot.ipFilter.remove(targetIP));
+                DatabasePlugin.EXECUTOR_SERVICE.submit(() -> bot.ipFilter.remove(targetIP));
 
                 return Component.translatable(
                         "Removed %s from the filters",
@@ -88,7 +88,7 @@ public class IPFilterCommand extends Command {
             case "clear" -> {
                 context.checkOverloadArgs(1);
 
-                DatabasePlugin.executorService.submit(() -> bot.ipFilter.clear());
+                DatabasePlugin.EXECUTOR_SERVICE.submit(() -> bot.ipFilter.clear());
                 return Component.text("Cleared the filter").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "list" -> {

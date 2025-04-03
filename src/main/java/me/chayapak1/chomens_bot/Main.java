@@ -26,11 +26,11 @@ public class Main {
 
     public static final List<Bot> bots = new ArrayList<>();
 
-    public static final ExecutorService executorService = Executors.newFixedThreadPool(
+    public static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(
             Math.max(1, Runtime.getRuntime().availableProcessors() / 2),
             new ThreadFactoryBuilder().setNameFormat("ExecutorService #%d").build()
     );
-    public static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(
+    public static final ScheduledExecutorService EXECUTOR = Executors.newScheduledThreadPool(
             Math.max(1, Runtime.getRuntime().availableProcessors() / 2),
             new ThreadFactoryBuilder().setNameFormat("ScheduledExecutorService #%d").build()
     );
@@ -89,7 +89,7 @@ public class Main {
         if (!config.backup.enabled) {
             initializeBots();
         } else {
-            executor.scheduleAtFixedRate(() -> {
+            EXECUTOR.scheduleAtFixedRate(() -> {
                 boolean reachable;
 
                 try {
@@ -181,9 +181,9 @@ public class Main {
 
         LoggerUtilities.log(stoppingMessage);
 
-        executor.shutdown();
+        EXECUTOR.shutdown();
 
-        executorService.shutdown();
+        EXECUTOR_SERVICE.shutdown();
 
         if (database != null) database.stop();
 

@@ -64,7 +64,7 @@ public class SeenCommand extends Command {
 
         if (online) return Component.join(JoinConfiguration.newlines(), onlineComponents);
 
-        DatabasePlugin.executorService.submit(() -> {
+        DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
             try {
                 final JsonNode playerElement = bot.playersDatabase.getPlayerData(player);
                 if (playerElement == null) throw new CommandException(Component.translatable(

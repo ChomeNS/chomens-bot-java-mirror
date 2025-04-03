@@ -78,7 +78,7 @@ public class FilterCommand extends Command {
                 final boolean finalRegex = regex;
                 final boolean finalIgnoreCase = ignoreCase;
 
-                DatabasePlugin.executorService.submit(() -> bot.playerFilter.add(player, reason, finalRegex, finalIgnoreCase));
+                DatabasePlugin.EXECUTOR_SERVICE.submit(() -> bot.playerFilter.add(player, reason, finalRegex, finalIgnoreCase));
 
                 if (reason.isEmpty()) {
                     return Component.translatable(
@@ -102,7 +102,7 @@ public class FilterCommand extends Command {
 
                 if (player == null) throw new CommandException(Component.text("Invalid index"));
 
-                DatabasePlugin.executorService.submit(() -> bot.playerFilter.remove(player.playerName));
+                DatabasePlugin.EXECUTOR_SERVICE.submit(() -> bot.playerFilter.remove(player.playerName));
 
                 return Component.translatable(
                         "Removed %s from the filters",
@@ -112,7 +112,7 @@ public class FilterCommand extends Command {
             case "clear" -> {
                 context.checkOverloadArgs(1);
 
-                DatabasePlugin.executorService.submit(() -> bot.playerFilter.clear());
+                DatabasePlugin.EXECUTOR_SERVICE.submit(() -> bot.playerFilter.clear());
                 return Component.text("Cleared the filter").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
             }
             case "list" -> {

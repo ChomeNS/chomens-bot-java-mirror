@@ -33,7 +33,7 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
 
     static {
         if (Main.database != null) {
-            DatabasePlugin.executorService.submit(() -> {
+            DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
                 try {
                     Main.database.execute(CREATE_TABLE);
                 } catch (SQLException e) {
@@ -135,7 +135,7 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
 
     @Override
     public void playerJoined (PlayerEntry target) {
-        DatabasePlugin.executorService.submit(() -> {
+        DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
             try {
                 final PreparedStatement insertPlayerStatement = Main.database.connection.prepareStatement(INSERT_PLAYER);
 
@@ -188,7 +188,7 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
 
     @Override
     public void playerLeft (PlayerEntry target) {
-        DatabasePlugin.executorService.submit(() -> {
+        DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
             try {
                 final PreparedStatement updatePlayerStatement = Main.database.connection.prepareStatement(UPDATE_PLAYER);
 

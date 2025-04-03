@@ -40,7 +40,7 @@ public class UrbanCommand extends Command {
                 false
         );
 
-        Main.executor.scheduleAtFixedRate(() -> requestsPerSecond = 0, 0, 1, TimeUnit.SECONDS);
+        Main.EXECUTOR.scheduleAtFixedRate(() -> requestsPerSecond = 0, 0, 1, TimeUnit.SECONDS);
     }
 
     public Component execute (CommandContext context) throws CommandException {

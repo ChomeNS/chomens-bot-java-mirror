@@ -23,7 +23,7 @@ public class MailPlugin implements PlayersPlugin.Listener {
 
     static {
         if (Main.database != null) {
-            DatabasePlugin.executorService.submit(() -> {
+            DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
                 try {
                     Main.database.execute(CREATE_TABLE);
                 } catch (SQLException e) {
@@ -45,7 +45,7 @@ public class MailPlugin implements PlayersPlugin.Listener {
 
     @Override
     public void playerJoined (PlayerEntry target) {
-        DatabasePlugin.executorService.submit(() -> {
+        DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
             final String name = target.profile.getName();
 
             int sendToTargetSize = 0;

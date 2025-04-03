@@ -51,7 +51,7 @@ public class MailCommand extends Command {
         final String action = context.getAction();
 
         switch (action) {
-            case "send" -> DatabasePlugin.executorService.submit(() -> {
+            case "send" -> DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
                 try {
                     bot.mail.send(
                             new Mail(
@@ -82,7 +82,7 @@ public class MailCommand extends Command {
                             throw new CommandException(Component.text("Player has no `message` NBT tag in their selected item's minecraft:custom_data"));
                         }
 
-                        DatabasePlugin.executorService.submit(() -> {
+                        DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
                             try {
                                 bot.mail.send(
                                         new Mail(
@@ -112,7 +112,7 @@ public class MailCommand extends Command {
             case "read" -> {
                 context.checkOverloadArgs(1);
 
-                DatabasePlugin.executorService.submit(() -> {
+                DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
                     final List<Mail> mails = bot.mail.list();
 
                     int senderMailSize = 0;

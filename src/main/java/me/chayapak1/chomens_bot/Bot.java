@@ -66,8 +66,8 @@ public class Bot extends SessionAdapter {
     public boolean loggedIn = false;
     public long loginTime;
 
-    public final ExecutorService executorService = Main.executorService;
-    public final ScheduledExecutorService executor = Main.executor;
+    public final ExecutorService executorService = Main.EXECUTOR_SERVICE;
+    public final ScheduledExecutorService executor = Main.EXECUTOR;
 
     public LoggerPlugin logger;
     public TickPlugin tick;

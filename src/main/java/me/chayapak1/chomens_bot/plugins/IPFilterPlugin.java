@@ -23,7 +23,7 @@ public class IPFilterPlugin implements PlayersPlugin.Listener, CorePlugin.Listen
 
     static {
         if (Main.database != null) {
-            DatabasePlugin.executorService.submit(() -> {
+            DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
                 try {
                     Main.database.execute(CREATE_TABLE);
                 } catch (SQLException e) {
@@ -31,7 +31,7 @@ public class IPFilterPlugin implements PlayersPlugin.Listener, CorePlugin.Listen
                 }
             });
 
-            Main.executor.scheduleAtFixedRate(IPFilterPlugin::list, 5, 30, TimeUnit.SECONDS);
+            Main.EXECUTOR.scheduleAtFixedRate(IPFilterPlugin::list, 5, 30, TimeUnit.SECONDS);
         }
     }
 

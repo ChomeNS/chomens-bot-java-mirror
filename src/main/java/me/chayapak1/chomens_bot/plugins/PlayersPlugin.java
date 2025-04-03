@@ -84,7 +84,7 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
     public CompletableFuture<String> getPlayerIP (PlayerEntry target, boolean forceSeen) {
         final CompletableFuture<String> outputFuture = new CompletableFuture<>();
 
-        DatabasePlugin.executorService.submit(() -> {
+        DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
             if (!forceSeen) {
                 final String databaseIP = bot.playersDatabase.getPlayerIP(target.profile.getName());
 

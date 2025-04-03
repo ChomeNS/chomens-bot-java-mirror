@@ -27,7 +27,7 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
 
     static {
         if (Main.database != null) {
-            DatabasePlugin.executorService.submit(() -> {
+            DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
                 try {
                     Main.database.execute(CREATE_TABLE);
                 } catch (SQLException e) {
@@ -35,7 +35,7 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
                 }
             });
 
-            Main.executor.scheduleAtFixedRate(PlayerFilterPlugin::list, 5, 30, TimeUnit.SECONDS);
+            Main.EXECUTOR.scheduleAtFixedRate(PlayerFilterPlugin::list, 5, 30, TimeUnit.SECONDS);
         }
     }
 

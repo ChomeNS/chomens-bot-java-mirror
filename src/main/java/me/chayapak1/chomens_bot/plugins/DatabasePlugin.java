@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class DatabasePlugin {
-    public static final ExecutorService executorService = Executors.newSingleThreadExecutor(
+    public static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor(
             new ThreadFactoryBuilder()
                     .setNameFormat("ExecutorService (database)")
                     .build()
@@ -33,7 +33,7 @@ public class DatabasePlugin {
     }
 
     public void checkOverloaded () throws CommandException {
-        final ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executorService;
+        final ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) EXECUTOR_SERVICE;
 
         if (threadPoolExecutor.getQueue().size() > 20) throw new CommandException(
                 Component.text("The executor service is filled with requests!")
@@ -59,7 +59,7 @@ public class DatabasePlugin {
     }
 
     public void stop () {
-        executorService.shutdown();
+        EXECUTOR_SERVICE.shutdown();
 
         try {
             connection.close();
