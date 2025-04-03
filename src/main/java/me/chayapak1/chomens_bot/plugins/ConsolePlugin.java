@@ -48,20 +48,22 @@ public class ConsolePlugin implements Completer {
 
         final String prompt = "> ";
 
-        final Thread thread = new Thread(() -> {
-            while (true) {
-                String line = null;
-                try {
-                    line = reader.readLine(prompt);
-                } catch (Exception e) {
-                    System.exit(1);
-                }
+        final Thread thread = new Thread(
+                () -> {
+                    while (true) {
+                        String line = null;
+                        try {
+                            line = reader.readLine(prompt);
+                        } catch (Exception e) {
+                            System.exit(1);
+                        }
 
-                handleLine(line);
-            }
-        });
+                        handleLine(line);
+                    }
+                },
+                "Console Thread"
+        );
 
-        thread.setName("Console Thread");
         thread.start();
     }
 
@@ -71,7 +73,7 @@ public class ConsolePlugin implements Completer {
 
         final String command = line.line().substring(prefix.length());
 
-        final List<Command> commands = CommandHandlerPlugin.commands;
+        final List<Command> commands = CommandHandlerPlugin.COMMANDS;
 
         final List<String> commandNames = commands.stream().map((eachCommand) -> eachCommand.name).toList();
 
@@ -90,7 +92,7 @@ public class ConsolePlugin implements Completer {
         for (Bot bot : allBots) {
             final String server = bot.getServerString(true);
 
-            if (!server.equals(consoleServer) && !consoleServer.equals("all")) continue;
+            if (!server.equals(consoleServer) && !consoleServer.equalsIgnoreCase("all")) continue;
 
             if (line.startsWith(prefix)) {
                 final ConsoleCommandContext context = new ConsoleCommandContext(bot, prefix);
