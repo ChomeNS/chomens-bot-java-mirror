@@ -12,9 +12,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class DatabasePlugin {
-    public static final ExecutorService executorService = Executors.newFixedThreadPool(
-            1,
-            new ThreadFactoryBuilder().setNameFormat("ExecutorService (database)").build()
+    public static final ExecutorService executorService = Executors.newSingleThreadExecutor(
+            new ThreadFactoryBuilder()
+                    .setNameFormat("ExecutorService (database)")
+                    .build()
     );
 
     public Connection connection;

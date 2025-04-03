@@ -35,7 +35,9 @@ public class FileLoggerUtilities {
 
     // we want a completely separate executor from the main one
     public static final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(
-            new ThreadFactoryBuilder().setNameFormat("ScheduledExecutorService (logger)").build()
+            new ThreadFactoryBuilder()
+                    .setNameFormat("ScheduledExecutorService (logger)")
+                    .build()
     );
 
     public static int spamLevel = 0;

@@ -83,8 +83,7 @@ public class Main {
 
         config = yaml.load(reader);
 
-        final Thread shutdownThread = new Thread(Main::handleShutdown);
-        shutdownThread.setName("ChomeNS Bot Shutdown Thread");
+        final Thread shutdownThread = new Thread(Main::handleShutdown, "ChomeNS Bot Shutdown Thread");
         Runtime.getRuntime().addShutdownHook(shutdownThread);
 
         if (!config.backup.enabled) {
