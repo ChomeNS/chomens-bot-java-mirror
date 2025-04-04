@@ -2,7 +2,6 @@ package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Configuration;
-import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
@@ -26,9 +25,7 @@ import java.util.Arrays;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class SelfCarePlugin
-        extends Bot.Listener
-        implements ChatPlugin.Listener, CommandSpyPlugin.Listener, PositionPlugin.Listener {
+public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener {
     private final Bot bot;
 
     private ScheduledFuture<?> checkTask;
@@ -54,8 +51,6 @@ public class SelfCarePlugin
 
         bot.addListener(this);
         bot.chat.addListener(this);
-        bot.commandSpy.addListener(this);
-        bot.position.addListener(this);
     }
 
     @Override
@@ -93,25 +88,6 @@ public class SelfCarePlugin
         else if (string.startsWith("You already have the username \"")) username = false;
 
         return true;
-    }
-
-    @Override
-    public void commandReceived (PlayerEntry sender, String command) {
-        final String trimmedCommand = command
-                .trim()
-                .replaceAll("\\s+", " ");
-
-        final String controlPart = " control " + bot.profile.getName();
-
-        if (
-                !bot.config.selfCare.icu ||
-                        (
-                                !trimmedCommand.equals("/icontrolu:icu" + controlPart) &&
-                                        !trimmedCommand.equals("/icu" + controlPart)
-                        )
-        ) return;
-
-        bot.core.run("essentials:sudo " + sender.profile.getIdAsString() + " icu stop");
     }
 
     public void check () {

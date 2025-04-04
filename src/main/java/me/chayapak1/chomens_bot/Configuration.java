@@ -152,8 +152,6 @@ public class Configuration {
 
         public boolean cspy = true;
 
-        public boolean icu = true;
-
         public Prefix prefix = new Prefix();
 
         public static class Prefix {
