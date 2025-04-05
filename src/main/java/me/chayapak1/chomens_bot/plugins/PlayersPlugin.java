@@ -99,7 +99,7 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
                 return;
             }
 
-            final CompletableFuture<Component> trackedCoreFuture = bot.core.runTracked("essentials:seen " + target.profile.getIdAsString());
+            final CompletableFuture<Component> trackedCoreFuture = bot.core.runTracked(true, "essentials:seen " + target.profile.getIdAsString());
 
             if (trackedCoreFuture == null) {
                 outputFuture.complete(null);
@@ -251,7 +251,7 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
     }
 
     private CompletableFuture<String> getLastKnownName (String uuid) {
-        return bot.query.entity(uuid, "bukkit.lastKnownName");
+        return bot.query.entity(true, uuid, "bukkit.lastKnownName");
     }
 
     private void check (PlayerEntry target) {

@@ -193,7 +193,8 @@ public class CorePlugin
     }
 
     // thanks chipmunk for this new tellraw method
-    public CompletableFuture<Component> runTracked (String command) {
+    public CompletableFuture<Component> runTracked (String command) { return runTracked(false, command); }
+    public CompletableFuture<Component> runTracked (boolean useCargo, String command) {
         if (!ready || command.length() > 32767) return null;
 
         if (!bot.options.useCore) return null;
@@ -209,7 +210,7 @@ public class CorePlugin
 
         final CompletableFuture<Component> trackedFuture = new CompletableFuture<>();
 
-        final CompletableFuture<String> future = bot.query.block(coreBlock, "LastOutput");
+        final CompletableFuture<String> future = bot.query.block(useCargo, coreBlock, "LastOutput");
 
         future.thenApply(output -> {
             if (output == null) return null;

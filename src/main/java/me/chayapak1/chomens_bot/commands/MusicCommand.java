@@ -191,7 +191,7 @@ public class MusicCommand extends Command {
         );
 
         future.thenApply(output -> {
-            if (output == null) {
+            if (output.isEmpty()) {
                 context.sendOutput(Component.text("Player has no `SongItemData.SongData` NBT tag in their selected item's minecraft:custom_data").color(NamedTextColor.RED));
                 return null;
             }
