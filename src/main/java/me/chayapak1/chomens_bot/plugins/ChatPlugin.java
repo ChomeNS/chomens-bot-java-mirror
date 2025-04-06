@@ -315,45 +315,43 @@ public class ChatPlugin extends Bot.Listener {
             return;
         }
 
-        final Matcher splitMatcher = CHAT_SPLIT_PATTERN.matcher(message);
+        final Matcher colorCodeMatcher = COLOR_CODE_PATTERN.matcher(message);
+
+        final List<Integer> colorCodePositions = new ArrayList<>();
+        final List<String> colorCodes = new ArrayList<>();
+
+        while (colorCodeMatcher.find()) {
+            colorCodePositions.add(colorCodeMatcher.start());
+            colorCodes.add(colorCodeMatcher.group());
+        }
 
         String lastColor = "";
+        int colorCodeIndex = 0;
 
+        final Matcher splitMatcher = CHAT_SPLIT_PATTERN.matcher(message);
         boolean isFirst = true;
 
-        // kinda broken but whatever
         while (splitMatcher.find()) {
             final String eachMessage = splitMatcher.group(1);
+            String strippedMessage = IllegalCharactersUtilities.stripIllegalCharacters(eachMessage);
 
-            final Matcher eachMessageMatcher = CHAT_SPLIT_PATTERN.matcher(eachMessage);
+            if (strippedMessage.trim().isEmpty()) continue;
 
-            while (eachMessageMatcher.find()) {
-                String strippedMessage = IllegalCharactersUtilities.stripIllegalCharacters(eachMessageMatcher.group(1));
-
-                if (strippedMessage.trim().isEmpty()) continue;
-
-                final Matcher colorCodeEndMatcher = COLOR_CODE_END_PATTERN.matcher(strippedMessage);
-
-                if (colorCodeEndMatcher.find())
-                    strippedMessage = strippedMessage.substring(0, strippedMessage.length() - 2);
-
-                if (!isFirst) {
-                    final Matcher colorCodeEndMatcher2 = COLOR_CODE_END_PATTERN.matcher(message);
-
-                    Matcher colorCodeMatcher;
-
-                    if (!colorCodeEndMatcher2.find()) colorCodeMatcher = COLOR_CODE_PATTERN.matcher(message);
-                    else colorCodeMatcher = COLOR_CODE_PATTERN.matcher(message.substring(0, message.length() - 2));
-
-                    while (colorCodeMatcher.find()) lastColor = colorCodeMatcher.group();
-                }
-
-                queue.add(
-                        lastColor + strippedMessage // the regex has 254 (comes from 256 - 2 (color code length)) so we can do this here
-                );
-
-                isFirst = false;
+            if (COLOR_CODE_END_PATTERN.matcher(strippedMessage).find()) {
+                strippedMessage = strippedMessage.substring(0, strippedMessage.length() - 2);
             }
+
+            if (!isFirst) {
+                final int currentPos = splitMatcher.start(1);
+
+                while (colorCodeIndex < colorCodePositions.size() && colorCodePositions.get(colorCodeIndex) < currentPos) {
+                    lastColor = colorCodes.get(colorCodeIndex);
+                    colorCodeIndex++;
+                }
+            }
+
+            queue.add(lastColor + strippedMessage);
+            isFirst = false;
         }
     }
 
