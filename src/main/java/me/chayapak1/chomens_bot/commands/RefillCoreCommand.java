@@ -5,6 +5,7 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
+import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 
 public class RefillCoreCommand extends Command {
@@ -28,6 +29,8 @@ public class RefillCoreCommand extends Command {
         bot.core.reset();
         bot.core.refill();
 
-        return null;
+        return Component
+                .text("Refilled the command core")
+                .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
     }
 }
