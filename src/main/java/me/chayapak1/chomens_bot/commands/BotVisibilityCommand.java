@@ -29,8 +29,7 @@ public class BotVisibilityCommand extends Command {
         final String action = context.getString(false, false, false);
 
         if (action.isEmpty()) {
-            final boolean visibility = bot.selfCare.visible;
-            bot.selfCare.visible = !visibility;
+            bot.selfCare.visible = !bot.selfCare.visible;
 
             final NamedTextColor greenOrGold = bot.selfCare.visible ? NamedTextColor.GREEN : NamedTextColor.GOLD;
 
