@@ -5,7 +5,6 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -40,7 +39,7 @@ public class BotVisibilityCommand extends Command {
             return Component.empty()
                     .append(Component.text("The bot's visibility is now "))
                     .append(Component.text(visibleOrInvisible).color(greenOrGold))
-                    .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                    .color(bot.colorPalette.defaultColor);
         } else {
             switch (action) {
                 case "on", "true" -> {
@@ -49,7 +48,7 @@ public class BotVisibilityCommand extends Command {
                     return Component.empty()
                             .append(Component.text("The bot's visibility is now "))
                             .append(Component.text("visible").color(NamedTextColor.GREEN))
-                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                            .color(bot.colorPalette.defaultColor);
                 }
                 case "off", "false" -> {
                     bot.selfCare.visible = false;
@@ -57,7 +56,7 @@ public class BotVisibilityCommand extends Command {
                     return Component.empty()
                             .append(Component.text("The bot's visibility is now "))
                             .append(Component.text("invisible").color(NamedTextColor.GOLD))
-                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                            .color(bot.colorPalette.defaultColor);
                 }
                 default -> throw new CommandException(Component.text("Invalid action"));
             }

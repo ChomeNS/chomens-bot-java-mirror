@@ -5,7 +5,6 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.StringUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -77,14 +76,14 @@ public class InfoCommand extends Command {
         switch (action) {
             case "creator" -> {
                 return Component.empty()
-                        .append(Component.text("ChomeNS Bot ").color(ColorUtilities.getColorByString(bot.config.colorPalette.primary)))
-                        .append(Component.text("is created by ").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)))
-                        .append(Component.text("chayapak").color(ColorUtilities.getColorByString(bot.config.colorPalette.ownerName)));
+                        .append(Component.text("ChomeNS Bot ").color(bot.colorPalette.primary))
+                        .append(Component.text("is created by ").color(bot.colorPalette.defaultColor))
+                        .append(Component.text("chayapak").color(bot.colorPalette.ownerName));
             }
             case "discord" -> {
                 final String link = bot.config.discord.inviteLink;
                 return Component.empty()
-                        .append(Component.text("The Discord invite is ").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)))
+                        .append(Component.text("The Discord invite is ").color(bot.colorPalette.defaultColor))
                         .append(
                                 Component
                                         .text(link)
@@ -123,7 +122,7 @@ public class InfoCommand extends Command {
                     file.close();
                 } catch (IOException ignored) { }
 
-                final TextColor color = ColorUtilities.getColorByString(bot.config.colorPalette.string);
+                final TextColor color = bot.colorPalette.string;
 
                 final String[] lines = builder.toString().split("\n");
                 final Optional<String> modelName = Arrays.stream(lines)
@@ -171,7 +170,7 @@ public class InfoCommand extends Command {
                                         Component.text((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024L / 1024L),
                                         Component.text(Runtime.getRuntime().totalMemory() / 1024L / 1024L)
                                 ).color(color)
-                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary));
+                ).color(bot.colorPalette.secondary);
 
                 return component;
             }
@@ -193,7 +192,7 @@ public class InfoCommand extends Command {
                                 .clickEvent(
                                         ClickEvent.copyToClipboard(username)
                                 )
-                                .color(ColorUtilities.getColorByString(bot.config.colorPalette.username)),
+                                .color(bot.colorPalette.username),
                         Component
                                 .text(uuid)
                                 .hoverEvent(
@@ -206,8 +205,8 @@ public class InfoCommand extends Command {
                                 .clickEvent(
                                         ClickEvent.copyToClipboard(uuid)
                                 )
-                                .color(ColorUtilities.getColorByString(bot.config.colorPalette.uuid))
-                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                                .color(bot.colorPalette.uuid)
+                ).color(bot.colorPalette.defaultColor);
             }
             case "botlogintime" -> {
                 final long loginTime = bot.loginTime;
@@ -227,11 +226,11 @@ public class InfoCommand extends Command {
                         "The bots login time is %s and has been on the server for %s",
                         Component
                                 .text(formattedLoginTime)
-                                .color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                                .color(bot.colorPalette.string),
                         Component
                                 .text(formattedTimeSince)
-                                .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
-                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                                .color(bot.colorPalette.string)
+                ).color(bot.colorPalette.defaultColor);
             }
             case "uptime" -> {
                 final long uptime = ManagementFactory.getRuntimeMXBean().getUptime() / 1000;
@@ -254,11 +253,11 @@ public class InfoCommand extends Command {
                                 Component.text(seconds),
                                 Component.text(StringUtilities.addPluralS(seconds, "second"))
                         ).color(NamedTextColor.GREEN)
-                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                ).color(bot.colorPalette.defaultColor);
             }
             default -> {
                 return Component.empty()
-                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
+                        .color(bot.colorPalette.defaultColor)
                         .append(Component.text("ChomeNS Bot").color(NamedTextColor.YELLOW))
                         .append(Component.space())
                         .append(
@@ -277,7 +276,7 @@ public class InfoCommand extends Command {
                         .append(
                                 Component
                                         .text(ORIGINAL_REPOSITORY_URL)
-                                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                                        .color(bot.colorPalette.string)
                                         .clickEvent(
                                                 ClickEvent.openUrl(ORIGINAL_REPOSITORY_URL)
                                         )
@@ -287,7 +286,7 @@ public class InfoCommand extends Command {
                         .append(
                                 Component
                                         .text(BUILD_INFO.getProperty("build.date", "unknown"))
-                                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                                        .color(bot.colorPalette.string)
                         )
                         .append(
                                 Component
@@ -295,10 +294,10 @@ public class InfoCommand extends Command {
                                                 ", Git commit %s (%s)",
                                                 Component
                                                         .text(BUILD_INFO.getProperty("build.git.commit.hash", "unknown"))
-                                                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                                                        .color(bot.colorPalette.string),
                                                 Component
                                                         .text(BUILD_INFO.getProperty("build.git.commit.count", "unknown"))
-                                                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
+                                                        .color(bot.colorPalette.number)
                                         )
                         )
                         .append(Component.newline())
@@ -308,7 +307,7 @@ public class InfoCommand extends Command {
                                                 "Build %s",
                                                 Component
                                                         .text(BUILD_INFO.getProperty("build.number", "unknown"))
-                                                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
+                                                        .color(bot.colorPalette.number)
                                         )
                         );
             }

@@ -5,7 +5,6 @@ import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.contexts.DiscordCommandContext;
 import me.chayapak1.chomens_bot.util.CodeBlockUtilities;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.dv8tion.jda.api.JDA;
@@ -427,7 +426,7 @@ public class DiscordPlugin extends ListenerAdapter {
                             %s""",
                     embed.getTitle() == null ?
                             Component.text("No title").color(NamedTextColor.GRAY) :
-                            Component.text(embed.getTitle()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                            Component.text(embed.getTitle()).color(bot.colorPalette.string),
                     embed.getDescription() == null ?
                             Component.text("No description").color(NamedTextColor.GRAY) :
                             Component.text(embed.getDescription()).color(NamedTextColor.WHITE)

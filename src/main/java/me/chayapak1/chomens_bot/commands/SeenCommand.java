@@ -9,7 +9,6 @@ import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -93,10 +92,10 @@ public class SeenCommand extends Command {
 
                 context.sendOutput(Component.translatable(
                         "%s was last seen at %s on %s",
-                        Component.text(player).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)),
-                        Component.text(formattedTime).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
-                        Component.text(server).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
-                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)));
+                        Component.text(player).color(bot.colorPalette.username),
+                        Component.text(formattedTime).color(bot.colorPalette.string),
+                        Component.text(server).color(bot.colorPalette.string)
+                ).color(bot.colorPalette.defaultColor));
             } catch (CommandException e) {
                 context.sendOutput(e.message.color(NamedTextColor.RED));
             }

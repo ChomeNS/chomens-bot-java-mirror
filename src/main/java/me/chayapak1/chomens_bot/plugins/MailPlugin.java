@@ -4,7 +4,6 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.data.mail.Mail;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -64,8 +63,8 @@ public class MailPlugin implements PlayersPlugin.Listener {
                                 "Run %s or %s to read",
                         Component.text(sendToTargetSize).color(NamedTextColor.GREEN),
                         Component.text((sendToTargetSize > 1) ? "s" : ""),
-                        Component.text(bot.config.commandSpyPrefixes.getFirst() + "mail read").color(ColorUtilities.getColorByString(bot.config.colorPalette.primary)),
-                        Component.text(bot.config.prefixes.getFirst() + "mail read").color(ColorUtilities.getColorByString(bot.config.colorPalette.primary))
+                        Component.text(bot.config.commandSpyPrefixes.getFirst() + "mail read").color(bot.colorPalette.primary),
+                        Component.text(bot.config.prefixes.getFirst() + "mail read").color(bot.colorPalette.primary)
                 ).color(NamedTextColor.GOLD);
 
                 bot.chat.tellraw(component, target.profile.getId());

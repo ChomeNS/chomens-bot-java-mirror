@@ -5,7 +5,6 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import org.cloudburstmc.math.vector.Vector3i;
 
@@ -45,7 +44,7 @@ public class ScreenshareCommand extends Command {
 
                     return Component
                             .text("Started screen sharing")
-                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                            .color(bot.colorPalette.defaultColor);
                 }
                 case "stop" -> {
                     context.checkOverloadArgs(1);
@@ -54,7 +53,7 @@ public class ScreenshareCommand extends Command {
 
                     return Component
                             .text("Stopped screen sharing")
-                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                            .color(bot.colorPalette.defaultColor);
                 }
                 case "setres" -> {
                     context.checkOverloadArgs(3);
@@ -69,8 +68,8 @@ public class ScreenshareCommand extends Command {
 
                     return Component
                             .text("Set the resolution to ")
-                            .append(Component.text(width + "x" + height).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)))
-                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                            .append(Component.text(width + "x" + height).color(bot.colorPalette.string))
+                            .color(bot.colorPalette.defaultColor);
                 }
                 case "setfps" -> {
                     context.checkOverloadArgs(2);
@@ -81,8 +80,8 @@ public class ScreenshareCommand extends Command {
 
                     return Component
                             .text("Set the FPS to ")
-                            .append(Component.text(fps).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)))
-                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                            .append(Component.text(fps).color(bot.colorPalette.number))
+                            .color(bot.colorPalette.defaultColor);
                 }
                 default -> throw new CommandException(Component.text("Invalid action"));
             }

@@ -6,7 +6,6 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -49,7 +48,7 @@ public class ConsoleCommand extends Command {
                     Main.console.consoleServer = "all";
                     return Component.text(
                             "Set the console server to all servers"
-                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                    ).color(bot.colorPalette.defaultColor);
                 }
 
                 try {
@@ -62,7 +61,7 @@ public class ConsoleCommand extends Command {
                     return Component.translatable(
                             "Set the console server to %s",
                             Component.text(Main.console.consoleServer)
-                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                    ).color(bot.colorPalette.defaultColor);
                 } catch (ArrayIndexOutOfBoundsException e) {
                     throw new CommandException(Component.text("Invalid server: " + server));
                 }
@@ -77,7 +76,7 @@ public class ConsoleCommand extends Command {
                 return Component.translatable(
                         "Logging to console is now %s",
                         bool ? Component.text("enabled").color(NamedTextColor.GREEN) : Component.text("disabled").color(NamedTextColor.RED)
-                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                ).color(bot.colorPalette.defaultColor);
             }
             case "printdisconnectedreason" -> {
                 context.checkOverloadArgs(2);
@@ -89,7 +88,7 @@ public class ConsoleCommand extends Command {
                 return Component.translatable(
                         "Printing the disconnected cause is now %s",
                         bool ? Component.text("enabled").color(NamedTextColor.GREEN) : Component.text("disabled").color(NamedTextColor.RED)
-                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                ).color(bot.colorPalette.defaultColor);
             }
         }
 

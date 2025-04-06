@@ -9,7 +9,6 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.HTMLUtilities;
 import me.chayapak1.chomens_bot.util.HttpUtilities;
 import net.kyori.adventure.text.Component;
@@ -110,7 +109,7 @@ public class WikipediaCommand extends Command {
                                         .style(
                                                 Style.style()
                                                         .decorate(TextDecoration.BOLD)
-                                                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                                                        .color(bot.colorPalette.secondary)
                                         )
                         )
                         .append(Component.newline())

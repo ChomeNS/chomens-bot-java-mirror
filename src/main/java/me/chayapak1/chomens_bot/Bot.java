@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot;
 
+import me.chayapak1.chomens_bot.data.color.ColorPalette;
 import me.chayapak1.chomens_bot.plugins.*;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.RandomStringUtilities;
@@ -48,6 +49,7 @@ public class Bot extends SessionAdapter {
     public final Configuration.BotOption options;
 
     public final Configuration config;
+    public final ColorPalette colorPalette;
 
     public final List<Bot> bots;
 
@@ -120,6 +122,7 @@ public class Bot extends SessionAdapter {
         this.bots = bots;
 
         this.config = config;
+        this.colorPalette = new ColorPalette(config.colorPalette);
     }
 
     public void connect () {
@@ -158,7 +161,7 @@ public class Bot extends SessionAdapter {
         this.teamJoiner = new TeamJoinerPlugin(this);
         this.chomeNSMod = new ChomeNSModIntegrationPlugin(this);
         this.auth = new AuthPlugin(this);
-        //        this.screenshare = new ScreensharePlugin(this);
+        // this.screenshare = new ScreensharePlugin(this);
         this.formatChecker = new FormatCheckerPlugin(this);
         this.clearChatNameAnnouncer = new ClearChatNameAnnouncerPlugin(this);
         this.whitelist = new WhitelistPlugin(this);

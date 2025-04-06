@@ -8,7 +8,6 @@ import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 
 import java.util.List;
@@ -83,11 +82,11 @@ public class FindAltsCommand extends Command {
 
         final Component playerComponent = Component
                 .text(player)
-                .color(ColorUtilities.getColorByString(bot.config.colorPalette.username));
+                .color(bot.colorPalette.username);
 
         Component component = Component
                 .translatable("Possible alts for the %s %s:")
-                .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
+                .color(bot.colorPalette.defaultColor)
                 .arguments(
                         Component.text(argumentIsIP ? "IP" : "player"),
                         argumentIsIP ?
@@ -97,7 +96,7 @@ public class FindAltsCommand extends Command {
                                                 playerComponent,
                                                 Component
                                                         .text(targetIP)
-                                                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
+                                                        .color(bot.colorPalette.number)
                                         )
                 )
                 .appendNewline();
@@ -127,7 +126,7 @@ public class FindAltsCommand extends Command {
                     .append(
                             Component
                                     .text(username)
-                                    .color((i++ & 1) == 0 ? ColorUtilities.getColorByString(bot.config.colorPalette.primary) : ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                                    .color((i++ & 1) == 0 ? bot.colorPalette.primary : bot.colorPalette.secondary)
                     )
                     .appendSpace();
         }

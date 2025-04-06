@@ -6,7 +6,6 @@ import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -58,7 +57,7 @@ public class UUIDCommand extends Command {
                             .clickEvent(
                                     ClickEvent.copyToClipboard(uuid)
                             )
-                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.uuid))
+                            .color(bot.colorPalette.uuid)
             ).color(NamedTextColor.GREEN);
         } else {
             final PlayerEntry entry = context.sender;
@@ -77,7 +76,7 @@ public class UUIDCommand extends Command {
                             .clickEvent(
                                     ClickEvent.copyToClipboard(uuid)
                             )
-                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.uuid))
+                            .color(bot.colorPalette.uuid)
             ).color(NamedTextColor.GREEN);
         }
     }

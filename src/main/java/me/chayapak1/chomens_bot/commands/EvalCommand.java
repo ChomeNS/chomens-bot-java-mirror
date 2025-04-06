@@ -6,7 +6,6 @@ import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.eval.EvalOutput;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -48,7 +47,7 @@ public class EvalCommand extends Command {
             case "reset" -> {
                 bot.eval.reset();
 
-                return Component.text("Reset the eval worker").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                return Component.text("Reset the eval worker").color(bot.colorPalette.defaultColor);
             }
             default -> throw new CommandException(Component.text("Invalid action"));
         }

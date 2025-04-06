@@ -56,7 +56,7 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener 
     @Override
     public boolean systemMessageReceived (Component component, String string, String ansi) {
         final Configuration.BotOption.EssentialsMessages essentialsMessages = bot.options.essentialsMessages;
-        
+
         if (string.equals("Successfully enabled CommandSpy")) cspy = true;
         else if (string.equals("Successfully disabled CommandSpy")) cspy = false;
 
@@ -103,7 +103,7 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener 
         else if (selfCares.gamemode && gamemode != GameMode.CREATIVE && !bot.options.creayun)
             bot.chat.send("/minecraft:gamemode creative @s[type=player]");
 
-        // core
+            // core
         else if (selfCares.cspy && !cspy && kaboom) {
             if (bot.options.useChat || !bot.options.coreCommandSpy)
                 bot.chat.sendCommandInstantly("commandspy:commandspy on");

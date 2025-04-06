@@ -5,7 +5,6 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -37,14 +36,14 @@ public class WhitelistCommand extends Command {
 
                 bot.whitelist.enable();
 
-                return Component.text("Enabled whitelist").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                return Component.text("Enabled whitelist").color(bot.colorPalette.defaultColor);
             }
             case "disable" -> {
                 context.checkOverloadArgs(1);
 
                 bot.whitelist.disable();
 
-                return Component.text("Disabled whitelist").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                return Component.text("Disabled whitelist").color(bot.colorPalette.defaultColor);
             }
             case "add" -> {
                 final String player = context.getString(true, true);
@@ -53,8 +52,8 @@ public class WhitelistCommand extends Command {
 
                 return Component.translatable(
                         "Added %s to the whitelist",
-                        Component.text(player).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
-                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                        Component.text(player).color(bot.colorPalette.username)
+                ).color(bot.colorPalette.defaultColor);
             }
             case "remove" -> {
                 try {
@@ -64,8 +63,8 @@ public class WhitelistCommand extends Command {
 
                     return Component.translatable(
                             "Removed %s from the whitelist",
-                            Component.text(player).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
-                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                            Component.text(player).color(bot.colorPalette.username)
+                    ).color(bot.colorPalette.defaultColor);
                 } catch (IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
                     throw new CommandException(Component.text("Invalid index"));
                 }
@@ -75,7 +74,7 @@ public class WhitelistCommand extends Command {
 
                 bot.whitelist.clear();
 
-                return Component.text("Cleared the whitelist").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                return Component.text("Cleared the whitelist").color(bot.colorPalette.defaultColor);
             }
             case "list" -> {
                 context.checkOverloadArgs(1);
@@ -87,8 +86,8 @@ public class WhitelistCommand extends Command {
                     playersComponent.add(
                             Component.translatable(
                                     "%s › %s",
-                                    Component.text(index).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
-                                    Component.text(player).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
+                                    Component.text(index).color(bot.colorPalette.number),
+                                    Component.text(player).color(bot.colorPalette.username)
                             ).color(NamedTextColor.DARK_GRAY)
                     );
 

@@ -133,7 +133,8 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
         // I think this is kinda annoying when you correct spelling mistakes or something,
         // so I made it return nothing if we're in game
         if (command == null) {
-            if (!inGame) context.sendOutput(Component.text("Unknown command: " + commandName).color(NamedTextColor.RED));
+            if (!inGame)
+                context.sendOutput(Component.text("Unknown command: " + commandName).color(NamedTextColor.RED));
 
             return;
         }

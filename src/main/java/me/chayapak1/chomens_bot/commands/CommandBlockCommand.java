@@ -6,7 +6,6 @@ import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -126,7 +125,7 @@ public class CommandBlockCommand extends Command {
                                                                     .append(
                                                                             Component
                                                                                     .text(player.profile.getIdAsString())
-                                                                                    .color(ColorUtilities.getColorByString(bot.config.colorPalette.uuid))
+                                                                                    .color(bot.colorPalette.uuid)
                                                                     )
                                                                     .append(Component.newline())
                                                                     .append(Component.text("Click to copy the username to your clipboard").color(NamedTextColor.GREEN))

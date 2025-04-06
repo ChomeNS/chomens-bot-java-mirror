@@ -5,7 +5,6 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -41,9 +40,9 @@ public class TimeCommand extends Command {
 
             return Component.translatable(
                     "The current time for %s is: %s",
-                    Component.text(timezone).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                    Component.text(timezone).color(bot.colorPalette.string),
                     Component.text(formattedTime).color(NamedTextColor.GREEN)
-            ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+            ).color(bot.colorPalette.defaultColor);
         } catch (DateTimeException e) {
             throw new CommandException(Component.text("Invalid timezone (case-sensitive)"));
         }

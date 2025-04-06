@@ -6,7 +6,6 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -61,7 +60,7 @@ public class GrepLogCommand extends Command {
 
             thread = null;
 
-            return Component.text("Stopped querying the logs").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+            return Component.text("Stopped querying the logs").color(bot.colorPalette.defaultColor);
         }
 
         if (thread != null) throw new CommandException(Component.text("Another query is already running"));
@@ -69,11 +68,11 @@ public class GrepLogCommand extends Command {
         context.sendOutput(
                 Component
                         .translatable("Started querying the logs for %s")
-                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
+                        .color(bot.colorPalette.defaultColor)
                         .arguments(
                                 Component
                                         .text(input)
-                                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                                        .color(bot.colorPalette.string)
                         )
         );
 

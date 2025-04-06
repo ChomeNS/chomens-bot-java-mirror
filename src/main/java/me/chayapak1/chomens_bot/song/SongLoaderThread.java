@@ -1,7 +1,6 @@
 package me.chayapak1.chomens_bot.song;
 
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.DownloadUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -146,14 +145,14 @@ public class SongLoaderThread extends Thread {
             bot.chat.tellraw(
                     Component.text(
                             "Added folder to the song queue"
-                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
+                    ).color(bot.colorPalette.defaultColor)
             );
         } else {
             bot.chat.tellraw(
                     Component.translatable(
                             "Added %s to the song queue",
-                            Component.empty().append(Component.text(song.name)).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
-                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
+                            Component.empty().append(Component.text(song.name)).color(bot.colorPalette.secondary)
+                    ).color(bot.colorPalette.defaultColor)
             );
         }
     }

@@ -6,7 +6,6 @@ import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -54,7 +53,7 @@ public class ListCommand extends Command {
             final Component hoverEvent = Component
                     .text(entry.profile.getName())
                     .append(Component.newline())
-                    .append(Component.text(entry.profile.getIdAsString()).color(ColorUtilities.getColorByString(bot.config.colorPalette.uuid)))
+                    .append(Component.text(entry.profile.getIdAsString()).color(bot.colorPalette.uuid))
                     .append(Component.newline())
                     .append(Component.newline())
                     .append(
@@ -72,8 +71,8 @@ public class ListCommand extends Command {
                                                                     .map(Component::text)
                                                                     .toList()
                                                     )
-                                                    .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
-                                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                                                    .color(bot.colorPalette.string)
+                                    ).color(bot.colorPalette.secondary)
                     )
                     .append(Component.newline())
                     .append(
@@ -81,8 +80,8 @@ public class ListCommand extends Command {
                                     "Vanished: %s",
                                     Component
                                             .text(!entry.listed)
-                                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
-                            ).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                                            .color(bot.colorPalette.string)
+                            ).color(bot.colorPalette.secondary)
                     )
                     .append(Component.newline())
                     .append(
@@ -91,8 +90,8 @@ public class ListCommand extends Command {
                                     Component
                                             .text(entry.latency)
                                             .append(Component.text("ms"))
-                                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.string)) // using number color palette will not blend in (GOLD)
-                            ).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                                            .color(bot.colorPalette.string) // using number color palette will not blend in (GOLD)
+                            ).color(bot.colorPalette.secondary)
                     )
                     .append(Component.newline())
                     .append(
@@ -100,8 +99,8 @@ public class ListCommand extends Command {
                                     "Game Mode: %s",
                                     Component
                                             .text(entry.gamemode.name())
-                                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
-                            ).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                                            .color(bot.colorPalette.string)
+                            ).color(bot.colorPalette.secondary)
                     )
                     .append(Component.newline())
                     .append(Component.newline())
@@ -125,7 +124,7 @@ public class ListCommand extends Command {
                                             .clickEvent(
                                                     ClickEvent.copyToClipboard(entry.profile.getIdAsString())
                                             )
-                                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.uuid))
+                                            .color(bot.colorPalette.uuid)
                             )
                             .hoverEvent(
                                     HoverEvent.showText(hoverEvent)

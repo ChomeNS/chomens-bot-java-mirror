@@ -6,7 +6,6 @@ import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.cloop.CommandLoop;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -46,10 +45,10 @@ public class CloopCommand extends Command {
 
                 return Component.translatable(
                         "Added %s with interval %s %s to the cloops",
-                        Component.text(command).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
-                        Component.text(interval).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
-                        Component.text(unit.toString()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
-                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                        Component.text(command).color(bot.colorPalette.string),
+                        Component.text(interval).color(bot.colorPalette.number),
+                        Component.text(unit.toString()).color(bot.colorPalette.string)
+                ).color(bot.colorPalette.defaultColor);
             }
             case "remove" -> {
                 context.checkOverloadArgs(2);
@@ -61,8 +60,8 @@ public class CloopCommand extends Command {
 
                     return Component.translatable(
                             "Removed cloop %s",
-                            Component.text(cloop.command()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
-                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                            Component.text(cloop.command()).color(bot.colorPalette.string)
+                    ).color(bot.colorPalette.defaultColor);
                 } catch (IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
                     throw new CommandException(Component.text("Invalid index"));
                 }
@@ -71,7 +70,7 @@ public class CloopCommand extends Command {
                 context.checkOverloadArgs(1);
 
                 bot.cloop.clear();
-                return Component.text("Cleared all cloops").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                return Component.text("Cleared all cloops").color(bot.colorPalette.defaultColor);
             }
             case "list" -> {
                 context.checkOverloadArgs(1);
@@ -83,10 +82,10 @@ public class CloopCommand extends Command {
                     cloopsComponent.add(
                             Component.translatable(
                                     "%s › %s (%s %s)",
-                                    Component.text(index).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
-                                    Component.text(command.command()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
-                                    Component.text(command.interval()).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
-                                    Component.text(command.unit().toString()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                                    Component.text(index).color(bot.colorPalette.number),
+                                    Component.text(command.command()).color(bot.colorPalette.string),
+                                    Component.text(command.interval()).color(bot.colorPalette.number),
+                                    Component.text(command.unit().toString()).color(bot.colorPalette.string)
                             ).color(NamedTextColor.DARK_GRAY)
                     );
                     index++;

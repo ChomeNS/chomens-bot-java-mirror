@@ -6,7 +6,6 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 
 public class StopCommand extends Command {
@@ -29,6 +28,6 @@ public class StopCommand extends Command {
 
         Main.stop(0, reason.isEmpty() ? null : reason);
 
-        return Component.text("Stopping").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+        return Component.text("Stopping").color(bot.colorPalette.defaultColor);
     }
 }

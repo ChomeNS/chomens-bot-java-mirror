@@ -194,6 +194,7 @@ public class CorePlugin
 
     // thanks chipmunk for this new tellraw method
     public CompletableFuture<Component> runTracked (String command) { return runTracked(false, command); }
+
     public CompletableFuture<Component> runTracked (boolean useCargo, String command) {
         if (!ready || command.length() > 32767) return null;
 

@@ -3,7 +3,6 @@ package me.chayapak1.chomens_bot.plugins;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.logging.LogType;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -29,7 +28,7 @@ public class TrustedPlugin implements PlayersPlugin.Listener {
     public void broadcast (Component message, UUID exceptTarget) {
         final Component component = Component.translatable(
                 "[%s] [%s] %s",
-                Component.text("ChomeNS Bot").color(ColorUtilities.getColorByString(this.bot.config.colorPalette.primary)),
+                Component.text("ChomeNS Bot").color(bot.colorPalette.primary),
                 Component.text(this.bot.options.serverName).color(NamedTextColor.GRAY),
                 message.color(NamedTextColor.WHITE)
         ).color(NamedTextColor.DARK_GRAY);
@@ -62,7 +61,7 @@ public class TrustedPlugin implements PlayersPlugin.Listener {
         if (!target.profile.getName().equals(bot.config.ownerName)) {
             component = Component.translatable(
                     "Hello, %s!",
-                    Component.text(target.profile.getName()).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
+                    Component.text(target.profile.getName()).color(bot.colorPalette.username)
             ).color(NamedTextColor.GREEN);
         } else {
             final LocalDateTime now = LocalDateTime.now();
@@ -75,9 +74,9 @@ public class TrustedPlugin implements PlayersPlugin.Listener {
                             Hello, %s!
                             Time: %s
                             Online players: %s""",
-                    Component.text(target.profile.getName()).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)),
-                    Component.text(formattedTime).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
-                    Component.text(bot.players.list.size()).color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
+                    Component.text(target.profile.getName()).color(bot.colorPalette.username),
+                    Component.text(formattedTime).color(bot.colorPalette.string),
+                    Component.text(bot.players.list.size()).color(bot.colorPalette.number)
             ).color(NamedTextColor.GREEN);
         }
 
@@ -89,8 +88,8 @@ public class TrustedPlugin implements PlayersPlugin.Listener {
         broadcast(
                 Component.translatable(
                         "Trusted player %s is now online",
-                        Component.text(target.profile.getName()).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
-                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)),
+                        Component.text(target.profile.getName()).color(bot.colorPalette.username)
+                ).color(bot.colorPalette.defaultColor),
                 target.profile.getId()
         );
     }
@@ -102,8 +101,8 @@ public class TrustedPlugin implements PlayersPlugin.Listener {
         broadcast(
                 Component.translatable(
                         "Trusted player %s is now offline",
-                        Component.text(target.profile.getName()).color(ColorUtilities.getColorByString(bot.config.colorPalette.username))
-                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
+                        Component.text(target.profile.getName()).color(bot.colorPalette.username)
+                ).color(bot.colorPalette.defaultColor)
         );
     }
 }

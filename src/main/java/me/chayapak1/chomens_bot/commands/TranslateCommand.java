@@ -8,7 +8,6 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.HttpUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -73,7 +72,7 @@ public class TranslateCommand extends Command {
                                         "Result: %s",
                                         Component.text(output).color(NamedTextColor.GREEN)
                                 )
-                                .color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                                .color(bot.colorPalette.secondary)
                 );
             } catch (Exception e) {
                 context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));

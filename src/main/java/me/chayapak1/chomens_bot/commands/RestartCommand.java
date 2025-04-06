@@ -6,7 +6,6 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 
 public class RestartCommand extends Command {
@@ -29,6 +28,6 @@ public class RestartCommand extends Command {
 
         Main.stop(12, reason.isEmpty() ? null : reason, "Restarting..");
 
-        return Component.text("Restarting").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+        return Component.text("Restarting").color(bot.colorPalette.defaultColor);
     }
 }

@@ -7,7 +7,6 @@ import me.chayapak1.chomens_bot.song.Loop;
 import me.chayapak1.chomens_bot.song.Note;
 import me.chayapak1.chomens_bot.song.Song;
 import me.chayapak1.chomens_bot.song.SongLoaderThread;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import me.chayapak1.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
@@ -119,9 +118,9 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
                 Component
                         .translatable(
                                 "Loading %s",
-                                Component.text(songName, ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                                Component.text(songName, bot.colorPalette.secondary)
                         )
-                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)),
+                        .color(bot.colorPalette.defaultColor),
                 BOTH_SELECTOR
         );
 
@@ -148,8 +147,8 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
                 bot.chat.tellraw(
                         Component.translatable(
                                 "Now playing %s",
-                                Component.empty().append(Component.text(currentSong.name)).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
-                        ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)),
+                                Component.empty().append(Component.text(currentSong.name)).color(bot.colorPalette.secondary)
+                        ).color(bot.colorPalette.defaultColor),
                         BOTH_SELECTOR
                 );
                 currentSong.play();
@@ -185,8 +184,8 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
                 bot.chat.tellraw(
                         Component.translatable(
                                 "Finished playing %s",
-                                Component.empty().append(Component.text(currentSong.name)).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
-                        ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)),
+                                Component.empty().append(Component.text(currentSong.name)).color(bot.colorPalette.secondary)
+                        ).color(bot.colorPalette.defaultColor),
                         BOTH_SELECTOR
                 );
 

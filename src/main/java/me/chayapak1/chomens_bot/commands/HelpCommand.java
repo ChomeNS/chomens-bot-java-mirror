@@ -7,7 +7,6 @@ import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.command.contexts.ConsoleCommandContext;
 import me.chayapak1.chomens_bot.plugins.CommandHandlerPlugin;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -119,7 +118,7 @@ public class HelpCommand extends Command {
 
             usages.add(
                     Component.empty()
-                            .append(Component.text(prefix + actualCommandName).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
+                            .append(Component.text(prefix + actualCommandName).color(bot.colorPalette.secondary))
                             .append(Component.text(
                                     (command.aliases.length > 0 && !command.aliases[0].isEmpty()) ?
                                             " (" + String.join(", ", command.aliases) + ")" :
@@ -140,10 +139,10 @@ public class HelpCommand extends Command {
 
             for (String usage : command.usages) {
                 Component usageComponent = Component.empty()
-                        .append(Component.text(prefix + actualCommandName).color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)))
+                        .append(Component.text(prefix + actualCommandName).color(bot.colorPalette.secondary))
                         .append(Component.text(" "));
 
-                usageComponent = usageComponent.append(Component.text(usage).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)));
+                usageComponent = usageComponent.append(Component.text(usage).color(bot.colorPalette.string));
 
                 usages.add(usageComponent);
             }

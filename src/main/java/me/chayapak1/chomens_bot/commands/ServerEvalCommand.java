@@ -5,7 +5,6 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import party.iroiro.luajava.Lua;
@@ -38,7 +37,7 @@ public class ServerEvalCommand extends Command {
             if (lua != null) lua.close();
             lua = null;
 
-            return Component.text("Reset the Lua instance").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+            return Component.text("Reset the Lua instance").color(bot.colorPalette.defaultColor);
         }
 
         bot.executorService.submit(() -> {

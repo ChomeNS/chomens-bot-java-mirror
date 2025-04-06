@@ -2,7 +2,6 @@ package me.chayapak1.chomens_bot.command;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -109,7 +108,7 @@ public class CommandContext {
                                         .arguments(
                                                 Component
                                                         .text(greedyString)
-                                                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                                                        .color(bot.colorPalette.string),
                                                 Component
                                                         .text(quote)
                                                         .color(NamedTextColor.YELLOW)
@@ -136,7 +135,7 @@ public class CommandContext {
                                         .arguments(
                                                 Component
                                                         .text(greedyString)
-                                                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                                                        .color(bot.colorPalette.string)
                                         )
                         );
                     }

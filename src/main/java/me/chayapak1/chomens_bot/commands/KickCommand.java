@@ -7,7 +7,6 @@ import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.exploitMethods.Kick;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 
 import java.util.Arrays;
@@ -47,11 +46,11 @@ public class KickCommand extends Command {
         return Component.empty()
                 .append(Component.text("Kicking player"))
                 .append(Component.space())
-                .append(Component.text(name).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)))
+                .append(Component.text(name).color(bot.colorPalette.username))
                 .append(Component.space())
                 .append(Component.text("with method"))
                 .append(Component.space())
-                .append(Component.text(method.name()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)))
-                .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                .append(Component.text(method.name()).color(bot.colorPalette.string))
+                .color(bot.colorPalette.defaultColor);
     }
 }

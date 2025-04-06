@@ -7,7 +7,6 @@ import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
 import me.chayapak1.chomens_bot.plugins.IPFilterPlugin;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -59,14 +58,14 @@ public class IPFilterCommand extends Command {
                 if (reason.isEmpty()) {
                     return Component.translatable(
                             "Added %s to the filters",
-                            Component.text(ip).color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
-                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                            Component.text(ip).color(bot.colorPalette.number)
+                    ).color(bot.colorPalette.defaultColor);
                 } else {
                     return Component.translatable(
                             "Added %s to the filters with reason %s",
-                            Component.text(ip).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
-                            Component.text(reason).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
-                    ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                            Component.text(ip).color(bot.colorPalette.number),
+                            Component.text(reason).color(bot.colorPalette.string)
+                    ).color(bot.colorPalette.defaultColor);
                 }
             }
             case "remove" -> {
@@ -82,14 +81,14 @@ public class IPFilterCommand extends Command {
 
                 return Component.translatable(
                         "Removed %s from the filters",
-                        Component.text(targetIP).color(ColorUtilities.getColorByString(bot.config.colorPalette.number))
-                ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                        Component.text(targetIP).color(bot.colorPalette.number)
+                ).color(bot.colorPalette.defaultColor);
             }
             case "clear" -> {
                 context.checkOverloadArgs(1);
 
                 DatabasePlugin.EXECUTOR_SERVICE.submit(() -> bot.ipFilter.clear());
-                return Component.text("Cleared the filter").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                return Component.text("Cleared the filter").color(bot.colorPalette.defaultColor);
             }
             case "list" -> {
                 context.checkOverloadArgs(1);
@@ -110,7 +109,7 @@ public class IPFilterCommand extends Command {
                                 .append(
                                         Component
                                                 .text(reason)
-                                                .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                                                .color(bot.colorPalette.string)
                                 )
                                 .append(Component.text(")"));
                     }
@@ -118,8 +117,8 @@ public class IPFilterCommand extends Command {
                     filtersComponents.add(
                             Component.translatable(
                                     "%s › %s %s",
-                                    Component.text(index).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
-                                    Component.text(ip).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)),
+                                    Component.text(index).color(bot.colorPalette.number),
+                                    Component.text(ip).color(bot.colorPalette.username),
                                     reasonComponent
                             ).color(NamedTextColor.DARK_GRAY)
                     );

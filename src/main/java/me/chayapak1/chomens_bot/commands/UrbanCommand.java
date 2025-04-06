@@ -11,7 +11,6 @@ import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.command.contexts.DiscordCommandContext;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.HttpUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -106,10 +105,10 @@ public class UrbanCommand extends Command {
                                         Thumbs up: %s
                                         Thumbs down: %s
                                         Example: %s""",
-                                Component.text(author).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                                Component.text(author).color(bot.colorPalette.string),
                                 Component.text(thumbsUp).color(NamedTextColor.GREEN),
                                 Component.text(thumbsDown).color(NamedTextColor.RED),
-                                Component.text(example.replaceAll("\r\n?", "\n")).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                                Component.text(example.replaceAll("\r\n?", "\n")).color(bot.colorPalette.string)
                         );
 
                         if (even) {

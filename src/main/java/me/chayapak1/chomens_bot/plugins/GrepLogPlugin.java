@@ -4,7 +4,6 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.FileLoggerUtilities;
 import me.chayapak1.chomens_bot.util.StringUtilities;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -109,10 +108,10 @@ public class GrepLogPlugin {
                         final DecimalFormat formatter = new DecimalFormat("#,###");
 
                         final Component component = Component.translatable("Found %s matches for %s. You can see the results by clicking %s or in the Discord server.")
-                                .color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
+                                .color(bot.colorPalette.defaultColor)
                                 .arguments(
-                                        Component.text(formatter.format(matches)).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
-                                        Component.text(input).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                                        Component.text(formatter.format(matches)).color(bot.colorPalette.number),
+                                        Component.text(input).color(bot.colorPalette.string),
                                         Component
                                                 .text("here")
                                                 .color(NamedTextColor.GREEN)
@@ -120,7 +119,7 @@ public class GrepLogPlugin {
                                                         HoverEvent.showText(
                                                                 Component
                                                                         .text("Click! :D")
-                                                                        .color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                                                                        .color(bot.colorPalette.secondary)
                                                         )
                                                 )
                                                 .clickEvent(

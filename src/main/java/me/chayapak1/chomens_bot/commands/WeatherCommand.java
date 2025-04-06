@@ -7,7 +7,6 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.HttpUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -51,8 +50,8 @@ public class WeatherCommand extends Command {
 
             return Component.translatable(
                     "Current weather for %s, %s:\n%s (%s), feels like %s (%s)\nCondition: %s\nCloud cover: %s\nHumidity: %s\nTime: %s",
-                    Component.text(jsonObject.get("location").getAsJsonObject().get("name").getAsString()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
-                    Component.text(jsonObject.get("location").getAsJsonObject().get("country").getAsString()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                    Component.text(jsonObject.get("location").getAsJsonObject().get("name").getAsString()).color(bot.colorPalette.string),
+                    Component.text(jsonObject.get("location").getAsJsonObject().get("country").getAsString()).color(bot.colorPalette.string),
                     Component
                             .empty()
                             .append(
@@ -64,7 +63,7 @@ public class WeatherCommand extends Command {
                                                             .get("temp_c")
                                                             .getAsString() + "°C"
                                             )
-                                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary))
+                                            .color(bot.colorPalette.secondary)
                             ),
                     Component
                             .text(
@@ -74,7 +73,7 @@ public class WeatherCommand extends Command {
                                             .get("temp_f")
                                             .getAsString() + "°F"
                             )
-                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.secondary)),
+                            .color(bot.colorPalette.secondary),
                     Component
                             .text(
                                     jsonObject
@@ -103,7 +102,7 @@ public class WeatherCommand extends Command {
                                             .get("text")
                                             .getAsString()
                             )
-                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
+                            .color(bot.colorPalette.string),
                     Component
                             .text(
                                     jsonObject
@@ -113,7 +112,7 @@ public class WeatherCommand extends Command {
                                             .getAsInt()
                             )
                             .append(Component.text("%"))
-                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
+                            .color(bot.colorPalette.number),
                     Component
                             .text(
                                     jsonObject
@@ -123,7 +122,7 @@ public class WeatherCommand extends Command {
                                             .getAsInt()
                             )
                             .append(Component.text("%"))
-                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
+                            .color(bot.colorPalette.number),
                     Component
                             .text(
                                     jsonObject
@@ -132,8 +131,8 @@ public class WeatherCommand extends Command {
                                             .get("localtime")
                                             .getAsString()
                             )
-                            .color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
-            ).color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor));
+                            .color(bot.colorPalette.string)
+            ).color(bot.colorPalette.defaultColor);
         } catch (Exception e) {
             throw new CommandException(Component.text("Location \"" + location + "\" not found"));
         }

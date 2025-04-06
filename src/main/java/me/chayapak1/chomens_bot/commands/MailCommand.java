@@ -9,7 +9,6 @@ import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.mail.Mail;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
-import me.chayapak1.chomens_bot.util.ColorUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -63,7 +62,7 @@ public class MailCommand extends Command {
                             )
                     );
 
-                    context.sendOutput(Component.text("Mail sent!").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor)));
+                    context.sendOutput(Component.text("Mail sent!").color(bot.colorPalette.defaultColor));
                 } catch (CommandException e) {
                     context.sendOutput(e.message.color(NamedTextColor.RED));
                 }
@@ -95,7 +94,7 @@ public class MailCommand extends Command {
                                 );
 
                                 context.sendOutput(
-                                        Component.text("Mail sent!").color(ColorUtilities.getColorByString(bot.config.colorPalette.defaultColor))
+                                        Component.text("Mail sent!").color(bot.colorPalette.defaultColor)
                                 );
                             } catch (CommandException e) {
                                 context.sendOutput(e.message.color(NamedTextColor.RED));
@@ -146,10 +145,10 @@ public class MailCommand extends Command {
                                                 %s %s Sent by: %s %s
                                                 Contents:
                                                 %s""",
-                                        Component.text(count).color(ColorUtilities.getColorByString(bot.config.colorPalette.number)),
+                                        Component.text(count).color(bot.colorPalette.number),
                                         Component.text("-").color(NamedTextColor.DARK_GRAY),
 
-                                        Component.text(mail.sentBy()).color(ColorUtilities.getColorByString(bot.config.colorPalette.username)),
+                                        Component.text(mail.sentBy()).color(bot.colorPalette.username),
                                         Component
                                                 .text("[Hover here for more info]")
                                                 .color(NamedTextColor.GREEN)
@@ -159,8 +158,8 @@ public class MailCommand extends Command {
                                                                         """
                                                                                 Time sent: %s
                                                                                 Server: %s""",
-                                                                        Component.text(formattedTime).color(ColorUtilities.getColorByString(bot.config.colorPalette.string)),
-                                                                        Component.text(mail.server()).color(ColorUtilities.getColorByString(bot.config.colorPalette.string))
+                                                                        Component.text(formattedTime).color(bot.colorPalette.string),
+                                                                        Component.text(mail.server()).color(bot.colorPalette.string)
                                                                 ).color(NamedTextColor.GREEN)
                                                         )
                                                 ),
