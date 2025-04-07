@@ -411,7 +411,6 @@ public class ComponentUtilities {
             // is INTENTIONAL and is a FEATURE
             int i = 0;
             while (matcher.find()) {
-                parseStartTime++;
                 if (matcher.group().equals("%%")) {
                     matcher.appendReplacement(sb, "%");
                 } else {
@@ -459,10 +458,9 @@ public class ComponentUtilities {
         public String stringifyPartially (KeybindComponent message, String color, String style) {
             final String keybind = message.keybind();
 
-            // FIXME: this isn't the correct way to parse keybinds
-            final Component component = KEYBINDINGS.containsKey(keybind) ?
-                    Component.translatable(KEYBINDINGS.get(keybind)) :
-                    Component.text(keybind);
+            // this is indeed the correct way to process keybindings
+            // inside the minecraft code, silly past me was wrong :D
+            final Component component = Component.translatable(KEYBINDINGS.getOrDefault(keybind, keybind));
 
             return stringifyPartially(component, color, style);
         }
