@@ -532,8 +532,9 @@ public class DiscordPlugin extends ListenerAdapter {
             synchronized (logMessages) {
                 StringBuilder logMessage = logMessages.get(channelId);
                 message = logMessage.toString()
-                        // the ZWSP fixes discord.gg showing invite
-                        .replace("discord.gg", "discord\u200b.\u200bgg");
+                        // the ZWSP fixes discord.gg/discord.com showing invite
+                        .replace("discord.gg", "discord\u200b.\u200bgg")
+                        .replace("discord.com", "discord\u200b.\u200bcom");
 
                 final int maxLength = 2_000 - ("""
                         ```ansi
