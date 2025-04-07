@@ -169,6 +169,27 @@ public class ComponentUtilities {
             DISCORD_ANSI_MAP.put("r", "\u001b[0m");
         }
 
+        public static final Map<NamedTextColor, String> NAMED_TEXT_COLOR_MAP = new HashMap<>();
+
+        static {
+            NAMED_TEXT_COLOR_MAP.put(NamedTextColor.BLACK, "0");
+            NAMED_TEXT_COLOR_MAP.put(NamedTextColor.DARK_BLUE, "1");
+            NAMED_TEXT_COLOR_MAP.put(NamedTextColor.DARK_GREEN, "2");
+            NAMED_TEXT_COLOR_MAP.put(NamedTextColor.DARK_AQUA, "3");
+            NAMED_TEXT_COLOR_MAP.put(NamedTextColor.DARK_RED, "4");
+            NAMED_TEXT_COLOR_MAP.put(NamedTextColor.DARK_PURPLE, "5");
+            NAMED_TEXT_COLOR_MAP.put(NamedTextColor.GOLD, "6");
+            NAMED_TEXT_COLOR_MAP.put(NamedTextColor.GRAY, "7");
+            NAMED_TEXT_COLOR_MAP.put(NamedTextColor.DARK_GRAY, "8");
+            NAMED_TEXT_COLOR_MAP.put(NamedTextColor.BLUE, "9");
+            NAMED_TEXT_COLOR_MAP.put(NamedTextColor.GREEN, "a");
+            NAMED_TEXT_COLOR_MAP.put(NamedTextColor.AQUA, "b");
+            NAMED_TEXT_COLOR_MAP.put(NamedTextColor.RED, "c");
+            NAMED_TEXT_COLOR_MAP.put(NamedTextColor.LIGHT_PURPLE, "d");
+            NAMED_TEXT_COLOR_MAP.put(NamedTextColor.YELLOW, "e");
+            NAMED_TEXT_COLOR_MAP.put(NamedTextColor.WHITE, "f");
+        }
+
         // we only focus on the discord ones that we made
         private static final Pattern DISCORD_ANSI_PATTERN = Pattern.compile("(\\u001b\\[\\d+m)");
 
@@ -263,28 +284,25 @@ public class ComponentUtilities {
                 final TextDecoration decoration = decorationEntry.getKey();
                 final TextDecoration.State state = decorationEntry.getValue();
 
-                if (state == TextDecoration.State.NOT_SET || state == TextDecoration.State.FALSE) continue;
+                if (state != TextDecoration.State.TRUE) continue;
 
-                if (type == ParseType.ANSI || type == ParseType.DISCORD_ANSI) {
-                    final Map<String, String> map = type == ParseType.ANSI ?
-                            ANSI_MAP :
-                            DISCORD_ANSI_MAP;
+                if (type != ParseType.PLAIN) {
+                    final Map<String, String> styleMap =
+                            type == ParseType.ANSI ? ANSI_MAP : DISCORD_ANSI_MAP;
 
-                    switch (decoration) {
-                        case BOLD -> style.append(map.get("l"));
-                        case ITALIC -> style.append(map.get("o"));
-                        case OBFUSCATED -> style.append(map.get("k"));
-                        case UNDERLINED -> style.append(map.get("n"));
-                        case STRIKETHROUGH -> style.append(map.get("m"));
-                    }
-                } else if (type == ParseType.SECTION_SIGNS) {
-                    switch (decoration) {
-                        case BOLD -> style.append("§l");
-                        case ITALIC -> style.append("§o");
-                        case OBFUSCATED -> style.append("§k");
-                        case UNDERLINED -> style.append("§n");
-                        case STRIKETHROUGH -> style.append("§m");
-                    }
+                    final String key = switch (decoration) {
+                        case BOLD -> "l";
+                        case ITALIC -> "o";
+                        case UNDERLINED -> "n";
+                        case STRIKETHROUGH -> "m";
+                        case OBFUSCATED -> "k";
+                    };
+
+                    style.append(
+                            type == ParseType.SECTION_SIGNS ?
+                                    "§" + key :
+                                    styleMap.getOrDefault(key, "")
+                    );
                 }
             }
 
@@ -296,28 +314,10 @@ public class ComponentUtilities {
 
             // map totallynotskidded™ from https://github.com/PrismarineJS/prismarine-chat/blob/master/index.js#L299
             String code;
-            if (color == NamedTextColor.BLACK) code = "0";
-            else if (color == NamedTextColor.DARK_BLUE) code = "1";
-            else if (color == NamedTextColor.DARK_GREEN) code = "2";
-            else if (color == NamedTextColor.DARK_AQUA) code = "3";
-            else if (color == NamedTextColor.DARK_RED) code = "4";
-            else if (color == NamedTextColor.DARK_PURPLE) code = "5";
-            else if (color == NamedTextColor.GOLD) code = "6";
-            else if (color == NamedTextColor.GRAY) code = "7";
-            else if (color == NamedTextColor.DARK_GRAY) code = "8";
-            else if (color == NamedTextColor.BLUE) code = "9";
-            else if (color == NamedTextColor.GREEN) code = "a";
-            else if (color == NamedTextColor.AQUA) code = "b";
-            else if (color == NamedTextColor.RED) code = "c";
-            else if (color == NamedTextColor.LIGHT_PURPLE) code = "d";
-            else if (color == NamedTextColor.YELLOW) code = "e";
-            else if (color == NamedTextColor.WHITE) code = "f";
-            else {
-                try {
-                    code = color.asHexString();
-                } catch (NullPointerException e) {
-                    code = ""; // mabe...,,.,..,
-                }
+            if (color instanceof NamedTextColor named) {
+                code = NAMED_TEXT_COLOR_MAP.getOrDefault(named, "");
+            } else {
+                code = color.asHexString();
             }
 
             if (type == ParseType.SECTION_SIGNS) {
@@ -346,9 +346,9 @@ public class ComponentUtilities {
                 }
 
                 return ansiCode;
-            } else {
-                return "";
             }
+
+            return "";
         }
 
         private String getPartialResultAndSetLastColor (String originalResult, String color, String style) {
