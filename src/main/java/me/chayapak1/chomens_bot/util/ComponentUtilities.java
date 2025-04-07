@@ -197,6 +197,7 @@ public class ComponentUtilities {
 
         private long parseStartTime = System.currentTimeMillis();
 
+        private String lastColor = "";
         private String lastStyle = "";
 
         private boolean isSubParsing = false;
@@ -245,7 +246,8 @@ public class ComponentUtilities {
 
                 for (Component child : message.children()) {
                     final ComponentParser parser = new ComponentParser();
-                    parser.lastStyle = lastStyle + color + style;
+                    parser.lastColor = lastColor + color;
+                    parser.lastStyle = lastStyle + style;
                     parser.parseStartTime = parseStartTime;
                     parser.isSubParsing = true;
                     builder.append(parser.stringify(child, type));
@@ -278,13 +280,13 @@ public class ComponentUtilities {
         public String getStyle (Style textStyle) {
             if (textStyle == null) return "";
 
-            StringBuilder style = new StringBuilder();
+            final StringBuilder style = new StringBuilder();
 
             for (Map.Entry<TextDecoration, TextDecoration.State> decorationEntry : textStyle.decorations().entrySet()) {
                 final TextDecoration decoration = decorationEntry.getKey();
                 final TextDecoration.State state = decorationEntry.getValue();
 
-                if (state != TextDecoration.State.TRUE) continue;
+                if (state == TextDecoration.State.NOT_SET) continue;
 
                 if (type != ParseType.PLAIN) {
                     final Map<String, String> styleMap =
@@ -298,11 +300,22 @@ public class ComponentUtilities {
                         case OBFUSCATED -> "k";
                     };
 
-                    style.append(
-                            type == ParseType.SECTION_SIGNS ?
-                                    "§" + key :
-                                    styleMap.getOrDefault(key, "")
-                    );
+                    final String code = type == ParseType.SECTION_SIGNS ?
+                            "§" + key :
+                            styleMap.getOrDefault(key, "");
+
+                    if (state == TextDecoration.State.TRUE) {
+                        style.append(code);
+                    } else {
+                        // state is FALSE, meaning that the component HAS SPECIFIED the style to be empty
+
+                        if (!lastStyle.isEmpty()) lastStyle = lastStyle.replace(code, "");
+
+                        style
+                                .append(getResetCode())
+                                .append(lastColor)
+                                .append(lastStyle);
+                    }
                 }
             }
 
@@ -351,19 +364,30 @@ public class ComponentUtilities {
             return "";
         }
 
-        private String getPartialResultAndSetLastColor (String originalResult, String color, String style) {
+        private String getResetCode () {
+            return switch (type) {
+                case SECTION_SIGNS -> "§r";
+                case ANSI, DISCORD_ANSI -> ANSI_MAP.get("r");
+                default -> "";
+            };
+        }
+
+        private String getPartialResult (String originalResult, String color, String style, boolean setLastStyles) {
             if (type == ParseType.PLAIN) return originalResult;
 
-            String resetCode;
-            if (type == ParseType.ANSI || type == ParseType.DISCORD_ANSI) resetCode = ANSI_MAP.get("r");
-            else resetCode = "§r";
-
             final String result =
-                    lastStyle + color + style +
+                    lastColor + lastStyle + color + style +
                             originalResult +
-                            (lastStyle.isEmpty() ? resetCode : "");
+                            (
+                                    !color.isEmpty() || !style.isEmpty()
+                                            ? getResetCode()
+                                            : ""
+                            );
 
-            lastStyle = color + style;
+            if (setLastStyles) {
+                lastColor = color;
+                lastStyle = style;
+            }
 
             return result;
         }
@@ -393,7 +417,7 @@ public class ComponentUtilities {
                 } catch (Exception ignored) { }
             }
 
-            return getPartialResultAndSetLastColor(replacedContent, color, style);
+            return getPartialResult(replacedContent, color, style, true);
         }
 
         private String stringifyPartially (TextComponent message, String color, String style) {
@@ -422,19 +446,25 @@ public class ComponentUtilities {
                         if (idx >= 0 && idx < message.arguments().size()) {
                             final ComponentParser parser = new ComponentParser();
 
-                            parser.lastStyle = lastStyle + color + style;
+                            parser.lastColor = lastColor + color;
+                            parser.lastStyle = lastStyle + style;
                             parser.parseStartTime = parseStartTime;
                             parser.isSubParsing = true;
 
                             matcher.appendReplacement(
                                     sb,
                                     Matcher.quoteReplacement(
-                                            parser.stringify(
-                                                    message.arguments()
-                                                            .get(idx)
-                                                            .asComponent(),
-                                                    type
-                                            ) + lastStyle + color + style // IMPORTANT!!!!
+                                            getPartialResult(
+                                                    parser.stringify(
+                                                            message.arguments()
+                                                                    .get(idx)
+                                                                    .asComponent(),
+                                                            type
+                                                    ),
+                                                    color,
+                                                    style,
+                                                    false
+                                            ) + lastColor + lastStyle + color + style
                                     )
                             );
                         } else {
@@ -446,7 +476,7 @@ public class ComponentUtilities {
 
             matcher.appendTail(sb);
 
-            return getPartialResultAndSetLastColor(sb.toString(), color, style);
+            return getPartialResult(sb.toString(), color, style, true);
         }
 
         // on the client side, this acts just like TextComponent
