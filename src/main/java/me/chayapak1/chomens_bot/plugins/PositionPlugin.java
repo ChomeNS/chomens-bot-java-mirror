@@ -73,7 +73,7 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
     }
 
     private void packetReceived (ClientboundPlayerPositionPacket packet) {
-        if (bot.session != null) bot.session.send(new ServerboundAcceptTeleportationPacket(packet.getId()));
+        bot.session.send(new ServerboundAcceptTeleportationPacket(packet.getId()));
 
         position = packet.getPosition();
 
