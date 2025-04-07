@@ -531,12 +531,16 @@ public class DiscordPlugin extends ListenerAdapter {
             String message;
             synchronized (logMessages) {
                 StringBuilder logMessage = logMessages.get(channelId);
-                message = logMessage.toString().replace(".", "\u200b.\u200b"); // the ZWSP fixes discord.gg showing invite
+                message = logMessage.toString()
+                        // the ZWSP fixes discord.gg showing invite
+                        .replace("discord.gg", "discord\u200b.\u200bgg");
+
                 final int maxLength = 2_000 - ("""
                         ```ansi
                         
                         ```"""
                 ).length(); // kinda sus
+
                 if (message.length() >= maxLength) {
                     message = message.substring(0, maxLength);
                 }
