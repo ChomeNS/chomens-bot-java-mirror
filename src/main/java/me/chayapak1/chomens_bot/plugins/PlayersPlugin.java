@@ -143,7 +143,7 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
                     candidate != null &&
                             (
                                     candidate.profile.getIdAsString().equals(username) || // checks for a string UUID
-                                            getName(candidate).equals(username) ||
+                                            candidate.profile.getName().equals(username) ||
                                             candidate.usernames.contains(username)
                             )
             ) {
@@ -182,12 +182,6 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
         if (target == null) return;
 
         target.listed = newEntry.isListed();
-    }
-
-    private String getName (PlayerEntry target) {
-        return bot.options.creayun ?
-                target.profile.getName().replaceAll("§.", "") :
-                target.profile.getName();
     }
 
     private void addPlayer (PlayerListEntry newEntry) {

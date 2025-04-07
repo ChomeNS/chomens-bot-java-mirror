@@ -131,7 +131,6 @@ selfCare:
 
 bots:
   # username - optional, if not specified it will just use a random username
-  # creayun - defaults to false
   # serverName - name it whatever you like, it will be used as server name in trusted broadcast and in console
   # hidden - if enabled, the server address will not show anywhere in the bot, including discord, netmsg, etc., except console
   # useCore - if enabled it just sends the command using chat instead of using core. recommended to enable useChat too when this is disabled
@@ -151,7 +150,6 @@ bots:
   # - host: 'localhost'
   #   port: 25565
   #   username: 'ChomeNS_Bot'
-  #   creayun: false
   #   serverName: 'Localhost'
   #   hidden: false
   #   useCore: true

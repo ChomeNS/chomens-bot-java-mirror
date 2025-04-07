@@ -166,7 +166,6 @@ public class Configuration {
         public String host;
         public int port;
         public String username;
-        public boolean creayun = false;
         public String serverName;
         public boolean hidden = false;
         public boolean useCore = true;

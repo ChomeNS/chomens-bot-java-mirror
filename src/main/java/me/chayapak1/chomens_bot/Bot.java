@@ -243,8 +243,6 @@ public class Bot extends SessionAdapter {
         }
 
         session.send(ServerboundPlayerLoadedPacket.INSTANCE);
-
-        if (options.creayun) chat.send("/server creative");
     }
 
     private void packetReceived (ClientboundCustomQueryPacket packet) {

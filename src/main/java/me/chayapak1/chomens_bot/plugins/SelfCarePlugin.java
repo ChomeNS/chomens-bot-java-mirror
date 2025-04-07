@@ -96,11 +96,9 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener 
         final boolean kaboom = bot.serverFeatures.hasExtras;
         final boolean hasEssentials = bot.serverFeatures.hasEssentials;
 
-        final boolean creayun = bot.options.creayun;
-
         // chat only
         if (selfCares.op && permissionLevel < 2) bot.chat.send("/minecraft:op @s[type=player]");
-        else if (selfCares.gamemode && gamemode != GameMode.CREATIVE && !bot.options.creayun)
+        else if (selfCares.gamemode && gamemode != GameMode.CREATIVE)
             bot.chat.send("/minecraft:gamemode creative @s[type=player]");
 
             // core
@@ -111,7 +109,7 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener 
         }
 
         // back to chat only
-        else if (selfCares.prefix.enabled && !prefix && kaboom && !bot.options.creayun)
+        else if (selfCares.prefix.enabled && !prefix && kaboom)
             bot.chat.send("/extras:prefix " + bot.config.selfCare.prefix.prefix);
         else if (selfCares.username && (System.currentTimeMillis() - usernameStartTime) >= 2 * 1000 && !username && kaboom)
             bot.chat.send("/extras:username " + bot.username);
@@ -123,13 +121,13 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener 
                     "";
             final String uuid = bot.profile.getIdAsString();
 
-            if (selfCares.vanish && visible == vanish && !creayun) {
+            if (selfCares.vanish && visible == vanish) {
                 runEssentialsCommand("essentials:vanish " + usernameOrBlank + (visible ? "disable" : "enable"));
             } else if (selfCares.nickname && !nickname) {
                 runEssentialsCommand("essentials:nickname " + uuid + " off");
-            } else if (selfCares.socialspy && !socialspy && !creayun) {
+            } else if (selfCares.socialspy && !socialspy) {
                 runEssentialsCommand("essentials:socialspy " + usernameOrBlank + "enable");
-            } else if (selfCares.mute && muted && !creayun) {
+            } else if (selfCares.mute && muted) {
                 runEssentialsCommand("essentials:mute " + uuid);
                 muted = false;
             }

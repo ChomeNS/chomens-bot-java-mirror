@@ -1,7 +1,6 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.chatParsers.CreayunChatParser;
 import me.chayapak1.chomens_bot.chatParsers.KaboomChatParser;
 import me.chayapak1.chomens_bot.chatParsers.MinecraftChatParser;
 import me.chayapak1.chomens_bot.chatParsers.U203aChatParser;
@@ -47,7 +46,7 @@ public class ChatPlugin extends Bot.Listener {
 
     private final Bot bot;
 
-    public final Pattern CHAT_SPLIT_PATTERN;
+    public final Pattern CHAT_SPLIT_PATTERN = Pattern.compile("\\G\\s*([^\\r\\n]{1,254}(?=\\s|$)|[^\\r\\n]{254})");
 
     private final List<ChatParser> chatParsers;
 
@@ -61,7 +60,6 @@ public class ChatPlugin extends Bot.Listener {
 
     public ChatPlugin (Bot bot) {
         this.bot = bot;
-        this.CHAT_SPLIT_PATTERN = Pattern.compile("\\G\\s*([^\\r\\n]{1," + (bot.options.creayun ? 126 : 254) + "}(?=\\s|$)|[^\\r\\n]{254})"); // thanks HBot for the regex <3
 
         queueDelay = bot.options.chatQueueDelay;
 
@@ -71,7 +69,6 @@ public class ChatPlugin extends Bot.Listener {
         chatParsers.add(new MinecraftChatParser(bot));
         chatParsers.add(new KaboomChatParser(bot));
         chatParsers.add(new U203aChatParser(bot));
-        chatParsers.add(new CreayunChatParser(bot));
 
         bot.executor.scheduleAtFixedRate(this::sendChatTick, 0, queueDelay, TimeUnit.MILLISECONDS);
     }
