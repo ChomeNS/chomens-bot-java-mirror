@@ -311,10 +311,17 @@ public class ComponentUtilities {
 
                         if (!lastStyle.isEmpty()) lastStyle = lastStyle.replace(code, "");
 
-                        style
-                                .append(getResetCode())
-                                .append(lastColor)
-                                .append(lastStyle);
+                        if (type == ParseType.SECTION_SIGNS) {
+                            style
+                                    .append(getResetCode())
+                                    .append(lastColor)
+                                    .append(lastStyle);
+                        } else {
+                            style
+                                    .append(getResetCode())
+                                    .append(lastStyle)
+                                    .append(lastColor);
+                        }
                     }
                 }
             }
@@ -375,8 +382,12 @@ public class ComponentUtilities {
         private String getPartialResult (String originalResult, String color, String style, boolean setLastStyles) {
             if (type == ParseType.PLAIN) return originalResult;
 
+            final String orderedStyling = type == ParseType.SECTION_SIGNS
+                    ? lastColor + lastStyle + color + style
+                    : lastStyle + lastColor + style + color;
+
             final String result =
-                    lastColor + lastStyle + color + style +
+                    orderedStyling +
                             originalResult +
                             (
                                     !color.isEmpty() || !style.isEmpty()
@@ -451,6 +462,10 @@ public class ComponentUtilities {
                             parser.parseStartTime = parseStartTime;
                             parser.isSubParsing = true;
 
+                            final String orderedStyling = type == ParseType.SECTION_SIGNS
+                                    ? lastColor + lastStyle + color + style
+                                    : lastStyle + lastColor + style + color;
+
                             matcher.appendReplacement(
                                     sb,
                                     Matcher.quoteReplacement(
@@ -464,7 +479,7 @@ public class ComponentUtilities {
                                                     color,
                                                     style,
                                                     false
-                                            ) + lastColor + lastStyle + color + style
+                                            ) + orderedStyling
                                     )
                             );
                         } else {
