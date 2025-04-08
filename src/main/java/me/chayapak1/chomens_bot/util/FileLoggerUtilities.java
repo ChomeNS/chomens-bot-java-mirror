@@ -1,6 +1,8 @@
 package me.chayapak1.chomens_bot.util;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import me.chayapak1.chomens_bot.data.logging.LogType;
+import net.kyori.adventure.text.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -100,7 +102,14 @@ public class FileLoggerUtilities {
     }
 
     public static synchronized void compressLogFile () throws IOException {
-        if (Files.size(logPath) > 100 * 1024 * 1024) { // Will not save because log file is too big
+        if (Files.size(logPath) > 500 * 1024 * 1024) { // Will not save because log file is too big
+            LoggerUtilities.log(
+                    LogType.INFO,
+                    null,
+                    Component.text("Not archiving log file since it's too big!"),
+                    false,
+                    true
+            );
             return;
         }
 
