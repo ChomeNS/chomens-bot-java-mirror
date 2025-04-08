@@ -1,7 +1,10 @@
 package me.chayapak1.chomens_bot;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import me.chayapak1.chomens_bot.plugins.*;
+import me.chayapak1.chomens_bot.plugins.ConsolePlugin;
+import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
+import me.chayapak1.chomens_bot.plugins.DiscordPlugin;
+import me.chayapak1.chomens_bot.plugins.IRCPlugin;
 import me.chayapak1.chomens_bot.util.ArrayUtilities;
 import me.chayapak1.chomens_bot.util.HttpUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
@@ -132,7 +135,6 @@ public class Main {
 
             // initialize plugins
             console = new ConsolePlugin(config);
-            ChomeNSModIntegrationPlugin.init();
             if (config.database.enabled) database = new DatabasePlugin(config);
             if (config.discord.enabled) discord = new DiscordPlugin(config);
             if (config.irc.enabled) irc = new IRCPlugin(config);

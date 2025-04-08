@@ -1,38 +1,34 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.chomeNSMod.Encryptor;
 import me.chayapak1.chomens_bot.chomeNSMod.Packet;
 import me.chayapak1.chomens_bot.chomeNSMod.PacketHandler;
-import me.chayapak1.chomens_bot.chomeNSMod.Types;
 import me.chayapak1.chomens_bot.chomeNSMod.clientboundPackets.ClientboundHandshakePacket;
 import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundRunCommandPacket;
 import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundRunCoreCommandPacket;
 import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundSuccessfulHandshakePacket;
+import me.chayapak1.chomens_bot.data.chomeNSMod.PayloadState;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
-import me.chayapak1.chomens_bot.util.Ascii85;
-import me.chayapak1.chomens_bot.util.LoggerUtilities;
+import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import org.apache.commons.lang3.tuple.Pair;
+import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.TranslationArgument;
 
-import javax.crypto.Cipher;
-import java.io.BufferedWriter;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.security.*;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.*;
-import java.util.stream.Stream;
 
 // This is inspired from the ChomeNS Bot Proxy which is in the JavaScript version of ChomeNS Bot.
 public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, PlayersPlugin.Listener, TickPlugin.Listener {
     private static final String ID = "chomens_mod";
+    private static final int ENCODED_PAYLOAD_LENGTH = 31_000; // just 32767 trimmed "a bit"
+
+    private static final Random RANDOM = new Random();
 
     public static final List<Class<? extends Packet>> SERVERBOUND_PACKETS = new ArrayList<>();
 
@@ -40,92 +36,6 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
         SERVERBOUND_PACKETS.add(ServerboundSuccessfulHandshakePacket.class);
         SERVERBOUND_PACKETS.add(ServerboundRunCoreCommandPacket.class);
         SERVERBOUND_PACKETS.add(ServerboundRunCommandPacket.class);
-    }
-
-    private static PrivateKey PRIVATE_KEY;
-
-    private static final Map<String, PublicKey> CLIENT_PUBLIC_KEYS = new HashMap<>();
-    private static final Path CLIENT_PUBLIC_KEYS_PATH = Path.of("client_public_keys");
-
-    private static final Path PRIVATE_KEY_PATH = Path.of("private.key");
-    private static final Path PUBLIC_KEY_PATH = Path.of("public.key");
-
-    private static final String BEGIN_PRIVATE_KEY = "-----BEGIN CHOMENS BOT PRIVATE KEY-----";
-    private static final String END_PRIVATE_KEY = "-----END CHOMENS BOT PRIVATE KEY-----";
-
-    private static final String BEGIN_PUBLIC_KEY = "-----BEGIN CHOMENS BOT PUBLIC KEY-----";
-    private static final String END_PUBLIC_KEY = "-----END CHOMENS BOT PUBLIC KEY-----";
-
-    public static void init () {
-        try {
-            // let's only check for the private key here
-            if (!Files.exists(PRIVATE_KEY_PATH)) {
-                final KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
-                keyGen.initialize(2048);
-
-                final KeyPair pair = keyGen.generateKeyPair();
-
-                // write the keys
-                // (note: no newline split is intentional)
-                final String encodedPrivateKey =
-                        BEGIN_PRIVATE_KEY + "\n" +
-                                Base64.getEncoder().encodeToString(pair.getPrivate().getEncoded()) +
-                                "\n" + END_PRIVATE_KEY;
-                final String encodedPublicKey =
-                        BEGIN_PUBLIC_KEY + "\n" +
-                                Base64.getEncoder().encodeToString(pair.getPublic().getEncoded()) +
-                                "\n" + END_PUBLIC_KEY;
-
-                final BufferedWriter privateKeyWriter = Files.newBufferedWriter(PRIVATE_KEY_PATH);
-                privateKeyWriter.write(encodedPrivateKey);
-                privateKeyWriter.close();
-
-                final BufferedWriter publicKeyWriter = Files.newBufferedWriter(PUBLIC_KEY_PATH);
-                publicKeyWriter.write(encodedPublicKey);
-                publicKeyWriter.close();
-            }
-
-            // is this a good way to remove the things?
-            final String privateKeyString = new String(Files.readAllBytes(PRIVATE_KEY_PATH))
-                    .replace(BEGIN_PRIVATE_KEY + "\n", "")
-                    .replace("\n" + END_PRIVATE_KEY, "")
-                    .replace("\n", "")
-                    .trim();
-
-            final byte[] privateKeyBytes = Base64.getDecoder().decode(privateKeyString);
-            final KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-
-            PRIVATE_KEY = keyFactory.generatePrivate(new PKCS8EncodedKeySpec(privateKeyBytes));
-
-            // lol this is so messy
-            if (Files.isDirectory(CLIENT_PUBLIC_KEYS_PATH)) {
-                try (final Stream<Path> files = Files.list(CLIENT_PUBLIC_KEYS_PATH)) {
-                    for (Path path : files.toList()) {
-                        try {
-                            final String publicKeyString = new String(Files.readAllBytes(path))
-                                    .replace(BEGIN_PUBLIC_KEY + "\n", "")
-                                    .replace("\n" + END_PUBLIC_KEY, "")
-                                    .replace("\n", "")
-                                    .trim();
-
-                            final byte[] publicKeyBytes = Base64.getDecoder().decode(publicKeyString);
-                            final KeyFactory clientKeyFactory = KeyFactory.getInstance("RSA");
-
-                            String username = path.getFileName().toString();
-
-                            if (username.contains(".")) username = username.substring(0, username.lastIndexOf("."));
-
-                            CLIENT_PUBLIC_KEYS.put(
-                                    username,
-                                    clientKeyFactory.generatePublic(new X509EncodedKeySpec(publicKeyBytes))
-                            );
-                        } catch (Exception ignored) { }
-                    }
-                }
-            }
-        } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException | IllegalArgumentException e) {
-            LoggerUtilities.error(e);
-        }
     }
 
     private final Bot bot;
@@ -136,7 +46,7 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
     public final List<PlayerEntry> connectedPlayers = new ArrayList<>();
 
-    private int chunkID = 0;
+    private final Map<PlayerEntry, Map<Integer, StringBuilder>> receivedParts = new HashMap<>();
 
     public ChomeNSModIntegrationPlugin (Bot bot) {
         this.bot = bot;
@@ -152,26 +62,6 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
         tryHandshaking();
     }
 
-    public byte[] decrypt (byte[] data) throws Exception {
-        final Cipher cipher = Cipher.getInstance("RSA");
-        cipher.init(Cipher.DECRYPT_MODE, PRIVATE_KEY);
-
-        return cipher.doFinal(data);
-    }
-
-    public String encrypt (String player, byte[] data) throws Exception {
-        final PublicKey publicKey = CLIENT_PUBLIC_KEYS.get(player);
-
-        if (publicKey == null) return null;
-
-        final Cipher cipher = Cipher.getInstance("RSA");
-        cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-
-        final byte[] encryptedBytes = cipher.doFinal(data);
-
-        return Ascii85.encode(encryptedBytes);
-    }
-
     public void send (PlayerEntry target, Packet packet) {
         if (!connectedPlayers.contains(target) && !(packet instanceof ClientboundHandshakePacket))
             return; // LoL sus check
@@ -184,59 +74,37 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
         final byte[] bytes = new byte[buf.readableBytes()];
         buf.readBytes(bytes);
 
-        // split
-        final int length = bytes.length;
-        final int chunkSize = 245 - (6 * 3);
+        try {
+            final int messageId = RANDOM.nextInt();
 
-        final List<byte[]> chunks = new ArrayList<>();
+            final String encrypted = Encryptor.encrypt(bytes, bot.config.chomeNSMod.password);
 
-        for (int i = 0; i < length; i += chunkSize) {
-            final int end = Math.min(length, i + chunkSize);
-            final byte[] chunk = Arrays.copyOfRange(bytes, i, end);
+            final Iterable<String> split = Splitter.fixedLength(ENCODED_PAYLOAD_LENGTH).split(encrypted);
 
-            chunks.add(chunk);
-        }
+            int i = 1;
 
-        final int currentChunkID = chunkID++;
-
-        int fullBytesIndex = 0;
-        for (byte[] chunk : chunks) {
-            final ByteBuf finalBuf = Unpooled.buffer();
-
-            finalBuf.writeInt(currentChunkID);
-            finalBuf.writeInt(chunks.size());
-            finalBuf.writeInt(fullBytesIndex);
-            finalBuf.writeInt(length);
-
-            finalBuf.writeBytes(chunk);
-
-            final byte[] finalBytes = new byte[finalBuf.readableBytes()];
-            finalBuf.readBytes(finalBytes);
-
-            try {
-                final String encrypted = encrypt(target.profile.getName(), finalBytes);
+            for (String part : split) {
+                final PayloadState state = i == Iterables.size(split)
+                        ? PayloadState.DONE
+                        : PayloadState.JOINING;
 
                 final Component component = Component.translatable(
                         "",
                         Component.text(ID),
-                        Component.text(encrypted)
+                        Component.text(messageId),
+                        Component.text(state.ordinal()),
+                        Component.text(part)
                 );
 
                 bot.chat.actionBar(component, target.profile.getId());
-            } catch (Exception ignored) { }
 
-            fullBytesIndex += chunk.length;
-        }
+                i++;
+            }
+        } catch (Exception ignored) { }
     }
 
-    private Pair<PlayerEntry, Packet> deserialize (byte[] data) {
+    private Packet deserialize (byte[] data) {
         final ByteBuf buf = Unpooled.wrappedBuffer(data);
-
-        final UUID uuid = Types.readUUID(buf);
-
-        final PlayerEntry player = bot.players.getEntry(uuid);
-
-        if (player == null) return null;
 
         final int id = buf.readInt();
 
@@ -245,7 +113,7 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
         if (packetClass == null) return null;
 
         try {
-            return Pair.of(player, packetClass.getDeclaredConstructor(ByteBuf.class).newInstance(buf));
+            return packetClass.getDeclaredConstructor(ByteBuf.class).newInstance(buf);
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
                  IllegalAccessException e) {
             return null;
@@ -254,37 +122,80 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
     @Override
     public boolean systemMessageReceived (Component component, String string, String ansi) {
-        if (!(component instanceof TextComponent textComponent)) return true;
-
-        final String id = textComponent.content();
-
         if (
-                !id.equals(ID) ||
-                        component.children().size() != 1 ||
-                        !(component.children().getFirst() instanceof TextComponent dataComponent)
+                !(component instanceof TranslatableComponent translatableComponent) ||
+                        !translatableComponent.key().isEmpty()
         ) return true;
 
-        final String data = dataComponent.content();
+        final List<TranslationArgument> arguments = translatableComponent.arguments();
+
+        if (
+                arguments.size() != 5 ||
+
+                        !(arguments.get(0).asComponent() instanceof TextComponent idTextComponent) ||
+                        !(arguments.get(1).asComponent() instanceof TextComponent uuidTextComponent) ||
+                        !(arguments.get(2).asComponent() instanceof TextComponent messageIdTextComponent) ||
+                        !(arguments.get(3).asComponent() instanceof TextComponent payloadStateTextComponent) ||
+                        !(arguments.get(4).asComponent() instanceof TextComponent payloadTextComponent) ||
+
+                        !idTextComponent.content().equals(ID)
+        ) return true;
 
         try {
-            final byte[] decrypted = decrypt(Ascii85.decode(data));
+            final UUID uuid = UUIDUtilities.tryParse(uuidTextComponent.content());
 
-            final Pair<PlayerEntry, Packet> deserialized = deserialize(decrypted);
+            if (uuid == null) return true;
 
-            if (deserialized == null) return false;
+            final PlayerEntry player = bot.players.getEntry(uuid);
 
-            final PlayerEntry player = deserialized.getKey();
-            final Packet packet = deserialized.getValue();
+            if (player == null) return false;
 
-            handlePacket(player, packet);
+            final int messageId = Integer.parseInt(messageIdTextComponent.content());
+            final int payloadStateIndex = Integer.parseInt(payloadStateTextComponent.content());
+
+            final PayloadState payloadState = PayloadState.values()[payloadStateIndex];
+
+            if (!receivedParts.containsKey(player)) receivedParts.put(player, new HashMap<>());
+
+            final Map<Integer, StringBuilder> playerReceivedParts = receivedParts.get(player);
+
+            if (!playerReceivedParts.containsKey(messageId)) playerReceivedParts.put(messageId, new StringBuilder());
+
+            final StringBuilder builder = playerReceivedParts.get(messageId);
+
+            final String payload = payloadTextComponent.content();
+
+            builder.append(payload);
+
+            playerReceivedParts.put(messageId, builder);
+
+            if (payloadState == PayloadState.DONE) {
+                playerReceivedParts.remove(messageId);
+
+                final byte[] decryptedFullPayload = Encryptor.decrypt(
+                        builder.toString(),
+                        bot.config.chomeNSMod.password
+                );
+
+                final Packet packet = deserialize(decryptedFullPayload);
+
+                if (
+                        packet == null ||
+                                (
+                                        !(packet instanceof ServerboundSuccessfulHandshakePacket) &&
+                                                !connectedPlayers.contains(player)
+                                )
+                ) return false;
+
+                handlePacket(player, packet);
+            }
         } catch (Exception ignored) { }
 
         return false;
     }
 
     private void tryHandshaking () {
-        // is looping through the usernames from the client public keys list a good idea?
-        for (String username : CLIENT_PUBLIC_KEYS.keySet()) {
+        for (String username : bot.config.chomeNSMod.players) {
             final PlayerEntry target = bot.players.getEntry(username);
 
             if (target == null || connectedPlayers.contains(target)) continue;
@@ -309,6 +220,7 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
         if (!connectedPlayers.contains(target)) return;
 
         connectedPlayers.remove(target);
+        receivedParts.remove(target);
     }
 
     @SuppressWarnings("unused")

@@ -29,6 +29,15 @@ database:
   username: 'chomens_bot'
   password: '123456'
 
+chomeNSMod:
+  enabled: false
+  password: '123456' # secure password 2025
+  players:
+    - 'player username that has ChomeNS Mod'
+    - 'Bob'
+    - 'Jake'
+    - 'Parker'
+
 discord:
   enabled: false
   prefix: 'default!'

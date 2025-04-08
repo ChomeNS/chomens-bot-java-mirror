@@ -16,6 +16,8 @@ public class Configuration {
 
     public Database database = new Database();
 
+    public ChomeNSMod chomeNSMod = new ChomeNSMod();
+
     public String weatherApiKey;
 
     public String namespace = "chomens_bot";
@@ -67,6 +69,12 @@ public class Configuration {
         public String address = "localhost";
         public String username = "chomens_bot";
         public String password = "123456";
+    }
+
+    public static class ChomeNSMod {
+        public boolean enabled = false;
+        public String password = "123456";
+        public List<String> players = new ArrayList<>();
     }
 
     public static class Keys {
