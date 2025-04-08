@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.command;
 
+import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import net.kyori.adventure.text.Component;
 
 import java.util.Arrays;
@@ -11,6 +12,7 @@ public abstract class Command {
     public final String[] aliases;
     public final TrustLevel trustLevel;
     public final boolean consoleOnly;
+    public ChatPacketType[] disallowedPacketTypes;
 
     public Command (
             String name,
@@ -26,6 +28,24 @@ public abstract class Command {
         this.aliases = aliases;
         this.trustLevel = trustLevel;
         this.consoleOnly = consoleOnly;
+    }
+
+    public Command (
+            String name,
+            String description,
+            String[] usages,
+            String[] aliases,
+            TrustLevel trustLevel,
+            boolean consoleOnly,
+            ChatPacketType[] disallowedPacketTypes
+    ) {
+        this.name = name;
+        this.description = description;
+        this.usages = usages;
+        this.aliases = aliases;
+        this.trustLevel = trustLevel;
+        this.consoleOnly = consoleOnly;
+        this.disallowedPacketTypes = disallowedPacketTypes;
     }
 
     public abstract Component execute (CommandContext context) throws Exception;

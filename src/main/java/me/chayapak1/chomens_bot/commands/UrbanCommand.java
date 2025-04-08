@@ -11,6 +11,7 @@ import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.command.contexts.DiscordCommandContext;
+import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.util.HttpUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -36,7 +37,8 @@ public class UrbanCommand extends Command {
                 new String[] { "<term>" },
                 new String[] {},
                 TrustLevel.PUBLIC,
-                false
+                false,
+                new ChatPacketType[]{ ChatPacketType.DISGUISED }
         );
 
         Main.EXECUTOR.scheduleAtFixedRate(() -> requestsPerSecond = 0, 0, 1, TimeUnit.SECONDS);

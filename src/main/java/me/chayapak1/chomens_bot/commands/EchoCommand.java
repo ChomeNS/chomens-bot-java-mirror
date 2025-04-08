@@ -5,6 +5,7 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
+import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import net.kyori.adventure.text.Component;
 
 public class EchoCommand extends Command {
@@ -15,7 +16,8 @@ public class EchoCommand extends Command {
                 new String[] { "<message>" },
                 new String[] { "say" },
                 TrustLevel.PUBLIC,
-                false
+                false,
+                new ChatPacketType[]{ ChatPacketType.DISGUISED }
         );
     }
 

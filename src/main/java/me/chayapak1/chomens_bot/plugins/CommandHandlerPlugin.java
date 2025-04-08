@@ -139,9 +139,17 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
             return;
         }
 
-        if (!bypass && disabled) {
-            context.sendOutput(Component.text("ChomeNS Bot is currently disabled").color(NamedTextColor.RED));
-            return;
+        if (!bypass) {
+            if (disabled) {
+                context.sendOutput(Component.text("ChomeNS Bot is currently disabled").color(NamedTextColor.RED));
+                return;
+            } else if (
+                    context instanceof PlayerCommandContext playerContext &&
+                            command.disallowedPacketTypes != null &&
+                            Arrays.asList(command.disallowedPacketTypes).contains(playerContext.packetType)
+            ) {
+                return;
+            }
         }
 
         final TrustLevel trustLevel = command.trustLevel;

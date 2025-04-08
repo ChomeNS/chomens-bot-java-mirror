@@ -5,6 +5,7 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
+import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.eval.EvalOutput;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -19,7 +20,8 @@ public class EvalCommand extends Command {
                 new String[] { "run <code>", "reset" },
                 new String[] {},
                 TrustLevel.PUBLIC,
-                false
+                false,
+                new ChatPacketType[]{ ChatPacketType.DISGUISED }
         );
     }
 

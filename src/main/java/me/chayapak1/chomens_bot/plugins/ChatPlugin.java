@@ -4,6 +4,7 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.chatParsers.KaboomChatParser;
 import me.chayapak1.chomens_bot.chatParsers.MinecraftChatParser;
 import me.chayapak1.chomens_bot.chatParsers.U203aChatParser;
+import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.chat.ChatParser;
 import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
@@ -119,7 +120,7 @@ public class ChatPlugin extends Bot.Listener {
         for (Listener listener : listeners) {
             if (!listener.systemMessageReceived(component, string, ansi)) break;
 
-            if (playerMessage != null && !listener.playerMessageReceived(playerMessage)) break;
+            if (playerMessage != null && !listener.playerMessageReceived(playerMessage, ChatPacketType.SYSTEM)) break;
         }
     }
 
@@ -182,7 +183,7 @@ public class ChatPlugin extends Bot.Listener {
         final Component unsignedContent = packet.getUnsignedContent();
 
         for (Listener listener : listeners) {
-            if (!listener.playerMessageReceived(playerMessage)) break;
+            if (!listener.playerMessageReceived(playerMessage, ChatPacketType.PLAYER)) break;
 
             final Component chatTypeComponent = getComponentByChatType(
                     packet.getChatType().id(),
@@ -242,7 +243,7 @@ public class ChatPlugin extends Bot.Listener {
                 );
 
                 for (Listener listener : listeners) {
-                    if (!listener.playerMessageReceived(playerMessage)) break;
+                    if (!listener.playerMessageReceived(playerMessage, ChatPacketType.DISGUISED)) break;
                 }
             }
         } else {
@@ -258,7 +259,7 @@ public class ChatPlugin extends Bot.Listener {
             final String ansi = ComponentUtilities.stringifyAnsi(component);
 
             for (Listener listener : listeners) {
-                if (!listener.playerMessageReceived(playerMessage)) break;
+                if (!listener.playerMessageReceived(playerMessage, ChatPacketType.DISGUISED)) break;
                 if (!listener.systemMessageReceived(component, string, ansi)) break;
             }
         }
@@ -379,7 +380,7 @@ public class ChatPlugin extends Bot.Listener {
     public void addListener (Listener listener) { listeners.add(listener); }
 
     public interface Listener {
-        default boolean playerMessageReceived (PlayerMessage message) { return true; }
+        default boolean playerMessageReceived (PlayerMessage message, ChatPacketType packetType) { return true; }
 
         default boolean systemMessageReceived (Component component, String string, String ansi) { return true; }
     }

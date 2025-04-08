@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
@@ -80,7 +81,7 @@ public class FilterManagerPlugin
     }
 
     @Override
-    public boolean playerMessageReceived (PlayerMessage message) {
+    public boolean playerMessageReceived (PlayerMessage message, ChatPacketType packetType) {
         if (message.sender().profile.getName() == null) return true;
 
         final Pair<PlayerEntry, String> player = getFilteredFromName(message.sender().profile.getName());

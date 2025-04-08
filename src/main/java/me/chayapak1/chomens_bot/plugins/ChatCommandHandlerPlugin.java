@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.contexts.PlayerCommandContext;
+import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
@@ -27,7 +28,7 @@ public class ChatCommandHandlerPlugin implements ChatPlugin.Listener, CommandSpy
     }
 
     @Override
-    public boolean playerMessageReceived (PlayerMessage message) {
+    public boolean playerMessageReceived (PlayerMessage message, ChatPacketType packetType) {
         if (
                 message.sender() != null &&
                         bot.profile != null &&
@@ -38,7 +39,7 @@ public class ChatCommandHandlerPlugin implements ChatPlugin.Listener, CommandSpy
         final Component messageComponent = message.contents();
         if (displayNameComponent == null || messageComponent == null) return true;
 
-        handle(displayNameComponent, messageComponent, message.sender(), "@a", prefixes);
+        handle(displayNameComponent, messageComponent, message.sender(), "@a", prefixes, packetType);
 
         return true;
     }
@@ -56,7 +57,14 @@ public class ChatCommandHandlerPlugin implements ChatPlugin.Listener, CommandSpy
         final Component displayNameComponent = Component.text(sender.profile.getName());
         final Component messageComponent = Component.text(command);
 
-        handle(displayNameComponent, messageComponent, sender, UUIDUtilities.selector(sender.profile.getId()), commandSpyPrefixes);
+        handle(
+                displayNameComponent,
+                messageComponent,
+                sender,
+                UUIDUtilities.selector(sender.profile.getId()),
+                commandSpyPrefixes,
+                ChatPacketType.SYSTEM
+        );
     }
 
     private void handle (
@@ -64,7 +72,8 @@ public class ChatCommandHandlerPlugin implements ChatPlugin.Listener, CommandSpy
             Component messageComponent,
             PlayerEntry sender,
             String selector,
-            List<String> prefixes
+            List<String> prefixes,
+            ChatPacketType packetType
     ) {
         final String displayName = ComponentUtilities.stringify(displayNameComponent);
         final String contents = ComponentUtilities.stringify(messageComponent);
@@ -80,7 +89,14 @@ public class ChatCommandHandlerPlugin implements ChatPlugin.Listener, CommandSpy
 
         final String commandString = contents.substring(prefix.length());
 
-        final PlayerCommandContext context = new PlayerCommandContext(bot, displayName, prefix, selector, sender);
+        final PlayerCommandContext context = new PlayerCommandContext(
+                bot,
+                displayName,
+                prefix,
+                selector,
+                sender,
+                packetType
+        );
 
         bot.commandHandler.executeCommand(commandString, context, null);
     }
