@@ -296,7 +296,7 @@ public class ChatPlugin extends Bot.Listener {
         if (!bot.loggedIn) return;
 
         bot.session.send(new ServerboundChatPacket(
-                message,
+                StringUtilities.truncateToFitUtf8ByteLength(message, 256),
                 Instant.now().toEpochMilli(),
                 0L,
                 null,

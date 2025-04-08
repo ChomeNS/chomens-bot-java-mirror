@@ -244,13 +244,13 @@ public class InfoCommand extends Command {
                         Component.translatable(
                                 "%s %s, %s %s, %s %s, %s %s",
                                 Component.text(days),
-                                Component.text(StringUtilities.addPluralS(days, "day")),
+                                Component.text(StringUtilities.addPlural(days, "day")),
                                 Component.text(hours),
-                                Component.text(StringUtilities.addPluralS(hours, "hour")),
+                                Component.text(StringUtilities.addPlural(hours, "hour")),
                                 Component.text(minutes),
-                                Component.text(StringUtilities.addPluralS(minutes, "minute")),
+                                Component.text(StringUtilities.addPlural(minutes, "minute")),
                                 Component.text(seconds),
-                                Component.text(StringUtilities.addPluralS(seconds, "second"))
+                                Component.text(StringUtilities.addPlural(seconds, "second"))
                         ).color(NamedTextColor.GREEN)
                 ).color(bot.colorPalette.defaultColor);
             }

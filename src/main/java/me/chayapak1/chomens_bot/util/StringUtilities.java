@@ -1,5 +1,7 @@
 package me.chayapak1.chomens_bot.util;
 
+import io.netty.buffer.ByteBufUtil;
+
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -27,6 +29,12 @@ public class StringUtilities {
         }
 
         return removedCommand.toString();
+    }
+
+    public static String substringUtfLimit (String string, int limit) {
+        final int max = ByteBufUtil.utf8MaxBytes(limit);
+        final byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
+        return new String(Arrays.copyOfRange(bytes, 0, max), StandardCharsets.UTF_8);
     }
 
     // https://stackoverflow.com/a/35148974/18518424
@@ -72,7 +80,7 @@ public class StringUtilities {
         return false;
     }
 
-    public static String addPluralS (long amount, String unit) {
+    public static String addPlural (long amount, String unit) {
         return amount > 1 ? unit + "s" : unit;
     }
 
