@@ -206,7 +206,7 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
     private void handlePacket (PlayerEntry player, Packet packet) {
         if (packet instanceof ServerboundSuccessfulHandshakePacket) {
-            connectedPlayers.remove(player);
+            connectedPlayers.removeIf(eachPlayer -> eachPlayer.equals(player));
             connectedPlayers.add(player);
         }
 
@@ -217,9 +217,7 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
     @Override
     public void playerLeft (PlayerEntry target) {
-        if (!connectedPlayers.contains(target)) return;
-
-        connectedPlayers.remove(target);
+        connectedPlayers.removeIf(player -> player.equals(target));
         receivedParts.remove(target);
     }
 
