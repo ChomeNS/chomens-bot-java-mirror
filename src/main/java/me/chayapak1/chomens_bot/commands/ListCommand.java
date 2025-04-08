@@ -46,6 +46,7 @@ public class ListCommand extends Command {
             // Vanished: false
             // Latency: 32
             // Game Mode: CREATIVE
+            // IP Address: 127.0.0.1
             //
             // Click to copy the username to your clipboard
             // Shift+Click to insert the UUID into your chat box
@@ -98,6 +99,15 @@ public class ListCommand extends Command {
                                     "Game Mode: %s",
                                     Component
                                             .text(entry.gamemode.name())
+                                            .color(bot.colorPalette.string)
+                            ).color(bot.colorPalette.secondary)
+                    )
+                    .append(Component.newline())
+                    .append(
+                            Component.translatable(
+                                    "IP Address: %s",
+                                    Component
+                                            .text(entry.ip == null ? "N/A" : entry.ip)
                                             .color(bot.colorPalette.string)
                             ).color(bot.colorPalette.secondary)
                     )
