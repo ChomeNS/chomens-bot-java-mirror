@@ -15,8 +15,7 @@ public class RestartCommand extends Command {
                 "Gracefully restarts the bot",
                 new String[] { "[reason]" },
                 new String[] {},
-                TrustLevel.OWNER,
-                false
+                TrustLevel.OWNER
         );
     }
 

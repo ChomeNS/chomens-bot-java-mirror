@@ -18,8 +18,7 @@ public class GrepLogCommand extends Command {
                 "Queries the bot's logs",
                 new String[] { "<input>", "...-ignorecase...", "...-regex...", "stop" },
                 new String[] { "logquery", "findlog" },
-                TrustLevel.PUBLIC,
-                false
+                TrustLevel.PUBLIC
         );
     }
 

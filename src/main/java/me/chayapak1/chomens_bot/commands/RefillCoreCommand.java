@@ -14,8 +14,7 @@ public class RefillCoreCommand extends Command {
                 "Refills and resets the bots command core",
                 new String[] {},
                 new String[] { "rc" },
-                TrustLevel.PUBLIC,
-                false
+                TrustLevel.PUBLIC
         );
     }
 

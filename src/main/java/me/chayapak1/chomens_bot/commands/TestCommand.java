@@ -14,8 +14,7 @@ public class TestCommand extends Command {
                 "Tests if the bot is working",
                 new String[] { "[args]" },
                 new String[] {},
-                TrustLevel.PUBLIC,
-                false
+                TrustLevel.PUBLIC
         );
     }
 

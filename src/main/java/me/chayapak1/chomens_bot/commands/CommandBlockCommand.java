@@ -32,8 +32,7 @@ public class CommandBlockCommand extends Command {
                         "..{uuid{regex}}.."
                 },
                 new String[] { "cmd", "commandblock", "run", "core" },
-                TrustLevel.PUBLIC,
-                false
+                TrustLevel.PUBLIC
         );
     }
 

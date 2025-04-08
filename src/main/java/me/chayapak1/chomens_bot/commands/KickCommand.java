@@ -19,8 +19,7 @@ public class KickCommand extends Command {
                 "Kicks a player",
                 new String[] {},
                 new String[] {},
-                TrustLevel.TRUSTED,
-                false
+                TrustLevel.TRUSTED
         );
 
         final String allMethods = String.join("|", Arrays.stream(Kick.values()).map(Enum::name).toList());

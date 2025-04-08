@@ -14,14 +14,13 @@ public class ScreenshareCommand extends Command {
                 "screenshare",
                 "Shares my screen",
                 new String[] {
-                        "<start> <x> <y> <z>",
-                        "<stop>",
-                        "<setres> <width> <height>",
-                        "<setfps> <fps>"
+                        "start <x> <y> <z>",
+                        "stop",
+                        "setres <width> <height>",
+                        "setfps <fps>"
                 },
                 new String[] {},
-                TrustLevel.TRUSTED,
-                false
+                TrustLevel.TRUSTED
         );
     }
 

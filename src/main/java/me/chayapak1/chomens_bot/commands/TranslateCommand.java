@@ -24,8 +24,7 @@ public class TranslateCommand extends Command {
                 "Translates a message using Google Translate",
                 new String[] { "<fromLanguage> <toLanguage> <message>" },
                 new String[] {},
-                TrustLevel.PUBLIC,
-                false
+                TrustLevel.PUBLIC
         );
     }
 

@@ -21,8 +21,7 @@ public class CloopCommand extends Command {
                 "Loops commands",
                 new String[] { "add <interval> <TimeUnit> <command>", "remove <index>", "clear", "list" },
                 new String[] { "commandloop" },
-                TrustLevel.TRUSTED,
-                false
+                TrustLevel.TRUSTED
         );
     }
 

@@ -19,6 +19,21 @@ public abstract class Command {
             String description,
             String[] usages,
             String[] aliases,
+            TrustLevel trustLevel
+    ) {
+        this.name = name;
+        this.description = description;
+        this.usages = usages;
+        this.aliases = aliases;
+        this.trustLevel = trustLevel;
+        this.consoleOnly = false;
+    }
+
+    public Command (
+            String name,
+            String description,
+            String[] usages,
+            String[] aliases,
             TrustLevel trustLevel,
             boolean consoleOnly
     ) {

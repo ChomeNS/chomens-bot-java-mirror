@@ -15,8 +15,7 @@ public class ValidateCommand extends Command {
                 "Validates/shows your trust level",
                 new String[] { "" },
                 new String[] { "checkhash" },
-                TrustLevel.TRUSTED,
-                false
+                TrustLevel.TRUSTED
         );
     }
 

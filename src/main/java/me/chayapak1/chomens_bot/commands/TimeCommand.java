@@ -20,8 +20,7 @@ public class TimeCommand extends Command {
                 "Shows the date and time for the specified timezone",
                 new String[] { "<timezone>" },
                 new String[] { "dateandtime", "date" },
-                TrustLevel.PUBLIC,
-                false
+                TrustLevel.PUBLIC
         );
     }
 

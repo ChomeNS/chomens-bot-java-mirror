@@ -29,8 +29,7 @@ public class FilterCommand extends Command {
                         "list"
                 },
                 new String[] { "filterplayer", "ban", "blacklist" },
-                TrustLevel.ADMIN,
-                false
+                TrustLevel.ADMIN
         );
     }
 

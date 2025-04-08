@@ -6,6 +6,7 @@ import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.command.contexts.ConsoleCommandContext;
+import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.plugins.MusicPlayerPlugin;
 import me.chayapak1.chomens_bot.song.Instrument;
 import me.chayapak1.chomens_bot.song.Loop;
@@ -59,7 +60,8 @@ public class MusicCommand extends Command {
                 },
                 new String[] { "song" },
                 TrustLevel.PUBLIC,
-                false
+                false,
+                new ChatPacketType[]{ ChatPacketType.DISGUISED }
         );
     }
 

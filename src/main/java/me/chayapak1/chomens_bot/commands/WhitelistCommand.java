@@ -19,8 +19,7 @@ public class WhitelistCommand extends Command {
                 "Manages whitelist",
                 new String[] { "enable", "disable", "add <player>", "remove <index>", "clear", "list" },
                 new String[] {},
-                TrustLevel.ADMIN,
-                false
+                TrustLevel.ADMIN
         );
     }
 

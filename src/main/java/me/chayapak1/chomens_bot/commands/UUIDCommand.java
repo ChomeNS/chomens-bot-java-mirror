@@ -19,8 +19,7 @@ public class UUIDCommand extends Command {
                 "Shows your UUID or other player's UUID",
                 new String[] { "[username]" },
                 new String[] {},
-                TrustLevel.PUBLIC,
-                false
+                TrustLevel.PUBLIC
         );
     }
 

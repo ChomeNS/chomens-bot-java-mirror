@@ -27,8 +27,7 @@ public class IPFilterCommand extends Command {
                         "list"
                 },
                 new String[] { "filterip", "banip", "ipban" },
-                TrustLevel.ADMIN,
-                false
+                TrustLevel.ADMIN
         );
     }
 

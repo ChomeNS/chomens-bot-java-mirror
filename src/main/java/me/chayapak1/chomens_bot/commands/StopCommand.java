@@ -15,8 +15,7 @@ public class StopCommand extends Command {
                 "Gracefully stops the bot",
                 new String[] { "[reason]" },
                 new String[] {},
-                TrustLevel.OWNER,
-                false
+                TrustLevel.OWNER
         );
     }
 

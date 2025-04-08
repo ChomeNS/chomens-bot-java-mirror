@@ -25,8 +25,7 @@ public class HelpCommand extends Command {
                 "Shows a command list or usage for a command",
                 new String[] { "[command]" },
                 new String[] { "heko", "cmds", "commands" },
-                TrustLevel.PUBLIC,
-                false
+                TrustLevel.PUBLIC
         );
     }
 
