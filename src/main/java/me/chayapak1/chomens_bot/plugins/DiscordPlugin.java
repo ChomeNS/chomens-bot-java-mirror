@@ -145,7 +145,7 @@ public class DiscordPlugin extends ListenerAdapter {
                 public void disconnected (DisconnectedEvent event) {
                     if (totalConnects.get(channelId) >= 6) return;
 
-                    final String reason = ComponentUtilities.stringifyAnsi(event.getReason());
+                    final String reason = ComponentUtilities.stringifyDiscordAnsi(event.getReason());
                     sendMessageInstantly(
                             "Disconnected: \n" +
                                     "```ansi\n" +
