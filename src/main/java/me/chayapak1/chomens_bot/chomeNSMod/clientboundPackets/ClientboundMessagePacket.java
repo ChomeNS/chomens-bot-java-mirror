@@ -5,15 +5,15 @@ import me.chayapak1.chomens_bot.chomeNSMod.Packet;
 import me.chayapak1.chomens_bot.chomeNSMod.Types;
 import net.kyori.adventure.text.Component;
 
-public class ClientboundCommandOutputPacket implements Packet {
-    public final Component output;
+public class ClientboundMessagePacket implements Packet {
+    public final Component message;
 
-    public ClientboundCommandOutputPacket (Component output) {
-        this.output = output;
+    public ClientboundMessagePacket (Component message) {
+        this.message = message;
     }
 
-    public ClientboundCommandOutputPacket (ByteBuf buf) {
-        this.output = Types.readComponent(buf);
+    public ClientboundMessagePacket (ByteBuf buf) {
+        this.message = Types.readComponent(buf);
     }
 
     @Override
@@ -23,6 +23,6 @@ public class ClientboundCommandOutputPacket implements Packet {
 
     @Override
     public void serialize (ByteBuf buf) {
-        Types.writeComponent(buf, this.output);
+        Types.writeComponent(buf, this.message);
     }
 }
