@@ -6,7 +6,6 @@ import me.chayapak1.chomens_bot.data.bossbar.BotBossBar;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.geysermc.mcprotocollib.network.Session;
-import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.data.game.BossBarColor;
@@ -15,10 +14,12 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.Clientbound
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 // yes this has been rewritten to be not spammy
-public class BossbarManagerPlugin extends Bot.Listener implements PlayersPlugin.Listener {
+public class BossbarManagerPlugin
+        extends Bot.Listener
+        implements PlayersPlugin.Listener, TickPlugin.Listener, CorePlugin.Listener
+{
     private final Bot bot;
 
     public final Map<UUID, BossBar> serverBossBars = new HashMap<>();
@@ -36,7 +37,8 @@ public class BossbarManagerPlugin extends Bot.Listener implements PlayersPlugin.
         bot.addListener(this);
 
         bot.players.addListener(this);
-        bot.executor.scheduleAtFixedRate(this::check, 0, 600, TimeUnit.MILLISECONDS);
+        bot.tick.addListener(this);
+        bot.core.addListener(this);
     }
 
     @Override
@@ -126,7 +128,8 @@ public class BossbarManagerPlugin extends Bot.Listener implements PlayersPlugin.
         }
     }
 
-    private void check () {
+    @Override
+    public void onSecondTick () {
         for (Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
             final UUID uuid = _bossBar.getKey();
             final BotBossBar bossBar = _bossBar.getValue();
@@ -137,7 +140,7 @@ public class BossbarManagerPlugin extends Bot.Listener implements PlayersPlugin.
                 bossBar.gotSecret = false;
 
                 addBossBar(bossBar.id, bossBar, true);
-            } else if (!bossBar.title().equals(serverBossBar.title)) {
+            } else if (!serverBossBar.title.equals(bossBar.title)) {
                 bossBar.setTitle(bossBar.title, true);
             } else if (bossBar.value() != serverBossBar.health * bossBar.max()) {
                 bossBar.setValue(bossBar.value(), true);
@@ -151,7 +154,7 @@ public class BossbarManagerPlugin extends Bot.Listener implements PlayersPlugin.
     }
 
     @Override
-    public void connected (ConnectedEvent event) {
+    public void coreReady () {
         for (Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
             final BotBossBar bossBar = _bossBar.getValue();
 
@@ -192,7 +195,7 @@ public class BossbarManagerPlugin extends Bot.Listener implements PlayersPlugin.
     }
 
     private void addBossBar (String name, BotBossBar bossBar, boolean secret) {
-        if (actionBar) return;
+        if (!enabled || actionBar) return;
 
         final String prefix = "minecraft:bossbar set " + name + " ";
 
@@ -230,6 +233,8 @@ public class BossbarManagerPlugin extends Bot.Listener implements PlayersPlugin.
     }
 
     public BotBossBar get (String name) {
+        if (!enabled) return null;
+
         for (Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
             final BotBossBar bossBar = _bossBar.getValue();
 
@@ -240,6 +245,8 @@ public class BossbarManagerPlugin extends Bot.Listener implements PlayersPlugin.
     }
 
     public BotBossBar get (UUID uuid) {
+        if (!enabled) return null;
+
         for (Map.Entry<UUID, BotBossBar> bossBar : bossBars.entrySet()) {
             if (bossBar.getValue().uuid == uuid) return bossBar.getValue();
         }

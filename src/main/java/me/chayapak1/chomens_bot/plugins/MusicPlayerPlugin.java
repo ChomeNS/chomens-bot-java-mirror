@@ -33,9 +33,9 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
     public static final String CUSTOM_PITCH_SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic,tag=custompitch]";
     public static final String BOTH_SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic]";
 
-    private final Bot bot;
-
     public static final Path SONG_DIR = Path.of("songs");
+
+    private static final String BOSS_BAR_NAME = "music";
 
     static {
         try {
@@ -44,6 +44,8 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
             LoggerUtilities.error(e);
         }
     }
+
+    private final Bot bot;
 
     public Song currentSong;
     public final List<Song> songQueue = Collections.synchronizedList(new LinkedList<>());
@@ -65,7 +67,6 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
 
     public boolean locked = false; // this can be set through servereval
 
-    private final String bossBarName = "music";
     public BossBarColor bossBarColor;
 
     public String currentLyrics = "";
@@ -159,11 +160,11 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
             if (!currentSong.finished()) {
                 handleLyrics();
 
-                BotBossBar bossBar = bot.bossbar.get(bossBarName);
+                BotBossBar bossBar = bot.bossbar.get(BOSS_BAR_NAME);
 
-                if (bossBar == null && bot.bossbar.enabled) bossBar = addBossBar();
+                if (bossBar == null) bossBar = addBossBar();
 
-                if (bot.bossbar.enabled && bot.options.useCore) {
+                if (bossBar != null && bot.options.useCore) {
                     bossBar.setTitle(generateBossBar());
                     bossBar.setColor(bossBarColor);
                     bossBar.setValue((int) Math.floor(((double) (currentSong.time * speed) / 1000)));
@@ -243,7 +244,7 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
                 bot
         );
 
-        bot.bossbar.add(bossBarName, bossBar);
+        bot.bossbar.add(BOSS_BAR_NAME, bossBar);
 
         return bossBar;
     }
@@ -289,11 +290,11 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
     }
 
     public void removeBossBar () {
-        final BotBossBar bossBar = bot.bossbar.get(bossBarName);
+        final BotBossBar bossBar = bot.bossbar.get(BOSS_BAR_NAME);
 
         if (bossBar != null) bossBar.setTitle(Component.text("No song is currently playing"));
 
-        bot.bossbar.remove(bossBarName);
+        bot.bossbar.remove(BOSS_BAR_NAME);
     }
 
     public Component generateBossBar () {

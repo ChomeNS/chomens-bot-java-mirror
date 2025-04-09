@@ -2,7 +2,6 @@ package me.chayapak1.chomens_bot.data.bossbar;
 
 import me.chayapak1.chomens_bot.Bot;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.geysermc.mcprotocollib.protocol.data.game.BossBarColor;
 import org.geysermc.mcprotocollib.protocol.data.game.BossBarDivision;
@@ -10,13 +9,13 @@ import org.geysermc.mcprotocollib.protocol.data.game.BossBarDivision;
 import java.util.UUID;
 
 public class BotBossBar extends BossBar {
-    public UUID uuid = UUID.randomUUID(); // the random uuid will be temporary
+    public UUID uuid;
 
     public final Component secret = Component
-            .text(UUID.randomUUID().toString())
-            .color(NamedTextColor.BLACK)
-            .append(Component.space())
-            .append(Component.text("(please ignore!)").color(NamedTextColor.GRAY));
+            .translatable(
+                    "",
+                    Component.text(UUID.randomUUID().toString())
+            );
 
     public boolean gotSecret = false;
 

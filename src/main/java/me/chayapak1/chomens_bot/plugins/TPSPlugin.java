@@ -35,11 +35,7 @@ public class TPSPlugin extends Bot.Listener implements TickPlugin.Listener {
         bot.tick.addListener(this);
     }
 
-    public void on () {
-        if (enabled) return;
-
-        enabled = true;
-
+    private void createBossBar () {
         final BotBossBar bossBar = new BotBossBar(
                 Component.empty(),
                 "@a",
@@ -52,6 +48,14 @@ public class TPSPlugin extends Bot.Listener implements TickPlugin.Listener {
         );
 
         bot.bossbar.add(bossbarName, bossBar);
+    }
+
+    public void on () {
+        if (enabled) return;
+
+        enabled = true;
+
+        createBossBar();
     }
 
     public void off () {
@@ -85,7 +89,10 @@ public class TPSPlugin extends Bot.Listener implements TickPlugin.Listener {
 
             final BotBossBar bossBar = bot.bossbar.get(bossbarName);
 
-            if (bossBar == null) return;
+            if (bossBar == null) {
+                createBossBar();
+                return;
+            }
 
             bossBar.setTitle(component);
             bossBar.setColor(getBossBarColor(tickRate));
