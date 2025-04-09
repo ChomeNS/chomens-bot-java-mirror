@@ -12,6 +12,7 @@ import me.chayapak1.chomens_bot.chomeNSMod.clientboundPackets.ClientboundHandsha
 import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundRunCommandPacket;
 import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundRunCoreCommandPacket;
 import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundSuccessfulHandshakePacket;
+import me.chayapak1.chomens_bot.data.chomeNSMod.PayloadMetadata;
 import me.chayapak1.chomens_bot.data.chomeNSMod.PayloadState;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
@@ -21,14 +22,18 @@ import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.TranslationArgument;
 
 import java.lang.reflect.InvocationTargetException;
+import java.security.SecureRandom;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 // This is inspired from the ChomeNS Bot Proxy which is in the JavaScript version of ChomeNS Bot.
 public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, PlayersPlugin.Listener, TickPlugin.Listener {
     private static final String ID = "chomens_mod";
     private static final int ENCODED_PAYLOAD_LENGTH = 31_000; // just 32767 trimmed "a bit"
 
-    private static final Random RANDOM = new Random();
+    private static final long NONCE_EXPIRATION_MS = 30 * 1000; // 30 seconds
+
+    private static final SecureRandom RANDOM = new SecureRandom();
 
     public static final List<Class<? extends Packet>> SERVERBOUND_PACKETS = new ArrayList<>();
 
@@ -44,9 +49,11 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
     private final List<Listener> listeners = new ArrayList<>();
 
-    public final List<PlayerEntry> connectedPlayers = new ArrayList<>();
+    public final List<PlayerEntry> connectedPlayers = Collections.synchronizedList(new ArrayList<>());
 
-    private final Map<PlayerEntry, Map<Integer, StringBuilder>> receivedParts = new HashMap<>();
+    private final Map<PlayerEntry, Map<Integer, StringBuilder>> receivedParts = new ConcurrentHashMap<>();
+
+    private final List<PayloadMetadata> seenMetadata = Collections.synchronizedList(new ArrayList<>());
 
     public ChomeNSModIntegrationPlugin (Bot bot) {
         this.bot = bot;
@@ -60,13 +67,19 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
     @Override
     public void onSecondTick () {
         tryHandshaking();
+
+        seenMetadata.removeIf(
+                metadata -> System.currentTimeMillis() - metadata.timestamp() > NONCE_EXPIRATION_MS
+        );
     }
 
     public void send (PlayerEntry target, Packet packet) {
-        if (!connectedPlayers.contains(target) && !(packet instanceof ClientboundHandshakePacket))
-            return; // LoL sus check
+        if (!connectedPlayers.contains(target) && !(packet instanceof ClientboundHandshakePacket)) return;
 
         final ByteBuf buf = Unpooled.buffer();
+
+        final PayloadMetadata metadata = generateMetadata();
+        metadata.serialize(buf);
 
         buf.writeInt(packet.getId());
         packet.serialize(buf);
@@ -103,8 +116,35 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
         } catch (Exception ignored) { }
     }
 
+    private PayloadMetadata generateMetadata () {
+        final byte[] nonce = new byte[8];
+        RANDOM.nextBytes(nonce);
+
+        final long timestamp = System.currentTimeMillis();
+
+        return new PayloadMetadata(nonce, timestamp);
+    }
+
+    private boolean isValidPayload (PayloadMetadata metadata) {
+        // check if the timestamp is less than the expiration time
+        if (System.currentTimeMillis() - metadata.timestamp() > NONCE_EXPIRATION_MS) return false;
+
+        // check if nonce is replayed in case the server owner
+        // is not being very nice and decided to pull out
+        // a replay attack
+        final boolean valid = !seenMetadata.contains(metadata);
+
+        if (valid) seenMetadata.add(metadata);
+
+        return valid;
+    }
+
     private Packet deserialize (byte[] data) {
         final ByteBuf buf = Unpooled.wrappedBuffer(data);
+
+        final PayloadMetadata metadata = PayloadMetadata.deserialize(buf);
+
+        if (!isValidPayload(metadata)) return null;
 
         final int id = buf.readInt();
 
@@ -155,7 +195,7 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
             final PayloadState payloadState = PayloadState.values()[payloadStateIndex];
 
-            if (!receivedParts.containsKey(player)) receivedParts.put(player, new HashMap<>());
+            receivedParts.putIfAbsent(player, new ConcurrentHashMap<>());
 
             final Map<Integer, StringBuilder> playerReceivedParts = receivedParts.get(player);
 
