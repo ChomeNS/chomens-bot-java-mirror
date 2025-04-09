@@ -169,11 +169,15 @@ public class Bot extends SessionAdapter {
         this.whitelist = new WhitelistPlugin(this);
         this.playersDatabase = new PlayersDatabasePlugin(this);
         this.ipFilter = new IPFilterPlugin(this);
-
-        for (final Listener listener : listeners) listener.loadedPlugins(this);
     }
 
-    protected void reconnect () {
+    protected void connect () {
+        for (final Listener listener : listeners) listener.loadedPlugins(this);
+
+        reconnect();
+    }
+
+    private void reconnect () {
         if (session != null) session = null; // does this do nothing?
 
         for (final Listener listener : listeners) {
