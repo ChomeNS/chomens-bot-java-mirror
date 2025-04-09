@@ -126,6 +126,8 @@ public class Main {
         alreadyStarted = true;
 
         try {
+            if (config.database.enabled) database = new DatabasePlugin(config);
+
             final Configuration.BotOption[] botsOptions = config.bots;
 
             for (final Configuration.BotOption botOption : botsOptions) {
@@ -133,9 +135,7 @@ public class Main {
                 bots.add(bot);
             }
 
-            // initialize plugins
             console = new ConsolePlugin(config);
-            if (config.database.enabled) database = new DatabasePlugin(config);
             if (config.discord.enabled) discord = new DiscordPlugin(config);
             if (config.irc.enabled) irc = new IRCPlugin(config);
 
