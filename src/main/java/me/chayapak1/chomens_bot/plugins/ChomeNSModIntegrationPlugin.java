@@ -14,6 +14,7 @@ import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundRunCore
 import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundSuccessfulHandshakePacket;
 import me.chayapak1.chomens_bot.data.chomeNSMod.PayloadMetadata;
 import me.chayapak1.chomens_bot.data.chomeNSMod.PayloadState;
+import me.chayapak1.chomens_bot.data.logging.LogType;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
@@ -144,7 +145,16 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
         final PayloadMetadata metadata = PayloadMetadata.deserialize(buf);
 
-        if (!isValidPayload(metadata)) return null;
+        if (!isValidPayload(metadata)) {
+            bot.logger.log(
+                    LogType.INFO,
+                    Component.translatable(
+                            "Ignoring suspected replay attack payload with metadata: %s",
+                            Component.text(metadata.toString()) // PayloadMetadata has toString()
+                    )
+            );
+            return null;
+        }
 
         final int id = buf.readInt();
 
