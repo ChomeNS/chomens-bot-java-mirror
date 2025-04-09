@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
     private final Bot bot;
 
-    public final List<PlayerEntry> list = new ArrayList<>();
+    public final List<PlayerEntry> list = Collections.synchronizedList(new ArrayList<>());
 
     private final List<Listener> listeners = new ArrayList<>();
 
