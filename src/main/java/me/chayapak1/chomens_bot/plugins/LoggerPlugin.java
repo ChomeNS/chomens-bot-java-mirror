@@ -15,7 +15,7 @@ public class LoggerPlugin implements ChatPlugin.Listener {
 
     private int totalConnects = 0;
 
-    public LoggerPlugin (Bot bot) {
+    public LoggerPlugin (final Bot bot) {
         this.bot = bot;
 
         bot.addListener(new Bot.Listener() {
@@ -39,7 +39,7 @@ public class LoggerPlugin implements ChatPlugin.Listener {
             }
 
             @Override
-            public void connected (ConnectedEvent event) {
+            public void connected (final ConnectedEvent event) {
                 log(
                         String.format(
                                 "Successfully connected to: %s",
@@ -51,7 +51,7 @@ public class LoggerPlugin implements ChatPlugin.Listener {
             }
 
             @Override
-            public void disconnected (DisconnectedEvent event) {
+            public void disconnected (final DisconnectedEvent event) {
                 if (totalConnects >= 20) return;
 
                 final Component message = Component.translatable(
@@ -64,34 +64,34 @@ public class LoggerPlugin implements ChatPlugin.Listener {
             }
 
             @Override
-            public void loadedPlugins (Bot bot) {
+            public void loadedPlugins (final Bot bot) {
                 bot.chat.addListener(LoggerPlugin.this);
             }
         });
     }
 
-    public void log (LogType type, Component message) {
+    public void log (final LogType type, final Component message) {
         LoggerUtilities.log(type, bot, message, true, logToConsole);
     }
 
-    public void log (LogType type, Component message, boolean logToFile) {
+    public void log (final LogType type, final Component message, final boolean logToFile) {
         LoggerUtilities.log(type, bot, message, logToFile, logToConsole);
     }
 
-    public void log (Component message) { log(LogType.INFO, message); }
+    public void log (final Component message) { log(LogType.INFO, message); }
 
-    public void log (String message) { log(LogType.INFO, Component.text(message)); }
+    public void log (final String message) { log(LogType.INFO, Component.text(message)); }
 
-    public void log (LogType type, String message) { log(type, Component.text(message)); }
+    public void log (final LogType type, final String message) { log(type, Component.text(message)); }
 
-    public void error (Component message) { log(LogType.ERROR, message); }
+    public void error (final Component message) { log(LogType.ERROR, message); }
 
-    public void error (String message) { log(LogType.ERROR, Component.text(message)); }
+    public void error (final String message) { log(LogType.ERROR, Component.text(message)); }
 
-    public void error (Throwable throwable) { log(LogType.ERROR, ExceptionUtilities.getStacktrace(throwable)); }
+    public void error (final Throwable throwable) { log(LogType.ERROR, ExceptionUtilities.getStacktrace(throwable)); }
 
     @Override
-    public boolean systemMessageReceived (Component component, String string, String ansi) {
+    public boolean systemMessageReceived (final Component component, final String string, final String ansi) {
         log(LogType.CHAT, component);
 
         return true;

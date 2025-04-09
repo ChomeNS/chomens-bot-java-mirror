@@ -12,10 +12,10 @@ import java.time.format.DateTimeFormatter;
 public class LoggerUtilities {
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
-    private static Component getPrefix (Bot bot, Component prefix, Component message) {
+    private static Component getPrefix (final Bot bot, final Component prefix, final Component message) {
         final LocalDateTime dateTime = LocalDateTime.now();
 
-        Component component;
+        final Component component;
         if (bot != null) {
             component = Component.translatable(
                     "[%s %s] [%s] [%s] %s",
@@ -38,19 +38,19 @@ public class LoggerUtilities {
         return component;
     }
 
-    public static void log (String message) { log(LogType.INFO, null, Component.text(message), true, true); }
+    public static void log (final String message) { log(LogType.INFO, null, Component.text(message), true, true); }
 
-    public static void log (Component message) { log(LogType.INFO, null, message, true, true); }
+    public static void log (final Component message) { log(LogType.INFO, null, message, true, true); }
 
-    public static void log (LogType type, String message) { log(type, null, Component.text(message), true, true); }
+    public static void log (final LogType type, final String message) { log(type, null, Component.text(message), true, true); }
 
-    public static void log (LogType type, Component message) { log(type, null, message, true, true); }
+    public static void log (final LogType type, final Component message) { log(type, null, message, true, true); }
 
-    public static void log (Bot bot, Component message) { log(LogType.INFO, bot, message, true, true); }
+    public static void log (final Bot bot, final Component message) { log(LogType.INFO, bot, message, true, true); }
 
-    public static void log (Bot bot, String message) { log(LogType.INFO, bot, Component.text(message), true, true); }
+    public static void log (final Bot bot, final String message) { log(LogType.INFO, bot, Component.text(message), true, true); }
 
-    public static void log (LogType type, Bot bot, Component message, boolean logToFile, boolean logToConsole) {
+    public static void log (final LogType type, final Bot bot, final Component message, final boolean logToFile, final boolean logToConsole) {
         final Component component = getPrefix(bot, type.component, message);
 
         if (logToConsole) print(ComponentUtilities.stringifyAnsi(component));
@@ -67,13 +67,13 @@ public class LoggerUtilities {
         }
     }
 
-    public static void error (String message) { log(LogType.ERROR, message); }
+    public static void error (final String message) { log(LogType.ERROR, message); }
 
-    public static void error (Component message) { log(LogType.ERROR, message); }
+    public static void error (final Component message) { log(LogType.ERROR, message); }
 
-    public static void error (Throwable throwable) { log(LogType.ERROR, ExceptionUtilities.getStacktrace(throwable)); }
+    public static void error (final Throwable throwable) { log(LogType.ERROR, ExceptionUtilities.getStacktrace(throwable)); }
 
-    private static void print (String message) {
+    private static void print (final String message) {
         if (Main.console == null) System.out.println(message);
         else Main.console.reader.printAbove(message);
     }

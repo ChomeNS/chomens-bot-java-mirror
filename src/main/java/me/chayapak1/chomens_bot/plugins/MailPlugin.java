@@ -25,7 +25,7 @@ public class MailPlugin implements PlayersPlugin.Listener {
             DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
                 try {
                     Main.database.execute(CREATE_TABLE);
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LoggerUtilities.error(e);
                 }
             });
@@ -34,7 +34,7 @@ public class MailPlugin implements PlayersPlugin.Listener {
 
     private final Bot bot;
 
-    public MailPlugin (Bot bot) {
+    public MailPlugin (final Bot bot) {
         this.bot = bot;
 
         if (Main.database == null) return;
@@ -43,7 +43,7 @@ public class MailPlugin implements PlayersPlugin.Listener {
     }
 
     @Override
-    public void playerJoined (PlayerEntry target) {
+    public void playerJoined (final PlayerEntry target) {
         DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
             final String name = target.profile.getName();
 
@@ -51,7 +51,7 @@ public class MailPlugin implements PlayersPlugin.Listener {
 
             final List<Mail> mails = list();
 
-            for (Mail mail : mails) {
+            for (final Mail mail : mails) {
                 if (!mail.sentTo().equals(name)) continue;
 
                 sendToTargetSize++;
@@ -72,7 +72,7 @@ public class MailPlugin implements PlayersPlugin.Listener {
         });
     }
 
-    public void send (Mail mail) {
+    public void send (final Mail mail) {
         try {
             final PreparedStatement statement = Main.database.connection.prepareStatement(INSERT_MAIL);
 
@@ -83,19 +83,19 @@ public class MailPlugin implements PlayersPlugin.Listener {
             statement.setString(5, mail.contents());
 
             statement.executeUpdate();
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             bot.logger.error(e);
         }
     }
 
-    public void clear (String sentTo) {
+    public void clear (final String sentTo) {
         try {
             final PreparedStatement statement = Main.database.connection.prepareStatement(REMOVE_MAIL);
 
             statement.setString(1, sentTo);
 
             statement.executeUpdate();
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             bot.logger.error(e);
         }
     }
@@ -103,7 +103,7 @@ public class MailPlugin implements PlayersPlugin.Listener {
     public List<Mail> list () {
         final List<Mail> output = new ArrayList<>();
 
-        try (ResultSet result = Main.database.query(LIST_MAILS)) {
+        try (final ResultSet result = Main.database.query(LIST_MAILS)) {
             if (result == null) return output;
 
             while (result.next()) {
@@ -117,7 +117,7 @@ public class MailPlugin implements PlayersPlugin.Listener {
 
                 output.add(mail);
             }
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             bot.logger.error(e);
         }
 

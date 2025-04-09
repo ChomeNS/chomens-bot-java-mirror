@@ -4,12 +4,12 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.eval.EvalFunction;
 
 public class CorePlaceBlockFunction extends EvalFunction {
-    public CorePlaceBlockFunction (Bot bot) {
+    public CorePlaceBlockFunction (final Bot bot) {
         super("corePlaceBlock", bot);
     }
 
     @Override
-    public Output execute (Object... args) {
+    public Output execute (final Object... args) {
         if (args.length == 0) return null;
 
         final String command = (String) args[0];

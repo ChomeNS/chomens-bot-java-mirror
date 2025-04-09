@@ -10,7 +10,7 @@ public class JavaOpusEncoder {
     public final int frameSize;
     public final de.maxhenkel.opus4j.OpusEncoder.Application application;
 
-    public JavaOpusEncoder (int sampleRate, int frameSize, int maxPayloadSize, de.maxhenkel.opus4j.OpusEncoder.Application application) {
+    public JavaOpusEncoder (final int sampleRate, final int frameSize, final int maxPayloadSize, final de.maxhenkel.opus4j.OpusEncoder.Application application) {
         this.sampleRate = sampleRate;
         this.frameSize = frameSize;
         this.application = application;
@@ -24,20 +24,20 @@ public class JavaOpusEncoder {
         }
         try {
             opusEncoder = new OpusEncoder(sampleRate, 1, getApplication(application));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new IllegalStateException("Failed to create Opus encoder", e);
         }
     }
 
-    public byte[] encode (short[] rawAudio) {
+    public byte[] encode (final short[] rawAudio) {
         if (isClosed()) {
             throw new IllegalStateException("Encoder is closed");
         }
 
-        int result;
+        final int result;
         try {
             result = opusEncoder.encode(rawAudio, 0, frameSize, buffer, 0, buffer.length);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new RuntimeException("Failed to encode audio", e);
         }
 
@@ -45,7 +45,7 @@ public class JavaOpusEncoder {
             throw new RuntimeException("Failed to encode audio data");
         }
 
-        byte[] audio = new byte[result];
+        final byte[] audio = new byte[result];
         System.arraycopy(buffer, 0, audio, 0, result);
         return audio;
     }
@@ -68,7 +68,7 @@ public class JavaOpusEncoder {
         opusEncoder = null;
     }
 
-    public static OpusApplication getApplication (de.maxhenkel.opus4j.OpusEncoder.Application application) {
+    public static OpusApplication getApplication (final de.maxhenkel.opus4j.OpusEncoder.Application application) {
         return switch (application) {
             case AUDIO -> OpusApplication.OPUS_APPLICATION_AUDIO;
             case LOW_DELAY -> OpusApplication.OPUS_APPLICATION_RESTRICTED_LOWDELAY;

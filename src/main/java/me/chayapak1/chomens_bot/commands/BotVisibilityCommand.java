@@ -20,7 +20,7 @@ public class BotVisibilityCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         context.checkOverloadArgs(1);
 
         final Bot bot = context.bot;

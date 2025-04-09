@@ -21,14 +21,14 @@ public class DatabasePlugin {
 
     public Connection connection;
 
-    public DatabasePlugin (Configuration config) {
+    public DatabasePlugin (final Configuration config) {
         try {
             connection = DriverManager.getConnection(
                     "jdbc:mariadb://" + config.database.address + "/chomens_bot",
                     config.database.username,
                     config.database.password
             );
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             LoggerUtilities.error(e);
         }
     }
@@ -41,19 +41,19 @@ public class DatabasePlugin {
         );
     }
 
-    public boolean execute (String query) throws SQLException {
+    public boolean execute (final String query) throws SQLException {
         final Statement statement = connection.createStatement();
 
         return statement.execute(query);
     }
 
-    public ResultSet query (String query) throws SQLException {
+    public ResultSet query (final String query) throws SQLException {
         final Statement statement = connection.createStatement();
 
         return statement.executeQuery(query);
     }
 
-    public int update (String query) throws SQLException {
+    public int update (final String query) throws SQLException {
         final Statement statement = connection.createStatement();
 
         return statement.executeUpdate(query);
@@ -64,7 +64,7 @@ public class DatabasePlugin {
 
         try {
             connection.close();
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             LoggerUtilities.error(e);
         }
     }

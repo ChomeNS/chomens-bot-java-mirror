@@ -8,11 +8,11 @@ import net.kyori.adventure.text.Component;
 public class ClientboundMessagePacket implements Packet {
     public final Component message;
 
-    public ClientboundMessagePacket (Component message) {
+    public ClientboundMessagePacket (final Component message) {
         this.message = message;
     }
 
-    public ClientboundMessagePacket (ByteBuf buf) {
+    public ClientboundMessagePacket (final ByteBuf buf) {
         this.message = Types.readComponent(buf);
     }
 
@@ -22,7 +22,7 @@ public class ClientboundMessagePacket implements Packet {
     }
 
     @Override
-    public void serialize (ByteBuf buf) {
+    public void serialize (final ByteBuf buf) {
         Types.writeComponent(buf, this.message);
     }
 }

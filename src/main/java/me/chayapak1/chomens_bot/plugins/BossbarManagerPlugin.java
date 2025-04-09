@@ -30,7 +30,7 @@ public class BossbarManagerPlugin
 
     public final String bossBarPrefix;
 
-    public BossbarManagerPlugin (Bot bot) {
+    public BossbarManagerPlugin (final Bot bot) {
         this.bot = bot;
         this.bossBarPrefix = bot.config.namespace + ":";
 
@@ -42,11 +42,11 @@ public class BossbarManagerPlugin
     }
 
     @Override
-    public void packetReceived (Session session, Packet packet) {
-        if (packet instanceof ClientboundBossEventPacket t_packet) packetReceived(t_packet);
+    public void packetReceived (final Session session, final Packet packet) {
+        if (packet instanceof final ClientboundBossEventPacket t_packet) packetReceived(t_packet);
     }
 
-    private void packetReceived (ClientboundBossEventPacket packet) {
+    private void packetReceived (final ClientboundBossEventPacket packet) {
         if (!enabled || actionBar || !bot.options.useCore) return;
 
         try {
@@ -54,7 +54,7 @@ public class BossbarManagerPlugin
                 case ADD -> {
                     final Map<UUID, BotBossBar> mapCopy = new HashMap<>(bossBars);
 
-                    for (Map.Entry<UUID, BotBossBar> _bossBar : mapCopy.entrySet()) {
+                    for (final Map.Entry<UUID, BotBossBar> _bossBar : mapCopy.entrySet()) {
                         final BotBossBar bossBar = _bossBar.getValue();
 
                         if (bossBar.secret.equals(packet.getTitle())) {
@@ -123,14 +123,14 @@ public class BossbarManagerPlugin
                     bossBar.health = packet.getHealth();
                 }
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             bot.logger.error(e);
         }
     }
 
     @Override
     public void onSecondTick () {
-        for (Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
+        for (final Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
             final UUID uuid = _bossBar.getKey();
             final BotBossBar bossBar = _bossBar.getValue();
 
@@ -155,7 +155,7 @@ public class BossbarManagerPlugin
 
     @Override
     public void coreReady () {
-        for (Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
+        for (final Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
             final BotBossBar bossBar = _bossBar.getValue();
 
             addBossBar(bossBar.id, bossBar, true);
@@ -163,22 +163,22 @@ public class BossbarManagerPlugin
     }
 
     @Override
-    public void disconnected (DisconnectedEvent event) {
+    public void disconnected (final DisconnectedEvent event) {
         serverBossBars.clear();
     }
 
     @Override
-    public void playerJoined (PlayerEntry target) {
+    public void playerJoined (final PlayerEntry target) {
         if (!enabled || actionBar || !bot.options.useCore) return;
 
-        for (Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
+        for (final Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
             final BotBossBar bossBar = _bossBar.getValue();
 
             bossBar.setPlayers(bossBar.players(), true);
         }
     }
 
-    public void add (String name, BotBossBar bossBar) {
+    public void add (final String name, final BotBossBar bossBar) {
         if (!enabled || !bot.options.useCore) return;
 
         bossBar.onlyName = name;
@@ -190,11 +190,11 @@ public class BossbarManagerPlugin
         addBossBar(bossBar.id, bossBar, true);
     }
 
-    private void addBossBar (String name, BotBossBar bossBar) {
+    private void addBossBar (final String name, final BotBossBar bossBar) {
         addBossBar(name, bossBar, false);
     }
 
-    private void addBossBar (String name, BotBossBar bossBar, boolean secret) {
+    private void addBossBar (final String name, final BotBossBar bossBar, final boolean secret) {
         if (!enabled || actionBar) return;
 
         final String prefix = "minecraft:bossbar set " + name + " ";
@@ -220,22 +220,22 @@ public class BossbarManagerPlugin
         bot.core.run(prefix + "value " + bossBar.value());
     }
 
-    public void remove (String name) {
+    public void remove (final String name) {
         if (!enabled || actionBar || !bot.options.useCore) return;
 
         final Map<UUID, BotBossBar> mapCopy = new HashMap<>(bossBars);
 
-        for (Map.Entry<UUID, BotBossBar> bossBar : mapCopy.entrySet()) {
+        for (final Map.Entry<UUID, BotBossBar> bossBar : mapCopy.entrySet()) {
             if (bossBar.getValue().id.equals(bossBarPrefix + name)) bossBars.remove(bossBar.getValue().uuid);
         }
 
         bot.core.run("minecraft:bossbar remove " + bossBarPrefix + name);
     }
 
-    public BotBossBar get (String name) {
+    public BotBossBar get (final String name) {
         if (!enabled) return null;
 
-        for (Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
+        for (final Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
             final BotBossBar bossBar = _bossBar.getValue();
 
             if (bossBar.id != null && bossBar.id.equals(bossBarPrefix + name)) return bossBars.get(bossBar.uuid);
@@ -244,10 +244,10 @@ public class BossbarManagerPlugin
         return null;
     }
 
-    public BotBossBar get (UUID uuid) {
+    public BotBossBar get (final UUID uuid) {
         if (!enabled) return null;
 
-        for (Map.Entry<UUID, BotBossBar> bossBar : bossBars.entrySet()) {
+        for (final Map.Entry<UUID, BotBossBar> bossBar : bossBars.entrySet()) {
             if (bossBar.getValue().uuid == uuid) return bossBar.getValue();
         }
 

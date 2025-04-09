@@ -24,7 +24,7 @@ public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener, Ti
 
     public final Queue<Component> cargosQueue = new ConcurrentLinkedQueue<>();
 
-    public QueryPlugin (Bot bot) {
+    public QueryPlugin (final Bot bot) {
         this.bot = bot;
 
         bot.addListener(this);
@@ -42,9 +42,9 @@ public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener, Ti
     }
 
     @Override
-    public boolean systemMessageReceived (Component component, String string, String ansi) {
+    public boolean systemMessageReceived (final Component component, final String string, final String ansi) {
         if (
-                !(component instanceof TranslatableComponent rootTranslatable) ||
+                !(component instanceof final TranslatableComponent rootTranslatable) ||
                         !rootTranslatable.key().equals(ID)
         ) return true;
 
@@ -55,18 +55,18 @@ public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener, Ti
         final Component cargosComponent = arguments.getFirst().asComponent();
 
         if (
-                !(cargosComponent instanceof TextComponent cargosTextComponent) ||
+                !(cargosComponent instanceof final TextComponent cargosTextComponent) ||
                         !cargosTextComponent.content().isEmpty()
         ) return false;
 
         final List<Component> cargos = cargosComponent.children();
 
-        for (Component cargo : cargos) processCargo(cargo);
+        for (final Component cargo : cargos) processCargo(cargo);
 
         return false;
     }
 
-    private void sendQueueComponent (Component component) {
+    private void sendQueueComponent (final Component component) {
         final Queue<Component> queue = new LinkedList<>();
         queue.add(component);
 
@@ -81,7 +81,7 @@ public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener, Ti
         sendQueueComponent(queue);
     }
 
-    private void sendQueueComponent (Queue<Component> queue) {
+    private void sendQueueComponent (final Queue<Component> queue) {
         bot.chat.tellraw(
                 Component
                         .translatable(
@@ -95,8 +95,8 @@ public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener, Ti
         );
     }
 
-    private void processCargo (Component cargo) {
-        if (!(cargo instanceof TextComponent textComponent)) return;
+    private void processCargo (final Component cargo) {
+        if (!(cargo instanceof final TextComponent textComponent)) return;
 
         final UUID inputId = UUIDUtilities.tryParse(textComponent.content());
 
@@ -108,7 +108,7 @@ public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener, Ti
 
         if (
                 children.size() > 2 ||
-                        !(children.getFirst() instanceof TextComponent firstChild)
+                        !(children.getFirst() instanceof final TextComponent firstChild)
         ) return;
 
         try {
@@ -129,7 +129,7 @@ public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener, Ti
 
                 future.complete(stringOutput);
             }
-        } catch (NumberFormatException ignored) { }
+        } catch (final NumberFormatException ignored) { }
     }
 
     private Triple<CompletableFuture<String>, Long, UUID> getFutureAndId () {
@@ -144,9 +144,9 @@ public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener, Ti
         return Triple.of(future, transactionId, id);
     }
 
-    public CompletableFuture<String> block (Vector3i location, String path) { return block(false, location, path); }
+    public CompletableFuture<String> block (final Vector3i location, final String path) { return block(false, location, path); }
 
-    public CompletableFuture<String> block (boolean useCargo, Vector3i location, String path) {
+    public CompletableFuture<String> block (final boolean useCargo, final Vector3i location, final String path) {
         final Triple<CompletableFuture<String>, Long, UUID> triple = getFutureAndId();
 
         final UUID id = triple.getRight();
@@ -173,9 +173,9 @@ public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener, Ti
         return triple.getLeft();
     }
 
-    public CompletableFuture<String> entity (String selector, String path) { return entity(false, selector, path); }
+    public CompletableFuture<String> entity (final String selector, final String path) { return entity(false, selector, path); }
 
-    public CompletableFuture<String> entity (boolean useCargo, String selector, String path) {
+    public CompletableFuture<String> entity (final boolean useCargo, final String selector, final String path) {
         final Triple<CompletableFuture<String>, Long, UUID> triple = getFutureAndId();
 
         final UUID id = triple.getRight();
@@ -200,7 +200,7 @@ public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener, Ti
     // should there be storage query?
 
     @Override
-    public void disconnected (DisconnectedEvent event) {
+    public void disconnected (final DisconnectedEvent event) {
         nextTransactionId.set(0);
         transactions.clear();
         ids.clear();

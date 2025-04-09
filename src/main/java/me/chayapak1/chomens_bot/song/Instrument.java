@@ -24,27 +24,27 @@ public class Instrument {
     public final int offset;
     public final String sound;
 
-    private Instrument (int id, String name, int offset) {
+    private Instrument (final int id, final String name, final int offset) {
         this.id = id;
         this.name = name;
         this.offset = offset;
         this.sound = "minecraft:block.note_block." + name;
     }
 
-    public Instrument (int id, String name, int offset, String sound) {
+    public Instrument (final int id, final String name, final int offset, final String sound) {
         this.id = id;
         this.name = name;
         this.offset = offset;
         this.sound = sound;
     }
 
-    public static Instrument of (String sound) {
+    public static Instrument of (final String sound) {
         return new Instrument(-1, null, 0, sound);
     }
 
     private static final Instrument[] values = { HARP, BASEDRUM, SNARE, HAT, BASS, FLUTE, BELL, GUITAR, CHIME, XYLOPHONE, IRON_XYLOPHONE, COW_BELL, DIDGERIDOO, BIT, BANJO, PLING };
 
-    public static Instrument fromId (int id) {
+    public static Instrument fromId (final int id) {
         return values[id];
     }
 }

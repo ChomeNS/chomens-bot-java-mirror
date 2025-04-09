@@ -11,10 +11,10 @@ public class FilteredPlayer {
 
     @JsonCreator
     public FilteredPlayer (
-            @JsonProperty("playerName") String playerName,
-            @JsonProperty("reason") String reason,
-            @JsonProperty("regex") boolean regex,
-            @JsonProperty("ignoreCase") boolean ignoreCase
+            @JsonProperty("playerName") final String playerName,
+            @JsonProperty("reason") final String reason,
+            @JsonProperty("regex") final boolean regex,
+            @JsonProperty("ignoreCase") final boolean ignoreCase
     ) {
         this.playerName = playerName;
         this.reason = reason;

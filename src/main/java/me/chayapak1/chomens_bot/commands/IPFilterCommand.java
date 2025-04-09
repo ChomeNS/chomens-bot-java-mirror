@@ -33,7 +33,7 @@ public class IPFilterCommand extends Command {
 
     // most of these codes are from cloop and greplog
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         final String action = context.getAction();
@@ -95,7 +95,7 @@ public class IPFilterCommand extends Command {
                 final List<Component> filtersComponents = new ArrayList<>();
 
                 int index = 0;
-                for (Map.Entry<String, String> entry : IPFilterPlugin.localList.entrySet()) {
+                for (final Map.Entry<String, String> entry : IPFilterPlugin.localList.entrySet()) {
                     final String ip = entry.getKey();
                     final String reason = entry.getValue();
 

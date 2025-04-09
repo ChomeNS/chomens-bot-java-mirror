@@ -27,7 +27,7 @@ public class ServerEvalCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         final String code = context.getString(true, true);
@@ -53,7 +53,7 @@ public class ServerEvalCommand extends Command {
                 final String output = values.length < 1 ? Arrays.toString(values) : values[0].toString();
 
                 context.sendOutput(Component.text(output).color(NamedTextColor.GREEN));
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
             }
         });

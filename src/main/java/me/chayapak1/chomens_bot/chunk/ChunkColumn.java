@@ -17,7 +17,7 @@ public class ChunkColumn {
 
     private final int minY;
 
-    public ChunkColumn (Bot bot, ChunkPos chunkPos, byte[] data, int worldHeight, int minY) {
+    public ChunkColumn (final Bot bot, final ChunkPos chunkPos, final byte[] data, final int worldHeight, final int minY) {
         this.bot = bot;
         this.pos = chunkPos;
         this.minY = minY;
@@ -35,18 +35,18 @@ public class ChunkColumn {
         }
     }
 
-    public int getBlock (int x, int y, int z) {
+    public int getBlock (final int x, final int y, final int z) {
         if (chunks == null) return 0;
 
-        int yIndex = (y - minY) >> 4;
+        final int yIndex = (y - minY) >> 4;
 
         if (yIndex >= chunks.length) return 0;
 
         return chunks[yIndex].getBlock(x, y & 15, z);
     }
 
-    public void setBlock (int x, int y, int z, int id) {
-        int yIndex = (y - minY) >> 4;
+    public void setBlock (final int x, final int y, final int z, final int id) {
+        final int yIndex = (y - minY) >> 4;
 
         if (yIndex >= chunks.length) return;
 
@@ -57,7 +57,7 @@ public class ChunkColumn {
             }
 
             chunks[yIndex].setBlock(x, y & 15, z, id);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // passing bot just for debugging? really?
             bot.logger.error(
                     Component.translatable(

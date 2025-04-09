@@ -51,7 +51,7 @@ public class Main {
     public static DiscordPlugin discord;
     public static IRCPlugin irc;
 
-    public static void main (String[] args) throws IOException {
+    public static void main (final String[] args) throws IOException {
         final Path configPath = Path.of("config.yml");
 
         final Constructor constructor = new Constructor(Configuration.class, new LoaderOptions());
@@ -59,20 +59,20 @@ public class Main {
 
         if (!Files.exists(configPath)) {
             // creates config file from default-config.yml
-            InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("default-config.yml");
+            final InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("default-config.yml");
 
             if (is == null) System.exit(1);
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            StringBuilder stringBuilder = new StringBuilder();
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            final StringBuilder stringBuilder = new StringBuilder();
             while (reader.ready()) {
-                char character = (char) reader.read();
+                final char character = (char) reader.read();
                 stringBuilder.append(character);
             }
-            String defaultConfig = stringBuilder.toString();
+            final String defaultConfig = stringBuilder.toString();
 
             // writes it
-            BufferedWriter configWriter = Files.newBufferedWriter(configPath);
+            final BufferedWriter configWriter = Files.newBufferedWriter(configPath);
             configWriter.write(defaultConfig);
             configWriter.close();
 
@@ -81,8 +81,8 @@ public class Main {
             System.exit(1);
         }
 
-        InputStream opt = Files.newInputStream(configPath);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(opt));
+        final InputStream opt = Files.newInputStream(configPath);
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(opt));
 
         config = yaml.load(reader);
 
@@ -99,7 +99,7 @@ public class Main {
                     HttpUtilities.getRequest(new URI(config.backup.address).toURL());
 
                     reachable = true;
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     reachable = false;
                 }
 
@@ -128,7 +128,7 @@ public class Main {
         try {
             final Configuration.BotOption[] botsOptions = config.bots;
 
-            for (Configuration.BotOption botOption : botsOptions) {
+            for (final Configuration.BotOption botOption : botsOptions) {
                 final Bot bot = new Bot(botOption, bots, config);
                 bots.add(bot);
             }
@@ -141,8 +141,8 @@ public class Main {
 
             LoggerUtilities.log("Initialized all bots. Now connecting");
 
-            for (Bot bot : bots) bot.connect();
-        } catch (Exception e) {
+            for (final Bot bot : bots) bot.connect();
+        } catch (final Exception e) {
             LoggerUtilities.error(e);
 
             System.exit(1);
@@ -155,22 +155,22 @@ public class Main {
         if (Files.exists(stopReasonFilePath)) {
             try {
                 reason = new String(Files.readAllBytes(stopReasonFilePath)).trim();
-            } catch (IOException ignored) { }
+            } catch (final IOException ignored) { }
         }
 
         stop(0, reason, false);
     }
 
     // most of these are stolen from HBot
-    public static void stop (int exitCode) { stop(exitCode, null, null, true); }
+    public static void stop (final int exitCode) { stop(exitCode, null, null, true); }
 
-    public static void stop (int exitCode, String reason) { stop(exitCode, reason, null, true); }
+    public static void stop (final int exitCode, final String reason) { stop(exitCode, reason, null, true); }
 
-    public static void stop (int exitCode, String reason, String type) { stop(exitCode, reason, type, true); }
+    public static void stop (final int exitCode, final String reason, final String type) { stop(exitCode, reason, type, true); }
 
-    public static void stop (int exitCode, String reason, boolean callSystemExit) { stop(exitCode, reason, null, callSystemExit); }
+    public static void stop (final int exitCode, final String reason, final boolean callSystemExit) { stop(exitCode, reason, null, callSystemExit); }
 
-    public static void stop (int exitCode, String reason, String type, boolean callSystemExit) {
+    public static void stop (final int exitCode, final String reason, final String type, final boolean callSystemExit) {
         if (stopping) return;
 
         stopping = true;
@@ -189,7 +189,7 @@ public class Main {
 
         if (database != null) database.stop();
 
-        ArrayList<Bot> copiedList;
+        final ArrayList<Bot> copiedList;
         synchronized (bots) {
             copiedList = new ArrayList<>(bots);
         }
@@ -202,7 +202,7 @@ public class Main {
         final boolean[] stoppedDiscord = new boolean[copiedList.size()];
 
         int botIndex = 0;
-        for (Bot bot : copiedList) {
+        for (final Bot bot : copiedList) {
             try {
                 if (discordEnabled) {
                     final String channelId = Main.discord.servers.get(bot.getServerString(true));
@@ -217,7 +217,7 @@ public class Main {
                 }
 
                 bot.stop();
-            } catch (Exception ignored) { }
+            } catch (final Exception ignored) { }
 
             botIndex++;
         }
@@ -227,7 +227,7 @@ public class Main {
                 try {
                     if (!ArrayUtilities.isAllTrue(stoppedDiscord)) Thread.sleep(50);
                     else break;
-                } catch (InterruptedException ignored) { }
+                } catch (final InterruptedException ignored) { }
             }
 
             discord.jda.shutdown();

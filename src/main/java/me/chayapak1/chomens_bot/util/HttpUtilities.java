@@ -18,20 +18,20 @@ import java.security.SecureRandom;
 public class HttpUtilities {
     // ig duplicate codes yup real
 
-    public static String getRequest (URL url) throws NoSuchAlgorithmException, KeyManagementException, IOException {
-        SSLContext ctx = SSLContext.getInstance("TLS");
+    public static String getRequest (final URL url) throws NoSuchAlgorithmException, KeyManagementException, IOException {
+        final SSLContext ctx = SSLContext.getInstance("TLS");
         ctx.init(new KeyManager[0], new TrustManager[] { new DownloadUtilities.DefaultTrustManager() }, new SecureRandom());
         SSLContext.setDefault(ctx);
 
-        URLConnection conn = url.openConnection();
+        final URLConnection conn = url.openConnection();
         conn.setConnectTimeout(5000);
         conn.setReadTimeout(10000);
         // https://www.whatismybrowser.com/guides/the-latest-user-agent/windows
         conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36");
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        final BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String inputLine;
-        StringBuilder content = new StringBuilder();
+        final StringBuilder content = new StringBuilder();
         while ((inputLine = in.readLine()) != null) {
             content.append(inputLine);
         }
@@ -40,12 +40,12 @@ public class HttpUtilities {
         return content.toString();
     }
 
-    public static String postRequest (URL url, String contentType, String requestBody) throws Exception {
-        SSLContext ctx = SSLContext.getInstance("TLS");
+    public static String postRequest (final URL url, final String contentType, final String requestBody) throws Exception {
+        final SSLContext ctx = SSLContext.getInstance("TLS");
         ctx.init(new KeyManager[0], new TrustManager[] { new DownloadUtilities.DefaultTrustManager() }, new SecureRandom());
         SSLContext.setDefault(ctx);
 
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
         conn.setDoOutput(true);
         conn.setRequestProperty("Content-Type", contentType);
@@ -55,13 +55,13 @@ public class HttpUtilities {
         // https://www.whatismybrowser.com/guides/the-latest-user-agent/windows
         conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36");
 
-        OutputStream os = conn.getOutputStream();
+        final OutputStream os = conn.getOutputStream();
         os.write(requestBody.getBytes());
         os.flush();
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        final BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String inputLine;
-        StringBuilder content = new StringBuilder();
+        final StringBuilder content = new StringBuilder();
         while ((inputLine = in.readLine()) != null) {
             content.append(inputLine);
         }

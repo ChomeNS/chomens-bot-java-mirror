@@ -56,7 +56,7 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
     private final List<PayloadMetadata> seenMetadata = Collections.synchronizedList(new ArrayList<>());
 
-    public ChomeNSModIntegrationPlugin (Bot bot) {
+    public ChomeNSModIntegrationPlugin (final Bot bot) {
         this.bot = bot;
         this.handler = new PacketHandler(bot);
 
@@ -74,7 +74,7 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
         );
     }
 
-    public void send (PlayerEntry target, Packet packet) {
+    public void send (final PlayerEntry target, final Packet packet) {
         if (!connectedPlayers.contains(target) && !(packet instanceof ClientboundHandshakePacket)) return;
 
         final ByteBuf buf = Unpooled.buffer();
@@ -97,7 +97,7 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
             int i = 1;
 
-            for (String part : split) {
+            for (final String part : split) {
                 final PayloadState state = i == Iterables.size(split)
                         ? PayloadState.DONE
                         : PayloadState.JOINING;
@@ -114,7 +114,7 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
                 i++;
             }
-        } catch (Exception ignored) { }
+        } catch (final Exception ignored) { }
     }
 
     private PayloadMetadata generateMetadata () {
@@ -126,7 +126,7 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
         return new PayloadMetadata(nonce, timestamp);
     }
 
-    private boolean isValidPayload (PayloadMetadata metadata) {
+    private boolean isValidPayload (final PayloadMetadata metadata) {
         // check if the timestamp is less than the expiration time
         if (System.currentTimeMillis() - metadata.timestamp() > NONCE_EXPIRATION_MS) return false;
 
@@ -140,7 +140,7 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
         return valid;
     }
 
-    private Packet deserialize (byte[] data) {
+    private Packet deserialize (final byte[] data) {
         final ByteBuf buf = Unpooled.wrappedBuffer(data);
 
         final PayloadMetadata metadata = PayloadMetadata.deserialize(buf);
@@ -164,16 +164,16 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
         try {
             return packetClass.getDeclaredConstructor(ByteBuf.class).newInstance(buf);
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
-                 IllegalAccessException e) {
+        } catch (final NoSuchMethodException | InvocationTargetException | InstantiationException |
+                       IllegalAccessException e) {
             return null;
         }
     }
 
     @Override
-    public boolean systemMessageReceived (Component component, String string, String ansi) {
+    public boolean systemMessageReceived (final Component component, final String string, final String ansi) {
         if (
-                !(component instanceof TranslatableComponent translatableComponent) ||
+                !(component instanceof final TranslatableComponent translatableComponent) ||
                         !translatableComponent.key().isEmpty()
         ) return true;
 
@@ -182,11 +182,11 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
         if (
                 arguments.size() != 5 ||
 
-                        !(arguments.get(0).asComponent() instanceof TextComponent idTextComponent) ||
-                        !(arguments.get(1).asComponent() instanceof TextComponent uuidTextComponent) ||
-                        !(arguments.get(2).asComponent() instanceof TextComponent messageIdTextComponent) ||
-                        !(arguments.get(3).asComponent() instanceof TextComponent payloadStateTextComponent) ||
-                        !(arguments.get(4).asComponent() instanceof TextComponent payloadTextComponent) ||
+                        !(arguments.get(0).asComponent() instanceof final TextComponent idTextComponent) ||
+                        !(arguments.get(1).asComponent() instanceof final TextComponent uuidTextComponent) ||
+                        !(arguments.get(2).asComponent() instanceof final TextComponent messageIdTextComponent) ||
+                        !(arguments.get(3).asComponent() instanceof final TextComponent payloadStateTextComponent) ||
+                        !(arguments.get(4).asComponent() instanceof final TextComponent payloadTextComponent) ||
 
                         !idTextComponent.content().equals(ID)
         ) return true;
@@ -239,13 +239,13 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
                 handlePacket(player, packet);
             }
-        } catch (Exception ignored) { }
+        } catch (final Exception ignored) { }
 
         return false;
     }
 
     private void tryHandshaking () {
-        for (String username : bot.config.chomeNSMod.players) {
+        for (final String username : bot.config.chomeNSMod.players) {
             final PlayerEntry target = bot.players.getEntry(username);
 
             if (target == null || connectedPlayers.contains(target)) continue;
@@ -254,7 +254,7 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
         }
     }
 
-    private void handlePacket (PlayerEntry player, Packet packet) {
+    private void handlePacket (final PlayerEntry player, final Packet packet) {
         if (packet instanceof ServerboundSuccessfulHandshakePacket) {
             connectedPlayers.removeIf(eachPlayer -> eachPlayer.equals(player));
             connectedPlayers.add(player);
@@ -262,17 +262,17 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
         handler.handlePacket(player, packet);
 
-        for (Listener listener : listeners) listener.packetReceived(player, packet);
+        for (final Listener listener : listeners) listener.packetReceived(player, packet);
     }
 
     @Override
-    public void playerLeft (PlayerEntry target) {
+    public void playerLeft (final PlayerEntry target) {
         connectedPlayers.removeIf(player -> player.equals(target));
         receivedParts.remove(target);
     }
 
     @SuppressWarnings("unused")
     public interface Listener {
-        default void packetReceived (PlayerEntry player, Packet packet) { }
+        default void packetReceived (final PlayerEntry player, final Packet packet) { }
     }
 }

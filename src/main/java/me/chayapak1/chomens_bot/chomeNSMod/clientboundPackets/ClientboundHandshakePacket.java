@@ -7,7 +7,7 @@ public class ClientboundHandshakePacket implements Packet {
     public ClientboundHandshakePacket () {
     }
 
-    public ClientboundHandshakePacket (ByteBuf buf) {
+    public ClientboundHandshakePacket (final ByteBuf buf) {
     }
 
     @Override
@@ -16,6 +16,6 @@ public class ClientboundHandshakePacket implements Packet {
     }
 
     @Override
-    public void serialize (ByteBuf buf) {
+    public void serialize (final ByteBuf buf) {
     }
 }

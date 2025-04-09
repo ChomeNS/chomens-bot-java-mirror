@@ -19,7 +19,7 @@ public class CowsayCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         final String message = context.getString(true, true);
 
         final CowExecutor cowExecutor = new CowExecutor();

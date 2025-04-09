@@ -14,14 +14,14 @@ public class Note implements Comparable<Note> {
     public final boolean isRainbowToggle;
 
     public Note (
-            Instrument instrument,
-            double pitch,
-            double originalPitch,
-            float volume,
-            long time,
-            int panning,
-            int stereo,
-            boolean isRainbowToggle
+            final Instrument instrument,
+            final double pitch,
+            final double originalPitch,
+            final float volume,
+            final long time,
+            final int panning,
+            final int stereo,
+            final boolean isRainbowToggle
     ) {
         this.instrument = instrument;
         this.shiftedInstrument = this.instrument;
@@ -36,15 +36,15 @@ public class Note implements Comparable<Note> {
     }
 
     public Note (
-            Instrument instrument,
-            Instrument shiftedInstrument,
-            double pitch,
-            double shiftedPitch,
-            double originalPitch,
-            float volume,
-            long time,
-            int panning,
-            int stereo
+            final Instrument instrument,
+            final Instrument shiftedInstrument,
+            final double pitch,
+            final double shiftedPitch,
+            final double originalPitch,
+            final float volume,
+            final long time,
+            final int panning,
+            final int stereo
     ) {
         this.instrument = instrument;
         this.shiftedInstrument = shiftedInstrument;
@@ -59,7 +59,7 @@ public class Note implements Comparable<Note> {
     }
 
     @Override
-    public int compareTo (Note other) {
+    public int compareTo (final Note other) {
         return Long.compare(time, other.time);
     }
 }

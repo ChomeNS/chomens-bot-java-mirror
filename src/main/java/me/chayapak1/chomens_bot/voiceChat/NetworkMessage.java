@@ -26,12 +26,12 @@ public class NetworkMessage {
     public Packet<? extends Packet<?>> packet;
     public SocketAddress address;
 
-    public NetworkMessage (Packet<?> packet) {
+    public NetworkMessage (final Packet<?> packet) {
         this(System.currentTimeMillis());
         this.packet = packet;
     }
 
-    private NetworkMessage (long timestamp) {
+    private NetworkMessage (final long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -51,7 +51,7 @@ public class NetworkMessage {
         packetRegistry.put((byte) 0xA, ConnectionAckPacket.class);
     }
 
-    public static NetworkMessage readPacket (RawUdpPacket packet, InitializationData initializationData) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+    public static NetworkMessage readPacket (final RawUdpPacket packet, final InitializationData initializationData) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
         if (packet == null) return null;
 
         final byte[] data = packet.data();
@@ -62,30 +62,30 @@ public class NetworkMessage {
         return readFromBytes(packet.socketAddress(), initializationData.secret, b.readByteArray(), System.currentTimeMillis());
     }
 
-    private static NetworkMessage readFromBytes (SocketAddress socketAddress, UUID secret, byte[] encryptedPayload, long timestamp) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        byte[] decrypt;
+    private static NetworkMessage readFromBytes (final SocketAddress socketAddress, final UUID secret, final byte[] encryptedPayload, final long timestamp) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        final byte[] decrypt;
         try {
             decrypt = AESUtilities.decrypt(secret, encryptedPayload);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LoggerUtilities.error(e);
             return null;
         }
 
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.wrappedBuffer(decrypt));
-        byte packetType = buffer.readByte();
+        final FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.wrappedBuffer(decrypt));
+        final byte packetType = buffer.readByte();
         final Class<? extends Packet<?>> packetClass = packetRegistry.get(packetType);
         if (packetClass == null) return null;
-        Packet<?> p = packetClass.getDeclaredConstructor().newInstance();
+        final Packet<?> p = packetClass.getDeclaredConstructor().newInstance();
 
-        NetworkMessage message = new NetworkMessage(timestamp);
+        final NetworkMessage message = new NetworkMessage(timestamp);
         message.address = socketAddress;
         message.packet = p.fromBytes(buffer);
 
         return message;
     }
 
-    private static byte getPacketType (Packet<? extends Packet<?>> packet) {
-        for (Map.Entry<Byte, Class<? extends Packet<?>>> entry : packetRegistry.entrySet()) {
+    private static byte getPacketType (final Packet<? extends Packet<?>> packet) {
+        for (final Map.Entry<Byte, Class<? extends Packet<?>>> entry : packetRegistry.entrySet()) {
             if (packet.getClass().equals(entry.getValue())) {
                 return entry.getKey();
             }
@@ -93,22 +93,22 @@ public class NetworkMessage {
         return -1;
     }
 
-    public byte[] writeClient (InitializationData data) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        byte[] payload = write(data.secret);
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer(1 + 16 + payload.length));
+    public byte[] writeClient (final InitializationData data) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        final byte[] payload = write(data.secret);
+        final FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer(1 + 16 + payload.length));
         buffer.writeByte(MAGIC_BYTE);
         buffer.writeUUID(data.playerUUID);
         buffer.writeByteArray(payload);
 
-        byte[] bytes = new byte[buffer.readableBytes()];
+        final byte[] bytes = new byte[buffer.readableBytes()];
         buffer.readBytes(bytes);
         return bytes;
     }
 
-    public byte[] write (UUID secret) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+    public byte[] write (final UUID secret) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        final FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
 
-        byte type = getPacketType(packet);
+        final byte type = getPacketType(packet);
         if (type < 0) {
             throw new IllegalArgumentException("Packet type not found");
         }
@@ -116,7 +116,7 @@ public class NetworkMessage {
         buffer.writeByte(type);
         packet.toBytes(buffer);
 
-        byte[] bytes = new byte[buffer.readableBytes()];
+        final byte[] bytes = new byte[buffer.readableBytes()];
         buffer.readBytes(bytes);
         return AESUtilities.encrypt(secret, bytes);
     }

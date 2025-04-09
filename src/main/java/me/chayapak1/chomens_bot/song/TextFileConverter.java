@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets;
 
 public class TextFileConverter implements Converter {
     @Override
-    public Song getSongFromBytes (byte[] bytes, String fileName, Bot bot) {
+    public Song getSongFromBytes (final byte[] bytes, final String fileName, final Bot bot) {
         final String data = new String(bytes, StandardCharsets.UTF_8);
 
         if (!data.contains(":")) return null;
@@ -15,7 +15,7 @@ public class TextFileConverter implements Converter {
 
         final Song song = new Song(fileName, bot, null, null, null, null, null, false);
 
-        for (String line : data.split("\r\n|\r|\n")) {
+        for (final String line : data.split("\r\n|\r|\n")) {
             if (line.isBlank()) continue;
 
             // worst way to implement this but it works lol
@@ -44,7 +44,7 @@ public class TextFileConverter implements Converter {
             int intInstrument = -1;
             try {
                 intInstrument = Integer.parseInt(instrument);
-            } catch (NumberFormatException ignored) { }
+            } catch (final NumberFormatException ignored) { }
 
             float volume = 1;
             if (split.length > 3) volume = Float.parseFloat(split[3]);

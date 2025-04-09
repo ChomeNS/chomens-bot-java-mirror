@@ -5,11 +5,11 @@ import me.chayapak1.chomens_bot.voiceChat.Packet;
 
 public class AuthenticateAckPacket implements Packet<AuthenticateAckPacket> {
     @Override
-    public AuthenticateAckPacket fromBytes (FriendlyByteBuf buf) {
+    public AuthenticateAckPacket fromBytes (final FriendlyByteBuf buf) {
         return new AuthenticateAckPacket();
     }
 
     @Override
-    public void toBytes (FriendlyByteBuf buf) {
+    public void toBytes (final FriendlyByteBuf buf) {
     }
 }

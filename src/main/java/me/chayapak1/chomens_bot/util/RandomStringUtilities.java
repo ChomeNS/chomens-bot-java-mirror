@@ -26,7 +26,7 @@ public class RandomStringUtilities {
 
     private static final SecureRandom random = new SecureRandom();
 
-    public static String generate (int length) {
+    public static String generate (final int length) {
         buf = new char[length];
 
         return nextString();

@@ -14,19 +14,19 @@ public class CloopPlugin {
     private final List<ScheduledFuture<?>> loopTasks = new ArrayList<>();
     public final List<CommandLoop> loops = new ArrayList<>();
 
-    public CloopPlugin (Bot bot) {
+    public CloopPlugin (final Bot bot) {
         this.bot = bot;
     }
 
-    public void add (TimeUnit unit, long interval, String command) {
-        Runnable loopTask = () -> bot.core.run(command);
+    public void add (final TimeUnit unit, final long interval, final String command) {
+        final Runnable loopTask = () -> bot.core.run(command);
 
         loops.add(new CommandLoop(command, interval, unit));
         loopTasks.add(bot.executor.scheduleAtFixedRate(loopTask, 0, interval, unit));
     }
 
-    public CommandLoop remove (int index) {
-        ScheduledFuture<?> loopTask = loopTasks.remove(index);
+    public CommandLoop remove (final int index) {
+        final ScheduledFuture<?> loopTask = loopTasks.remove(index);
 
         if (loopTask != null) {
             loopTask.cancel(false);
@@ -36,7 +36,7 @@ public class CloopPlugin {
     }
 
     public void clear () {
-        for (ScheduledFuture<?> loopTask : loopTasks) {
+        for (final ScheduledFuture<?> loopTask : loopTasks) {
             loopTask.cancel(false);
         }
 

@@ -10,9 +10,9 @@ public class HTMLUtilities {
     private static final String CODE_COLOR = "§2";
     private static final String DEFAULT_COLOR = "§a";
 
-    public static String toFormattingCodes (String html) {
-        Matcher matcher = HTML_TAG_PATTERN.matcher(html);
-        StringBuilder raw = new StringBuilder();
+    public static String toFormattingCodes (final String html) {
+        final Matcher matcher = HTML_TAG_PATTERN.matcher(html);
+        final StringBuilder raw = new StringBuilder();
 
         boolean bold = false, italic = false, underline = false, code = false;
 
@@ -22,7 +22,7 @@ public class HTMLUtilities {
         while (matcher.find()) {
             matcher.appendReplacement(raw, "");
 
-            boolean endTag = matcher.group(1) != null;
+            final boolean endTag = matcher.group(1) != null;
             String tagName = matcher.group(2);
             if (tagName == null) {
                 // we're in a comment or newline

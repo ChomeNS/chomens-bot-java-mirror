@@ -30,7 +30,7 @@ public class FindAltsCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws Exception {
+    public Component execute (final CommandContext context) throws Exception {
         final Bot bot = context.bot;
 
         if (Main.database == null)
@@ -42,7 +42,7 @@ public class FindAltsCommand extends Command {
 
         final boolean allServer = flag.equals("-allserver");
 
-        String player;
+        final String player;
 
         if (allServer) {
             player = context.getString(true, true);
@@ -79,7 +79,7 @@ public class FindAltsCommand extends Command {
         return null;
     }
 
-    private Component handle (Bot bot, String targetIP, boolean argumentIsIP, String player, boolean allServer) {
+    private Component handle (final Bot bot, final String targetIP, final boolean argumentIsIP, final String player, final boolean allServer) {
         final Map<String, JsonNode> altsMap = bot.playersDatabase.findPlayerAlts(targetIP, allServer);
 
         final Component playerComponent = Component
@@ -123,7 +123,7 @@ public class FindAltsCommand extends Command {
                 .toList();
 
         int i = 0;
-        for (String username : sorted) {
+        for (final String username : sorted) {
             component = component
                     .append(
                             Component

@@ -37,7 +37,7 @@ public class CommandBlockCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         runCommand(bot, context, context.getString(true, true), null);
@@ -45,7 +45,7 @@ public class CommandBlockCommand extends Command {
         return null;
     }
 
-    private void runCommand (Bot bot, CommandContext context, String command, PlayerEntry player) {
+    private void runCommand (final Bot bot, final CommandContext context, final String command, final PlayerEntry player) {
         final Matcher userMatcher = USER_PATTERN.matcher(command);
         final Matcher uuidMatcher = UUID_PATTERN.matcher(command);
 
@@ -53,12 +53,12 @@ public class CommandBlockCommand extends Command {
         final boolean uuidFound = uuidMatcher.find();
 
         if (userFound || uuidFound) {
-            Pattern pattern;
+            final Pattern pattern;
 
             if (userFound) pattern = Pattern.compile(userMatcher.group(1));
             else pattern = Pattern.compile(uuidMatcher.group(1));
 
-            for (PlayerEntry entry : bot.players.list) {
+            for (final PlayerEntry entry : bot.players.list) {
                 final String username = entry.profile.getName();
                 final String uuid = entry.profile.getIdAsString();
 
@@ -85,7 +85,7 @@ public class CommandBlockCommand extends Command {
                 }
             }
         } else if (command.contains("{username}") || command.contains("{uuid}")) {
-            for (PlayerEntry entry : bot.players.list) {
+            for (final PlayerEntry entry : bot.players.list) {
                 final String username = entry.profile.getName();
                 final String uuid = entry.profile.getIdAsString();
 

@@ -18,42 +18,42 @@ public class AESUtilities {
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final String CIPHER = "AES/CBC/PKCS5Padding";
 
-    public static byte[] getBytesFromUUID (UUID uuid) {
-        ByteBuffer buffer = ByteBuffer.wrap(new byte[16]);
+    public static byte[] getBytesFromUUID (final UUID uuid) {
+        final ByteBuffer buffer = ByteBuffer.wrap(new byte[16]);
         buffer.putLong(uuid.getMostSignificantBits());
         buffer.putLong(uuid.getLeastSignificantBits());
         return buffer.array();
     }
 
     private static byte[] generateIV () {
-        byte[] iv = new byte[16];
+        final byte[] iv = new byte[16];
         RANDOM.nextBytes(iv);
         return iv;
     }
 
-    private static SecretKeySpec createKeySpec (UUID secret) {
+    private static SecretKeySpec createKeySpec (final UUID secret) {
         return new SecretKeySpec(getBytesFromUUID(secret), "AES");
     }
 
-    public static byte[] encrypt (UUID secret, byte[] data) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-        byte[] iv = generateIV();
-        IvParameterSpec ivSpec = new IvParameterSpec(iv);
-        Cipher cipher = Cipher.getInstance(CIPHER);
+    public static byte[] encrypt (final UUID secret, final byte[] data) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+        final byte[] iv = generateIV();
+        final IvParameterSpec ivSpec = new IvParameterSpec(iv);
+        final Cipher cipher = Cipher.getInstance(CIPHER);
         cipher.init(Cipher.ENCRYPT_MODE, createKeySpec(secret), ivSpec);
-        byte[] enc = cipher.doFinal(data);
-        byte[] payload = new byte[iv.length + enc.length];
+        final byte[] enc = cipher.doFinal(data);
+        final byte[] payload = new byte[iv.length + enc.length];
         System.arraycopy(iv, 0, payload, 0, iv.length);
         System.arraycopy(enc, 0, payload, iv.length, enc.length);
         return payload;
     }
 
-    public static byte[] decrypt (UUID secret, byte[] payload) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-        byte[] iv = new byte[16];
+    public static byte[] decrypt (final UUID secret, final byte[] payload) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+        final byte[] iv = new byte[16];
         System.arraycopy(payload, 0, iv, 0, iv.length);
-        byte[] data = new byte[payload.length - iv.length];
+        final byte[] data = new byte[payload.length - iv.length];
         System.arraycopy(payload, iv.length, data, 0, data.length);
-        IvParameterSpec ivSpec = new IvParameterSpec(iv);
-        Cipher cipher = Cipher.getInstance(CIPHER);
+        final IvParameterSpec ivSpec = new IvParameterSpec(iv);
+        final Cipher cipher = Cipher.getInstance(CIPHER);
         cipher.init(Cipher.DECRYPT_MODE, createKeySpec(secret), ivSpec);
         return cipher.doFinal(data);
     }

@@ -45,7 +45,7 @@ public class SongLoaderThread extends Thread {
 
     private boolean isFolder = false;
 
-    public SongLoaderThread (URL location, Bot bot, String requester) {
+    public SongLoaderThread (final URL location, final Bot bot, final String requester) {
         this.bot = bot;
         this.requester = requester;
         isUrl = true;
@@ -54,7 +54,7 @@ public class SongLoaderThread extends Thread {
         fileName = location.getFile();
     }
 
-    public SongLoaderThread (Path location, Bot bot, String requester) {
+    public SongLoaderThread (final Path location, final Bot bot, final String requester) {
         this.bot = bot;
         this.requester = requester;
         isUrl = false;
@@ -65,7 +65,7 @@ public class SongLoaderThread extends Thread {
         fileName = location.getFileName().toString();
     }
 
-    public SongLoaderThread (byte[] data, Bot bot, String requester) {
+    public SongLoaderThread (final byte[] data, final Bot bot, final String requester) {
         this.bot = bot;
         this.requester = requester;
         this.data = data;
@@ -78,14 +78,14 @@ public class SongLoaderThread extends Thread {
     @Override
     public void run () {
         if (isFolder && !isUrl && !isItem) {
-            try (Stream<Path> files = Files.list(songPath)) {
+            try (final Stream<Path> files = Files.list(songPath)) {
                 files.forEach((file) -> {
                     songPath = file;
                     processFile();
                 });
 
                 showAddedToQueue();
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 bot.logger.error(e);
             }
         } else processFile();
@@ -94,8 +94,8 @@ public class SongLoaderThread extends Thread {
     private void processFile () {
         if (bot.music.songQueue.size() > 100) return;
 
-        byte[] bytes;
-        String name;
+        final byte[] bytes;
+        final String name;
         try {
             if (isUrl) {
                 bytes = DownloadUtilities.DownloadToByteArray(songUrl, 5 * 1024 * 1024);
@@ -109,7 +109,7 @@ public class SongLoaderThread extends Thread {
                 bytes = Files.readAllBytes(songPath);
                 name = !isFolder ? fileName : songPath.getFileName().toString();
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             exception = new SongLoaderException(Component.text(e.getMessage()));
 
             failed();
@@ -117,12 +117,12 @@ public class SongLoaderThread extends Thread {
             return;
         }
 
-        for (Converter converter : converters) {
+        for (final Converter converter : converters) {
             if (song != null && !isFolder) break;
 
             try {
                 song = converter.getSongFromBytes(bytes, name, bot);
-            } catch (Exception ignored) { }
+            } catch (final Exception ignored) { }
         }
 
         if (song == null) {

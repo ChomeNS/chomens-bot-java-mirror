@@ -29,7 +29,7 @@ public class ConsoleCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         final String action = context.getString(false, true, true);
@@ -38,7 +38,7 @@ public class ConsoleCommand extends Command {
             case "server" -> {
                 final List<String> servers = new ArrayList<>();
 
-                for (Bot eachBot : bot.bots) {
+                for (final Bot eachBot : bot.bots) {
                     servers.add(eachBot.getServerString(true));
                 }
 
@@ -62,7 +62,7 @@ public class ConsoleCommand extends Command {
                             "Set the console server to %s",
                             Component.text(Main.console.consoleServer)
                     ).color(bot.colorPalette.defaultColor);
-                } catch (ArrayIndexOutOfBoundsException e) {
+                } catch (final ArrayIndexOutOfBoundsException e) {
                     throw new CommandException(Component.text("Invalid server: " + server));
                 }
             }

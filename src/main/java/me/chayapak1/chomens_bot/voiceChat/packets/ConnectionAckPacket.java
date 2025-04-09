@@ -5,11 +5,11 @@ import me.chayapak1.chomens_bot.voiceChat.Packet;
 
 public class ConnectionAckPacket implements Packet<ConnectionAckPacket> {
     @Override
-    public ConnectionAckPacket fromBytes (FriendlyByteBuf buf) {
+    public ConnectionAckPacket fromBytes (final FriendlyByteBuf buf) {
         return new ConnectionAckPacket();
     }
 
     @Override
-    public void toBytes (FriendlyByteBuf buf) {
+    public void toBytes (final FriendlyByteBuf buf) {
     }
 }

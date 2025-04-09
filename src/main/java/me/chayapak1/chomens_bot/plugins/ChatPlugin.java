@@ -59,7 +59,7 @@ public class ChatPlugin extends Bot.Listener {
 
     private final List<Listener> listeners = new ArrayList<>();
 
-    public ChatPlugin (Bot bot) {
+    public ChatPlugin (final Bot bot) {
         this.bot = bot;
 
         queueDelay = bot.options.chatQueueDelay;
@@ -75,22 +75,22 @@ public class ChatPlugin extends Bot.Listener {
     }
 
     @Override
-    public void packetReceived (Session session, Packet packet) {
-        if (packet instanceof ClientboundSystemChatPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundPlayerChatPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundDisguisedChatPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundRegistryDataPacket t_packet) packetReceived(t_packet);
+    public void packetReceived (final Session session, final Packet packet) {
+        if (packet instanceof final ClientboundSystemChatPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundPlayerChatPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundDisguisedChatPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundRegistryDataPacket t_packet) packetReceived(t_packet);
     }
 
-    private void packetReceived (ClientboundSystemChatPacket packet) {
+    private void packetReceived (final ClientboundSystemChatPacket packet) {
         final Component component = packet.getContent();
 
         if (
-                component instanceof TextComponent t_component &&
+                component instanceof final TextComponent t_component &&
                         t_component.content().length() > 15_000
         ) return;
 
-        if (component instanceof TranslatableComponent t_component) {
+        if (component instanceof final TranslatableComponent t_component) {
             final String key = t_component.key();
 
             if (
@@ -109,7 +109,7 @@ public class ChatPlugin extends Bot.Listener {
 
         PlayerMessage playerMessage = null;
 
-        for (ChatParser parser : chatParsers) {
+        for (final ChatParser parser : chatParsers) {
             playerMessage = parser.parse(component);
             if (playerMessage != null) break;
         }
@@ -117,17 +117,17 @@ public class ChatPlugin extends Bot.Listener {
         final String string = ComponentUtilities.stringify(component);
         final String ansi = ComponentUtilities.stringifyAnsi(component);
 
-        for (Listener listener : listeners) {
+        for (final Listener listener : listeners) {
             if (!listener.systemMessageReceived(component, string, ansi)) break;
 
             if (playerMessage != null && !listener.playerMessageReceived(playerMessage, ChatPacketType.SYSTEM)) break;
         }
     }
 
-    private void packetReceived (ClientboundRegistryDataPacket packet) {
+    private void packetReceived (final ClientboundRegistryDataPacket packet) {
         if (!packet.getRegistry().key().equals(Key.key(CHAT_TYPE_REGISTRY_KEY))) return;
 
-        for (RegistryEntry entry : packet.getEntries()) {
+        for (final RegistryEntry entry : packet.getEntries()) {
             final NbtMap data = entry.getData();
 
             if (data == null) continue;
@@ -152,7 +152,7 @@ public class ChatPlugin extends Bot.Listener {
         }
     }
 
-    private Component getComponentByChatType (int chatType, Component target, Component sender, Component content) {
+    private Component getComponentByChatType (final int chatType, final Component target, final Component sender, final Component content) {
         final Component type = chatTypes.get(chatType);
 
         if (type == null) return null;
@@ -167,7 +167,7 @@ public class ChatPlugin extends Bot.Listener {
         );
     }
 
-    private void packetReceived (ClientboundPlayerChatPacket packet) {
+    private void packetReceived (final ClientboundPlayerChatPacket packet) {
         final UUID senderUUID = packet.getSender();
 
         final PlayerEntry entry = bot.players.getEntry(senderUUID);
@@ -182,7 +182,7 @@ public class ChatPlugin extends Bot.Listener {
 
         final Component unsignedContent = packet.getUnsignedContent();
 
-        for (Listener listener : listeners) {
+        for (final Listener listener : listeners) {
             if (!listener.playerMessageReceived(playerMessage, ChatPacketType.PLAYER)) break;
 
             final Component chatTypeComponent = getComponentByChatType(
@@ -206,12 +206,12 @@ public class ChatPlugin extends Bot.Listener {
         }
     }
 
-    private void packetReceived (ClientboundDisguisedChatPacket packet) {
+    private void packetReceived (final ClientboundDisguisedChatPacket packet) {
         final Component component = packet.getMessage();
 
         PlayerMessage parsedFromMessage = null;
 
-        for (ChatParser parser : chatParsers) {
+        for (final ChatParser parser : chatParsers) {
             parsedFromMessage = parser.parse(component);
             if (parsedFromMessage != null) break;
         }
@@ -227,11 +227,11 @@ public class ChatPlugin extends Bot.Listener {
             final String string = ComponentUtilities.stringify(chatTypeComponent);
             final String ansi = ComponentUtilities.stringifyAnsi(chatTypeComponent);
 
-            for (Listener listener : listeners) {
+            for (final Listener listener : listeners) {
                 if (!listener.systemMessageReceived(chatTypeComponent, string, ansi)) break;
             }
 
-            for (ChatParser parser : chatParsers) {
+            for (final ChatParser parser : chatParsers) {
                 final PlayerMessage parsed = parser.parse(chatTypeComponent);
 
                 if (parsed == null) continue;
@@ -242,7 +242,7 @@ public class ChatPlugin extends Bot.Listener {
                         parsed.contents()
                 );
 
-                for (Listener listener : listeners) {
+                for (final Listener listener : listeners) {
                     if (!listener.playerMessageReceived(playerMessage, ChatPacketType.DISGUISED)) break;
                 }
             }
@@ -258,7 +258,7 @@ public class ChatPlugin extends Bot.Listener {
             final String string = ComponentUtilities.stringify(component);
             final String ansi = ComponentUtilities.stringifyAnsi(component);
 
-            for (Listener listener : listeners) {
+            for (final Listener listener : listeners) {
                 if (!listener.playerMessageReceived(playerMessage, ChatPacketType.DISGUISED)) break;
                 if (!listener.systemMessageReceived(component, string, ansi)) break;
             }
@@ -286,13 +286,13 @@ public class ChatPlugin extends Bot.Listener {
         }
     }
 
-    public void sendCommandInstantly (String command) {
+    public void sendCommandInstantly (final String command) {
         if (!bot.loggedIn) return;
 
         bot.session.send(new ServerboundChatCommandPacket(command));
     }
 
-    public void sendChatInstantly (String message) {
+    public void sendChatInstantly (final String message) {
         if (!bot.loggedIn) return;
 
         bot.session.send(new ServerboundChatPacket(
@@ -307,7 +307,7 @@ public class ChatPlugin extends Bot.Listener {
 
     public void clearQueue () { queue.clear(); }
 
-    public void send (String message) {
+    public void send (final String message) {
         if (message.startsWith("/")) {
             queue.add(message);
             return;
@@ -353,7 +353,7 @@ public class ChatPlugin extends Bot.Listener {
         }
     }
 
-    public void tellraw (Component component, String targets) {
+    public void tellraw (final Component component, final String targets) {
         if (bot.options.useChat) {
             if (!targets.equals("@a")) return; // worst fix of all time!1!
 
@@ -364,32 +364,32 @@ public class ChatPlugin extends Bot.Listener {
         }
     }
 
-    public void tellraw (Component component, UUID uuid) { tellraw(component, UUIDUtilities.selector(uuid)); }
+    public void tellraw (final Component component, final UUID uuid) { tellraw(component, UUIDUtilities.selector(uuid)); }
 
-    public void tellraw (Component component) { tellraw(component, "@a"); }
+    public void tellraw (final Component component) { tellraw(component, "@a"); }
 
-    public void actionBar (Component component, String targets) {
+    public void actionBar (final Component component, final String targets) {
         if (bot.options.useChat) return;
         bot.core.run("minecraft:title " + targets + " actionbar " + GsonComponentSerializer.gson().serialize(component));
     }
 
-    public void actionBar (Component component, UUID uuid) { actionBar(component, UUIDUtilities.selector(uuid)); }
+    public void actionBar (final Component component, final UUID uuid) { actionBar(component, UUIDUtilities.selector(uuid)); }
 
-    public void actionBar (Component component) { actionBar(component, "@a"); }
+    public void actionBar (final Component component) { actionBar(component, "@a"); }
 
-    public void addListener (Listener listener) { listeners.add(listener); }
+    public void addListener (final Listener listener) { listeners.add(listener); }
 
     public interface Listener {
-        default boolean playerMessageReceived (PlayerMessage message, ChatPacketType packetType) { return true; }
+        default boolean playerMessageReceived (final PlayerMessage message, final ChatPacketType packetType) { return true; }
 
-        default boolean systemMessageReceived (Component component, String string, String ansi) { return true; }
+        default boolean systemMessageReceived (final Component component, final String string, final String ansi) { return true; }
     }
 
     private record ChatTypeContext(Component target, Component sender, Component content) { }
 
     private static class ChatTypeComponentRenderer extends TranslatableComponentRenderer<ChatTypeContext> {
         @Override
-        protected @NotNull Component renderText (@NotNull TextComponent component, @NotNull ChatTypeContext context) {
+        protected @NotNull Component renderText (@NotNull final TextComponent component, @NotNull final ChatTypeContext context) {
             return switch (component.content()) {
                 case "target" -> context.target();
                 case "sender" -> context.sender();

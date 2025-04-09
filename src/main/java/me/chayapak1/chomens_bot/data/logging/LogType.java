@@ -14,7 +14,7 @@ public enum LogType {
 
     public final Component component;
 
-    LogType (Component component) {
+    LogType (final Component component) {
         this.component = component;
     }
 }

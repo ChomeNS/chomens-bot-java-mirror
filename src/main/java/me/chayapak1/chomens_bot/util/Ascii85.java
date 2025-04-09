@@ -30,20 +30,20 @@ public class Ascii85 {
 
     private Ascii85 () { }
 
-    public static String encode (byte[] payload) {
+    public static String encode (final byte[] payload) {
         if (payload == null) {
             throw new IllegalArgumentException("You must provide a non-null input");
         }
         // By using five ASCII characters to represent four bytes of binary data the encoded size ¹⁄₄ is larger than the original
-        StringBuilder stringBuff = new StringBuilder(payload.length * 5 / 4);
+        final StringBuilder stringBuff = new StringBuilder(payload.length * 5 / 4);
         // We break the payload into int (4 bytes)
-        byte[] chunk = new byte[4];
+        final byte[] chunk = new byte[4];
         int chunkIndex = 0;
-        for (byte currByte : payload) {
+        for (final byte currByte : payload) {
             chunk[chunkIndex++] = currByte;
 
             if (chunkIndex == 4) {
-                int value = byteToInt(chunk);
+                final int value = byteToInt(chunk);
                 //Because all-zero data is quite common, an exception is made for the sake of data compression,
                 //and an all-zero group is encoded as a single character "z" instead of "!!!!!".
                 if (value == 0) {
@@ -58,10 +58,10 @@ public class Ascii85 {
 
         //If we didn't end on 0, then we need some padding
         if (chunkIndex > 0) {
-            int numPadded = chunk.length - chunkIndex;
+            final int numPadded = chunk.length - chunkIndex;
             Arrays.fill(chunk, chunkIndex, chunk.length, (byte) 0);
-            int value = byteToInt(chunk);
-            char[] encodedChunk = encodeChunk(value);
+            final int value = byteToInt(chunk);
+            final char[] encodedChunk = encodeChunk(value);
             for (int i = 0; i < encodedChunk.length - numPadded; i++) {
                 stringBuff.append(encodedChunk[i]);
             }
@@ -70,10 +70,10 @@ public class Ascii85 {
         return stringBuff.toString();
     }
 
-    private static char[] encodeChunk (int value) {
+    private static char[] encodeChunk (final int value) {
         //transform value to unsigned long
         long longValue = value & 0x00000000ffffffffL;
-        char[] encodedChunk = new char[5];
+        final char[] encodedChunk = new char[5];
         for (int i = 0; i < encodedChunk.length; i++) {
             encodedChunk[i] = (char) ((longValue / BASE85_POW[4 - i]) + ASCII_SHIFT);
             longValue = longValue % BASE85_POW[4 - i];
@@ -99,28 +99,28 @@ public class Ascii85 {
         final int inputLength = chars.length();
 
         // lets first count the occurrences of 'z'
-        long zCount = chars.chars().filter(c -> c == 'z').count();
+        final long zCount = chars.chars().filter(c -> c == 'z').count();
 
         // Typically by using five ASCII characters to represent four bytes of binary data
         // the encoded size ¹⁄₄ is larger than the original.
         // We however have to account for the 'z' which were compressed
-        BigDecimal uncompressedZLength = BigDecimal.valueOf(zCount).multiply(BigDecimal.valueOf(4));
+        final BigDecimal uncompressedZLength = BigDecimal.valueOf(zCount).multiply(BigDecimal.valueOf(4));
 
-        BigDecimal uncompressedNonZLength = BigDecimal.valueOf(inputLength - zCount)
+        final BigDecimal uncompressedNonZLength = BigDecimal.valueOf(inputLength - zCount)
                 .multiply(BigDecimal.valueOf(4))
                 .divide(BigDecimal.valueOf(5));
 
-        BigDecimal uncompressedLength = uncompressedZLength.add(uncompressedNonZLength);
+        final BigDecimal uncompressedLength = uncompressedZLength.add(uncompressedNonZLength);
 
-        ByteBuffer bytebuff = ByteBuffer.allocate(uncompressedLength.intValue());
+        final ByteBuffer bytebuff = ByteBuffer.allocate(uncompressedLength.intValue());
         //1. Whitespace characters may occur anywhere to accommodate line length limitations. So lets strip it.
         chars = REMOVE_WHITESPACE.matcher(chars).replaceAll("");
         //Since Base85 is an ascii encoder, we don't need to get the bytes as UTF-8.
-        byte[] payload = chars.getBytes(StandardCharsets.US_ASCII);
-        byte[] chunk = new byte[5];
+        final byte[] payload = chars.getBytes(StandardCharsets.US_ASCII);
+        final byte[] chunk = new byte[5];
         int chunkIndex = 0;
 
-        for (byte currByte : payload) {
+        for (final byte currByte : payload) {
             // Because all-zero data is quite common, an exception is made for the sake of data compression,
             // and an all-zero group is encoded as a single character "z" instead of "!!!!!".
             if (currByte == 'z') {
@@ -145,9 +145,9 @@ public class Ascii85 {
 
         // If we didn't end on 0, then we need some padding
         if (chunkIndex > 0) {
-            int numPadded = chunk.length - chunkIndex;
+            final int numPadded = chunk.length - chunkIndex;
             Arrays.fill(chunk, chunkIndex, chunk.length, (byte) 'u');
-            byte[] paddedDecode = decodeChunk(chunk);
+            final byte[] paddedDecode = decodeChunk(chunk);
             for (int i = 0; i < paddedDecode.length - numPadded; i++) {
                 bytebuff.put(paddedDecode[i]);
             }
@@ -157,7 +157,7 @@ public class Ascii85 {
         return Arrays.copyOf(bytebuff.array(), bytebuff.limit());
     }
 
-    private static byte[] decodeChunk (byte[] chunk) {
+    private static byte[] decodeChunk (final byte[] chunk) {
         if (chunk.length != 5) {
             throw new IllegalArgumentException("You can only decode chunks of size 5.");
         }
@@ -173,14 +173,14 @@ public class Ascii85 {
         return intToByte(value);
     }
 
-    private static int byteToInt (byte[] value) {
+    private static int byteToInt (final byte[] value) {
         if (value == null || value.length != 4) {
             throw new IllegalArgumentException("You cannot create an int without exactly 4 bytes.");
         }
         return ByteBuffer.wrap(value).getInt();
     }
 
-    private static byte[] intToByte (int value) {
+    private static byte[] intToByte (final int value) {
         return new byte[] {
                 (byte) (value >>> 24),
                 (byte) (value >>> 16),

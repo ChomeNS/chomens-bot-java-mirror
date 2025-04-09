@@ -15,11 +15,11 @@ public class BossBar {
     public float health;
 
     public BossBar (
-            UUID uuid,
-            Component title,
-            BossBarColor color,
-            BossBarDivision division,
-            float health
+            final UUID uuid,
+            final Component title,
+            final BossBarColor color,
+            final BossBarDivision division,
+            final float health
     ) {
         this.uuid = uuid;
         this.title = title;

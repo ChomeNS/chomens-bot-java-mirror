@@ -17,18 +17,18 @@ import java.util.UUID;
 public class U203aChatParser implements ChatParser {
     private final Bot bot;
 
-    public U203aChatParser (Bot bot) {
+    public U203aChatParser (final Bot bot) {
         this.bot = bot;
     }
 
     @Override
-    public PlayerMessage parse (Component message) {
+    public PlayerMessage parse (final Component message) {
         if (message instanceof TranslatableComponent) return parse((TranslatableComponent) message);
         return null;
     }
 
     // very similar to MinecraftChatParser
-    public PlayerMessage parse (TranslatableComponent message) {
+    public PlayerMessage parse (final TranslatableComponent message) {
         final List<TranslationArgument> args = message.arguments();
         if (args.size() < 3 || (!message.key().equals("[%s] %s › %s") && !message.key().equals("%s %s › %s")))
             return null;
@@ -36,10 +36,10 @@ public class U203aChatParser implements ChatParser {
         final Component senderComponent = args.get(1).asComponent();
         final Component contents = args.get(2).asComponent();
 
-        PlayerEntry sender;
+        final PlayerEntry sender;
         final HoverEvent<?> hoverEvent = senderComponent.hoverEvent();
         if (hoverEvent != null && hoverEvent.action().equals(HoverEvent.Action.SHOW_ENTITY)) {
-            HoverEvent.ShowEntity entityInfo = (HoverEvent.ShowEntity) hoverEvent.value();
+            final HoverEvent.ShowEntity entityInfo = (HoverEvent.ShowEntity) hoverEvent.value();
             final UUID senderUUID = entityInfo.id();
             sender = bot.players.getEntry(senderUUID);
         } else {

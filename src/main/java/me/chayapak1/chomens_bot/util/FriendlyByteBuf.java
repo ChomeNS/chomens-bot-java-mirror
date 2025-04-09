@@ -24,7 +24,7 @@ public class FriendlyByteBuf extends ByteBuf {
 
     private final ByteBuf buf;
 
-    public FriendlyByteBuf (ByteBuf byteBuf) {
+    public FriendlyByteBuf (final ByteBuf byteBuf) {
         buf = byteBuf;
     }
 
@@ -32,7 +32,7 @@ public class FriendlyByteBuf extends ByteBuf {
         this(Unpooled.buffer());
     }
 
-    public void writeByteArray (byte[] bs) {
+    public void writeByteArray (final byte[] bs) {
         writeVarInt(bs.length);
         writeBytes(bs);
     }
@@ -41,12 +41,12 @@ public class FriendlyByteBuf extends ByteBuf {
         return readByteArray(readableBytes());
     }
 
-    public byte[] readByteArray (int i) {
-        int j = readVarInt();
+    public byte[] readByteArray (final int i) {
+        final int j = readVarInt();
         if (j > i) {
             throw new DecoderException("ByteArray with size " + j + " is bigger than allowed " + i);
         } else {
-            byte[] bs = new byte[j];
+            final byte[] bs = new byte[j];
             readBytes(bs);
             return bs;
         }
@@ -68,7 +68,7 @@ public class FriendlyByteBuf extends ByteBuf {
         return i;
     }
 
-    public void writeUUID (UUID uUID) {
+    public void writeUUID (final UUID uUID) {
         writeLong(uUID.getMostSignificantBits());
         writeLong(uUID.getLeastSignificantBits());
     }
@@ -86,14 +86,14 @@ public class FriendlyByteBuf extends ByteBuf {
         writeByte(i);
     }
 
-    public String readUtf (int i) {
-        int j = readVarInt();
+    public String readUtf (final int i) {
+        final int j = readVarInt();
         if (j > i * 4) {
             throw new DecoderException("The received encoded string buffer length is longer than maximum allowed (" + j + " > " + i * 4 + ')');
         } else if (j < 0) {
             throw new DecoderException("The received encoded string buffer length is less than zero! Weird string!");
         } else {
-            String string = toString(readerIndex(), j, StandardCharsets.UTF_8);
+            final String string = toString(readerIndex(), j, StandardCharsets.UTF_8);
             readerIndex(readerIndex() + j);
             if (string.length() > i) {
                 throw new DecoderException("The received string length is longer than maximum allowed (" + j + " > " + i + ')');
@@ -103,8 +103,8 @@ public class FriendlyByteBuf extends ByteBuf {
         }
     }
 
-    public void writeUtf (String string, int i) {
-        byte[] bs = string.getBytes(StandardCharsets.UTF_8);
+    public void writeUtf (final String string, final int i) {
+        final byte[] bs = string.getBytes(StandardCharsets.UTF_8);
         if (bs.length > i) {
             throw new EncoderException("String too big (was " + bs.length + " bytes encoded, max " + i + ')');
         } else {
@@ -117,7 +117,7 @@ public class FriendlyByteBuf extends ByteBuf {
         return readUtf(32767);
     }
 
-    public void writeUtf (String string) {
+    public void writeUtf (final String string) {
         writeUtf(string, 32767);
     }
 
@@ -127,7 +127,7 @@ public class FriendlyByteBuf extends ByteBuf {
     }
 
     @Override
-    public ByteBuf capacity (int i) {
+    public ByteBuf capacity (final int i) {
         return buf.capacity(i);
     }
 
@@ -149,7 +149,7 @@ public class FriendlyByteBuf extends ByteBuf {
 
     @Override
     @Deprecated
-    public ByteBuf order (ByteOrder byteOrder) {
+    public ByteBuf order (final ByteOrder byteOrder) {
         return buf.order(byteOrder);
     }
 
@@ -179,7 +179,7 @@ public class FriendlyByteBuf extends ByteBuf {
     }
 
     @Override
-    public ByteBuf readerIndex (int i) {
+    public ByteBuf readerIndex (final int i) {
         return buf.readerIndex(i);
     }
 
@@ -189,12 +189,12 @@ public class FriendlyByteBuf extends ByteBuf {
     }
 
     @Override
-    public ByteBuf writerIndex (int i) {
+    public ByteBuf writerIndex (final int i) {
         return buf.writerIndex(i);
     }
 
     @Override
-    public ByteBuf setIndex (int i, int j) {
+    public ByteBuf setIndex (final int i, final int j) {
         return buf.setIndex(i, j);
     }
 
@@ -219,7 +219,7 @@ public class FriendlyByteBuf extends ByteBuf {
     }
 
     @Override
-    public boolean isReadable (int i) {
+    public boolean isReadable (final int i) {
         return buf.isReadable(i);
     }
 
@@ -229,7 +229,7 @@ public class FriendlyByteBuf extends ByteBuf {
     }
 
     @Override
-    public boolean isWritable (int i) {
+    public boolean isWritable (final int i) {
         return buf.isWritable(i);
     }
 
@@ -269,282 +269,282 @@ public class FriendlyByteBuf extends ByteBuf {
     }
 
     @Override
-    public ByteBuf ensureWritable (int i) {
+    public ByteBuf ensureWritable (final int i) {
         return buf.ensureWritable(i);
     }
 
     @Override
-    public int ensureWritable (int i, boolean bl) {
+    public int ensureWritable (final int i, final boolean bl) {
         return buf.ensureWritable(i, bl);
     }
 
     @Override
-    public boolean getBoolean (int i) {
+    public boolean getBoolean (final int i) {
         return buf.getBoolean(i);
     }
 
     @Override
-    public byte getByte (int i) {
+    public byte getByte (final int i) {
         return buf.getByte(i);
     }
 
     @Override
-    public short getUnsignedByte (int i) {
+    public short getUnsignedByte (final int i) {
         return buf.getUnsignedByte(i);
     }
 
     @Override
-    public short getShort (int i) {
+    public short getShort (final int i) {
         return buf.getShort(i);
     }
 
     @Override
-    public short getShortLE (int i) {
+    public short getShortLE (final int i) {
         return buf.getShortLE(i);
     }
 
     @Override
-    public int getUnsignedShort (int i) {
+    public int getUnsignedShort (final int i) {
         return buf.getUnsignedShort(i);
     }
 
     @Override
-    public int getUnsignedShortLE (int i) {
+    public int getUnsignedShortLE (final int i) {
         return buf.getUnsignedShortLE(i);
     }
 
     @Override
-    public int getMedium (int i) {
+    public int getMedium (final int i) {
         return buf.getMedium(i);
     }
 
     @Override
-    public int getMediumLE (int i) {
+    public int getMediumLE (final int i) {
         return buf.getMediumLE(i);
     }
 
     @Override
-    public int getUnsignedMedium (int i) {
+    public int getUnsignedMedium (final int i) {
         return buf.getUnsignedMedium(i);
     }
 
     @Override
-    public int getUnsignedMediumLE (int i) {
+    public int getUnsignedMediumLE (final int i) {
         return buf.getUnsignedMediumLE(i);
     }
 
     @Override
-    public int getInt (int i) {
+    public int getInt (final int i) {
         return buf.getInt(i);
     }
 
     @Override
-    public int getIntLE (int i) {
+    public int getIntLE (final int i) {
         return buf.getIntLE(i);
     }
 
     @Override
-    public long getUnsignedInt (int i) {
+    public long getUnsignedInt (final int i) {
         return buf.getUnsignedInt(i);
     }
 
     @Override
-    public long getUnsignedIntLE (int i) {
+    public long getUnsignedIntLE (final int i) {
         return buf.getUnsignedIntLE(i);
     }
 
     @Override
-    public long getLong (int i) {
+    public long getLong (final int i) {
         return buf.getLong(i);
     }
 
     @Override
-    public long getLongLE (int i) {
+    public long getLongLE (final int i) {
         return buf.getLongLE(i);
     }
 
     @Override
-    public char getChar (int i) {
+    public char getChar (final int i) {
         return buf.getChar(i);
     }
 
     @Override
-    public float getFloat (int i) {
+    public float getFloat (final int i) {
         return buf.getFloat(i);
     }
 
     @Override
-    public double getDouble (int i) {
+    public double getDouble (final int i) {
         return buf.getDouble(i);
     }
 
     @Override
-    public ByteBuf getBytes (int i, ByteBuf byteBuf) {
+    public ByteBuf getBytes (final int i, final ByteBuf byteBuf) {
         return buf.getBytes(i, byteBuf);
     }
 
     @Override
-    public ByteBuf getBytes (int i, ByteBuf byteBuf, int j) {
+    public ByteBuf getBytes (final int i, final ByteBuf byteBuf, final int j) {
         return buf.getBytes(i, byteBuf, j);
     }
 
     @Override
-    public ByteBuf getBytes (int i, ByteBuf byteBuf, int j, int k) {
+    public ByteBuf getBytes (final int i, final ByteBuf byteBuf, final int j, final int k) {
         return buf.getBytes(i, byteBuf, j, k);
     }
 
     @Override
-    public ByteBuf getBytes (int i, byte[] bs) {
+    public ByteBuf getBytes (final int i, final byte[] bs) {
         return buf.getBytes(i, bs);
     }
 
     @Override
-    public ByteBuf getBytes (int i, byte[] bs, int j, int k) {
+    public ByteBuf getBytes (final int i, final byte[] bs, final int j, final int k) {
         return buf.getBytes(i, bs, j, k);
     }
 
     @Override
-    public ByteBuf getBytes (int i, ByteBuffer byteBuffer) {
+    public ByteBuf getBytes (final int i, final ByteBuffer byteBuffer) {
         return buf.getBytes(i, byteBuffer);
     }
 
     @Override
-    public ByteBuf getBytes (int i, OutputStream outputStream, int j) throws IOException {
+    public ByteBuf getBytes (final int i, final OutputStream outputStream, final int j) throws IOException {
         return buf.getBytes(i, outputStream, j);
     }
 
     @Override
-    public int getBytes (int i, GatheringByteChannel gatheringByteChannel, int j) throws IOException {
+    public int getBytes (final int i, final GatheringByteChannel gatheringByteChannel, final int j) throws IOException {
         return buf.getBytes(i, gatheringByteChannel, j);
     }
 
     @Override
-    public int getBytes (int i, FileChannel fileChannel, long l, int j) throws IOException {
+    public int getBytes (final int i, final FileChannel fileChannel, final long l, final int j) throws IOException {
         return buf.getBytes(i, fileChannel, l, j);
     }
 
     @Override
-    public CharSequence getCharSequence (int i, int j, Charset charset) {
+    public CharSequence getCharSequence (final int i, final int j, final Charset charset) {
         return buf.getCharSequence(i, j, charset);
     }
 
     @Override
-    public ByteBuf setBoolean (int i, boolean bl) {
+    public ByteBuf setBoolean (final int i, final boolean bl) {
         return buf.setBoolean(i, bl);
     }
 
     @Override
-    public ByteBuf setByte (int i, int j) {
+    public ByteBuf setByte (final int i, final int j) {
         return buf.setByte(i, j);
     }
 
     @Override
-    public ByteBuf setShort (int i, int j) {
+    public ByteBuf setShort (final int i, final int j) {
         return buf.setShort(i, j);
     }
 
     @Override
-    public ByteBuf setShortLE (int i, int j) {
+    public ByteBuf setShortLE (final int i, final int j) {
         return buf.setShortLE(i, j);
     }
 
     @Override
-    public ByteBuf setMedium (int i, int j) {
+    public ByteBuf setMedium (final int i, final int j) {
         return buf.setMedium(i, j);
     }
 
     @Override
-    public ByteBuf setMediumLE (int i, int j) {
+    public ByteBuf setMediumLE (final int i, final int j) {
         return buf.setMediumLE(i, j);
     }
 
     @Override
-    public ByteBuf setInt (int i, int j) {
+    public ByteBuf setInt (final int i, final int j) {
         return buf.setInt(i, j);
     }
 
     @Override
-    public ByteBuf setIntLE (int i, int j) {
+    public ByteBuf setIntLE (final int i, final int j) {
         return buf.setIntLE(i, j);
     }
 
     @Override
-    public ByteBuf setLong (int i, long l) {
+    public ByteBuf setLong (final int i, final long l) {
         return buf.setLong(i, l);
     }
 
     @Override
-    public ByteBuf setLongLE (int i, long l) {
+    public ByteBuf setLongLE (final int i, final long l) {
         return buf.setLongLE(i, l);
     }
 
     @Override
-    public ByteBuf setChar (int i, int j) {
+    public ByteBuf setChar (final int i, final int j) {
         return buf.setChar(i, j);
     }
 
     @Override
-    public ByteBuf setFloat (int i, float f) {
+    public ByteBuf setFloat (final int i, final float f) {
         return buf.setFloat(i, f);
     }
 
     @Override
-    public ByteBuf setDouble (int i, double d) {
+    public ByteBuf setDouble (final int i, final double d) {
         return buf.setDouble(i, d);
     }
 
     @Override
-    public ByteBuf setBytes (int i, ByteBuf byteBuf) {
+    public ByteBuf setBytes (final int i, final ByteBuf byteBuf) {
         return buf.setBytes(i, byteBuf);
     }
 
     @Override
-    public ByteBuf setBytes (int i, ByteBuf byteBuf, int j) {
+    public ByteBuf setBytes (final int i, final ByteBuf byteBuf, final int j) {
         return buf.setBytes(i, byteBuf, j);
     }
 
     @Override
-    public ByteBuf setBytes (int i, ByteBuf byteBuf, int j, int k) {
+    public ByteBuf setBytes (final int i, final ByteBuf byteBuf, final int j, final int k) {
         return buf.setBytes(i, byteBuf, j, k);
     }
 
     @Override
-    public ByteBuf setBytes (int i, byte[] bs) {
+    public ByteBuf setBytes (final int i, final byte[] bs) {
         return buf.setBytes(i, bs);
     }
 
     @Override
-    public ByteBuf setBytes (int i, byte[] bs, int j, int k) {
+    public ByteBuf setBytes (final int i, final byte[] bs, final int j, final int k) {
         return buf.setBytes(i, bs, j, k);
     }
 
     @Override
-    public ByteBuf setBytes (int i, ByteBuffer byteBuffer) {
+    public ByteBuf setBytes (final int i, final ByteBuffer byteBuffer) {
         return buf.setBytes(i, byteBuffer);
     }
 
     @Override
-    public int setBytes (int i, InputStream inputStream, int j) throws IOException {
+    public int setBytes (final int i, final InputStream inputStream, final int j) throws IOException {
         return buf.setBytes(i, inputStream, j);
     }
 
     @Override
-    public int setBytes (int i, ScatteringByteChannel scatteringByteChannel, int j) throws IOException {
+    public int setBytes (final int i, final ScatteringByteChannel scatteringByteChannel, final int j) throws IOException {
         return buf.setBytes(i, scatteringByteChannel, j);
     }
 
     @Override
-    public int setBytes (int i, FileChannel fileChannel, long l, int j) throws IOException {
+    public int setBytes (final int i, final FileChannel fileChannel, final long l, final int j) throws IOException {
         return buf.setBytes(i, fileChannel, l, j);
     }
 
     @Override
-    public ByteBuf setZero (int i, int j) {
+    public ByteBuf setZero (final int i, final int j) {
         return buf.setZero(i, j);
     }
 
     @Override
-    public int setCharSequence (int i, CharSequence charSequence, Charset charset) {
+    public int setCharSequence (final int i, final CharSequence charSequence, final Charset charset) {
         return buf.setCharSequence(i, charSequence, charset);
     }
 
@@ -649,232 +649,232 @@ public class FriendlyByteBuf extends ByteBuf {
     }
 
     @Override
-    public ByteBuf readBytes (int i) {
+    public ByteBuf readBytes (final int i) {
         return buf.readBytes(i);
     }
 
     @Override
-    public ByteBuf readSlice (int i) {
+    public ByteBuf readSlice (final int i) {
         return buf.readSlice(i);
     }
 
     @Override
-    public ByteBuf readRetainedSlice (int i) {
+    public ByteBuf readRetainedSlice (final int i) {
         return buf.readRetainedSlice(i);
     }
 
     @Override
-    public ByteBuf readBytes (ByteBuf byteBuf) {
+    public ByteBuf readBytes (final ByteBuf byteBuf) {
         return buf.readBytes(byteBuf);
     }
 
     @Override
-    public ByteBuf readBytes (ByteBuf byteBuf, int i) {
+    public ByteBuf readBytes (final ByteBuf byteBuf, final int i) {
         return buf.readBytes(byteBuf, i);
     }
 
     @Override
-    public ByteBuf readBytes (ByteBuf byteBuf, int i, int j) {
+    public ByteBuf readBytes (final ByteBuf byteBuf, final int i, final int j) {
         return buf.readBytes(byteBuf, i, j);
     }
 
     @Override
-    public ByteBuf readBytes (byte[] bs) {
+    public ByteBuf readBytes (final byte[] bs) {
         return buf.readBytes(bs);
     }
 
     @Override
-    public ByteBuf readBytes (byte[] bs, int i, int j) {
+    public ByteBuf readBytes (final byte[] bs, final int i, final int j) {
         return buf.readBytes(bs, i, j);
     }
 
     @Override
-    public ByteBuf readBytes (ByteBuffer byteBuffer) {
+    public ByteBuf readBytes (final ByteBuffer byteBuffer) {
         return buf.readBytes(byteBuffer);
     }
 
     @Override
-    public ByteBuf readBytes (OutputStream outputStream, int i) throws IOException {
+    public ByteBuf readBytes (final OutputStream outputStream, final int i) throws IOException {
         return buf.readBytes(outputStream, i);
     }
 
     @Override
-    public int readBytes (GatheringByteChannel gatheringByteChannel, int i) throws IOException {
+    public int readBytes (final GatheringByteChannel gatheringByteChannel, final int i) throws IOException {
         return buf.readBytes(gatheringByteChannel, i);
     }
 
     @Override
-    public CharSequence readCharSequence (int i, Charset charset) {
+    public CharSequence readCharSequence (final int i, final Charset charset) {
         return buf.readCharSequence(i, charset);
     }
 
     @Override
-    public int readBytes (FileChannel fileChannel, long l, int i) throws IOException {
+    public int readBytes (final FileChannel fileChannel, final long l, final int i) throws IOException {
         return buf.readBytes(fileChannel, l, i);
     }
 
     @Override
-    public ByteBuf skipBytes (int i) {
+    public ByteBuf skipBytes (final int i) {
         return buf.skipBytes(i);
     }
 
     @Override
-    public ByteBuf writeBoolean (boolean bl) {
+    public ByteBuf writeBoolean (final boolean bl) {
         return buf.writeBoolean(bl);
     }
 
     @Override
-    public ByteBuf writeByte (int i) {
+    public ByteBuf writeByte (final int i) {
         return buf.writeByte(i);
     }
 
     @Override
-    public ByteBuf writeShort (int i) {
+    public ByteBuf writeShort (final int i) {
         return buf.writeShort(i);
     }
 
     @Override
-    public ByteBuf writeShortLE (int i) {
+    public ByteBuf writeShortLE (final int i) {
         return buf.writeShortLE(i);
     }
 
     @Override
-    public ByteBuf writeMedium (int i) {
+    public ByteBuf writeMedium (final int i) {
         return buf.writeMedium(i);
     }
 
     @Override
-    public ByteBuf writeMediumLE (int i) {
+    public ByteBuf writeMediumLE (final int i) {
         return buf.writeMediumLE(i);
     }
 
     @Override
-    public ByteBuf writeInt (int i) {
+    public ByteBuf writeInt (final int i) {
         return buf.writeInt(i);
     }
 
     @Override
-    public ByteBuf writeIntLE (int i) {
+    public ByteBuf writeIntLE (final int i) {
         return buf.writeIntLE(i);
     }
 
     @Override
-    public ByteBuf writeLong (long l) {
+    public ByteBuf writeLong (final long l) {
         return buf.writeLong(l);
     }
 
     @Override
-    public ByteBuf writeLongLE (long l) {
+    public ByteBuf writeLongLE (final long l) {
         return buf.writeLongLE(l);
     }
 
     @Override
-    public ByteBuf writeChar (int i) {
+    public ByteBuf writeChar (final int i) {
         return buf.writeChar(i);
     }
 
     @Override
-    public ByteBuf writeFloat (float f) {
+    public ByteBuf writeFloat (final float f) {
         return buf.writeFloat(f);
     }
 
     @Override
-    public ByteBuf writeDouble (double d) {
+    public ByteBuf writeDouble (final double d) {
         return buf.writeDouble(d);
     }
 
     @Override
-    public ByteBuf writeBytes (ByteBuf byteBuf) {
+    public ByteBuf writeBytes (final ByteBuf byteBuf) {
         return buf.writeBytes(byteBuf);
     }
 
     @Override
-    public ByteBuf writeBytes (ByteBuf byteBuf, int i) {
+    public ByteBuf writeBytes (final ByteBuf byteBuf, final int i) {
         return buf.writeBytes(byteBuf, i);
     }
 
     @Override
-    public ByteBuf writeBytes (ByteBuf byteBuf, int i, int j) {
+    public ByteBuf writeBytes (final ByteBuf byteBuf, final int i, final int j) {
         return buf.writeBytes(byteBuf, i, j);
     }
 
     @Override
-    public ByteBuf writeBytes (byte[] bs) {
+    public ByteBuf writeBytes (final byte[] bs) {
         return buf.writeBytes(bs);
     }
 
     @Override
-    public ByteBuf writeBytes (byte[] bs, int i, int j) {
+    public ByteBuf writeBytes (final byte[] bs, final int i, final int j) {
         return buf.writeBytes(bs, i, j);
     }
 
     @Override
-    public ByteBuf writeBytes (ByteBuffer byteBuffer) {
+    public ByteBuf writeBytes (final ByteBuffer byteBuffer) {
         return buf.writeBytes(byteBuffer);
     }
 
     @Override
-    public int writeBytes (InputStream inputStream, int i) throws IOException {
+    public int writeBytes (final InputStream inputStream, final int i) throws IOException {
         return buf.writeBytes(inputStream, i);
     }
 
     @Override
-    public int writeBytes (ScatteringByteChannel scatteringByteChannel, int i) throws IOException {
+    public int writeBytes (final ScatteringByteChannel scatteringByteChannel, final int i) throws IOException {
         return buf.writeBytes(scatteringByteChannel, i);
     }
 
     @Override
-    public int writeBytes (FileChannel fileChannel, long l, int i) throws IOException {
+    public int writeBytes (final FileChannel fileChannel, final long l, final int i) throws IOException {
         return buf.writeBytes(fileChannel, l, i);
     }
 
     @Override
-    public ByteBuf writeZero (int i) {
+    public ByteBuf writeZero (final int i) {
         return buf.writeZero(i);
     }
 
     @Override
-    public int writeCharSequence (CharSequence charSequence, Charset charset) {
+    public int writeCharSequence (final CharSequence charSequence, final Charset charset) {
         return buf.writeCharSequence(charSequence, charset);
     }
 
     @Override
-    public int indexOf (int i, int j, byte b) {
+    public int indexOf (final int i, final int j, final byte b) {
         return buf.indexOf(i, j, b);
     }
 
     @Override
-    public int bytesBefore (byte b) {
+    public int bytesBefore (final byte b) {
         return buf.bytesBefore(b);
     }
 
     @Override
-    public int bytesBefore (int i, byte b) {
+    public int bytesBefore (final int i, final byte b) {
         return buf.bytesBefore(i, b);
     }
 
     @Override
-    public int bytesBefore (int i, int j, byte b) {
+    public int bytesBefore (final int i, final int j, final byte b) {
         return buf.bytesBefore(i, j, b);
     }
 
     @Override
-    public int forEachByte (ByteProcessor byteProcessor) {
+    public int forEachByte (final ByteProcessor byteProcessor) {
         return buf.forEachByte(byteProcessor);
     }
 
     @Override
-    public int forEachByte (int i, int j, ByteProcessor byteProcessor) {
+    public int forEachByte (final int i, final int j, final ByteProcessor byteProcessor) {
         return buf.forEachByte(i, j, byteProcessor);
     }
 
     @Override
-    public int forEachByteDesc (ByteProcessor byteProcessor) {
+    public int forEachByteDesc (final ByteProcessor byteProcessor) {
         return buf.forEachByteDesc(byteProcessor);
     }
 
     @Override
-    public int forEachByteDesc (int i, int j, ByteProcessor byteProcessor) {
+    public int forEachByteDesc (final int i, final int j, final ByteProcessor byteProcessor) {
         return buf.forEachByteDesc(i, j, byteProcessor);
     }
 
@@ -884,7 +884,7 @@ public class FriendlyByteBuf extends ByteBuf {
     }
 
     @Override
-    public ByteBuf copy (int i, int j) {
+    public ByteBuf copy (final int i, final int j) {
         return buf.copy(i, j);
     }
 
@@ -899,12 +899,12 @@ public class FriendlyByteBuf extends ByteBuf {
     }
 
     @Override
-    public ByteBuf slice (int i, int j) {
+    public ByteBuf slice (final int i, final int j) {
         return buf.slice(i, j);
     }
 
     @Override
-    public ByteBuf retainedSlice (int i, int j) {
+    public ByteBuf retainedSlice (final int i, final int j) {
         return buf.retainedSlice(i, j);
     }
 
@@ -929,12 +929,12 @@ public class FriendlyByteBuf extends ByteBuf {
     }
 
     @Override
-    public ByteBuffer nioBuffer (int i, int j) {
+    public ByteBuffer nioBuffer (final int i, final int j) {
         return buf.nioBuffer(i, j);
     }
 
     @Override
-    public ByteBuffer internalNioBuffer (int i, int j) {
+    public ByteBuffer internalNioBuffer (final int i, final int j) {
         return buf.internalNioBuffer(i, j);
     }
 
@@ -944,7 +944,7 @@ public class FriendlyByteBuf extends ByteBuf {
     }
 
     @Override
-    public ByteBuffer[] nioBuffers (int i, int j) {
+    public ByteBuffer[] nioBuffers (final int i, final int j) {
         return buf.nioBuffers(i, j);
     }
 
@@ -974,12 +974,12 @@ public class FriendlyByteBuf extends ByteBuf {
     }
 
     @Override
-    public String toString (Charset charset) {
+    public String toString (final Charset charset) {
         return buf.toString(charset);
     }
 
     @Override
-    public String toString (int i, int j, Charset charset) {
+    public String toString (final int i, final int j, final Charset charset) {
         return buf.toString(i, j, charset);
     }
 
@@ -996,7 +996,7 @@ public class FriendlyByteBuf extends ByteBuf {
     }
 
     @Override
-    public int compareTo (ByteBuf byteBuf) {
+    public int compareTo (final ByteBuf byteBuf) {
         return buf.compareTo(byteBuf);
     }
 
@@ -1006,7 +1006,7 @@ public class FriendlyByteBuf extends ByteBuf {
     }
 
     @Override
-    public ByteBuf retain (int i) {
+    public ByteBuf retain (final int i) {
         return buf.retain(i);
     }
 
@@ -1021,7 +1021,7 @@ public class FriendlyByteBuf extends ByteBuf {
     }
 
     @Override
-    public ByteBuf touch (Object object) {
+    public ByteBuf touch (final Object object) {
         return buf.touch(object);
     }
 
@@ -1036,7 +1036,7 @@ public class FriendlyByteBuf extends ByteBuf {
     }
 
     @Override
-    public boolean release (int i) {
+    public boolean release (final int i) {
         return buf.release(i);
     }
 }

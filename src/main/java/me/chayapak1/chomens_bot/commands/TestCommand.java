@@ -19,7 +19,7 @@ public class TestCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         return Component.translatable(
                 "Hello, World! Username: %s, Sender UUID: %s, Prefix: %s, Args: %s",
                 Component.text(context.sender.profile.getName()),

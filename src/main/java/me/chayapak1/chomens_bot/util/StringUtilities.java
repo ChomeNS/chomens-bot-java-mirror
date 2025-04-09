@@ -1,7 +1,5 @@
 package me.chayapak1.chomens_bot.util;
 
-import io.netty.buffer.ByteBufUtil;
-
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -12,7 +10,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 public class StringUtilities {
-    public static String removeNamespace (String command) {
+    public static String removeNamespace (final String command) {
         final StringBuilder removedCommand = new StringBuilder(command);
 
         final String[] splitSpace = command.split("\\s+"); // [minecraft:test, arg1, arg2, ...]
@@ -31,26 +29,20 @@ public class StringUtilities {
         return removedCommand.toString();
     }
 
-    public static String substringUtfLimit (String string, int limit) {
-        final int max = ByteBufUtil.utf8MaxBytes(limit);
-        final byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
-        return new String(Arrays.copyOfRange(bytes, 0, max), StandardCharsets.UTF_8);
-    }
-
     // https://stackoverflow.com/a/35148974/18518424
-    public static String truncateToFitUtf8ByteLength (String s, int maxBytes) {
+    public static String truncateToFitUtf8ByteLength (final String s, final int maxBytes) {
         if (s == null) {
             return null;
         }
-        Charset charset = StandardCharsets.UTF_8;
-        CharsetDecoder decoder = charset.newDecoder();
-        byte[] sba = s.getBytes(charset);
+        final Charset charset = StandardCharsets.UTF_8;
+        final CharsetDecoder decoder = charset.newDecoder();
+        final byte[] sba = s.getBytes(charset);
         if (sba.length <= maxBytes) {
             return s;
         }
         // Ensure truncation by having byte buffer = maxBytes
-        ByteBuffer bb = ByteBuffer.wrap(sba, 0, maxBytes);
-        CharBuffer cb = CharBuffer.allocate(maxBytes);
+        final ByteBuffer bb = ByteBuffer.wrap(sba, 0, maxBytes);
+        final CharBuffer cb = CharBuffer.allocate(maxBytes);
         // Ignore an incomplete character
         decoder.onMalformedInput(CodingErrorAction.IGNORE);
         decoder.decode(bb, cb, true);
@@ -59,7 +51,7 @@ public class StringUtilities {
     }
 
     // https://stackoverflow.com/a/25379180/18518424
-    public static boolean containsIgnoreCase (String src, String what) {
+    public static boolean containsIgnoreCase (final String src, final String what) {
         final int length = what.length();
         if (length == 0)
             return true; // Empty string is contained
@@ -80,17 +72,17 @@ public class StringUtilities {
         return false;
     }
 
-    public static String addPlural (long amount, String unit) {
+    public static String addPlural (final long amount, final String unit) {
         return amount > 1 ? unit + "s" : unit;
     }
 
-    public static boolean isNotNullAndNotBlank (String text) {
+    public static boolean isNotNullAndNotBlank (final String text) {
         return text != null && !text.isBlank();
     }
 
-    public static String replaceAllWithMap (String input, Map<String, String> replacements) {
+    public static String replaceAllWithMap (final String input, final Map<String, String> replacements) {
         String result = input;
-        for (Map.Entry<String, String> entry : replacements.entrySet()) {
+        for (final Map.Entry<String, String> entry : replacements.entrySet()) {
             result = result.replaceAll(entry.getKey(), entry.getValue());
         }
         return result;

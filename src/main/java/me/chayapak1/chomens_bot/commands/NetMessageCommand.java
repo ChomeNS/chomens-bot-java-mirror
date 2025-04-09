@@ -29,7 +29,7 @@ public class NetMessageCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
         final List<Bot> bots = bot.bots;
 
@@ -78,7 +78,7 @@ public class NetMessageCommand extends Command {
                         )
         ).color(NamedTextColor.DARK_GRAY);
 
-        for (Bot eachBot : bots) {
+        for (final Bot eachBot : bots) {
             if (!eachBot.loggedIn) continue;
             eachBot.chat.tellraw(component);
         }

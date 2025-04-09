@@ -29,7 +29,7 @@ public class TranslateCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         final String from = context.getString(false, true);
@@ -73,7 +73,7 @@ public class TranslateCommand extends Command {
                                 )
                                 .color(bot.colorPalette.secondary)
                 );
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
             }
         });

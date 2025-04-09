@@ -26,7 +26,7 @@ public class CloopCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         final String action = context.getAction();
@@ -61,7 +61,7 @@ public class CloopCommand extends Command {
                             "Removed cloop %s",
                             Component.text(cloop.command()).color(bot.colorPalette.string)
                     ).color(bot.colorPalette.defaultColor);
-                } catch (IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
+                } catch (final IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
                     throw new CommandException(Component.text("Invalid index"));
                 }
             }
@@ -77,7 +77,7 @@ public class CloopCommand extends Command {
                 final List<Component> cloopsComponent = new ArrayList<>();
 
                 int index = 0;
-                for (CommandLoop command : bot.cloop.loops) {
+                for (final CommandLoop command : bot.cloop.loops) {
                     cloopsComponent.add(
                             Component.translatable(
                                     "%s › %s (%s %s)",

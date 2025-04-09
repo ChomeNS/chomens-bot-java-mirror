@@ -7,7 +7,7 @@ public class ServerboundSuccessfulHandshakePacket implements Packet {
     public ServerboundSuccessfulHandshakePacket () {
     }
 
-    public ServerboundSuccessfulHandshakePacket (ByteBuf buf) {
+    public ServerboundSuccessfulHandshakePacket (final ByteBuf buf) {
     }
 
     @Override
@@ -16,7 +16,7 @@ public class ServerboundSuccessfulHandshakePacket implements Packet {
     }
 
     @Override
-    public void serialize (ByteBuf buf) {
+    public void serialize (final ByteBuf buf) {
 
     }
 }

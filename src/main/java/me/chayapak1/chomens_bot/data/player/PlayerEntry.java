@@ -22,14 +22,14 @@ public class PlayerEntry {
     public String ip;
 
     public PlayerEntry (
-            GameProfile profile,
-            GameMode gamemode,
-            int latency,
-            Component displayName,
-            long expiresAt,
-            PublicKey publicKey,
-            byte[] keySignature,
-            boolean listed
+            final GameProfile profile,
+            final GameMode gamemode,
+            final int latency,
+            final Component displayName,
+            final long expiresAt,
+            final PublicKey publicKey,
+            final byte[] keySignature,
+            final boolean listed
     ) {
         this.profile = profile;
         this.gamemode = gamemode;
@@ -41,7 +41,7 @@ public class PlayerEntry {
         this.listed = listed;
     }
 
-    public PlayerEntry (PlayerListEntry entry) {
+    public PlayerEntry (final PlayerListEntry entry) {
         this(entry.getProfile(), entry.getGameMode(), entry.getLatency(), entry.getDisplayName(), entry.getExpiresAt(), entry.getPublicKey(), entry.getKeySignature(), entry.isListed());
     }
 

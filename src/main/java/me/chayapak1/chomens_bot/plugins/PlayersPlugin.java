@@ -28,7 +28,7 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
 
     private final List<PlayerEntry> pendingLeftPlayers = Collections.synchronizedList(new ArrayList<>());
 
-    public PlayersPlugin (Bot bot) {
+    public PlayersPlugin (final Bot bot) {
         this.bot = bot;
 
         bot.executor.scheduleAtFixedRate(this::onLastKnownNameTick, 0, 5, TimeUnit.SECONDS);
@@ -43,16 +43,16 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
     }
 
     @Override
-    public void packetReceived (Session session, Packet packet) {
-        if (packet instanceof ClientboundPlayerInfoUpdatePacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundPlayerInfoRemovePacket t_packet) packetReceived(t_packet);
+    public void packetReceived (final Session session, final Packet packet) {
+        if (packet instanceof final ClientboundPlayerInfoUpdatePacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundPlayerInfoRemovePacket t_packet) packetReceived(t_packet);
     }
 
-    private void packetReceived (ClientboundPlayerInfoUpdatePacket packet) {
+    private void packetReceived (final ClientboundPlayerInfoUpdatePacket packet) {
         final EnumSet<PlayerListEntryAction> actions = packet.getActions();
 
-        for (PlayerListEntryAction action : actions) {
-            for (PlayerListEntry entry : packet.getEntries()) {
+        for (final PlayerListEntryAction action : actions) {
+            for (final PlayerListEntry entry : packet.getEntries()) {
                 if (action == PlayerListEntryAction.ADD_PLAYER) addPlayer(entry);
                 else if (action == PlayerListEntryAction.INITIALIZE_CHAT) initializeChat(entry);
                 else if (action == PlayerListEntryAction.UPDATE_LISTED) updateListed(entry);
@@ -63,15 +63,15 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
         }
     }
 
-    private void packetReceived (ClientboundPlayerInfoRemovePacket packet) {
+    private void packetReceived (final ClientboundPlayerInfoRemovePacket packet) {
         final List<UUID> uuids = packet.getProfileIds();
 
-        for (UUID uuid : uuids) removePlayer(uuid);
+        for (final UUID uuid : uuids) removePlayer(uuid);
     }
 
-    private void queryPlayersIP () { for (PlayerEntry target : list) queryPlayersIP(target); }
+    private void queryPlayersIP () { for (final PlayerEntry target : list) queryPlayersIP(target); }
 
-    private void queryPlayersIP (PlayerEntry target) {
+    private void queryPlayersIP (final PlayerEntry target) {
         if (target.ip != null) return;
 
         final CompletableFuture<String> future = getPlayerIP(target, true);
@@ -79,15 +79,15 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
         future.thenApply(ip -> {
             target.ip = ip;
 
-            for (Listener listener : listeners) listener.queriedPlayerIP(target, ip);
+            for (final Listener listener : listeners) listener.queriedPlayerIP(target, ip);
 
             return null;
         });
     }
 
-    public CompletableFuture<String> getPlayerIP (PlayerEntry target) { return getPlayerIP(target, false); }
+    public CompletableFuture<String> getPlayerIP (final PlayerEntry target) { return getPlayerIP(target, false); }
 
-    public CompletableFuture<String> getPlayerIP (PlayerEntry target, boolean forceSeen) {
+    public CompletableFuture<String> getPlayerIP (final PlayerEntry target, final boolean forceSeen) {
         final CompletableFuture<String> outputFuture = new CompletableFuture<>();
 
         DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
@@ -133,8 +133,8 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
         return outputFuture;
     }
 
-    public final PlayerEntry getEntry (UUID uuid) {
-        for (PlayerEntry candidate : list) {
+    public final PlayerEntry getEntry (final UUID uuid) {
+        for (final PlayerEntry candidate : list) {
             if (candidate != null && candidate.profile.getId().equals(uuid)) {
                 return candidate;
             }
@@ -143,8 +143,8 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
         return null;
     }
 
-    public final PlayerEntry getEntry (String username) {
-        for (PlayerEntry candidate : list) {
+    public final PlayerEntry getEntry (final String username) {
+        for (final PlayerEntry candidate : list) {
             if (
                     candidate != null &&
                             (
@@ -160,8 +160,8 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
         return null;
     }
 
-    public final PlayerEntry getEntry (Component displayName) {
-        for (PlayerEntry candidate : list) {
+    public final PlayerEntry getEntry (final Component displayName) {
+        for (final PlayerEntry candidate : list) {
             if (candidate != null && candidate.displayName != null && candidate.displayName.equals(displayName)) {
                 return candidate;
             }
@@ -172,25 +172,25 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
 
     public PlayerEntry getBotEntry () { return getEntry(bot.username); }
 
-    private PlayerEntry getEntry (PlayerListEntry other) {
+    private PlayerEntry getEntry (final PlayerListEntry other) {
         return getEntry(other.getProfileId());
     }
 
-    private void initializeChat (PlayerListEntry newEntry) {
+    private void initializeChat (final PlayerListEntry newEntry) {
         final PlayerEntry target = getEntry(newEntry);
         if (target == null) return;
 
         target.publicKey = newEntry.getPublicKey();
     }
 
-    private void updateListed (PlayerListEntry newEntry) {
+    private void updateListed (final PlayerListEntry newEntry) {
         final PlayerEntry target = getEntry(newEntry);
         if (target == null) return;
 
         target.listed = newEntry.isListed();
     }
 
-    private void addPlayer (PlayerListEntry newEntry) {
+    private void addPlayer (final PlayerListEntry newEntry) {
         final PlayerEntry duplicate = getEntry(newEntry);
 
         final PlayerEntry target = new PlayerEntry(newEntry);
@@ -207,17 +207,17 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
 
             list.add(target);
 
-            for (Listener listener : listeners) listener.playerUnVanished(target);
+            for (final Listener listener : listeners) listener.playerUnVanished(target);
         } else {
             list.add(target);
 
             queryPlayersIP(target);
 
-            for (Listener listener : listeners) listener.playerJoined(target);
+            for (final Listener listener : listeners) listener.playerJoined(target);
         }
     }
 
-    private void updateGameMode (PlayerListEntry newEntry) {
+    private void updateGameMode (final PlayerListEntry newEntry) {
         final PlayerEntry target = getEntry(newEntry);
         if (target == null) return;
 
@@ -225,10 +225,10 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
 
         target.gamemode = gameMode;
 
-        for (Listener listener : listeners) { listener.playerGameModeUpdated(target, gameMode); }
+        for (final Listener listener : listeners) { listener.playerGameModeUpdated(target, gameMode); }
     }
 
-    private void updateLatency (PlayerListEntry newEntry) {
+    private void updateLatency (final PlayerListEntry newEntry) {
         final PlayerEntry target = getEntry(newEntry);
         if (target == null) return;
 
@@ -236,10 +236,10 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
 
         target.latency = ping;
 
-        for (Listener listener : listeners) { listener.playerLatencyUpdated(target, ping); }
+        for (final Listener listener : listeners) { listener.playerLatencyUpdated(target, ping); }
     }
 
-    private void updateDisplayName (PlayerListEntry newEntry) {
+    private void updateDisplayName (final PlayerListEntry newEntry) {
         final PlayerEntry target = getEntry(newEntry);
         if (target == null) return;
 
@@ -247,14 +247,14 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
 
         target.displayName = displayName;
 
-        for (Listener listener : listeners) { listener.playerDisplayNameUpdated(target, displayName); }
+        for (final Listener listener : listeners) { listener.playerDisplayNameUpdated(target, displayName); }
     }
 
-    private CompletableFuture<String> getLastKnownName (String uuid) {
+    private CompletableFuture<String> getLastKnownName (final String uuid) {
         return bot.query.entity(true, uuid, "bukkit.lastKnownName");
     }
 
-    private void check (PlayerEntry target) {
+    private void check (final PlayerEntry target) {
         final PlayerEntry pending = pendingLeftPlayers.stream()
                 .filter(player -> player.equals(target))
                 .findAny()
@@ -275,7 +275,7 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
                 // checking if removed prevents the event from being called twice
                 // this was a bug for quite a few weeks lol
                 if (removed) {
-                    for (Listener listener : listeners) listener.playerLeft(target);
+                    for (final Listener listener : listeners) listener.playerLeft(target);
                 }
             } else if (!lastKnownName.equals(target.profile.getName())) {
                 final PlayerEntry newTarget = new PlayerEntry(
@@ -301,14 +301,14 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
 
                 list.remove(target);
 
-                for (Listener listener : listeners) listener.playerChangedUsername(newTarget);
+                for (final Listener listener : listeners) listener.playerChangedUsername(newTarget);
             } else if (pending != null) {
                 // we already passed all the left and username check,
                 // so the only one left is vanish
 
                 target.listed = false;
 
-                for (Listener listener : listeners) listener.playerVanished(target);
+                for (final Listener listener : listeners) listener.playerVanished(target);
             }
 
             return null;
@@ -320,12 +320,12 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
         if (!bot.loggedIn || !bot.core.ready || !bot.serverFeatures.hasNamespaces)
             return;
 
-        for (PlayerEntry target : new ArrayList<>(list)) {
+        for (final PlayerEntry target : new ArrayList<>(list)) {
             check(target);
         }
     }
 
-    private void removePlayer (UUID uuid) {
+    private void removePlayer (final UUID uuid) {
         final PlayerEntry target = getEntry(uuid);
 
         if (target == null) return;
@@ -334,7 +334,7 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
             final boolean removed = list.remove(target);
 
             if (removed) {
-                for (Listener listener : listeners) listener.playerLeft(target);
+                for (final Listener listener : listeners) listener.playerLeft(target);
             }
         } else {
             pendingLeftPlayers.add(target);
@@ -344,30 +344,30 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
     }
 
     @Override
-    public void disconnected (DisconnectedEvent event) {
+    public void disconnected (final DisconnectedEvent event) {
         list.clear();
     }
 
-    public void addListener (Listener listener) { listeners.add(listener); }
+    public void addListener (final Listener listener) { listeners.add(listener); }
 
     @SuppressWarnings("unused")
     public interface Listener {
-        default void playerJoined (PlayerEntry target) { }
+        default void playerJoined (final PlayerEntry target) { }
 
-        default void playerUnVanished (PlayerEntry target) { }
+        default void playerUnVanished (final PlayerEntry target) { }
 
-        default void playerGameModeUpdated (PlayerEntry target, GameMode gameMode) { }
+        default void playerGameModeUpdated (final PlayerEntry target, final GameMode gameMode) { }
 
-        default void playerLatencyUpdated (PlayerEntry target, int ping) { }
+        default void playerLatencyUpdated (final PlayerEntry target, final int ping) { }
 
-        default void playerDisplayNameUpdated (PlayerEntry target, Component displayName) { }
+        default void playerDisplayNameUpdated (final PlayerEntry target, final Component displayName) { }
 
-        default void playerLeft (PlayerEntry target) { }
+        default void playerLeft (final PlayerEntry target) { }
 
-        default void playerVanished (PlayerEntry target) { }
+        default void playerVanished (final PlayerEntry target) { }
 
-        default void playerChangedUsername (PlayerEntry target) { }
+        default void playerChangedUsername (final PlayerEntry target) { }
 
-        default void queriedPlayerIP (PlayerEntry target, String ip) { }
+        default void queriedPlayerIP (final PlayerEntry target, final String ip) { }
     }
 }

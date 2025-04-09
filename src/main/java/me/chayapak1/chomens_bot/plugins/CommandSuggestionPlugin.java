@@ -14,21 +14,21 @@ public class CommandSuggestionPlugin implements ChatPlugin.Listener {
 
     private final Bot bot;
 
-    public CommandSuggestionPlugin (Bot bot) {
+    public CommandSuggestionPlugin (final Bot bot) {
         this.bot = bot;
 
         bot.chat.addListener(this);
     }
 
     @Override
-    public boolean systemMessageReceived (Component component, String string, String ansi) {
+    public boolean systemMessageReceived (final Component component, final String string, final String ansi) {
         final List<Component> children = component.children();
 
         if (
-                !(component instanceof TextComponent idComponent) ||
+                !(component instanceof final TextComponent idComponent) ||
                         !idComponent.content().equals(ID) ||
                         children.size() != 1 ||
-                        !(children.getFirst() instanceof TextComponent playerComponent)
+                        !(children.getFirst() instanceof final TextComponent playerComponent)
         ) return true;
 
         final String player = playerComponent.content();
@@ -36,7 +36,7 @@ public class CommandSuggestionPlugin implements ChatPlugin.Listener {
         final List<Component> output = new ArrayList<>();
         output.add(Component.text(ID));
 
-        for (Command command : CommandHandlerPlugin.COMMANDS) {
+        for (final Command command : CommandHandlerPlugin.COMMANDS) {
             if (command.consoleOnly) continue;
 
             final boolean hasAliases = command.aliases.length != 0;
@@ -47,7 +47,7 @@ public class CommandSuggestionPlugin implements ChatPlugin.Listener {
                     .append(Component.text(hasAliases));
 
             if (hasAliases) {
-                for (String alias : command.aliases) outputComponent = outputComponent.append(Component.text(alias));
+                for (final String alias : command.aliases) outputComponent = outputComponent.append(Component.text(alias));
             }
 
             output.add(outputComponent);

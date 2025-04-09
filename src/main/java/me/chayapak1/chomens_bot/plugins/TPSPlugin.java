@@ -28,7 +28,7 @@ public class TPSPlugin extends Bot.Listener implements TickPlugin.Listener {
 
     private final String bossbarName = "tpsbar";
 
-    public TPSPlugin (Bot bot) {
+    public TPSPlugin (final Bot bot) {
         this.bot = bot;
 
         bot.addListener(this);
@@ -97,19 +97,19 @@ public class TPSPlugin extends Bot.Listener implements TickPlugin.Listener {
             bossBar.setTitle(component);
             bossBar.setColor(getBossBarColor(tickRate));
             bossBar.setValue((int) Math.round(tickRate));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             bot.logger.error(e);
         }
     }
 
-    private NamedTextColor getColor (double tickRate) {
+    private NamedTextColor getColor (final double tickRate) {
         if (tickRate > 15) return NamedTextColor.GREEN;
         else if (tickRate == 15) return NamedTextColor.YELLOW;
         else if (tickRate < 15 && tickRate > 10) return NamedTextColor.RED;
         else return NamedTextColor.DARK_RED;
     }
 
-    private BossBarColor getBossBarColor (double tickRate) {
+    private BossBarColor getBossBarColor (final double tickRate) {
         if (tickRate > 15) return BossBarColor.LIME;
         else if (tickRate == 15) return BossBarColor.YELLOW;
         else if (tickRate < 15 && tickRate > 10) return BossBarColor.RED;
@@ -117,20 +117,20 @@ public class TPSPlugin extends Bot.Listener implements TickPlugin.Listener {
     }
 
     @Override
-    public void packetReceived (Session session, Packet packet) {
-        if (packet instanceof ClientboundSetTimePacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundLoginPacket t_packet) packetReceived(t_packet);
+    public void packetReceived (final Session session, final Packet packet) {
+        if (packet instanceof final ClientboundSetTimePacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundLoginPacket t_packet) packetReceived(t_packet);
     }
 
-    private void packetReceived (ClientboundSetTimePacket ignoredPacket) {
-        long now = System.currentTimeMillis();
-        float timeElapsed = (float) (now - timeLastTimeUpdate) / 1000.0F;
+    private void packetReceived (final ClientboundSetTimePacket ignoredPacket) {
+        final long now = System.currentTimeMillis();
+        final float timeElapsed = (float) (now - timeLastTimeUpdate) / 1000.0F;
         tickRates[nextIndex] = MathUtilities.clamp(20.0f / timeElapsed, 0.0f, 20.0f);
         nextIndex = (nextIndex + 1) % tickRates.length;
         timeLastTimeUpdate = now;
     }
 
-    private void packetReceived (ClientboundLoginPacket ignoredPacket) {
+    private void packetReceived (final ClientboundLoginPacket ignoredPacket) {
         Arrays.fill(tickRates, 0);
         nextIndex = 0;
         timeGameJoined = timeLastTimeUpdate = System.currentTimeMillis();
@@ -141,7 +141,7 @@ public class TPSPlugin extends Bot.Listener implements TickPlugin.Listener {
 
         int numTicks = 0;
         float sumTickRates = 0.0f;
-        for (double tickRate : tickRates) {
+        for (final double tickRate : tickRates) {
             if (tickRate > 0) {
                 sumTickRates += (float) tickRate;
                 numTicks++;

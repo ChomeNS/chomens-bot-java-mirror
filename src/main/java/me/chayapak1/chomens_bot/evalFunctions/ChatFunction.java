@@ -4,12 +4,12 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.eval.EvalFunction;
 
 public class ChatFunction extends EvalFunction {
-    public ChatFunction (Bot bot) {
+    public ChatFunction (final Bot bot) {
         super("chat", bot);
     }
 
     @Override
-    public Output execute (Object... args) {
+    public Output execute (final Object... args) {
         if (args.length == 0) return null;
 
         final String message = (String) args[0];

@@ -67,14 +67,14 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
         registerCommand(new RestartCommand());
     }
 
-    public static void registerCommand (Command command) {
+    public static void registerCommand (final Command command) {
         COMMANDS.add(command);
     }
 
-    public static Command findCommand (String searchTerm) {
+    public static Command findCommand (final String searchTerm) {
         if (searchTerm.isBlank()) return null;
 
-        for (Command command : COMMANDS) {
+        for (final Command command : COMMANDS) {
             if (
                     command.name.equals(searchTerm.toLowerCase()) ||
                             Arrays.stream(command.aliases).toList().contains(searchTerm.toLowerCase())
@@ -92,7 +92,7 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
 
     private int commandPerSecond = 0;
 
-    public CommandHandlerPlugin (Bot bot) {
+    public CommandHandlerPlugin (final Bot bot) {
         this.bot = bot;
 
         bot.tick.addListener(this);
@@ -109,9 +109,9 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
     // (sometimes execution time can be as high as 19 ms,
     // though it can also be as low as 4000 ns)
     public void executeCommand (
-            String input,
-            CommandContext context,
-            MessageReceivedEvent event
+            final String input,
+            final CommandContext context,
+            final MessageReceivedEvent event
     ) {
         final boolean inGame = context instanceof PlayerCommandContext;
         final boolean discord = context instanceof DiscordCommandContext;
@@ -144,7 +144,7 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
                 context.sendOutput(Component.text("ChomeNS Bot is currently disabled").color(NamedTextColor.RED));
                 return;
             } else if (
-                    context instanceof PlayerCommandContext playerContext &&
+                    context instanceof final PlayerCommandContext playerContext &&
                             command.disallowedPacketTypes != null &&
                             Arrays.asList(command.disallowedPacketTypes).contains(playerContext.packetType)
             ) {
@@ -176,7 +176,7 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
 
                 TrustLevel userTrustLevel = TrustLevel.PUBLIC;
 
-                for (Role role : roles) {
+                for (final Role role : roles) {
                     if (role.getName().equalsIgnoreCase(bot.config.discord.ownerRoleName)) {
                         userTrustLevel = TrustLevel.OWNER;
                         break;
@@ -237,9 +237,9 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
             final Component output = command.execute(context);
 
             if (output != null) context.sendOutput(output);
-        } catch (CommandException e) {
+        } catch (final CommandException e) {
             context.sendOutput(e.message.color(NamedTextColor.RED));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             bot.logger.error(e);
 
             final String stackTrace = ExceptionUtilities.getStacktrace(e);

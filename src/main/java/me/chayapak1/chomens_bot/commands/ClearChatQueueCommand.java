@@ -19,7 +19,7 @@ public class ClearChatQueueCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         context.checkOverloadArgs(0);
 
         final Bot bot = context.bot;

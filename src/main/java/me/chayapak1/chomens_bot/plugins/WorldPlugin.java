@@ -31,30 +31,30 @@ public class WorldPlugin extends Bot.Listener {
 
     private final List<Listener> listeners = new ArrayList<>();
 
-    public WorldPlugin (Bot bot) {
+    public WorldPlugin (final Bot bot) {
         this.bot = bot;
 
         bot.addListener(this);
     }
 
     @Override
-    public void packetReceived (Session session, Packet packet) {
-        if (packet instanceof ClientboundLevelChunkWithLightPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundForgetLevelChunkPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundBlockUpdatePacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundSectionBlocksUpdatePacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundLoginPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundRespawnPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundRegistryDataPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundSetSimulationDistancePacket t_packet) packetReceived(t_packet);
+    public void packetReceived (final Session session, final Packet packet) {
+        if (packet instanceof final ClientboundLevelChunkWithLightPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundForgetLevelChunkPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundBlockUpdatePacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundSectionBlocksUpdatePacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundLoginPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundRespawnPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundRegistryDataPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundSetSimulationDistancePacket t_packet) packetReceived(t_packet);
     }
 
     @Override
-    public void disconnected (DisconnectedEvent event) {
+    public void disconnected (final DisconnectedEvent event) {
         chunks.clear();
     }
 
-    private void worldChanged (String dimension) {
+    private void worldChanged (final String dimension) {
         final RegistryEntry currentDimension = registry.stream()
                 .filter(eachDimension -> eachDimension.getId().asString().equals(dimension))
                 .findFirst()
@@ -69,48 +69,48 @@ public class WorldPlugin extends Bot.Listener {
         minY = data.getInt("min_y");
         maxY = data.getInt("height") + minY;
 
-        for (Listener listener : listeners) listener.worldChanged(dimension);
+        for (final Listener listener : listeners) listener.worldChanged(dimension);
     }
 
-    private void packetReceived (ClientboundRegistryDataPacket packet) {
+    private void packetReceived (final ClientboundRegistryDataPacket packet) {
         if (!packet.getRegistry().value().equals("dimension_type")) return;
 
         registry = packet.getEntries();
     }
 
-    private void packetReceived (ClientboundLoginPacket packet) {
+    private void packetReceived (final ClientboundLoginPacket packet) {
         simulationDistance = packet.getSimulationDistance();
 
         worldChanged(packet.getCommonPlayerSpawnInfo().getWorldName().asString());
     }
 
-    private void packetReceived (ClientboundRespawnPacket packet) {
+    private void packetReceived (final ClientboundRespawnPacket packet) {
         worldChanged(packet.getCommonPlayerSpawnInfo().getWorldName().asString());
     }
 
-    private void packetReceived (ClientboundSetSimulationDistancePacket packet) {
+    private void packetReceived (final ClientboundSetSimulationDistancePacket packet) {
         simulationDistance = packet.getSimulationDistance();
     }
 
-    private void packetReceived (ClientboundLevelChunkWithLightPacket packet) {
+    private void packetReceived (final ClientboundLevelChunkWithLightPacket packet) {
         final ChunkPos pos = new ChunkPos(packet.getX(), packet.getZ());
         final ChunkColumn column = new ChunkColumn(bot, pos, packet.getChunkData(), maxY, minY);
         chunks.put(pos, column);
     }
 
-    private void packetReceived (ClientboundForgetLevelChunkPacket packet) {
+    private void packetReceived (final ClientboundForgetLevelChunkPacket packet) {
         chunks.remove(new ChunkPos(packet.getX(), packet.getZ()));
     }
 
-    private void packetReceived (ClientboundBlockUpdatePacket packet) {
+    private void packetReceived (final ClientboundBlockUpdatePacket packet) {
         final Vector3i position = packet.getEntry().getPosition();
         final int id = packet.getEntry().getBlock();
 
         setBlock(position.getX(), position.getY(), position.getZ(), id);
     }
 
-    private void packetReceived (ClientboundSectionBlocksUpdatePacket packet) {
-        for (BlockChangeEntry entry : packet.getEntries()) {
+    private void packetReceived (final ClientboundSectionBlocksUpdatePacket packet) {
+        for (final BlockChangeEntry entry : packet.getEntries()) {
             final Vector3i position = entry.getPosition();
             final int id = entry.getBlock();
 
@@ -118,28 +118,28 @@ public class WorldPlugin extends Bot.Listener {
         }
     }
 
-    public ChunkColumn getChunk (int x, int z) { return chunks.get(new ChunkPos(x, z)); }
+    public ChunkColumn getChunk (final int x, final int z) { return chunks.get(new ChunkPos(x, z)); }
 
-    public ChunkColumn getChunk (ChunkPos pos) { return chunks.get(pos); }
+    public ChunkColumn getChunk (final ChunkPos pos) { return chunks.get(pos); }
 
     public Collection<ChunkColumn> getChunks () { return chunks.values(); }
 
-    public int getBlock (int x, int y, int z) {
+    public int getBlock (final int x, final int y, final int z) {
         final ChunkPos chunkPos = new ChunkPos(Math.floorDiv(x, 16), Math.floorDiv(z, 16));
         final ChunkColumn chunk = chunks.get(chunkPos);
         return chunk == null ? 0 : chunks.get(chunkPos).getBlock(x & 15, y, z & 15);
     }
 
     // should this be public?
-    public void setBlock (int x, int y, int z, int id) {
+    public void setBlock (final int x, final int y, final int z, final int id) {
         final ChunkPos chunkPos = new ChunkPos(Math.floorDiv(x, 16), Math.floorDiv(z, 16));
         if (!chunks.containsKey(chunkPos)) return;
         chunks.get(chunkPos).setBlock(x & 15, y, z & 15, id);
     }
 
-    public void addListener (Listener listener) { listeners.add(listener); }
+    public void addListener (final Listener listener) { listeners.add(listener); }
 
     public interface Listener {
-        default void worldChanged (String dimension) { }
+        default void worldChanged (final String dimension) { }
     }
 }

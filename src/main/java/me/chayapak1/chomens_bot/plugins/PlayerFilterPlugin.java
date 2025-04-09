@@ -28,7 +28,7 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
             DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
                 try {
                     Main.database.execute(CREATE_TABLE);
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LoggerUtilities.error(e);
                 }
             });
@@ -39,7 +39,7 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
 
     private final Bot bot;
 
-    public PlayerFilterPlugin (Bot bot) {
+    public PlayerFilterPlugin (final Bot bot) {
         this.bot = bot;
 
         if (Main.database == null) return;
@@ -50,7 +50,7 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
     public static List<FilteredPlayer> list () {
         final List<FilteredPlayer> output = new ArrayList<>();
 
-        try (ResultSet result = Main.database.query(LIST_FILTERS)) {
+        try (final ResultSet result = Main.database.query(LIST_FILTERS)) {
             if (result == null) return output;
 
             while (result.next()) {
@@ -63,7 +63,7 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
 
                 output.add(filteredPlayer);
             }
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             LoggerUtilities.error(e);
         }
 
@@ -72,8 +72,8 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
         return output;
     }
 
-    private FilteredPlayer getPlayer (String name) {
-        for (FilteredPlayer filteredPlayer : localList) {
+    private FilteredPlayer getPlayer (final String name) {
+        for (final FilteredPlayer filteredPlayer : localList) {
             if (matchesPlayer(name, filteredPlayer)) {
                 return filteredPlayer;
             }
@@ -82,10 +82,10 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
         return null;
     }
 
-    private List<FilteredPlayer> getPlayers (String name) {
+    private List<FilteredPlayer> getPlayers (final String name) {
         final List<FilteredPlayer> matches = new ArrayList<>();
 
-        for (FilteredPlayer filteredPlayer : localList) {
+        for (final FilteredPlayer filteredPlayer : localList) {
             if (matchesPlayer(name, filteredPlayer)) {
                 matches.add(filteredPlayer);
             }
@@ -94,7 +94,7 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
         return matches;
     }
 
-    private boolean matchesPlayer (String name, FilteredPlayer player) {
+    private boolean matchesPlayer (final String name, final FilteredPlayer player) {
         if (player.regex) {
             final Pattern pattern = compilePattern(player);
 
@@ -104,19 +104,19 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
         }
     }
 
-    private Pattern compilePattern (FilteredPlayer player) {
+    private Pattern compilePattern (final FilteredPlayer player) {
         try {
             final int flags = player.ignoreCase ? Pattern.CASE_INSENSITIVE : 0;
 
             return Pattern.compile(player.playerName, flags);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             bot.logger.error("Error compiling player filter regex " + player.playerName + " (this shouldn't happen):");
             bot.logger.error(e);
             return null;
         }
     }
 
-    private boolean compareNames (String name, FilteredPlayer player) {
+    private boolean compareNames (final String name, final FilteredPlayer player) {
         final String playerName = player.ignoreCase ? player.playerName.toLowerCase() : player.playerName;
         final String targetName = player.ignoreCase ? name.toLowerCase() : name;
 
@@ -124,7 +124,7 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
     }
 
     @Override
-    public void playerJoined (PlayerEntry target) {
+    public void playerJoined (final PlayerEntry target) {
         bot.executorService.submit(() -> {
             final FilteredPlayer player = getPlayer(target.profile.getName());
 
@@ -134,7 +134,7 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
         });
     }
 
-    public void add (String playerName, String reason, boolean regex, boolean ignoreCase) {
+    public void add (final String playerName, final String reason, final boolean regex, final boolean ignoreCase) {
         try {
             final PreparedStatement statement = Main.database.connection.prepareStatement(INSERT_FILTER);
 
@@ -146,15 +146,15 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
             statement.executeUpdate();
 
             list();
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             bot.logger.error(e);
         }
 
         final List<FilteredPlayer> matches = getPlayers(playerName);
 
         // loop through all the servers too
-        for (Bot bot : bot.bots) {
-            for (FilteredPlayer match : matches) {
+        for (final Bot bot : bot.bots) {
+            for (final FilteredPlayer match : matches) {
                 final PlayerEntry entry = bot.players.getEntry(match.playerName);
 
                 if (entry == null) continue;
@@ -164,7 +164,7 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
         }
     }
 
-    public void remove (String playerName) {
+    public void remove (final String playerName) {
         bot.filterManager.remove(playerName);
 
         try {
@@ -175,19 +175,19 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
             statement.executeUpdate();
 
             list();
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             bot.logger.error(e);
         }
     }
 
     public void clear () {
-        for (FilteredPlayer player : localList) bot.filterManager.remove(player.playerName);
+        for (final FilteredPlayer player : localList) bot.filterManager.remove(player.playerName);
 
         try {
             Main.database.update(CLEAR_FILTER);
 
             list();
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             bot.logger.error(e);
         }
     }

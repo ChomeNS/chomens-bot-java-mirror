@@ -35,14 +35,14 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
             DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
                 try {
                     Main.database.execute(CREATE_TABLE);
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LoggerUtilities.error(e);
                 }
             });
         }
     }
 
-    public PlayersDatabasePlugin (Bot bot) {
+    public PlayersDatabasePlugin (final Bot bot) {
         this.bot = bot;
 
         if (Main.database == null) return;
@@ -50,7 +50,7 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
         bot.players.addListener(this);
     }
 
-    public JsonNode getPlayerData (String username) {
+    public JsonNode getPlayerData (final String username) {
         if (Main.database == null || Main.database.connection == null) return null;
 
         try {
@@ -67,13 +67,13 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
             final String stringJson = result.getString("data");
 
             return objectMapper.readTree(stringJson);
-        } catch (SQLException | JsonProcessingException e) {
+        } catch (final SQLException | JsonProcessingException e) {
             bot.logger.error(e);
             return null;
         }
     }
 
-    public String getPlayerIP (String username) {
+    public String getPlayerIP (final String username) {
         if (Main.database == null || Main.database.connection == null) return null;
 
         try {
@@ -91,19 +91,19 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
             result.next();
 
             return result.getString("ip");
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             bot.logger.error(e);
             return null;
         }
     }
 
-    public Map<String, JsonNode> findPlayerAlts (String ip) { return findPlayerAlts(ip, false); }
+    public Map<String, JsonNode> findPlayerAlts (final String ip) { return findPlayerAlts(ip, false); }
 
-    public Map<String, JsonNode> findPlayerAlts (String ip, boolean allServer) {
+    public Map<String, JsonNode> findPlayerAlts (final String ip, final boolean allServer) {
         try {
             final Map<String, JsonNode> output = new HashMap<>();
 
-            PreparedStatement statement;
+            final PreparedStatement statement;
 
             if (allServer) {
                 statement = Main.database.connection.prepareStatement(FIND_ALTS_ALL_SERVERS);
@@ -126,14 +126,14 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
             }
 
             return output;
-        } catch (SQLException | JsonProcessingException e) {
+        } catch (final SQLException | JsonProcessingException e) {
             bot.logger.error(e);
             return null;
         }
     }
 
     @Override
-    public void playerJoined (PlayerEntry target) {
+    public void playerJoined (final PlayerEntry target) {
         DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
             try {
                 final PreparedStatement insertPlayerStatement = Main.database.connection.prepareStatement(INSERT_PLAYER);
@@ -151,14 +151,14 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
                 insertPlayerStatement.setString(2, objectMapper.writeValueAsString(baseObject));
 
                 insertPlayerStatement.executeUpdate();
-            } catch (SQLException | JsonProcessingException e) {
+            } catch (final SQLException | JsonProcessingException e) {
                 bot.logger.error(e);
             }
         });
     }
 
     @Override
-    public void queriedPlayerIP (PlayerEntry target, String ip) {
+    public void queriedPlayerIP (final PlayerEntry target, final String ip) {
         DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
             try {
                 final PreparedStatement updatePlayerStatement = Main.database.connection.prepareStatement(UPDATE_PLAYER);
@@ -174,14 +174,14 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
                 updatePlayerStatement.setString(4, target.profile.getName());
 
                 updatePlayerStatement.executeUpdate();
-            } catch (SQLException | JsonProcessingException e) {
+            } catch (final SQLException | JsonProcessingException e) {
                 bot.logger.error(e);
             }
         });
     }
 
     @Override
-    public void playerLeft (PlayerEntry target) {
+    public void playerLeft (final PlayerEntry target) {
         DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
             try {
                 final PreparedStatement updatePlayerStatement = Main.database.connection.prepareStatement(UPDATE_PLAYER);
@@ -196,7 +196,7 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
                 updatePlayerStatement.setString(4, target.profile.getName());
 
                 updatePlayerStatement.executeUpdate();
-            } catch (SQLException | JsonProcessingException e) {
+            } catch (final SQLException | JsonProcessingException e) {
                 bot.logger.error(e);
             }
         });

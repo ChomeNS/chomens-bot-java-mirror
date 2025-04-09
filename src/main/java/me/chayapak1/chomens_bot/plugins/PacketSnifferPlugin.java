@@ -20,7 +20,7 @@ public class PacketSnifferPlugin extends Bot.Listener {
     private BufferedWriter writer;
 
     @SuppressWarnings("ConstantValue") // this can be set through servereval
-    public PacketSnifferPlugin (Bot bot) {
+    public PacketSnifferPlugin (final Bot bot) {
         this.bot = bot;
 
         if (enabled) enable();
@@ -43,7 +43,7 @@ public class PacketSnifferPlugin extends Bot.Listener {
             if (!Files.exists(path)) Files.createFile(path);
 
             writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             bot.logger.error(e);
         }
     }
@@ -55,31 +55,31 @@ public class PacketSnifferPlugin extends Bot.Listener {
         try {
             writer.flush();
             writer.close();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             bot.logger.error(e);
         }
     }
 
     @Override
-    public void packetReceived (Session session, Packet packet) {
+    public void packetReceived (final Session session, final Packet packet) {
         if (!enabled) return;
 
         try {
             writer.write(packet.toString() + "\n");
             writer.flush();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             bot.logger.error(e);
         }
     }
 
     @Override
-    public void packetSending (PacketSendingEvent event) {
+    public void packetSending (final PacketSendingEvent event) {
         if (!enabled) return;
 
         try {
             writer.write(event.getPacket().toString() + "\n");
             writer.flush();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             bot.logger.error(e);
         }
     }

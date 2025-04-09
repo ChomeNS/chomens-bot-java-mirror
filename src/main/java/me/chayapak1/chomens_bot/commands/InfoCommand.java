@@ -41,7 +41,7 @@ public class InfoCommand extends Command {
     static {
         try (final InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("application.properties")) {
             BUILD_INFO.load(input);
-        } catch (IOException ignored) { }
+        } catch (final IOException ignored) { }
     }
 
     public InfoCommand () {
@@ -63,7 +63,7 @@ public class InfoCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         context.checkOverloadArgs(1);
 
         final Bot bot = context.bot;
@@ -100,10 +100,10 @@ public class InfoCommand extends Command {
                 final StringBuilder builder = new StringBuilder();
 
                 try {
-                    RandomAccessFile file = new RandomAccessFile("/proc/cpuinfo", "r");
-                    FileChannel channel = file.getChannel();
+                    final RandomAccessFile file = new RandomAccessFile("/proc/cpuinfo", "r");
+                    final FileChannel channel = file.getChannel();
 
-                    ByteBuffer buffer = ByteBuffer.allocate(1024 * 1024); // 1 MB buffer
+                    final ByteBuffer buffer = ByteBuffer.allocate(1024 * 1024); // 1 MB buffer
                     long bytesRead = channel.read(buffer);
 
                     while (bytesRead != -1) {
@@ -119,7 +119,7 @@ public class InfoCommand extends Command {
 
                     channel.close();
                     file.close();
-                } catch (IOException ignored) { }
+                } catch (final IOException ignored) { }
 
                 final TextColor color = bot.colorPalette.string;
 
@@ -135,7 +135,7 @@ public class InfoCommand extends Command {
 
                 try {
                     localHost = InetAddress.getLocalHost();
-                } catch (UnknownHostException ignored) { }
+                } catch (final UnknownHostException ignored) { }
 
                 component = Component.translatable(
                         """

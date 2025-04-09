@@ -38,7 +38,7 @@ public class WikipediaCommand extends Command {
         );
     }
 
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         final String page = context.getString(true, true);
@@ -59,7 +59,7 @@ public class WikipediaCommand extends Command {
                 if (redirectsElement != null) {
                     final JsonArray normalized = redirectsElement.getAsJsonArray();
 
-                    for (JsonElement element : normalized) {
+                    for (final JsonElement element : normalized) {
                         final JsonObject redirect = element.getAsJsonObject();
 
                         final String redirectedTo = redirect.get("to").getAsString();
@@ -118,12 +118,12 @@ public class WikipediaCommand extends Command {
                         .append(Component.text(extracted).color(NamedTextColor.GREEN));
 
                 context.sendOutput(component);
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
                 context.sendOutput(Component.text("Failed parsing page ID").color(NamedTextColor.RED));
                 bot.logger.error(e);
-            } catch (CommandException e) {
+            } catch (final CommandException e) {
                 context.sendOutput(e.message.color(NamedTextColor.RED));
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
             }
         });

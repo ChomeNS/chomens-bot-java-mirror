@@ -26,7 +26,7 @@ public class IPFilterPlugin implements PlayersPlugin.Listener, CorePlugin.Listen
             DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
                 try {
                     Main.database.execute(CREATE_TABLE);
-                } catch (SQLException e) {
+                } catch (final SQLException e) {
                     LoggerUtilities.error(e);
                 }
             });
@@ -37,7 +37,7 @@ public class IPFilterPlugin implements PlayersPlugin.Listener, CorePlugin.Listen
 
     private final Bot bot;
 
-    public IPFilterPlugin (Bot bot) {
+    public IPFilterPlugin (final Bot bot) {
         this.bot = bot;
 
         if (Main.database == null) return;
@@ -54,13 +54,13 @@ public class IPFilterPlugin implements PlayersPlugin.Listener, CorePlugin.Listen
     }
 
     @Override
-    public void queriedPlayerIP (PlayerEntry target, String ip) {
+    public void queriedPlayerIP (final PlayerEntry target, final String ip) {
         if (localList.isEmpty()) return;
 
         check(target);
     }
 
-    private void check (PlayerEntry target) {
+    private void check (final PlayerEntry target) {
         if (bot.options.useCorePlaceBlock) return; // it will spam the place block core so i ignored this
 
         final String ip = target.ip;
@@ -73,13 +73,13 @@ public class IPFilterPlugin implements PlayersPlugin.Listener, CorePlugin.Listen
     public static Map<String, String> list () {
         final Map<String, String> output = new LinkedHashMap<>();
 
-        try (ResultSet result = Main.database.query(LIST_FILTERS)) {
+        try (final ResultSet result = Main.database.query(LIST_FILTERS)) {
             if (result == null) return output;
 
             while (result.next()) {
                 output.put(result.getString("ip"), result.getString("reason"));
             }
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             LoggerUtilities.error(e);
         }
 
@@ -88,7 +88,7 @@ public class IPFilterPlugin implements PlayersPlugin.Listener, CorePlugin.Listen
         return output;
     }
 
-    public void add (String ip, String reason) {
+    public void add (final String ip, final String reason) {
         try {
             final PreparedStatement statement = Main.database.connection.prepareStatement(INSERT_FILTER);
 
@@ -98,7 +98,7 @@ public class IPFilterPlugin implements PlayersPlugin.Listener, CorePlugin.Listen
             statement.executeUpdate();
 
             list();
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             bot.logger.error(e);
         }
 
@@ -109,11 +109,11 @@ public class IPFilterPlugin implements PlayersPlugin.Listener, CorePlugin.Listen
         if (localList.isEmpty()) return;
 
         bot.executorService.submit(() -> {
-            for (PlayerEntry entry : bot.players.list) check(entry);
+            for (final PlayerEntry entry : bot.players.list) check(entry);
         });
     }
 
-    public void remove (String ip) {
+    public void remove (final String ip) {
         try {
             final PreparedStatement statement = Main.database.connection.prepareStatement(REMOVE_FILTER);
 
@@ -122,7 +122,7 @@ public class IPFilterPlugin implements PlayersPlugin.Listener, CorePlugin.Listen
             statement.executeUpdate();
 
             list();
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             bot.logger.error(e);
         }
     }
@@ -132,13 +132,13 @@ public class IPFilterPlugin implements PlayersPlugin.Listener, CorePlugin.Listen
             Main.database.update(CLEAR_FILTER);
 
             list();
-        } catch (SQLException e) {
+        } catch (final SQLException e) {
             bot.logger.error(e);
         }
     }
 
-    private void handleFilterManager (String ip, PlayerEntry entry) {
-        for (Map.Entry<String, String> ipEntry : localList.entrySet()) {
+    private void handleFilterManager (final String ip, final PlayerEntry entry) {
+        for (final Map.Entry<String, String> ipEntry : localList.entrySet()) {
             final String eachIP = ipEntry.getKey();
             final String reason = ipEntry.getValue();
 

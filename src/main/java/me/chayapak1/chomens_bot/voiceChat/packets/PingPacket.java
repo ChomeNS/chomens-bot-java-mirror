@@ -10,7 +10,7 @@ public class PingPacket implements Packet<PingPacket> {
     public long timestamp;
 
     @Override
-    public PingPacket fromBytes (FriendlyByteBuf buf) {
+    public PingPacket fromBytes (final FriendlyByteBuf buf) {
         final PingPacket pingPacket = new PingPacket();
         pingPacket.id = buf.readUUID();
         pingPacket.timestamp = buf.readLong();
@@ -18,7 +18,7 @@ public class PingPacket implements Packet<PingPacket> {
     }
 
     @Override
-    public void toBytes (FriendlyByteBuf buf) {
+    public void toBytes (final FriendlyByteBuf buf) {
         buf.writeUUID(id);
         buf.writeLong(timestamp);
     }

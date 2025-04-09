@@ -27,17 +27,17 @@ public class MinecraftChatParser implements ChatParser {
         keys.add("chat.type.emote");
     }
 
-    public MinecraftChatParser (Bot bot) {
+    public MinecraftChatParser (final Bot bot) {
         this.bot = bot;
     }
 
     @Override
-    public PlayerMessage parse (Component message) {
+    public PlayerMessage parse (final Component message) {
         if (message instanceof TranslatableComponent) return parse((TranslatableComponent) message);
         return null;
     }
 
-    public PlayerMessage parse (TranslatableComponent message) {
+    public PlayerMessage parse (final TranslatableComponent message) {
         final List<TranslationArgument> args = message.arguments();
         final String key = message.key();
         if (args.size() < 2 || !keys.contains(key)) return null;
@@ -45,11 +45,11 @@ public class MinecraftChatParser implements ChatParser {
         final Component senderComponent = args.getFirst().asComponent();
         final Component contents = args.get(1).asComponent();
 
-        PlayerEntry sender;
+        final PlayerEntry sender;
 
         final HoverEvent<?> hoverEvent = senderComponent.hoverEvent();
         if (hoverEvent != null && hoverEvent.action().equals(HoverEvent.Action.SHOW_ENTITY)) {
-            HoverEvent.ShowEntity entityInfo = (HoverEvent.ShowEntity) hoverEvent.value();
+            final HoverEvent.ShowEntity entityInfo = (HoverEvent.ShowEntity) hoverEvent.value();
             final UUID senderUUID = entityInfo.id();
             sender = bot.players.getEntry(senderUUID);
         } else {

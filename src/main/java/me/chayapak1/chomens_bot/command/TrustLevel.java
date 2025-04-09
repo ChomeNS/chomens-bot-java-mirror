@@ -12,7 +12,7 @@ public enum TrustLevel {
     public final int level;
     public final Component component;
 
-    TrustLevel (int level, Component component) {
+    TrustLevel (final int level, final Component component) {
         this.level = level;
         this.component = component;
     }

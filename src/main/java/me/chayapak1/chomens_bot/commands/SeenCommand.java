@@ -32,7 +32,7 @@ public class SeenCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         if (Main.database == null)
@@ -46,7 +46,7 @@ public class SeenCommand extends Command {
 
         final List<Component> onlineComponents = new ArrayList<>();
 
-        for (Bot eachBot : bot.bots) {
+        for (final Bot eachBot : bot.bots) {
             if (eachBot.players.getEntry(player) != null) {
                 online = true;
 
@@ -95,7 +95,7 @@ public class SeenCommand extends Command {
                         Component.text(formattedTime).color(bot.colorPalette.string),
                         Component.text(server).color(bot.colorPalette.string)
                 ).color(bot.colorPalette.defaultColor));
-            } catch (CommandException e) {
+            } catch (final CommandException e) {
                 context.sendOutput(e.message.color(NamedTextColor.RED));
             }
         });

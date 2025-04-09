@@ -24,7 +24,7 @@ public class WhitelistCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         final String action = context.getAction();
@@ -64,7 +64,7 @@ public class WhitelistCommand extends Command {
                             "Removed %s from the whitelist",
                             Component.text(player).color(bot.colorPalette.username)
                     ).color(bot.colorPalette.defaultColor);
-                } catch (IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
+                } catch (final IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
                     throw new CommandException(Component.text("Invalid index"));
                 }
             }
@@ -81,7 +81,7 @@ public class WhitelistCommand extends Command {
                 final List<Component> playersComponent = new ArrayList<>();
 
                 int index = 0;
-                for (String player : bot.whitelist.list) {
+                for (final String player : bot.whitelist.list) {
                     playersComponent.add(
                             Component.translatable(
                                     "%s › %s",

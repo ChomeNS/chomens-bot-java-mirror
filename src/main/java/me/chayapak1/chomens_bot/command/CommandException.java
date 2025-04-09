@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component;
 public class CommandException extends Exception {
     public final Component message;
 
-    public CommandException (Component message) {
+    public CommandException (final Component message) {
         this.message = message;
     }
 }

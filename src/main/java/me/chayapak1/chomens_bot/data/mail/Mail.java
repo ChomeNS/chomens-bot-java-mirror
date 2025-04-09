@@ -6,11 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public record Mail(String sentBy, String sentTo, long timeSent, String server, String contents) {
     @JsonCreator
     public Mail (
-            @JsonProperty("sentBy") String sentBy,
-            @JsonProperty("sentTo") String sentTo,
-            @JsonProperty("timeSent") long timeSent,
-            @JsonProperty("server") String server,
-            @JsonProperty("contents") String contents
+            @JsonProperty("sentBy") final String sentBy,
+            @JsonProperty("sentTo") final String sentTo,
+            @JsonProperty("timeSent") final long timeSent,
+            @JsonProperty("server") final String server,
+            @JsonProperty("contents") final String contents
     ) {
         this.sentBy = sentBy;
         this.sentTo = sentTo;

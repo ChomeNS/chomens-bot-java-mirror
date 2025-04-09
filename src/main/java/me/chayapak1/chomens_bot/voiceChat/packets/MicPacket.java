@@ -11,9 +11,9 @@ public class MicPacket implements Packet<MicPacket> {
     public MicPacket () { }
 
     public MicPacket (
-            byte[] data,
-            boolean whispering,
-            long sequenceNumber
+            final byte[] data,
+            final boolean whispering,
+            final long sequenceNumber
     ) {
         this.data = data;
         this.whispering = whispering;
@@ -21,8 +21,8 @@ public class MicPacket implements Packet<MicPacket> {
     }
 
     @Override
-    public MicPacket fromBytes (FriendlyByteBuf buf) {
-        MicPacket soundPacket = new MicPacket();
+    public MicPacket fromBytes (final FriendlyByteBuf buf) {
+        final MicPacket soundPacket = new MicPacket();
         soundPacket.data = buf.readByteArray();
         soundPacket.sequenceNumber = buf.readLong();
         soundPacket.whispering = buf.readBoolean();
@@ -30,7 +30,7 @@ public class MicPacket implements Packet<MicPacket> {
     }
 
     @Override
-    public void toBytes (FriendlyByteBuf buf) {
+    public void toBytes (final FriendlyByteBuf buf) {
         buf.writeByteArray(data);
         buf.writeLong(sequenceNumber);
         buf.writeBoolean(whispering);

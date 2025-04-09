@@ -20,7 +20,7 @@ public class Encryptor {
     private static final int ITERATIONS = 65536;
     private static final int KEY_LENGTH = 256;
 
-    public static String encrypt (byte[] data, String password) throws Exception {
+    public static String encrypt (final byte[] data, final String password) throws Exception {
         final byte[] salt = generateRandomBytes(SALT_LENGTH);
         final SecretKey key = deriveKey(password, salt);
 
@@ -39,7 +39,7 @@ public class Encryptor {
         return Ascii85.encode(combined);
     }
 
-    public static byte[] decrypt (String ascii85Data, String password) throws Exception {
+    public static byte[] decrypt (final String ascii85Data, final String password) throws Exception {
         final byte[] combined = Ascii85.decode(ascii85Data);
 
         final byte[] salt = new byte[SALT_LENGTH];
@@ -58,14 +58,14 @@ public class Encryptor {
         return cipher.doFinal(encrypted);
     }
 
-    private static SecretKey deriveKey (String password, byte[] salt) throws Exception {
+    private static SecretKey deriveKey (final String password, final byte[] salt) throws Exception {
         final SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
         final KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, ITERATIONS, KEY_LENGTH);
         final SecretKey tmp = factory.generateSecret(spec);
         return new SecretKeySpec(tmp.getEncoded(), "AES");
     }
 
-    private static byte[] generateRandomBytes (int length) {
+    private static byte[] generateRandomBytes (final int length) {
         final byte[] bytes = new byte[length];
         RANDOM.nextBytes(bytes);
         return bytes;

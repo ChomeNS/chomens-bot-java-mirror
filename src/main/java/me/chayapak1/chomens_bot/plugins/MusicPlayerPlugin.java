@@ -40,7 +40,7 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
     static {
         try {
             if (!Files.exists(SONG_DIR)) Files.createDirectory(SONG_DIR);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LoggerUtilities.error(e);
         }
     }
@@ -71,7 +71,7 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
 
     public String currentLyrics = "";
 
-    public MusicPlayerPlugin (Bot bot) {
+    public MusicPlayerPlugin (final Bot bot) {
         this.bot = bot;
 
         bot.addListener(this);
@@ -82,21 +82,21 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
         bot.executor.scheduleAtFixedRate(() -> urlLimit = 0, 0, bot.config.music.urlRatelimit.seconds, TimeUnit.SECONDS);
     }
 
-    public void loadSong (Path location, PlayerEntry sender) {
+    public void loadSong (final Path location, final PlayerEntry sender) {
         startLoadingSong(
                 location.getFileName().toString(),
                 new SongLoaderThread(location, bot, sender.profile.getName())
         );
     }
 
-    public void loadSong (byte[] data, PlayerEntry sender) {
+    public void loadSong (final byte[] data, final PlayerEntry sender) {
         startLoadingSong(
                 sender.profile.getName() + "'s song item",
                 new SongLoaderThread(data, bot, sender.profile.getName())
         );
     }
 
-    public void loadSong (URL location, PlayerEntry sender) {
+    public void loadSong (final URL location, final PlayerEntry sender) {
         if (urlLimit >= bot.config.music.urlRatelimit.limit) {
             bot.chat.tellraw(Component.text("URL loading is being rate limited!").color(NamedTextColor.RED));
             return;
@@ -110,7 +110,7 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
         );
     }
 
-    private void startLoadingSong (String songName, SongLoaderThread loaderThread) {
+    private void startLoadingSong (final String songName, final SongLoaderThread loaderThread) {
         if (songQueue.size() > 500) return;
 
         this.loaderThread = loaderThread;
@@ -208,7 +208,7 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
                     currentSong.play();
                 }
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             bot.logger.error(e);
         }
     }
@@ -298,7 +298,7 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
     }
 
     public Component generateBossBar () {
-        TextColor nameColor;
+        final TextColor nameColor;
 
         if (rainbow) {
             final int increment = 360 / 20;
@@ -348,7 +348,7 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
         return component;
     }
 
-    public Component formatTime (long millis) {
+    public Component formatTime (final long millis) {
         final int seconds = (int) millis / 1000;
 
         final String minutePart = String.valueOf(seconds / 60);
@@ -367,7 +367,7 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
     }
 
     @Override
-    public void disconnected (DisconnectedEvent event) {
+    public void disconnected (final DisconnectedEvent event) {
         if (currentSong != null) currentSong.pause(); // nice.
         loaderThread = null;
     }
@@ -424,7 +424,7 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
 
                 key -= 33;
 
-                double floatingPitch = 0.5 * Math.pow(2, (key + (pitch / 10)) / 12);
+                final double floatingPitch = 0.5 * Math.pow(2, (key + (pitch / 10)) / 12);
 
                 for (int i = 0; i < amplify; i++) {
                     bot.core.run(
@@ -439,22 +439,22 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
                     );
                 }
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             bot.logger.error(e);
         }
     }
 
-    private Vector3d getBlockPosition (Note note) {
-        Vector3d blockPosition;
+    private Vector3d getBlockPosition (final Note note) {
+        final Vector3d blockPosition;
 
         if (currentSong.nbs) {
-            double value;
+            final double value;
 
             if (note.stereo == 100 && note.panning != 100) value = note.panning;
             else if (note.panning == 100 && note.stereo != 100) value = note.stereo;
             else value = (double) (note.stereo + note.panning) / 2;
 
-            double xPos;
+            final double xPos;
 
             if (value > 100) xPos = (value - 100) / -100;
             else if (value == 100) xPos = 0;

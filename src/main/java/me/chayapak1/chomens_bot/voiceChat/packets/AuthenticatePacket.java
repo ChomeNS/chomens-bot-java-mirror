@@ -12,23 +12,23 @@ public class AuthenticatePacket implements Packet<AuthenticatePacket> {
     public AuthenticatePacket () { }
 
     public AuthenticatePacket (
-            UUID playerUUID,
-            UUID secret
+            final UUID playerUUID,
+            final UUID secret
     ) {
         this.playerUUID = playerUUID;
         this.secret = secret;
     }
 
     @Override
-    public AuthenticatePacket fromBytes (FriendlyByteBuf buf) {
-        AuthenticatePacket packet = new AuthenticatePacket();
+    public AuthenticatePacket fromBytes (final FriendlyByteBuf buf) {
+        final AuthenticatePacket packet = new AuthenticatePacket();
         packet.playerUUID = buf.readUUID();
         packet.secret = buf.readUUID();
         return packet;
     }
 
     @Override
-    public void toBytes (FriendlyByteBuf buf) {
+    public void toBytes (final FriendlyByteBuf buf) {
         buf.writeUUID(playerUUID);
         buf.writeUUID(secret);
     }

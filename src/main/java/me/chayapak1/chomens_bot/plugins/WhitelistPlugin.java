@@ -13,7 +13,7 @@ public class WhitelistPlugin implements PlayersPlugin.Listener {
 
     private boolean enabled = false;
 
-    public WhitelistPlugin (Bot bot) {
+    public WhitelistPlugin (final Bot bot) {
         this.bot = bot;
 
         bot.players.addListener(this);
@@ -22,7 +22,7 @@ public class WhitelistPlugin implements PlayersPlugin.Listener {
     public void enable () {
         enabled = true;
 
-        for (PlayerEntry entry : bot.players.list) {
+        for (final PlayerEntry entry : bot.players.list) {
             if (list.contains(entry.profile.getName())) continue;
 
             list.add(entry.profile.getName());
@@ -34,18 +34,18 @@ public class WhitelistPlugin implements PlayersPlugin.Listener {
     public void disable () {
         enabled = false;
 
-        for (PlayerEntry entry : bot.players.list) {
+        for (final PlayerEntry entry : bot.players.list) {
             bot.filterManager.remove(entry.profile.getName());
         }
     }
 
-    public void add (String player) {
+    public void add (final String player) {
         list.add(player);
 
         bot.filterManager.remove(player);
     }
 
-    public String remove (int index) {
+    public String remove (final int index) {
         final String removed = list.remove(index);
 
         checkAndAddToFilterManager(removed);
@@ -56,16 +56,16 @@ public class WhitelistPlugin implements PlayersPlugin.Listener {
     public void clear () {
         list.removeIf(eachPlayer -> !eachPlayer.equals(bot.profile.getName()));
 
-        for (PlayerEntry entry : bot.players.list) {
+        for (final PlayerEntry entry : bot.players.list) {
             if (entry.profile.equals(bot.profile)) continue;
 
             bot.filterManager.add(entry, "");
         }
     }
 
-    public boolean isBlacklisted (String name) { return !list.contains(name); }
+    public boolean isBlacklisted (final String name) { return !list.contains(name); }
 
-    private void checkAndAddToFilterManager (String player) {
+    private void checkAndAddToFilterManager (final String player) {
         final PlayerEntry entry = bot.players.getEntry(player);
 
         if (entry == null) return;
@@ -74,7 +74,7 @@ public class WhitelistPlugin implements PlayersPlugin.Listener {
     }
 
     @Override
-    public void playerJoined (PlayerEntry target) {
+    public void playerJoined (final PlayerEntry target) {
         if (!enabled) return;
 
         if (isBlacklisted(target.profile.getName())) bot.filterManager.add(target, "");

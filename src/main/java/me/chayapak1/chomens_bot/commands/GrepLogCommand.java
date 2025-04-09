@@ -23,7 +23,7 @@ public class GrepLogCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         if (Main.discord == null || Main.discord.jda == null) {
@@ -81,7 +81,7 @@ public class GrepLogCommand extends Command {
         thread = new Thread(() -> {
             try {
                 bot.grepLog.search(context, input, finalIgnoreCase, finalRegex);
-            } catch (CommandException e) {
+            } catch (final CommandException e) {
                 context.sendOutput(e.message.color(NamedTextColor.RED));
             }
 

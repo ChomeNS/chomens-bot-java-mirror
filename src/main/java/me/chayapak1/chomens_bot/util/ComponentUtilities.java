@@ -69,22 +69,22 @@ public class ComponentUtilities {
     public static final Map<String, String> VOICE_CHAT_LANGUAGE = loadJsonStringMap("voiceChatLanguage.json");
     public static final Map<String, String> KEYBINDINGS = loadJsonStringMap("keybinds.json");
 
-    private static Map<String, String> loadJsonStringMap (String name) {
-        Map<String, String> map = new HashMap<>();
+    private static Map<String, String> loadJsonStringMap (final String name) {
+        final Map<String, String> map = new HashMap<>();
 
-        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(name);
+        final InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(name);
         assert is != null;
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        final JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
 
-        for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+        for (final Map.Entry<String, JsonElement> entry : json.entrySet()) {
             map.put(entry.getKey(), json.get(entry.getKey()).getAsString());
         }
 
         return map;
     }
 
-    public static String getOrReturnFallback (TranslatableComponent component) {
+    public static String getOrReturnFallback (final TranslatableComponent component) {
         final String key = component.key();
 
         final String minecraftKey = LANGUAGE.get(key);
@@ -95,15 +95,15 @@ public class ComponentUtilities {
         else return component.fallback() != null ? component.fallback() : key;
     }
 
-    public static String stringify (Component message) { return new ComponentParser().stringify(message, ComponentParser.ParseType.PLAIN); }
+    public static String stringify (final Component message) { return new ComponentParser().stringify(message, ComponentParser.ParseType.PLAIN); }
 
-    public static String stringifySectionSign (Component message) { return new ComponentParser().stringify(message, ComponentParser.ParseType.SECTION_SIGNS); }
+    public static String stringifySectionSign (final Component message) { return new ComponentParser().stringify(message, ComponentParser.ParseType.SECTION_SIGNS); }
 
-    public static String stringifyAnsi (Component message) { return new ComponentParser().stringify(message, ComponentParser.ParseType.ANSI); }
+    public static String stringifyAnsi (final Component message) { return new ComponentParser().stringify(message, ComponentParser.ParseType.ANSI); }
 
-    public static String stringifyDiscordAnsi (Component message) { return new ComponentParser().stringify(message, ComponentParser.ParseType.DISCORD_ANSI); }
+    public static String stringifyDiscordAnsi (final Component message) { return new ComponentParser().stringify(message, ComponentParser.ParseType.DISCORD_ANSI); }
 
-    public static String deserializeFromDiscordAnsi (String original) { return new ComponentParser().deserializeFromDiscordAnsi(original); }
+    public static String deserializeFromDiscordAnsi (final String original) { return new ComponentParser().deserializeFromDiscordAnsi(original); }
 
     private static class ComponentParser {
         public static final Pattern ARG_PATTERN = Pattern.compile("%(?:(\\d+)\\$)?([s%])");
@@ -202,7 +202,7 @@ public class ComponentUtilities {
 
         private boolean isSubParsing = false;
 
-        public String deserializeFromDiscordAnsi (String original) {
+        public String deserializeFromDiscordAnsi (final String original) {
             final Matcher matcher = DISCORD_ANSI_PATTERN.matcher(original);
             final StringBuilder builder = new StringBuilder();
 
@@ -211,7 +211,7 @@ public class ComponentUtilities {
 
                 boolean replaced = false;
 
-                for (Map.Entry<String, String> entry : DISCORD_ANSI_MAP.entrySet()) {
+                for (final Map.Entry<String, String> entry : DISCORD_ANSI_MAP.entrySet()) {
                     if (!entry.getValue().equals(match)) continue;
 
                     matcher.appendReplacement(builder, "§" + entry.getKey());
@@ -229,7 +229,7 @@ public class ComponentUtilities {
             return builder.toString();
         }
 
-        private String stringify (Component message, ParseType type) {
+        private String stringify (final Component message, final ParseType type) {
             this.type = type;
 
             if (System.currentTimeMillis() > parseStartTime + MAX_TIME) return "";
@@ -244,7 +244,7 @@ public class ComponentUtilities {
 
                 builder.append(output);
 
-                for (Component child : message.children()) {
+                for (final Component child : message.children()) {
                     final ComponentParser parser = new ComponentParser();
                     parser.lastColor = lastColor + color;
                     parser.lastStyle = lastStyle + style;
@@ -261,28 +261,28 @@ public class ComponentUtilities {
                 }
 
                 return builder.toString();
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LoggerUtilities.error(e);
                 return "";
             }
         }
 
-        public String stringifyPartially (Component message, String color, String style) {
+        public String stringifyPartially (final Component message, final String color, final String style) {
             return switch (message) {
-                case TextComponent t_component -> stringifyPartially(t_component, color, style);
-                case TranslatableComponent t_component -> stringifyPartially(t_component, color, style);
-                case SelectorComponent t_component -> stringifyPartially(t_component, color, style);
-                case KeybindComponent t_component -> stringifyPartially(t_component, color, style);
+                case final TextComponent t_component -> stringifyPartially(t_component, color, style);
+                case final TranslatableComponent t_component -> stringifyPartially(t_component, color, style);
+                case final SelectorComponent t_component -> stringifyPartially(t_component, color, style);
+                case final KeybindComponent t_component -> stringifyPartially(t_component, color, style);
                 default -> String.format("[Component type %s not implemented!]", message.getClass().getSimpleName());
             };
         }
 
-        public String getStyle (Style textStyle) {
+        public String getStyle (final Style textStyle) {
             if (textStyle == null) return "";
 
             final StringBuilder style = new StringBuilder();
 
-            for (Map.Entry<TextDecoration, TextDecoration.State> decorationEntry : textStyle.decorations().entrySet()) {
+            for (final Map.Entry<TextDecoration, TextDecoration.State> decorationEntry : textStyle.decorations().entrySet()) {
                 final TextDecoration decoration = decorationEntry.getKey();
                 final TextDecoration.State state = decorationEntry.getValue();
 
@@ -329,12 +329,12 @@ public class ComponentUtilities {
             return style.toString();
         }
 
-        public String getColor (TextColor color) {
+        public String getColor (final TextColor color) {
             if (color == null) return "";
 
             // map totallynotskidded™ from https://github.com/PrismarineJS/prismarine-chat/blob/master/index.js#L299
-            String code;
-            if (color instanceof NamedTextColor named) {
+            final String code;
+            if (color instanceof final NamedTextColor named) {
                 code = NAMED_TEXT_COLOR_MAP.getOrDefault(named, "");
             } else {
                 code = color.asHexString();
@@ -379,7 +379,7 @@ public class ComponentUtilities {
             };
         }
 
-        private String getPartialResult (String originalResult, String color, String style, boolean setLastStyles) {
+        private String getPartialResult (final String originalResult, final String color, final String style, final boolean setLastStyles) {
             if (type == ParseType.PLAIN) return originalResult;
 
             final String orderedStyling = type == ParseType.SECTION_SIGNS
@@ -403,7 +403,7 @@ public class ComponentUtilities {
             return result;
         }
 
-        private String stringifyPartially (String message, String color, String style) {
+        private String stringifyPartially (final String message, final String color, final String style) {
             if (type == ParseType.PLAIN) return message;
 
             final boolean isAllAnsi = type == ParseType.ANSI || type == ParseType.DISCORD_ANSI;
@@ -425,22 +425,22 @@ public class ComponentUtilities {
                                         DISCORD_ANSI_MAP.get(code);
                                 else return color;
                             });
-                } catch (Exception ignored) { }
+                } catch (final Exception ignored) { }
             }
 
             return getPartialResult(replacedContent, color, style, true);
         }
 
-        private String stringifyPartially (TextComponent message, String color, String style) {
+        private String stringifyPartially (final TextComponent message, final String color, final String style) {
             return stringifyPartially(message.content(), color, style);
         }
 
-        private String stringifyPartially (TranslatableComponent message, String color, String style) {
+        private String stringifyPartially (final TranslatableComponent message, final String color, final String style) {
             final String format = getOrReturnFallback(message);
 
             // totallynotskidded™️from HBot (and changed a bit)
-            Matcher matcher = ARG_PATTERN.matcher(format);
-            StringBuilder sb = new StringBuilder();
+            final Matcher matcher = ARG_PATTERN.matcher(format);
+            final StringBuilder sb = new StringBuilder();
 
             // not checking if arguments length equals input format length
             // is INTENTIONAL and is a FEATURE
@@ -452,7 +452,7 @@ public class ComponentUtilities {
                     final String idxStr = matcher.group(1);
 
                     try {
-                        int idx = idxStr == null ? i++ : (Integer.parseInt(idxStr) - 1);
+                        final int idx = idxStr == null ? i++ : (Integer.parseInt(idxStr) - 1);
 
                         if (idx >= 0 && idx < message.arguments().size()) {
                             final ComponentParser parser = new ComponentParser();
@@ -485,7 +485,7 @@ public class ComponentUtilities {
                         } else {
                             matcher.appendReplacement(sb, "");
                         }
-                    } catch (NumberFormatException ignored) { } // is this a good idea?
+                    } catch (final NumberFormatException ignored) { } // is this a good idea?
                 }
             }
 
@@ -496,11 +496,11 @@ public class ComponentUtilities {
 
         // on the client side, this acts just like TextComponent
         // and does NOT process any players stuff
-        private String stringifyPartially (SelectorComponent message, String color, String style) {
+        private String stringifyPartially (final SelectorComponent message, final String color, final String style) {
             return stringifyPartially(message.pattern(), style, color);
         }
 
-        public String stringifyPartially (KeybindComponent message, String color, String style) {
+        public String stringifyPartially (final KeybindComponent message, final String color, final String style) {
             final String keybind = message.keybind();
 
             // this is indeed the correct way to process keybindings

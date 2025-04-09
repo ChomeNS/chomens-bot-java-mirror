@@ -42,19 +42,19 @@ public class VoiceChatPlugin extends Bot.Listener implements Runnable {
 
     public final List<ClientGroup> groups = new ArrayList<>();
 
-    public VoiceChatPlugin (Bot bot) {
+    public VoiceChatPlugin (final Bot bot) {
         this.bot = bot;
 
         bot.addListener(this);
     }
 
     @Override
-    public void packetReceived (Session session, Packet packet) {
-        if (packet instanceof ClientboundLoginPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundCustomPayloadPacket t_packet) packetReceived(t_packet);
+    public void packetReceived (final Session session, final Packet packet) {
+        if (packet instanceof final ClientboundLoginPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundCustomPayloadPacket t_packet) packetReceived(t_packet);
     }
 
-    private void packetReceived (ClientboundLoginPacket ignored) {
+    private void packetReceived (final ClientboundLoginPacket ignored) {
         // totally didn't use a real minecraft client with voicechat mod to get this
 
         bot.session.send(new ServerboundCustomPayloadPacket(
@@ -70,7 +70,7 @@ public class VoiceChatPlugin extends Bot.Listener implements Runnable {
         running = true;
     }
 
-    private void packetReceived (ClientboundCustomPayloadPacket packet) {
+    private void packetReceived (final ClientboundCustomPayloadPacket packet) {
         if (packet.getChannel().equals(SECRET_KEY)) {
             final byte[] bytes = packet.getData();
             final FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.wrappedBuffer(bytes));
@@ -89,7 +89,7 @@ public class VoiceChatPlugin extends Bot.Listener implements Runnable {
 
             try {
                 socket.open();
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 bot.logger.error("Failed to create Simple Voice Chat connection!");
                 bot.logger.error(e);
                 return;
@@ -124,7 +124,7 @@ public class VoiceChatPlugin extends Bot.Listener implements Runnable {
 
                 if (message == null) continue;
 
-                if (message.packet instanceof PingPacket pingPacket)
+                if (message.packet instanceof final PingPacket pingPacket)
                     sendToServer(new NetworkMessage(pingPacket));
                 else if (message.packet instanceof KeepAlivePacket)
                     sendToServer(new NetworkMessage(new KeepAlivePacket()));
@@ -139,7 +139,7 @@ public class VoiceChatPlugin extends Bot.Listener implements Runnable {
                             )
                     );
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 if (running) bot.logger.error(e);
                 else break; // stop the thread
             }
@@ -147,7 +147,7 @@ public class VoiceChatPlugin extends Bot.Listener implements Runnable {
     }
 
     @SuppressWarnings("unused") // can be set through ServerEvalCommand
-    public void joinGroup (String group, String password) {
+    public void joinGroup (final String group, final String password) {
         final ClientGroup[] clientGroups = groups
                 .stream()
                 .filter(eachGroup -> eachGroup.name().equals(group))
@@ -167,13 +167,13 @@ public class VoiceChatPlugin extends Bot.Listener implements Runnable {
         ));
     }
 
-    public void sendToServer (NetworkMessage message) {
+    public void sendToServer (final NetworkMessage message) {
         try {
             socket.send(
                     message.writeClient(initializationData),
                     socketAddress
             );
-        } catch (Exception e) {
+        } catch (final Exception e) {
             bot.logger.error(e);
         }
     }
@@ -181,19 +181,19 @@ public class VoiceChatPlugin extends Bot.Listener implements Runnable {
     private class VoiceChatSocketBase {
         private final byte[] BUFFER = new byte[4096];
 
-        public RawUdpPacket read (DatagramSocket socket) {
+        public RawUdpPacket read (final DatagramSocket socket) {
             if (socket.isClosed()) return null;
             try {
-                DatagramPacket packet = new DatagramPacket(BUFFER, BUFFER.length);
+                final DatagramPacket packet = new DatagramPacket(BUFFER, BUFFER.length);
 
                 socket.receive(packet);
 
                 // Setting the timestamp after receiving the packet
-                long timestamp = System.currentTimeMillis();
-                byte[] data = new byte[packet.getLength()];
+                final long timestamp = System.currentTimeMillis();
+                final byte[] data = new byte[packet.getLength()];
                 System.arraycopy(packet.getData(), packet.getOffset(), data, 0, packet.getLength());
                 return new RawUdpPacket(data, packet.getSocketAddress(), timestamp);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 if (!running) return null;
 
                 bot.logger.error(e);
@@ -205,7 +205,7 @@ public class VoiceChatPlugin extends Bot.Listener implements Runnable {
     }
 
     @Override
-    public void disconnected (DisconnectedEvent event) {
+    public void disconnected (final DisconnectedEvent event) {
         socket.close();
         groups.clear();
 
@@ -226,7 +226,7 @@ public class VoiceChatPlugin extends Bot.Listener implements Runnable {
             return read(socket);
         }
 
-        public void send (byte[] data, SocketAddress address) throws Exception {
+        public void send (final byte[] data, final SocketAddress address) throws Exception {
             if (socket == null) {
                 return; // Ignoring packet sending when socket isn't open yet
             }

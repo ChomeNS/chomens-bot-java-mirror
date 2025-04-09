@@ -35,7 +35,7 @@ public class ConsolePlugin implements Completer {
 
     private final Component format;
 
-    public ConsolePlugin (Configuration config) {
+    public ConsolePlugin (final Configuration config) {
         this.allBots = Main.bots;
         this.format = GsonComponentSerializer.gson().deserialize(config.consoleChatFormat);
         this.prefix = config.consoleCommandPrefix;
@@ -54,7 +54,7 @@ public class ConsolePlugin implements Completer {
                         String line = null;
                         try {
                             line = reader.readLine(prompt);
-                        } catch (Exception e) {
+                        } catch (final Exception e) {
                             System.exit(1);
                         }
 
@@ -68,7 +68,7 @@ public class ConsolePlugin implements Completer {
     }
 
     @Override
-    public void complete (LineReader reader, ParsedLine line, List<Candidate> candidates) {
+    public void complete (final LineReader reader, final ParsedLine line, final List<Candidate> candidates) {
         if (!line.line().startsWith(prefix)) return;
 
         final String command = line.line().substring(prefix.length());
@@ -86,10 +86,10 @@ public class ConsolePlugin implements Completer {
         candidates.addAll(filteredCommands);
     }
 
-    private void handleLine (String line) {
+    private void handleLine (final String line) {
         if (line == null) return;
 
-        for (Bot bot : allBots) {
+        for (final Bot bot : allBots) {
             final String server = bot.getServerString(true);
 
             if (!server.equals(consoleServer) && !consoleServer.equalsIgnoreCase("all")) continue;

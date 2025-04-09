@@ -15,7 +15,7 @@ public class AuthPlugin implements PlayersPlugin.Listener, ChatPlugin.Listener {
     public boolean isAuthenticating = false;
     public long startTime;
 
-    public AuthPlugin (Bot bot) {
+    public AuthPlugin (final Bot bot) {
         this.bot = bot;
 
         if (!bot.config.ownerAuthentication.enabled) return;
@@ -30,7 +30,7 @@ public class AuthPlugin implements PlayersPlugin.Listener, ChatPlugin.Listener {
 
         bot.addListener(new Bot.Listener() {
             @Override
-            public void disconnected (DisconnectedEvent event) {
+            public void disconnected (final DisconnectedEvent event) {
                 AuthPlugin.this.disconnected();
             }
         });
@@ -74,7 +74,7 @@ public class AuthPlugin implements PlayersPlugin.Listener, ChatPlugin.Listener {
     }
 
     @Override
-    public void playerJoined (PlayerEntry target) {
+    public void playerJoined (final PlayerEntry target) {
         if (!target.profile.getName().equals(bot.config.ownerName) || !bot.options.useCore) return;
 
         startTime = System.currentTimeMillis();
@@ -82,7 +82,7 @@ public class AuthPlugin implements PlayersPlugin.Listener, ChatPlugin.Listener {
     }
 
     @Override
-    public void playerLeft (PlayerEntry target) {
+    public void playerLeft (final PlayerEntry target) {
         if (!target.profile.getName().equals(bot.config.ownerName)) return;
 
         isAuthenticating = false;

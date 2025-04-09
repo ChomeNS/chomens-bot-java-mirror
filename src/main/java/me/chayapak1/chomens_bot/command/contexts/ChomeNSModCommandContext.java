@@ -7,7 +7,7 @@ import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import net.kyori.adventure.text.Component;
 
 public class ChomeNSModCommandContext extends CommandContext {
-    public ChomeNSModCommandContext (Bot bot, PlayerEntry sender) {
+    public ChomeNSModCommandContext (final Bot bot, final PlayerEntry sender) {
         super(
                 bot,
                 ".cbot ", // intentionally hardcoded
@@ -17,7 +17,7 @@ public class ChomeNSModCommandContext extends CommandContext {
     }
 
     @Override
-    public void sendOutput (Component component) {
+    public void sendOutput (final Component component) {
         bot.chomeNSMod.send(
                 sender,
                 new ClientboundMessagePacket(component)

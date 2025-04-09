@@ -22,7 +22,7 @@ public class DiscordCommandContext extends CommandContext {
 
     private final Bot bot;
 
-    public DiscordCommandContext (Bot bot, String prefix, MessageReceivedEvent event) {
+    public DiscordCommandContext (final Bot bot, final String prefix, final MessageReceivedEvent event) {
         super(
                 bot,
                 prefix,
@@ -46,7 +46,7 @@ public class DiscordCommandContext extends CommandContext {
     }
 
     @Override
-    public void sendOutput (Component component) {
+    public void sendOutput (final Component component) {
         String output = ComponentUtilities.stringifyDiscordAnsi(component);
 
         if (output.length() > 2048) {

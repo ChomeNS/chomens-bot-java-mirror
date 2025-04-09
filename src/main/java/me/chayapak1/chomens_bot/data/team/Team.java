@@ -23,16 +23,16 @@ public class Team {
     public Component suffix;
 
     public Team (
-            String teamName,
-            List<String> players,
-            Component displayName,
-            boolean friendlyFire,
-            boolean seeFriendlyInvisibles,
-            NameTagVisibility nametagVisibility,
-            CollisionRule collisionRule,
-            TeamColor color,
-            Component prefix,
-            Component suffix
+            final String teamName,
+            final List<String> players,
+            final Component displayName,
+            final boolean friendlyFire,
+            final boolean seeFriendlyInvisibles,
+            final NameTagVisibility nametagVisibility,
+            final CollisionRule collisionRule,
+            final TeamColor color,
+            final Component prefix,
+            final Component suffix
     ) {
         this.teamName = teamName;
         this.players = players;

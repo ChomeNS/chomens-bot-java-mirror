@@ -20,31 +20,31 @@ public class FormatCheckerPlugin implements ChatPlugin.Listener, PlayersPlugin.L
 
     private int totalFormat = 0;
 
-    public FormatCheckerPlugin (Bot bot) {
+    public FormatCheckerPlugin (final Bot bot) {
         this.bot = bot;
 
         bot.chat.addListener(this);
         bot.players.addListener(this);
     }
 
-    private void reset (PlayerEntry entry) {
+    private void reset (final PlayerEntry entry) {
         if (!entry.profile.getName().equals(bot.config.ownerName)) return;
 
         totalFormat = 0;
     }
 
     @Override
-    public void playerJoined (PlayerEntry target) {
+    public void playerJoined (final PlayerEntry target) {
         reset(target);
     }
 
     @Override
-    public void playerLeft (PlayerEntry target) {
+    public void playerLeft (final PlayerEntry target) {
         reset(target);
     }
 
     @Override
-    public boolean systemMessageReceived (Component component, String string, String ansi) {
+    public boolean systemMessageReceived (final Component component, final String string, final String ansi) {
         if (!isImposterFormat(component)) return true;
 
         bot.chat.tellraw(Component.text("Possible fake ChomeNS custom chat").style(Style.style(TextDecoration.ITALIC)).color(NamedTextColor.GRAY));
@@ -52,10 +52,10 @@ public class FormatCheckerPlugin implements ChatPlugin.Listener, PlayersPlugin.L
         return true;
     }
 
-    public boolean isImposterFormat (Component component) {
+    public boolean isImposterFormat (final Component component) {
         if (!bot.config.imposterFormatChecker.enabled) return false;
 
-        if (!(component instanceof TranslatableComponent format)) return false;
+        if (!(component instanceof final TranslatableComponent format)) return false;
 
         final List<TranslationArgument> args = format.arguments();
         if (args.size() < 3 || !format.key().equals("[%s] %s › %s")) return false;
@@ -71,15 +71,15 @@ public class FormatCheckerPlugin implements ChatPlugin.Listener, PlayersPlugin.L
         final Object prefix = format.arguments().getFirst().value();
 
         if (
-                ((prefix instanceof TextComponent text) && text.content().equals(bot.username + " Console")) || // ohio
+                ((prefix instanceof final TextComponent text) && text.content().equals(bot.username + " Console")) || // ohio
                         (Main.discord != null && prefix.equals(Main.discord.messagePrefix))
         ) return false;
 
-        if (!(prefix instanceof TranslatableComponent translatablePrefix)) return true;
+        if (!(prefix instanceof final TranslatableComponent translatablePrefix)) return true;
 
         final Object userHash = translatablePrefix.arguments().getFirst().value();
 
-        if (!(userHash instanceof TextComponent userHashComponent)) return true;
+        if (!(userHash instanceof final TextComponent userHashComponent)) return true;
 
         final String key = bot.config.imposterFormatChecker.key;
 

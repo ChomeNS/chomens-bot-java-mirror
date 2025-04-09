@@ -11,12 +11,12 @@ import java.util.concurrent.TimeUnit;
 public class CoreFunction extends EvalFunction {
     private long lastExecutionTime = System.currentTimeMillis();
 
-    public CoreFunction (Bot bot) {
+    public CoreFunction (final Bot bot) {
         super("core", bot);
     }
 
     @Override
-    public Output execute (Object... args) throws Exception {
+    public Output execute (final Object... args) throws Exception {
         if (args.length == 0) return null;
 
         // prevent 69 DDOS exploit !!!

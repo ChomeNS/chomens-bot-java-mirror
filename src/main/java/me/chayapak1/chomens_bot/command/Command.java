@@ -15,11 +15,11 @@ public abstract class Command {
     public ChatPacketType[] disallowedPacketTypes;
 
     public Command (
-            String name,
-            String description,
-            String[] usages,
-            String[] aliases,
-            TrustLevel trustLevel
+            final String name,
+            final String description,
+            final String[] usages,
+            final String[] aliases,
+            final TrustLevel trustLevel
     ) {
         this.name = name;
         this.description = description;
@@ -30,12 +30,12 @@ public abstract class Command {
     }
 
     public Command (
-            String name,
-            String description,
-            String[] usages,
-            String[] aliases,
-            TrustLevel trustLevel,
-            boolean consoleOnly
+            final String name,
+            final String description,
+            final String[] usages,
+            final String[] aliases,
+            final TrustLevel trustLevel,
+            final boolean consoleOnly
     ) {
         this.name = name;
         this.description = description;
@@ -46,13 +46,13 @@ public abstract class Command {
     }
 
     public Command (
-            String name,
-            String description,
-            String[] usages,
-            String[] aliases,
-            TrustLevel trustLevel,
-            boolean consoleOnly,
-            ChatPacketType[] disallowedPacketTypes
+            final String name,
+            final String description,
+            final String[] usages,
+            final String[] aliases,
+            final TrustLevel trustLevel,
+            final boolean consoleOnly,
+            final ChatPacketType[] disallowedPacketTypes
     ) {
         this.name = name;
         this.description = description;

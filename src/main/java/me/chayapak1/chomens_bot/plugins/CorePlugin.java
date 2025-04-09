@@ -62,7 +62,7 @@ public class CorePlugin
 
     private boolean shouldRefill = false;
 
-    public CorePlugin (Bot bot) {
+    public CorePlugin (final Bot bot) {
         this.bot = bot;
 
         this.fromSize = Vector3i.from(
@@ -173,7 +173,7 @@ public class CorePlugin
         incrementBlock();
     }
 
-    public void run (String command) {
+    public void run (final String command) {
         if (!ready || command.length() > 32767) return;
 
         if (bot.options.useCore) {
@@ -193,9 +193,9 @@ public class CorePlugin
     }
 
     // thanks chipmunk for this new tellraw method
-    public CompletableFuture<Component> runTracked (String command) { return runTracked(false, command); }
+    public CompletableFuture<Component> runTracked (final String command) { return runTracked(false, command); }
 
-    public CompletableFuture<Component> runTracked (boolean useCargo, String command) {
+    public CompletableFuture<Component> runTracked (final boolean useCargo, final String command) {
         if (!ready || command.length() > 32767) return null;
 
         if (!bot.options.useCore) return null;
@@ -231,10 +231,10 @@ public class CorePlugin
         return trackedFuture;
     }
 
-    public void runPlaceBlock (String command) {
+    public void runPlaceBlock (final String command) {
         try {
             placeBlockQueue.add(command);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             bot.logger.error(e);
         }
     }
@@ -279,7 +279,7 @@ public class CorePlugin
                                     customName
                             )
             );
-        } catch (JsonSyntaxException e) {
+        } catch (final JsonSyntaxException e) {
             bot.logger.error("Error while parsing the core's custom name into Component! You might have an invalid syntax in the custom name.");
             bot.logger.error(e);
         }
@@ -315,9 +315,9 @@ public class CorePlugin
 
         final Vector3i oldSize = toSize;
 
-        int x = toSize.getX();
+        final int x = toSize.getX();
         int y = -64;
-        int z = toSize.getZ();
+        final int z = toSize.getZ();
 
         while (commandsPerTick.get() > 16 * 16) {
             y++;
@@ -354,7 +354,7 @@ public class CorePlugin
         if (!isCoreComplete()) shouldRefill = true;
     }
 
-    private boolean isCommandBlockState (int blockState) {
+    private boolean isCommandBlockState (final int blockState) {
         return
                 // command block
                 (
@@ -376,7 +376,7 @@ public class CorePlugin
     }
 
     // ported from chomens bot js, which is originally from smp
-    private boolean isCore (Vector3i position) {
+    private boolean isCore (final Vector3i position) {
         return
                 position.getX() >= from.getX() && position.getX() <= to.getX() &&
                         position.getY() >= from.getY() && position.getY() <= to.getY() &&
@@ -404,7 +404,7 @@ public class CorePlugin
     }
 
     @Override
-    public void positionChange (Vector3d position) {
+    public void positionChange (final Vector3d position) {
         if (bot.position.isGoingDownFromHeightLimit) return;
 
         final int coreChunkPosX = from == null ? -1 : (int) Math.floor((double) from.getX() / 16);
@@ -427,18 +427,18 @@ public class CorePlugin
             ready = true;
 
             refillTask = bot.executor.scheduleAtFixedRate(this::refill, 0, bot.config.core.refillInterval, TimeUnit.MILLISECONDS);
-            for (Listener listener : listeners) listener.coreReady();
+            for (final Listener listener : listeners) listener.coreReady();
         }
     }
 
     @Override
-    public void worldChanged (String dimension) {
+    public void worldChanged (final String dimension) {
         reset();
         refill();
     }
 
     @Override
-    public void disconnected (DisconnectedEvent event) {
+    public void disconnected (final DisconnectedEvent event) {
         ready = false;
 
         refillTask.cancel(false);
@@ -471,7 +471,7 @@ public class CorePlugin
 
     public void refill () { refill(true); }
 
-    public void refill (boolean force) {
+    public void refill (final boolean force) {
         if (!ready) return;
 
         final Map<Integer, Boolean> refilledMap = new HashMap<>();
@@ -512,7 +512,7 @@ public class CorePlugin
         }
 
         if (refilledMap.containsValue(true)) {
-            for (Listener listener : listeners) listener.coreRefilled();
+            for (final Listener listener : listeners) listener.coreRefilled();
         }
     }
 
@@ -522,5 +522,5 @@ public class CorePlugin
         default void coreRefilled () { }
     }
 
-    public void addListener (Listener listener) { listeners.add(listener); }
+    public void addListener (final Listener listener) { listeners.add(listener); }
 }

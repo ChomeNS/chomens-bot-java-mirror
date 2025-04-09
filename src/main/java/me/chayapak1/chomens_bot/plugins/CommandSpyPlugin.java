@@ -15,18 +15,18 @@ public class CommandSpyPlugin implements ChatPlugin.Listener {
 
     private final List<Listener> listeners = new ArrayList<>();
 
-    public CommandSpyPlugin (Bot bot) {
+    public CommandSpyPlugin (final Bot bot) {
         this.bot = bot;
 
         bot.chat.addListener(this);
     }
 
     @Override
-    public boolean systemMessageReceived (Component component, String string, String ansi) {
+    public boolean systemMessageReceived (final Component component, final String string, final String ansi) {
         final List<Component> children = component.children();
 
         if (
-                !(component instanceof TextComponent textComponent) ||
+                !(component instanceof final TextComponent textComponent) ||
                         children.size() != 2 ||
                         textComponent.style().isEmpty() ||
                         (
@@ -44,14 +44,14 @@ public class CommandSpyPlugin implements ChatPlugin.Listener {
 
         if (sender == null) return true;
 
-        for (Listener listener : listeners) listener.commandReceived(sender, command);
+        for (final Listener listener : listeners) listener.commandReceived(sender, command);
 
         return true;
     }
 
-    public void addListener (Listener listener) { listeners.add(listener); }
+    public void addListener (final Listener listener) { listeners.add(listener); }
 
     public interface Listener {
-        default void commandReceived (PlayerEntry sender, String command) { }
+        default void commandReceived (final PlayerEntry sender, final String command) { }
     }
 }

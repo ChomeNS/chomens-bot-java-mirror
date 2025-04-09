@@ -19,7 +19,7 @@ public class BruhifyCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         bot.bruhify.bruhifyText = context.getString(true, false);

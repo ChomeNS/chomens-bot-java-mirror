@@ -11,12 +11,12 @@ public class ClientboundCoreOutputPacket implements Packet {
     public final UUID runID;
     public final Component output;
 
-    public ClientboundCoreOutputPacket (UUID runID, Component output) {
+    public ClientboundCoreOutputPacket (final UUID runID, final Component output) {
         this.runID = runID;
         this.output = output;
     }
 
-    public ClientboundCoreOutputPacket (ByteBuf buf) {
+    public ClientboundCoreOutputPacket (final ByteBuf buf) {
         this.runID = Types.readUUID(buf);
         this.output = Types.readComponent(buf);
     }
@@ -27,7 +27,7 @@ public class ClientboundCoreOutputPacket implements Packet {
     }
 
     @Override
-    public void serialize (ByteBuf buf) {
+    public void serialize (final ByteBuf buf) {
         Types.writeUUID(buf, this.runID);
         Types.writeComponent(buf, this.output);
     }

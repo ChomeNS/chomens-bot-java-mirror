@@ -11,7 +11,7 @@ public class TickPlugin {
 
     private final List<Listener> listeners = new ArrayList<>();
 
-    public TickPlugin (Bot bot) {
+    public TickPlugin (final Bot bot) {
         this.bot = bot;
 
         bot.executor.scheduleAtFixedRate(this::tick, 0, 50, TimeUnit.MILLISECONDS);
@@ -19,10 +19,10 @@ public class TickPlugin {
     }
 
     private void tick () {
-        for (Listener listener : listeners) {
+        for (final Listener listener : listeners) {
             try {
                 listener.onAlwaysTick();
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 bot.logger.error("Caught exception in an always tick listener!");
                 bot.logger.error(e);
             }
@@ -30,10 +30,10 @@ public class TickPlugin {
 
         if (!bot.loggedIn) return;
 
-        for (Listener listener : listeners) {
+        for (final Listener listener : listeners) {
             try {
                 listener.onTick();
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 bot.logger.error("Caught exception in a tick listener!");
                 bot.logger.error(e);
             }
@@ -43,17 +43,17 @@ public class TickPlugin {
     private void tickSecond () {
         if (!bot.loggedIn) return;
 
-        for (Listener listener : listeners) {
+        for (final Listener listener : listeners) {
             try {
                 listener.onSecondTick();
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 bot.logger.error("Caught exception in a second tick listener!");
                 bot.logger.error(e);
             }
         }
     }
 
-    public void addListener (Listener listener) {
+    public void addListener (final Listener listener) {
         listeners.add(listener);
     }
 

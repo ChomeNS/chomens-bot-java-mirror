@@ -10,17 +10,17 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import java.util.List;
 
 public class GetPlayerListFunction extends EvalFunction {
-    public GetPlayerListFunction (Bot bot) {
+    public GetPlayerListFunction (final Bot bot) {
         super("getPlayerList", bot);
     }
 
     @Override
-    public Output execute (Object... args) {
+    public Output execute (final Object... args) {
         final List<PlayerEntry> list = bot.players.list;
 
         final JsonArray array = new JsonArray();
 
-        for (PlayerEntry entry : list) {
+        for (final PlayerEntry entry : list) {
             final JsonObject object = new JsonObject();
 
             object.addProperty("uuid", entry.profile.getIdAsString());

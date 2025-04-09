@@ -34,7 +34,7 @@ public class MailCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         if (Main.database == null)
@@ -62,7 +62,7 @@ public class MailCommand extends Command {
                     );
 
                     context.sendOutput(Component.text("Mail sent!").color(bot.colorPalette.defaultColor));
-                } catch (CommandException e) {
+                } catch (final CommandException e) {
                     context.sendOutput(e.message.color(NamedTextColor.RED));
                 }
             });
@@ -95,11 +95,11 @@ public class MailCommand extends Command {
                                 context.sendOutput(
                                         Component.text("Mail sent!").color(bot.colorPalette.defaultColor)
                                 );
-                            } catch (CommandException e) {
+                            } catch (final CommandException e) {
                                 context.sendOutput(e.message.color(NamedTextColor.RED));
                             }
                         });
-                    } catch (CommandException e) {
+                    } catch (final CommandException e) {
                         context.sendOutput(e.message.color(NamedTextColor.RED));
                         return null;
                     }
@@ -114,7 +114,7 @@ public class MailCommand extends Command {
                     final List<Mail> mails = bot.mail.list();
 
                     int senderMailSize = 0;
-                    for (Mail mail : mails) {
+                    for (final Mail mail : mails) {
                         if (!mail.sentTo().equals(sender.profile.getName())) continue;
                         senderMailSize++;
                     }
@@ -128,7 +128,7 @@ public class MailCommand extends Command {
                     final List<Component> mailsComponent = new ArrayList<>();
 
                     int count = 1;
-                    for (Mail mail : mails) {
+                    for (final Mail mail : mails) {
                         if (!mail.sentTo().equals(sender.profile.getName())) continue;
 
                         final Instant instant = Instant.ofEpochMilli(mail.timeSent());

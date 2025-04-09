@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.Arrays;
 
 public record PayloadMetadata(byte[] nonce, long timestamp) {
-    public static PayloadMetadata deserialize (ByteBuf buf) {
+    public static PayloadMetadata deserialize (final ByteBuf buf) {
         final byte[] nonce = new byte[8];
 
         buf.readBytes(nonce);
@@ -15,7 +15,7 @@ public record PayloadMetadata(byte[] nonce, long timestamp) {
         return new PayloadMetadata(nonce, timestamp);
     }
 
-    public void serialize (ByteBuf buf) {
+    public void serialize (final ByteBuf buf) {
         buf.writeBytes(nonce);
         buf.writeLong(timestamp);
     }

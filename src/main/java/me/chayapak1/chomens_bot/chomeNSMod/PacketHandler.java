@@ -13,16 +13,16 @@ import java.util.concurrent.CompletableFuture;
 public class PacketHandler {
     private final Bot bot;
 
-    public PacketHandler (Bot bot) {
+    public PacketHandler (final Bot bot) {
         this.bot = bot;
     }
 
-    public void handlePacket (PlayerEntry player, Packet packet) {
-        if (packet instanceof ServerboundRunCoreCommandPacket t_packet) handlePacket(player, t_packet);
-        else if (packet instanceof ServerboundRunCommandPacket t_packet) handlePacket(player, t_packet);
+    public void handlePacket (final PlayerEntry player, final Packet packet) {
+        if (packet instanceof final ServerboundRunCoreCommandPacket t_packet) handlePacket(player, t_packet);
+        else if (packet instanceof final ServerboundRunCommandPacket t_packet) handlePacket(player, t_packet);
     }
 
-    private void handlePacket (PlayerEntry player, ServerboundRunCoreCommandPacket packet) {
+    private void handlePacket (final PlayerEntry player, final ServerboundRunCoreCommandPacket packet) {
         final CompletableFuture<Component> future = bot.core.runTracked(packet.command);
 
         if (future == null) {
@@ -50,7 +50,7 @@ public class PacketHandler {
         });
     }
 
-    private void handlePacket (PlayerEntry player, ServerboundRunCommandPacket packet) {
+    private void handlePacket (final PlayerEntry player, final ServerboundRunCommandPacket packet) {
         final String input = packet.input; // the input is raw, no prefix included
 
         final ChomeNSModCommandContext context = new ChomeNSModCommandContext(

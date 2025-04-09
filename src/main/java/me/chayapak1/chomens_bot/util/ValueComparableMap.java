@@ -16,25 +16,25 @@ public class ValueComparableMap <K extends Comparable<K>, V> extends TreeMap<K, 
         this(partialValueOrdering, new HashMap<>());
     }
 
-    private ValueComparableMap (Ordering<? super V> partialValueOrdering, HashMap<K, V> valueMap) {
+    private ValueComparableMap (final Ordering<? super V> partialValueOrdering, final HashMap<K, V> valueMap) {
         super(partialValueOrdering.onResultOf(valueMap::get).compound(Comparator.naturalOrder()));
         this.valueMap = valueMap;
     }
 
     @Override
-    public V put (K k, V v) {
+    public V put (final K k, final V v) {
         if (valueMap.containsKey(k)) remove(k);
         valueMap.put(k, v);
         return super.put(k, v);
     }
 
     @Override
-    public boolean containsKey (Object key) {
+    public boolean containsKey (final Object key) {
         return valueMap.containsKey(key);
     }
 
     @Override
-    public V getOrDefault (Object key, V defaultValue) {
+    public V getOrDefault (final Object key, final V defaultValue) {
         return containsKey(key) ? get(key) : defaultValue;
     }
 }

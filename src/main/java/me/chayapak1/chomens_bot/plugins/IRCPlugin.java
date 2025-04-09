@@ -30,7 +30,7 @@ public class IRCPlugin extends ListenerAdapter {
 
     private PircBotX bot;
 
-    public IRCPlugin (Configuration config) {
+    public IRCPlugin (final Configuration config) {
         this.ircConfig = config.irc;
 
         this.servers = ircConfig.servers;
@@ -49,7 +49,7 @@ public class IRCPlugin extends ListenerAdapter {
         if (!ircConfig.password.isEmpty())
             builder.addCapHandler(new SASLCapHandler(ircConfig.name, ircConfig.password, true));
 
-        for (Map.Entry<String, String> entry : ircConfig.servers.entrySet())
+        for (final Map.Entry<String, String> entry : ircConfig.servers.entrySet())
             builder.addAutoJoinChannel(entry.getValue());
 
         final org.pircbotx.Configuration configuration = builder.buildConfiguration();
@@ -59,23 +59,23 @@ public class IRCPlugin extends ListenerAdapter {
         new Thread(() -> {
             try {
                 bot.startBot();
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 LoggerUtilities.error(e);
             }
         }).start();
 
-        for (Bot bot : Main.bots) {
+        for (final Bot bot : Main.bots) {
             bot.addListener(new Bot.Listener() {
                 @Override
-                public void connected (ConnectedEvent event) {
+                public void connected (final ConnectedEvent event) {
                     IRCPlugin.this.connected(bot);
                 }
 
                 @Override
-                public void loadedPlugins (Bot bot) {
+                public void loadedPlugins (final Bot bot) {
                     bot.chat.addListener(new ChatPlugin.Listener() {
                         @Override
-                        public boolean systemMessageReceived (Component component, String string, String ansi) {
+                        public boolean systemMessageReceived (final Component component, final String string, final String ansi) {
                             IRCPlugin.this.systemMessageReceived(bot, ansi);
 
                             return true;
@@ -89,12 +89,12 @@ public class IRCPlugin extends ListenerAdapter {
     }
 
     @Override
-    public void onMessage (MessageEvent event) {
+    public void onMessage (final MessageEvent event) {
         Bot serverBot = null;
 
         String targetChannel = null;
 
-        for (Map.Entry<String, String> entry : servers.entrySet()) {
+        for (final Map.Entry<String, String> entry : servers.entrySet()) {
             if (entry.getValue().equals(event.getChannel().getName())) {
                 serverBot = Main.bots.stream()
                         .filter(eachBot -> entry.getKey().equals(eachBot.getServerString(true)))
@@ -162,18 +162,18 @@ public class IRCPlugin extends ListenerAdapter {
         serverBot.chat.tellraw(component);
     }
 
-    private void systemMessageReceived (Bot bot, String ansi) {
+    private void systemMessageReceived (final Bot bot, final String ansi) {
         sendMessage(
                 bot,
                 ansi
         );
     }
 
-    public void quit (String reason) {
+    public void quit (final String reason) {
         if (bot.isConnected()) bot.sendIRC().quitServer(reason);
     }
 
-    private void connected (Bot bot) {
+    private void connected (final Bot bot) {
         sendMessage(
                 bot,
                 String.format(
@@ -189,7 +189,7 @@ public class IRCPlugin extends ListenerAdapter {
         try {
             final Map<String, List<String>> clonedMap = new HashMap<>(messageQueue);
 
-            for (Map.Entry<String, List<String>> entry : clonedMap.entrySet()) {
+            for (final Map.Entry<String, List<String>> entry : clonedMap.entrySet()) {
                 final List<String> logs = entry.getValue();
 
                 if (logs.isEmpty()) continue;
@@ -202,16 +202,16 @@ public class IRCPlugin extends ListenerAdapter {
 
                 bot.sendIRC().message(entry.getKey(), withIRCColors);
             }
-        } catch (Exception ignored) { }
+        } catch (final Exception ignored) { }
     }
 
-    private void addMessageToQueue (Bot bot, String message) {
+    private void addMessageToQueue (final Bot bot, final String message) {
         final String channel = servers.get(bot.getServerString(true));
 
         addMessageToQueue(channel, message);
     }
 
-    private void addMessageToQueue (String channel, String message) {
+    private void addMessageToQueue (final String channel, final String message) {
         final List<String> split = new ArrayList<>(Arrays.asList(message.split("\n")));
 
         if (!messageQueue.containsKey(channel)) {
@@ -223,7 +223,7 @@ public class IRCPlugin extends ListenerAdapter {
         }
     }
 
-    public void sendMessage (Bot bot, String message) {
+    public void sendMessage (final Bot bot, final String message) {
         final String hostAndPort = bot.getServerString(true);
 
         final String channel = servers.get(hostAndPort);

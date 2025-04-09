@@ -27,7 +27,7 @@ public class WeatherCommand extends Command {
         );
     }
 
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         final String location = context.getString(true, true);
@@ -132,7 +132,7 @@ public class WeatherCommand extends Command {
                             )
                             .color(bot.colorPalette.string)
             ).color(bot.colorPalette.defaultColor);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new CommandException(Component.text("Location \"" + location + "\" not found"));
         }
     }

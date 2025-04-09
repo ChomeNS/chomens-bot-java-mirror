@@ -14,7 +14,7 @@ public class IRCCommandContext extends CommandContext {
     private final Bot bot;
     private final String nickName;
 
-    public IRCCommandContext (Bot bot, String prefix, String nickName) {
+    public IRCCommandContext (final Bot bot, final String prefix, final String nickName) {
         super(
                 bot,
                 prefix,
@@ -38,7 +38,7 @@ public class IRCCommandContext extends CommandContext {
     }
 
     @Override
-    public void sendOutput (Component component) {
+    public void sendOutput (final Component component) {
         Main.irc.sendMessage(bot, ComponentUtilities.stringifyAnsi(component));
     }
 

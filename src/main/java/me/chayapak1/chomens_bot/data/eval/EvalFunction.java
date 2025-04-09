@@ -8,14 +8,14 @@ public class EvalFunction {
     protected final Bot bot;
 
     public EvalFunction (
-            String name,
-            Bot bot
+            final String name,
+            final Bot bot
     ) {
         this.name = name;
         this.bot = bot;
     }
 
-    public Output execute (Object... args) throws Exception { return null; }
+    public Output execute (final Object... args) throws Exception { return null; }
 
     public record Output(String message, boolean parseJSON) {
     }

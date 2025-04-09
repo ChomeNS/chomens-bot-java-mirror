@@ -17,33 +17,33 @@ public class SongPlayerConverter implements Converter {
     public static final long MAX_UNCOMPRESSED_SIZE = 50 * 1024 * 1024;
 
     @Override
-    public Song getSongFromBytes (byte[] bytes, String fileName, Bot bot) throws Exception {
-        InputStream is = new LimitedSizeInputStream(new GZIPInputStream(new ByteArrayInputStream(bytes)), MAX_UNCOMPRESSED_SIZE);
+    public Song getSongFromBytes (byte[] bytes, final String fileName, final Bot bot) throws Exception {
+        final InputStream is = new LimitedSizeInputStream(new GZIPInputStream(new ByteArrayInputStream(bytes)), MAX_UNCOMPRESSED_SIZE);
         bytes = is.readAllBytes();
         is.close();
 
-        ByteBuffer buffer = ByteBuffer.wrap(bytes);
+        final ByteBuffer buffer = ByteBuffer.wrap(bytes);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
 
-        for (byte b : FILE_TYPE_SIGNATURE) {
+        for (final byte b : FILE_TYPE_SIGNATURE) {
             if (b != buffer.get()) {
                 throw new IOException("Invalid file type signature");
             }
         }
 
-        byte version = buffer.get();
+        final byte version = buffer.get();
         // Currently on format version 1
         if (version != 1) {
             throw new IOException("Unsupported format version!");
         }
 
-        long songLength = buffer.getLong();
-        String songName = getString(buffer, bytes.length);
-        int loop = buffer.get() & 0xFF;
-        int loopCount = buffer.get() & 0xFF;
-        long loopPosition = buffer.getLong();
+        final long songLength = buffer.getLong();
+        final String songName = getString(buffer, bytes.length);
+        final int loop = buffer.get() & 0xFF;
+        final int loopCount = buffer.get() & 0xFF;
+        final long loopPosition = buffer.getLong();
 
-        Song song = new Song(fileName, bot, !songName.trim().isEmpty() ? songName : null, null, null, null, null, false);
+        final Song song = new Song(fileName, bot, !songName.trim().isEmpty() ? songName : null, null, null, null, null, false);
         song.length = songLength;
         //        song.looping = loop > 0;
         //        song.loopCount = loopCount;
@@ -51,7 +51,7 @@ public class SongPlayerConverter implements Converter {
 
         long time = 0;
         while (true) {
-            int noteId = buffer.getShort();
+            final int noteId = buffer.getShort();
             if (noteId >= 0 && noteId < 400) {
                 time += getVarLong(buffer);
                 song.add(new Note(Instrument.fromId(noteId / 25), noteId % 25, noteId % 25, 1, time, -1, 100, false));
@@ -65,22 +65,22 @@ public class SongPlayerConverter implements Converter {
         return song;
     }
 
-    private static String getString (ByteBuffer buffer, int maxSize) throws IOException {
-        int length = buffer.getInt();
+    private static String getString (final ByteBuffer buffer, final int maxSize) throws IOException {
+        final int length = buffer.getInt();
         if (length > maxSize) {
             throw new IOException("String is too large");
         }
-        byte[] arr = new byte[length];
+        final byte[] arr = new byte[length];
         buffer.get(arr, 0, length);
         return new String(arr, StandardCharsets.UTF_8);
     }
 
-    private static long getVarLong (ByteBuffer buffer) {
+    private static long getVarLong (final ByteBuffer buffer) {
         long val = 0;
         long mult = 1;
         int flag = 1;
         while (flag != 0) {
-            int b = buffer.get() & 0xFF;
+            final int b = buffer.get() & 0xFF;
             val += (b & 0x7F) * mult;
             mult <<= 7;
             flag = b >>> 7;
@@ -93,31 +93,31 @@ public class SongPlayerConverter implements Converter {
         private final long maxSize;
         private long total;
 
-        public LimitedSizeInputStream (InputStream original, long maxSize) {
+        public LimitedSizeInputStream (final InputStream original, final long maxSize) {
             this.original = original;
             this.maxSize = maxSize;
         }
 
         @Override
         public int read () throws IOException {
-            int i = original.read();
+            final int i = original.read();
             if (i >= 0) incrementCounter(1);
             return i;
         }
 
         @Override
-        public int read (byte @NotNull [] b) throws IOException {
+        public int read (final byte @NotNull [] b) throws IOException {
             return read(b, 0, b.length);
         }
 
         @Override
-        public int read (byte @NotNull [] b, int off, int len) throws IOException {
-            int i = original.read(b, off, len);
+        public int read (final byte @NotNull [] b, final int off, final int len) throws IOException {
+            final int i = original.read(b, off, len);
             if (i >= 0) incrementCounter(i);
             return i;
         }
 
-        private void incrementCounter (int size) throws IOException {
+        private void incrementCounter (final int size) throws IOException {
             total += size;
             if (total > maxSize) throw new IOException("Input stream exceeded maximum size of " + maxSize + " bytes");
         }

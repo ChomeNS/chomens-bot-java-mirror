@@ -37,7 +37,7 @@ public class FilterCommand extends Command {
 
     // most of these codes are from cloop and greplog
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         boolean ignoreCase = false;
@@ -79,7 +79,7 @@ public class FilterCommand extends Command {
                     // try validating the regex
                     try {
                         Pattern.compile(player);
-                    } catch (PatternSyntaxException e) {
+                    } catch (final PatternSyntaxException e) {
                         throw new CommandException(
                                 Component.translatable(
                                         "Failed to parse filter regex: %s",
@@ -135,7 +135,7 @@ public class FilterCommand extends Command {
                 final List<Component> filtersComponents = new ArrayList<>();
 
                 int index = 0;
-                for (FilteredPlayer player : PlayerFilterPlugin.localList) {
+                for (final FilteredPlayer player : PlayerFilterPlugin.localList) {
                     Component options = Component.empty().color(NamedTextColor.DARK_GRAY);
 
                     if (player.ignoreCase || player.regex) {

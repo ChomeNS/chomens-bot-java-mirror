@@ -36,7 +36,7 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
 
     public boolean isSupported = false;
 
-    public ExtrasMessengerPlugin (Bot bot) {
+    public ExtrasMessengerPlugin (final Bot bot) {
         this.bot = bot;
         this.chomens_namespace = bot.config.namespace + ":"; // Ex. chomens_bot: (then it will be appended by channel)
 
@@ -44,11 +44,11 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
     }
 
     @Override
-    public void packetReceived (Session session, Packet packet) {
-        if (packet instanceof ClientboundCustomPayloadPacket t_packet) packetReceived(t_packet);
+    public void packetReceived (final Session session, final Packet packet) {
+        if (packet instanceof final ClientboundCustomPayloadPacket t_packet) packetReceived(t_packet);
     }
 
-    private void packetReceived (ClientboundCustomPayloadPacket packet) {
+    private void packetReceived (final ClientboundCustomPayloadPacket packet) {
         final Key packetChannel = packet.getChannel();
 
         if (packetChannel.equals(MINECRAFT_REGISTER_KEY)) {
@@ -88,7 +88,7 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
 
             registeredChannels.clear();
 
-            for (String channel : oldRegisteredChannels) {
+            for (final String channel : oldRegisteredChannels) {
                 registerChannel(channel);
             }
         } else if (packetChannel.equals(EXTRAS_MESSAGE_KEY)) {
@@ -102,11 +102,11 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
 
             final byte[] data = readByteArrayToEnd(buf);
 
-            for (Listener listener : listeners) listener.onMessage(uuid, data);
+            for (final Listener listener : listeners) listener.onMessage(uuid, data);
         }
     }
 
-    public void sendPayload (String name, byte[] data) {
+    public void sendPayload (final String name, final byte[] data) {
         final ByteBuf buf = Unpooled.buffer();
 
         writeString(buf, chomens_namespace + name);
@@ -122,7 +122,7 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
         );
     }
 
-    public void registerChannel (String channel) {
+    public void registerChannel (final String channel) {
         final ByteBuf buf = Unpooled.buffer();
 
         writeString(buf, chomens_namespace + channel);
@@ -137,7 +137,7 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
         registeredChannels.add(channel);
     }
 
-    public void unregisterChannel (String channel) {
+    public void unregisterChannel (final String channel) {
         final boolean removed = registeredChannels.remove(channel);
 
         if (!removed) return;
@@ -154,14 +154,14 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
         );
     }
 
-    private void writeString (ByteBuf input, String string) {
+    private void writeString (final ByteBuf input, final String string) {
         final byte[] bytesString = string.getBytes(StandardCharsets.US_ASCII);
         bytesString[bytesString.length - 1] |= END_CHAR_MASK;
 
         input.writeBytes(bytesString);
     }
 
-    private String readString (ByteBuf byteBuf) {
+    private String readString (final ByteBuf byteBuf) {
         final byte[] buf = new byte[255];
         int idx = 0;
 
@@ -180,14 +180,14 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
         return new String(Arrays.copyOf(buf, idx), StandardCharsets.US_ASCII);
     }
 
-    private UUID readUUID (ByteBuf input) {
+    private UUID readUUID (final ByteBuf input) {
         final long mostSignificant = input.readLong();
         final long leastSignificant = input.readLong();
 
         return new UUID(mostSignificant, leastSignificant);
     }
 
-    private byte[] readByteArrayToEnd (ByteBuf input) {
+    private byte[] readByteArrayToEnd (final ByteBuf input) {
         final byte[] bytes = new byte[input.readableBytes()];
 
         input.readBytes(bytes);
@@ -195,9 +195,9 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
         return bytes;
     }
 
-    public void addListener (Listener listener) { listeners.add(listener); }
+    public void addListener (final Listener listener) { listeners.add(listener); }
 
     public interface Listener {
-        default void onMessage (UUID sender, byte[] message) { }
+        default void onMessage (final UUID sender, final byte[] message) { }
     }
 }

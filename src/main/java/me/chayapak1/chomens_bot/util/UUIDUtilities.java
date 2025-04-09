@@ -8,19 +8,19 @@ import java.util.UUID;
 
 // Author: _ChipMC_ for int array and selector stuff
 public class UUIDUtilities {
-    public static UUID getOfflineUUID (String username) {
+    public static UUID getOfflineUUID (final String username) {
         return UUID.nameUUIDFromBytes(("OfflinePlayer:" + username).getBytes());
     }
 
-    public static UUID tryParse (String input) {
+    public static UUID tryParse (final String input) {
         try {
             return UUID.fromString(input);
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             return null;
         }
     }
 
-    public static int[] intArray (UUID uuid) {
+    public static int[] intArray (final UUID uuid) {
         final ByteBuffer buffer = ByteBuffer.wrap(new byte[16]);
         buffer.putLong(0, uuid.getMostSignificantBits());
         buffer.putLong(8, uuid.getLeastSignificantBits());
@@ -31,7 +31,7 @@ public class UUIDUtilities {
         return intArray;
     }
 
-    public static NbtMap tag (UUID uuid) {
+    public static NbtMap tag (final UUID uuid) {
         final NbtMapBuilder builder = NbtMap.builder();
 
         builder.putIntArray("", intArray(uuid));
@@ -39,8 +39,8 @@ public class UUIDUtilities {
         return builder.build();
     }
 
-    public static String snbt (UUID uuid) {
-        int[] array = intArray(uuid);
+    public static String snbt (final UUID uuid) {
+        final int[] array = intArray(uuid);
         return String.format(
                 "[I;%d,%d,%d,%d]",
                 array[0],
@@ -50,11 +50,11 @@ public class UUIDUtilities {
         );
     }
 
-    public static String selector (UUID uuid) { return selector(uuid, true); }
+    public static String selector (final UUID uuid) { return selector(uuid, true); }
 
-    public static String selector (UUID uuid, boolean end) { return "@p[nbt={UUID:" + snbt(uuid) + "}" + (end ? "]" : ""); }
+    public static String selector (final UUID uuid, final boolean end) { return "@p[nbt={UUID:" + snbt(uuid) + "}" + (end ? "]" : ""); }
 
-    public static String exclusiveSelector (UUID uuid) { return exclusiveSelector(uuid, true); }
+    public static String exclusiveSelector (final UUID uuid) { return exclusiveSelector(uuid, true); }
 
-    public static String exclusiveSelector (UUID uuid, boolean end) { return "@a[nbt=!{UUID:" + snbt(uuid) + "}" + (end ? "]" : ""); }
+    public static String exclusiveSelector (final UUID uuid, final boolean end) { return "@a[nbt=!{UUID:" + snbt(uuid) + "}" + (end ? "]" : ""); }
 }

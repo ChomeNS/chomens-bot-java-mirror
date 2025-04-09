@@ -16,7 +16,7 @@ public class ColorUtilities {
     private static final Map<Integer, String> ansiToIrcMap = new HashMap<>();
     private static final Map<Integer, String> ansiStyleToIrcMap = new HashMap<>();
 
-    public static TextColor getColorByString (String _color) {
+    public static TextColor getColorByString (final String _color) {
         final String color = _color.toLowerCase();
 
         if (color.startsWith("#")) return TextColor.fromHexString(color);
@@ -27,7 +27,7 @@ public class ColorUtilities {
         }
     }
 
-    public static char getClosestChatColor (int rgb) {
+    public static char getClosestChatColor (final int rgb) {
         final NamedTextColor closestNamed = NamedTextColor.nearestTo(TextColor.color(rgb));
         return formatToLegacyMap.get(closestNamed);
     }
@@ -57,7 +57,7 @@ public class ColorUtilities {
 
         final Map<Integer, String> clone = new HashMap<>(ansiToIrcMap);
 
-        for (Map.Entry<Integer, String> entry : clone.entrySet()) {
+        for (final Map.Entry<Integer, String> entry : clone.entrySet()) {
             ansiToIrcMap.put(entry.getKey() + 10, ansiToIrcMap.get(entry.getKey()));
         }
 
@@ -69,27 +69,27 @@ public class ColorUtilities {
         ansiStyleToIrcMap.put(4, "\u001f"); // Underlined
     }
 
-    public static String convertAnsiToIrc (String input) {
-        StringBuilder result = new StringBuilder();
+    public static String convertAnsiToIrc (final String input) {
+        final StringBuilder result = new StringBuilder();
         boolean insideEscape = false;
-        StringBuilder ansiCode = new StringBuilder();
+        final StringBuilder ansiCode = new StringBuilder();
 
         for (int i = 0; i < input.length(); i++) {
-            char c = input.charAt(i);
+            final char c = input.charAt(i);
             if (insideEscape) {
                 if (c == 'm') {
                     insideEscape = false;
                     // Parse the ANSI color code and map it to IRC color
-                    String[] codes = ansiCode.toString().split(";");
-                    for (String code : codes) {
+                    final String[] codes = ansiCode.toString().split(";");
+                    for (final String code : codes) {
                         try {
-                            int ansiColorCode = Integer.parseInt(code);
+                            final int ansiColorCode = Integer.parseInt(code);
                             if (ansiToIrcMap.containsKey(ansiColorCode)) {
                                 result.append("\u0003").append(ansiToIrcMap.get(ansiColorCode));
                             } else if (ansiStyleToIrcMap.containsKey(ansiColorCode)) {
                                 result.append(ansiStyleToIrcMap.get(ansiColorCode));
                             }
-                        } catch (NumberFormatException ignored) {
+                        } catch (final NumberFormatException ignored) {
                         }
                     }
                     ansiCode.setLength(0); // Clear the buffer

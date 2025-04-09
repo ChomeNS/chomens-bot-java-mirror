@@ -6,7 +6,7 @@ import net.kyori.adventure.text.Component;
 public class SongLoaderException extends Exception {
     public final Component message;
 
-    public SongLoaderException (Component message) {
+    public SongLoaderException (final Component message) {
         super();
         this.message = message;
     }

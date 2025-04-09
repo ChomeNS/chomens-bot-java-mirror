@@ -19,7 +19,7 @@ public class SecretPacket implements Packet<SecretPacket> {
     public boolean allowRecording;
 
     @Override
-    public SecretPacket fromBytes (FriendlyByteBuf buf) {
+    public SecretPacket fromBytes (final FriendlyByteBuf buf) {
         secret = buf.readUUID();
         serverPort = buf.readInt();
         playerUUID = buf.readUUID();
@@ -34,7 +34,7 @@ public class SecretPacket implements Packet<SecretPacket> {
     }
 
     @Override
-    public void toBytes (FriendlyByteBuf buf) {
+    public void toBytes (final FriendlyByteBuf buf) {
         buf.writeUUID(secret);
         buf.writeInt(serverPort);
         buf.writeUUID(playerUUID);

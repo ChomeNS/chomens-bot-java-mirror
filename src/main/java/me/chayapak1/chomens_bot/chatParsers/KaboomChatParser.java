@@ -16,18 +16,18 @@ import java.util.List;
 public class KaboomChatParser implements ChatParser {
     private final Bot bot;
 
-    public KaboomChatParser (Bot bot) {
+    public KaboomChatParser (final Bot bot) {
         this.bot = bot;
     }
 
     @Override
-    public PlayerMessage parse (Component message) {
+    public PlayerMessage parse (final Component message) {
         if (message instanceof TextComponent) return parse((TextComponent) message);
         return null;
     }
 
-    public PlayerMessage parse (TextComponent message) {
-        List<Component> children = message.children();
+    public PlayerMessage parse (final TextComponent message) {
+        final List<Component> children = message.children();
 
         if (!message.content().isEmpty() || !message.style().isEmpty() || children.size() < 3) return null;
 
@@ -66,7 +66,7 @@ public class KaboomChatParser implements ChatParser {
         return new PlayerMessage(sender, displayName, contents);
     }
 
-    private boolean isSeperatorAt (List<Component> children, int start) {
+    private boolean isSeperatorAt (final List<Component> children, final int start) {
         return (
                 children.get(start).equals(Component.text(":")) ||
                         children.get(start).equals(Component.text("§f:"))

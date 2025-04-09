@@ -79,8 +79,8 @@ public class NBSConverter implements Converter {
     }
 
     @Override
-    public Song getSongFromBytes (byte[] bytes, String fileName, Bot bot) throws IOException {
-        ByteBuffer buffer = ByteBuffer.wrap(bytes);
+    public Song getSongFromBytes (final byte[] bytes, final String fileName, final Bot bot) throws IOException {
+        final ByteBuffer buffer = ByteBuffer.wrap(bytes);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
 
         short songLength;
@@ -98,21 +98,21 @@ public class NBSConverter implements Converter {
             songLength = buffer.getShort();
         }
 
-        short layerCount = buffer.getShort();
-        String songName = getString(buffer, bytes.length);
-        String songAuthor = getString(buffer, bytes.length);
-        String songOriginalAuthor = getString(buffer, bytes.length);
-        String songDescription = getString(buffer, bytes.length);
+        final short layerCount = buffer.getShort();
+        final String songName = getString(buffer, bytes.length);
+        final String songAuthor = getString(buffer, bytes.length);
+        final String songOriginalAuthor = getString(buffer, bytes.length);
+        final String songDescription = getString(buffer, bytes.length);
         double tempo = buffer.getShort();
-        byte autoSaving = buffer.get();
-        byte autoSavingDuration = buffer.get();
-        byte timeSignature = buffer.get();
-        int minutesSpent = buffer.getInt();
-        int leftClicks = buffer.getInt();
-        int rightClicks = buffer.getInt();
-        int blocksAdded = buffer.getInt();
-        int blocksRemoved = buffer.getInt();
-        String origFileName = getString(buffer, bytes.length);
+        final byte autoSaving = buffer.get();
+        final byte autoSavingDuration = buffer.get();
+        final byte timeSignature = buffer.get();
+        final int minutesSpent = buffer.getInt();
+        final int leftClicks = buffer.getInt();
+        final int rightClicks = buffer.getInt();
+        final int blocksAdded = buffer.getInt();
+        final int blocksRemoved = buffer.getInt();
+        final String origFileName = getString(buffer, bytes.length);
 
         byte loop = 0;
         byte maxLoopCount = 0;
@@ -123,19 +123,19 @@ public class NBSConverter implements Converter {
             loopStartTick = buffer.getShort();
         }
 
-        ArrayList<NBSNote> nbsNotes = new ArrayList<>();
+        final ArrayList<NBSNote> nbsNotes = new ArrayList<>();
         short tick = -1;
         while (true) {
-            int tickJumps = buffer.getShort();
+            final int tickJumps = buffer.getShort();
             if (tickJumps == 0) break;
             tick += (short) tickJumps;
 
             short layer = -1;
             while (true) {
-                int layerJumps = buffer.getShort();
+                final int layerJumps = buffer.getShort();
                 if (layerJumps == 0) break;
                 layer += (short) layerJumps;
-                NBSNote note = new NBSNote();
+                final NBSNote note = new NBSNote();
                 note.tick = tick;
                 note.layer = layer;
                 note.instrument = buffer.get();
@@ -149,10 +149,10 @@ public class NBSConverter implements Converter {
             }
         }
 
-        ArrayList<NBSLayer> nbsLayers = new ArrayList<>();
+        final ArrayList<NBSLayer> nbsLayers = new ArrayList<>();
         if (buffer.hasRemaining()) {
             for (int i = 0; i < layerCount; i++) {
-                NBSLayer layer = new NBSLayer();
+                final NBSLayer layer = new NBSLayer();
                 layer.name = getString(buffer, bytes.length);
                 if (format >= 4) {
                     layer.lock = buffer.get();
@@ -165,11 +165,11 @@ public class NBSConverter implements Converter {
             }
         }
 
-        ArrayList<NBSCustomInstrument> customInstruments = new ArrayList<>();
+        final ArrayList<NBSCustomInstrument> customInstruments = new ArrayList<>();
         if (buffer.hasRemaining()) {
-            byte customInstrumentCount = buffer.get();
+            final byte customInstrumentCount = buffer.get();
             for (int i = 0; i < customInstrumentCount; i++) {
-                NBSCustomInstrument customInstrument = new NBSCustomInstrument();
+                final NBSCustomInstrument customInstrument = new NBSCustomInstrument();
                 customInstrument.name = getString(buffer, bytes.length);
                 customInstrument.file = getString(buffer, bytes.length);
                 customInstrument.pitch = buffer.get();
@@ -180,21 +180,21 @@ public class NBSConverter implements Converter {
 
         final StringBuilder layerNames = new StringBuilder();
 
-        for (NBSLayer layer : nbsLayers) {
+        for (final NBSLayer layer : nbsLayers) {
             layerNames.append(layer.name);
             layerNames.append("\n");
         }
 
         final String stringLayerNames = layerNames.toString();
 
-        Song song = new Song(!songName.isBlank() ? songName : fileName, bot, songName, songAuthor, songOriginalAuthor, songDescription, stringLayerNames.substring(0, stringLayerNames.length() - 1), true);
+        final Song song = new Song(!songName.isBlank() ? songName : fileName, bot, songName, songAuthor, songOriginalAuthor, songDescription, stringLayerNames.substring(0, stringLayerNames.length() - 1), true);
         if (loop > 0) {
             song.loopPosition = getMilliTime(loopStartTick, tempo);
             //      song.loopCount = maxLoopCount;
         }
-        for (NBSNote note : nbsNotes) {
+        for (final NBSNote note : nbsNotes) {
             boolean isRainbowToggle = false;
-            Instrument instrument;
+            final Instrument instrument;
             double key = note.key;
             if (note.instrument < INSTRUMENT_INDEX.length) {
                 instrument = INSTRUMENT_INDEX[note.instrument];
@@ -244,7 +244,7 @@ public class NBSConverter implements Converter {
 
                         final String bestMatch = outputTitles.isEmpty() ? "" : outputTitles.getFirst();
 
-                        for (Map.Entry<String, String> entry : subtitles.entrySet()) {
+                        for (final Map.Entry<String, String> entry : subtitles.entrySet()) {
                             if (!entry.getValue().equals(bestMatch)) continue;
 
                             name = entry.getKey().substring("subtitles.".length());
@@ -266,7 +266,7 @@ public class NBSConverter implements Converter {
                 layerVolume = nbsLayers.get(note.layer).volume;
             }
 
-            double pitch = key - 33;
+            final double pitch = key - 33;
 
             song.add(
                     new Note(
@@ -287,24 +287,24 @@ public class NBSConverter implements Converter {
         return song;
     }
 
-    private static String getString (ByteBuffer buffer, int maxSize) throws IOException {
-        int length = buffer.getInt();
+    private static String getString (final ByteBuffer buffer, final int maxSize) throws IOException {
+        final int length = buffer.getInt();
         if (length > maxSize) {
             throw new IOException("String is too large");
         }
-        byte[] arr = new byte[length];
+        final byte[] arr = new byte[length];
         buffer.get(arr, 0, length);
         return new String(arr, StandardCharsets.UTF_8);
     }
 
-    private static long getMilliTime (int tick, double tempo) {
+    private static long getMilliTime (final int tick, final double tempo) {
         return (long) (1000L * tick * 100 / tempo);
     }
 
     private static final Map<String, String> subtitles = new HashMap<>();
 
     static {
-        for (Map.Entry<String, String> entry : ComponentUtilities.LANGUAGE.entrySet()) {
+        for (final Map.Entry<String, String> entry : ComponentUtilities.LANGUAGE.entrySet()) {
             if (!entry.getKey().startsWith("subtitles.")) continue;
 
             subtitles.put(entry.getKey(), entry.getValue());
@@ -313,15 +313,15 @@ public class NBSConverter implements Converter {
 
     private static final List<String> sounds = loadJsonStringArray("sounds.json");
 
-    private static List<String> loadJsonStringArray (String name) {
-        List<String> list = new ArrayList<>();
+    private static List<String> loadJsonStringArray (final String name) {
+        final List<String> list = new ArrayList<>();
 
-        InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(name);
+        final InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(name);
         assert is != null;
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        JsonArray json = JsonParser.parseReader(reader).getAsJsonArray();
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        final JsonArray json = JsonParser.parseReader(reader).getAsJsonArray();
 
-        for (JsonElement entry : json) {
+        for (final JsonElement entry : json) {
             list.add(entry.getAsString());
         }
 

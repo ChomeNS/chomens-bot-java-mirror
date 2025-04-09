@@ -20,10 +20,10 @@ import java.util.concurrent.TimeUnit;
 public class DownloadUtilities {
     public static class DefaultTrustManager implements X509TrustManager {
         @Override
-        public void checkClientTrusted (X509Certificate[] arg0, String arg1) { }
+        public void checkClientTrusted (final X509Certificate[] arg0, final String arg1) { }
 
         @Override
-        public void checkServerTrusted (X509Certificate[] arg0, String arg1) { }
+        public void checkServerTrusted (final X509Certificate[] arg0, final String arg1) { }
 
         @Override
         public X509Certificate[] getAcceptedIssuers () {
@@ -37,24 +37,24 @@ public class DownloadUtilities {
         Main.EXECUTOR.scheduleAtFixedRate(() -> limit = 0, 0, 1, TimeUnit.SECONDS);
     }
 
-    public static byte[] DownloadToByteArray (URL url, int maxSize) throws IOException, KeyManagementException, NoSuchAlgorithmException {
+    public static byte[] DownloadToByteArray (final URL url, final int maxSize) throws IOException, KeyManagementException, NoSuchAlgorithmException {
         if (limit > 3) throw new IOException("NO !!!!!!");
 
         limit++;
 
-        SSLContext ctx = SSLContext.getInstance("TLS");
+        final SSLContext ctx = SSLContext.getInstance("TLS");
         ctx.init(new KeyManager[0], new TrustManager[] { new DefaultTrustManager() }, new SecureRandom());
         SSLContext.setDefault(ctx);
 
-        URLConnection conn = url.openConnection();
+        final URLConnection conn = url.openConnection();
         conn.setConnectTimeout(1000);
         conn.setReadTimeout(5000);
         // https://www.whatismybrowser.com/guides/the-latest-user-agent/windows
         conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36");
 
-        try (BufferedInputStream downloadStream = new BufferedInputStream(conn.getInputStream())) {
-            ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
-            byte[] buf = new byte[1024];
+        try (final BufferedInputStream downloadStream = new BufferedInputStream(conn.getInputStream())) {
+            final ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
+            final byte[] buf = new byte[1024];
             int n;
             int tot = 0;
             while ((n = downloadStream.read(buf)) > 0) {

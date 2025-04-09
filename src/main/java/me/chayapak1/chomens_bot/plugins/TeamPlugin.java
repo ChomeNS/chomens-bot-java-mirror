@@ -15,25 +15,25 @@ import java.util.List;
 public class TeamPlugin extends Bot.Listener {
     public final List<Team> teams = Collections.synchronizedList(new ArrayList<>());
 
-    public TeamPlugin (Bot bot) {
+    public TeamPlugin (final Bot bot) {
         bot.addListener(this);
     }
 
     @Override
-    public void disconnected (DisconnectedEvent event) {
+    public void disconnected (final DisconnectedEvent event) {
         teams.clear();
     }
 
-    public synchronized Team findTeamByName (String name) {
-        for (Team team : new ArrayList<>(teams)) {
+    public synchronized Team findTeamByName (final String name) {
+        for (final Team team : new ArrayList<>(teams)) {
             if (team.teamName.equals(name)) return team;
         }
 
         return null;
     }
 
-    public synchronized Team findTeamByMember (String member) {
-        for (Team team : new ArrayList<>(teams)) {
+    public synchronized Team findTeamByMember (final String member) {
+        for (final Team team : new ArrayList<>(teams)) {
             if (team.players.contains(member)) return team;
         }
 
@@ -41,11 +41,11 @@ public class TeamPlugin extends Bot.Listener {
     }
 
     @Override
-    public void packetReceived (Session session, Packet packet) {
-        if (packet instanceof ClientboundSetPlayerTeamPacket t_packet) packetReceived(t_packet);
+    public void packetReceived (final Session session, final Packet packet) {
+        if (packet instanceof final ClientboundSetPlayerTeamPacket t_packet) packetReceived(t_packet);
     }
 
-    private void packetReceived (ClientboundSetPlayerTeamPacket packet) {
+    private void packetReceived (final ClientboundSetPlayerTeamPacket packet) {
         switch (packet.getAction()) {
             case CREATE -> {
                 final Team team = new Team(

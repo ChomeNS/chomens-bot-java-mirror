@@ -25,7 +25,7 @@ public class TimeCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         try {
             final Bot bot = context.bot;
 
@@ -42,7 +42,7 @@ public class TimeCommand extends Command {
                     Component.text(timezone).color(bot.colorPalette.string),
                     Component.text(formattedTime).color(NamedTextColor.GREEN)
             ).color(bot.colorPalette.defaultColor);
-        } catch (DateTimeException e) {
+        } catch (final DateTimeException e) {
             throw new CommandException(Component.text("Invalid timezone (case-sensitive)"));
         }
     }

@@ -11,7 +11,7 @@ public class JavaOpusEncoder2 {
     public final int maxPayloadSize;
     public final OpusApplication application;
 
-    public JavaOpusEncoder2 (int sampleRate, int frameSize, int maxPayloadSize, OpusApplication application) {
+    public JavaOpusEncoder2 (final int sampleRate, final int frameSize, final int maxPayloadSize, final OpusApplication application) {
         this.sampleRate = sampleRate;
         this.frameSize = frameSize;
         this.maxPayloadSize = maxPayloadSize;
@@ -26,20 +26,20 @@ public class JavaOpusEncoder2 {
         }
         try {
             opusEncoder = new OpusEncoder(sampleRate, 1, application);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new IllegalStateException("Opus encoder error " + e.getMessage());
         }
     }
 
-    public byte[] encode (short[] rawAudio) {
+    public byte[] encode (final short[] rawAudio) {
         if (isClosed()) {
             throw new IllegalStateException("Encoder is closed");
         }
 
-        int result;
+        final int result;
         try {
             result = opusEncoder.encode(rawAudio, 0, frameSize, buffer, 0, buffer.length);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new RuntimeException("Failed to encode audio data: " + e.getMessage());
         }
 
@@ -47,7 +47,7 @@ public class JavaOpusEncoder2 {
             throw new RuntimeException("Failed to encode audio data");
         }
 
-        byte[] audio = new byte[result];
+        final byte[] audio = new byte[result];
         System.arraycopy(buffer, 0, audio, 0, result);
         return audio;
     }

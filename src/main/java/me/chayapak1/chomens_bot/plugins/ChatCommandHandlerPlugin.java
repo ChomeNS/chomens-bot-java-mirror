@@ -17,7 +17,7 @@ public class ChatCommandHandlerPlugin implements ChatPlugin.Listener, CommandSpy
     public final List<String> prefixes;
     public final List<String> commandSpyPrefixes;
 
-    public ChatCommandHandlerPlugin (Bot bot) {
+    public ChatCommandHandlerPlugin (final Bot bot) {
         this.bot = bot;
 
         this.prefixes = bot.config.prefixes;
@@ -28,7 +28,7 @@ public class ChatCommandHandlerPlugin implements ChatPlugin.Listener, CommandSpy
     }
 
     @Override
-    public boolean playerMessageReceived (PlayerMessage message, ChatPacketType packetType) {
+    public boolean playerMessageReceived (final PlayerMessage message, final ChatPacketType packetType) {
         if (
                 message.sender() != null &&
                         bot.profile != null &&
@@ -45,7 +45,7 @@ public class ChatCommandHandlerPlugin implements ChatPlugin.Listener, CommandSpy
     }
 
     @Override
-    public void commandReceived (PlayerEntry sender, String command) {
+    public void commandReceived (final PlayerEntry sender, final String command) {
         if (
                 sender.profile != null &&
                         bot.profile != null &&
@@ -68,19 +68,19 @@ public class ChatCommandHandlerPlugin implements ChatPlugin.Listener, CommandSpy
     }
 
     private void handle (
-            Component displayNameComponent,
-            Component messageComponent,
-            PlayerEntry sender,
-            String selector,
-            List<String> prefixes,
-            ChatPacketType packetType
+            final Component displayNameComponent,
+            final Component messageComponent,
+            final PlayerEntry sender,
+            final String selector,
+            final List<String> prefixes,
+            final ChatPacketType packetType
     ) {
         final String displayName = ComponentUtilities.stringify(displayNameComponent);
         final String contents = ComponentUtilities.stringify(messageComponent);
 
         String prefix = null;
 
-        for (String eachPrefix : prefixes) {
+        for (final String eachPrefix : prefixes) {
             if (!contents.startsWith(eachPrefix)) continue;
             prefix = eachPrefix;
         }

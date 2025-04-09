@@ -113,7 +113,11 @@ public class Bot extends SessionAdapter {
     public PlayersDatabasePlugin playersDatabase;
     public IPFilterPlugin ipFilter;
 
-    public Bot (Configuration.BotOption botOption, List<Bot> bots, Configuration config) {
+    public Bot (
+            final Configuration.BotOption botOption,
+            final List<Bot> bots,
+            final Configuration config
+    ) {
         this.host = botOption.host;
         this.port = botOption.port;
 
@@ -168,7 +172,7 @@ public class Bot extends SessionAdapter {
         this.playersDatabase = new PlayersDatabasePlugin(this);
         this.ipFilter = new IPFilterPlugin(this);
 
-        for (Listener listener : listeners) listener.loadedPlugins(this);
+        for (final Listener listener : listeners) listener.loadedPlugins(this);
 
         reconnect();
     }
@@ -176,7 +180,7 @@ public class Bot extends SessionAdapter {
     private void reconnect () {
         if (session != null) session = null; // does this do nothing?
 
-        for (Listener listener : listeners) {
+        for (final Listener listener : listeners) {
             listener.connecting();
         }
 
@@ -208,48 +212,48 @@ public class Bot extends SessionAdapter {
     }
 
     @Override
-    public void packetReceived (Session session, Packet packet) {
-        for (SessionListener listener : listeners) {
+    public void packetReceived (final Session session, final Packet packet) {
+        for (final SessionListener listener : listeners) {
             try {
                 listener.packetReceived(session, packet);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 logger.error(e);
             }
         }
 
-        if (packet instanceof ClientboundLoginPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundFinishConfigurationPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundLoginFinishedPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundCustomQueryPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundCookieRequestPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundTransferPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundStoreCookiePacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundLoginCompressionPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundCustomPayloadPacket t_packet) packetReceived(t_packet);
+        if (packet instanceof final ClientboundLoginPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundFinishConfigurationPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundLoginFinishedPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundCustomQueryPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundCookieRequestPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundTransferPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundStoreCookiePacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundLoginCompressionPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundCustomPayloadPacket t_packet) packetReceived(t_packet);
     }
 
-    private void packetReceived (ClientboundLoginFinishedPacket packet) {
+    private void packetReceived (final ClientboundLoginFinishedPacket packet) {
         profile = packet.getProfile();
 
         session.setFlag(BuiltinFlags.CLIENT_TRANSFERRING, false);
     }
 
-    private void packetReceived (ClientboundLoginPacket ignoredPacket) {
+    private void packetReceived (final ClientboundLoginPacket ignoredPacket) {
         loggedIn = true;
         loginTime = System.currentTimeMillis();
 
-        for (SessionListener listener : listeners) {
+        for (final SessionListener listener : listeners) {
             listener.connected(new ConnectedEvent(session));
         }
 
         session.send(ServerboundPlayerLoadedPacket.INSTANCE);
     }
 
-    private void packetReceived (ClientboundCustomQueryPacket packet) {
+    private void packetReceived (final ClientboundCustomQueryPacket packet) {
         session.send(new ServerboundCustomQueryAnswerPacket(packet.getMessageId(), null));
     }
 
-    private void packetReceived (ClientboundCustomPayloadPacket packet) {
+    private void packetReceived (final ClientboundCustomPayloadPacket packet) {
         if (!packet.getChannel().asString().equals("minecraft:register")) return;
 
         session.send(
@@ -260,7 +264,7 @@ public class Bot extends SessionAdapter {
         );
     }
 
-    private void packetReceived (ClientboundCookieRequestPacket packet) {
+    private void packetReceived (final ClientboundCookieRequestPacket packet) {
         session.send(
                 new ServerboundCookieResponsePacket(
                         packet.getKey(),
@@ -269,11 +273,11 @@ public class Bot extends SessionAdapter {
         );
     }
 
-    private void packetReceived (ClientboundStoreCookiePacket packet) {
+    private void packetReceived (final ClientboundStoreCookiePacket packet) {
         cookies.put(packet.getKey(), packet.getPayload());
     }
 
-    private void packetReceived (ClientboundTransferPacket ignoredPacket) {
+    private void packetReceived (final ClientboundTransferPacket ignoredPacket) {
         this.isTransferring = true;
 
         session.disconnect(Component.translatable("disconnect.transfer"));
@@ -281,7 +285,7 @@ public class Bot extends SessionAdapter {
 
     // we're not meant to send client information at finish configuration,
     // but if it works it works™
-    private void packetReceived (ClientboundFinishConfigurationPacket ignoredPacket) {
+    private void packetReceived (final ClientboundFinishConfigurationPacket ignoredPacket) {
         // for voicechat
         session.send(new ServerboundCustomPayloadPacket(
                 Key.key("minecraft:brand"),
@@ -316,43 +320,43 @@ public class Bot extends SessionAdapter {
     // they actually implemented this, but at this commit:
     // https://github.com/GeyserMC/MCProtocolLib/commit/f8460356db2b92fbf7cb506757fe8f87a011a1f7#diff-a9066adbcb6d5503f5edefe3ec95465cf755f1585e02b732a6fa907afe7c7177R67-L103
     // they removed it, for some reason
-    private void packetReceived (ClientboundLoginCompressionPacket packet) {
+    private void packetReceived (final ClientboundLoginCompressionPacket packet) {
         if (packet.getThreshold() < 0) {
             session.setCompression(null);
         }
     }
 
     @Override
-    public void packetSending (PacketSendingEvent packetSendingEvent) {
-        for (SessionListener listener : listeners) {
+    public void packetSending (final PacketSendingEvent packetSendingEvent) {
+        for (final SessionListener listener : listeners) {
             listener.packetSending(packetSendingEvent);
         }
     }
 
     @Override
-    public void packetSent (Session session, Packet packet) {
-        for (SessionListener listener : listeners) {
+    public void packetSent (final Session session, final Packet packet) {
+        for (final SessionListener listener : listeners) {
             listener.packetSent(session, packet);
         }
     }
 
     @Override
-    public void packetError (PacketErrorEvent packetErrorEvent) {
-        for (SessionListener listener : listeners) {
+    public void packetError (final PacketErrorEvent packetErrorEvent) {
+        for (final SessionListener listener : listeners) {
             listener.packetError(packetErrorEvent);
         }
         packetErrorEvent.setSuppress(true); // fixes the ohio sus exploit
     }
 
     @Override
-    public void disconnecting (DisconnectingEvent disconnectingEvent) {
-        for (SessionListener listener : listeners) {
+    public void disconnecting (final DisconnectingEvent disconnectingEvent) {
+        for (final SessionListener listener : listeners) {
             listener.disconnecting(disconnectingEvent);
         }
     }
 
     @Override
-    public void disconnected (DisconnectedEvent disconnectedEvent) {
+    public void disconnected (final DisconnectedEvent disconnectedEvent) {
         loggedIn = false;
 
         final Throwable cause = disconnectedEvent.getCause();
@@ -382,14 +386,14 @@ public class Bot extends SessionAdapter {
             executor.schedule(this::reconnect, reconnectDelay, TimeUnit.MILLISECONDS);
         }
 
-        for (SessionListener listener : listeners) {
+        for (final SessionListener listener : listeners) {
             listener.disconnected(disconnectedEvent);
         }
     }
 
     public String getServerString () { return getServerString(false); }
 
-    public String getServerString (boolean bypassHidden) {
+    public String getServerString (final boolean bypassHidden) {
         return options.hidden && !bypassHidden ?
                 options.serverName :
                 host + ":" + port;
@@ -400,7 +404,7 @@ public class Bot extends SessionAdapter {
         Main.bots.remove(this);
     }
 
-    public void addListener (Listener listener) {
+    public void addListener (final Listener listener) {
         listeners.add(listener);
     }
 
@@ -417,6 +421,6 @@ public class Bot extends SessionAdapter {
     public static class Listener extends SessionAdapter {
         public void connecting () { }
 
-        public void loadedPlugins (Bot bot) { }
+        public void loadedPlugins (final Bot bot) { }
     }
 }

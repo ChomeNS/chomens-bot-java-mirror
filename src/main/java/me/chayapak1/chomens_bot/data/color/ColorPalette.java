@@ -15,7 +15,7 @@ public class ColorPalette {
     public final TextColor number;
     public final TextColor ownerName;
 
-    public ColorPalette (Configuration.ColorPalette configColorPalette) {
+    public ColorPalette (final Configuration.ColorPalette configColorPalette) {
         this.primary = getColorByString(configColorPalette.primary);
         this.secondary = getColorByString(configColorPalette.secondary);
         this.defaultColor = getColorByString(configColorPalette.defaultColor);

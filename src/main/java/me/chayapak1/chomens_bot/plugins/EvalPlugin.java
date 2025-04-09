@@ -30,7 +30,7 @@ public class EvalPlugin {
 
     private final Gson gson = new Gson();
 
-    public EvalPlugin (Bot bot) {
+    public EvalPlugin (final Bot bot) {
         functions.add(new CoreFunction(bot));
         functions.add(new CorePlaceBlockFunction(bot));
         functions.add(new ChatFunction(bot));
@@ -40,7 +40,7 @@ public class EvalPlugin {
 
         try {
             socket = IO.socket(bot.config.eval.address);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             bot.logger.error(e);
         }
 
@@ -49,7 +49,7 @@ public class EvalPlugin {
 
             final JsonArray array = new JsonArray();
 
-            for (EvalFunction function : functions) array.add(function.name);
+            for (final EvalFunction function : functions) array.add(function.name);
 
             socket.emit(
                     "setFunctions",
@@ -59,7 +59,7 @@ public class EvalPlugin {
         socket.on(Socket.EVENT_DISCONNECT, (args) -> connected = false);
         socket.on(Socket.EVENT_CONNECT_ERROR, (args) -> connected = false);
 
-        for (EvalFunction function : functions) {
+        for (final EvalFunction function : functions) {
             socket.on(BRIDGE_PREFIX + function.name, args -> new Thread(() -> {
                 try {
                     final EvalFunction.Output output = function.execute(args);
@@ -67,7 +67,7 @@ public class EvalPlugin {
                     if (output == null) return;
 
                     socket.emit("functionOutput:" + function.name, output.message(), output.parseJSON());
-                } catch (Exception ignored) { }
+                } catch (final Exception ignored) { }
             }).start());
         }
 
@@ -84,13 +84,13 @@ public class EvalPlugin {
                 final CompletableFuture<EvalOutput> future = futures.remove(id);
 
                 future.complete(new EvalOutput(isError, output));
-            } catch (NumberFormatException ignored) { }
+            } catch (final NumberFormatException ignored) { }
         });
 
         socket.connect();
     }
 
-    public CompletableFuture<EvalOutput> run (String code) {
+    public CompletableFuture<EvalOutput> run (final String code) {
         final CompletableFuture<EvalOutput> future = new CompletableFuture<>();
 
         if (!connected) return null;

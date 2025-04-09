@@ -30,7 +30,7 @@ public class HelpCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         context.checkOverloadArgs(1);
 
         final String commandName = context.getString(false, false);
@@ -42,10 +42,10 @@ public class HelpCommand extends Command {
         }
     }
 
-    public Component getCommandList (CommandContext context) throws CommandException {
+    public Component getCommandList (final CommandContext context) throws CommandException {
         final List<Component> list = new ArrayList<>();
 
-        for (TrustLevel level : TrustLevel.values()) {
+        for (final TrustLevel level : TrustLevel.values()) {
             list.addAll(getCommandListByTrustLevel(context, level));
         }
 
@@ -67,12 +67,12 @@ public class HelpCommand extends Command {
                 .append(Component.join(JoinConfiguration.separator(Component.space()), list));
     }
 
-    public List<Component> getCommandListByTrustLevel (CommandContext context, TrustLevel trustLevel) throws CommandException {
+    public List<Component> getCommandListByTrustLevel (final CommandContext context, final TrustLevel trustLevel) throws CommandException {
         final List<Component> list = new ArrayList<>();
 
-        List<String> commandNames = new ArrayList<>();
+        final List<String> commandNames = new ArrayList<>();
 
-        for (Command command : CommandHandlerPlugin.COMMANDS) {
+        for (final Command command : CommandHandlerPlugin.COMMANDS) {
             if (command.trustLevel != trustLevel || (command.consoleOnly && !(context instanceof ConsoleCommandContext)))
                 continue;
 
@@ -81,7 +81,7 @@ public class HelpCommand extends Command {
 
         Collections.sort(commandNames);
 
-        for (String name : commandNames) {
+        for (final String name : commandNames) {
             list.add(
                     Component
                             .text(name)
@@ -101,12 +101,12 @@ public class HelpCommand extends Command {
         return list;
     }
 
-    public Component getUsages (CommandContext context, String commandName) throws CommandException {
+    public Component getUsages (final CommandContext context, final String commandName) throws CommandException {
         final Bot bot = context.bot;
 
         final String prefix = context.prefix;
 
-        for (Command command : CommandHandlerPlugin.COMMANDS) {
+        for (final Command command : CommandHandlerPlugin.COMMANDS) {
             if (
                     !command.name.equalsIgnoreCase(commandName) &&
                             !Arrays.stream(command.aliases).toList().contains(commandName.toLowerCase())
@@ -136,7 +136,7 @@ public class HelpCommand extends Command {
                             )
             );
 
-            for (String usage : command.usages) {
+            for (final String usage : command.usages) {
                 Component usageComponent = Component.empty()
                         .append(Component.text(prefix + actualCommandName).color(bot.colorPalette.secondary))
                         .append(Component.text(" "));

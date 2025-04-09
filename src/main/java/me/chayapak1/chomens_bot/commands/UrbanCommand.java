@@ -44,7 +44,7 @@ public class UrbanCommand extends Command {
         Main.EXECUTOR.scheduleAtFixedRate(() -> requestsPerSecond = 0, 0, 1, TimeUnit.SECONDS);
     }
 
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         if (requestsPerSecond > 3) throw new CommandException(Component.text("Too many requests"));
 
         final Bot bot = context.bot;
@@ -74,7 +74,7 @@ public class UrbanCommand extends Command {
 
                 int count = 0;
                 int index = 1;
-                for (JsonElement element : list) {
+                for (final JsonElement element : list) {
                     if (count >= 3) break;
 
                     final JsonObject definitionObject = element.getAsJsonObject();
@@ -180,7 +180,7 @@ public class UrbanCommand extends Command {
                 }
 
                 if (discord && !list.isEmpty()) context.sendOutput(discordComponent);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 bot.logger.error(e);
                 context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
             }

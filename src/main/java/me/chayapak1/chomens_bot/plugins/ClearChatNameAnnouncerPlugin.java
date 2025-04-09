@@ -8,7 +8,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class ClearChatNameAnnouncerPlugin implements CommandSpyPlugin.Listener {
     private final Bot bot;
 
-    public ClearChatNameAnnouncerPlugin (Bot bot) {
+    public ClearChatNameAnnouncerPlugin (final Bot bot) {
         this.bot = bot;
 
         if (!bot.config.announceClearChatUsername) return;
@@ -17,7 +17,7 @@ public class ClearChatNameAnnouncerPlugin implements CommandSpyPlugin.Listener {
     }
 
     @Override
-    public void commandReceived (PlayerEntry sender, String command) {
+    public void commandReceived (final PlayerEntry sender, final String command) {
         if (
                 command.equals("/clearchat") ||
                         command.equals("/cc") ||

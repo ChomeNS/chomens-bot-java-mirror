@@ -10,12 +10,12 @@ public class ServerboundRunCoreCommandPacket implements Packet {
     public final UUID runID;
     public final String command;
 
-    public ServerboundRunCoreCommandPacket (UUID runID, String command) {
+    public ServerboundRunCoreCommandPacket (final UUID runID, final String command) {
         this.runID = runID;
         this.command = command;
     }
 
-    public ServerboundRunCoreCommandPacket (ByteBuf buf) {
+    public ServerboundRunCoreCommandPacket (final ByteBuf buf) {
         this.runID = Types.readUUID(buf);
         this.command = Types.readString(buf);
     }
@@ -26,7 +26,7 @@ public class ServerboundRunCoreCommandPacket implements Packet {
     }
 
     @Override
-    public void serialize (ByteBuf buf) {
+    public void serialize (final ByteBuf buf) {
         Types.writeUUID(buf, this.runID);
         Types.writeString(buf, this.command);
     }

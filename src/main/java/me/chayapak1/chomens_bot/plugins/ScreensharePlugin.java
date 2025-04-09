@@ -28,17 +28,17 @@ public class ScreensharePlugin {
 
     //    public FFmpegFrameGrabber grabber;
 
-    public ScreensharePlugin (Bot bot) {
+    public ScreensharePlugin (final Bot bot) {
         this.bot = bot;
 
         try {
             robot = new Robot();
-        } catch (AWTException e) {
+        } catch (final AWTException e) {
             bot.logger.error(e);
         }
     }
 
-    public void start (Vector3i position) {
+    public void start (final Vector3i position) {
         screen = new Screen(bot, width, height, position);
 
         screen.update();
@@ -61,9 +61,9 @@ public class ScreensharePlugin {
     }
 
     private void drawScreen () {
-        Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+        final Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
 
-        BufferedImage capture = robot.createScreenCapture(screenRect);
+        final BufferedImage capture = robot.createScreenCapture(screenRect);
 
         //        try (Java2DFrameConverter frameConverter = new Java2DFrameConverter()) {
         //            final Frame grabbed = grabber.grab();
@@ -72,14 +72,14 @@ public class ScreensharePlugin {
 
         if (capture == null) return;
 
-        BufferedImage resized = resize(capture, screen.width, screen.height);
+        final BufferedImage resized = resize(capture, screen.width, screen.height);
 
         for (int y = 0; y < resized.getHeight(); y++) {
             for (int x = 0; x < resized.getWidth(); x++) {
-                int rgba = resized.getRGB(x, y);
-                int red = (rgba >> 16) & 255;
-                int green = (rgba >> 8) & 255;
-                int blue = rgba & 255;
+                final int rgba = resized.getRGB(x, y);
+                final int red = (rgba >> 16) & 255;
+                final int green = (rgba >> 8) & 255;
+                final int blue = rgba & 255;
 
                 screen.screen[x][y] = String.format("#%02x%02x%02x", red, green, blue);
             }
@@ -93,11 +93,11 @@ public class ScreensharePlugin {
     }
 
     // move this to util?
-    private BufferedImage resize (BufferedImage img, int newW, int newH) {
-        Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
-        BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+    private BufferedImage resize (final BufferedImage img, final int newW, final int newH) {
+        final Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+        final BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
 
-        Graphics2D g2d = dimg.createGraphics();
+        final Graphics2D g2d = dimg.createGraphics();
         g2d.drawImage(tmp, 0, 0, null);
         g2d.dispose();
 
@@ -114,7 +114,7 @@ public class ScreensharePlugin {
 
         public final ArrayList<String> tags = new ArrayList<>();
 
-        public Screen (Bot bot, int width, int height, Vector3i pos) {
+        public Screen (final Bot bot, final int width, final int height, final Vector3i pos) {
             screen = new String[width][height];
 
             this.bot = bot;
@@ -146,7 +146,7 @@ public class ScreensharePlugin {
         }
 
         public void kill () {
-            for (String i : tags) {
+            for (final String i : tags) {
                 bot.core.run("minecraft:kill @e[tag=" + i + "]");
             }
 
@@ -176,9 +176,9 @@ public class ScreensharePlugin {
             }
         }
 
-        public void setPixel (String hexColor, int x, int y) { screen[x][y] = hexColor; }
+        public void setPixel (final String hexColor, final int x, final int y) { screen[x][y] = hexColor; }
 
-        public void setRow (String[] hexColor, int row) {
+        public void setRow (final String[] hexColor, final int row) {
             for (int x = 0; x < width; x++) {
                 screen[x][row] = hexColor[x];
             }

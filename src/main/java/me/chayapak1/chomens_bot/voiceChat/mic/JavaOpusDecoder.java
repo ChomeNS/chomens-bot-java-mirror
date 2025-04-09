@@ -10,7 +10,7 @@ public class JavaOpusDecoder {
     protected final int frameSize;
     protected final int maxPayloadSize;
 
-    public JavaOpusDecoder (int sampleRate, int frameSize, int maxPayloadSize) {
+    public JavaOpusDecoder (final int sampleRate, final int frameSize, final int maxPayloadSize) {
         this.sampleRate = sampleRate;
         this.frameSize = frameSize;
         this.maxPayloadSize = maxPayloadSize;
@@ -24,16 +24,16 @@ public class JavaOpusDecoder {
         }
         try {
             opusDecoder = new OpusDecoder(sampleRate, 1);
-        } catch (OpusException e) {
+        } catch (final OpusException e) {
             throw new IllegalStateException("Opus decoder error " + e.getMessage());
         }
     }
 
-    public short[] decode (byte[] data) {
+    public short[] decode (final byte[] data) {
         if (isClosed()) {
             throw new IllegalStateException("Decoder is closed");
         }
-        int result;
+        final int result;
 
         try {
             if (data == null || data.length == 0) {
@@ -41,11 +41,11 @@ public class JavaOpusDecoder {
             } else {
                 result = opusDecoder.decode(data, 0, data.length, buffer, 0, frameSize, false);
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new RuntimeException("Failed to decode audio data: " + e.getMessage());
         }
 
-        short[] audio = new short[result];
+        final short[] audio = new short[result];
         System.arraycopy(buffer, 0, audio, 0, result);
         return audio;
     }

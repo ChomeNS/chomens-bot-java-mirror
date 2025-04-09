@@ -15,12 +15,12 @@ public class TabCompletePlugin extends Bot.Listener {
     private int nextTransactionId = 0;
     private final Map<Integer, CompletableFuture<ClientboundCommandSuggestionsPacket>> transactions = new HashMap<>();
 
-    public TabCompletePlugin (Bot bot) {
+    public TabCompletePlugin (final Bot bot) {
         this.bot = bot;
         bot.addListener(this);
     }
 
-    public CompletableFuture<ClientboundCommandSuggestionsPacket> tabComplete (String command) {
+    public CompletableFuture<ClientboundCommandSuggestionsPacket> tabComplete (final String command) {
         if (!bot.loggedIn) return null;
 
         final int transactionId = nextTransactionId++;
@@ -34,11 +34,11 @@ public class TabCompletePlugin extends Bot.Listener {
     }
 
     @Override
-    public void packetReceived (Session session, Packet packet) {
-        if (packet instanceof ClientboundCommandSuggestionsPacket t_packet) packetReceived(t_packet);
+    public void packetReceived (final Session session, final Packet packet) {
+        if (packet instanceof final ClientboundCommandSuggestionsPacket t_packet) packetReceived(t_packet);
     }
 
-    private void packetReceived (ClientboundCommandSuggestionsPacket packet) {
+    private void packetReceived (final ClientboundCommandSuggestionsPacket packet) {
         final int id = packet.getTransactionId();
 
         if (!transactions.containsKey(id)) return;

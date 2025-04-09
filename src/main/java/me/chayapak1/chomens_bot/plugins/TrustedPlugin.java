@@ -17,7 +17,7 @@ public class TrustedPlugin implements PlayersPlugin.Listener {
 
     public final List<String> list;
 
-    public TrustedPlugin (Bot bot) {
+    public TrustedPlugin (final Bot bot) {
         this.bot = bot;
 
         this.list = bot.config.trusted;
@@ -25,7 +25,7 @@ public class TrustedPlugin implements PlayersPlugin.Listener {
         bot.players.addListener(this);
     }
 
-    public void broadcast (Component message, UUID exceptTarget) {
+    public void broadcast (final Component message, final UUID exceptTarget) {
         final Component component = Component.translatable(
                 "[%s] [%s] %s",
                 Component.text("ChomeNS Bot").color(bot.colorPalette.primary),
@@ -35,10 +35,10 @@ public class TrustedPlugin implements PlayersPlugin.Listener {
 
         LoggerUtilities.log(LogType.TRUSTED_BROADCAST, component);
 
-        for (Bot bot : bot.bots) {
+        for (final Bot bot : bot.bots) {
             if (bot == this.bot || !bot.loggedIn) continue;
 
-            for (String player : list) {
+            for (final String player : list) {
                 final PlayerEntry entry = bot.players.getEntry(player);
 
                 if (entry == null) continue;
@@ -50,14 +50,14 @@ public class TrustedPlugin implements PlayersPlugin.Listener {
         }
     }
 
-    public void broadcast (Component message) { broadcast(message, null); }
+    public void broadcast (final Component message) { broadcast(message, null); }
 
     @Override
-    public void playerJoined (PlayerEntry target) {
+    public void playerJoined (final PlayerEntry target) {
         if (!list.contains(target.profile.getName())) return;
 
         // based (VERY)
-        Component component;
+        final Component component;
         if (!target.profile.getName().equals(bot.config.ownerName)) {
             component = Component.translatable(
                     "Hello, %s!",
@@ -95,7 +95,7 @@ public class TrustedPlugin implements PlayersPlugin.Listener {
     }
 
     @Override
-    public void playerLeft (PlayerEntry target) {
+    public void playerLeft (final PlayerEntry target) {
         if (!list.contains(target.profile.getName())) return;
 
         broadcast(

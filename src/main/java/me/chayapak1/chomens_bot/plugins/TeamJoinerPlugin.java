@@ -13,13 +13,13 @@ public class TeamJoinerPlugin {
 
     private final Bot bot;
 
-    public TeamJoinerPlugin (Bot bot) {
+    public TeamJoinerPlugin (final Bot bot) {
         this.bot = bot;
         this.teamName = bot.config.teamName;
 
         bot.addListener(new Bot.Listener() {
             @Override
-            public void connected (ConnectedEvent event) {
+            public void connected (final ConnectedEvent event) {
                 TeamJoinerPlugin.this.connected();
             }
         });
@@ -51,7 +51,7 @@ public class TeamJoinerPlugin {
             if (team.players.size() == 1 && team.players.getFirst().equals(bot.username)) return;
 
             excludeOthers();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             bot.logger.error(e);
         }
     }

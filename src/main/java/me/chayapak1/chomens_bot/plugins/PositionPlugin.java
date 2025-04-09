@@ -35,7 +35,7 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
     private final Map<Integer, Vector3d> positionMap = new HashMap<>();
     private final Map<Integer, Rotation> rotationMap = new HashMap<>();
 
-    public PositionPlugin (Bot bot) {
+    public PositionPlugin (final Bot bot) {
         this.bot = bot;
 
         bot.addListener(this);
@@ -62,25 +62,25 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
     }
 
     @Override
-    public void packetReceived (Session session, Packet packet) {
-        if (packet instanceof ClientboundPlayerPositionPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundAddEntityPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundRemoveEntitiesPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundMoveEntityRotPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundMoveEntityPosPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundMoveEntityPosRotPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundEntityPositionSyncPacket t_packet) packetReceived(t_packet);
+    public void packetReceived (final Session session, final Packet packet) {
+        if (packet instanceof final ClientboundPlayerPositionPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundAddEntityPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundRemoveEntitiesPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundMoveEntityRotPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundMoveEntityPosPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundMoveEntityPosRotPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundEntityPositionSyncPacket t_packet) packetReceived(t_packet);
     }
 
-    private void packetReceived (ClientboundPlayerPositionPacket packet) {
+    private void packetReceived (final ClientboundPlayerPositionPacket packet) {
         bot.session.send(new ServerboundAcceptTeleportationPacket(packet.getId()));
 
         position = packet.getPosition();
 
-        for (Listener listener : listeners) { listener.positionChange(position); }
+        for (final Listener listener : listeners) { listener.positionChange(position); }
     }
 
-    private void packetReceived (ClientboundAddEntityPacket packet) {
+    private void packetReceived (final ClientboundAddEntityPacket packet) {
         if (packet.getType() != EntityType.PLAYER) return;
 
         final PlayerEntry entry = bot.players.getEntry(packet.getUuid());
@@ -96,17 +96,17 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
         rotationMap.put(packet.getEntityId(), new Rotation(packet.getYaw(), packet.getPitch()));
     }
 
-    private void packetReceived (ClientboundRemoveEntitiesPacket packet) {
+    private void packetReceived (final ClientboundRemoveEntitiesPacket packet) {
         final int[] ids = packet.getEntityIds();
 
-        for (int id : ids) {
+        for (final int id : ids) {
             entityIdMap.remove(id);
             positionMap.remove(id);
             rotationMap.remove(id);
         }
     }
 
-    private void packetReceived (ClientboundEntityPositionSyncPacket packet) {
+    private void packetReceived (final ClientboundEntityPositionSyncPacket packet) {
         final PlayerEntry player = entityIdMap.get(packet.getId());
 
         if (player == null) return;
@@ -120,10 +120,10 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
         positionMap.put(packet.getId(), position);
         rotationMap.put(packet.getId(), rotation);
 
-        for (Listener listener : listeners) listener.playerMoved(player, position, rotation);
+        for (final Listener listener : listeners) listener.playerMoved(player, position, rotation);
     }
 
-    private void packetReceived (ClientboundMoveEntityRotPacket packet) {
+    private void packetReceived (final ClientboundMoveEntityRotPacket packet) {
         final PlayerEntry player = entityIdMap.get(packet.getEntityId());
 
         if (player == null) return;
@@ -132,11 +132,11 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
 
         rotationMap.put(packet.getEntityId(), rotation);
 
-        for (Listener listener : listeners)
+        for (final Listener listener : listeners)
             listener.playerMoved(player, getPlayerPosition(player.profile.getName()), rotation);
     }
 
-    private void packetReceived (ClientboundMoveEntityPosPacket packet) {
+    private void packetReceived (final ClientboundMoveEntityPosPacket packet) {
         final PlayerEntry player = entityIdMap.get(packet.getEntityId());
 
         if (player == null) return;
@@ -158,11 +158,11 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
 
         positionMap.put(packet.getEntityId(), position);
 
-        for (Listener listener : listeners)
+        for (final Listener listener : listeners)
             listener.playerMoved(player, position, getPlayerRotation(player.profile.getName()));
     }
 
-    private void packetReceived (ClientboundMoveEntityPosRotPacket packet) {
+    private void packetReceived (final ClientboundMoveEntityPosRotPacket packet) {
         final PlayerEntry player = entityIdMap.get(packet.getEntityId());
 
         if (player == null) return;
@@ -187,7 +187,7 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
         positionMap.put(packet.getEntityId(), position);
         rotationMap.put(packet.getEntityId(), rotation);
 
-        for (Listener listener : listeners) listener.playerMoved(player, position, rotation);
+        for (final Listener listener : listeners) listener.playerMoved(player, position, rotation);
     }
 
     // for now this is used in CorePlugin when placing the command block
@@ -200,7 +200,7 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
             if (isGoingDownFromHeightLimit) {
                 isGoingDownFromHeightLimit = false;
 
-                for (Listener listener : listeners) { listener.positionChange(position); }
+                for (final Listener listener : listeners) { listener.positionChange(position); }
             }
 
             return;
@@ -240,42 +240,42 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
         ));
     }
 
-    public Vector3d getPlayerPosition (String playerName) {
+    public Vector3d getPlayerPosition (final String playerName) {
         int entityId = -1;
-        for (Map.Entry<Integer, PlayerEntry> entry : entityIdMap.entrySet()) {
+        for (final Map.Entry<Integer, PlayerEntry> entry : entityIdMap.entrySet()) {
             if (entry.getValue().profile.getName().equals(playerName)) entityId = entry.getKey();
         }
 
         if (entityId == -1) return null;
 
-        for (Map.Entry<Integer, Vector3d> entry : positionMap.entrySet()) {
+        for (final Map.Entry<Integer, Vector3d> entry : positionMap.entrySet()) {
             if (entry.getKey() == entityId) return entry.getValue();
         }
 
         return null;
     }
 
-    public Rotation getPlayerRotation (String playerName) {
+    public Rotation getPlayerRotation (final String playerName) {
         int entityId = -1;
-        for (Map.Entry<Integer, PlayerEntry> entry : entityIdMap.entrySet()) {
+        for (final Map.Entry<Integer, PlayerEntry> entry : entityIdMap.entrySet()) {
             if (entry.getValue().profile.getName().equals(playerName)) entityId = entry.getKey();
         }
 
         if (entityId == -1) return null;
 
-        for (Map.Entry<Integer, Rotation> entry : rotationMap.entrySet()) {
+        for (final Map.Entry<Integer, Rotation> entry : rotationMap.entrySet()) {
             if (entry.getKey() == entityId) return entry.getValue();
         }
 
         return null;
     }
 
-    public void addListener (Listener listener) { listeners.add(listener); }
+    public void addListener (final Listener listener) { listeners.add(listener); }
 
     @SuppressWarnings("unused")
     public interface Listener {
-        default void positionChange (Vector3d position) { }
+        default void positionChange (final Vector3d position) { }
 
-        default void playerMoved (PlayerEntry player, Vector3d position, Rotation rotation) { }
+        default void playerMoved (final PlayerEntry player, final Vector3d position, final Rotation rotation) { }
     }
 }

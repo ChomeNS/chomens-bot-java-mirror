@@ -46,7 +46,7 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener 
     private boolean prefix = false;
     private boolean username = true;
 
-    public SelfCarePlugin (Bot bot) {
+    public SelfCarePlugin (final Bot bot) {
         this.bot = bot;
 
         bot.addListener(this);
@@ -54,7 +54,7 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener 
     }
 
     @Override
-    public boolean systemMessageReceived (Component component, String string, String ansi) {
+    public boolean systemMessageReceived (final Component component, final String string, final String ansi) {
         final Configuration.BotOption.EssentialsMessages essentialsMessages = bot.options.essentialsMessages;
 
         if (string.equals("Successfully enabled CommandSpy")) cspy = true;
@@ -135,15 +135,15 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener 
     }
 
     @Override
-    public void packetReceived (Session session, Packet packet) {
-        if (packet instanceof ClientboundLoginPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundGameEventPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundEntityEventPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundOpenScreenPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof ClientboundSetPassengersPacket t_packet) packetReceived(t_packet);
+    public void packetReceived (final Session session, final Packet packet) {
+        if (packet instanceof final ClientboundLoginPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundGameEventPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundEntityEventPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundOpenScreenPacket t_packet) packetReceived(t_packet);
+        else if (packet instanceof final ClientboundSetPassengersPacket t_packet) packetReceived(t_packet);
     }
 
-    private void packetReceived (ClientboundLoginPacket packet) {
+    private void packetReceived (final ClientboundLoginPacket packet) {
         this.entityId = packet.getEntityId();
         this.gamemode = packet.getCommonPlayerSpawnInfo().getGameMode();
 
@@ -163,7 +163,7 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener 
         checkTask = bot.executor.scheduleAtFixedRate(task, 0, bot.config.selfCare.delay, TimeUnit.MILLISECONDS);
     }
 
-    private void packetReceived (ClientboundGameEventPacket packet) {
+    private void packetReceived (final ClientboundGameEventPacket packet) {
         final GameEvent notification = packet.getNotification();
         final GameEventValue value = packet.getValue();
 
@@ -175,7 +175,7 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener 
         if (notification == GameEvent.CHANGE_GAMEMODE) gamemode = (GameMode) value;
     }
 
-    private void packetReceived (ClientboundEntityEventPacket packet) {
+    private void packetReceived (final ClientboundEntityEventPacket packet) {
         final EntityEvent event = packet.getEvent();
         final int id = packet.getEntityId();
 
@@ -188,7 +188,7 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener 
         else if (event == EntityEvent.PLAYER_OP_PERMISSION_LEVEL_4) permissionLevel = 4;
     }
 
-    private void packetReceived (ClientboundOpenScreenPacket packet) {
+    private void packetReceived (final ClientboundOpenScreenPacket packet) {
         // instantly closes the window when received the packet
         // also should this be in self care?
         bot.session.send(
@@ -198,7 +198,7 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener 
         );
     }
 
-    private void packetReceived (ClientboundSetPassengersPacket packet) {
+    private void packetReceived (final ClientboundSetPassengersPacket packet) {
         if (
                 Arrays.stream(packet.getPassengerIds())
                         .noneMatch(id -> id == entityId)
@@ -216,13 +216,13 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener 
         );
     }
 
-    private void runEssentialsCommand (String command) {
+    private void runEssentialsCommand (final String command) {
         if (bot.options.useChat) bot.chat.sendCommandInstantly(command);
         else bot.core.run(command);
     }
 
     @Override
-    public void disconnected (DisconnectedEvent event) {
+    public void disconnected (final DisconnectedEvent event) {
         checkTask.cancel(true);
     }
 }

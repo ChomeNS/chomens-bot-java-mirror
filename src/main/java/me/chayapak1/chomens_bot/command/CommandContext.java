@@ -29,7 +29,7 @@ public class CommandContext {
     public String[] fullArgs;
     public String[] args;
 
-    public CommandContext (Bot bot, String prefix, PlayerEntry sender, boolean inGame) {
+    public CommandContext (final Bot bot, final String prefix, final PlayerEntry sender, final boolean inGame) {
         this.bot = bot;
         this.prefix = prefix;
         this.sender = sender;
@@ -38,18 +38,18 @@ public class CommandContext {
 
     public Component displayName () { return Component.empty(); }
 
-    public void sendOutput (Component component) { }
+    public void sendOutput (final Component component) { }
 
     // args parsing stuff
     private int argsPosition = 0;
 
-    public String getString (boolean greedy, boolean required) throws CommandException { return getString(greedy, required, "string"); }
+    public String getString (final boolean greedy, final boolean required) throws CommandException { return getString(greedy, required, "string"); }
 
-    public String getString (boolean greedy, boolean required, boolean returnLowerCase) throws CommandException { return getString(greedy, returnLowerCase, required, "string"); }
+    public String getString (final boolean greedy, final boolean required, final boolean returnLowerCase) throws CommandException { return getString(greedy, returnLowerCase, required, "string"); }
 
-    private String getString (boolean greedy, boolean required, String type) throws CommandException { return getString(greedy, false, required, type); }
+    private String getString (final boolean greedy, final boolean required, final String type) throws CommandException { return getString(greedy, false, required, type); }
 
-    private String getString (boolean greedy, boolean returnLowerCase, boolean required, String type) throws CommandException {
+    private String getString (final boolean greedy, final boolean returnLowerCase, final boolean required, final String type) throws CommandException {
         if (argsPosition >= args.length || args[argsPosition] == null) {
             if (required) {
                 throw new CommandException(
@@ -174,31 +174,31 @@ public class CommandContext {
         return getString(false, true, true, "action");
     }
 
-    public Integer getInteger (boolean required) throws CommandException {
+    public Integer getInteger (final boolean required) throws CommandException {
         final String string = getString(false, required, "integer");
 
         if (string.isEmpty()) return null;
 
         try {
             return Integer.parseInt(string);
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             throw new CommandException(Component.text("Invalid integer"));
         }
     }
 
-    public Long getLong (boolean required) throws CommandException {
+    public Long getLong (final boolean required) throws CommandException {
         final String string = getString(false, required, "long");
 
         if (string.isEmpty()) return null;
 
         try {
             return Long.parseLong(string);
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             throw new CommandException(Component.text("Invalid long"));
         }
     }
 
-    public Double getDouble (boolean required, boolean allowInfinite) throws CommandException {
+    public Double getDouble (final boolean required, final boolean allowInfinite) throws CommandException {
         final String string = getString(false, required, "double");
 
         if (string.isEmpty()) return null;
@@ -208,12 +208,12 @@ public class CommandContext {
 
             if (!Double.isFinite(parsedDouble) && !allowInfinite) throw new NumberFormatException();
             else return parsedDouble;
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             throw new CommandException(Component.text("Invalid double"));
         }
     }
 
-    public Float getFloat (boolean required, boolean allowInfinite) throws CommandException {
+    public Float getFloat (final boolean required, final boolean allowInfinite) throws CommandException {
         final String string = getString(false, required, "float");
 
         if (string.isEmpty()) return null;
@@ -223,12 +223,12 @@ public class CommandContext {
 
             if (!Float.isFinite(parsedFloat) && !allowInfinite) throw new NumberFormatException();
             else return parsedFloat;
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             throw new CommandException(Component.text("Invalid float"));
         }
     }
 
-    public Boolean getBoolean (boolean required) throws CommandException {
+    public Boolean getBoolean (final boolean required) throws CommandException {
         final String string = getString(false, required, "boolean");
 
         if (string.isEmpty()) return null;
@@ -240,12 +240,12 @@ public class CommandContext {
         };
     }
 
-    public <T extends Enum<T>> T getEnum (Class<T> enumClass) throws CommandException {
+    public <T extends Enum<T>> T getEnum (final Class<T> enumClass) throws CommandException {
         final String string = getString(false, true, enumClass.getSimpleName());
 
         try {
             return Enum.valueOf(enumClass, string.toUpperCase());
-        } catch (IllegalArgumentException | NullPointerException e) {
+        } catch (final IllegalArgumentException | NullPointerException e) {
             final T[] values = enumClass.getEnumConstants();
 
             throw new CommandException(
@@ -258,7 +258,7 @@ public class CommandContext {
         }
     }
 
-    public void checkOverloadArgs (int maximumArgs) throws CommandException {
+    public void checkOverloadArgs (final int maximumArgs) throws CommandException {
         final String joined = String.join(" ", args);
 
         final String quotesReplaced = joined.replaceAll("([\"'])(?:\\.|(?!\1).)*\1", "i");

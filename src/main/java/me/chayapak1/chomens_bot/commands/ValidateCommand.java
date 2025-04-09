@@ -20,7 +20,7 @@ public class ValidateCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) {
+    public Component execute (final CommandContext context) {
         // <red>Trusted - 1
         // <dark_red>Admin - 2
         // .......

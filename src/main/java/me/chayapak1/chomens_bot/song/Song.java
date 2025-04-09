@@ -38,7 +38,7 @@ public class Song {
 
     private final Bot bot;
 
-    public Song (String originalName, Bot bot, String songName, String songAuthor, String songOriginalAuthor, String songDescription, String tracks, boolean nbs) {
+    public Song (final String originalName, final Bot bot, final String songName, final String songAuthor, final String songOriginalAuthor, final String songDescription, final String tracks, final boolean nbs) {
         this.originalName = originalName;
         this.bot = bot;
         this.songName = songName;
@@ -62,15 +62,15 @@ public class Song {
             authorPart = songAuthor;
         }
 
-        String namePart = isNotNullAndNotBlank(songName) ? songName : originalName;
+        final String namePart = isNotNullAndNotBlank(songName) ? songName : originalName;
         name = (authorPart != null) ? String.format("%s - %s", authorPart, namePart) : namePart;
     }
 
-    public Note get (int i) {
+    public Note get (final int i) {
         return notes.get(i);
     }
 
-    public void add (Note e) {
+    public void add (final Note e) {
         notes.add(e);
     }
 
@@ -100,7 +100,7 @@ public class Song {
         }
     }
 
-    public void setTime (long t) {
+    public void setTime (final long t) {
         time = t;
         startTime = System.currentTimeMillis() - time;
         position = 0;

@@ -25,7 +25,7 @@ public class ScreenshareCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         final String action = context.getString(false, true, true);
@@ -84,7 +84,7 @@ public class ScreenshareCommand extends Command {
                 }
                 default -> throw new CommandException(Component.text("Invalid action"));
             }
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             throw new CommandException(Component.text("Invalid integer"));
         }
     }

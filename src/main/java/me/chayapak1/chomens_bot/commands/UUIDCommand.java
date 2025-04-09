@@ -24,7 +24,7 @@ public class UUIDCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         final String player = context.getString(true, false);
@@ -32,8 +32,8 @@ public class UUIDCommand extends Command {
         if (!player.isEmpty()) {
             final PlayerEntry entry = bot.players.getEntry(player);
 
-            String name;
-            String uuid;
+            final String name;
+            final String uuid;
 
             if (entry == null) {
                 name = player;

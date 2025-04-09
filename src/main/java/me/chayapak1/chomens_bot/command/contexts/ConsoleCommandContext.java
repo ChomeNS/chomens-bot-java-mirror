@@ -9,13 +9,13 @@ import net.kyori.adventure.text.format.NamedTextColor;
 public class ConsoleCommandContext extends CommandContext {
     private final Bot bot;
 
-    public ConsoleCommandContext (Bot bot, String prefix) {
+    public ConsoleCommandContext (final Bot bot, final String prefix) {
         super(bot, prefix, bot.players.getBotEntry() /* real */, false);
         this.bot = bot;
     }
 
     @Override
-    public void sendOutput (Component component) {
+    public void sendOutput (final Component component) {
         bot.logger.log(LogType.COMMAND_OUTPUT, component);
     }
 

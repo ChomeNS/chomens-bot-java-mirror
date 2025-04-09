@@ -16,12 +16,12 @@ public class PlayerCommandContext extends CommandContext {
     private final Bot bot;
 
     public PlayerCommandContext (
-            Bot bot,
-            String playerName,
-            String prefix,
-            String selector,
-            PlayerEntry sender,
-            ChatPacketType packetType
+            final Bot bot,
+            final String playerName,
+            final String prefix,
+            final String selector,
+            final PlayerEntry sender,
+            final ChatPacketType packetType
     ) {
         super(bot, prefix, sender, true);
         this.bot = bot;
@@ -31,7 +31,7 @@ public class PlayerCommandContext extends CommandContext {
     }
 
     @Override
-    public void sendOutput (Component message) {
+    public void sendOutput (final Component message) {
         bot.chat.tellraw(
                 Component.translatable(
                         "%s",

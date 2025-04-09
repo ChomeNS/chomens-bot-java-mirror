@@ -16,19 +16,19 @@ public class ServerFeaturesPlugin extends Bot.Listener {
     public boolean hasEssentials = false;
     public boolean hasExtras = false;
 
-    public ServerFeaturesPlugin (Bot bot) {
+    public ServerFeaturesPlugin (final Bot bot) {
         this.bot = bot;
 
         bot.addListener(this);
     }
 
     @Override
-    public void packetReceived (Session session, Packet packet) {
-        if (packet instanceof ClientboundCommandsPacket t_packet) packetReceived(t_packet);
+    public void packetReceived (final Session session, final Packet packet) {
+        if (packet instanceof final ClientboundCommandsPacket t_packet) packetReceived(t_packet);
     }
 
-    private void packetReceived (ClientboundCommandsPacket packet) {
-        for (CommandNode node : packet.getNodes()) {
+    private void packetReceived (final ClientboundCommandsPacket packet) {
+        for (final CommandNode node : packet.getNodes()) {
             if (!node.isExecutable() || node.getType() != CommandType.LITERAL) continue;
 
             final String name = node.getName();
@@ -61,7 +61,7 @@ public class ServerFeaturesPlugin extends Bot.Listener {
     }
 
     @Override
-    public void disconnected (DisconnectedEvent event) {
+    public void disconnected (final DisconnectedEvent event) {
         hasNamespaces = false;
         hasEssentials = false;
         hasExtras = false;

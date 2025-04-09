@@ -28,7 +28,7 @@ public class KickCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         final Kick method = context.getEnum(Kick.class);

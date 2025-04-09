@@ -48,7 +48,7 @@ public class DiscordPlugin extends ListenerAdapter {
 
     private final Map<String, Integer> totalConnects = new HashMap<>();
 
-    public DiscordPlugin (Configuration config) {
+    public DiscordPlugin (final Configuration config) {
         final Configuration.Discord options = config.discord;
         this.prefix = options.prefix;
         this.servers = options.servers;
@@ -69,7 +69,7 @@ public class DiscordPlugin extends ListenerAdapter {
         try {
             jda = builder.build();
             jda.awaitReady();
-        } catch (InterruptedException ignored) { }
+        } catch (final InterruptedException ignored) { }
 
         if (jda == null) return;
 
@@ -77,7 +77,7 @@ public class DiscordPlugin extends ListenerAdapter {
 
         jda.addEventListener(this);
 
-        for (Bot bot : Main.bots) {
+        for (final Bot bot : Main.bots) {
             final String channelId = servers.get(bot.getServerString(true));
 
             bot.executor.scheduleAtFixedRate(() -> onDiscordTick(channelId), 0, 50, TimeUnit.MILLISECONDS);
@@ -86,10 +86,10 @@ public class DiscordPlugin extends ListenerAdapter {
 
             bot.addListener(new Bot.Listener() {
                 @Override
-                public void loadedPlugins (Bot bot) {
+                public void loadedPlugins (final Bot bot) {
                     bot.chat.addListener(new ChatPlugin.Listener() {
                         @Override
-                        public boolean systemMessageReceived (Component component, String string, String _ansi) {
+                        public boolean systemMessageReceived (final Component component, final String string, final String _ansi) {
                             if (string.length() > 2000 - 12) {
                                 sendMessage(CodeBlockUtilities.escape(string), channelId);
                             } else {
@@ -129,7 +129,7 @@ public class DiscordPlugin extends ListenerAdapter {
                 }
 
                 @Override
-                public void connected (ConnectedEvent event) {
+                public void connected (final ConnectedEvent event) {
                     totalConnects.put(channelId, 0);
 
                     sendMessageInstantly(
@@ -142,7 +142,7 @@ public class DiscordPlugin extends ListenerAdapter {
                 }
 
                 @Override
-                public void disconnected (DisconnectedEvent event) {
+                public void disconnected (final DisconnectedEvent event) {
                     if (totalConnects.get(channelId) >= 6) return;
 
                     final String reason = ComponentUtilities.stringifyDiscordAnsi(event.getReason());
@@ -159,8 +159,8 @@ public class DiscordPlugin extends ListenerAdapter {
     }
 
     @Override
-    public void onMessageReceived (@NotNull MessageReceivedEvent event) {
-        for (Bot bot : Main.bots) {
+    public void onMessageReceived (@NotNull final MessageReceivedEvent event) {
+        for (final Bot bot : Main.bots) {
             final String channelId = servers.get(bot.getServerString(true));
 
             if (
@@ -185,7 +185,7 @@ public class DiscordPlugin extends ListenerAdapter {
             Component output = Component.empty();
 
             if (isForwarded) {
-                for (MessageSnapshot snapshot : messageEvent.getMessageSnapshots()) {
+                for (final MessageSnapshot snapshot : messageEvent.getMessageSnapshots()) {
                     final List<Component> extraComponents = new ArrayList<>();
 
                     addExtraComponents(
@@ -248,8 +248,8 @@ public class DiscordPlugin extends ListenerAdapter {
     }
 
     private Component getMessageComponent (
-            Bot bot,
-            Message message
+            final Bot bot,
+            final Message message
     ) {
         final List<Component> extraComponents = new ArrayList<>();
 
@@ -276,7 +276,7 @@ public class DiscordPlugin extends ListenerAdapter {
 
             final List<Component> rolesList = new ArrayList<>();
 
-            for (Role role : roles) {
+            for (final Role role : roles) {
                 final Color color = role.getColor();
 
                 rolesList.add(
@@ -317,7 +317,7 @@ public class DiscordPlugin extends ListenerAdapter {
                         )
                 );
 
-        for (Role role : roles) {
+        for (final Role role : roles) {
             final Color color = role.getColor();
 
             if (color == null) continue;
@@ -378,7 +378,7 @@ public class DiscordPlugin extends ListenerAdapter {
         ).color(NamedTextColor.DARK_GRAY);
     }
 
-    private String replaceMessageContent (String content) {
+    private String replaceMessageContent (final String content) {
         return ComponentUtilities
                 // replaces the ANSI codes (from the bot) with section signs corresponding to the color/style
                 .deserializeFromDiscordAnsi(content)
@@ -389,19 +389,19 @@ public class DiscordPlugin extends ListenerAdapter {
     }
 
     private void addExtraComponents (
-            List<Component> extraComponents,
-            List<Message.Attachment> attachments,
-            List<MessageEmbed> embeds,
-            List<StickerItem> stickers,
-            Bot bot
+            final List<Component> extraComponents,
+            final List<Message.Attachment> attachments,
+            final List<MessageEmbed> embeds,
+            final List<StickerItem> stickers,
+            final Bot bot
     ) {
         addAttachmentsComponent(attachments, extraComponents);
         addEmbedsComponent(embeds, extraComponents, bot);
         addStickersComponent(stickers, extraComponents);
     }
 
-    private void addAttachmentsComponent (List<Message.Attachment> attachments, List<Component> extraComponents) {
-        for (Message.Attachment attachment : attachments) {
+    private void addAttachmentsComponent (final List<Message.Attachment> attachments, final List<Component> extraComponents) {
+        for (final Message.Attachment attachment : attachments) {
             extraComponents.add(
                     Component
                             .text("[Attachment]")
@@ -418,8 +418,8 @@ public class DiscordPlugin extends ListenerAdapter {
         }
     }
 
-    private void addEmbedsComponent (List<MessageEmbed> embeds, List<Component> extraComponents, Bot bot) {
-        for (MessageEmbed embed : embeds) {
+    private void addEmbedsComponent (final List<MessageEmbed> embeds, final List<Component> extraComponents, final Bot bot) {
+        for (final MessageEmbed embed : embeds) {
             final Component hoverEvent = Component.translatable(
                     """
                             Title: %s
@@ -441,8 +441,8 @@ public class DiscordPlugin extends ListenerAdapter {
         }
     }
 
-    private void addStickersComponent (List<StickerItem> stickers, List<Component> extraComponents) {
-        for (StickerItem sticker : stickers) {
+    private void addStickersComponent (final List<StickerItem> stickers, final List<Component> extraComponents) {
+        for (final StickerItem sticker : stickers) {
             extraComponents.add(
                     Component
                             .translatable(
@@ -472,12 +472,12 @@ public class DiscordPlugin extends ListenerAdapter {
     final Map<String, Long> nextLogTimes = new HashMap<>();
     final Map<String, Boolean> doneSendingInLogs = new HashMap<>();
 
-    public void sendMessage (String message, String channelId) {
+    public void sendMessage (final String message, final String channelId) {
         synchronized (logMessages) {
             if (!logMessages.containsKey(channelId)) {
                 logMessages.put(channelId, new StringBuilder());
             }
-            StringBuilder logMessage = logMessages.get(channelId);
+            final StringBuilder logMessage = logMessages.get(channelId);
             if (logMessage.length() < 2000) {
                 if (!logMessage.isEmpty()) {
                     logMessage.append('\n');
@@ -487,9 +487,9 @@ public class DiscordPlugin extends ListenerAdapter {
         }
     }
 
-    public void sendMessageInstantly (String message, String channelId) { sendMessageInstantly(message, channelId, true); }
+    public void sendMessageInstantly (final String message, final String channelId) { sendMessageInstantly(message, channelId, true); }
 
-    public MessageCreateAction sendMessageInstantly (String message, String channelId, boolean queue) {
+    public MessageCreateAction sendMessageInstantly (final String message, final String channelId, final boolean queue) {
         if (jda == null) return null;
 
         final TextChannel logChannel = jda.getTextChannelById(channelId);
@@ -515,22 +515,22 @@ public class DiscordPlugin extends ListenerAdapter {
         }
     }
 
-    public void onDiscordTick (String channelId) {
+    public void onDiscordTick (final String channelId) {
         synchronized (logMessages) {
             if (!logMessages.containsKey(channelId) || logMessages.get(channelId).isEmpty()) {
                 return;
             }
         }
 
-        long currentTime = System.currentTimeMillis();
+        final long currentTime = System.currentTimeMillis();
         if (!nextLogTimes.containsKey(channelId) || (currentTime >= nextLogTimes.get(channelId) && doneSendingInLogs.get(channelId))
                 || currentTime - nextLogTimes.get(channelId) > 5000) {
-            long logDelay = 2000;
+            final long logDelay = 2000;
 
             nextLogTimes.put(channelId, currentTime + logDelay);
             String message;
             synchronized (logMessages) {
-                StringBuilder logMessage = logMessages.get(channelId);
+                final StringBuilder logMessage = logMessages.get(channelId);
                 message = logMessage.toString()
                         // the ZWSP fixes discord.gg/discord.com showing invite
                         .replace("discord.gg", "discord\u200b.\u200bgg")

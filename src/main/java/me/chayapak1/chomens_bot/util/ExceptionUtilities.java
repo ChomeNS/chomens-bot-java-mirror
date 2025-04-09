@@ -5,7 +5,7 @@ import java.io.StringWriter;
 
 public class ExceptionUtilities {
     // totallynotskidded™ from apache's common utils thingy
-    public static String getStacktrace (Throwable throwable) {
+    public static String getStacktrace (final Throwable throwable) {
         final StringWriter sw = new StringWriter();
         final PrintWriter pw = new PrintWriter(sw, true);
 

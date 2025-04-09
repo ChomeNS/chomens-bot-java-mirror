@@ -66,7 +66,7 @@ public class MusicCommand extends Command {
     }
 
     @Override
-    public Component execute (CommandContext context) throws CommandException {
+    public Component execute (final CommandContext context) throws CommandException {
         if (context.bot.music.locked && !(context instanceof ConsoleCommandContext))
             throw new CommandException(Component.text("Managing music is currently locked"));
 
@@ -93,14 +93,14 @@ public class MusicCommand extends Command {
         };
     }
 
-    public Component play (CommandContext context) throws CommandException {
+    public Component play (final CommandContext context) throws CommandException {
         final MusicPlayerPlugin player = context.bot.music;
 
         if (player.loaderThread != null) throw new CommandException(Component.text("Already loading a song"));
 
         final String stringPath = context.getString(true, true);
 
-        Path path;
+        final Path path;
 
         try {
             path = Path.of(ROOT.toString(), stringPath);
@@ -121,14 +121,14 @@ public class MusicCommand extends Command {
 
                     final Path realPath = Path.of(ROOT.toString(), String.join(separator, splitPathClone));
 
-                    try (DirectoryStream<Path> stream = Files.newDirectoryStream(realPath)) {
+                    try (final DirectoryStream<Path> stream = Files.newDirectoryStream(realPath)) {
                         final List<Path> songsPaths = new ArrayList<>();
-                        for (Path eachPath : stream) songsPaths.add(eachPath);
+                        for (final Path eachPath : stream) songsPaths.add(eachPath);
 
                         PathUtilities.sort(songsPaths);
 
                         final List<String> songs = new ArrayList<>();
-                        for (Path eachPath : songsPaths) songs.add(eachPath.getFileName().toString());
+                        for (final Path eachPath : songsPaths) songs.add(eachPath.getFileName().toString());
 
                         final String lowerCaseFile = splitPath[splitPath.length - 1].toLowerCase();
 
@@ -141,18 +141,18 @@ public class MusicCommand extends Command {
                         final String file = matchedArray[0];
 
                         player.loadSong(Path.of(realPath.toString(), file), context.sender);
-                    } catch (NoSuchFileException e) {
+                    } catch (final NoSuchFileException e) {
                         throw new CommandException(Component.text("Directory does not exist"));
                     }
                 } else {
-                    try (DirectoryStream<Path> stream = Files.newDirectoryStream(ROOT)) {
+                    try (final DirectoryStream<Path> stream = Files.newDirectoryStream(ROOT)) {
                         final List<Path> songsPaths = new ArrayList<>();
-                        for (Path eachPath : stream) songsPaths.add(eachPath);
+                        for (final Path eachPath : stream) songsPaths.add(eachPath);
 
                         PathUtilities.sort(songsPaths);
 
                         final List<String> songs = new ArrayList<>();
-                        for (Path eachPath : songsPaths) songs.add(eachPath.getFileName().toString());
+                        for (final Path eachPath : songsPaths) songs.add(eachPath.getFileName().toString());
 
                         final String[] matchedArray = songs.stream()
                                 .filter(song -> song.equalsIgnoreCase(stringPath) || song.toLowerCase().contains(stringPath.toLowerCase()))
@@ -163,25 +163,25 @@ public class MusicCommand extends Command {
                         final String file = matchedArray[0];
 
                         player.loadSong(Path.of(ROOT.toString(), file), context.sender);
-                    } catch (NoSuchFileException e) {
+                    } catch (final NoSuchFileException e) {
                         throw new CommandException(Component.text("this will never happen ok??"));
                     }
                 }
             }
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             throw new CommandException(Component.text("Invalid URL"));
-        } catch (IndexOutOfBoundsException e) {
+        } catch (final IndexOutOfBoundsException e) {
             throw new CommandException(Component.text("Song not found"));
-        } catch (CommandException e) {
+        } catch (final CommandException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new CommandException(Component.text(e.toString()));
         }
 
         return null;
     }
 
-    public Component playFromItem (CommandContext context) throws CommandException {
+    public Component playFromItem (final CommandContext context) throws CommandException {
         context.checkOverloadArgs(1);
 
         final Bot bot = context.bot;
@@ -202,13 +202,13 @@ public class MusicCommand extends Command {
                         Base64.getDecoder().decode(output),
                         context.sender
                 );
-            } catch (IllegalArgumentException e) {
+            } catch (final IllegalArgumentException e) {
                 try {
                     bot.music.loadSong(
                             Ascii85.decode(output),
                             context.sender
                     );
-                } catch (IllegalArgumentException e2) {
+                } catch (final IllegalArgumentException e2) {
                     context.sendOutput(Component.text("Invalid Base64 or Ascii85 in the selected item").color(NamedTextColor.RED));
                 }
             }
@@ -219,7 +219,7 @@ public class MusicCommand extends Command {
         return null;
     }
 
-    public Component stop (CommandContext context) throws CommandException {
+    public Component stop (final CommandContext context) throws CommandException {
         context.checkOverloadArgs(1);
 
         final Bot bot = context.bot;
@@ -230,7 +230,7 @@ public class MusicCommand extends Command {
         return Component.text("Cleared the song queue").color(bot.colorPalette.defaultColor);
     }
 
-    public Component loop (CommandContext context) throws CommandException {
+    public Component loop (final CommandContext context) throws CommandException {
         context.checkOverloadArgs(2);
 
         final Bot bot = context.bot;
@@ -265,7 +265,7 @@ public class MusicCommand extends Command {
         }
     }
 
-    public Component list (CommandContext context) throws CommandException {
+    public Component list (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         final String prefix = context.prefix;
@@ -279,21 +279,21 @@ public class MusicCommand extends Command {
 
         if (!path.normalize().startsWith(ROOT.toString())) throw new CommandException(Component.text("no"));
 
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
+        try (final DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
             final List<Path> paths = new ArrayList<>();
-            for (Path eachPath : stream) paths.add(eachPath);
+            for (final Path eachPath : stream) paths.add(eachPath);
 
             PathUtilities.sort(paths);
 
             final List<Component> fullList = new ArrayList<>();
             int i = 0;
-            for (Path eachPath : paths) {
+            for (final Path eachPath : paths) {
                 final boolean isDirectory = Files.isDirectory(eachPath);
 
                 Path location;
                 try {
                     location = path;
-                } catch (IllegalArgumentException e) {
+                } catch (final IllegalArgumentException e) {
                     location = Paths.get(""); // wtf mabe
                 }
 
@@ -324,7 +324,7 @@ public class MusicCommand extends Command {
 
             while (index <= fullList.size()) {
                 // we MUST make a new copy of the list else everything will fard..,.
-                List<Component> list = new ArrayList<>(fullList).subList(index, Math.min(index + eachSize, fullList.size()));
+                final List<Component> list = new ArrayList<>(fullList).subList(index, Math.min(index + eachSize, fullList.size()));
 
                 final Component component = Component.join(JoinConfiguration.separator(Component.space()), list);
                 context.sendOutput(component);
@@ -332,14 +332,14 @@ public class MusicCommand extends Command {
                 index += eachSize;
                 list.clear();
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new CommandException(Component.text("Directory doesn't exist"));
         }
 
         return null;
     }
 
-    public Component skip (CommandContext context) throws CommandException {
+    public Component skip (final CommandContext context) throws CommandException {
         context.checkOverloadArgs(1);
 
         final Bot bot = context.bot;
@@ -358,7 +358,7 @@ public class MusicCommand extends Command {
         return null;
     }
 
-    public Component nowPlaying (CommandContext context) throws CommandException {
+    public Component nowPlaying (final CommandContext context) throws CommandException {
         context.checkOverloadArgs(1);
 
         final Bot bot = context.bot;
@@ -371,7 +371,7 @@ public class MusicCommand extends Command {
                 .color(bot.colorPalette.defaultColor);
     }
 
-    public Component queue (CommandContext context) throws CommandException {
+    public Component queue (final CommandContext context) throws CommandException {
         context.checkOverloadArgs(1);
 
         final Bot bot = context.bot;
@@ -379,7 +379,7 @@ public class MusicCommand extends Command {
 
         final List<Component> queueWithNames = new ArrayList<>();
         int i = 0;
-        for (Song song : queue) {
+        for (final Song song : queue) {
             queueWithNames.add(
                     Component.text(song.name).color((i++ & 1) == 0 ? bot.colorPalette.primary : bot.colorPalette.secondary)
             );
@@ -391,7 +391,7 @@ public class MusicCommand extends Command {
     }
 
     // lazy fix for java using "goto" as keyword real
-    public Component goTo (CommandContext context) throws CommandException {
+    public Component goTo (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
         final Song currentSong = bot.music.currentSong;
 
@@ -412,7 +412,7 @@ public class MusicCommand extends Command {
                 .color(bot.colorPalette.defaultColor);
     }
 
-    public Component pitch (CommandContext context) throws CommandException {
+    public Component pitch (final CommandContext context) throws CommandException {
         context.checkOverloadArgs(2);
 
         final Bot bot = context.bot;
@@ -427,7 +427,7 @@ public class MusicCommand extends Command {
                 .color(bot.colorPalette.defaultColor);
     }
 
-    public Component speed (CommandContext context) throws CommandException {
+    public Component speed (final CommandContext context) throws CommandException {
         context.checkOverloadArgs(2);
 
         final Bot bot = context.bot;
@@ -451,7 +451,7 @@ public class MusicCommand extends Command {
                 .color(bot.colorPalette.defaultColor);
     }
 
-    public Component amplify (CommandContext context) throws CommandException {
+    public Component amplify (final CommandContext context) throws CommandException {
         context.checkOverloadArgs(2);
 
         final Bot bot = context.bot;
@@ -468,7 +468,7 @@ public class MusicCommand extends Command {
                 .color(bot.colorPalette.defaultColor);
     }
 
-    public Component noteInstrument (CommandContext context) throws CommandException {
+    public Component noteInstrument (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
         final String instrument = context.getString(true, true);
@@ -485,7 +485,7 @@ public class MusicCommand extends Command {
         }
     }
 
-    public Component pause (CommandContext context) throws CommandException {
+    public Component pause (final CommandContext context) throws CommandException {
         context.checkOverloadArgs(1);
 
         final Bot bot = context.bot;
@@ -502,7 +502,7 @@ public class MusicCommand extends Command {
         }
     }
 
-    public Component info (CommandContext context) throws CommandException {
+    public Component info (final CommandContext context) throws CommandException {
         context.checkOverloadArgs(1);
 
         final Bot bot = context.bot;
@@ -532,7 +532,7 @@ public class MusicCommand extends Command {
         return Component.join(JoinConfiguration.newlines(), components);
     }
 
-    public Component testSong (CommandContext context) throws CommandException {
+    public Component testSong (final CommandContext context) throws CommandException {
         context.checkOverloadArgs(1);
 
         final Bot bot = context.bot;

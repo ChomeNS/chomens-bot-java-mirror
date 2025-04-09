@@ -7,7 +7,7 @@ public class TimestampUtilities {
     // totallynotskidded™ from SongPlayer (modified a bit)
     public static final Pattern TIMESTAMP_PATTERN = Pattern.compile("(?:(\\d+):)?(\\d+):(\\d+)");
 
-    public static long parseTimestamp (String timestamp) {
+    public static long parseTimestamp (final String timestamp) {
         final Matcher matcher = TIMESTAMP_PATTERN.matcher(timestamp);
 
         if (!matcher.matches()) return -1;

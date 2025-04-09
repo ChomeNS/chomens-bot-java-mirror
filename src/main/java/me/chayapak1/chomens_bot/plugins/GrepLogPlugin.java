@@ -35,11 +35,11 @@ public class GrepLogPlugin {
 
     public boolean running = false;
 
-    public GrepLogPlugin (Bot bot) {
+    public GrepLogPlugin (final Bot bot) {
         this.bot = bot;
     }
 
-    public void search (CommandContext context, String input, boolean ignoreCase, boolean regex) throws CommandException {
+    public void search (final CommandContext context, final String input, final boolean ignoreCase, final boolean regex) throws CommandException {
         running = true;
 
         try (final Stream<Path> files = Files.list(FileLoggerUtilities.logDirectory)) {
@@ -49,7 +49,7 @@ public class GrepLogPlugin {
 
             final StringBuilder result = new StringBuilder();
 
-            for (Path filePath : fileList) {
+            for (final Path filePath : fileList) {
                 if (!running) {
                     pattern = null;
                     return;
@@ -129,29 +129,29 @@ public class GrepLogPlugin {
 
                         context.sendOutput(component);
                     });
-        } catch (CommandException e) {
+        } catch (final CommandException e) {
             running = false;
             throw e;
-        } catch (FileNotFoundException e) {
+        } catch (final FileNotFoundException e) {
             running = false;
             throw new CommandException(Component.text("File not found"));
-        } catch (NotDirectoryException e) {
+        } catch (final NotDirectoryException e) {
             running = false;
             throw new CommandException(Component.text("Logger directory is not a directory"));
-        } catch (PatternSyntaxException e) {
+        } catch (final PatternSyntaxException e) {
             running = false;
             throw new CommandException(Component.text("Pattern is invalid"));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             running = false;
             throw new CommandException(Component.text("An I/O error has occurred"));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             bot.logger.error(e);
         }
 
         running = false;
     }
 
-    private StringBuilder process (BufferedReader bufferedReader, String input, boolean ignoreCase, boolean regex) throws IOException, PatternSyntaxException {
+    private StringBuilder process (final BufferedReader bufferedReader, final String input, final boolean ignoreCase, final boolean regex) throws IOException, PatternSyntaxException {
         if (regex && pattern == null) {
             if (ignoreCase)
                 pattern = Pattern.compile(input, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);

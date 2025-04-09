@@ -23,7 +23,7 @@ public class FilterManagerPlugin
 
     public final Map<PlayerEntry, String> list = Collections.synchronizedMap(new HashMap<>());
 
-    public FilterManagerPlugin (Bot bot) {
+    public FilterManagerPlugin (final Bot bot) {
         this.bot = bot;
 
         bot.executor.scheduleAtFixedRate(this::kick, 0, 10, TimeUnit.SECONDS);
@@ -46,7 +46,7 @@ public class FilterManagerPlugin
     }
 
     @Override
-    public void playerDisplayNameUpdated (PlayerEntry target, Component displayName) {
+    public void playerDisplayNameUpdated (final PlayerEntry target, final Component displayName) {
         final Pair<PlayerEntry, String> player = getFilteredFromName(target.profile.getName());
 
         if (player == null) return;
@@ -59,7 +59,7 @@ public class FilterManagerPlugin
     }
 
     @Override
-    public void commandReceived (PlayerEntry sender, String command) {
+    public void commandReceived (final PlayerEntry sender, final String command) {
         final Pair<PlayerEntry, String> player = getFilteredFromName(sender.profile.getName());
 
         if (player == null) return;
@@ -81,7 +81,7 @@ public class FilterManagerPlugin
     }
 
     @Override
-    public boolean playerMessageReceived (PlayerMessage message, ChatPacketType packetType) {
+    public boolean playerMessageReceived (final PlayerMessage message, final ChatPacketType packetType) {
         if (message.sender().profile.getName() == null) return true;
 
         final Pair<PlayerEntry, String> player = getFilteredFromName(message.sender().profile.getName());
@@ -94,13 +94,13 @@ public class FilterManagerPlugin
     }
 
     @Override
-    public void disconnected (DisconnectedEvent event) {
+    public void disconnected (final DisconnectedEvent event) {
         list.clear();
     }
 
-    public void doAll (PlayerEntry entry) { doAll(entry, ""); }
+    public void doAll (final PlayerEntry entry) { doAll(entry, ""); }
 
-    public void doAll (PlayerEntry entry, String reason) {
+    public void doAll (final PlayerEntry entry, final String reason) {
         bot.exploits.kick(entry.profile.getId());
         mute(entry, reason);
         deOp(entry);
@@ -108,31 +108,31 @@ public class FilterManagerPlugin
         clear(entry);
     }
 
-    public void mute (PlayerEntry target) { mute(target, ""); }
+    public void mute (final PlayerEntry target) { mute(target, ""); }
 
-    public void mute (PlayerEntry target, String reason) {
+    public void mute (final PlayerEntry target, final String reason) {
         bot.core.run("essentials:mute " + target.profile.getIdAsString() + " 10y " + reason);
     }
 
-    public void deOp (PlayerEntry target) {
+    public void deOp (final PlayerEntry target) {
         bot.core.run("minecraft:execute run deop " + UUIDUtilities.selector(target.profile.getId()));
     }
 
-    public void gameMode (PlayerEntry target) {
+    public void gameMode (final PlayerEntry target) {
         bot.core.run("minecraft:gamemode spectator " + UUIDUtilities.selector(target.profile.getId()));
     }
 
-    public void clear (PlayerEntry target) {
+    public void clear (final PlayerEntry target) {
         bot.core.run("minecraft:clear " + UUIDUtilities.selector(target.profile.getId()));
     }
 
     public void kick () {
-        for (PlayerEntry filtered : list.keySet()) {
+        for (final PlayerEntry filtered : list.keySet()) {
             bot.exploits.kick(filtered.profile.getId());
         }
     }
 
-    public void add (PlayerEntry entry, String reason) {
+    public void add (final PlayerEntry entry, final String reason) {
         if (
                 getFilteredFromName(entry.profile.getName()) != null || // prevent already existing filters
                         entry.profile.equals(bot.profile) // prevent self-harm !!!!!!
@@ -143,12 +143,12 @@ public class FilterManagerPlugin
         doAll(entry, reason);
     }
 
-    public void remove (String name) {
+    public void remove (final String name) {
         list.entrySet().removeIf(filtered -> filtered.getKey().profile.getName().equals(name));
     }
 
-    public Pair<PlayerEntry, String> getFilteredFromName (String name) {
-        for (Map.Entry<PlayerEntry, String> entry : list.entrySet()) {
+    public Pair<PlayerEntry, String> getFilteredFromName (final String name) {
+        for (final Map.Entry<PlayerEntry, String> entry : list.entrySet()) {
             if (entry.getKey().profile.getName().equals(name)) return Pair.of(entry.getKey(), entry.getValue());
         }
 
