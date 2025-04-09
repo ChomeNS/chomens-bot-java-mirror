@@ -141,7 +141,7 @@ public class Main {
 
             LoggerUtilities.log("Initialized all bots. Now connecting");
 
-            for (final Bot bot : bots) bot.connect();
+            for (final Bot bot : bots) bot.reconnect();
         } catch (final Exception e) {
             LoggerUtilities.error(e);
 

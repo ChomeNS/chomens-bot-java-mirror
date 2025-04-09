@@ -71,47 +71,47 @@ public class Bot extends SessionAdapter {
     public final ExecutorService executorService = Main.EXECUTOR_SERVICE;
     public final ScheduledExecutorService executor = Main.EXECUTOR;
 
-    public LoggerPlugin logger;
-    public TickPlugin tick;
-    public ChatPlugin chat;
-    public CommandSpyPlugin commandSpy;
-    public PositionPlugin position;
-    public ServerFeaturesPlugin serverFeatures;
-    public SelfCarePlugin selfCare;
-    public QueryPlugin query;
-    public ExtrasMessengerPlugin extrasMessenger;
-    public WorldPlugin world;
-    public CorePlugin core;
-    public TeamPlugin team;
-    public PlayersPlugin players;
-    public TabCompletePlugin tabComplete;
-    public CommandHandlerPlugin commandHandler;
-    public ChatCommandHandlerPlugin chatCommandHandler;
-    public HashingPlugin hashing;
-    public BossbarManagerPlugin bossbar;
-    public MusicPlayerPlugin music;
-    public TPSPlugin tps;
-    public EvalPlugin eval;
-    public TrustedPlugin trusted;
-    public GrepLogPlugin grepLog;
-    public BruhifyPlugin bruhify;
-    public CloopPlugin cloop;
-    public ExploitsPlugin exploits;
-    public FilterManagerPlugin filterManager;
-    public PlayerFilterPlugin playerFilter;
-    public CommandSuggestionPlugin commandSuggestion;
-    public MailPlugin mail;
-    public PacketSnifferPlugin packetSniffer;
-    public VoiceChatPlugin voiceChat;
-    public TeamJoinerPlugin teamJoiner;
-    public ChomeNSModIntegrationPlugin chomeNSMod;
-    public AuthPlugin auth;
-    public ScreensharePlugin screenshare;
-    public FormatCheckerPlugin formatChecker;
-    public ClearChatNameAnnouncerPlugin clearChatNameAnnouncer;
-    public WhitelistPlugin whitelist;
-    public PlayersDatabasePlugin playersDatabase;
-    public IPFilterPlugin ipFilter;
+    public final LoggerPlugin logger;
+    public final TickPlugin tick;
+    public final ChatPlugin chat;
+    public final CommandSpyPlugin commandSpy;
+    public final PositionPlugin position;
+    public final ServerFeaturesPlugin serverFeatures;
+    public final SelfCarePlugin selfCare;
+    public final QueryPlugin query;
+    public final ExtrasMessengerPlugin extrasMessenger;
+    public final WorldPlugin world;
+    public final CorePlugin core;
+    public final TeamPlugin team;
+    public final PlayersPlugin players;
+    public final TabCompletePlugin tabComplete;
+    public final CommandHandlerPlugin commandHandler;
+    public final ChatCommandHandlerPlugin chatCommandHandler;
+    public final HashingPlugin hashing;
+    public final BossbarManagerPlugin bossbar;
+    public final MusicPlayerPlugin music;
+    public final TPSPlugin tps;
+    public final EvalPlugin eval;
+    public final TrustedPlugin trusted;
+    public final GrepLogPlugin grepLog;
+    public final BruhifyPlugin bruhify;
+    public final CloopPlugin cloop;
+    public final ExploitsPlugin exploits;
+    public final FilterManagerPlugin filterManager;
+    public final PlayerFilterPlugin playerFilter;
+    public final CommandSuggestionPlugin commandSuggestion;
+    public final MailPlugin mail;
+    public final PacketSnifferPlugin packetSniffer;
+    public final VoiceChatPlugin voiceChat;
+    public final TeamJoinerPlugin teamJoiner;
+    public final ChomeNSModIntegrationPlugin chomeNSMod;
+    public final AuthPlugin auth;
+    public final ScreensharePlugin screenshare = null;
+    public final FormatCheckerPlugin formatChecker;
+    public final ClearChatNameAnnouncerPlugin clearChatNameAnnouncer;
+    public final WhitelistPlugin whitelist;
+    public final PlayersDatabasePlugin playersDatabase;
+    public final IPFilterPlugin ipFilter;
 
     public Bot (
             final Configuration.BotOption botOption,
@@ -127,9 +127,7 @@ public class Bot extends SessionAdapter {
 
         this.config = config;
         this.colorPalette = new ColorPalette(config.colorPalette);
-    }
 
-    public void connect () {
         this.logger = new LoggerPlugin(this);
         this.tick = new TickPlugin(this);
         this.chat = new ChatPlugin(this);
@@ -173,11 +171,9 @@ public class Bot extends SessionAdapter {
         this.ipFilter = new IPFilterPlugin(this);
 
         for (final Listener listener : listeners) listener.loadedPlugins(this);
-
-        reconnect();
     }
 
-    private void reconnect () {
+    protected void reconnect () {
         if (session != null) session = null; // does this do nothing?
 
         for (final Listener listener : listeners) {
