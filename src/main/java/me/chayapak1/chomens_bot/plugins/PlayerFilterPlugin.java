@@ -5,8 +5,6 @@ import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.data.filter.FilteredPlayer;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -112,7 +110,8 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
 
             return Pattern.compile(player.playerName, flags);
         } catch (Exception e) {
-            bot.chat.tellraw(Component.text(e.toString()).color(NamedTextColor.RED));
+            bot.logger.error("Error compiling player filter regex " + player.playerName + " (this shouldn't happen):");
+            bot.logger.error(e);
             return null;
         }
     }
@@ -153,12 +152,15 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
 
         final List<FilteredPlayer> matches = getPlayers(playerName);
 
-        for (FilteredPlayer match : matches) {
-            final PlayerEntry entry = bot.players.getEntry(match.playerName);
+        // loop through all the servers too
+        for (Bot bot : bot.bots) {
+            for (FilteredPlayer match : matches) {
+                final PlayerEntry entry = bot.players.getEntry(match.playerName);
 
-            if (entry == null) continue;
+                if (entry == null) continue;
 
-            bot.filterManager.add(entry, match.reason);
+                bot.filterManager.add(entry, match.reason);
+            }
         }
     }
 

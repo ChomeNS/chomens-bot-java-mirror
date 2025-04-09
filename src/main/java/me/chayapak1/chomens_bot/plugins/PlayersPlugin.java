@@ -76,7 +76,13 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
 
         final CompletableFuture<String> future = getPlayerIP(target, true);
 
-        future.thenApply(ip -> target.ip = ip);
+        future.thenApply(ip -> {
+            target.ip = ip;
+
+            for (Listener listener : listeners) listener.queriedPlayerIP(target, ip);
+
+            return null;
+        });
     }
 
     public CompletableFuture<String> getPlayerIP (PlayerEntry target) { return getPlayerIP(target, false); }
@@ -361,5 +367,7 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
         default void playerVanished (PlayerEntry target) { }
 
         default void playerChangedUsername (PlayerEntry target) { }
+
+        default void queriedPlayerIP (PlayerEntry target, String ip) { }
     }
 }

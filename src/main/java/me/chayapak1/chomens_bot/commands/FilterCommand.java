@@ -14,6 +14,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 public class FilterCommand extends Command {
     public FilterCommand () {
@@ -71,6 +73,20 @@ public class FilterCommand extends Command {
                                     Component.text(player)
                             )
                     );
+                }
+
+                if (regex) {
+                    // try validating the regex
+                    try {
+                        Pattern.compile(player);
+                    } catch (PatternSyntaxException e) {
+                        throw new CommandException(
+                                Component.translatable(
+                                        "Failed to parse filter regex: %s",
+                                        Component.text(e.toString())
+                                )
+                        );
+                    }
                 }
 
                 final boolean finalRegex = regex;

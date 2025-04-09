@@ -45,7 +45,7 @@ public class IPFilterPlugin implements PlayersPlugin.Listener, CorePlugin.Listen
         bot.players.addListener(this);
         bot.core.addListener(this);
 
-        bot.executor.scheduleAtFixedRate(this::checkAllPlayers, 5, 15, TimeUnit.SECONDS);
+        bot.executor.scheduleAtFixedRate(this::checkAllPlayers, 5, 5, TimeUnit.SECONDS);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class IPFilterPlugin implements PlayersPlugin.Listener, CorePlugin.Listen
     }
 
     @Override
-    public void playerJoined (PlayerEntry target) {
+    public void queriedPlayerIP (PlayerEntry target, String ip) {
         if (localList.isEmpty()) return;
 
         check(target);
@@ -142,9 +142,7 @@ public class IPFilterPlugin implements PlayersPlugin.Listener, CorePlugin.Listen
             final String eachIP = ipEntry.getKey();
             final String reason = ipEntry.getValue();
 
-            if (!eachIP.equals(ip)) continue;
-
-            if (entry.profile.equals(bot.profile)) continue;
+            if (entry.profile.equals(bot.profile) || !eachIP.equals(ip)) continue;
 
             bot.filterManager.add(entry, reason);
         }

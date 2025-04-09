@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS players (username VARCHAR(255) PRIMARY KEY, data LONGTEXT);";
@@ -152,34 +151,29 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
                 insertPlayerStatement.setString(2, objectMapper.writeValueAsString(baseObject));
 
                 insertPlayerStatement.executeUpdate();
+            } catch (SQLException | JsonProcessingException e) {
+                bot.logger.error(e);
+            }
+        });
+    }
 
-                final CompletableFuture<String> future = bot.players.getPlayerIP(target, true);
+    @Override
+    public void queriedPlayerIP (PlayerEntry target, String ip) {
+        DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
+            try {
+                final PreparedStatement updatePlayerStatement = Main.database.connection.prepareStatement(UPDATE_PLAYER);
 
-                if (future == null) return;
+                updatePlayerStatement.setString(1, "$.ips");
+                updatePlayerStatement.setString(2, "$.ips");
 
-                future.thenApply(output -> {
-                    if (output == null) return null;
+                final ObjectNode ipsObject = JsonNodeFactory.instance.objectNode();
+                ipsObject.put(bot.getServerString(true), ip);
 
-                    try {
-                        final PreparedStatement updatePlayerStatement = Main.database.connection.prepareStatement(UPDATE_PLAYER);
+                updatePlayerStatement.setString(3, objectMapper.writeValueAsString(ipsObject));
 
-                        updatePlayerStatement.setString(1, "$.ips");
-                        updatePlayerStatement.setString(2, "$.ips");
+                updatePlayerStatement.setString(4, target.profile.getName());
 
-                        final ObjectNode ipsObject = JsonNodeFactory.instance.objectNode();
-                        ipsObject.put(bot.getServerString(true), output);
-
-                        updatePlayerStatement.setString(3, objectMapper.writeValueAsString(ipsObject));
-
-                        updatePlayerStatement.setString(4, target.profile.getName());
-
-                        updatePlayerStatement.executeUpdate();
-                    } catch (SQLException | JsonProcessingException e) {
-                        bot.logger.error(e);
-                    }
-
-                    return output;
-                });
+                updatePlayerStatement.executeUpdate();
             } catch (SQLException | JsonProcessingException e) {
                 bot.logger.error(e);
             }
