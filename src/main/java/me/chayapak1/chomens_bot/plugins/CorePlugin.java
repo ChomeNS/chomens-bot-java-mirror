@@ -35,7 +35,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class CorePlugin
         extends Bot.Listener
-        implements PositionPlugin.Listener, WorldPlugin.Listener, TickPlugin.Listener {
+        implements PositionPlugin.Listener, WorldPlugin.Listener, TickPlugin.Listener
+{
     public static final int COMMAND_BLOCK_ID = 418;
 
     private final Bot bot;
@@ -54,8 +55,14 @@ public class CorePlugin
 
     public final Queue<String> placeBlockQueue = new ConcurrentLinkedQueue<>();
 
+    public final Queue<String> pendingCommands = new ConcurrentLinkedQueue<>();
+
     private final AtomicInteger commandsPerTick = new AtomicInteger(0);
     private final AtomicInteger commandsPerSecond = new AtomicInteger(0);
+
+    private final AtomicInteger positionChangesPerSecond = new AtomicInteger(0);
+
+    private boolean exists = false;
 
     private boolean shouldRefill = false;
 
@@ -92,6 +99,17 @@ public class CorePlugin
     public void onTick () {
         if (commandsPerTick.get() > 0) commandsPerTick.decrementAndGet();
 
+        if (!pendingCommands.isEmpty() && exists) {
+            // people that pre-order on TEMU application. Shop Like A Billionaire!!!
+            if (pendingCommands.size() > 150) pendingCommands.clear();
+
+            for (final String pendingCommand : pendingCommands) {
+                run(pendingCommand);
+            }
+
+            pendingCommands.clear();
+        }
+
         if (placeBlockQueue.size() > 300) {
             placeBlockQueue.clear();
             return;
@@ -110,10 +128,14 @@ public class CorePlugin
 
         resizeTick();
 
-        if (!shouldRefill) return;
+        exists = isCoreExists();
 
-        refill(false);
-        shouldRefill = false;
+        if (shouldRefill) {
+            refill(false);
+            shouldRefill = false;
+        }
+
+        positionChangesPerSecond.set(0);
     }
 
     public boolean hasRateLimit () {
@@ -180,7 +202,8 @@ public class CorePlugin
 
             if (isRateLimited() && hasRateLimit()) return;
 
-            forceRun(command);
+            if (exists) forceRun(command);
+            else pendingCommands.add(command);
 
             if (hasRateLimit()) commandsPerSecond.incrementAndGet();
         } else if (command.length() < 256) {
@@ -346,6 +369,27 @@ public class CorePlugin
         return true;
     }
 
+    // not to be confused with the one above, where it checks if
+    // every single block in that core is a command block,
+    // this one just only checks if the core exists, meaning
+    // that even if the core has only 1 out of 256 blocks,
+    // it will still return true
+    public boolean isCoreExists () {
+        if (!ready) return false;
+
+        for (int y = from.getY(); y <= to.getY(); y++) {
+            for (int z = from.getZ(); z <= to.getZ(); z++) {
+                for (int x = from.getX(); x <= to.getX(); x++) {
+                    final int block = bot.world.getBlock(x, y, z);
+
+                    if (isCommandBlockState(block)) return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     private void checkCoreTick () {
         if (!isCoreComplete()) shouldRefill = true;
     }
@@ -402,6 +446,8 @@ public class CorePlugin
     @Override
     public void positionChange (final Vector3d position) {
         if (bot.position.isGoingDownFromHeightLimit) return;
+
+        positionChangesPerSecond.incrementAndGet();
 
         final int coreChunkPosX = from == null ? -1 : (int) Math.floor((double) from.getX() / 16);
         final int coreChunkPosZ = from == null ? -1 : (int) Math.floor((double) from.getZ() / 16);
@@ -482,8 +528,13 @@ public class CorePlugin
                                     (refilled != null && refilled)
                     ) continue;
 
+                    final boolean useChat = positionChangesPerSecond.get() > 10;
+
+                    // bot becomes ChomeNS Mod user when using chat
                     final String command = String.format(
-                            "minecraft:fill %s %s %s %s %s %s minecraft:command_block{CustomName:'%s'}",
+                            "%sfill %d %d %d %d %d %d command_block%s",
+
+                            useChat ? "" : "minecraft:",
 
                             from.getX(),
                             y,
@@ -493,12 +544,17 @@ public class CorePlugin
                             y,
                             to.getZ(),
 
-                            bot.config.core.customName
+                            useChat
+                                    ? ""
+                                    : "{CustomName:'" +
+                                        bot.config.core.customName
+                                                .replace("\\", "\\\\")
+                                                .replace("'", "\\'") +
+                                        "'}"
                     );
 
-                    //        bot.chat.send(command);
-
-                    runPlaceBlock(command);
+                    if (useChat) bot.chat.sendCommandInstantly(command);
+                    else runPlaceBlock(command);
 
                     refilledMap.put(y, true);
                 }
