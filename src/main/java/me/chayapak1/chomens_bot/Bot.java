@@ -41,7 +41,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Bot extends SessionAdapter {
-    private final ArrayList<Listener> listeners = new ArrayList<>();
+    private final List<Listener> listeners = new ArrayList<>();
 
     public final String host;
     public final int port;

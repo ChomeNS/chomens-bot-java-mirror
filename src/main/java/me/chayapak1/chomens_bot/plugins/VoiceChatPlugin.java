@@ -206,7 +206,7 @@ public class VoiceChatPlugin extends Bot.Listener implements Runnable {
 
     @Override
     public void disconnected (final DisconnectedEvent event) {
-        socket.close();
+        if (socket != null) socket.close();
         groups.clear();
 
         running = false;
