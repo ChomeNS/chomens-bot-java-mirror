@@ -30,7 +30,6 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.Serv
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -44,8 +43,6 @@ public class CorePlugin
     private final List<Listener> listeners = new ArrayList<>();
 
     public volatile boolean ready = false;
-
-    private ScheduledFuture<?> refillTask;
 
     public final Vector3i fromSize;
     public Vector3i toSize;
@@ -76,8 +73,6 @@ public class CorePlugin
                 15
         );
 
-        bot.position.addListener(this);
-
         if (hasRateLimit() && hasReset()) {
             bot.executor.scheduleAtFixedRate(
                     () -> commandsPerSecond.set(0),
@@ -90,6 +85,7 @@ public class CorePlugin
         bot.addListener(this);
         bot.world.addListener(this);
         bot.tick.addListener(this);
+        bot.position.addListener(this);
     }
 
     @Override
@@ -426,7 +422,9 @@ public class CorePlugin
         if (!ready) {
             ready = true;
 
-            refillTask = bot.executor.scheduleAtFixedRate(this::refill, 0, bot.config.core.refillInterval, TimeUnit.MILLISECONDS);
+            reset();
+            refill();
+
             for (final Listener listener : listeners) listener.coreReady();
         }
     }
@@ -440,10 +438,6 @@ public class CorePlugin
     @Override
     public void disconnected (final DisconnectedEvent event) {
         ready = false;
-
-        refillTask.cancel(false);
-
-        reset();
     }
 
     public void recalculateRelativePositions () {

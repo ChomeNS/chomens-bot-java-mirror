@@ -387,7 +387,11 @@ public class Bot extends SessionAdapter {
         }
 
         for (final SessionListener listener : listeners) {
-            listener.disconnected(disconnectedEvent);
+            try {
+                listener.disconnected(disconnectedEvent);
+            } catch (final Exception e) {
+                logger.error(e);
+            }
         }
     }
 

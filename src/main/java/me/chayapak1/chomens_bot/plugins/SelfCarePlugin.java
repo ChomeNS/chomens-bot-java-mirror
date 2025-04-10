@@ -4,7 +4,6 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Configuration;
 import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.network.Session;
-import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.data.game.ClientCommand;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.EntityEvent;
@@ -22,13 +21,10 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.inventory.S
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundPlayerCommandPacket;
 
 import java.util.Arrays;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener {
     private final Bot bot;
-
-    private ScheduledFuture<?> checkTask;
 
     public boolean visible = false;
 
@@ -154,13 +150,11 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener 
         muted = false;
         prefix = false;
 
-        final Runnable task = () -> {
+        bot.executor.scheduleAtFixedRate(() -> {
             if (!bot.loggedIn) return;
 
             check();
-        };
-
-        checkTask = bot.executor.scheduleAtFixedRate(task, 0, bot.config.selfCare.delay, TimeUnit.MILLISECONDS);
+        }, 0, bot.config.selfCare.delay, TimeUnit.MILLISECONDS);
     }
 
     private void packetReceived (final ClientboundGameEventPacket packet) {
@@ -219,10 +213,5 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener 
     private void runEssentialsCommand (final String command) {
         if (bot.options.useChat) bot.chat.sendCommandInstantly(command);
         else bot.core.run(command);
-    }
-
-    @Override
-    public void disconnected (final DisconnectedEvent event) {
-        checkTask.cancel(true);
     }
 }

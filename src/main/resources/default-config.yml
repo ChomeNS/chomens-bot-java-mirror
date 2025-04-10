@@ -106,8 +106,7 @@ namespace: 'default_chomens_bot' # useful when you make a clone of the bot
 teamName: 'default_chomens_bot' # i recommend having this value the same as namespace
 
 core:
-  refillInterval: 300000 # (60 * 5) * 1000 (5 minutes)
-  # PLEASE give valid JSON component here else the core don't refill at all
+  # PLEASE give valid JSON component here
   customName: '[{"text":"ChomeNS ","color":"yellow"},{"text":"Core","color":"green"},{"text":"™","color":"gold"}]'
 
 # https://code.chipmunk.land/ChomeNS/eval-server
