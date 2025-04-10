@@ -13,19 +13,15 @@ public class LoggerPlugin implements ChatPlugin.Listener {
 
     public boolean logToConsole = true;
 
-    private int totalConnects = 0;
-
     public LoggerPlugin (final Bot bot) {
         this.bot = bot;
 
         bot.addListener(new Bot.Listener() {
             @Override
             public void connecting () {
-                totalConnects++;
-
-                if (totalConnects > 20) return;
-                else if (totalConnects == 20) {
-                    log("Suspending connecting and disconnect messages from now on");
+                if (bot.connectingTimes > 10) return;
+                else if (bot.connectingTimes == 10) {
+                    log("Suppressing connection status messages from now on");
 
                     return;
                 }
@@ -46,13 +42,11 @@ public class LoggerPlugin implements ChatPlugin.Listener {
                                 bot.getServerString(true)
                         )
                 );
-
-                totalConnects = 0;
             }
 
             @Override
             public void disconnected (final DisconnectedEvent event) {
-                if (totalConnects >= 20) return;
+                if (bot.disconnectedTimes >= 10) return;
 
                 final Component message = Component.translatable(
                         "Disconnected from %s, reason: %s",

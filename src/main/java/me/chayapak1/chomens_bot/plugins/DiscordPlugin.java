@@ -46,8 +46,6 @@ public class DiscordPlugin extends ListenerAdapter {
 
     public final String discordUrl;
 
-    private final Map<String, Integer> totalConnects = new HashMap<>();
-
     public DiscordPlugin (final Configuration config) {
         final Configuration.Discord options = config.discord;
         this.prefix = options.prefix;
@@ -82,8 +80,6 @@ public class DiscordPlugin extends ListenerAdapter {
 
             bot.executor.scheduleAtFixedRate(() -> onDiscordTick(channelId), 0, 50, TimeUnit.MILLISECONDS);
 
-            totalConnects.put(channelId, 0); // is this necessary?
-
             bot.addListener(new Bot.Listener() {
                 @Override
                 public void loadedPlugins (final Bot bot) {
@@ -108,13 +104,9 @@ public class DiscordPlugin extends ListenerAdapter {
 
                 @Override
                 public void connecting () {
-                    final int newTotalConnects = totalConnects.get(channelId) + 1;
-
-                    totalConnects.put(channelId, newTotalConnects);
-
-                    if (newTotalConnects > 6) return;
-                    else if (newTotalConnects == 6) {
-                        sendMessageInstantly("Suspending connecting and disconnect messages from now on", channelId);
+                    if (bot.connectingTimes > 6) return;
+                    else if (bot.connectingTimes == 6) {
+                        sendMessageInstantly("Suppressing connection status messages from now on", channelId);
 
                         return;
                     }
@@ -130,8 +122,6 @@ public class DiscordPlugin extends ListenerAdapter {
 
                 @Override
                 public void connected (final ConnectedEvent event) {
-                    totalConnects.put(channelId, 0);
-
                     sendMessageInstantly(
                             String.format(
                                     "Successfully connected to: `%s`",
@@ -143,7 +133,7 @@ public class DiscordPlugin extends ListenerAdapter {
 
                 @Override
                 public void disconnected (final DisconnectedEvent event) {
-                    if (totalConnects.get(channelId) >= 6) return;
+                    if (bot.disconnectedTimes >= 6) return;
 
                     final String reason = ComponentUtilities.stringifyDiscordAnsi(event.getReason());
                     sendMessageInstantly(
