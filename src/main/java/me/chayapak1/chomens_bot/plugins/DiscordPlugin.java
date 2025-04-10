@@ -33,6 +33,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
 
 // this is one of the classes which has >500 lines LMAO
 public class DiscordPlugin extends ListenerAdapter {
@@ -515,13 +516,28 @@ public class DiscordPlugin extends ListenerAdapter {
             final long logDelay = 2000;
 
             nextLogTimes.put(channelId, currentTime + logDelay);
+
             String message;
+
             synchronized (logMessages) {
                 final StringBuilder logMessage = logMessages.get(channelId);
-                message = logMessage.toString()
-                        // the ZWSP fixes discord.gg/discord.com showing invite
-                        .replace("discord.gg", "discord\u200b.\u200bgg")
-                        .replace("discord.com", "discord\u200b.\u200bcom");
+
+                final Matcher inviteMatcher = Message.INVITE_PATTERN.matcher(logMessage.toString());
+
+                final StringBuilder messageBuilder = new StringBuilder();
+
+                while (inviteMatcher.find()) {
+                    inviteMatcher.appendReplacement(
+                            messageBuilder,
+                            Matcher.quoteReplacement(
+                                    inviteMatcher.group()
+                                            // fixes discord.gg (and some more discord urls) showing invite
+                                            .replace(".", "\u200b.")
+                            )
+                    );
+                }
+
+                inviteMatcher.appendTail(messageBuilder);
 
                 final int maxLength = 2_000 - ("""
                         ```ansi
@@ -529,9 +545,8 @@ public class DiscordPlugin extends ListenerAdapter {
                         ```"""
                 ).length(); // kinda sus
 
-                if (message.length() >= maxLength) {
-                    message = message.substring(0, maxLength);
-                }
+                message = messageBuilder.substring(0, Math.min(messageBuilder.length(), maxLength));
+
                 logMessage.setLength(0);
             }
 
