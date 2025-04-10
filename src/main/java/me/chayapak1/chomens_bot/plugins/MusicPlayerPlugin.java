@@ -56,6 +56,7 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
     public float pitch = 0;
     public float speed = 1;
 
+    public float volume = 0;
     public int amplify = 1;
 
     public boolean rainbow = false; // nbs easter egg
@@ -402,7 +403,7 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
                         note.pitch != note.shiftedPitch ||
                                 note.shiftedInstrument != note.instrument;
 
-                final double volume = note.volume;
+                final double volume = note.volume + this.volume;
 
                 if (shouldCustomPitch) {
                     bot.core.run(

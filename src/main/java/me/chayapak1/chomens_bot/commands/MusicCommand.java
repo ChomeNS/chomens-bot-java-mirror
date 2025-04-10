@@ -52,6 +52,7 @@ public class MusicCommand extends Command {
                         "goto <timestamp>",
                         "pitch <pitch>",
                         "speed <speed>",
+                        "volume <volume modifier>",
                         "amplify <amplification>",
                         "noteinstrument <instrument>",
                         "pause",
@@ -61,7 +62,7 @@ public class MusicCommand extends Command {
                 new String[] { "song" },
                 TrustLevel.PUBLIC,
                 false,
-                new ChatPacketType[]{ ChatPacketType.DISGUISED }
+                new ChatPacketType[] { ChatPacketType.DISGUISED }
         );
     }
 
@@ -84,6 +85,7 @@ public class MusicCommand extends Command {
             case "goto" -> goTo(context);
             case "pitch" -> pitch(context);
             case "speed" -> speed(context);
+            case "volume" -> volume(context);
             case "amplify" -> amplify(context);
             case "noteinstrument" -> noteInstrument(context);
             case "pause", "resume" -> pause(context);
@@ -448,6 +450,21 @@ public class MusicCommand extends Command {
         return Component.empty()
                 .append(Component.text("Set the speed to "))
                 .append(Component.text(speed).color(bot.colorPalette.number))
+                .color(bot.colorPalette.defaultColor);
+    }
+
+    public Component volume (final CommandContext context) throws CommandException {
+        context.checkOverloadArgs(2);
+
+        final Bot bot = context.bot;
+
+        final float volume = context.getFloat(true, false);
+
+        bot.music.volume = volume;
+
+        return Component.empty()
+                .append(Component.text("Set the volume modifier to "))
+                .append(Component.text(volume).color(bot.colorPalette.number))
                 .color(bot.colorPalette.defaultColor);
     }
 
