@@ -106,7 +106,7 @@ public class ComponentUtilities {
     public static String deserializeFromDiscordAnsi (final String original) { return new ComponentParser().deserializeFromDiscordAnsi(original); }
 
     private static class ComponentParser {
-        public static final Pattern ARG_PATTERN = Pattern.compile("%(?:(\\d+)\\$)?([s%])");
+        public static final Pattern ARG_PATTERN = Pattern.compile("%(?:(\\d+)\\$)?([A-Za-z%]|$)");
 
         public static final long MAX_TIME = 100; // this is actually more than we need
 
@@ -438,60 +438,111 @@ public class ComponentUtilities {
         private String stringifyPartially (final TranslatableComponent message, final String color, final String style) {
             final String format = getOrReturnFallback(message);
 
-            // totallynotskidded™️from HBot (and changed a bit)
             final Matcher matcher = ARG_PATTERN.matcher(format);
             final StringBuilder sb = new StringBuilder();
 
-            // not checking if arguments length equals input format length
-            // is INTENTIONAL and is a FEATURE
-            int i = 0;
-            while (matcher.find()) {
-                if (matcher.group().equals("%%")) {
-                    matcher.appendReplacement(sb, "%");
-                } else {
-                    final String idxStr = matcher.group(1);
+            // RIPPED straight from minecraft source code !!! :D
+            try {
+                int i = 0;
 
-                    try {
+                int lastIndex = 0;
+
+                while (matcher.find(lastIndex)) {
+                    final int start = matcher.start();
+                    final int end = matcher.end();
+
+                    if (start > lastIndex) {
+                        final String formatSegment = format.substring(lastIndex, start);
+
+                        if (formatSegment.indexOf('%') != -1) {
+                            throw new IllegalArgumentException();
+                        }
+
+                        appendTranslation(
+                                color,
+                                style,
+                                sb,
+                                Component.text(formatSegment)
+                        );
+                    }
+
+                    final String full = format.substring(start, end);
+
+                    if (matcher.group().equals("%") && full.equals("%%")) {
+                        sb.append('%');
+                    } else if (matcher.group(2).equals("s")) {
+                        final String idxStr = matcher.group(1);
+
                         final int idx = idxStr == null ? i++ : (Integer.parseInt(idxStr) - 1);
 
-                        if (idx >= 0 && idx < message.arguments().size()) {
-                            final ComponentParser parser = new ComponentParser();
+                        if (idx < 0 || idx > message.arguments().size()) throw new IllegalArgumentException();
 
-                            parser.lastColor = lastColor + color;
-                            parser.lastStyle = lastStyle + style;
-                            parser.parseStartTime = parseStartTime;
-                            parser.isSubParsing = true;
+                        appendTranslation(
+                                color,
+                                style,
+                                sb,
+                                message.arguments()
+                                        .get(idx)
+                                        .asComponent()
+                        );
+                    } else {
+                        throw new IllegalArgumentException();
+                    }
 
-                            final String orderedStyling = type == ParseType.SECTION_SIGNS
-                                    ? lastColor + lastStyle + color + style
-                                    : lastStyle + lastColor + style + color;
-
-                            matcher.appendReplacement(
-                                    sb,
-                                    Matcher.quoteReplacement(
-                                            getPartialResult(
-                                                    parser.stringify(
-                                                            message.arguments()
-                                                                    .get(idx)
-                                                                    .asComponent(),
-                                                            type
-                                                    ),
-                                                    color,
-                                                    style,
-                                                    false
-                                            ) + orderedStyling
-                                    )
-                            );
-                        } else {
-                            matcher.appendReplacement(sb, "");
-                        }
-                    } catch (final NumberFormatException ignored) { } // is this a good idea?
+                    lastIndex = end;
                 }
+
+                if (lastIndex < format.length()) {
+                    final String remaining = format.substring(lastIndex);
+
+                    if (remaining.indexOf('%') != -1) {
+                        throw new IllegalArgumentException();
+                    }
+
+                    appendTranslation(
+                            color,
+                            style,
+                            sb,
+                            Component.text(remaining)
+                    );
+                }
+            } catch (final Exception e) {
+                sb.setLength(0);
+                sb.append(format);
             }
 
-            matcher.appendTail(sb);
-
             return getPartialResult(sb.toString(), color, style, true);
+        }
+
+        private void appendTranslation (
+                final String color,
+                final String style,
+                final StringBuilder sb,
+                final Component message
+        ) {
+            final ComponentParser parser = new ComponentParser();
+
+            parser.lastColor = lastColor + color;
+            parser.lastStyle = lastStyle + style;
+            parser.parseStartTime = parseStartTime;
+            parser.isSubParsing = true;
+
+            final String orderedStyling = type == ParseType.SECTION_SIGNS
+                    ? lastColor + lastStyle + color + style
+                    : lastStyle + lastColor + style + color;
+
+            sb.append(
+                    getPartialResult(
+                            parser.stringify(
+                                    message,
+                                    type
+                            ),
+                            color,
+                            style,
+                            false
+                    )
+            );
+            sb.append(orderedStyling);
         }
 
         // on the client side, this acts just like TextComponent
