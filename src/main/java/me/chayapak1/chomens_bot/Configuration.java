@@ -178,7 +178,7 @@ public class Configuration {
         public boolean useCore = true;
         public boolean useCorePlaceBlock = false;
         public boolean useChat = false;
-        public boolean coreCommandSpy = false;
+        public boolean coreCommandSpy = true;
         public boolean resolveSRV = true;
         public int reconnectDelay = 2000;
         public int chatQueueDelay = 125;
