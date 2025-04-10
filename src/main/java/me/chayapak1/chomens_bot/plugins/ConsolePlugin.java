@@ -5,7 +5,7 @@ import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.contexts.ConsoleCommandContext;
-import me.chayapak1.chomens_bot.util.ComponentUtilities;
+import me.chayapak1.chomens_bot.util.ChatMessageUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentBuilder;
 import net.kyori.adventure.text.SelectorComponent;
@@ -14,7 +14,6 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.jline.reader.*;
 
@@ -23,7 +22,6 @@ import java.util.Map;
 
 public class ConsolePlugin implements Completer {
     private static final ConsoleFormatRenderer RENDERER = new ConsoleFormatRenderer();
-    private static final LegacyComponentSerializer LEGACY = LegacyComponentSerializer.legacyAmpersand();
 
     private final List<Bot> allBots;
 
@@ -104,9 +102,7 @@ public class ConsolePlugin implements Completer {
 
             if (!bot.loggedIn) continue;
 
-            final Component stylizedMessage = LEGACY
-                    .deserialize(line)
-                    .replaceText(ComponentUtilities.URL_REPLACEMENT_CONFIG);
+            final Component stylizedMessage = ChatMessageUtilities.applyChatMessageStyling(line);
 
             final Component rendered = RENDERER.render(
                     format,

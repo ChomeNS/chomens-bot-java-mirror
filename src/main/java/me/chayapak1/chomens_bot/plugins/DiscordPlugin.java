@@ -4,6 +4,7 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.contexts.DiscordCommandContext;
+import me.chayapak1.chomens_bot.util.ChatMessageUtilities;
 import me.chayapak1.chomens_bot.util.CodeBlockUtilities;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
@@ -24,7 +25,6 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.jetbrains.annotations.NotNull;
@@ -327,10 +327,7 @@ public class DiscordPlugin extends ListenerAdapter {
 
         final String replacedMessageContent = replaceMessageContent(message.getContentDisplay());
 
-        Component actualMessage = LegacyComponentSerializer
-                .legacyAmpersand()
-                .deserialize(replacedMessageContent)
-                .replaceText(ComponentUtilities.URL_REPLACEMENT_CONFIG);
+        Component actualMessage = ChatMessageUtilities.applyChatMessageStyling(replacedMessageContent);
 
         if (!extraComponents.isEmpty()) {
             if (!replacedMessageContent.isBlank()) actualMessage = actualMessage.append(Component.space());

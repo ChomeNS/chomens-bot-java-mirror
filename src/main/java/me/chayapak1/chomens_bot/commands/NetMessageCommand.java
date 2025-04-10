@@ -6,12 +6,11 @@ import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
-import me.chayapak1.chomens_bot.util.ComponentUtilities;
+import me.chayapak1.chomens_bot.util.ChatMessageUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.List;
 
@@ -53,9 +52,7 @@ public class NetMessageCommand extends Command {
 
         final String rawMessage = context.getString(true, true);
 
-        final Component stylizedMessage = LegacyComponentSerializer.legacyAmpersand()
-                .deserialize(rawMessage)
-                .replaceText(ComponentUtilities.URL_REPLACEMENT_CONFIG);
+        final Component stylizedMessage = ChatMessageUtilities.applyChatMessageStyling(rawMessage);
 
         final Component component = Component.translatable(
                 "[%s]%s%s%s› %s",

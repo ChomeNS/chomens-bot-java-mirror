@@ -4,8 +4,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.kyori.adventure.text.*;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
@@ -20,49 +18,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ComponentUtilities {
-    // https://github.com/kaboomserver/extras/blob/master/src/main/java/pw/kaboom/extras/modules/player/PlayerChat.java#L49C9-L81C26
-    // with the hover event added
-    public static final TextReplacementConfig URL_REPLACEMENT_CONFIG =
-            TextReplacementConfig
-                    .builder()
-                    .match(Pattern
-                                   .compile("((https?://(ww(w|\\d)\\.)?|ww(w|\\d))[-a-zA-Z0-9@:%._+~#=]{1,256}"
-                                                    + "\\.[a-zA-Z0-9]{1,63}\\b([-a-zA-Z0-9@:%_+.~#?&/=]*))"))
-                    .replacement((b, c) -> {
-                        if (c == null) {
-                            return null;
-                        }
-
-                        if (b.groupCount() < 1) {
-                            return null;
-                        }
-
-                        final String content = b.group(1);
-                        final String url;
-
-                    /*
-                    Minecraft doesn't accept "www.google.com" as a URL
-                    in click events
-                     */
-                        if (content.contains("://")) {
-                            url = content;
-                        } else {
-                            url = "https://" + content;
-                        }
-
-                        return Component.text(content, NamedTextColor.BLUE)
-                                .decorate(TextDecoration.UNDERLINED)
-                                .clickEvent(ClickEvent.openUrl(url))
-                                .hoverEvent(
-                                        HoverEvent.showText(
-                                                Component
-                                                        .text("Click here to open the URL")
-                                                        .color(NamedTextColor.BLUE)
-                                        )
-                                );
-                    })
-                    .build();
-
     // component parsing
     // rewritten from chipmunkbot, a lot of stuff has changed, and also ANSI and section signs support, etc...
     public static final Map<String, String> LANGUAGE = loadJsonStringMap("language.json");
