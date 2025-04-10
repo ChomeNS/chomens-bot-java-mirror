@@ -14,6 +14,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 // based off of HBot's supercb command
 public class CommandBlockCommand extends Command {
@@ -40,7 +41,11 @@ public class CommandBlockCommand extends Command {
     public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        runCommand(bot, context, context.getString(true, true), null);
+        try {
+            runCommand(bot, context, context.getString(true, true), null);
+        } catch (final PatternSyntaxException e) {
+            throw new CommandException(Component.text(e.toString()));
+        }
 
         return null;
     }
