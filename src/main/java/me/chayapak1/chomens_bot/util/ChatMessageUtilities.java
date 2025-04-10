@@ -9,8 +9,6 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public class ChatMessageUtilities {
     private static final LegacyComponentSerializer SERIALIZER = LegacyComponentSerializer
-
-            // https://sus.red/abc?a=b&c=d will break the styles, click event, hover events, everything
             .legacySection()
 
             .toBuilder()
