@@ -7,6 +7,8 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
+import java.util.regex.Pattern;
+
 public class ChatMessageUtilities {
     private static final LegacyComponentSerializer SERIALIZER = LegacyComponentSerializer
             .legacySection()
@@ -14,6 +16,9 @@ public class ChatMessageUtilities {
             .toBuilder()
 
             .extractUrls(
+                    Pattern
+                            .compile("((https?://(ww(w|\\d)\\.)?|ww(w|\\d))[-a-zA-Z0-9@:%._+~#=]{1,256}"
+                                             + "\\.[a-zA-Z0-9]{1,63}\\b([-a-zA-Z0-9@:%_+.~#?&/=]*))"),
                     Style.style(
                             NamedTextColor.BLUE,
                             TextDecoration.UNDERLINED,
