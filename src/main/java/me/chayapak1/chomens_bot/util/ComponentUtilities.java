@@ -63,7 +63,9 @@ public class ComponentUtilities {
     private static class ComponentParser {
         public static final Pattern ARG_PATTERN = Pattern.compile("%(?:(\\d+)\\$)?([A-Za-z%]|$)");
 
-        public static final long MAX_TIME = 100; // this is actually more than we need
+        public static final long MAX_TIME = 5; // Change Clock Time And Break Bot !
+
+        public static final int MAX_DEPTH = 256;
 
         public static final Map<String, String> ANSI_MAP = new HashMap<>();
 
@@ -152,6 +154,8 @@ public class ComponentUtilities {
 
         private long parseStartTime = System.currentTimeMillis();
 
+        private int depth = 0;
+
         private String lastColor = "";
         private String lastStyle = "";
 
@@ -187,7 +191,7 @@ public class ComponentUtilities {
         private String stringify (final Component message, final ParseType type) {
             this.type = type;
 
-            if (System.currentTimeMillis() > parseStartTime + MAX_TIME) return "";
+            if (depth > MAX_DEPTH || System.currentTimeMillis() > parseStartTime + MAX_TIME) return "";
 
             try {
                 final StringBuilder builder = new StringBuilder();
@@ -204,6 +208,7 @@ public class ComponentUtilities {
                     parser.lastColor = lastColor + color;
                     parser.lastStyle = lastStyle + style;
                     parser.parseStartTime = parseStartTime;
+                    parser.depth = depth;
                     parser.isSubParsing = true;
                     builder.append(parser.stringify(child, type));
                 }
@@ -475,11 +480,14 @@ public class ComponentUtilities {
                 final StringBuilder sb,
                 final Component message
         ) {
+            depth++;
+
             final ComponentParser parser = new ComponentParser();
 
             parser.lastColor = lastColor + color;
             parser.lastStyle = lastStyle + style;
             parser.parseStartTime = parseStartTime;
+            parser.depth = depth;
             parser.isSubParsing = true;
 
             final String orderedStyling = type == ParseType.SECTION_SIGNS
