@@ -67,10 +67,10 @@ public class DiscordPlugin {
 
         new GuildMessageEventHandler(jda, prefix, messagePrefix);
 
+        Main.EXECUTOR.scheduleAtFixedRate(this::onDiscordTick, 0, 50, TimeUnit.MILLISECONDS);
+
         for (final Bot bot : Main.bots) {
             final String channelId = servers.get(bot.getServerString(true));
-
-            bot.executor.scheduleAtFixedRate(() -> onDiscordTick(channelId), 0, 50, TimeUnit.MILLISECONDS);
 
             bot.addListener(new Bot.Listener() {
                 @Override
@@ -186,54 +186,58 @@ public class DiscordPlugin {
         }
     }
 
-    public void onDiscordTick (final String channelId) {
-        if (!logMessages.containsKey(channelId) || logMessages.get(channelId).isEmpty()) {
-            return;
-        }
+    public void onDiscordTick () {
+        for (final Bot bot : Main.bots) {
+            final String channelId = servers.get(bot.getServerString(true));
 
-        final long currentTime = System.currentTimeMillis();
-        if (!nextLogTimes.containsKey(channelId)
-                || (currentTime >= nextLogTimes.get(channelId) && doneSendingInLogs.get(channelId))
-                || currentTime - nextLogTimes.get(channelId) > 5000
-        ) {
-            final long logDelay = 2000;
-
-            nextLogTimes.put(channelId, currentTime + logDelay);
-
-            String message;
-
-            final StringBuilder logMessage = logMessages.get(channelId);
-
-            final Matcher inviteMatcher = Message.INVITE_PATTERN.matcher(logMessage.toString());
-
-            final StringBuilder messageBuilder = new StringBuilder();
-
-            while (inviteMatcher.find()) {
-                inviteMatcher.appendReplacement(
-                        messageBuilder,
-                        Matcher.quoteReplacement(
-                                inviteMatcher.group()
-                                        // fixes discord.gg (and some more discord urls) showing invite
-                                        .replace(".", "\u200b.")
-                        )
-                );
+            if (!logMessages.containsKey(channelId) || logMessages.get(channelId).isEmpty()) {
+                continue;
             }
 
-            inviteMatcher.appendTail(messageBuilder);
+            final long currentTime = System.currentTimeMillis();
+            if (!nextLogTimes.containsKey(channelId)
+                    || (currentTime >= nextLogTimes.get(channelId) && doneSendingInLogs.get(channelId))
+                    || currentTime - nextLogTimes.get(channelId) > 5000
+            ) {
+                final long logDelay = 2000;
 
-            final int maxLength = 2_000 - ("""
-                    ```ansi
-                    
-                    ```"""
-            ).length(); // kinda sus
+                nextLogTimes.put(channelId, currentTime + logDelay);
 
-            message = messageBuilder.substring(0, Math.min(messageBuilder.length(), maxLength));
+                String message;
 
-            logMessage.setLength(0);
+                final StringBuilder logMessage = logMessages.get(channelId);
 
-            if (message.trim().isBlank()) return;
+                final Matcher inviteMatcher = Message.INVITE_PATTERN.matcher(logMessage.toString());
 
-            sendMessageInstantly("```ansi\n" + message + "\n```", channelId);
+                final StringBuilder messageBuilder = new StringBuilder();
+
+                while (inviteMatcher.find()) {
+                    inviteMatcher.appendReplacement(
+                            messageBuilder,
+                            Matcher.quoteReplacement(
+                                    inviteMatcher.group()
+                                            // fixes discord.gg (and some more discord urls) showing invite
+                                            .replace(".", "\u200b.")
+                            )
+                    );
+                }
+
+                inviteMatcher.appendTail(messageBuilder);
+
+                final int maxLength = 2_000 - ("""
+                        ```ansi
+                        
+                        ```"""
+                ).length(); // kinda sus
+
+                message = messageBuilder.substring(0, Math.min(messageBuilder.length(), maxLength));
+
+                logMessage.setLength(0);
+
+                if (message.trim().isBlank()) continue;
+
+                sendMessageInstantly("```ansi\n" + message + "\n```", channelId);
+            }
         }
     }
 }
