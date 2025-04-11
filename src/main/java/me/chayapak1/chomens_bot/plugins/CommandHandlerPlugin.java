@@ -174,20 +174,7 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
 
                 final List<Role> roles = member.getRoles();
 
-                TrustLevel userTrustLevel = TrustLevel.PUBLIC;
-
-                for (final Role role : roles) {
-                    if (role.getName().equalsIgnoreCase(bot.config.discord.ownerRoleName)) {
-                        userTrustLevel = TrustLevel.OWNER;
-                        break;
-                    } else if (role.getName().equalsIgnoreCase(bot.config.discord.adminRoleName)) {
-                        userTrustLevel = TrustLevel.ADMIN;
-                        break;
-                    } else if (role.getName().equalsIgnoreCase(bot.config.discord.trustedRoleName)) {
-                        userTrustLevel = TrustLevel.TRUSTED;
-                        break;
-                    }
-                }
+                final TrustLevel userTrustLevel = TrustLevel.fromDiscordRoles(roles);
 
                 if (trustLevel.level > userTrustLevel.level) {
                     context.sendOutput(

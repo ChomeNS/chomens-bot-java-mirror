@@ -41,6 +41,8 @@ chomeNSMod:
 discord:
   enabled: false
   prefix: 'default!'
+  serverId : 'id here'
+  enableDiscordHashing: true
   token: 'token here'
   trustedRoleName: 'Trusted'
   adminRoleName: 'Admin'

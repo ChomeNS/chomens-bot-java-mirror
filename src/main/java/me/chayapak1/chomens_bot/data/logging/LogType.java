@@ -10,7 +10,8 @@ public enum LogType {
     ERROR(Component.text("Error").color(NamedTextColor.RED)),
     COMMAND_OUTPUT(Component.text("Command Output").color(NamedTextColor.LIGHT_PURPLE)),
     AUTH(Component.text("Auth").color(NamedTextColor.RED)),
-    SIMPLE_VOICE_CHAT(Component.text("Simple Voice Chat").color(NamedTextColor.AQUA));
+    SIMPLE_VOICE_CHAT(Component.text("Simple Voice Chat").color(NamedTextColor.AQUA)),
+    DISCORD(Component.text("Discord").color(NamedTextColor.BLUE));
 
     public final Component component;
 

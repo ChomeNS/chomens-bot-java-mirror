@@ -107,6 +107,8 @@ public class Configuration {
     public static class Discord {
         public boolean enabled = false;
         public String prefix = "default!";
+        public String serverId;
+        public boolean enableDiscordHashing = true;
         public String token;
         public Map<String, String> servers = new HashMap<>();
         public EmbedColors embedColors = new EmbedColors();

@@ -3,6 +3,7 @@ package me.chayapak1.chomens_bot.plugins;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.Main;
+import me.chayapak1.chomens_bot.discord.DirectMessageEventHandler;
 import me.chayapak1.chomens_bot.discord.GuildMessageEventHandler;
 import me.chayapak1.chomens_bot.util.CodeBlockUtilities;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
@@ -29,6 +30,8 @@ import java.util.regex.Matcher;
 public class DiscordPlugin {
     public JDA jda;
 
+    public Configuration.Discord options;
+
     public final Map<String, String> servers;
 
     public final String prefix;
@@ -38,7 +41,7 @@ public class DiscordPlugin {
     public final String discordUrl;
 
     public DiscordPlugin (final Configuration config) {
-        final Configuration.Discord options = config.discord;
+        this.options = config.discord;
         this.prefix = options.prefix;
         this.servers = options.servers;
         this.discordUrl = config.discord.inviteLink;
@@ -53,7 +56,11 @@ public class DiscordPlugin {
                 .clickEvent(ClickEvent.openUrl(discordUrl));
 
         final JDABuilder builder = JDABuilder.createDefault(config.discord.token);
-        builder.enableIntents(GatewayIntent.MESSAGE_CONTENT);
+        builder.enableIntents(
+                GatewayIntent.MESSAGE_CONTENT,
+                GatewayIntent.DIRECT_MESSAGES,
+                GatewayIntent.GUILD_MEMBERS
+        );
         builder.setEnableShutdownHook(false);
 
         try {
@@ -66,6 +73,7 @@ public class DiscordPlugin {
         jda.getPresence().setPresence(Activity.playing(config.discord.statusMessage), false);
 
         new GuildMessageEventHandler(jda, prefix, messagePrefix);
+        new DirectMessageEventHandler(jda, options);
 
         Main.EXECUTOR.scheduleAtFixedRate(this::onDiscordTick, 0, 50, TimeUnit.MILLISECONDS);
 

@@ -4,11 +4,18 @@ import com.google.common.hash.Hashing;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
+import me.chayapak1.chomens_bot.util.RandomStringUtilities;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class HashingPlugin {
+    public static final Map<Long, Pair<TrustLevel, String>> discordHashes = new ConcurrentHashMap<>();
+
     private final Bot bot;
 
     public HashingPlugin (final Bot bot) {
@@ -64,10 +71,42 @@ public class HashingPlugin {
                 checkHash(getOwnerHash(prefix, sender, false), input);
     }
 
+    public boolean isCorrectDiscordHash (final String input) {
+        for (final Pair<TrustLevel, String> pair : discordHashes.values()) {
+            if (checkHash(pair.getRight(), input)) return true;
+        }
+
+        return false;
+    }
+
+    public TrustLevel getDiscordHashTrustLevel (final String input) {
+        for (final Map.Entry<Long, Pair<TrustLevel, String>> entry : new ArrayList<>(discordHashes.entrySet())) {
+            final Pair<TrustLevel, String> pair = entry.getValue();
+
+            if (!pair.getRight().equals(input)) continue;
+
+            discordHashes.remove(entry.getKey());
+
+            return pair.getLeft();
+        }
+
+        return TrustLevel.PUBLIC;
+    }
+
     public TrustLevel getTrustLevel (final String input, final String prefix, final PlayerEntry sender) {
         if (isCorrectOwnerHash(input, prefix, sender)) return TrustLevel.OWNER;
         else if (isCorrectAdminHash(input, prefix, sender)) return TrustLevel.ADMIN;
         else if (isCorrectHash(input, prefix, sender)) return TrustLevel.TRUSTED;
+        else if (isCorrectDiscordHash(input)) return getDiscordHashTrustLevel(input);
         else return TrustLevel.PUBLIC;
+    }
+
+    public static String generateDiscordHash (final long userId, final TrustLevel trustLevel) {
+        // i wouldn't say it's a hash, it's just a random string
+        final String string = RandomStringUtilities.generate(16);
+
+        discordHashes.putIfAbsent(userId, Pair.of(trustLevel, string));
+
+        return discordHashes.get(userId).getRight();
     }
 }
