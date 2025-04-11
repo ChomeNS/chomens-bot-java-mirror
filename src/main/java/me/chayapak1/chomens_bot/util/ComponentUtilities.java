@@ -63,7 +63,7 @@ public class ComponentUtilities {
     private static class ComponentParser {
         public static final Pattern ARG_PATTERN = Pattern.compile("%(?:(\\d+)\\$)?([A-Za-z%]|$)");
 
-        public static final long MAX_TIME = 5; // Change Clock Time And Break Bot !
+        public static final long MAX_TIME = 25; // Change Clock Time And Break Bot !
 
         public static final int MAX_DEPTH = 256;
 
