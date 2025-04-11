@@ -45,6 +45,8 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener 
     public SelfCarePlugin (final Bot bot) {
         this.bot = bot;
 
+        bot.executor.scheduleAtFixedRate(this::check, 0, bot.config.selfCare.delay, TimeUnit.MILLISECONDS);
+
         bot.addListener(this);
         bot.chat.addListener(this);
     }
@@ -87,6 +89,8 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener 
     }
 
     public void check () {
+        if (!bot.loggedIn) return;
+
         final Configuration.SelfCare selfCares = bot.config.selfCare;
 
         final boolean kaboom = bot.serverFeatures.hasExtras;
@@ -149,12 +153,6 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener 
         socialspy = false;
         muted = false;
         prefix = false;
-
-        bot.executor.scheduleAtFixedRate(() -> {
-            if (!bot.loggedIn) return;
-
-            check();
-        }, 0, bot.config.selfCare.delay, TimeUnit.MILLISECONDS);
     }
 
     private void packetReceived (final ClientboundGameEventPacket packet) {
