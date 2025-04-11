@@ -4,8 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.util.ComponentUtilities;
-import me.chayapak1.chomens_bot.util.LevenshteinUtilities;
 import me.chayapak1.chomens_bot.util.StringUtilities;
 
 import java.io.BufferedReader;
@@ -226,32 +224,11 @@ public class NBSConverter implements Converter {
                 if (file.endsWith(".ogg")) file = file.substring(0, file.length() - ".ogg".length());
 
                 if (!sounds.contains(name) && !sounds.contains(file) && !isTempoChanger) {
-                    boolean replaced = false;
-
                     final String replacedName = StringUtilities.replaceAllWithMap(name.toLowerCase(), CUSTOM_INSTRUMENT_REPLACEMENTS);
                     final String replacedFile = StringUtilities.replaceAllWithMap(file.toLowerCase(), CUSTOM_INSTRUMENT_REPLACEMENTS);
 
-                    if (!file.equals(replacedFile)) {
-                        file = replacedFile;
-                        replaced = true;
-                    } else if (!name.equals(replacedName)) {
-                        name = replacedName;
-                        replaced = true;
-                    }
-
-                    if (!replaced) {
-                        final List<String> outputTitles = LevenshteinUtilities.searchTitles(name, subtitles.values());
-
-                        final String bestMatch = outputTitles.isEmpty() ? "" : outputTitles.getFirst();
-
-                        for (final Map.Entry<String, String> entry : subtitles.entrySet()) {
-                            if (!entry.getValue().equals(bestMatch)) continue;
-
-                            name = entry.getKey().substring("subtitles.".length());
-
-                            break;
-                        }
-                    }
+                    if (!file.equals(replacedFile)) file = replacedFile;
+                    else if (!name.equals(replacedName)) name = replacedName;
                 }
 
                 if (!sounds.contains(name) && sounds.contains(file)) name = file;
@@ -299,16 +276,6 @@ public class NBSConverter implements Converter {
 
     private static long getMilliTime (final int tick, final double tempo) {
         return (long) (1000L * tick * 100 / tempo);
-    }
-
-    private static final Map<String, String> subtitles = new HashMap<>();
-
-    static {
-        for (final Map.Entry<String, String> entry : ComponentUtilities.LANGUAGE.entrySet()) {
-            if (!entry.getKey().startsWith("subtitles.")) continue;
-
-            subtitles.put(entry.getKey(), entry.getValue());
-        }
     }
 
     private static final List<String> sounds = loadJsonStringArray("sounds.json");
