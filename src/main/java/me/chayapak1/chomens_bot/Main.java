@@ -230,7 +230,7 @@ public class Main {
                 } catch (final InterruptedException ignored) { }
             }
 
-            discord.jda.shutdown();
+            if (discord != null && discord.jda != null) discord.jda.shutdown();
         }
 
         if (callSystemExit) System.exit(exitCode);
