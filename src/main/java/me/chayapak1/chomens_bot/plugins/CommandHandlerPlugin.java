@@ -65,6 +65,7 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
         registerCommand(new GrepLogCommand());
         registerCommand(new FindAltsCommand());
         registerCommand(new RestartCommand());
+        registerCommand(new NetCommandCommand());
     }
 
     public static void registerCommand (final Command command) {
