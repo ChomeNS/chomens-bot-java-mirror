@@ -110,7 +110,6 @@ public class Bot extends SessionAdapter {
     public final ChomeNSModIntegrationPlugin chomeNSMod;
     public final AuthPlugin auth;
     public final ScreensharePlugin screenshare = null;
-    public final FormatCheckerPlugin formatChecker;
     public final ClearChatNameAnnouncerPlugin clearChatNameAnnouncer;
     public final WhitelistPlugin whitelist;
     public final PlayersDatabasePlugin playersDatabase;
@@ -167,7 +166,6 @@ public class Bot extends SessionAdapter {
         this.chomeNSMod = new ChomeNSModIntegrationPlugin(this);
         this.auth = new AuthPlugin(this);
         // this.screenshare = new ScreensharePlugin(this);
-        this.formatChecker = new FormatCheckerPlugin(this);
         this.clearChatNameAnnouncer = new ClearChatNameAnnouncerPlugin(this);
         this.whitelist = new WhitelistPlugin(this);
         this.playersDatabase = new PlayersDatabasePlugin(this);

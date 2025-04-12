@@ -82,10 +82,6 @@ ownerName: 'XxChange_mexX'
 
 consoleChatFormat: '{"translate":"chat.type.text","with":["OWNER_NAME","MESSAGE"]}'
 
-imposterFormatChecker:
-  enabled: false
-  key: ''
-
 ownerAuthentication:
   enabled: false
   timeout: 10000 # 10 seconds - 10 * 1000

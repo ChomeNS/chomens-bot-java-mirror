@@ -36,8 +36,6 @@ public class Configuration {
 
     public String consoleChatFormat = "{\"translate\":\"chat.type.text\",\"with\":[\"OWNER_NAME\",\"MESSAGE\"]}";
 
-    public ImposterFormatChecker imposterFormatChecker = new ImposterFormatChecker();
-
     public OwnerAuthentication ownerAuthentication = new OwnerAuthentication();
 
     public boolean announceClearChatUsername = false;
@@ -46,11 +44,6 @@ public class Configuration {
     public SelfCare selfCare = new SelfCare();
 
     public BotOption[] bots = new BotOption[] {};
-
-    public static class ImposterFormatChecker {
-        public boolean enabled = false;
-        public String key;
-    }
 
     public static class OwnerAuthentication {
         public boolean enabled = false;
