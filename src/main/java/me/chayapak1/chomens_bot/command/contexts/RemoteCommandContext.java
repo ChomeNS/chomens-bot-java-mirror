@@ -10,7 +10,7 @@ public class RemoteCommandContext extends CommandContext {
     public final CommandContext source;
 
     public RemoteCommandContext (final Bot targetBot, final CommandContext source) {
-        super(targetBot, source.prefix, source.sender, source.inGame);
+        super(targetBot, source.prefix, source.sender, false);
 
         this.targetBot = targetBot;
         this.source = source;

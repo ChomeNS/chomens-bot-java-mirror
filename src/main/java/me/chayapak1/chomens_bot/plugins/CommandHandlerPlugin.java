@@ -5,10 +5,7 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
-import me.chayapak1.chomens_bot.command.contexts.ChomeNSModCommandContext;
-import me.chayapak1.chomens_bot.command.contexts.ConsoleCommandContext;
-import me.chayapak1.chomens_bot.command.contexts.DiscordCommandContext;
-import me.chayapak1.chomens_bot.command.contexts.PlayerCommandContext;
+import me.chayapak1.chomens_bot.command.contexts.*;
 import me.chayapak1.chomens_bot.commands.*;
 import me.chayapak1.chomens_bot.util.ExceptionUtilities;
 import net.dv8tion.jda.api.entities.Member;
@@ -167,8 +164,20 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
 
         final String[] args = Arrays.copyOfRange(splitInput, (trustLevel != TrustLevel.PUBLIC && inGame) ? 2 : 1, splitInput.length);
 
+        // LoL ohio spaghetti code
         if (command.trustLevel != TrustLevel.PUBLIC && !bypass) {
-            if (discord) {
+            if (context instanceof final RemoteCommandContext remote) {
+                if (remote.source.trustLevel.level < trustLevel.level) {
+                    context.sendOutput(
+                            Component
+                                    .text("Your don't have enough permission to execute this command!")
+                                    .color(NamedTextColor.RED)
+                    );
+                    return;
+                }
+
+                context.trustLevel = remote.source.trustLevel;
+            } else if (discord) {
                 final Member member = event.getMember();
 
                 if (member == null) return;
@@ -207,6 +216,9 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
 
                 context.trustLevel = userTrustLevel;
             }
+        } else if (bypass) {
+            final TrustLevel[] values = TrustLevel.values();
+            context.trustLevel = values[values.length - 1]; // highest level
         }
 
         // should i give access to all bypass contexts instead of only console?
