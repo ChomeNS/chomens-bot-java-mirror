@@ -38,8 +38,6 @@ public class NetCommandCommand extends Command {
             final String[] servers = rawServers.split(",");
 
             for (final Bot bot : allBots) {
-                if (!bot.loggedIn) continue;
-
                 for (final String server : servers) {
                     if (
                             server.isBlank()
@@ -59,6 +57,8 @@ public class NetCommandCommand extends Command {
         final String command = context.getString(true, true);
 
         for (final Bot bot : bots) {
+            if (!bot.loggedIn) continue;
+
             final CommandContext remoteContext = new RemoteCommandContext(bot, context);
 
             context.bot.commandHandler.executeCommand(command, remoteContext, null);
