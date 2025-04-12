@@ -198,7 +198,7 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
         if (duplicate != null && !duplicate.profile.getName().equals(target.profile.getName())) return;
 
         if (duplicate != null) {
-            list.remove(duplicate);
+            list.removeIf(entry -> entry.equals(duplicate));
 
             target.listed = true;
 
@@ -297,9 +297,9 @@ public class PlayersPlugin extends Bot.Listener implements TickPlugin.Listener {
 
                 newTarget.ip = target.ip;
 
-                list.add(newTarget);
+                list.removeIf(entry -> entry.profile.getId().equals(target.profile.getId()));
 
-                list.remove(target);
+                list.add(newTarget);
 
                 for (final Listener listener : listeners) listener.playerChangedUsername(newTarget);
             } else if (pending != null) {
