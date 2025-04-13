@@ -101,7 +101,6 @@ keys:
 weatherApiKey: 'key here' # weatherapi.com key
 
 namespace: 'default_chomens_bot' # useful when you make a clone of the bot
-teamName: 'default_chomens_bot' # i recommend having this value the same as namespace
 
 core:
   # PLEASE give valid JSON component here

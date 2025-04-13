@@ -21,7 +21,6 @@ public class Configuration {
     public String weatherApiKey;
 
     public String namespace = "chomens_bot";
-    public String teamName = "chomens_bot";
 
     public Core core = new Core();
     public Discord discord = new Discord();
