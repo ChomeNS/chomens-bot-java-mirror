@@ -19,8 +19,8 @@ public class LoggerPlugin implements ChatPlugin.Listener {
         bot.addListener(new Bot.Listener() {
             @Override
             public void connecting () {
-                if (bot.connectingTimes > 10) return;
-                else if (bot.connectingTimes == 10) {
+                if (bot.connectAttempts > 10) return;
+                else if (bot.connectAttempts == 10) {
                     log("Suppressing connection status messages from now on");
 
                     return;
@@ -46,7 +46,7 @@ public class LoggerPlugin implements ChatPlugin.Listener {
 
             @Override
             public void disconnected (final DisconnectedEvent event) {
-                if (bot.disconnectedTimes >= 10) return;
+                if (bot.connectAttempts >= 10) return;
 
                 final Component message = Component.translatable(
                         "Disconnected from %s, reason: %s",

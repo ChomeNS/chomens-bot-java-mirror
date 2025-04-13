@@ -65,8 +65,7 @@ public class Bot extends SessionAdapter {
 
     public boolean printDisconnectedCause = false;
 
-    public int connectingTimes = 0;
-    public int disconnectedTimes = 0;
+    public int connectAttempts = 0;
 
     public boolean loggedIn = false;
     public long loginTime;
@@ -181,7 +180,7 @@ public class Bot extends SessionAdapter {
     private void reconnect () {
         if (session != null) session = null; // does this do nothing?
 
-        connectingTimes++;
+        connectAttempts++;
 
         for (final Listener listener : listeners) {
             listener.connecting();
@@ -244,8 +243,7 @@ public class Bot extends SessionAdapter {
     private void packetReceived (final ClientboundLoginPacket ignoredPacket) {
         loggedIn = true;
         loginTime = System.currentTimeMillis();
-        connectingTimes = 0;
-        disconnectedTimes = 0;
+        connectAttempts = 0;
 
         for (final SessionListener listener : listeners) {
             listener.connected(new ConnectedEvent(session));
@@ -363,8 +361,6 @@ public class Bot extends SessionAdapter {
     @Override
     public void disconnected (final DisconnectedEvent disconnectedEvent) {
         loggedIn = false;
-
-        disconnectedTimes++;
 
         final Throwable cause = disconnectedEvent.getCause();
 

@@ -106,8 +106,8 @@ public class DiscordPlugin {
 
                 @Override
                 public void connecting () {
-                    if (bot.connectingTimes > 6) return;
-                    else if (bot.connectingTimes == 6) {
+                    if (bot.connectAttempts > 6) return;
+                    else if (bot.connectAttempts == 6) {
                         sendMessageInstantly("Suppressing connection status messages from now on", channelId);
 
                         return;
@@ -135,7 +135,7 @@ public class DiscordPlugin {
 
                 @Override
                 public void disconnected (final DisconnectedEvent event) {
-                    if (bot.disconnectedTimes >= 6) return;
+                    if (bot.connectAttempts >= 6) return;
 
                     final String reason = ComponentUtilities.stringifyDiscordAnsi(event.getReason());
                     sendMessageInstantly(
