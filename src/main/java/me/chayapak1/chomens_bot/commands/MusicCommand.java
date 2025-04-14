@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.nio.file.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -532,19 +533,23 @@ public class MusicCommand extends Command {
         final TextColor keyColor = bot.colorPalette.secondary;
         final TextColor valueColor = bot.colorPalette.string;
 
+        final DecimalFormat formatter = new DecimalFormat("#,###");
+
+        final String formattedNotesCount = formatter.format(currentSong.size());
+
         if (isNotNullAndNotBlank(currentSong.name))
-            components.add(Component.translatable("Title/Filename: %s", Component.text(currentSong.name).color(valueColor)).color(keyColor));
+            components.add(Component.translatable("Title/Filename: %s", keyColor, Component.text(currentSong.name, valueColor)));
         if (isNotNullAndNotBlank(currentSong.requester))
-            components.add(Component.translatable("Requester: %s", Component.text(currentSong.requester).color(valueColor)).color(keyColor));
+            components.add(Component.translatable("Requested by: %s", keyColor, Component.text(currentSong.requester, valueColor)));
         if (isNotNullAndNotBlank(currentSong.songAuthor))
-            components.add(Component.translatable("Author: %s", Component.text(currentSong.songAuthor).color(valueColor)).color(keyColor));
+            components.add(Component.translatable("Author: %s", keyColor, Component.text(currentSong.songAuthor, valueColor)));
         if (isNotNullAndNotBlank(currentSong.songOriginalAuthor))
-            components.add(Component.translatable("Original author: %s", Component.text(currentSong.songOriginalAuthor).color(valueColor)).color(keyColor));
+            components.add(Component.translatable("Original author: %s", keyColor, Component.text(currentSong.songOriginalAuthor, valueColor)));
         if (isNotNullAndNotBlank(currentSong.tracks))
-            components.add(Component.translatable("Tracks: %s", Component.text(currentSong.tracks).color(valueColor)).color(keyColor));
-        components.add(Component.translatable("Notes: %s", Component.text(currentSong.size()).color(valueColor)).color(keyColor));
+            components.add(Component.translatable("Tracks: %s", keyColor, Component.text(currentSong.tracks, valueColor)));
+        components.add(Component.translatable("Notes: %s", keyColor, Component.text(formattedNotesCount, valueColor)));
         if (isNotNullAndNotBlank(currentSong.songDescription))
-            components.add(Component.translatable("Description: %s", Component.text(currentSong.songDescription).color(valueColor)).color(keyColor));
+            components.add(Component.translatable("Description: %s", keyColor, Component.text(currentSong.songDescription, valueColor)));
 
         return Component.join(JoinConfiguration.newlines(), components);
     }
