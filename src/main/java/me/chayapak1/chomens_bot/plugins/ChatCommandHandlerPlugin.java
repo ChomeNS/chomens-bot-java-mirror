@@ -98,6 +98,6 @@ public class ChatCommandHandlerPlugin implements ChatPlugin.Listener, CommandSpy
                 packetType
         );
 
-        bot.commandHandler.executeCommand(commandString, context, null);
+        bot.commandHandler.executeCommand(commandString, context);
     }
 }

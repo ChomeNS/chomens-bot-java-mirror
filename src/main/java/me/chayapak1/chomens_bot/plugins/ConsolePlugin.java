@@ -95,7 +95,7 @@ public class ConsolePlugin implements Completer {
             if (line.startsWith(prefix)) {
                 final ConsoleCommandContext context = new ConsoleCommandContext(bot, prefix);
 
-                bot.commandHandler.executeCommand(line.substring(prefix.length()), context, null);
+                bot.commandHandler.executeCommand(line.substring(prefix.length()), context);
 
                 continue;
             }

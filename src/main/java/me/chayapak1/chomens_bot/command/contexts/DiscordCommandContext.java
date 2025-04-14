@@ -18,7 +18,7 @@ import java.awt.*;
 import java.nio.charset.StandardCharsets;
 
 public class DiscordCommandContext extends CommandContext {
-    private final MessageReceivedEvent event;
+    public final MessageReceivedEvent event;
 
     private final Bot bot;
 

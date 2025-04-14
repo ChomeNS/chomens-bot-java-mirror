@@ -61,7 +61,7 @@ public class GuildMessageEventHandler extends ListenerAdapter {
             if (messageString.startsWith(prefix)) {
                 final DiscordCommandContext context = new DiscordCommandContext(bot, prefix, event);
 
-                bot.commandHandler.executeCommand(messageString.substring(prefix.length()), context, event);
+                bot.commandHandler.executeCommand(messageString.substring(prefix.length()), context);
 
                 return;
             }

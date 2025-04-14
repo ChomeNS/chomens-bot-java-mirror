@@ -108,11 +108,20 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
     // though it can also be as low as 4000 ns)
     public void executeCommand (
             final String input,
-            final CommandContext context,
-            final MessageReceivedEvent event
+            final CommandContext context
     ) {
         final boolean inGame = context instanceof PlayerCommandContext;
-        final boolean discord = context instanceof DiscordCommandContext;
+
+        final boolean discord;
+        final MessageReceivedEvent event;
+
+        if (context instanceof final DiscordCommandContext discordContext) {
+            discord = true;
+            event = discordContext.event;
+        } else {
+            discord = false;
+            event = null;
+        }
 
         final boolean bypass = context instanceof ConsoleCommandContext || context instanceof ChomeNSModCommandContext;
 

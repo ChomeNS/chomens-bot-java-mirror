@@ -61,7 +61,7 @@ public class NetCommandCommand extends Command {
 
             final CommandContext remoteContext = new RemoteCommandContext(bot, context);
 
-            context.bot.commandHandler.executeCommand(command, remoteContext, null);
+            context.bot.commandHandler.executeCommand(command, remoteContext);
         }
 
         return null;

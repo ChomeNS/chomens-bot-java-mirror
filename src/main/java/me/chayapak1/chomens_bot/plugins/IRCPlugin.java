@@ -123,7 +123,7 @@ public class IRCPlugin extends ListenerAdapter {
 
             final IRCCommandContext context = new IRCCommandContext(serverBot, commandPrefix, name);
 
-            serverBot.commandHandler.executeCommand(noPrefix, context, null);
+            serverBot.commandHandler.executeCommand(noPrefix, context);
 
             return;
         }
