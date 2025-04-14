@@ -439,6 +439,7 @@ public class MusicCommand extends Command {
         final float speed = context.getFloat(true, false);
 
         if (speed > 5) throw new CommandException(Component.text("Too fast!"));
+        else if (speed < 0) throw new CommandException(Component.text("Invalid speed"));
 
         long oldTime = -1;
 
@@ -477,6 +478,7 @@ public class MusicCommand extends Command {
         final int amplify = context.getInteger(true);
 
         if (amplify > 8) throw new CommandException(Component.text("Too big value"));
+        else if (amplify < 0) throw new CommandException(Component.text("Invalid amplification value"));
 
         bot.music.amplify = amplify;
 
