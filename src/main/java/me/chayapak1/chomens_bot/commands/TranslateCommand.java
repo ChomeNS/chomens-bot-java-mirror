@@ -1,13 +1,11 @@
 package me.chayapak1.chomens_bot.commands;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
+import me.chayapak1.chomens_bot.util.HTMLUtilities;
 import me.chayapak1.chomens_bot.util.HttpUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -16,13 +14,21 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TranslateCommand extends Command {
+    private static final String TRANSLATE_MOBILE_URL = "https://translate.google.com/m?sl=%s&tl=%s&hl=en&q=%s";
+    private static final Pattern FIND_RESULT_PATTERN = Pattern.compile(
+            "class=\"result-container\">([^<]*)</div>",
+            Pattern.MULTILINE
+    );
+
     public TranslateCommand () {
         super(
                 "translate",
                 "Translates a message using Google Translate",
-                new String[] { "<fromLanguage> <toLanguage> <message>" },
+                new String[] { "<from> <to> <message>" },
                 new String[] {},
                 TrustLevel.PUBLIC
         );
@@ -37,39 +43,34 @@ public class TranslateCommand extends Command {
 
         final String message = context.getString(true, true);
 
-        final Gson gson = new Gson();
-
         bot.executorService.submit(() -> {
             try {
-                final URL url = new URI("https://translate.google.com/translate_a/single?client=at&dt=t&dt=rm&dj=1").toURL();
-
-                final String jsonOutput = HttpUtilities.postRequest(
-                        url,
-                        "application/x-www-form-urlencoded;charset=utf-8",
+                final URL url = new URI(
                         String.format(
-                                "sl=%s&tl=%s&q=%s",
-                                from,
-                                to,
-                                URLEncoder.encode(
-                                        message,
-                                        StandardCharsets.UTF_8
-                                )
+                                TRANSLATE_MOBILE_URL,
+                                URLEncoder.encode(from, StandardCharsets.UTF_8),
+                                URLEncoder.encode(to, StandardCharsets.UTF_8),
+                                URLEncoder.encode(message, StandardCharsets.UTF_8)
                         )
-                );
+                ).toURL();
 
-                final JsonObject jsonObject = gson.fromJson(jsonOutput, JsonObject.class);
+                final String html = HttpUtilities.getRequest(url);
 
-                final JsonArray sentences = jsonObject.getAsJsonArray("sentences");
+                final Matcher matcher = FIND_RESULT_PATTERN.matcher(html);
 
-                final JsonObject translation = sentences.get(0).getAsJsonObject();
+                if (!matcher.find()) return;
 
-                final String output = translation.get("trans").getAsString();
+                final String match = matcher.group(1);
+                if (match == null) return;
+
+                final String result = HTMLUtilities.toFormattingCodes(match);
+                if (result == null) return;
 
                 context.sendOutput(
                         Component
                                 .translatable(
                                         "Result: %s",
-                                        Component.text(output).color(NamedTextColor.GREEN)
+                                        Component.text(result).color(NamedTextColor.GREEN)
                                 )
                                 .color(bot.colorPalette.secondary)
                 );
