@@ -26,6 +26,8 @@ import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 
 public class DiscordPlugin {
@@ -81,6 +83,8 @@ public class DiscordPlugin {
 
         for (final Bot bot : Main.bots) {
             final String channelId = servers.get(bot.getServerString(true));
+
+            logData.put(channelId, new LogData());
 
             bot.addListener(new Bot.Listener() {
                 @Override
@@ -151,14 +155,14 @@ public class DiscordPlugin {
     }
 
     // based from HBot (and modified quite a bit)
-    private final Map<String, StringBuilder> logMessages = new ConcurrentHashMap<>();
-    private final Map<String, Long> nextLogTimes = new ConcurrentHashMap<>();
-    private final Map<String, Boolean> doneSendingInLogs = new ConcurrentHashMap<>();
+    private final Map<String, LogData> logData = new ConcurrentHashMap<>();
 
     public void sendMessage (final String message, final String channelId) {
-        logMessages.putIfAbsent(channelId, new StringBuilder());
+        final LogData data = logData.get(channelId);
 
-        final StringBuilder logMessage = logMessages.get(channelId);
+        if (data == null) return;
+
+        final StringBuilder logMessage = data.logMessages;
 
         if (logMessage.length() < 2000) {
             if (!logMessage.isEmpty()) {
@@ -181,12 +185,16 @@ public class DiscordPlugin {
         }
 
         if (queue) {
+            final LogData data = logData.get(channelId);
+
+            if (data == null) return null;
+
             logChannel.sendMessage(message).queue(
-                    (msg) -> doneSendingInLogs.put(channelId, true),
+                    (msg) -> data.doneSendingInLog.set(true),
                     (e) -> {
                         LoggerUtilities.error(e);
 
-                        doneSendingInLogs.put(channelId, false);
+                        data.doneSendingInLog.set(false);
                     }
             );
 
@@ -200,54 +208,61 @@ public class DiscordPlugin {
         for (final Bot bot : Main.bots) {
             final String channelId = servers.get(bot.getServerString(true));
 
-            if (!logMessages.containsKey(channelId) || logMessages.get(channelId).isEmpty()) {
-                continue;
-            }
+            final LogData data = logData.get(channelId);
+
+            if (data == null) continue;
 
             final long currentTime = System.currentTimeMillis();
-            if (!nextLogTimes.containsKey(channelId)
-                    || (currentTime >= nextLogTimes.get(channelId) && doneSendingInLogs.get(channelId))
-                    || currentTime - nextLogTimes.get(channelId) > 5000
-            ) {
-                final long logDelay = 2000;
 
-                nextLogTimes.put(channelId, currentTime + logDelay);
+            if (
+                    (currentTime < data.nextLogTime.get() || !data.doneSendingInLog.get())
+                            && currentTime - data.nextLogTime.get() < (5 * 1000)
+            ) continue;
 
-                String message;
+            final long logDelay = 2000;
 
-                final StringBuilder logMessage = logMessages.get(channelId);
+            data.nextLogTime.set(currentTime + logDelay);
 
-                final Matcher inviteMatcher = Message.INVITE_PATTERN.matcher(logMessage.toString());
+            String message;
 
-                final StringBuilder messageBuilder = new StringBuilder();
+            final StringBuilder logMessages = data.logMessages;
 
-                while (inviteMatcher.find()) {
-                    inviteMatcher.appendReplacement(
-                            messageBuilder,
-                            Matcher.quoteReplacement(
-                                    inviteMatcher.group()
-                                            // fixes discord.gg (and some more discord urls) showing invite
-                                            .replace(".", "\u200b.")
-                            )
-                    );
-                }
+            final Matcher inviteMatcher = Message.INVITE_PATTERN.matcher(logMessages.toString());
 
-                inviteMatcher.appendTail(messageBuilder);
+            final StringBuilder messageBuilder = new StringBuilder();
 
-                final int maxLength = 2_000 - ("""
-                        ```ansi
-                        
-                        ```"""
-                ).length(); // kinda sus
-
-                message = messageBuilder.substring(0, Math.min(messageBuilder.length(), maxLength));
-
-                logMessage.setLength(0);
-
-                if (message.trim().isBlank()) continue;
-
-                sendMessageInstantly("```ansi\n" + message + "\n```", channelId);
+            while (inviteMatcher.find()) {
+                inviteMatcher.appendReplacement(
+                        messageBuilder,
+                        Matcher.quoteReplacement(
+                                inviteMatcher.group()
+                                        // fixes discord.gg (and some more discord urls) showing invite
+                                        .replace(".", "\u200b.")
+                        )
+                );
             }
+
+            inviteMatcher.appendTail(messageBuilder);
+
+            final int maxLength = 2_000 - ("""
+                    ```ansi
+                    
+                    ```"""
+            ).length(); // kinda sus
+
+            message = messageBuilder.substring(0, Math.min(messageBuilder.length(), maxLength));
+
+            logMessages.setLength(0);
+
+            if (message.trim().isBlank()) continue;
+
+            sendMessageInstantly("```ansi\n" + message + "\n```", channelId);
         }
+    }
+
+    private static class LogData {
+        private final StringBuilder logMessages = new StringBuilder();
+        private final AtomicLong nextLogTime = new AtomicLong(0L);
+        private final AtomicBoolean doneSendingInLog = new AtomicBoolean(false);
     }
 }
