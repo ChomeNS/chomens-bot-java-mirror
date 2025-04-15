@@ -12,6 +12,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener, TickPlugin.Listener {
     private static final String ID = "chomens_bot_query";
@@ -36,9 +37,18 @@ public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener, Ti
     public void onSecondTick () {
         if (cargosQueue.isEmpty()) return;
 
-        sendQueueComponent(cargosQueue);
+        if (cargosQueue.size() > 1000) {
+            cargosQueue.clear();
+            return;
+        }
 
-        cargosQueue.clear();
+        final Set<Component> set = cargosQueue.stream()
+                .limit(150) // due to how bloated the components are, we can only go up to around 150
+                .collect(Collectors.toUnmodifiableSet());
+
+        sendQueueComponent(set);
+
+        for (int i = 0; i < set.size(); i++) cargosQueue.poll();
     }
 
     @Override
@@ -67,7 +77,7 @@ public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener, Ti
     }
 
     private void sendQueueComponent (final Component component) {
-        final Queue<Component> queue = new LinkedList<>();
+        final Set<Component> queue = new HashSet<>();
         queue.add(component);
 
         // this is required so the joined component will be
@@ -81,7 +91,7 @@ public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener, Ti
         sendQueueComponent(queue);
     }
 
-    private void sendQueueComponent (final Queue<Component> queue) {
+    private void sendQueueComponent (final Set<Component> queue) {
         bot.chat.tellraw(
                 Component
                         .translatable(
