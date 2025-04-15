@@ -67,10 +67,8 @@ public class FindAltsCommand extends Command {
 
             if (future == null) return null;
 
-            final String tempFinalPlayer = player;
-
             future.thenApply(targetIP -> {
-                context.sendOutput(handle(bot, targetIP, false, tempFinalPlayer, allServer));
+                context.sendOutput(handle(bot, targetIP, false, player, allServer));
 
                 return targetIP;
             });

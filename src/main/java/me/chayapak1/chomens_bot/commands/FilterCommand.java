@@ -63,7 +63,7 @@ public class FilterCommand extends Command {
 
                 if (
                         PlayerFilterPlugin.localList.stream()
-                                .map(filteredPlayer -> filteredPlayer.playerName())
+                                .map(FilteredPlayer::playerName)
                                 .toList()
                                 .contains(player)
                 ) {

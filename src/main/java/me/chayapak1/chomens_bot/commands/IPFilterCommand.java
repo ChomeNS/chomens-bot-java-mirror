@@ -86,7 +86,7 @@ public class IPFilterCommand extends Command {
             case "clear" -> {
                 context.checkOverloadArgs(1);
 
-                DatabasePlugin.EXECUTOR_SERVICE.submit(() -> bot.ipFilter.clear());
+                DatabasePlugin.EXECUTOR_SERVICE.submit(bot.ipFilter::clear);
                 return Component.text("Cleared the filter").color(bot.colorPalette.defaultColor);
             }
             case "list" -> {
