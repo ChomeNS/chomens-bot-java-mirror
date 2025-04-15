@@ -75,9 +75,9 @@ public class DiscordPlugin {
 
         jda.getPresence().setPresence(Activity.playing(config.discord.statusMessage), false);
 
+        new MessageLogger(jda);
         new GuildMessageEventHandler(jda, prefix, messagePrefix);
         new DirectMessageEventHandler(jda, options);
-        new MessageLogger(jda);
 
         Main.EXECUTOR.scheduleAtFixedRate(this::onDiscordTick, 0, 50, TimeUnit.MILLISECONDS);
 
