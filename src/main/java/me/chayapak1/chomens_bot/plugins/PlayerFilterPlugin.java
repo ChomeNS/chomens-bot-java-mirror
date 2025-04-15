@@ -95,7 +95,7 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
     }
 
     private boolean matchesPlayer (final String name, final FilteredPlayer player) {
-        if (player.regex) {
+        if (player.regex()) {
             final Pattern pattern = compilePattern(player);
 
             return pattern != null && pattern.matcher(name).find();
@@ -106,19 +106,19 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
 
     private Pattern compilePattern (final FilteredPlayer player) {
         try {
-            final int flags = player.ignoreCase ? Pattern.CASE_INSENSITIVE : 0;
+            final int flags = player.ignoreCase() ? Pattern.CASE_INSENSITIVE : 0;
 
-            return Pattern.compile(player.playerName, flags);
+            return Pattern.compile(player.playerName(), flags);
         } catch (final Exception e) {
-            bot.logger.error("Error compiling player filter regex " + player.playerName + " (this shouldn't happen):");
+            bot.logger.error("Error compiling player filter regex " + player.playerName() + " (this shouldn't happen):");
             bot.logger.error(e);
             return null;
         }
     }
 
     private boolean compareNames (final String name, final FilteredPlayer player) {
-        final String playerName = player.ignoreCase ? player.playerName.toLowerCase() : player.playerName;
-        final String targetName = player.ignoreCase ? name.toLowerCase() : name;
+        final String playerName = player.ignoreCase() ? player.playerName().toLowerCase() : player.playerName();
+        final String targetName = player.ignoreCase() ? name.toLowerCase() : name;
 
         return playerName.equals(targetName);
     }
@@ -130,7 +130,7 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
 
             if (player == null) return;
 
-            bot.filterManager.add(target, player.reason);
+            bot.filterManager.add(target, player.reason());
         });
     }
 
@@ -155,11 +155,11 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
         // loop through all the servers too
         for (final Bot bot : bot.bots) {
             for (final FilteredPlayer match : matches) {
-                final PlayerEntry entry = bot.players.getEntry(match.playerName);
+                final PlayerEntry entry = bot.players.getEntry(match.playerName());
 
                 if (entry == null) continue;
 
-                bot.filterManager.add(entry, match.reason);
+                bot.filterManager.add(entry, match.reason());
             }
         }
     }
@@ -181,7 +181,7 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
     }
 
     public void clear () {
-        for (final FilteredPlayer player : localList) bot.filterManager.remove(player.playerName);
+        for (final FilteredPlayer player : localList) bot.filterManager.remove(player.playerName());
 
         try {
             Main.database.update(CLEAR_FILTER);

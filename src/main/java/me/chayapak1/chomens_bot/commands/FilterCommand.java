@@ -63,7 +63,7 @@ public class FilterCommand extends Command {
 
                 if (
                         PlayerFilterPlugin.localList.stream()
-                                .map(filteredPlayer -> filteredPlayer.playerName)
+                                .map(filteredPlayer -> filteredPlayer.playerName())
                                 .toList()
                                 .contains(player)
                 ) {
@@ -116,11 +116,11 @@ public class FilterCommand extends Command {
 
                 if (player == null) throw new CommandException(Component.text("Invalid index"));
 
-                DatabasePlugin.EXECUTOR_SERVICE.submit(() -> bot.playerFilter.remove(player.playerName));
+                DatabasePlugin.EXECUTOR_SERVICE.submit(() -> bot.playerFilter.remove(player.playerName()));
 
                 return Component.translatable(
                         "Removed %s from the filters",
-                        Component.text(player.playerName).color(bot.colorPalette.username)
+                        Component.text(player.playerName()).color(bot.colorPalette.username)
                 ).color(bot.colorPalette.defaultColor);
             }
             case "clear" -> {
@@ -138,11 +138,11 @@ public class FilterCommand extends Command {
                 for (final FilteredPlayer player : PlayerFilterPlugin.localList) {
                     Component options = Component.empty().color(NamedTextColor.DARK_GRAY);
 
-                    if (player.ignoreCase || player.regex) {
+                    if (player.ignoreCase() || player.regex()) {
                         final List<Component> args = new ArrayList<>();
 
-                        if (player.ignoreCase) args.add(Component.text("ignore case"));
-                        if (player.regex) args.add(Component.text("regex"));
+                        if (player.ignoreCase()) args.add(Component.text("ignore case"));
+                        if (player.regex()) args.add(Component.text("regex"));
 
                         options = options
                                 .append(Component.text("("))
@@ -158,13 +158,13 @@ public class FilterCommand extends Command {
                                 .append(Component.space());
                     }
 
-                    if (!player.reason.isEmpty()) {
+                    if (!player.reason().isEmpty()) {
                         options = options
                                 .append(Component.text("("))
                                 .append(Component.text("reason: ").color(NamedTextColor.GRAY))
                                 .append(
                                         Component
-                                                .text(player.reason)
+                                                .text(player.reason())
                                                 .color(bot.colorPalette.string)
                                 )
                                 .append(Component.text(")"));
@@ -174,7 +174,7 @@ public class FilterCommand extends Command {
                             Component.translatable(
                                     "%s › %s %s",
                                     Component.text(index).color(bot.colorPalette.number),
-                                    Component.text(player.playerName).color(bot.colorPalette.username),
+                                    Component.text(player.playerName()).color(bot.colorPalette.username),
                                     options
                             ).color(NamedTextColor.DARK_GRAY)
                     );
