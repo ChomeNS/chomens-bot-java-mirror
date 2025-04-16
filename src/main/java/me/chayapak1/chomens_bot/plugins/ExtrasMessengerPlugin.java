@@ -3,6 +3,7 @@ package me.chayapak1.chomens_bot.plugins;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import net.kyori.adventure.key.Key;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.packet.Packet;
@@ -15,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-public class ExtrasMessengerPlugin extends Bot.Listener {
+public class ExtrasMessengerPlugin implements Listener {
     private static final Key MINECRAFT_REGISTER_KEY = Key.key("minecraft", "register");
 
     private static final Key EXTRAS_REGISTER_KEY = Key.key("extras", "register");
@@ -25,8 +26,6 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
     private static final String MINECRAFT_CHANNEL_SEPARATOR = "\0";
 
     private static final byte END_CHAR_MASK = (byte) 0x80;
-
-    private final List<Listener> listeners = new ArrayList<>();
 
     private final Bot bot;
 
@@ -40,7 +39,7 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
         this.bot = bot;
         this.chomens_namespace = bot.config.namespace + ":"; // Ex. chomens_bot: (then it will be appended by channel)
 
-        bot.addListener(this);
+        bot.listener.addListener(this);
     }
 
     @Override
@@ -102,7 +101,7 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
 
             final byte[] data = readByteArrayToEnd(buf);
 
-            for (final Listener listener : listeners) listener.onMessage(uuid, data);
+            bot.listener.dispatch(listener -> listener.onExtrasMessageReceived(uuid, data));
         }
     }
 
@@ -193,11 +192,5 @@ public class ExtrasMessengerPlugin extends Bot.Listener {
         input.readBytes(bytes);
 
         return bytes;
-    }
-
-    public void addListener (final Listener listener) { listeners.add(listener); }
-
-    public interface Listener {
-        default void onMessage (final UUID sender, final byte[] message) { }
     }
 }

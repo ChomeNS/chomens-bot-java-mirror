@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Main;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 
@@ -17,7 +18,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
+public class PlayersDatabasePlugin implements Listener {
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS players (username VARCHAR(255) PRIMARY KEY, data LONGTEXT);";
     private static final String INSERT_PLAYER = "INSERT IGNORE INTO players (username, data) VALUES (?, ?);";
     private static final String UPDATE_PLAYER = "UPDATE players SET data = JSON_SET(data, ?, JSON_MERGE_PATCH(JSON_EXTRACT(data, ?), ?)) WHERE username = ?;";
@@ -47,7 +48,7 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
 
         if (Main.database == null) return;
 
-        bot.players.addListener(this);
+        bot.listener.addListener(this);
     }
 
     public JsonNode getPlayerData (final String username) {
@@ -133,7 +134,7 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
     }
 
     @Override
-    public void playerJoined (final PlayerEntry target) {
+    public void onPlayerJoined (final PlayerEntry target) {
         DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
             try {
                 final PreparedStatement insertPlayerStatement = Main.database.connection.prepareStatement(INSERT_PLAYER);
@@ -158,7 +159,7 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
     }
 
     @Override
-    public void queriedPlayerIP (final PlayerEntry target, final String ip) {
+    public void onQueriedPlayerIP (final PlayerEntry target, final String ip) {
         DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
             try {
                 final PreparedStatement updatePlayerStatement = Main.database.connection.prepareStatement(UPDATE_PLAYER);
@@ -181,7 +182,7 @@ public class PlayersDatabasePlugin implements PlayersPlugin.Listener {
     }
 
     @Override
-    public void playerLeft (final PlayerEntry target) {
+    public void onPlayerLeft (final PlayerEntry target) {
         DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
             try {
                 final PreparedStatement updatePlayerStatement = Main.database.connection.prepareStatement(UPDATE_PLAYER);

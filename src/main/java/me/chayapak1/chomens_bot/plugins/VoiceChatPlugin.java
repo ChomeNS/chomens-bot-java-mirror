@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.plugins;
 
 import io.netty.buffer.Unpooled;
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.logging.LogType;
 import me.chayapak1.chomens_bot.data.voiceChat.ClientGroup;
 import me.chayapak1.chomens_bot.data.voiceChat.RawUdpPacket;
@@ -27,7 +28,7 @@ import java.util.UUID;
 
 // ALMOST ALL of these codes are from the simple voice chat mod itself including the other voicechat classes
 // mic packet exists but is never sent because i am too lazy to implement the player + evilbot already has a voicechat music player
-public class VoiceChatPlugin extends Bot.Listener implements Runnable {
+public class VoiceChatPlugin implements Listener, Runnable {
     private static final Key SECRET_KEY = Key.key("voicechat:secret");
     private static final Key ADD_GROUP_KEY = Key.key("voicechat:add_group");
     private static final Key REMOVE_GROUP_KEY = Key.key("voicechat:remove_group");
@@ -45,7 +46,7 @@ public class VoiceChatPlugin extends Bot.Listener implements Runnable {
     public VoiceChatPlugin (final Bot bot) {
         this.bot = bot;
 
-        bot.addListener(this);
+        bot.listener.addListener(this);
     }
 
     @Override

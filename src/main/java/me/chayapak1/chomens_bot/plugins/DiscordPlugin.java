@@ -3,6 +3,7 @@ package me.chayapak1.chomens_bot.plugins;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.Main;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.discord.DirectMessageEventHandler;
 import me.chayapak1.chomens_bot.discord.GuildMessageEventHandler;
 import me.chayapak1.chomens_bot.discord.MessageLogger;
@@ -86,30 +87,25 @@ public class DiscordPlugin {
 
             logData.put(channelId, new LogData());
 
-            bot.addListener(new Bot.Listener() {
+            bot.listener.addListener(new Listener() {
                 @Override
-                public void loadedPlugins (final Bot bot) {
-                    bot.chat.addListener(new ChatPlugin.Listener() {
-                        @Override
-                        public boolean systemMessageReceived (final Component component, final String string, final String _ansi) {
-                            if (string.length() > 2000 - 12) {
-                                sendMessage(CodeBlockUtilities.escape(string), channelId);
-                            } else {
-                                final String ansi = ComponentUtilities.stringifyDiscordAnsi(component);
+                public boolean onSystemMessageReceived (final Component component, final String string, final String _ansi) {
+                    if (string.length() > 2000 - 12) {
+                        sendMessage(CodeBlockUtilities.escape(string), channelId);
+                    } else {
+                        final String ansi = ComponentUtilities.stringifyDiscordAnsi(component);
 
-                                sendMessage(
-                                        CodeBlockUtilities.escape(ansi),
-                                        channelId
-                                );
-                            }
+                        sendMessage(
+                                CodeBlockUtilities.escape(ansi),
+                                channelId
+                        );
+                    }
 
-                            return true;
-                        }
-                    });
+                    return true;
                 }
 
                 @Override
-                public void connecting () {
+                public void onConnecting () {
                     if (bot.connectAttempts > 6) return;
                     else if (bot.connectAttempts == 6) {
                         sendMessageInstantly("Suppressing connection status messages from now on", channelId);
@@ -223,7 +219,7 @@ public class DiscordPlugin {
 
             data.nextLogTime.set(currentTime + logDelay);
 
-            String message;
+            final String message;
 
             final StringBuilder logMessages = data.logMessages;
 

@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.plugins;
 
 import com.google.gson.JsonSyntaxException;
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.util.MathUtilities;
 import me.chayapak1.chomens_bot.util.StringUtilities;
 import net.kyori.adventure.text.Component;
@@ -27,21 +28,18 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.inventory.S
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundPlayerActionPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundUseItemOnPacket;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class CorePlugin
-        extends Bot.Listener
-        implements PositionPlugin.Listener, WorldPlugin.Listener, TickPlugin.Listener
-{
+public class CorePlugin implements Listener {
     public static final int COMMAND_BLOCK_ID = 418;
 
     private final Bot bot;
-
-    private final List<Listener> listeners = new ArrayList<>();
 
     public volatile boolean ready = false;
 
@@ -89,10 +87,7 @@ public class CorePlugin
             );
         }
 
-        bot.addListener(this);
-        bot.world.addListener(this);
-        bot.tick.addListener(this);
-        bot.position.addListener(this);
+        bot.listener.addListener(this);
     }
 
     @Override
@@ -444,7 +439,7 @@ public class CorePlugin
     }
 
     @Override
-    public void positionChange (final Vector3d position) {
+    public void onPositionChange (final Vector3d position) {
         if (bot.position.isGoingDownFromHeightLimit) return;
 
         positionChangesPerSecond.incrementAndGet();
@@ -471,12 +466,12 @@ public class CorePlugin
             reset();
             refill();
 
-            for (final Listener listener : listeners) listener.coreReady();
+            bot.listener.dispatch(Listener::onCoreReady);
         }
     }
 
     @Override
-    public void worldChanged (final String dimension) {
+    public void onWorldChanged (final String dimension) {
         reset();
         refill();
     }
@@ -562,15 +557,7 @@ public class CorePlugin
         }
 
         if (refilledMap.containsValue(true)) {
-            for (final Listener listener : listeners) listener.coreRefilled();
+            bot.listener.dispatch(Listener::onCoreRefilled);
         }
     }
-
-    public interface Listener {
-        default void coreReady () { }
-
-        default void coreRefilled () { }
-    }
-
-    public void addListener (final Listener listener) { listeners.add(listener); }
 }

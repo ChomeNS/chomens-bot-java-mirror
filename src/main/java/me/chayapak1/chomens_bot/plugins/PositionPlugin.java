@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.entity.Rotation;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.MathUtilities;
 import org.cloudburstmc.math.vector.Vector3d;
@@ -14,16 +15,12 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.spaw
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.level.ServerboundAcceptTeleportationPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundMovePlayerPosPacket;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 // some part of the code used to be in a test plugin but i thought it would be useful in the future so i moved it here
-public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener {
+public class PositionPlugin implements Listener {
     private final Bot bot;
-
-    private final List<Listener> listeners = new ArrayList<>();
 
     public Vector3d position = Vector3d.from(0, 0, 0);
 
@@ -38,8 +35,7 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
     public PositionPlugin (final Bot bot) {
         this.bot = bot;
 
-        bot.addListener(this);
-        bot.tick.addListener(this);
+        bot.listener.addListener(this);
     }
 
     @Override
@@ -77,7 +73,7 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
 
         position = packet.getPosition();
 
-        for (final Listener listener : listeners) { listener.positionChange(position); }
+        bot.listener.dispatch(listener -> listener.onPositionChange(position));
     }
 
     private void packetReceived (final ClientboundAddEntityPacket packet) {
@@ -120,7 +116,7 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
         positionMap.put(packet.getId(), position);
         rotationMap.put(packet.getId(), rotation);
 
-        for (final Listener listener : listeners) listener.playerMoved(player, position, rotation);
+        bot.listener.dispatch(listener -> listener.onPlayerMoved(player, position, rotation));
     }
 
     private void packetReceived (final ClientboundMoveEntityRotPacket packet) {
@@ -132,8 +128,7 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
 
         rotationMap.put(packet.getEntityId(), rotation);
 
-        for (final Listener listener : listeners)
-            listener.playerMoved(player, getPlayerPosition(player.profile.getName()), rotation);
+        bot.listener.dispatch(listener -> listener.onPlayerMoved(player, getPlayerPosition(player.profile.getName()), rotation));
     }
 
     private void packetReceived (final ClientboundMoveEntityPosPacket packet) {
@@ -146,20 +141,21 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
         positionMap.remove(packet.getEntityId());
 
         // code ported straight from minecraft
-        Vector3d position = lastPosition;
+        final Vector3d position;
 
         if (packet.getMoveX() != 0 || packet.getMoveY() != 0 || packet.getMoveZ() != 0) {
-            position = position.add(
+            position = lastPosition.add(
                     packet.getMoveX() == 0 ? 0 : packet.getMoveX(),
                     packet.getMoveY() == 0 ? 0 : packet.getMoveY(),
                     packet.getMoveZ() == 0 ? 0 : packet.getMoveZ()
             );
+        } else {
+            position = lastPosition;
         }
 
         positionMap.put(packet.getEntityId(), position);
 
-        for (final Listener listener : listeners)
-            listener.playerMoved(player, position, getPlayerRotation(player.profile.getName()));
+        bot.listener.dispatch(listener -> listener.onPlayerMoved(player, position, getPlayerRotation(player.profile.getName())));
     }
 
     private void packetReceived (final ClientboundMoveEntityPosRotPacket packet) {
@@ -172,14 +168,16 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
         positionMap.remove(packet.getEntityId());
         rotationMap.remove(packet.getEntityId());
 
-        Vector3d position = lastPosition;
+        final Vector3d position;
 
         if (packet.getMoveX() != 0 || packet.getMoveY() != 0 || packet.getMoveZ() != 0) {
-            position = position.add(
+            position = lastPosition.add(
                     packet.getMoveX() == 0 ? 0 : packet.getMoveX(),
                     packet.getMoveY() == 0 ? 0 : packet.getMoveY(),
                     packet.getMoveZ() == 0 ? 0 : packet.getMoveZ()
             );
+        } else {
+            position = lastPosition;
         }
 
         final Rotation rotation = new Rotation(packet.getYaw(), packet.getPitch());
@@ -187,7 +185,7 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
         positionMap.put(packet.getEntityId(), position);
         rotationMap.put(packet.getEntityId(), rotation);
 
-        for (final Listener listener : listeners) listener.playerMoved(player, position, rotation);
+        bot.listener.dispatch(listener -> listener.onPlayerMoved(player, position, rotation));
     }
 
     // for now this is used in CorePlugin when placing the command block
@@ -200,7 +198,7 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
             if (isGoingDownFromHeightLimit) {
                 isGoingDownFromHeightLimit = false;
 
-                for (final Listener listener : listeners) { listener.positionChange(position); }
+                bot.listener.dispatch(listener -> listener.onPositionChange(position));
             }
 
             return;
@@ -268,14 +266,5 @@ public class PositionPlugin extends Bot.Listener implements TickPlugin.Listener 
         }
 
         return null;
-    }
-
-    public void addListener (final Listener listener) { listeners.add(listener); }
-
-    @SuppressWarnings("unused")
-    public interface Listener {
-        default void positionChange (final Vector3d position) { }
-
-        default void playerMoved (final PlayerEntry player, final Vector3d position, final Rotation rotation) { }
     }
 }

@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.bossbar.BotBossBar;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -16,7 +17,7 @@ import java.text.DecimalFormat;
 import java.util.Arrays;
 
 // totallynotskidded™ from meteor client (https://github.com/MeteorDevelopment/meteor-client/blob/master/src/main/java/meteordevelopment/meteorclient/utils/world/TickRate.java)
-public class TPSPlugin extends Bot.Listener implements TickPlugin.Listener {
+public class TPSPlugin implements Listener {
     private final Bot bot;
 
     private boolean enabled = false;
@@ -31,8 +32,7 @@ public class TPSPlugin extends Bot.Listener implements TickPlugin.Listener {
     public TPSPlugin (final Bot bot) {
         this.bot = bot;
 
-        bot.addListener(this);
-        bot.tick.addListener(this);
+        bot.listener.addListener(this);
     }
 
     private void createBossBar () {

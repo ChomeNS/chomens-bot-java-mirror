@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Configuration;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.packet.Packet;
@@ -23,7 +24,7 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.Serv
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener {
+public class SelfCarePlugin implements Listener {
     private final Bot bot;
 
     public boolean visible = false;
@@ -47,12 +48,11 @@ public class SelfCarePlugin extends Bot.Listener implements ChatPlugin.Listener 
 
         bot.executor.scheduleAtFixedRate(this::check, 0, bot.config.selfCare.delay, TimeUnit.MILLISECONDS);
 
-        bot.addListener(this);
-        bot.chat.addListener(this);
+        bot.listener.addListener(this);
     }
 
     @Override
-    public boolean systemMessageReceived (final Component component, final String string, final String ansi) {
+    public boolean onSystemMessageReceived (final Component component, final String string, final String ansi) {
         final Configuration.BotOption.EssentialsMessages essentialsMessages = bot.options.essentialsMessages;
 
         if (string.equals("Successfully enabled CommandSpy")) cspy = true;

@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.network.packet.Packet;
@@ -8,7 +9,7 @@ import org.geysermc.mcprotocollib.protocol.data.game.command.CommandNode;
 import org.geysermc.mcprotocollib.protocol.data.game.command.CommandType;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundCommandsPacket;
 
-public class ServerFeaturesPlugin extends Bot.Listener {
+public class ServerFeaturesPlugin implements Listener {
     private final Bot bot;
 
     public boolean hasNamespaces = false;
@@ -19,7 +20,7 @@ public class ServerFeaturesPlugin extends Bot.Listener {
     public ServerFeaturesPlugin (final Bot bot) {
         this.bot = bot;
 
-        bot.addListener(this);
+        bot.listener.addListener(this);
     }
 
     @Override

@@ -3,6 +3,7 @@ package me.chayapak1.chomens_bot.plugins;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.data.filter.FilteredPlayer;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-public class PlayerFilterPlugin implements PlayersPlugin.Listener {
+public class PlayerFilterPlugin implements Listener {
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS filters (name VARCHAR(255) PRIMARY KEY, reason VARCHAR(255), regex BOOLEAN, ignoreCase BOOLEAN);";
     private static final String LIST_FILTERS = "SELECT * FROM filters;";
     private static final String INSERT_FILTER = "INSERT INTO filters (name, reason, regex, ignoreCase) VALUES (?, ?, ?, ?);";
@@ -44,7 +45,7 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
 
         if (Main.database == null) return;
 
-        bot.players.addListener(this);
+        bot.listener.addListener(this);
     }
 
     public static List<FilteredPlayer> list () {
@@ -124,7 +125,7 @@ public class PlayerFilterPlugin implements PlayersPlugin.Listener {
     }
 
     @Override
-    public void playerJoined (final PlayerEntry target) {
+    public void onPlayerJoined (final PlayerEntry target) {
         bot.executorService.submit(() -> {
             final FilteredPlayer player = getPlayer(target.profile.getName());
 

@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot;
 
 import me.chayapak1.chomens_bot.data.color.ColorPalette;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.plugins.*;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.RandomStringUtilities;
@@ -41,8 +42,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Bot extends SessionAdapter {
-    private final List<Listener> listeners = new ArrayList<>();
-
     public final String host;
     public final int port;
 
@@ -73,6 +72,7 @@ public class Bot extends SessionAdapter {
     public final ExecutorService executorService = Main.EXECUTOR_SERVICE;
     public final ScheduledExecutorService executor = Main.EXECUTOR;
 
+    public final ListenerManagerPlugin listener;
     public final LoggerPlugin logger;
     public final TickPlugin tick;
     public final ChatPlugin chat;
@@ -129,14 +129,15 @@ public class Bot extends SessionAdapter {
         this.config = config;
         this.colorPalette = new ColorPalette(config.colorPalette);
 
-        this.logger = new LoggerPlugin(this);
+        this.listener = new ListenerManagerPlugin(this);
         this.tick = new TickPlugin(this);
         this.chat = new ChatPlugin(this);
         this.commandSpy = new CommandSpyPlugin(this);
+        this.query = new QueryPlugin(this);
+        this.logger = new LoggerPlugin(this);
         this.position = new PositionPlugin(this);
         this.serverFeatures = new ServerFeaturesPlugin(this);
         this.selfCare = new SelfCarePlugin(this);
-        this.query = new QueryPlugin(this);
         this.extrasMessenger = new ExtrasMessengerPlugin(this);
         this.world = new WorldPlugin(this);
         this.core = new CorePlugin(this);
@@ -172,8 +173,6 @@ public class Bot extends SessionAdapter {
     }
 
     protected void connect () {
-        for (final Listener listener : listeners) listener.loadedPlugins(this);
-
         reconnect();
     }
 
@@ -182,9 +181,7 @@ public class Bot extends SessionAdapter {
 
         connectAttempts++;
 
-        for (final Listener listener : listeners) {
-            listener.connecting();
-        }
+        this.listener.dispatch(Listener::onConnecting);
 
         if (!isTransferring) {
             username = options.username == null ?
@@ -215,13 +212,7 @@ public class Bot extends SessionAdapter {
 
     @Override
     public void packetReceived (final Session session, final Packet packet) {
-        for (final SessionListener listener : listeners) {
-            try {
-                listener.packetReceived(session, packet);
-            } catch (final Exception e) {
-                logger.error(e);
-            }
-        }
+        this.listener.dispatch(listener -> listener.packetReceived(session, packet));
 
         if (packet instanceof final ClientboundLoginPacket t_packet) packetReceived(t_packet);
         else if (packet instanceof final ClientboundFinishConfigurationPacket t_packet) packetReceived(t_packet);
@@ -245,9 +236,7 @@ public class Bot extends SessionAdapter {
         loginTime = System.currentTimeMillis();
         connectAttempts = 0;
 
-        for (final SessionListener listener : listeners) {
-            listener.connected(new ConnectedEvent(session));
-        }
+        this.listener.dispatch(listener -> listener.connected(new ConnectedEvent(session)));
 
         session.send(ServerboundPlayerLoadedPacket.INSTANCE);
     }
@@ -331,31 +320,23 @@ public class Bot extends SessionAdapter {
 
     @Override
     public void packetSending (final PacketSendingEvent packetSendingEvent) {
-        for (final SessionListener listener : listeners) {
-            listener.packetSending(packetSendingEvent);
-        }
+        this.listener.dispatch(listener -> listener.packetSending(packetSendingEvent));
     }
 
     @Override
     public void packetSent (final Session session, final Packet packet) {
-        for (final SessionListener listener : listeners) {
-            listener.packetSent(session, packet);
-        }
+        this.listener.dispatch(listener -> listener.packetSent(session, packet));
     }
 
     @Override
     public void packetError (final PacketErrorEvent packetErrorEvent) {
-        for (final SessionListener listener : listeners) {
-            listener.packetError(packetErrorEvent);
-        }
+        this.listener.dispatch(listener -> listener.packetError(packetErrorEvent));
         packetErrorEvent.setSuppress(true); // fixes the ohio sus exploit
     }
 
     @Override
     public void disconnecting (final DisconnectingEvent disconnectingEvent) {
-        for (final SessionListener listener : listeners) {
-            listener.disconnecting(disconnectingEvent);
-        }
+        this.listener.dispatch(listener -> listener.disconnecting(disconnectingEvent));
     }
 
     @Override
@@ -389,13 +370,7 @@ public class Bot extends SessionAdapter {
             executor.schedule(this::reconnect, reconnectDelay, TimeUnit.MILLISECONDS);
         }
 
-        for (final SessionListener listener : listeners) {
-            try {
-                listener.disconnected(disconnectedEvent);
-            } catch (final Exception e) {
-                logger.error(e);
-            }
-        }
+        this.listener.dispatch(listener -> listener.disconnected(disconnectedEvent));
     }
 
     public String getServerString () { return getServerString(false); }
@@ -411,10 +386,6 @@ public class Bot extends SessionAdapter {
         Main.bots.remove(this);
     }
 
-    public void addListener (final Listener listener) {
-        listeners.add(listener);
-    }
-
     @Override
     public String toString () {
         return "Bot{" +
@@ -423,11 +394,5 @@ public class Bot extends SessionAdapter {
                 ", username='" + username + '\'' +
                 ", loggedIn=" + loggedIn +
                 '}';
-    }
-
-    public static class Listener extends SessionAdapter {
-        public void connecting () { }
-
-        public void loadedPlugins (final Bot bot) { }
     }
 }

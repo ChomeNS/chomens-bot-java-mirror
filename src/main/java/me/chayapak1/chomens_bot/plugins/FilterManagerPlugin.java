@@ -3,6 +3,7 @@ package me.chayapak1.chomens_bot.plugins;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
@@ -16,9 +17,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-public class FilterManagerPlugin
-        extends Bot.Listener
-        implements PlayersPlugin.Listener, ChatPlugin.Listener, CommandSpyPlugin.Listener, TickPlugin.Listener {
+public class FilterManagerPlugin implements Listener {
     private final Bot bot;
 
     public final Map<PlayerEntry, String> list = Collections.synchronizedMap(new HashMap<>());
@@ -26,13 +25,9 @@ public class FilterManagerPlugin
     public FilterManagerPlugin (final Bot bot) {
         this.bot = bot;
 
-        bot.executor.scheduleAtFixedRate(this::kick, 0, 10, TimeUnit.SECONDS);
+        bot.listener.addListener(this);
 
-        bot.addListener(this);
-        bot.players.addListener(this);
-        bot.tick.addListener(this);
-        bot.chat.addListener(this);
-        bot.commandSpy.addListener(this);
+        bot.executor.scheduleAtFixedRate(this::kick, 0, 10, TimeUnit.SECONDS);
     }
 
     @Override
@@ -46,7 +41,7 @@ public class FilterManagerPlugin
     }
 
     @Override
-    public void playerDisplayNameUpdated (final PlayerEntry target, final Component displayName) {
+    public void onPlayerDisplayNameUpdated (final PlayerEntry target, final Component displayName) {
         final Pair<PlayerEntry, String> player = getFilteredFromName(target.profile.getName());
 
         if (player == null) return;
@@ -59,7 +54,7 @@ public class FilterManagerPlugin
     }
 
     @Override
-    public void commandReceived (final PlayerEntry sender, final String command) {
+    public void onCommandSpyMessageReceived (final PlayerEntry sender, final String command) {
         final Pair<PlayerEntry, String> player = getFilteredFromName(sender.profile.getName());
 
         if (player == null) return;
@@ -81,7 +76,7 @@ public class FilterManagerPlugin
     }
 
     @Override
-    public boolean playerMessageReceived (final PlayerMessage message, final ChatPacketType packetType) {
+    public boolean onPlayerMessageReceived (final PlayerMessage message, final ChatPacketType packetType) {
         if (message.sender().profile.getName() == null) return true;
 
         final Pair<PlayerEntry, String> player = getFilteredFromName(message.sender().profile.getName());

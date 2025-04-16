@@ -14,6 +14,7 @@ import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundRunCore
 import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundSuccessfulHandshakePacket;
 import me.chayapak1.chomens_bot.data.chomeNSMod.PayloadMetadata;
 import me.chayapak1.chomens_bot.data.chomeNSMod.PayloadState;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.logging.LogType;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
@@ -28,7 +29,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 // This is inspired from the ChomeNS Bot Proxy which is in the JavaScript version of ChomeNS Bot.
-public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, PlayersPlugin.Listener, TickPlugin.Listener {
+public class ChomeNSModIntegrationPlugin implements Listener {
     private static final String ID = "chomens_mod";
     private static final int ENCODED_PAYLOAD_LENGTH = 31_000; // just 32767 trimmed "a bit"
 
@@ -48,8 +49,6 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
     private final PacketHandler handler;
 
-    private final List<Listener> listeners = new ArrayList<>();
-
     public final List<PlayerEntry> connectedPlayers = Collections.synchronizedList(new ArrayList<>());
 
     private final Map<PlayerEntry, Map<Integer, StringBuilder>> receivedParts = new ConcurrentHashMap<>();
@@ -60,9 +59,7 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
         this.bot = bot;
         this.handler = new PacketHandler(bot);
 
-        bot.chat.addListener(this);
-        bot.players.addListener(this);
-        bot.tick.addListener(this);
+        bot.listener.addListener(this);
     }
 
     @Override
@@ -171,7 +168,7 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
     }
 
     @Override
-    public boolean systemMessageReceived (final Component component, final String string, final String ansi) {
+    public boolean onSystemMessageReceived (final Component component, final String string, final String ansi) {
         if (
                 !(component instanceof final TranslatableComponent translatableComponent) ||
                         !translatableComponent.key().isEmpty()
@@ -262,17 +259,12 @@ public class ChomeNSModIntegrationPlugin implements ChatPlugin.Listener, Players
 
         handler.handlePacket(player, packet);
 
-        for (final Listener listener : listeners) listener.packetReceived(player, packet);
+        bot.listener.dispatch(listener -> listener.onChomeNSModPacketReceived(player, packet));
     }
 
     @Override
-    public void playerLeft (final PlayerEntry target) {
+    public void onPlayerLeft (final PlayerEntry target) {
         connectedPlayers.removeIf(player -> player.equals(target));
         receivedParts.remove(target);
-    }
-
-    @SuppressWarnings("unused")
-    public interface Listener {
-        default void packetReceived (final PlayerEntry player, final Packet packet) { }
     }
 }

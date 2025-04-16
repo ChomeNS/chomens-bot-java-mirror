@@ -1,11 +1,12 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.util.HSVLike;
 
-public class BruhifyPlugin implements TickPlugin.Listener {
+public class BruhifyPlugin implements Listener {
     private final Bot bot;
 
     public String bruhifyText = "";
@@ -15,7 +16,7 @@ public class BruhifyPlugin implements TickPlugin.Listener {
     public BruhifyPlugin (final Bot bot) {
         this.bot = bot;
 
-        bot.tick.addListener(this);
+        bot.listener.addListener(this);
     }
 
     @Override

@@ -4,6 +4,7 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.contexts.IRCCommandContext;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.kyori.adventure.text.Component;
@@ -65,22 +66,17 @@ public class IRCPlugin extends ListenerAdapter {
         }).start();
 
         for (final Bot bot : Main.bots) {
-            bot.addListener(new Bot.Listener() {
+            bot.listener.addListener(new Listener() {
                 @Override
                 public void connected (final ConnectedEvent event) {
                     IRCPlugin.this.connected(bot);
                 }
 
                 @Override
-                public void loadedPlugins (final Bot bot) {
-                    bot.chat.addListener(new ChatPlugin.Listener() {
-                        @Override
-                        public boolean systemMessageReceived (final Component component, final String string, final String ansi) {
-                            IRCPlugin.this.systemMessageReceived(bot, ansi);
+                public boolean onSystemMessageReceived (final Component component, final String string, final String ansi) {
+                    IRCPlugin.this.systemMessageReceived(bot, ansi);
 
-                            return true;
-                        }
-                    });
+                    return true;
                 }
             });
         }

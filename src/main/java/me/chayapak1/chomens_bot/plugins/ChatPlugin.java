@@ -7,6 +7,7 @@ import me.chayapak1.chomens_bot.chatParsers.U203aChatParser;
 import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.chat.ChatParser;
 import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.IllegalCharactersUtilities;
@@ -38,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ChatPlugin extends Bot.Listener {
+public class ChatPlugin implements Listener {
     public static final Pattern COLOR_CODE_PATTERN = Pattern.compile("(&[a-f0-9rlonmk])", Pattern.MULTILINE);
     public static final Pattern COLOR_CODE_END_PATTERN = Pattern.compile("^.*&[a-f0-9rlonmk]$", Pattern.MULTILINE);
 
@@ -49,7 +50,7 @@ public class ChatPlugin extends Bot.Listener {
 
     public final Pattern CHAT_SPLIT_PATTERN = Pattern.compile("\\G\\s*([^\\r\\n]{1,254}(?=\\s|$)|[^\\r\\n]{254})");
 
-    private final List<ChatParser> chatParsers;
+    private final List<ChatParser> chatParsers = Collections.synchronizedList(new ArrayList<>());
 
     public final List<Component> chatTypes = new ArrayList<>();
 
@@ -57,16 +58,13 @@ public class ChatPlugin extends Bot.Listener {
 
     public final int queueDelay;
 
-    private final List<Listener> listeners = new ArrayList<>();
-
     public ChatPlugin (final Bot bot) {
         this.bot = bot;
 
         queueDelay = bot.options.chatQueueDelay;
 
-        bot.addListener(this);
+        bot.listener.addListener(this);
 
-        chatParsers = Collections.synchronizedList(new ArrayList<>());
         chatParsers.add(new MinecraftChatParser(bot));
         chatParsers.add(new KaboomChatParser(bot));
         chatParsers.add(new U203aChatParser(bot));
@@ -117,11 +115,13 @@ public class ChatPlugin extends Bot.Listener {
         final String string = ComponentUtilities.stringify(component);
         final String ansi = ComponentUtilities.stringifyAnsi(component);
 
-        for (final Listener listener : listeners) {
-            if (!listener.systemMessageReceived(component, string, ansi)) break;
+        final PlayerMessage finalPlayerMessage = playerMessage; // ???
+        bot.listener.dispatchWithCheck(listener -> {
+            if (!listener.onSystemMessageReceived(component, string, ansi)) return false;
 
-            if (playerMessage != null && !listener.playerMessageReceived(playerMessage, ChatPacketType.SYSTEM)) break;
-        }
+            return finalPlayerMessage == null
+                    || listener.onPlayerMessageReceived(finalPlayerMessage, ChatPacketType.SYSTEM);
+        });
     }
 
     private void packetReceived (final ClientboundRegistryDataPacket packet) {
@@ -182,8 +182,8 @@ public class ChatPlugin extends Bot.Listener {
 
         final Component unsignedContent = packet.getUnsignedContent();
 
-        for (final Listener listener : listeners) {
-            if (!listener.playerMessageReceived(playerMessage, ChatPacketType.PLAYER)) break;
+        bot.listener.dispatchWithCheck(listener -> {
+            if (!listener.onPlayerMessageReceived(playerMessage, ChatPacketType.PLAYER)) return false;
 
             final Component chatTypeComponent = getComponentByChatType(
                     packet.getChatType().id(),
@@ -196,14 +196,14 @@ public class ChatPlugin extends Bot.Listener {
                 final String string = ComponentUtilities.stringify(chatTypeComponent);
                 final String ansi = ComponentUtilities.stringifyAnsi(chatTypeComponent);
 
-                if (!listener.systemMessageReceived(chatTypeComponent, string, ansi)) break;
+                return listener.onSystemMessageReceived(chatTypeComponent, string, ansi);
             } else {
                 final String string = ComponentUtilities.stringify(unsignedContent);
                 final String ansi = ComponentUtilities.stringifyAnsi(unsignedContent);
 
-                if (!listener.systemMessageReceived(unsignedContent, string, ansi)) break;
+                return listener.onSystemMessageReceived(unsignedContent, string, ansi);
             }
-        }
+        });
     }
 
     private void packetReceived (final ClientboundDisguisedChatPacket packet) {
@@ -227,9 +227,8 @@ public class ChatPlugin extends Bot.Listener {
             final String string = ComponentUtilities.stringify(chatTypeComponent);
             final String ansi = ComponentUtilities.stringifyAnsi(chatTypeComponent);
 
-            for (final Listener listener : listeners) {
-                if (!listener.systemMessageReceived(chatTypeComponent, string, ansi)) break;
-            }
+            bot.listener.dispatchWithCheck(listener ->
+                                                   listener.onSystemMessageReceived(chatTypeComponent, string, ansi));
 
             for (final ChatParser parser : chatParsers) {
                 final PlayerMessage parsed = parser.parse(chatTypeComponent);
@@ -242,9 +241,9 @@ public class ChatPlugin extends Bot.Listener {
                         parsed.contents()
                 );
 
-                for (final Listener listener : listeners) {
-                    if (!listener.playerMessageReceived(playerMessage, ChatPacketType.DISGUISED)) break;
-                }
+                bot.listener.dispatchWithCheck(listener -> listener.onPlayerMessageReceived(
+                        playerMessage, ChatPacketType.DISGUISED
+                ));
             }
         } else {
             if (parsedFromMessage == null) return;
@@ -258,10 +257,10 @@ public class ChatPlugin extends Bot.Listener {
             final String string = ComponentUtilities.stringify(component);
             final String ansi = ComponentUtilities.stringifyAnsi(component);
 
-            for (final Listener listener : listeners) {
-                if (!listener.playerMessageReceived(playerMessage, ChatPacketType.DISGUISED)) break;
-                if (!listener.systemMessageReceived(component, string, ansi)) break;
-            }
+            bot.listener.dispatchWithCheck(listener -> {
+                if (!listener.onPlayerMessageReceived(playerMessage, ChatPacketType.DISGUISED)) return false;
+                return listener.onSystemMessageReceived(component, string, ansi);
+            });
         }
     }
 
@@ -376,14 +375,6 @@ public class ChatPlugin extends Bot.Listener {
     public void actionBar (final Component component, final UUID uuid) { actionBar(component, UUIDUtilities.selector(uuid)); }
 
     public void actionBar (final Component component) { actionBar(component, "@a"); }
-
-    public void addListener (final Listener listener) { listeners.add(listener); }
-
-    public interface Listener {
-        default boolean playerMessageReceived (final PlayerMessage message, final ChatPacketType packetType) { return true; }
-
-        default boolean systemMessageReceived (final Component component, final String string, final String ansi) { return true; }
-    }
 
     private record ChatTypeContext(Component target, Component sender, Component content) { }
 

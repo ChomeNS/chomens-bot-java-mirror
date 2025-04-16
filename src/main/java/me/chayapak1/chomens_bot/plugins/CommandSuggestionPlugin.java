@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.Command;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
@@ -9,32 +10,33 @@ import net.kyori.adventure.text.TextComponent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandSuggestionPlugin implements ChatPlugin.Listener {
-    public static final String ID = "chomens_bot_request_command_suggestion";
-
+public class CommandSuggestionPlugin implements Listener {
     private final Bot bot;
+
+    private final String id;
 
     public CommandSuggestionPlugin (final Bot bot) {
         this.bot = bot;
+        this.id = bot.config.namespace + "_request_command_suggestions"; // chomens_bot_request_command_suggestion
 
-        bot.chat.addListener(this);
+        bot.listener.addListener(this);
     }
 
     @Override
-    public boolean systemMessageReceived (final Component component, final String string, final String ansi) {
+    public boolean onSystemMessageReceived (final Component component, final String string, final String ansi) {
         final List<Component> children = component.children();
 
         if (
-                !(component instanceof final TextComponent idComponent) ||
-                        !idComponent.content().equals(ID) ||
-                        children.size() != 1 ||
-                        !(children.getFirst() instanceof final TextComponent playerComponent)
+                !(component instanceof final TextComponent idComponent)
+                        || !idComponent.content().equals(id)
+                        || children.size() != 1
+                        || !(children.getFirst() instanceof final TextComponent playerComponent)
         ) return true;
 
         final String player = playerComponent.content();
 
         final List<Component> output = new ArrayList<>();
-        output.add(Component.text(ID));
+        output.add(Component.text(id));
 
         for (final Command command : CommandHandlerPlugin.COMMANDS) {
             if (command.consoleOnly) continue;

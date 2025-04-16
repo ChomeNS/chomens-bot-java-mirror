@@ -1,12 +1,13 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WhitelistPlugin implements PlayersPlugin.Listener {
+public class WhitelistPlugin implements Listener {
     private final Bot bot;
 
     public final List<String> list = new ArrayList<>();
@@ -16,7 +17,7 @@ public class WhitelistPlugin implements PlayersPlugin.Listener {
     public WhitelistPlugin (final Bot bot) {
         this.bot = bot;
 
-        bot.players.addListener(this);
+        bot.listener.addListener(this);
     }
 
     public void enable () {
@@ -74,7 +75,7 @@ public class WhitelistPlugin implements PlayersPlugin.Listener {
     }
 
     @Override
-    public void playerJoined (final PlayerEntry target) {
+    public void onPlayerJoined (final PlayerEntry target) {
         if (!enabled) return;
 
         if (isBlacklisted(target.profile.getName())) bot.filterManager.add(target, "");

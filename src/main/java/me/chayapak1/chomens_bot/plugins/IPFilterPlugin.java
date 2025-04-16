@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Main;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 
@@ -12,7 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class IPFilterPlugin implements PlayersPlugin.Listener, CorePlugin.Listener {
+public class IPFilterPlugin implements Listener {
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ipFilters (ip VARCHAR(255) PRIMARY KEY, reason VARCHAR(255));";
     private static final String LIST_FILTERS = "SELECT * FROM ipFilters;";
     private static final String INSERT_FILTER = "INSERT INTO ipFilters (ip, reason) VALUES (?, ?);";
@@ -42,19 +43,18 @@ public class IPFilterPlugin implements PlayersPlugin.Listener, CorePlugin.Listen
 
         if (Main.database == null) return;
 
-        bot.players.addListener(this);
-        bot.core.addListener(this);
+        bot.listener.addListener(this);
 
         bot.executor.scheduleAtFixedRate(this::checkAllPlayers, 5, 5, TimeUnit.SECONDS);
     }
 
     @Override
-    public void coreReady () {
+    public void onCoreReady () {
         checkAllPlayers();
     }
 
     @Override
-    public void queriedPlayerIP (final PlayerEntry target, final String ip) {
+    public void onQueriedPlayerIP (final PlayerEntry target, final String ip) {
         if (localList.isEmpty()) return;
 
         check(target);

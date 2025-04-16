@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundCommandSuggestionsPacket;
@@ -10,14 +11,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class TabCompletePlugin extends Bot.Listener {
+public class TabCompletePlugin implements Listener {
     private final Bot bot;
     private int nextTransactionId = 0;
     private final Map<Integer, CompletableFuture<ClientboundCommandSuggestionsPacket>> transactions = new HashMap<>();
 
     public TabCompletePlugin (final Bot bot) {
         this.bot = bot;
-        bot.addListener(this);
+
+        bot.listener.addListener(this);
     }
 
     public CompletableFuture<ClientboundCommandSuggestionsPacket> tabComplete (final String command) {

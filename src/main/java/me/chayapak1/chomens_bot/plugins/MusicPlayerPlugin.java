@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.bossbar.BotBossBar;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.song.Loop;
 import me.chayapak1.chomens_bot.song.Note;
@@ -29,7 +30,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 // Author: _ChipMC_ & hhhzzzsss
-public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listener {
+public class MusicPlayerPlugin implements Listener {
     public static final String SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic,tag=!custompitch]";
     public static final String CUSTOM_PITCH_SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic,tag=custompitch]";
     public static final String BOTH_SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic]";
@@ -76,9 +77,7 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
     public MusicPlayerPlugin (final Bot bot) {
         this.bot = bot;
 
-        bot.addListener(this);
-
-        bot.core.addListener(this);
+        bot.listener.addListener(this);
 
         bot.executor.scheduleAtFixedRate(this::onTick, 0, 50, TimeUnit.MILLISECONDS);
         bot.executor.scheduleAtFixedRate(() -> urlLimit = 0, 0, bot.config.music.urlRatelimit.seconds, TimeUnit.SECONDS);
@@ -131,13 +130,14 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
     }
 
     @Override
-    public void coreReady () {
+    public void onCoreReady () {
         if (currentSong != null) currentSong.play();
     }
 
     // this needs a separate ticker because we need
     // the song to be playing without lag
-    private void onTick () {
+    @Override
+    public void onTick () {
         try {
             if (!bot.loggedIn) return;
 

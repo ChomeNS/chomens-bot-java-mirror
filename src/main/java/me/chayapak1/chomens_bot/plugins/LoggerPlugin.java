@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.logging.LogType;
 import me.chayapak1.chomens_bot.util.ExceptionUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
@@ -8,7 +9,7 @@ import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 
-public class LoggerPlugin implements ChatPlugin.Listener {
+public class LoggerPlugin implements Listener {
     private final Bot bot;
 
     public boolean logToConsole = true;
@@ -16,52 +17,7 @@ public class LoggerPlugin implements ChatPlugin.Listener {
     public LoggerPlugin (final Bot bot) {
         this.bot = bot;
 
-        bot.addListener(new Bot.Listener() {
-            @Override
-            public void connecting () {
-                if (bot.connectAttempts > 10) return;
-                else if (bot.connectAttempts == 10) {
-                    log("Suppressing connection status messages from now on");
-
-                    return;
-                }
-
-                log(
-                        String.format(
-                                "Connecting to: %s",
-                                bot.getServerString(true)
-                        )
-                );
-            }
-
-            @Override
-            public void connected (final ConnectedEvent event) {
-                log(
-                        String.format(
-                                "Successfully connected to: %s",
-                                bot.getServerString(true)
-                        )
-                );
-            }
-
-            @Override
-            public void disconnected (final DisconnectedEvent event) {
-                if (bot.connectAttempts >= 10) return;
-
-                final Component message = Component.translatable(
-                        "Disconnected from %s, reason: %s",
-                        Component.text(bot.getServerString(true)),
-                        event.getReason()
-                );
-
-                log(message);
-            }
-
-            @Override
-            public void loadedPlugins (final Bot bot) {
-                bot.chat.addListener(LoggerPlugin.this);
-            }
-        });
+        bot.listener.addListener(this);
     }
 
     public void log (final LogType type, final Component message) {
@@ -85,7 +41,47 @@ public class LoggerPlugin implements ChatPlugin.Listener {
     public void error (final Throwable throwable) { log(LogType.ERROR, ExceptionUtilities.getStacktrace(throwable)); }
 
     @Override
-    public boolean systemMessageReceived (final Component component, final String string, final String ansi) {
+    public void onConnecting () {
+        if (bot.connectAttempts > 10) return;
+        else if (bot.connectAttempts == 10) {
+            log("Suppressing connection status messages from now on");
+
+            return;
+        }
+
+        log(
+                String.format(
+                        "Connecting to: %s",
+                        bot.getServerString(true)
+                )
+        );
+    }
+
+    @Override
+    public void connected (final ConnectedEvent event) {
+        log(
+                String.format(
+                        "Successfully connected to: %s",
+                        bot.getServerString(true)
+                )
+        );
+    }
+
+    @Override
+    public void disconnected (final DisconnectedEvent event) {
+        if (bot.connectAttempts >= 10) return;
+
+        final Component message = Component.translatable(
+                "Disconnected from %s, reason: %s",
+                Component.text(bot.getServerString(true)),
+                event.getReason()
+        );
+
+        log(message);
+    }
+
+    @Override
+    public boolean onSystemMessageReceived (final Component component, final String string, final String ansi) {
         log(LogType.CHAT, component);
 
         return true;

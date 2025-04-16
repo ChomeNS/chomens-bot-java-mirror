@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.logging.LogType;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
@@ -12,17 +13,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
-public class TrustedPlugin implements PlayersPlugin.Listener {
+public class TrustedPlugin implements Listener {
     private final Bot bot;
 
     public final List<String> list;
 
     public TrustedPlugin (final Bot bot) {
         this.bot = bot;
-
         this.list = bot.config.trusted;
 
-        bot.players.addListener(this);
+        bot.listener.addListener(this);
     }
 
     public void broadcast (final Component message, final UUID exceptTarget) {
@@ -53,7 +53,7 @@ public class TrustedPlugin implements PlayersPlugin.Listener {
     public void broadcast (final Component message) { broadcast(message, null); }
 
     @Override
-    public void playerJoined (final PlayerEntry target) {
+    public void onPlayerJoined (final PlayerEntry target) {
         if (!list.contains(target.profile.getName())) return;
 
         // based (VERY)
@@ -95,7 +95,7 @@ public class TrustedPlugin implements PlayersPlugin.Listener {
     }
 
     @Override
-    public void playerLeft (final PlayerEntry target) {
+    public void onPlayerLeft (final PlayerEntry target) {
         if (!list.contains(target.profile.getName())) return;
 
         broadcast(

@@ -3,6 +3,7 @@ package me.chayapak1.chomens_bot.plugins;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.bossbar.BossBar;
 import me.chayapak1.chomens_bot.data.bossbar.BotBossBar;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.geysermc.mcprotocollib.network.Session;
@@ -16,10 +17,7 @@ import java.util.Map;
 import java.util.UUID;
 
 // yes this has been rewritten to be not spammy
-public class BossbarManagerPlugin
-        extends Bot.Listener
-        implements PlayersPlugin.Listener, TickPlugin.Listener, CorePlugin.Listener
-{
+public class BossbarManagerPlugin implements Listener {
     private final Bot bot;
 
     public final Map<UUID, BossBar> serverBossBars = new HashMap<>();
@@ -34,11 +32,7 @@ public class BossbarManagerPlugin
         this.bot = bot;
         this.bossBarPrefix = bot.config.namespace + ":";
 
-        bot.addListener(this);
-
-        bot.players.addListener(this);
-        bot.tick.addListener(this);
-        bot.core.addListener(this);
+        bot.listener.addListener(this);
     }
 
     @Override
@@ -154,7 +148,7 @@ public class BossbarManagerPlugin
     }
 
     @Override
-    public void coreReady () {
+    public void onCoreReady () {
         for (final Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
             final BotBossBar bossBar = _bossBar.getValue();
 
@@ -168,7 +162,7 @@ public class BossbarManagerPlugin
     }
 
     @Override
-    public void playerJoined (final PlayerEntry target) {
+    public void onPlayerJoined (final PlayerEntry target) {
         if (!enabled || actionBar || !bot.options.useCore) return;
 
         for (final Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {

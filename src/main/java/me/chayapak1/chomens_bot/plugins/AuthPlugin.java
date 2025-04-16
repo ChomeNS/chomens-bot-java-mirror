@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.logging.LogType;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import net.kyori.adventure.text.Component;
@@ -9,7 +10,7 @@ import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 
 import java.util.concurrent.TimeUnit;
 
-public class AuthPlugin implements PlayersPlugin.Listener, ChatPlugin.Listener {
+public class AuthPlugin implements Listener {
     private final Bot bot;
 
     public boolean isAuthenticating = false;
@@ -28,15 +29,7 @@ public class AuthPlugin implements PlayersPlugin.Listener, ChatPlugin.Listener {
             timeoutCheck();
         }, 500, 500, TimeUnit.MILLISECONDS);
 
-        bot.addListener(new Bot.Listener() {
-            @Override
-            public void disconnected (final DisconnectedEvent event) {
-                AuthPlugin.this.disconnected();
-            }
-        });
-
-        bot.chat.addListener(this);
-        bot.players.addListener(this);
+        bot.listener.addListener(this);
     }
 
     private void checkAuthenticated () {
@@ -74,7 +67,7 @@ public class AuthPlugin implements PlayersPlugin.Listener, ChatPlugin.Listener {
     }
 
     @Override
-    public void playerJoined (final PlayerEntry target) {
+    public void onPlayerJoined (final PlayerEntry target) {
         if (!target.profile.getName().equals(bot.config.ownerName) || !bot.options.useCore) return;
 
         startTime = System.currentTimeMillis();
@@ -82,13 +75,14 @@ public class AuthPlugin implements PlayersPlugin.Listener, ChatPlugin.Listener {
     }
 
     @Override
-    public void playerLeft (final PlayerEntry target) {
+    public void onPlayerLeft (final PlayerEntry target) {
         if (!target.profile.getName().equals(bot.config.ownerName)) return;
 
         isAuthenticating = false;
     }
 
-    private void disconnected () {
+    @Override
+    public void disconnected (final DisconnectedEvent event) {
         isAuthenticating = false;
     }
 }

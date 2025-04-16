@@ -7,6 +7,7 @@ import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.command.contexts.*;
 import me.chayapak1.chomens_bot.commands.*;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.util.ExceptionUtilities;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CommandHandlerPlugin implements TickPlugin.Listener {
+public class CommandHandlerPlugin implements Listener {
     public static final List<Command> COMMANDS = new ArrayList<>();
 
     static {
@@ -93,7 +94,7 @@ public class CommandHandlerPlugin implements TickPlugin.Listener {
     public CommandHandlerPlugin (final Bot bot) {
         this.bot = bot;
 
-        bot.tick.addListener(this);
+        bot.listener.addListener(this);
     }
 
     @Override

@@ -3,6 +3,7 @@ package me.chayapak1.chomens_bot.plugins;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.chunk.ChunkColumn;
 import me.chayapak1.chomens_bot.data.chunk.ChunkPos;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import org.cloudburstmc.math.vector.Vector3i;
 import org.cloudburstmc.nbt.NbtMap;
 import org.geysermc.mcprotocollib.network.Session;
@@ -15,9 +16,12 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.Clientbound
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundRespawnPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.*;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class WorldPlugin extends Bot.Listener {
+public class WorldPlugin implements Listener {
     private final Bot bot;
 
     public int minY = 0;
@@ -29,12 +33,10 @@ public class WorldPlugin extends Bot.Listener {
 
     public List<RegistryEntry> registry = null;
 
-    private final List<Listener> listeners = new ArrayList<>();
-
     public WorldPlugin (final Bot bot) {
         this.bot = bot;
 
-        bot.addListener(this);
+        bot.listener.addListener(this);
     }
 
     @Override
@@ -69,7 +71,7 @@ public class WorldPlugin extends Bot.Listener {
         minY = data.getInt("min_y");
         maxY = data.getInt("height") + minY;
 
-        for (final Listener listener : listeners) listener.worldChanged(dimension);
+        bot.listener.dispatch(listener -> listener.onWorldChanged(dimension));
     }
 
     private void packetReceived (final ClientboundRegistryDataPacket packet) {
@@ -135,11 +137,5 @@ public class WorldPlugin extends Bot.Listener {
         final ChunkPos chunkPos = new ChunkPos(Math.floorDiv(x, 16), Math.floorDiv(z, 16));
         if (!chunks.containsKey(chunkPos)) return;
         chunks.get(chunkPos).setBlock(x & 15, y, z & 15, id);
-    }
-
-    public void addListener (final Listener listener) { listeners.add(listener); }
-
-    public interface Listener {
-        default void worldChanged (final String dimension) { }
     }
 }

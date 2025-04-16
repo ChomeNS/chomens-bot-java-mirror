@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.*;
 import org.apache.commons.lang3.tuple.Triple;
@@ -14,7 +15,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener, TickPlugin.Listener {
+public class QueryPlugin implements Listener {
     private static final String ID = "chomens_bot_query";
 
     private final Bot bot;
@@ -28,9 +29,7 @@ public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener, Ti
     public QueryPlugin (final Bot bot) {
         this.bot = bot;
 
-        bot.addListener(this);
-        bot.chat.addListener(this);
-        bot.tick.addListener(this);
+        bot.listener.addListener(this);
     }
 
     @Override
@@ -52,7 +51,7 @@ public class QueryPlugin extends Bot.Listener implements ChatPlugin.Listener, Ti
     }
 
     @Override
-    public boolean systemMessageReceived (final Component component, final String string, final String ansi) {
+    public boolean onSystemMessageReceived (final Component component, final String string, final String ansi) {
         if (
                 !(component instanceof final TranslatableComponent rootTranslatable) ||
                         !rootTranslatable.key().equals(ID)

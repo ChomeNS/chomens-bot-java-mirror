@@ -4,6 +4,7 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.contexts.PlayerCommandContext;
 import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
@@ -11,7 +12,7 @@ import net.kyori.adventure.text.Component;
 
 import java.util.List;
 
-public class ChatCommandHandlerPlugin implements ChatPlugin.Listener, CommandSpyPlugin.Listener {
+public class ChatCommandHandlerPlugin implements Listener {
     public final Bot bot;
 
     public final List<String> prefixes;
@@ -23,12 +24,11 @@ public class ChatCommandHandlerPlugin implements ChatPlugin.Listener, CommandSpy
         this.prefixes = bot.config.prefixes;
         this.commandSpyPrefixes = bot.config.commandSpyPrefixes;
 
-        bot.chat.addListener(this);
-        bot.commandSpy.addListener(this);
+        bot.listener.addListener(this);
     }
 
     @Override
-    public boolean playerMessageReceived (final PlayerMessage message, final ChatPacketType packetType) {
+    public boolean onPlayerMessageReceived (final PlayerMessage message, final ChatPacketType packetType) {
         if (
                 message.sender() != null &&
                         bot.profile != null &&
@@ -45,7 +45,7 @@ public class ChatCommandHandlerPlugin implements ChatPlugin.Listener, CommandSpy
     }
 
     @Override
-    public void commandReceived (final PlayerEntry sender, final String command) {
+    public void onCommandSpyMessageReceived (final PlayerEntry sender, final String command) {
         if (
                 sender.profile != null &&
                         bot.profile != null &&

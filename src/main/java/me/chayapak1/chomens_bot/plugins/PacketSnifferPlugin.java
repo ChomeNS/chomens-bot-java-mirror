@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.event.session.PacketSendingEvent;
 import org.geysermc.mcprotocollib.network.packet.Packet;
@@ -11,21 +12,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
-// normally unused in the main instance of the bot
-public class PacketSnifferPlugin extends Bot.Listener {
+// pretty useful for debugging in production
+public class PacketSnifferPlugin implements Listener {
     private final Bot bot;
 
     public boolean enabled = false;
 
     private BufferedWriter writer;
 
-    @SuppressWarnings("ConstantValue") // this can be set through servereval
+    @SuppressWarnings("ConstantValue") // you can set `enabled` above before compiling
     public PacketSnifferPlugin (final Bot bot) {
         this.bot = bot;
 
         if (enabled) enable();
 
-        bot.addListener(this);
+        bot.listener.addListener(this);
     }
 
     public void enable () {
