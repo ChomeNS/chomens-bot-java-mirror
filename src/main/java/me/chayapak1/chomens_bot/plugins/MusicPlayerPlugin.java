@@ -157,8 +157,6 @@ public class MusicPlayerPlugin implements Listener {
                 currentSong.play();
             }
 
-            if (currentSong.paused) return;
-
             if (!currentSong.finished()) {
                 handleLyrics();
 
