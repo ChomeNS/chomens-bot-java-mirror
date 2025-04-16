@@ -134,6 +134,8 @@ public class Bot extends SessionAdapter {
         this.chat = new ChatPlugin(this);
         this.commandSpy = new CommandSpyPlugin(this);
         this.query = new QueryPlugin(this);
+        this.chomeNSMod = new ChomeNSModIntegrationPlugin(this);
+        this.commandSuggestion = new CommandSuggestionPlugin(this);
         this.logger = new LoggerPlugin(this);
         this.position = new PositionPlugin(this);
         this.serverFeatures = new ServerFeaturesPlugin(this);
@@ -158,12 +160,10 @@ public class Bot extends SessionAdapter {
         this.exploits = new ExploitsPlugin(this);
         this.filterManager = new FilterManagerPlugin(this);
         this.playerFilter = new PlayerFilterPlugin(this);
-        this.commandSuggestion = new CommandSuggestionPlugin(this);
         this.mail = new MailPlugin(this);
         this.packetSniffer = new PacketSnifferPlugin(this);
         this.voiceChat = new VoiceChatPlugin(this);
         this.selectorBroadcaster = new BotSelectorBroadcasterPlugin(this);
-        this.chomeNSMod = new ChomeNSModIntegrationPlugin(this);
         this.auth = new AuthPlugin(this);
         // this.screenshare = new ScreensharePlugin(this);
         this.clearChatNameAnnouncer = new ClearChatNameAnnouncerPlugin(this);

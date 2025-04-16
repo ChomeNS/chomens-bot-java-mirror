@@ -17,7 +17,7 @@ public class CommandSuggestionPlugin implements Listener {
 
     public CommandSuggestionPlugin (final Bot bot) {
         this.bot = bot;
-        this.id = bot.config.namespace + "_request_command_suggestions"; // chomens_bot_request_command_suggestion
+        this.id = bot.config.namespace + "_request_command_suggestion"; // chomens_bot_request_command_suggestion
 
         bot.listener.addListener(this);
     }
