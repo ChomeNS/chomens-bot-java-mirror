@@ -213,7 +213,9 @@ public class NBSConverter implements Converter {
                 if (name.equals("Tempo Changer")) {
                     isTempoChanger = true;
 
-                    tempo = (double) Math.abs(note.pitch) * 100 / 15;
+                    // causes issues :(
+                    // (more specifically empty gaps after the tempo has been changed)
+                    // tempo = (double) Math.abs(note.pitch) * 100 / 15;
                 } else if (name.equals("Toggle Rainbow")) {
                     isRainbowToggle = true;
                 }

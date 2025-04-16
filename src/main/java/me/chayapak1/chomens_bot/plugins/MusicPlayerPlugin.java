@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -328,10 +329,24 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
                                               formatTime((long) (currentSong.length * speed)).color(NamedTextColor.GRAY)).color(NamedTextColor.DARK_GRAY)
                 );
 
-        if (!bot.core.hasRateLimit() && !currentLyrics.isEmpty()) {
+        final DecimalFormat formatter = new DecimalFormat("#,###");
+
+        if (!bot.core.hasRateLimit()) {
             component = component
-                    .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
-                    .append(Component.text(currentLyrics).color(NamedTextColor.BLUE));
+                    .append(Component.text(" | ").color(NamedTextColor.DARK_GRAY))
+                    .append(
+                            Component.translatable(
+                                    "%s / %s",
+                                    Component.text(formatter.format(currentSong.position), NamedTextColor.GRAY),
+                                    Component.text(formatter.format(currentSong.size()), NamedTextColor.GRAY)
+                            ).color(NamedTextColor.DARK_GRAY)
+                    );
+
+            if (!currentLyrics.isBlank()) {
+                component = component
+                        .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
+                        .append(Component.text(currentLyrics).color(NamedTextColor.BLUE));
+            }
         }
 
         if (currentSong.paused) {
@@ -376,17 +391,15 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
     public void handlePlaying () {
         if (currentSong == null) return;
 
-        try {
-            currentSong.advanceTime();
-            while (currentSong.reachedNextNote()) {
-                final Note note = currentSong.getNextNote();
+        currentSong.advanceTime();
+        while (currentSong.reachedNextNote()) {
+            final Note note = currentSong.getNextNote();
 
+            try {
                 if (note.isRainbowToggle) {
                     rainbow = !rainbow;
                     continue;
                 }
-
-                if (note.volume == 0) continue;
 
                 double key = note.shiftedPitch;
 
@@ -439,9 +452,9 @@ public class MusicPlayerPlugin extends Bot.Listener implements CorePlugin.Listen
                                     MathUtilities.clamp(floatingPitch, 0, 2)
                     );
                 }
+            } catch (final Exception e) {
+                bot.logger.error(e);
             }
-        } catch (final Exception e) {
-            bot.logger.error(e);
         }
     }
 

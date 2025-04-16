@@ -139,9 +139,7 @@ public class Song {
     }
 
     public Note getNextNote () {
-        if (position >= notes.size()) {
-            if (bot.music.loop == Loop.OFF) return null;
-        }
+        if (position >= notes.size() && bot.music.loop == Loop.OFF) return null;
         return notes.get(position++);
     }
 
