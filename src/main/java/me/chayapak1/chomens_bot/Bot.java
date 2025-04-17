@@ -5,6 +5,7 @@ import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.plugins.*;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.RandomStringUtilities;
+import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.auth.GameProfile;
@@ -25,7 +26,6 @@ import org.geysermc.mcprotocollib.protocol.packet.common.clientbound.Clientbound
 import org.geysermc.mcprotocollib.protocol.packet.common.clientbound.ClientboundTransferPacket;
 import org.geysermc.mcprotocollib.protocol.packet.common.serverbound.ServerboundClientInformationPacket;
 import org.geysermc.mcprotocollib.protocol.packet.common.serverbound.ServerboundCustomPayloadPacket;
-import org.geysermc.mcprotocollib.protocol.packet.configuration.clientbound.ClientboundFinishConfigurationPacket;
 import org.geysermc.mcprotocollib.protocol.packet.cookie.clientbound.ClientboundCookieRequestPacket;
 import org.geysermc.mcprotocollib.protocol.packet.cookie.serverbound.ServerboundCookieResponsePacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
@@ -34,6 +34,7 @@ import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundC
 import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginCompressionPacket;
 import org.geysermc.mcprotocollib.protocol.packet.login.clientbound.ClientboundLoginFinishedPacket;
 import org.geysermc.mcprotocollib.protocol.packet.login.serverbound.ServerboundCustomQueryAnswerPacket;
+import org.geysermc.mcprotocollib.protocol.packet.login.serverbound.ServerboundLoginAcknowledgedPacket;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -191,7 +192,15 @@ public class Bot extends SessionAdapter {
 
         final ClientSession session = ClientNetworkSessionFactory.factory()
                 .setAddress(host, port)
-                .setProtocol(new MinecraftProtocol(username))
+                .setProtocol(
+                        new MinecraftProtocol(
+                                new GameProfile(
+                                        UUIDUtilities.getOfflineUUID(username),
+                                        username
+                                ),
+                                null
+                        )
+                )
                 .create();
 
         this.session = session;
@@ -215,7 +224,6 @@ public class Bot extends SessionAdapter {
         this.listener.dispatch(listener -> listener.packetReceived(session, packet));
 
         if (packet instanceof final ClientboundLoginPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundFinishConfigurationPacket t_packet) packetReceived(t_packet);
         else if (packet instanceof final ClientboundLoginFinishedPacket t_packet) packetReceived(t_packet);
         else if (packet instanceof final ClientboundCustomQueryPacket t_packet) packetReceived(t_packet);
         else if (packet instanceof final ClientboundCookieRequestPacket t_packet) packetReceived(t_packet);
@@ -275,36 +283,6 @@ public class Bot extends SessionAdapter {
         session.disconnect(Component.translatable("disconnect.transfer"));
     }
 
-    // we're not meant to send client information at finish configuration,
-    // but if it works it works™
-    private void packetReceived (final ClientboundFinishConfigurationPacket ignoredPacket) {
-        // for voicechat
-        session.send(new ServerboundCustomPayloadPacket(
-                Key.key("minecraft:brand"),
-                "\u0006fabric".getBytes() // should i use fabric here?
-        ));
-
-        // this enables all the skin parts (by default they are ALL DISABLED
-        // which is why most bots when they use someone's skin they are just
-        // kinda broken)
-        final List<SkinPart> skinParts = new ArrayList<>(Arrays.asList(SkinPart.VALUES));
-
-        // we also set other stuffs here
-        session.send(
-                new ServerboundClientInformationPacket(
-                        ComponentUtilities.LANGUAGE.getOrDefault("language.code", "en_us"),
-                        16,
-                        ChatVisibility.FULL,
-                        true,
-                        skinParts,
-                        HandPreference.RIGHT_HAND,
-                        false,
-                        false,
-                        ParticleStatus.ALL
-                )
-        );
-    }
-
     // MCProtocolLib devs forgot
     // "Negative values will disable compression, meaning the packet format should remain in the uncompressed packet format."
     // https://minecraft.wiki/w/Java_Edition_protocol#Set_Compression
@@ -326,6 +304,39 @@ public class Bot extends SessionAdapter {
     @Override
     public void packetSent (final Session session, final Packet packet) {
         this.listener.dispatch(listener -> listener.packetSent(session, packet));
+
+        if (packet instanceof final ServerboundLoginAcknowledgedPacket t_packet) packetSent(t_packet);
+    }
+
+    private void packetSent (final ServerboundLoginAcknowledgedPacket ignoredPacket) {
+        // doesn't work without submitting it somewhere :(
+        executorService.submit(() -> {
+            // for voicechat
+            session.send(new ServerboundCustomPayloadPacket(
+                    Key.key("minecraft:brand"),
+                    "fabric".getBytes(StandardCharsets.UTF_8)
+            ));
+
+            // this enables all the skin parts (by default they are ALL DISABLED
+            // which is why most bots when they use someone's skin they are just
+            // kinda broken)
+            final List<SkinPart> skinParts = new ArrayList<>(Arrays.asList(SkinPart.VALUES));
+
+            // we also set other stuffs here
+            session.send(
+                    new ServerboundClientInformationPacket(
+                            ComponentUtilities.LANGUAGE.getOrDefault("language.code", "en_us"),
+                            16,
+                            ChatVisibility.FULL,
+                            true,
+                            skinParts,
+                            HandPreference.RIGHT_HAND,
+                            false,
+                            false,
+                            ParticleStatus.ALL
+                    )
+            );
+        });
     }
 
     @Override
