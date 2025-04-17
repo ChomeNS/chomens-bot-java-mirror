@@ -79,7 +79,7 @@ public class MusicPlayerPlugin implements Listener {
 
         bot.listener.addListener(this);
 
-        bot.executor.scheduleAtFixedRate(this::onTick, 0, 50, TimeUnit.MILLISECONDS);
+        bot.executor.scheduleAtFixedRate(this::onMusicTick, 0, 50, TimeUnit.MILLISECONDS);
         bot.executor.scheduleAtFixedRate(() -> urlLimit = 0, 0, bot.config.music.urlRatelimit.seconds, TimeUnit.SECONDS);
     }
 
@@ -136,8 +136,7 @@ public class MusicPlayerPlugin implements Listener {
 
     // this needs a separate ticker because we need
     // the song to be playing without lag
-    @Override
-    public void onTick () {
+    private void onMusicTick () {
         try {
             if (!bot.loggedIn) return;
 
