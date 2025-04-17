@@ -40,21 +40,12 @@ public class FilterCommand extends Command {
     public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        boolean ignoreCase = false;
-        boolean regex = false;
+        final List<String> flags = context.getFlags(true);
 
-        String action = context.getString(false, true, true);
+        final boolean ignoreCase = flags.contains("ignorecase");
+        final boolean regex = flags.contains("regex");
 
-        // run 2 times. for example `*filter -ignorecase -regex add test` will be both accepted
-        for (int i = 0; i < 2; i++) {
-            if (action.equals("-ignorecase")) {
-                ignoreCase = true;
-                action = context.getString(false, true);
-            } else if (action.equals("-regex")) {
-                regex = true;
-                action = context.getString(false, true);
-            }
-        }
+        final String action = context.getString(false, true, true);
 
         switch (action) {
             case "add" -> {
@@ -89,10 +80,7 @@ public class FilterCommand extends Command {
                     }
                 }
 
-                final boolean finalRegex = regex;
-                final boolean finalIgnoreCase = ignoreCase;
-
-                DatabasePlugin.EXECUTOR_SERVICE.submit(() -> bot.playerFilter.add(player, reason, finalRegex, finalIgnoreCase));
+                DatabasePlugin.EXECUTOR_SERVICE.submit(() -> bot.playerFilter.add(player, reason, regex, ignoreCase));
 
                 if (reason.isEmpty()) {
                     return Component.translatable(
@@ -126,7 +114,7 @@ public class FilterCommand extends Command {
             case "clear" -> {
                 context.checkOverloadArgs(1);
 
-                DatabasePlugin.EXECUTOR_SERVICE.submit(() -> bot.playerFilter.clear());
+                DatabasePlugin.EXECUTOR_SERVICE.submit(bot.playerFilter::clear);
                 return Component.text("Cleared the filter").color(bot.colorPalette.defaultColor);
             }
             case "list" -> {

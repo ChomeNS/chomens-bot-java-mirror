@@ -9,6 +9,8 @@ import me.chayapak1.chomens_bot.command.TrustLevel;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
+import java.util.List;
+
 public class GrepLogCommand extends Command {
     private Thread thread;
 
@@ -16,7 +18,7 @@ public class GrepLogCommand extends Command {
         super(
                 "greplog",
                 "Queries the bot's logs",
-                new String[] { "<input>", "...-ignorecase...", "...-regex...", "stop" },
+                new String[] { "<input>", "-ignorecase ...", "-regex ...", "stop" },
                 new String[] { "logquery", "findlog" },
                 TrustLevel.PUBLIC
         );
@@ -30,32 +32,18 @@ public class GrepLogCommand extends Command {
             throw new CommandException(Component.text("The bot's Discord integration has to be enabled to use this command."));
         }
 
-        boolean ignoreCase = false;
-        boolean regex = false;
+        final List<String> flags = context.getFlags(true);
 
-        String firstInput = context.getString(false, true);
+        final boolean ignoreCase = flags.contains("ignorecase");
+        final boolean regex = flags.contains("regex");
 
-        // run 2 times. for example `*greplog -ignorecase -regex test` will be both accepted
-        for (int i = 0; i < 2; i++) {
-            if (firstInput.equals("-ignorecase")) {
-                ignoreCase = true;
-                firstInput = context.getString(false, true);
-            } else if (firstInput.equals("-regex")) {
-                regex = true;
-                firstInput = context.getString(false, true);
-            }
-        }
+        final String input = context.getString(true, true);
 
-        // interesting code
-        final String input = (firstInput + " " + context.getString(true, false)).trim();
-
-        if (input.equals("stop")) {
+        if (input.equalsIgnoreCase("stop")) {
             if (thread == null) throw new CommandException(Component.text("There is no query process running"));
 
             bot.grepLog.running = false;
             bot.grepLog.pattern = null;
-
-            thread.interrupt(); // ? should i interrupt it this way?
 
             thread = null;
 
@@ -75,12 +63,9 @@ public class GrepLogCommand extends Command {
                         )
         );
 
-        final boolean finalIgnoreCase = ignoreCase;
-        final boolean finalRegex = regex;
-
         thread = new Thread(() -> {
             try {
-                bot.grepLog.search(context, input, finalIgnoreCase, finalRegex);
+                bot.grepLog.search(context, input, ignoreCase, regex);
             } catch (final CommandException e) {
                 context.sendOutput(e.message.color(NamedTextColor.RED));
             }

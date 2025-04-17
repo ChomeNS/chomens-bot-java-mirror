@@ -38,23 +38,11 @@ public class FindAltsCommand extends Command {
 
         Main.database.checkOverloaded();
 
-        final String flag = context.getString(false, true);
+        final List<String> flags = context.getFlags(true);
 
-        final boolean allServer = flag.equals("-allserver");
+        final boolean allServer = flags.contains("allserver");
 
-        final String player;
-
-        if (allServer) {
-            player = context.getString(true, true);
-        } else {
-            final String rest = context.getString(true, false);
-            player = flag +
-                    (
-                            rest.isEmpty() ?
-                                    "" :
-                                    " " + rest
-                    );
-        }
+        final String player = context.getString(true, true);
 
         final PlayerEntry playerEntry = bot.players.getEntry(player);
 

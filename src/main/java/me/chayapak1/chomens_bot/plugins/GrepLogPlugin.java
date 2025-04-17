@@ -155,7 +155,8 @@ public class GrepLogPlugin {
         if (regex && pattern == null) {
             if (ignoreCase)
                 pattern = Pattern.compile(input, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CHARACTER_CLASS);
-            else pattern = Pattern.compile(input, Pattern.UNICODE_CHARACTER_CLASS);
+            else
+                pattern = Pattern.compile(input, Pattern.UNICODE_CHARACTER_CLASS);
         }
 
         final StringBuilder result = new StringBuilder();

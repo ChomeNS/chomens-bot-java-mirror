@@ -8,10 +8,15 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CommandContext {
     public static final Component UNKNOWN_ARGUMENT_COMPONENT = Component.text("???").style(Style.style(TextDecoration.UNDERLINED));
+    private static final Pattern FLAGS_PATTERN = Pattern.compile("^\\s*-([^\\s0-9]\\S*)"); // stolen from HBot
 
     public final Bot bot;
 
@@ -172,6 +177,36 @@ public class CommandContext {
 
     public String getAction () throws CommandException {
         return getString(false, true, true, "action");
+    }
+
+    public List<String> getFlags () throws CommandException { return getFlags(false); }
+
+    public List<String> getFlags (final boolean returnLowerCase) throws CommandException {
+        final List<String> flags = new ArrayList<>();
+
+        String flag = getFlag(returnLowerCase);
+
+        while (flag != null) {
+            flags.add(flag);
+            flag = getFlag(returnLowerCase);
+        }
+
+        return flags;
+    }
+
+    private String getFlag (final boolean returnLowerCase) throws CommandException {
+        final String string = getString(false, false, returnLowerCase);
+
+        if (string.isBlank()) return null;
+
+        final Matcher matcher = FLAGS_PATTERN.matcher(string);
+
+        if (matcher.find()) {
+            return matcher.group(1);
+        } else {
+            argsPosition--; // getString incremented argsPosition
+            return null;
+        }
     }
 
     public Integer getInteger (final boolean required) throws CommandException {
