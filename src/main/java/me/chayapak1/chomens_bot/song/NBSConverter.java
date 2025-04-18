@@ -185,7 +185,16 @@ public class NBSConverter implements Converter {
 
         final String stringLayerNames = layerNames.toString();
 
-        final Song song = new Song(!songName.isBlank() ? songName : fileName, bot, songName, songAuthor, songOriginalAuthor, songDescription, stringLayerNames.substring(0, stringLayerNames.length() - 1), true);
+        final Song song = new Song(
+                !songName.isBlank() ? songName : fileName,
+                bot,
+                songName,
+                songAuthor,
+                songOriginalAuthor,
+                songDescription,
+                stringLayerNames.substring(0, Math.max(0, stringLayerNames.length() - 1)),
+                true
+        );
         if (loop > 0) {
             song.loopPosition = getMilliTime(loopStartTick, tempo);
             //      song.loopCount = maxLoopCount;
@@ -255,7 +264,7 @@ public class NBSConverter implements Converter {
                             (float) note.velocity * (float) layerVolume / 10000f,
                             getMilliTime(note.tick, tempo),
                             Byte.toUnsignedInt(note.panning),
-                            Byte.toUnsignedInt(nbsLayers.get(note.layer).stereo),
+                            nbsLayers.isEmpty() ? 100 : Byte.toUnsignedInt(nbsLayers.get(note.layer).stereo),
                             isRainbowToggle
                     )
             );
