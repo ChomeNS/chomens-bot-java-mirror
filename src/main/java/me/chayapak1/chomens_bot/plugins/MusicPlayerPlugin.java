@@ -72,7 +72,7 @@ public class MusicPlayerPlugin implements Listener {
 
     public boolean locked = false; // this can be set through servereval
 
-    public BossBarColor bossBarColor;
+    public BossBarColor bossBarColor = BossBarColor.YELLOW;
 
     public String currentLyrics = "";
 
@@ -237,7 +237,7 @@ public class MusicPlayerPlugin implements Listener {
         final BotBossBar bossBar = new BotBossBar(
                 Component.empty(),
                 BOTH_SELECTOR,
-                BossBarColor.LIME,
+                bossBarColor,
                 BossBarDivision.NONE,
                 true,
                 (int) currentSong.length / 1000,
@@ -349,7 +349,7 @@ public class MusicPlayerPlugin implements Listener {
         if (currentSong.paused) {
             return component
                     .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
-                    .append(Component.text("Paused", NamedTextColor.LIGHT_PURPLE));
+                    .append(Component.text("⏸", NamedTextColor.LIGHT_PURPLE));
         }
 
         if (loop != Loop.OFF) {
