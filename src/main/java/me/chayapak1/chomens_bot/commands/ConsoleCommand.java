@@ -22,7 +22,7 @@ public class ConsoleCommand extends Command {
                         "logtoconsole <true|false>",
                         "printdisconnectedreason <true|false>"
                 },
-                new String[] {},
+                new String[] { "csvr" },
                 TrustLevel.OWNER,
                 true
         );
@@ -32,7 +32,9 @@ public class ConsoleCommand extends Command {
     public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        final String action = context.getString(false, true, true);
+        final String action = !context.userInputCommandName.equals(this.name)
+                ? "server" // csvr alias (console server), like in the original chomens bot javascript
+                : context.getString(false, true, true);
 
         switch (action) {
             case "server" -> {
