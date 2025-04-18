@@ -55,8 +55,8 @@ public class CorePlugin implements Listener {
 
     public final Queue<String> pendingCommands = new ConcurrentLinkedQueue<>();
 
-    private final AtomicInteger commandsPerTick = new AtomicInteger(0);
-    private final AtomicInteger commandsPerSecond = new AtomicInteger(0);
+    public final AtomicInteger commandsPerTick = new AtomicInteger(0);
+    public final AtomicInteger commandsPerSecond = new AtomicInteger(0);
 
     private final AtomicInteger positionChangesPerSecond = new AtomicInteger(0);
 
