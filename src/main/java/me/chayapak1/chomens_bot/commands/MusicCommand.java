@@ -404,7 +404,7 @@ public class MusicCommand extends Command {
 
         if (currentSong == null) throw new CommandException(Component.text("No song is currently playing"));
 
-        if (timestamp < 0 || timestamp > currentSong.length)
+        if (timestamp < 0 || timestamp > currentSong.length * bot.music.speed)
             throw new CommandException(Component.text("Invalid timestamp"));
 
         currentSong.setTime(timestamp);
@@ -436,14 +436,14 @@ public class MusicCommand extends Command {
         final Bot bot = context.bot;
         final Song currentSong = bot.music.currentSong;
 
-        final float speed = context.getFloat(true, false);
+        final double speed = context.getDouble(true, false);
 
         if (speed > 5) throw new CommandException(Component.text("Too fast!"));
         else if (speed < 0) throw new CommandException(Component.text("Invalid speed"));
 
-        long oldTime = -1;
+        double oldTime = -1;
 
-        if (currentSong != null) oldTime = currentSong.time;
+        if (currentSong != null) oldTime = currentSong.time / speed;
 
         bot.music.speed = speed;
 

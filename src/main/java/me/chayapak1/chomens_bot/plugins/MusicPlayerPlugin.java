@@ -39,6 +39,8 @@ public class MusicPlayerPlugin implements Listener {
 
     private static final String BOSS_BAR_NAME = "music";
 
+    private static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
+
     static {
         try {
             if (!Files.exists(SONG_DIR)) Files.createDirectory(SONG_DIR);
@@ -55,8 +57,8 @@ public class MusicPlayerPlugin implements Listener {
     public Loop loop = Loop.OFF;
 
     // sus nightcore stuff,..,.,.
-    public float pitch = 0;
-    public float speed = 1;
+    public double pitch = 0;
+    public double speed = 1;
 
     public float volume = 0;
     public int amplify = 1;
@@ -166,8 +168,8 @@ public class MusicPlayerPlugin implements Listener {
                 if (bossBar != null && bot.options.useCore) {
                     bossBar.setTitle(generateBossBar());
                     bossBar.setColor(bossBarColor);
-                    bossBar.setValue((int) Math.floor(((double) (currentSong.time * speed) / 1000)));
-                    bossBar.setMax((long) (currentSong.length * speed) / 1000);
+                    bossBar.setValue((int) Math.floor(((currentSong.time / speed) / 1000)));
+                    bossBar.setMax((long) (currentSong.length / speed) / 1000);
                 }
 
                 if (currentSong.paused || bot.core.isRateLimited()) return;
@@ -322,11 +324,9 @@ public class MusicPlayerPlugin implements Listener {
                 .append(
                         Component
                                 .translatable("%s / %s",
-                                              formatTime((long) (currentSong.time * speed)).color(NamedTextColor.GRAY),
-                                              formatTime((long) (currentSong.length * speed)).color(NamedTextColor.GRAY)).color(NamedTextColor.DARK_GRAY)
+                                              formatTime((long) (currentSong.time / speed)).color(NamedTextColor.GRAY),
+                                              formatTime((long) (currentSong.length / speed)).color(NamedTextColor.GRAY)).color(NamedTextColor.DARK_GRAY)
                 );
-
-        final DecimalFormat formatter = new DecimalFormat("#,###");
 
         if (!bot.core.hasRateLimit()) {
             component = component
@@ -334,8 +334,8 @@ public class MusicPlayerPlugin implements Listener {
                     .append(
                             Component.translatable(
                                     "%s / %s",
-                                    Component.text(formatter.format(currentSong.position), NamedTextColor.GRAY),
-                                    Component.text(formatter.format(currentSong.size()), NamedTextColor.GRAY)
+                                    Component.text(FORMATTER.format(currentSong.position), NamedTextColor.GRAY),
+                                    Component.text(FORMATTER.format(currentSong.size()), NamedTextColor.GRAY)
                             ).color(NamedTextColor.DARK_GRAY)
                     );
 

@@ -8,7 +8,7 @@ public class Note implements Comparable<Note> {
     public final double shiftedPitch;
     public final double originalPitch;
     public final float volume;
-    public final long time;
+    public final double time;
     public final int panning;
     public final int stereo;
     public final boolean isRainbowToggle;
@@ -18,7 +18,7 @@ public class Note implements Comparable<Note> {
             final double pitch,
             final double originalPitch,
             final float volume,
-            final long time,
+            final double time,
             final int panning,
             final int stereo,
             final boolean isRainbowToggle
@@ -42,7 +42,7 @@ public class Note implements Comparable<Note> {
             final double shiftedPitch,
             final double originalPitch,
             final float volume,
-            final long time,
+            final double time,
             final int panning,
             final int stereo
     ) {
@@ -60,6 +60,6 @@ public class Note implements Comparable<Note> {
 
     @Override
     public int compareTo (final Note other) {
-        return Long.compare(time, other.time);
+        return Double.compare(time, other.time);
     }
 }

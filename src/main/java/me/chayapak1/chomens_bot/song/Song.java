@@ -17,9 +17,9 @@ public class Song {
     public String requester = "Unknown";
     public int position = 0; // Current note index
     public boolean paused = true;
-    public long startTime = 0; // Start time in millis since unix epoch
-    public long length = 0; // Milliseconds in the song
-    public long time = 0; // Time since start of song
+    public double startTime = 0; // Start time in millis since unix epoch
+    public double length = 0; // Milliseconds in the song
+    public double time = 0; // Time since start of song
     public long loopPosition = 0; // Milliseconds into the song to start looping
 
     public final Map<Long, String> lyrics = new HashMap<>();
@@ -100,26 +100,26 @@ public class Song {
         }
     }
 
-    public void setTime (final long t) {
+    public void setTime (final double t) {
         time = t;
         startTime = System.currentTimeMillis() - time;
         position = 0;
-        while (position < notes.size() && notes.get(position).time < t) {
+        while (position < notes.size() && notes.get(position).time / bot.music.speed <= t) {
             position++;
         }
     }
 
     public void advanceTime () {
-        time = (long) ((System.currentTimeMillis() - startTime) * bot.music.speed);
+        time = (System.currentTimeMillis() - startTime) * bot.music.speed;
     }
 
     public boolean reachedNextNote () {
         if (position < notes.size()) {
-            return notes.get(position).time <= time * bot.music.speed;
+            return notes.get(position).time / bot.music.speed <= time;
         } else {
             if (finished() && bot.music.loop != Loop.OFF) {
                 if (position < notes.size()) {
-                    return notes.get(position).time <= time * bot.music.speed;
+                    return notes.get(position).time / bot.music.speed <= time;
                 } else {
                     return false;
                 }
@@ -133,7 +133,7 @@ public class Song {
         position = 0;
         startTime += length - loopPosition;
         time -= length - loopPosition;
-        while (position < notes.size() && notes.get(position).time < loopPosition) {
+        while (position < notes.size() && notes.get(position).time / bot.music.speed < loopPosition) {
             position++;
         }
     }
@@ -144,7 +144,7 @@ public class Song {
     }
 
     public boolean finished () {
-        return (time * bot.music.speed) > length || position >= size();
+        return time > length || position >= size();
     }
 
     public int size () {
