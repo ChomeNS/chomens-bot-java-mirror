@@ -135,13 +135,13 @@ public class Bot extends SessionAdapter {
         this.chat = new ChatPlugin(this);
         this.commandSpy = new CommandSpyPlugin(this);
         this.query = new QueryPlugin(this);
+        this.extrasMessenger = new ExtrasMessengerPlugin(this);
         this.chomeNSMod = new ChomeNSModIntegrationPlugin(this);
         this.commandSuggestion = new CommandSuggestionPlugin(this);
         this.logger = new LoggerPlugin(this);
         this.position = new PositionPlugin(this);
         this.serverFeatures = new ServerFeaturesPlugin(this);
         this.selfCare = new SelfCarePlugin(this);
-        this.extrasMessenger = new ExtrasMessengerPlugin(this);
         this.world = new WorldPlugin(this);
         this.core = new CorePlugin(this);
         this.team = new TeamPlugin(this);
