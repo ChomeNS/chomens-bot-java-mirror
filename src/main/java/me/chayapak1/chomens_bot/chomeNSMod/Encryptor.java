@@ -1,7 +1,5 @@
 package me.chayapak1.chomens_bot.chomeNSMod;
 
-import me.chayapak1.chomens_bot.util.Ascii85;
-
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -12,6 +10,7 @@ import java.security.SecureRandom;
 import java.security.spec.KeySpec;
 
 // inspired from smp encryption plugin
+// Author: ChatGPT
 public class Encryptor {
     private static final SecureRandom RANDOM = new SecureRandom();
 
@@ -20,7 +19,7 @@ public class Encryptor {
     private static final int ITERATIONS = 65536;
     private static final int KEY_LENGTH = 256;
 
-    public static String encrypt (final byte[] data, final String password) throws Exception {
+    public static byte[] encrypt (final byte[] data, final String password) throws Exception {
         final byte[] salt = generateRandomBytes(SALT_LENGTH);
         final SecretKey key = deriveKey(password, salt);
 
@@ -36,12 +35,10 @@ public class Encryptor {
         System.arraycopy(iv, 0, combined, salt.length, iv.length);
         System.arraycopy(encrypted, 0, combined, salt.length + iv.length, encrypted.length);
 
-        return Ascii85.encode(combined);
+        return combined;
     }
 
-    public static byte[] decrypt (final String ascii85Data, final String password) throws Exception {
-        final byte[] combined = Ascii85.decode(ascii85Data);
-
+    public static byte[] decrypt (final byte[] combined, final String password) throws Exception {
         final byte[] salt = new byte[SALT_LENGTH];
         final byte[] iv = new byte[IV_LENGTH];
         final byte[] encrypted = new byte[combined.length - SALT_LENGTH - IV_LENGTH];

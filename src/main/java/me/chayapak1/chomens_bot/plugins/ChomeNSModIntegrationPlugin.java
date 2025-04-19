@@ -17,6 +17,7 @@ import me.chayapak1.chomens_bot.data.chomeNSMod.PayloadState;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.logging.LogType;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
+import me.chayapak1.chomens_bot.util.Ascii85;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -31,7 +32,9 @@ import java.util.concurrent.ConcurrentHashMap;
 // This is inspired from the ChomeNS Bot Proxy which is in the JavaScript version of ChomeNS Bot.
 public class ChomeNSModIntegrationPlugin implements Listener {
     private static final String ID = "chomens_mod";
-    private static final int ENCODED_PAYLOAD_LENGTH = 31_000; // just 32767 trimmed "a bit"
+
+    private static final int ASCII85_CHUNK_SIZE = 31_000; // just 32767 trimmed "a bit"
+    private static final int EXTRAS_CHUNK_SIZE = 32_500; // just 32767 trimmed a bit
 
     private static final long NONCE_EXPIRATION_MS = 30 * 1000; // 30 seconds
 
@@ -58,6 +61,8 @@ public class ChomeNSModIntegrationPlugin implements Listener {
     public ChomeNSModIntegrationPlugin (final Bot bot) {
         this.bot = bot;
         this.handler = new PacketHandler(bot);
+
+        bot.extrasMessenger.registerChannel(ID);
 
         bot.listener.addListener(this);
     }
@@ -88,28 +93,66 @@ public class ChomeNSModIntegrationPlugin implements Listener {
         try {
             final int messageId = RANDOM.nextInt();
 
-            final String encrypted = Encryptor.encrypt(bytes, bot.config.chomeNSMod.password);
+            final byte[] encrypted = Encryptor.encrypt(bytes, bot.config.chomeNSMod.password);
 
-            final Iterable<String> split = Splitter.fixedLength(ENCODED_PAYLOAD_LENGTH).split(encrypted);
+            // FIXME: not sure how to implement on the mod side yet
+            final boolean supportsExtrasMessaging = false; // bot.extrasMessenger.isSupported;
 
-            int i = 1;
+            if (supportsExtrasMessaging) {
+                // TODO: test this
+                // TODO: implement receiver
+                final List<byte[]> chunks = new ArrayList<>();
 
-            for (final String part : split) {
-                final PayloadState state = i == Iterables.size(split)
-                        ? PayloadState.DONE
-                        : PayloadState.JOINING;
+                for (int i = 0; i < encrypted.length; i += EXTRAS_CHUNK_SIZE) {
+                    final int end = Math.min(encrypted.length, i + EXTRAS_CHUNK_SIZE);
+                    final byte[] chunk = Arrays.copyOfRange(encrypted, i, end);
+                    chunks.add(chunk);
+                }
 
-                final Component component = Component.translatable(
-                        "",
-                        Component.text(ID),
-                        Component.text(messageId),
-                        Component.text(state.ordinal()),
-                        Component.text(part)
-                );
+                int i = 1;
 
-                bot.chat.actionBar(component, target.profile.getId());
+                for (final byte[] chunk : chunks) {
+                    final PayloadState state = i == chunks.size()
+                            ? PayloadState.DONE
+                            : PayloadState.JOINING;
 
-                i++;
+                    final ByteBuf extrasBuf = Unpooled.buffer();
+
+                    extrasBuf.writeInt(messageId);
+                    extrasBuf.writeShort(state.ordinal()); // short or byte?
+                    extrasBuf.writeBytes(chunk);
+
+                    final byte[] extrasBytes = new byte[buf.readableBytes()];
+                    extrasBuf.readBytes(extrasBytes);
+
+                    bot.extrasMessenger.sendPayload(ID, extrasBytes);
+
+                    i++;
+                }
+            } else {
+                final String encryptedAscii85 = Ascii85.encode(encrypted);
+
+                final Iterable<String> chunks = Splitter.fixedLength(ASCII85_CHUNK_SIZE).split(encryptedAscii85);
+
+                int i = 1;
+
+                for (final String chunk : chunks) {
+                    final PayloadState state = i == Iterables.size(chunks)
+                            ? PayloadState.DONE
+                            : PayloadState.JOINING;
+
+                    final Component component = Component.translatable(
+                            "",
+                            Component.text(ID),
+                            Component.text(messageId),
+                            Component.text(state.ordinal()),
+                            Component.text(chunk)
+                    );
+
+                    bot.chat.actionBar(component, target.profile.getId());
+
+                    i++;
+                }
             }
         } catch (final Exception ignored) { }
     }
@@ -220,7 +263,7 @@ public class ChomeNSModIntegrationPlugin implements Listener {
                 playerReceivedParts.remove(messageId);
 
                 final byte[] decryptedFullPayload = Encryptor.decrypt(
-                        builder.toString(),
+                        Ascii85.decode(builder.toString()),
                         bot.config.chomeNSMod.password
                 );
 

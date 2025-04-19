@@ -106,6 +106,8 @@ public class ExtrasMessengerPlugin implements Listener {
     }
 
     public void sendPayload (final String name, final byte[] data) {
+        if (!bot.loggedIn) return;
+
         final ByteBuf buf = Unpooled.buffer();
 
         writeString(buf, chomens_namespace + name);
@@ -122,6 +124,11 @@ public class ExtrasMessengerPlugin implements Listener {
     }
 
     public void registerChannel (final String channel) {
+        if (!bot.loggedIn) {
+            registeredChannels.add(channel);
+            return;
+        }
+
         final ByteBuf buf = Unpooled.buffer();
 
         writeString(buf, chomens_namespace + channel);
@@ -139,7 +146,7 @@ public class ExtrasMessengerPlugin implements Listener {
     public void unregisterChannel (final String channel) {
         final boolean removed = registeredChannels.remove(channel);
 
-        if (!removed) return;
+        if (!removed || !bot.loggedIn) return;
 
         final ByteBuf buf = Unpooled.buffer();
 
@@ -164,7 +171,7 @@ public class ExtrasMessengerPlugin implements Listener {
         final byte[] buf = new byte[255];
         int idx = 0;
 
-        for (; ; ) {
+        while (true) {
             final byte input = byteBuf.readByte();
 
             if (idx == buf.length) break;
