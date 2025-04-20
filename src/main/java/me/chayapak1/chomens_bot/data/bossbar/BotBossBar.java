@@ -70,7 +70,14 @@ public class BotBossBar extends BossBar {
         bot.core.run("minecraft:bossbar set " + id + " name " + serialized);
 
         if (!bot.core.hasRateLimit())
-            bot.core.run("minecraft:execute as @e[type=minecraft:text_display,tag=" + bot.config.namespace + "_" + onlyName + "] run data modify entity @s text set value '" + serialized.replace("\\", "\\\\").replace("'", "\\'") + "'");
+            bot.core.run(
+                    String.format(
+                            "minecraft:execute as @e[type=minecraft:text_display,tag=%s_%s] run data modify entity @s text set value %s",
+                            bot.config.namespace,
+                            onlyName,
+                            serialized
+                    )
+            );
     }
 
     public BossBarColor color (final BossBarColor color) {

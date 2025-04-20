@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CorePlugin implements Listener {
-    public static final int COMMAND_BLOCK_ID = 418;
+    public static final int COMMAND_BLOCK_ID = 425;
 
     private final Bot bot;
 
@@ -391,23 +391,9 @@ public class CorePlugin implements Listener {
 
     private boolean isCommandBlockState (final int blockState) {
         return
-                // command block
-                (
-                        blockState >= 8680 &&
-                                blockState <= 8686
-                ) ||
-
-                        // chain command block
-                        (
-                                blockState >= 13540 &&
-                                        blockState <= 13546
-                        ) ||
-
-                        // repeating command block
-                        (
-                                blockState >= 13534 &&
-                                        blockState <= 13540
-                        );
+                (blockState >= 8690 && blockState <= 8701) // command block
+                        || (blockState >= 13550 && blockState <= 13561) // chain command block
+                        || (blockState >= 13538 && blockState <= 13549); // repeating command block
     }
 
     // ported from chomens bot js, which is originally from smp
