@@ -1,9 +1,9 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.util.SNBTUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.cloudburstmc.math.vector.Vector3i;
 
 import java.awt.*;
@@ -141,7 +141,7 @@ public class ScreensharePlugin {
             }
 
             for (int i = 0; i < names.size(); i++) {
-                bot.core.run("minecraft:data merge entity @e[tag=" + tags.get(i) + ",limit=1] {text:'" + GsonComponentSerializer.gson().serialize(names.get(i)) + "'}");
+                bot.core.run("minecraft:data merge entity @e[tag=" + tags.get(i) + ",limit=1] {text:" + SNBTUtilities.fromComponent(bot, names.get(i)) + "}");
             }
         }
 

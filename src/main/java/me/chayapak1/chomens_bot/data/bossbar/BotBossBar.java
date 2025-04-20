@@ -1,8 +1,8 @@
 package me.chayapak1.chomens_bot.data.bossbar;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.util.SNBTUtilities;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.geysermc.mcprotocollib.protocol.data.game.BossBarColor;
 import org.geysermc.mcprotocollib.protocol.data.game.BossBarDivision;
 
@@ -65,7 +65,7 @@ public class BotBossBar extends BossBar {
 
         this.title = title;
 
-        final String serialized = GsonComponentSerializer.gson().serialize(title);
+        final String serialized = SNBTUtilities.fromComponent(bot, title);
 
         bot.core.run("minecraft:bossbar set " + id + " name " + serialized);
 

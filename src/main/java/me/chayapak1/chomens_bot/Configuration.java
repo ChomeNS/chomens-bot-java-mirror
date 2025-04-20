@@ -76,7 +76,7 @@ public class Configuration {
     }
 
     public static class Core {
-        public String customName = "{\"text\":\"@\"}";
+        public String customName = "{text:'@'}";
     }
 
     public static class Position {
@@ -172,6 +172,7 @@ public class Configuration {
         public boolean useCore = true;
         public boolean useCorePlaceBlock = false;
         public boolean useChat = false;
+        public boolean useSNBTComponents = true;
         public boolean coreCommandSpy = true;
         public boolean resolveSRV = true;
         public int reconnectDelay = 2000;

@@ -541,11 +541,7 @@ public class CorePlugin implements Listener {
 
                             useChat
                                     ? ""
-                                    : "{CustomName:'" +
-                                        bot.config.core.customName
-                                                .replace("\\", "\\\\")
-                                                .replace("'", "\\'") +
-                                        "'}"
+                                    : "{CustomName:" + bot.config.core.customName + "}"
                     );
 
                     if (useChat) bot.chat.sendCommandInstantly(command);

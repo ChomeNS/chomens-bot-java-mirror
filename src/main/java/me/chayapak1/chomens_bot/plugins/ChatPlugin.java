@@ -9,16 +9,12 @@ import me.chayapak1.chomens_bot.data.chat.ChatParser;
 import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
-import me.chayapak1.chomens_bot.util.ComponentUtilities;
-import me.chayapak1.chomens_bot.util.IllegalCharactersUtilities;
-import me.chayapak1.chomens_bot.util.StringUtilities;
-import me.chayapak1.chomens_bot.util.UUIDUtilities;
+import me.chayapak1.chomens_bot.util.*;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.cloudburstmc.nbt.NbtMap;
 import org.cloudburstmc.nbt.NbtType;
 import org.geysermc.mcprotocollib.network.Session;
@@ -300,7 +296,8 @@ public class ChatPlugin implements Listener {
                 0L,
                 null,
                 0,
-                new BitSet()
+                new BitSet(),
+                0
         ));
     }
 
@@ -359,7 +356,7 @@ public class ChatPlugin implements Listener {
             final String stringified = ComponentUtilities.stringifySectionSign(component).replace("§", "&");
             send(stringified);
         } else {
-            bot.core.run("minecraft:tellraw " + targets + " " + GsonComponentSerializer.gson().serialize(component));
+            bot.core.run("minecraft:tellraw " + targets + " " + SNBTUtilities.fromComponent(bot, component));
         }
     }
 
@@ -369,7 +366,7 @@ public class ChatPlugin implements Listener {
 
     public void actionBar (final Component component, final String targets) {
         if (bot.options.useChat) return;
-        bot.core.run("minecraft:title " + targets + " actionbar " + GsonComponentSerializer.gson().serialize(component));
+        bot.core.run("minecraft:title " + targets + " actionbar " + SNBTUtilities.fromComponent(bot, component));
     }
 
     public void actionBar (final Component component, final UUID uuid) { actionBar(component, UUIDUtilities.selector(uuid)); }

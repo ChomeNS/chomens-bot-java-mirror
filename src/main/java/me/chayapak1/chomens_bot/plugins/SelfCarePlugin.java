@@ -159,12 +159,12 @@ public class SelfCarePlugin implements Listener {
         final GameEvent notification = packet.getNotification();
         final GameEventValue value = packet.getValue();
 
-        if (notification == GameEvent.ENTER_CREDITS && bot.config.selfCare.endCredits) {
+        if (notification == GameEvent.WIN_GAME && bot.config.selfCare.endCredits) {
             bot.session.send(new ServerboundClientCommandPacket(ClientCommand.RESPAWN));
             return;
         }
 
-        if (notification == GameEvent.CHANGE_GAMEMODE) gamemode = (GameMode) value;
+        if (notification == GameEvent.CHANGE_GAME_MODE) gamemode = (GameMode) value;
     }
 
     private void packetReceived (final ClientboundEntityEventPacket packet) {
