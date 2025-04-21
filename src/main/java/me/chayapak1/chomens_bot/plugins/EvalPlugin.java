@@ -60,15 +60,19 @@ public class EvalPlugin {
         socket.on(Socket.EVENT_CONNECT_ERROR, (args) -> connected = false);
 
         for (final EvalFunction function : functions) {
-            socket.on(BRIDGE_PREFIX + function.name, args -> new Thread(() -> {
-                try {
-                    final EvalFunction.Output output = function.execute(args);
+            socket.on(
+                    BRIDGE_PREFIX + function.name,
+                    args ->
+                            bot.executorService.submit(() -> {
+                                try {
+                                    final EvalFunction.Output output = function.execute(args);
 
-                    if (output == null) return;
+                                    if (output == null) return;
 
-                    socket.emit("functionOutput:" + function.name, output.message(), output.parseJSON());
-                } catch (final Exception ignored) { }
-            }).start());
+                                    socket.emit("functionOutput:" + function.name, output.message(), output.parseJSON());
+                                } catch (final Exception ignored) { }
+                            })
+            );
         }
 
         socket.on("codeOutput", (args) -> {
