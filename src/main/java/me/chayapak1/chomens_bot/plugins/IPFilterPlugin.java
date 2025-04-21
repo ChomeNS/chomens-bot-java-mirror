@@ -109,7 +109,9 @@ public class IPFilterPlugin implements Listener {
         if (localList.isEmpty()) return;
 
         bot.executorService.submit(() -> {
-            for (final PlayerEntry entry : bot.players.list) check(entry);
+            synchronized (bot.players.list) {
+                for (final PlayerEntry entry : bot.players.list) check(entry);
+            }
         });
     }
 

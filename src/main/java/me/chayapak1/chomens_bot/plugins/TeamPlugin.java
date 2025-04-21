@@ -25,20 +25,24 @@ public class TeamPlugin implements Listener {
         teams.clear();
     }
 
-    public synchronized Team findTeamByName (final String name) {
-        for (final Team team : new ArrayList<>(teams)) {
-            if (team.teamName.equals(name)) return team;
-        }
+    public Team findTeamByName (final String name) {
+        synchronized (teams) {
+            for (final Team team : new ArrayList<>(teams)) {
+                if (team.teamName.equals(name)) return team;
+            }
 
-        return null;
+            return null;
+        }
     }
 
-    public synchronized Team findTeamByMember (final String member) {
-        for (final Team team : new ArrayList<>(teams)) {
-            if (team.players.contains(member)) return team;
-        }
+    public Team findTeamByMember (final String member) {
+        synchronized (teams) {
+            for (final Team team : new ArrayList<>(teams)) {
+                if (team.players.contains(member)) return team;
+            }
 
-        return null;
+            return null;
+        }
     }
 
     @Override

@@ -15,8 +15,8 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.spaw
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.level.ServerboundAcceptTeleportationPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundMovePlayerPosPacket;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 // some part of the code used to be in a test plugin but i thought it would be useful in the future so i moved it here
 public class PositionPlugin implements Listener {
@@ -28,9 +28,9 @@ public class PositionPlugin implements Listener {
 
     private long tpCommandCooldownTime = 0;
 
-    private final Map<Integer, PlayerEntry> entityIdMap = new HashMap<>();
-    private final Map<Integer, Vector3d> positionMap = new HashMap<>();
-    private final Map<Integer, Rotation> rotationMap = new HashMap<>();
+    private final Map<Integer, PlayerEntry> entityIdMap = new ConcurrentHashMap<>();
+    private final Map<Integer, Vector3d> positionMap = new ConcurrentHashMap<>();
+    private final Map<Integer, Rotation> rotationMap = new ConcurrentHashMap<>();
 
     public PositionPlugin (final Bot bot) {
         this.bot = bot;

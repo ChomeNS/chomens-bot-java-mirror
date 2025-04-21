@@ -63,48 +63,52 @@ public class CommandBlockCommand extends Command {
             if (userFound) pattern = Pattern.compile(userMatcher.group(1));
             else pattern = Pattern.compile(uuidMatcher.group(1));
 
-            for (final PlayerEntry entry : bot.players.list) {
-                final String username = entry.profile.getName();
-                final String uuid = entry.profile.getIdAsString();
+            synchronized (bot.players.list) {
+                for (final PlayerEntry entry : bot.players.list) {
+                    final String username = entry.profile.getName();
+                    final String uuid = entry.profile.getIdAsString();
 
-                if (!pattern.matcher(userFound ? username : uuid).matches()) continue;
+                    if (!pattern.matcher(userFound ? username : uuid).matches()) continue;
 
-                String replacedCommand;
+                    String replacedCommand;
 
-                if (userFound)
-                    replacedCommand = new StringBuilder(command).replace(userMatcher.start(), userMatcher.end(), username).toString();
-                else
-                    replacedCommand = new StringBuilder(command).replace(uuidMatcher.start(), uuidMatcher.end(), uuid).toString();
+                    if (userFound)
+                        replacedCommand = new StringBuilder(command).replace(userMatcher.start(), userMatcher.end(), username).toString();
+                    else
+                        replacedCommand = new StringBuilder(command).replace(uuidMatcher.start(), uuidMatcher.end(), uuid).toString();
 
-                replacedCommand = replacedCommand
-                        .replace("{username}", username)
-                        .replace("{uuid}", uuid);
+                    replacedCommand = replacedCommand
+                            .replace("{username}", username)
+                            .replace("{uuid}", uuid);
 
-                if (
-                        !replacedCommand.contains("{username}") &&
-                                !replacedCommand.contains("{uuid}") &&
-                                !USER_PATTERN.matcher(username).find() &&
-                                !UUID_PATTERN.matcher(username).find()
-                ) {
-                    runCommand(bot, context, replacedCommand, entry);
+                    if (
+                            !replacedCommand.contains("{username}") &&
+                                    !replacedCommand.contains("{uuid}") &&
+                                    !USER_PATTERN.matcher(username).find() &&
+                                    !UUID_PATTERN.matcher(username).find()
+                    ) {
+                        runCommand(bot, context, replacedCommand, entry);
+                    }
                 }
             }
         } else if (command.contains("{username}") || command.contains("{uuid}")) {
-            for (final PlayerEntry entry : bot.players.list) {
-                final String username = entry.profile.getName();
-                final String uuid = entry.profile.getIdAsString();
+            synchronized (bot.players.list) {
+                for (final PlayerEntry entry : bot.players.list) {
+                    final String username = entry.profile.getName();
+                    final String uuid = entry.profile.getIdAsString();
 
-                final String replacedCommand = command
-                        .replace("{username}", username)
-                        .replace("{uuid}", uuid);
+                    final String replacedCommand = command
+                            .replace("{username}", username)
+                            .replace("{uuid}", uuid);
 
-                if (
-                        !replacedCommand.contains("{username}") &&
-                                !replacedCommand.contains("{uuid}") &&
-                                !USER_PATTERN.matcher(username).find() &&
-                                !UUID_PATTERN.matcher(username).find()
-                ) {
-                    runCommand(bot, context, replacedCommand, entry);
+                    if (
+                            !replacedCommand.contains("{username}") &&
+                                    !replacedCommand.contains("{uuid}") &&
+                                    !USER_PATTERN.matcher(username).find() &&
+                                    !UUID_PATTERN.matcher(username).find()
+                    ) {
+                        runCommand(bot, context, replacedCommand, entry);
+                    }
                 }
             }
         } else {

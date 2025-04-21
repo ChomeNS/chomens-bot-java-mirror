@@ -15,13 +15,14 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.Clientbound
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 // yes this has been rewritten to be not spammy
 public class BossbarManagerPlugin implements Listener {
     private final Bot bot;
 
-    public final Map<UUID, BossBar> serverBossBars = new HashMap<>();
-    private final Map<UUID, BotBossBar> bossBars = new HashMap<>();
+    public final Map<UUID, BossBar> serverBossBars = new ConcurrentHashMap<>();
+    private final Map<UUID, BotBossBar> bossBars = new ConcurrentHashMap<>();
 
     public boolean enabled = true;
     public boolean actionBar = false;

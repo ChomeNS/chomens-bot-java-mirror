@@ -23,20 +23,24 @@ public class WhitelistPlugin implements Listener {
     public void enable () {
         enabled = true;
 
-        for (final PlayerEntry entry : bot.players.list) {
-            if (list.contains(entry.profile.getName())) continue;
+        synchronized (bot.players.list) {
+            for (final PlayerEntry entry : bot.players.list) {
+                if (list.contains(entry.profile.getName())) continue;
 
-            list.add(entry.profile.getName());
+                list.add(entry.profile.getName());
 
-            bot.filterManager.remove(entry.profile.getName());
+                bot.filterManager.remove(entry.profile.getName());
+            }
         }
     }
 
     public void disable () {
         enabled = false;
 
-        for (final PlayerEntry entry : bot.players.list) {
-            bot.filterManager.remove(entry.profile.getName());
+        synchronized (bot.players.list) {
+            for (final PlayerEntry entry : bot.players.list) {
+                bot.filterManager.remove(entry.profile.getName());
+            }
         }
     }
 
@@ -57,10 +61,12 @@ public class WhitelistPlugin implements Listener {
     public void clear () {
         list.removeIf(eachPlayer -> !eachPlayer.equals(bot.profile.getName()));
 
-        for (final PlayerEntry entry : bot.players.list) {
-            if (entry.profile.equals(bot.profile)) continue;
+        synchronized (bot.players.list) {
+            for (final PlayerEntry entry : bot.players.list) {
+                if (entry.profile.equals(bot.profile)) continue;
 
-            bot.filterManager.add(entry, "");
+                bot.filterManager.add(entry, "");
+            }
         }
     }
 

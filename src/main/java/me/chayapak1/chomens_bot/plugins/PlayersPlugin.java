@@ -67,7 +67,11 @@ public class PlayersPlugin implements Listener {
         for (final UUID uuid : uuids) removePlayer(uuid);
     }
 
-    private void queryPlayersIP () { for (final PlayerEntry target : list) queryPlayersIP(target); }
+    private void queryPlayersIP () {
+        synchronized (list) {
+            for (final PlayerEntry target : list) queryPlayersIP(target);
+        }
+    }
 
     private void queryPlayersIP (final PlayerEntry target) {
         if (target.ip != null) return;
@@ -132,40 +136,46 @@ public class PlayersPlugin implements Listener {
     }
 
     public final PlayerEntry getEntry (final UUID uuid) {
-        for (final PlayerEntry candidate : list) {
-            if (candidate != null && candidate.profile.getId().equals(uuid)) {
-                return candidate;
+        synchronized (list) {
+            for (final PlayerEntry candidate : list) {
+                if (candidate != null && candidate.profile.getId().equals(uuid)) {
+                    return candidate;
+                }
             }
-        }
 
-        return null;
+            return null;
+        }
     }
 
     public final PlayerEntry getEntry (final String username) {
-        for (final PlayerEntry candidate : list) {
-            if (
-                    candidate != null &&
-                            (
-                                    candidate.profile.getIdAsString().equals(username) || // checks for a string UUID
-                                            candidate.profile.getName().equals(username) ||
-                                            candidate.usernames.contains(username)
-                            )
-            ) {
-                return candidate;
+        synchronized (list) {
+            for (final PlayerEntry candidate : list) {
+                if (
+                        candidate != null &&
+                                (
+                                        candidate.profile.getIdAsString().equals(username) || // checks for a string UUID
+                                                candidate.profile.getName().equals(username) ||
+                                                candidate.usernames.contains(username)
+                                )
+                ) {
+                    return candidate;
+                }
             }
-        }
 
-        return null;
+            return null;
+        }
     }
 
     public final PlayerEntry getEntry (final Component displayName) {
-        for (final PlayerEntry candidate : list) {
-            if (candidate != null && candidate.displayName != null && candidate.displayName.equals(displayName)) {
-                return candidate;
+        synchronized (list) {
+            for (final PlayerEntry candidate : list) {
+                if (candidate != null && candidate.displayName != null && candidate.displayName.equals(displayName)) {
+                    return candidate;
+                }
             }
-        }
 
-        return null;
+            return null;
+        }
     }
 
     public PlayerEntry getBotEntry () { return getEntry(bot.username); }
