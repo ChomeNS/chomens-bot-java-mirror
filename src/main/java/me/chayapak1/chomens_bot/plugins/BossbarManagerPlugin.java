@@ -5,11 +5,11 @@ import me.chayapak1.chomens_bot.data.bossbar.BossBar;
 import me.chayapak1.chomens_bot.data.bossbar.BotBossBar;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.network.packet.Packet;
-import org.geysermc.mcprotocollib.protocol.data.game.BossBarColor;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundBossEventPacket;
 
 import java.util.HashMap;
@@ -46,6 +46,17 @@ public class BossbarManagerPlugin implements Listener {
         try {
             switch (packet.getAction()) {
                 case ADD -> {
+                    serverBossBars.put(
+                            packet.getUuid(),
+                            new BossBar(
+                                    packet.getUuid(),
+                                    packet.getTitle(),
+                                    packet.getColor(),
+                                    packet.getDivision(),
+                                    packet.getHealth()
+                            )
+                    );
+
                     final Map<UUID, BotBossBar> mapCopy = new HashMap<>(bossBars);
 
                     for (final Map.Entry<UUID, BotBossBar> _bossBar : mapCopy.entrySet()) {
@@ -79,27 +90,20 @@ public class BossbarManagerPlugin implements Listener {
                             newBossBar.setTitle(bossBar.title);
                         }
                     }
-
-                    serverBossBars.put(
-                            packet.getUuid(),
-                            new BossBar(
-                                    packet.getUuid(),
-                                    packet.getTitle(),
-                                    packet.getColor(),
-                                    packet.getDivision(),
-                                    packet.getHealth()
-                            )
-                    );
                 }
                 case REMOVE -> serverBossBars.remove(packet.getUuid()); // self care is at the check function
                 case UPDATE_STYLE -> {
                     final BossBar bossBar = serverBossBars.get(packet.getUuid());
+
+                    if (bossBar == null) return;
 
                     bossBar.color = packet.getColor();
                     bossBar.division = packet.getDivision();
                 }
                 case UPDATE_TITLE -> {
                     final BossBar bossBar = serverBossBars.get(packet.getUuid());
+
+                    if (bossBar == null) return;
 
                     final BotBossBar botBossBar = get(bossBar.uuid);
 
@@ -113,6 +117,8 @@ public class BossbarManagerPlugin implements Listener {
                 }
                 case UPDATE_HEALTH -> {
                     final BossBar bossBar = serverBossBars.get(packet.getUuid());
+
+                    if (bossBar == null) return;
 
                     bossBar.health = packet.getHealth();
                 }
@@ -133,7 +139,7 @@ public class BossbarManagerPlugin implements Listener {
             if (serverBossBar == null) {
                 bossBar.gotSecret = false;
 
-                addBossBar(bossBar.id, bossBar, true);
+                addBossBar(bossBar.id, bossBar);
             } else if (!serverBossBar.title.equals(bossBar.title)) {
                 bossBar.setTitle(bossBar.title, true);
             } else if (bossBar.value() != serverBossBar.health * bossBar.max()) {
@@ -152,7 +158,7 @@ public class BossbarManagerPlugin implements Listener {
         for (final Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {
             final BotBossBar bossBar = _bossBar.getValue();
 
-            addBossBar(bossBar.id, bossBar, true);
+            addBossBar(bossBar.id, bossBar);
         }
     }
 
@@ -181,37 +187,25 @@ public class BossbarManagerPlugin implements Listener {
 
         bossBars.put(bossBar.uuid, bossBar);
 
-        addBossBar(bossBar.id, bossBar, true);
+        addBossBar(bossBar.id, bossBar);
     }
 
     private void addBossBar (final String name, final BotBossBar bossBar) {
-        addBossBar(name, bossBar, false);
-    }
-
-    private void addBossBar (final String name, final BotBossBar bossBar, final boolean secret) {
         if (!enabled || actionBar) return;
 
-        final String prefix = "minecraft:bossbar set " + name + " ";
+        final Component title = bossBar.secret;
 
-        final String stringifiedName = GsonComponentSerializer.gson().serialize(secret ? bossBar.secret : bossBar.title);
+        final String stringTitle = GsonComponentSerializer.gson().serialize(title);
 
-        String division = null;
+        bot.core.run("minecraft:bossbar add " + name + " " + stringTitle);
 
-        switch (bossBar.division) {
-            case NONE -> division = "progress";
-            case NOTCHES_20 -> division = "notched_20";
-            case NOTCHES_6 -> division = "notched_6";
-            case NOTCHES_12 -> division = "notched_12";
-            case NOTCHES_10 -> division = "notched_10";
-        }
-
-        bot.core.run("minecraft:bossbar add " + name + " " + stringifiedName);
-        bot.core.run(prefix + "players " + bossBar.players());
-        bot.core.run(prefix + "color " + (bossBar.color == BossBarColor.LIME ? "green" : (bossBar.color == BossBarColor.CYAN ? "blue" : bossBar.color.name().toLowerCase())));
-        bot.core.run(prefix + "visible " + bossBar.visible());
-        bot.core.run(prefix + "style " + division);
-        bot.core.run(prefix + "max " + bossBar.max());
-        bot.core.run(prefix + "value " + bossBar.value());
+        bossBar.setTitle(title, true);
+        bossBar.setPlayers(bossBar.players(), true);
+        bossBar.setVisible(bossBar.visible(), true);
+        bossBar.setColor(bossBar.color, true);
+        bossBar.setDivision(bossBar.division(), true);
+        bossBar.setMax(bossBar.max(), true);
+        bossBar.setValue(bossBar.value(), true);
     }
 
     public void remove (final String name) {

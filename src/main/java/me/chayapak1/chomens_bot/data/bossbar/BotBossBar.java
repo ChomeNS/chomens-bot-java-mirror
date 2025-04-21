@@ -55,9 +55,7 @@ public class BotBossBar extends BossBar {
     }
 
     public void setTitle (final Component title, final boolean force) {
-        if (!gotSecret) return;
-
-        if (this.title.equals(title) && !force) return;
+        if ((this.title.equals(title) || !gotSecret) && !force) return;
 
         if (bot.bossbar.actionBar) {
             bot.chat.actionBar(title, players);
@@ -84,9 +82,7 @@ public class BotBossBar extends BossBar {
     }
 
     public void setColor (final BossBarColor color, final boolean force) {
-        if (!gotSecret) return;
-
-        if (this.color == color && !force) return;
+        if ((this.color == color || !gotSecret) && !force) return;
 
         this.color = color;
 
@@ -102,9 +98,7 @@ public class BotBossBar extends BossBar {
     public void setPlayers (final String players) { setPlayers(players, false); }
 
     public void setPlayers (final String players, final boolean force) {
-        if (!gotSecret) return;
-
-        if (this.players.equals(players) && !force) return;
+        if ((this.players.equals(players) || !gotSecret) && !force) return;
 
         this.players = players;
 
@@ -120,9 +114,7 @@ public class BotBossBar extends BossBar {
     }
 
     public void setDivision (final BossBarDivision _division, final boolean force) {
-        if (!gotSecret) return;
-
-        if (this.division == _division && !force) return;
+        if ((this.division == _division || !gotSecret) && !force) return;
 
         this.division = _division;
 
@@ -148,9 +140,7 @@ public class BotBossBar extends BossBar {
     }
 
     public void setValue (final int value, final boolean force) {
-        if (!gotSecret) return;
-
-        if (this.value == value && !force) return;
+        if ((this.value == value || !gotSecret) && !force) return;
 
         this.value = value;
 
@@ -162,9 +152,11 @@ public class BotBossBar extends BossBar {
     public boolean visible () { return visible; }
 
     public void setVisible (final boolean visible) {
-        if (!gotSecret) return;
+        setVisible(visible, false);
+    }
 
-        if (this.visible == visible) return;
+    public void setVisible (final boolean visible, final boolean force) {
+        if ((this.visible == visible || !gotSecret) && !force) return;
 
         this.visible = visible;
 
@@ -180,9 +172,7 @@ public class BotBossBar extends BossBar {
     }
 
     public void setMax (final long max, final boolean force) {
-        if (!gotSecret) return;
-
-        if (this.max == max && !force) return;
+        if ((this.max == max || !gotSecret) && !force) return;
 
         this.max = max;
 
