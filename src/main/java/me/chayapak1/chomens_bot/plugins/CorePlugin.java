@@ -497,6 +497,15 @@ public class CorePlugin implements Listener {
 
         final Map<Integer, Boolean> refilledMap = new HashMap<>();
 
+        final String customName = bot.options.useSNBTComponents ?
+                String.format("{CustomName:%s}", bot.config.core.customName) :
+                String.format(
+                        "{CustomName:'%s'}",
+                        bot.config.core.customName
+                                .replace("\\", "\\\\")
+                                .replace("'", "\\'")
+                );
+
         for (int y = from.getY(); y <= to.getY(); y++) {
             for (int z = from.getZ(); z <= to.getZ(); z++) {
                 for (int x = from.getX(); x <= to.getX(); x++) {
@@ -525,9 +534,7 @@ public class CorePlugin implements Listener {
                             y,
                             to.getZ(),
 
-                            useChat
-                                    ? ""
-                                    : "{CustomName:" + bot.config.core.customName + "}"
+                            useChat ? "" : customName
                     );
 
                     if (useChat) bot.chat.sendCommandInstantly(command);
