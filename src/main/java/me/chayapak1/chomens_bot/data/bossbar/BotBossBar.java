@@ -9,7 +9,7 @@ import org.geysermc.mcprotocollib.protocol.data.game.BossBarDivision;
 import java.util.UUID;
 
 public class BotBossBar extends BossBar {
-    public UUID uuid;
+    public UUID uuid = UUID.randomUUID(); // temporary
 
     public final Component secret = Component
             .translatable(
