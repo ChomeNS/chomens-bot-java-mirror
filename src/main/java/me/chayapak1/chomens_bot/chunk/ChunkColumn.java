@@ -2,23 +2,18 @@ package me.chayapak1.chomens_bot.chunk;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.chunk.ChunkPos;
-import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.protocol.codec.MinecraftTypes;
 import org.geysermc.mcprotocollib.protocol.data.game.chunk.ChunkSection;
 
 // Author: hhhzzzsss
 public class ChunkColumn {
-    private final Bot bot;
-
     public final ChunkPos pos;
     public final ChunkSection[] chunks;
 
     private final int minY;
 
-    public ChunkColumn (final Bot bot, final ChunkPos chunkPos, final byte[] data, final int worldHeight, final int minY) {
-        this.bot = bot;
+    public ChunkColumn (final ChunkPos chunkPos, final byte[] data, final int worldHeight, final int minY) {
         this.pos = chunkPos;
         this.minY = minY;
 
@@ -58,21 +53,20 @@ public class ChunkColumn {
 
             chunks[yIndex].setBlock(x, y & 15, z, id);
         } catch (final Exception e) {
-            // passing bot just for debugging? really?
-            bot.logger.error(
-                    Component.translatable(
-                            "Failed to set block at %s %s %s in chunk %s %s with state %s!",
-
-                            Component.text(x),
-                            Component.text(y),
-                            Component.text(z),
-
-                            Component.text(pos.x()),
-                            Component.text(pos.z()),
-
-                            Component.text(id)
-                    )
-            );
+            //            bot.logger.error(
+            //                    Component.translatable(
+            //                            "Failed to set block at %s %s %s in chunk %s %s with state %s!",
+            //
+            //                            Component.text(x),
+            //                            Component.text(y),
+            //                            Component.text(z),
+            //
+            //                            Component.text(pos.x()),
+            //                            Component.text(pos.z()),
+            //
+            //                            Component.text(id)
+            //                    )
+            //            );
             // bot.logger.error(e);
         }
     }
