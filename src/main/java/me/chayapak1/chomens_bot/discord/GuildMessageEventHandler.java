@@ -53,7 +53,7 @@ public class GuildMessageEventHandler extends ListenerAdapter {
         for (final Bot bot : Main.bots) {
             final String channelId = Main.discord.servers.get(bot.getServerString(true));
 
-            if (!bot.loggedIn || !event.getChannel().getId().equals(channelId)) continue;
+            if (!event.getChannel().getId().equals(channelId)) continue;
 
             final Message messageObject = event.getMessage();
             final String messageString = messageObject.getContentDisplay();
@@ -72,32 +72,7 @@ public class GuildMessageEventHandler extends ListenerAdapter {
 
             if (isForwarded) {
                 for (final MessageSnapshot snapshot : messageObject.getMessageSnapshots()) {
-                    final List<Component> extraComponents = new ArrayList<>();
-
-                    addExtraComponents(
-                            extraComponents,
-                            snapshot.getAttachments(),
-                            snapshot.getEmbeds(),
-                            snapshot.getStickers(),
-                            bot
-                    );
-
-                    final String replacedMessageContent = replaceMessageContent(snapshot.getContentRaw());
-
-                    Component messageComponent = Component.text(replacedMessageContent);
-
-                    if (!extraComponents.isEmpty()) {
-                        if (!replacedMessageContent.isBlank())
-                            messageComponent = messageComponent.append(Component.space());
-
-                        messageComponent = messageComponent
-                                .append(
-                                        Component.join(
-                                                JoinConfiguration.spaces(),
-                                                extraComponents
-                                        )
-                                );
-                    }
+                    final Component messageComponent = getForwardedMessageComponent(bot, snapshot);
 
                     output = Component
                             .translatable(
@@ -136,6 +111,37 @@ public class GuildMessageEventHandler extends ListenerAdapter {
 
             bot.chat.tellraw(output);
         }
+    }
+
+    private Component getForwardedMessageComponent (final Bot bot, final MessageSnapshot snapshot) {
+        final List<Component> extraComponents = new ArrayList<>();
+
+        addExtraComponents(
+                extraComponents,
+                snapshot.getAttachments(),
+                snapshot.getEmbeds(),
+                snapshot.getStickers(),
+                bot
+        );
+
+        final String replacedMessageContent = replaceMessageContent(snapshot.getContentRaw());
+
+        Component messageComponent = Component.text(replacedMessageContent);
+
+        if (!extraComponents.isEmpty()) {
+            if (!replacedMessageContent.isBlank())
+                messageComponent = messageComponent.append(Component.space());
+
+            messageComponent = messageComponent
+                    .append(
+                            Component.join(
+                                    JoinConfiguration.spaces(),
+                                    extraComponents
+                            )
+                    );
+        }
+
+        return messageComponent;
     }
 
     private Component getMessageComponent (

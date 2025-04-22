@@ -96,13 +96,15 @@ public class CorePlugin implements Listener {
 
         if (!pendingCommands.isEmpty() && exists) {
             // people that pre-order on TEMU application. Shop Like A Billionaire!!!
-            if (pendingCommands.size() > 150) pendingCommands.clear();
+            if (pendingCommands.size() > 256) {
+                pendingCommands.clear();
+            } else {
+                for (final String pendingCommand : pendingCommands) {
+                    run(pendingCommand);
+                }
 
-            for (final String pendingCommand : pendingCommands) {
-                run(pendingCommand);
+                pendingCommands.clear();
             }
-
-            pendingCommands.clear();
         }
 
         if (placeBlockQueue.size() > 300) {
@@ -187,6 +189,12 @@ public class CorePlugin implements Listener {
     }
 
     public void run (final String command) {
+        if (!exists) {
+            // Add to TEMU shopping cart
+            pendingCommands.add(command);
+            return;
+        }
+
         if (!ready || command.length() > 32767) return;
 
         if (bot.options.useCore) {
@@ -197,8 +205,7 @@ public class CorePlugin implements Listener {
 
             if (isRateLimited() && hasRateLimit()) return;
 
-            if (exists) forceRun(command);
-            else pendingCommands.add(command);
+            forceRun(command);
 
             if (hasRateLimit()) commandsPerSecond.incrementAndGet();
         } else if (command.length() < 256) {
@@ -465,6 +472,7 @@ public class CorePlugin implements Listener {
     @Override
     public void disconnected (final DisconnectedEvent event) {
         ready = false;
+        exists = false;
     }
 
     public void recalculateRelativePositions () {
