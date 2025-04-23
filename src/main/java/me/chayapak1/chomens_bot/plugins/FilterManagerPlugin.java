@@ -11,16 +11,15 @@ import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.tuple.Pair;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class FilterManagerPlugin implements Listener {
     private final Bot bot;
 
-    public final Map<PlayerEntry, String> list = Collections.synchronizedMap(new HashMap<>());
+    public final Map<PlayerEntry, String> list = new ConcurrentHashMap<>();
 
     public FilterManagerPlugin (final Bot bot) {
         this.bot = bot;
