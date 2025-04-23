@@ -14,10 +14,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 // Author: hhhzzzsss
 public class NBSConverter implements Converter {
@@ -303,6 +300,6 @@ public class NBSConverter implements Converter {
             list.add(entry.getAsString());
         }
 
-        return list;
+        return Collections.unmodifiableList(list);
     }
 }

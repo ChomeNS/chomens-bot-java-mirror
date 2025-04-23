@@ -10,21 +10,18 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
 // Author: _ChipMC_ & hhhzzzsss but modified
 public class SongLoaderThread extends Thread {
     // should the converters be here?
-    public static final List<Converter> converters = new ArrayList<>();
-
-    static {
-        converters.add(new MidiConverter());
-        converters.add(new NBSConverter());
-        converters.add(new TextFileConverter());
-        converters.add(new SongPlayerConverter());
-    }
+    public static final List<Converter> converters = List.of(
+            new MidiConverter(),
+            new NBSConverter(),
+            new TextFileConverter(),
+            new SongPlayerConverter()
+    );
 
     public final String fileName;
 

@@ -10,22 +10,19 @@ import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.event.HoverEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class MinecraftChatParser implements ChatParser {
     private final Bot bot;
 
-    private static final List<String> keys = new ArrayList<>();
-
-    static {
-        keys.add("chat.type.text");
-        keys.add("chat.type.announcement");
-        keys.add("commands.message.display.incoming");
-        keys.add("chat.type.team.text");
-        keys.add("chat.type.emote");
-    }
+    private static final List<String> keys = List.of(
+            "chat.type.text",
+            "chat.type.announcement",
+            "commands.message.display.incoming",
+            "chat.type.team.text",
+            "chat.type.emote"
+    );
 
     public MinecraftChatParser (final Bot bot) {
         this.bot = bot;

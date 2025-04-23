@@ -16,59 +16,52 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class CommandHandlerPlugin implements Listener {
-    public static final List<Command> COMMANDS = new ArrayList<>();
-
-    static {
-        registerCommand(new CommandBlockCommand());
-        registerCommand(new CowsayCommand());
-        registerCommand(new EchoCommand());
-        registerCommand(new HelpCommand());
-        registerCommand(new TestCommand());
-        registerCommand(new ValidateCommand());
-        registerCommand(new MusicCommand());
-        registerCommand(new RandomTeleportCommand());
-        registerCommand(new BotVisibilityCommand());
-        registerCommand(new TPSBarCommand());
-        registerCommand(new NetMessageCommand());
-        registerCommand(new RefillCoreCommand());
-        registerCommand(new WikipediaCommand());
-        registerCommand(new UrbanCommand());
-        registerCommand(new ClearChatCommand());
-        registerCommand(new ListCommand());
-        registerCommand(new ServerEvalCommand());
-        registerCommand(new UUIDCommand());
-        registerCommand(new TimeCommand());
-        registerCommand(new BruhifyCommand());
-        registerCommand(new EndCommand());
-        registerCommand(new CloopCommand());
-        registerCommand(new WeatherCommand());
-        registerCommand(new TranslateCommand());
-        registerCommand(new KickCommand());
-        registerCommand(new ClearChatQueueCommand());
-        registerCommand(new FilterCommand());
-        registerCommand(new MailCommand());
-        registerCommand(new EvalCommand());
-        registerCommand(new InfoCommand());
-        registerCommand(new ConsoleCommand());
-        //        registerCommand(new ScreenshareCommand());
-        registerCommand(new WhitelistCommand());
-        registerCommand(new SeenCommand());
-        registerCommand(new IPFilterCommand());
-        registerCommand(new StopCommand());
-        registerCommand(new GrepLogCommand());
-        registerCommand(new FindAltsCommand());
-        registerCommand(new RestartCommand());
-        registerCommand(new NetCommandCommand());
-    }
-
-    public static void registerCommand (final Command command) {
-        COMMANDS.add(command);
-    }
+    public static final List<Command> COMMANDS = List.of(
+            new CommandBlockCommand(),
+            new CowsayCommand(),
+            new EchoCommand(),
+            new HelpCommand(),
+            new TestCommand(),
+            new ValidateCommand(),
+            new MusicCommand(),
+            new RandomTeleportCommand(),
+            new BotVisibilityCommand(),
+            new TPSBarCommand(),
+            new NetMessageCommand(),
+            new RefillCoreCommand(),
+            new WikipediaCommand(),
+            new UrbanCommand(),
+            new ClearChatCommand(),
+            new ListCommand(),
+            new ServerEvalCommand(),
+            new UUIDCommand(),
+            new TimeCommand(),
+            new BruhifyCommand(),
+            new EndCommand(),
+            new CloopCommand(),
+            new WeatherCommand(),
+            new TranslateCommand(),
+            new KickCommand(),
+            new ClearChatQueueCommand(),
+            new FilterCommand(),
+            new MailCommand(),
+            new EvalCommand(),
+            new InfoCommand(),
+            new ConsoleCommand(),
+            // new ScreenshareCommand(),
+            new WhitelistCommand(),
+            new SeenCommand(),
+            new IPFilterCommand(),
+            new StopCommand(),
+            new GrepLogCommand(),
+            new FindAltsCommand(),
+            new RestartCommand(),
+            new NetCommandCommand()
+    );
 
     public static Command findCommand (final String searchTerm) {
         if (searchTerm.isBlank()) return null;

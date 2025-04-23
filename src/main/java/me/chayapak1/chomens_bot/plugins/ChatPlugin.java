@@ -46,7 +46,7 @@ public class ChatPlugin implements Listener {
 
     public final Pattern CHAT_SPLIT_PATTERN = Pattern.compile("\\G\\s*([^\\r\\n]{1,254}(?=\\s|$)|[^\\r\\n]{254})");
 
-    private final List<ChatParser> chatParsers = Collections.synchronizedList(new ArrayList<>());
+    private final List<ChatParser> chatParsers = new ArrayList<>();
 
     public final List<Component> chatTypes = new ArrayList<>();
 

@@ -37,13 +37,11 @@ public class ChomeNSModIntegrationPlugin implements Listener {
 
     private static final SecureRandom RANDOM = new SecureRandom();
 
-    public static final List<Class<? extends Packet>> SERVERBOUND_PACKETS = new ArrayList<>();
-
-    static {
-        SERVERBOUND_PACKETS.add(ServerboundSuccessfulHandshakePacket.class);
-        SERVERBOUND_PACKETS.add(ServerboundRunCoreCommandPacket.class);
-        SERVERBOUND_PACKETS.add(ServerboundRunCommandPacket.class);
-    }
+    public static final List<Class<? extends Packet>> SERVERBOUND_PACKETS = List.of(
+            ServerboundSuccessfulHandshakePacket.class,
+            ServerboundRunCoreCommandPacket.class,
+            ServerboundRunCommandPacket.class
+    );
 
     private final Bot bot;
 
