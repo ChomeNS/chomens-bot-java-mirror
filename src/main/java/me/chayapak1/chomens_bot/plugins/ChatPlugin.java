@@ -70,10 +70,13 @@ public class ChatPlugin implements Listener {
 
     @Override
     public void packetReceived (final Session session, final Packet packet) {
-        if (packet instanceof final ClientboundSystemChatPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundPlayerChatPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundDisguisedChatPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundRegistryDataPacket t_packet) packetReceived(t_packet);
+        switch (packet) {
+            case final ClientboundSystemChatPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundPlayerChatPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundDisguisedChatPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundRegistryDataPacket t_packet -> packetReceived(t_packet);
+            default -> { }
+        }
     }
 
     private void packetReceived (final ClientboundSystemChatPacket packet) {

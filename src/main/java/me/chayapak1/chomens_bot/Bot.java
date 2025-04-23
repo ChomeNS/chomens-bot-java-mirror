@@ -223,14 +223,17 @@ public class Bot extends SessionAdapter {
     public void packetReceived (final Session session, final Packet packet) {
         this.listener.dispatch(listener -> listener.packetReceived(session, packet));
 
-        if (packet instanceof final ClientboundLoginPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundLoginFinishedPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundCustomQueryPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundCookieRequestPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundTransferPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundStoreCookiePacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundLoginCompressionPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundCustomPayloadPacket t_packet) packetReceived(t_packet);
+        switch (packet) {
+            case final ClientboundLoginPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundLoginFinishedPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundCustomQueryPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundCookieRequestPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundTransferPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundStoreCookiePacket t_packet -> packetReceived(t_packet);
+            case final ClientboundLoginCompressionPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundCustomPayloadPacket t_packet -> packetReceived(t_packet);
+            default -> { }
+        }
     }
 
     private void packetReceived (final ClientboundLoginFinishedPacket packet) {

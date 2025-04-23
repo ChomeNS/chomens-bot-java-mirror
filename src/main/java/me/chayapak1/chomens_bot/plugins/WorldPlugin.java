@@ -41,14 +41,17 @@ public class WorldPlugin implements Listener {
 
     @Override
     public void packetReceived (final Session session, final Packet packet) {
-        if (packet instanceof final ClientboundLevelChunkWithLightPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundForgetLevelChunkPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundBlockUpdatePacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundSectionBlocksUpdatePacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundLoginPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundRespawnPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundRegistryDataPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundSetSimulationDistancePacket t_packet) packetReceived(t_packet);
+        switch (packet) {
+            case final ClientboundLevelChunkWithLightPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundForgetLevelChunkPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundBlockUpdatePacket t_packet -> packetReceived(t_packet);
+            case final ClientboundSectionBlocksUpdatePacket t_packet -> packetReceived(t_packet);
+            case final ClientboundLoginPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundRespawnPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundRegistryDataPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundSetSimulationDistancePacket t_packet -> packetReceived(t_packet);
+            default -> { }
+        }
     }
 
     @Override

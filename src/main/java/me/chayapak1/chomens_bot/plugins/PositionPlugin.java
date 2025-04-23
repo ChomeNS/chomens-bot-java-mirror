@@ -58,13 +58,16 @@ public class PositionPlugin implements Listener {
 
     @Override
     public void packetReceived (final Session session, final Packet packet) {
-        if (packet instanceof final ClientboundPlayerPositionPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundAddEntityPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundRemoveEntitiesPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundMoveEntityRotPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundMoveEntityPosPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundMoveEntityPosRotPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundEntityPositionSyncPacket t_packet) packetReceived(t_packet);
+        switch (packet) {
+            case final ClientboundPlayerPositionPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundAddEntityPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundRemoveEntitiesPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundMoveEntityRotPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundMoveEntityPosPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundMoveEntityPosRotPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundEntityPositionSyncPacket t_packet -> packetReceived(t_packet);
+            default -> { }
+        }
     }
 
     private void packetReceived (final ClientboundPlayerPositionPacket packet) {

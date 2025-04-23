@@ -136,11 +136,14 @@ public class SelfCarePlugin implements Listener {
 
     @Override
     public void packetReceived (final Session session, final Packet packet) {
-        if (packet instanceof final ClientboundLoginPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundGameEventPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundEntityEventPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundOpenScreenPacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundSetPassengersPacket t_packet) packetReceived(t_packet);
+        switch (packet) {
+            case final ClientboundLoginPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundGameEventPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundEntityEventPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundOpenScreenPacket t_packet -> packetReceived(t_packet);
+            case final ClientboundSetPassengersPacket t_packet -> packetReceived(t_packet);
+            default -> { }
+        }
     }
 
     private void packetReceived (final ClientboundLoginPacket packet) {

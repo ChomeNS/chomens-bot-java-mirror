@@ -51,12 +51,15 @@ public class PlayersPlugin implements Listener {
 
         for (final PlayerListEntryAction action : actions) {
             for (final PlayerListEntry entry : packet.getEntries()) {
-                if (action == PlayerListEntryAction.ADD_PLAYER) addPlayer(entry);
-                else if (action == PlayerListEntryAction.INITIALIZE_CHAT) initializeChat(entry);
-                else if (action == PlayerListEntryAction.UPDATE_LISTED) updateListed(entry);
-                else if (action == PlayerListEntryAction.UPDATE_GAME_MODE) updateGameMode(entry);
-                else if (action == PlayerListEntryAction.UPDATE_LATENCY) updateLatency(entry);
-                else if (action == PlayerListEntryAction.UPDATE_DISPLAY_NAME) updateDisplayName(entry);
+                switch (action) {
+                    case ADD_PLAYER -> addPlayer(entry);
+                    case INITIALIZE_CHAT -> initializeChat(entry);
+                    case UPDATE_LISTED -> updateListed(entry);
+                    case UPDATE_GAME_MODE -> updateGameMode(entry);
+                    case UPDATE_LATENCY -> updateLatency(entry);
+                    case UPDATE_DISPLAY_NAME -> updateDisplayName(entry);
+                    default -> { }
+                }
             }
         }
     }
