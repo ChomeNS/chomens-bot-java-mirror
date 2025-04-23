@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,9 +21,17 @@ import java.util.regex.Pattern;
 public class ComponentUtilities {
     // component parsing
     // rewritten from chipmunkbot, a lot of stuff has changed, and also ANSI and section signs support, etc...
-    public static final Map<String, String> LANGUAGE = loadJsonStringMap("language.json");
-    public static final Map<String, String> VOICE_CHAT_LANGUAGE = loadJsonStringMap("voiceChatLanguage.json");
+    public static final Map<String, String> LANGUAGE = new HashMap<>();
+
+    private static final List<String> LANGUAGES = List.of("language.json", "voiceChatLanguage.json");
+
     public static final Map<String, String> KEYBINDINGS = loadJsonStringMap("keybinds.json");
+
+    static {
+        for (final String language : LANGUAGES) {
+            LANGUAGE.putAll(loadJsonStringMap(language));
+        }
+    }
 
     private static Map<String, String> loadJsonStringMap (final String name) {
         final Map<String, String> map = new HashMap<>();
@@ -41,13 +50,12 @@ public class ComponentUtilities {
 
     public static String getOrReturnFallback (final TranslatableComponent component) {
         final String key = component.key();
+        final String fallback = component.fallback();
 
-        final String minecraftKey = LANGUAGE.get(key);
-        final String voiceChatKey = VOICE_CHAT_LANGUAGE.get(key);
-
-        if (minecraftKey != null) return minecraftKey;
-        else if (voiceChatKey != null) return voiceChatKey;
-        else return component.fallback() != null ? component.fallback() : key;
+        return LANGUAGE.getOrDefault(
+                key,
+                fallback != null ? fallback : key
+        );
     }
 
     public static String stringify (final Component message) { return new ComponentParser().stringify(message, ComponentParser.ParseType.PLAIN); }
