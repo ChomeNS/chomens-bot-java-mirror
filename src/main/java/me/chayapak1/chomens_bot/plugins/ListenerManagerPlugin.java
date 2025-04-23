@@ -20,41 +20,45 @@ public class ListenerManagerPlugin {
     }
 
     public void dispatch (final Consumer<Listener> consumer) {
-        for (final Listener listener : listeners) {
-            try {
-                consumer.accept(listener);
-            } catch (final Exception e) {
-                bot.logger.error(
-                        Component.translatable(
-                                "Caught exception while trying to dispatch an event to %s!",
-                                Component.text(listener.getClass().getSimpleName())
-                        )
-                );
-                bot.logger.error(e);
+        synchronized (listeners) {
+            for (final Listener listener : listeners) {
+                try {
+                    consumer.accept(listener);
+                } catch (final Exception e) {
+                    bot.logger.error(
+                            Component.translatable(
+                                    "Caught exception while trying to dispatch an event to %s!",
+                                    Component.text(listener.getClass().getSimpleName())
+                            )
+                    );
+                    bot.logger.error(e);
+                }
             }
         }
     }
 
     public void dispatchWithCheck (final Function<Listener, Boolean> function) {
-        for (final Listener listener : listeners) {
-            try {
-                final Boolean result = function.apply(listener);
+        synchronized (listeners) {
+            for (final Listener listener : listeners) {
+                try {
+                    final Boolean result = function.apply(listener);
 
-                if (result != null && !result) break;
-            } catch (final Exception e) {
-                bot.logger.error(
-                        Component.translatable(
-                                "Caught exception while trying to dispatch an event with a returning boolean to %s!",
-                                Component.text(listener.getClass().getSimpleName())
-                        )
-                );
-                bot.logger.error(e);
+                    if (result != null && !result) break;
+                } catch (final Exception e) {
+                    bot.logger.error(
+                            Component.translatable(
+                                    "Caught exception while trying to dispatch an event with a returning boolean to %s!",
+                                    Component.text(listener.getClass().getSimpleName())
+                            )
+                    );
+                    bot.logger.error(e);
+                }
             }
         }
     }
 
     public void addListener (final Listener listener) {
-        if (listeners.contains(listener)) throw new IllegalStateException(
+        if (listeners.contains(listener)) throw new IllegalArgumentException(
                 "This listener is already in the listeners list. " +
                         "Please call `removeListener(listener)` first."
         );
