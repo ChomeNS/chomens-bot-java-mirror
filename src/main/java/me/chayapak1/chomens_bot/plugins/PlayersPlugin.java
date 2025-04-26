@@ -122,14 +122,16 @@ public class PlayersPlugin implements Listener {
             trackedCoreFuture.thenApply(output -> {
                 final List<Component> children = output.children();
 
-                String stringified = ComponentUtilities.stringify(Component.join(JoinConfiguration.separator(Component.empty()), children));
+                String string = ComponentUtilities
+                        .stringify(Component.join(JoinConfiguration.separator(Component.empty()), children))
+                        .trim();
 
-                if (!stringified.startsWith(" - IP Address: ")) return output;
+                if (!string.startsWith("- IP Address: ")) return output;
 
-                stringified = stringified.trim().substring(" - IP Address: ".length());
-                if (stringified.startsWith("/")) stringified = stringified.substring(1);
+                string = string.trim().substring("- IP Address: ".length());
+                if (string.startsWith("/")) string = string.substring(1);
 
-                outputFuture.complete(stringified);
+                outputFuture.complete(string);
 
                 return output;
             });
