@@ -317,7 +317,7 @@ public class Bot extends SessionAdapter {
             // for voicechat
             session.send(new ServerboundCustomPayloadPacket(
                     Key.key("minecraft:brand"),
-                    "fabric".getBytes(StandardCharsets.UTF_8)
+                    "\u0006fabric".getBytes(StandardCharsets.UTF_8)
             ));
 
             // this enables all the skin parts (by default they are ALL DISABLED
