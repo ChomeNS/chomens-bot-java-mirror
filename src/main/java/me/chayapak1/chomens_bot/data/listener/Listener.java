@@ -31,6 +31,7 @@ public interface Listener {
     default void onTick () { }
     default void onAlwaysTick () { }
     default void onSecondTick () { }
+    default void onLocalSecondTick () { }
 
     // core
     default void onCoreReady () { }

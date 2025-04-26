@@ -6,12 +6,9 @@ import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.geysermc.mcprotocollib.network.Session;
-import org.geysermc.mcprotocollib.network.packet.Packet;
+import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
 import org.geysermc.mcprotocollib.protocol.data.game.BossBarColor;
 import org.geysermc.mcprotocollib.protocol.data.game.BossBarDivision;
-import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
-import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundSetTimePacket;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -116,13 +113,9 @@ public class TPSPlugin implements Listener {
         else return BossBarColor.PURPLE;
     }
 
+    // this is the server time update tick, sent straight from server, not local!
     @Override
-    public void packetReceived (final Session session, final Packet packet) {
-        if (packet instanceof final ClientboundSetTimePacket t_packet) packetReceived(t_packet);
-        else if (packet instanceof final ClientboundLoginPacket t_packet) packetReceived(t_packet);
-    }
-
-    private void packetReceived (final ClientboundSetTimePacket ignoredPacket) {
+    public void onSecondTick () {
         final long now = System.currentTimeMillis();
         final float timeElapsed = (float) (now - timeLastTimeUpdate) / 1000.0F;
         tickRates[nextIndex] = MathUtilities.clamp(20.0f / timeElapsed, 0.0f, 20.0f);
@@ -130,7 +123,8 @@ public class TPSPlugin implements Listener {
         timeLastTimeUpdate = now;
     }
 
-    private void packetReceived (final ClientboundLoginPacket ignoredPacket) {
+    @Override
+    public void connected (final ConnectedEvent event) {
         Arrays.fill(tickRates, 0);
         nextIndex = 0;
         timeGameJoined = timeLastTimeUpdate = System.currentTimeMillis();

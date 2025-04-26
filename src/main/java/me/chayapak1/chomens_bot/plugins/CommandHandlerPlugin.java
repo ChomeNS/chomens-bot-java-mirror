@@ -91,7 +91,7 @@ public class CommandHandlerPlugin implements Listener {
     }
 
     @Override
-    public void onSecondTick () {
+    public void onLocalSecondTick () {
         commandPerSecond = 0;
     }
 

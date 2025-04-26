@@ -30,7 +30,7 @@ public class FilterManagerPlugin implements Listener {
     }
 
     @Override
-    public void onSecondTick () {
+    public void onLocalSecondTick () {
         removeLeftPlayers();
     }
 
