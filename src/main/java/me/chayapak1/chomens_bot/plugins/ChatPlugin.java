@@ -83,8 +83,9 @@ public class ChatPlugin implements Listener {
         final Component component = packet.getContent();
 
         if (
-                component instanceof final TextComponent t_component &&
-                        t_component.content().length() > 15_000
+                packet.isOverlay() ||
+                        (component instanceof final TextComponent t_component
+                                && t_component.content().length() > 15_000)
         ) return;
 
         if (component instanceof final TranslatableComponent t_component) {
