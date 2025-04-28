@@ -415,7 +415,7 @@ public class MusicPlayerPlugin implements Listener {
 
                 final double volume = note.volume + this.volume;
 
-                if (volume == 0.0) return;
+                if (volume == 0.0) continue;
 
                 if (shouldCustomPitch) {
                     bot.core.run(
