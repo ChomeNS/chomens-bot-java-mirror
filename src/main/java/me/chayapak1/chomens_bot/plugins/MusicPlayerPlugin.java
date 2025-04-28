@@ -415,6 +415,8 @@ public class MusicPlayerPlugin implements Listener {
 
                 final double volume = note.volume + this.volume;
 
+                if (volume == 0.0) return;
+
                 if (shouldCustomPitch) {
                     bot.core.run(
                             "minecraft:execute as " +
@@ -471,7 +473,7 @@ public class MusicPlayerPlugin implements Listener {
             else if (value == 100) xPos = 0;
             else xPos = ((value - 100) * -1) / 100;
 
-            blockPosition = Vector3d.from(xPos, 0, 0);
+            blockPosition = Vector3d.from(xPos * 2, 0, 0);
         } else {
             final double originalPitch = note.originalPitch;
 
