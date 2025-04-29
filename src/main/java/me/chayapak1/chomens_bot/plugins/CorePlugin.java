@@ -326,6 +326,15 @@ public class CorePlugin implements Listener {
         );
         session.send(new ServerboundPlayerActionPacket(PlayerAction.START_DIGGING, temporaryBlockPosition, Direction.NORTH, 0));
         session.send(new ServerboundUseItemOnPacket(temporaryBlockPosition, Direction.UP, Hand.MAIN_HAND, 0.5f, 0.5f, 0.5f, false, false, 1));
+
+        if (!bot.options.useCorePlaceBlock) {
+            bot.executor.schedule(() -> session.send(
+                    new ServerboundSetCreativeModeSlotPacket(
+                            (short) 36,
+                            null
+                    )
+            ), 50 * 2, TimeUnit.MILLISECONDS);
+        }
     }
 
     private void resizeTick () {
