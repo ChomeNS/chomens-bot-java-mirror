@@ -50,7 +50,7 @@ public class NBSConverter implements Converter {
     }
 
     public static class NBSNote {
-        public int tick;
+        public long tick;
         public short layer;
         public byte instrument;
         public byte key;
@@ -119,11 +119,11 @@ public class NBSConverter implements Converter {
         }
 
         final ArrayList<NBSNote> nbsNotes = new ArrayList<>();
-        short tick = -1;
+        long tick = -1;
         while (true) {
-            final int tickJumps = buffer.getShort();
+            final short tickJumps = buffer.getShort();
             if (tickJumps == 0) break;
-            tick += (short) tickJumps;
+            tick += tickJumps;
 
             short layer = -1;
             while (true) {
@@ -282,7 +282,7 @@ public class NBSConverter implements Converter {
         return new String(arr, StandardCharsets.UTF_8);
     }
 
-    private static long getMilliTime (final int tick, final double tempo) {
+    private static long getMilliTime (final long tick, final double tempo) {
         return (long) (1000L * tick * 100 / tempo);
     }
 
