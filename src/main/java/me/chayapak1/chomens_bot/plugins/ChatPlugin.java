@@ -1,5 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.chatParsers.KaboomChatParser;
 import me.chayapak1.chomens_bot.chatParsers.MinecraftChatParser;
@@ -18,7 +20,10 @@ import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
 import org.cloudburstmc.nbt.NbtMap;
 import org.cloudburstmc.nbt.NbtType;
 import org.geysermc.mcprotocollib.network.Session;
+import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.network.packet.Packet;
+import org.geysermc.mcprotocollib.protocol.codec.NbtComponentSerializer;
+import org.geysermc.mcprotocollib.protocol.data.DefaultComponentSerializer;
 import org.geysermc.mcprotocollib.protocol.data.game.RegistryEntry;
 import org.geysermc.mcprotocollib.protocol.packet.configuration.clientbound.ClientboundRegistryDataPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundDisguisedChatPacket;
@@ -38,13 +43,12 @@ import java.util.regex.Pattern;
 public class ChatPlugin implements Listener {
     public static final Pattern COLOR_CODE_PATTERN = Pattern.compile("(&[a-f0-9rlonmk])", Pattern.MULTILINE);
     public static final Pattern COLOR_CODE_END_PATTERN = Pattern.compile("^.*&[a-f0-9rlonmk]$", Pattern.MULTILINE);
+    public static final Pattern CHAT_SPLIT_PATTERN = Pattern.compile("\\G\\s*([^\\r\\n]{1,254}(?=\\s|$)|[^\\r\\n]{254})");
 
     private static final String CHAT_TYPE_REGISTRY_KEY = "minecraft:chat_type";
     private static final ChatTypeComponentRenderer CHAT_TYPE_COMPONENT_RENDERER = new ChatTypeComponentRenderer();
 
     private final Bot bot;
-
-    public final Pattern CHAT_SPLIT_PATTERN = Pattern.compile("\\G\\s*([^\\r\\n]{1,254}(?=\\s|$)|[^\\r\\n]{254})");
 
     private final List<ChatParser> chatParsers = new ArrayList<>();
 
@@ -138,18 +142,40 @@ public class ChatPlugin implements Listener {
 
             final String translation = chat.getString("translation_key");
             final List<String> parameters = chat.getList("parameters", NbtType.STRING);
-            // styles?
 
-            final Component component = Component.translatable(
-                    translation,
-                    parameters
-                            .stream()
-                            .map(Component::text) // will be replaced later
-                            .toList()
-            );
+            final NbtMap styleMap = chat.getCompound("style", null);
+
+            Component style = Component.empty();
+
+            if (styleMap != null) {
+                JsonElement json = NbtComponentSerializer.tagComponentToJson(styleMap);
+
+                if (json.isJsonObject() && json.getAsJsonObject().get("text") == null) {
+                    final JsonObject object = json.getAsJsonObject();
+                    object.addProperty("text", "");
+                    json = object; // is this necessary?
+                }
+
+                style = DefaultComponentSerializer.get().deserializeFromTree(json);
+            }
+
+            final Component component = Component
+                    .translatable(
+                            translation,
+                            parameters
+                                    .stream()
+                                    .map(Component::text) // will be replaced later
+                                    .toList()
+                    )
+                    .mergeStyle(style);
 
             chatTypes.add(component);
         }
+    }
+
+    @Override
+    public void disconnected (final DisconnectedEvent event) {
+        chatTypes.clear();
     }
 
     private Component getComponentByChatType (final int chatType, final Component target, final Component sender, final Component content) {
