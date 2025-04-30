@@ -5,7 +5,8 @@ import me.chayapak1.chomens_bot.Bot;
 import javax.sound.midi.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.nio.ByteBuffer;
+import java.nio.charset.*;
 import java.util.*;
 
 import static javax.sound.midi.ShortMessage.SYSTEM_RESET;
@@ -51,7 +52,7 @@ public class MidiConverter implements Converter {
                     if (mm.getType() == SET_TEMPO) {
                         tempoEvents.add(event);
                     } else if (mm.getType() == TRACK_NAME) {
-                        final String stringTitle = new String(mm.getData(), StandardCharsets.UTF_8);
+                        final String stringTitle = decodeStringWithUTF8OrShiftJIS(mm.getData());
 
                         if (stringTitle.isBlank()) continue;
 
@@ -64,10 +65,10 @@ public class MidiConverter implements Converter {
                             isFirst = false;
                         }
                     } else if (mm.getType() == TEXT) {
-                        text.append(new String(mm.getData(), StandardCharsets.UTF_8));
+                        text.append(decodeStringWithUTF8OrShiftJIS(mm.getData()));
                         text.append('\n');
                     } else if (mm.getType() == LYRICS) {
-                        final String lyric = new String(mm.getMessage(), StandardCharsets.UTF_8);
+                        final String lyric = decodeStringWithUTF8OrShiftJIS(mm.getMessage());
 
                         lyrics.put(event.getTick(), lyric);
                     }
@@ -451,5 +452,26 @@ public class MidiConverter implements Converter {
         percussionMap.put(85, 21 + 25 * Instrument.HAT.id);
         percussionMap.put(86, 14 + 25 * Instrument.BASEDRUM.id);
         percussionMap.put(87, 7 + 25 * Instrument.BASEDRUM.id);
+    }
+
+    // this is needed for japanese MIDIs like night of nights, which uses shift jis encoded string as its title
+    // here is the bytes of it
+    // [-125, 105, -125, 67, -125, 103, -127, 69, -125, 73, -125, 117, -127, 69, -125, 105, -125, 67, -125, 99]
+    //
+    // jshell> new String(bytes, java.nio.charset.StandardCharsets.UTF_8)
+    // $5 ==> "�i�C�g�E�I�u�E�i�C�c"
+    //
+    // jshell> new String(bytes, java.nio.charset.Charset.forName("Shift-JIS"))
+    // $4 ==> "ナイト・オブ・ナイツ"
+    private static String decodeStringWithUTF8OrShiftJIS (final byte[] bytes) {
+        final CharsetDecoder utf8Decoder = StandardCharsets.UTF_8.newDecoder();
+        utf8Decoder.onMalformedInput(CodingErrorAction.REPORT); // detect invalid bytes, so we can fall back
+        utf8Decoder.onUnmappableCharacter(CodingErrorAction.REPORT);
+
+        try {
+            return utf8Decoder.decode(ByteBuffer.wrap(bytes)).toString();
+        } catch (final CharacterCodingException e) {
+            return new String(bytes, Charset.forName("Shift_JIS"));
+        }
     }
 }
