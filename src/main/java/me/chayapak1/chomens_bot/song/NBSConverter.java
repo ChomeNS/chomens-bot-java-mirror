@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -279,7 +278,7 @@ public class NBSConverter implements Converter {
         }
         final byte[] arr = new byte[length];
         buffer.get(arr, 0, length);
-        return new String(arr, StandardCharsets.UTF_8);
+        return StringUtilities.fromUTF8Lossy(arr);
     }
 
     private static long getMilliTime (final long tick, final double tempo) {

@@ -29,6 +29,57 @@ public class StringUtilities {
         return removedCommand.toString();
     }
 
+    // Author: ChatGPT
+    public static String fromUTF8Lossy (final byte[] input) {
+        final StringBuilder result = new StringBuilder();
+        int i = 0;
+
+        while (i < input.length) {
+            final byte b = input[i];
+
+            if ((b & 0x80) == 0) {
+                // ASCII byte (0xxxxxxx)
+                result.append((char) b);
+            } else {
+                // Try to decode as UTF-8 multibyte sequence
+                final int bytesRemaining = input.length - i;
+
+                // UTF-8 rules: number of bytes in sequence based on first byte
+                int seqLen = -1;
+                if ((b & 0xE0) == 0xC0 && bytesRemaining >= 2) seqLen = 2;
+                else if ((b & 0xF0) == 0xE0 && bytesRemaining >= 3) seqLen = 3;
+                else if ((b & 0xF8) == 0xF0 && bytesRemaining >= 4) seqLen = 4;
+
+                if (seqLen > 1) {
+                    boolean valid = true;
+                    for (int j = 1; j < seqLen; j++) {
+                        if ((input[i + j] & 0xC0) != 0x80) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    if (valid) {
+                        try {
+                            final String s = new String(input, i, seqLen, StandardCharsets.UTF_8);
+                            result.append(s);
+                            i += seqLen;
+                            continue;
+                        } catch (final Exception e) {
+                            // Fall through to escape
+                        }
+                    }
+                }
+
+                // If invalid UTF-8 sequence or unknown pattern, escape the byte
+                result.append(String.format("<%04X>", b & 0xFF));
+            }
+
+            i++;
+        }
+
+        return result.toString();
+    }
+
     // https://stackoverflow.com/a/35148974/18518424
     public static String truncateToFitUtf8ByteLength (final String s, final int maxBytes) {
         if (s == null) {
