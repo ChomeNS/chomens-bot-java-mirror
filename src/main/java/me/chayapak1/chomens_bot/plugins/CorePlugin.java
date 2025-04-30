@@ -555,6 +555,7 @@ public class CorePlugin implements Listener {
                     );
 
                     if (useChat) bot.chat.sendCommandInstantly(command);
+                    else if (isCoreExists()) run(command);
                     else runPlaceBlock(command);
 
                     refilledMap.put(y, true);
