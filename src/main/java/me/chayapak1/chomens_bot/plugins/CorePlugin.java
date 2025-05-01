@@ -51,12 +51,14 @@ public class CorePlugin implements Listener {
 
     public volatile Vector3i block = null;
 
+    public final AtomicInteger index = new AtomicInteger();
+
     public final Queue<String> placeBlockQueue = new ConcurrentLinkedQueue<>();
 
     public final Queue<String> pendingCommands = new ConcurrentLinkedQueue<>();
 
-    public final AtomicInteger commandsPerTick = new AtomicInteger(0);
-    public final AtomicInteger commandsPerSecond = new AtomicInteger(0);
+    public final AtomicInteger commandsPerTick = new AtomicInteger();
+    public final AtomicInteger commandsPerSecond = new AtomicInteger();
 
     private final AtomicInteger positionChangesPerSecond = new AtomicInteger(0);
 
@@ -156,6 +158,8 @@ public class CorePlugin implements Listener {
 
         if (!bot.serverFeatures.hasNamespaces) command = StringUtilities.removeNamespace(command);
 
+        incrementBlock(0);
+
         if (bot.serverFeatures.hasExtras) {
             bot.session.send(new ServerboundSetCommandBlockPacket(
                     block,
@@ -184,8 +188,6 @@ public class CorePlugin implements Listener {
                     true
             ));
         }
-
-        incrementBlock();
     }
 
     public void run (final String command) {
@@ -341,18 +343,20 @@ public class CorePlugin implements Listener {
         if (!ready) return;
 
         // fixes a bug where the block positions are more than the ones in from and to
-        if (!isCore(block)) reset();
+        if (!isCore(block)) recalculateRelativePositions();
 
         final Vector3i oldSize = toSize;
 
         final int x = toSize.getX();
-        int y = -64;
+        int y = bot.world.minY;
         final int z = toSize.getZ();
 
         while (commandsPerTick.get() > 16 * 16) {
             y++;
             commandsPerTick.getAndAdd(-(16 * 16));
         }
+
+        y = Math.min(y, bot.world.maxY);
 
         toSize = Vector3i.from(x, y, z);
 
@@ -420,24 +424,22 @@ public class CorePlugin implements Listener {
                         position.getZ() >= from.getZ() && position.getZ() <= to.getZ();
     }
 
-    private synchronized void incrementBlock () {
-        int x = block.getX() + 1;
-        int y = block.getY();
-        int z = block.getZ();
+    private void incrementBlock (final int times) {
+        if (times > 256) return;
 
-        if (x > to.getX()) {
-            x = from.getX();
-            z++;
-            if (z > to.getZ()) {
-                z = from.getZ();
-                y++;
-                if (y > to.getY()) {
-                    y = from.getY();
-                }
-            }
-        }
+        final int currentIndex = index.get();
+
+        final int x = from.getX() + (currentIndex & 15);
+        final int z = from.getZ() + ((currentIndex >> 4) & 15);
+        final int y = (currentIndex >> 8) + bot.world.minY;
 
         block = Vector3i.from(x, y, z);
+
+        index.set((currentIndex + 1) % (256 * Math.max(1, to.getY() - from.getY())));
+
+        if (!isCommandBlockState(bot.world.getBlock(x, y, z))) {
+            incrementBlock(times + 1);
+        }
     }
 
     @Override
@@ -505,6 +507,7 @@ public class CorePlugin implements Listener {
         recalculateRelativePositions();
 
         block = Vector3i.from(from);
+        index.set(0);
     }
 
     public void refill () { refill(true); }
