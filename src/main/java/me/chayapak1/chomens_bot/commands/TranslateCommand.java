@@ -7,6 +7,7 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
+import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -34,7 +35,9 @@ public class TranslateCommand extends Command {
                 "Translates a message using Google Translate",
                 new String[] { "<from> <to> <message>" },
                 new String[] {},
-                TrustLevel.PUBLIC
+                TrustLevel.PUBLIC,
+                false,
+                new ChatPacketType[] { ChatPacketType.SYSTEM, ChatPacketType.DISGUISED }
         );
     }
 
