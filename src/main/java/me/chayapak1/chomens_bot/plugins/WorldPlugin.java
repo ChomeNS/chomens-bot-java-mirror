@@ -29,6 +29,8 @@ public class WorldPlugin implements Listener {
 
     public int simulationDistance = 8;
 
+    public String currentDimension = "";
+
     private final Map<ChunkPos, ChunkColumn> chunks = new HashMap<>();
 
     public List<RegistryEntry> registry = null;
@@ -60,6 +62,8 @@ public class WorldPlugin implements Listener {
     }
 
     private void worldChanged (final String dimension) {
+        currentDimension = dimension;
+
         final RegistryEntry currentDimension = registry.stream()
                 .filter(eachDimension -> eachDimension.getId().asString().equals(dimension))
                 .findFirst()

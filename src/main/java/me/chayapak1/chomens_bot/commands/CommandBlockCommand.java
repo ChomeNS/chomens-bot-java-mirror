@@ -10,6 +10,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.cloudburstmc.math.vector.Vector3i;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
@@ -26,6 +27,7 @@ public class CommandBlockCommand extends Command {
                 "cb",
                 "Executes a command in the command core and return its output",
                 new String[] {
+                        "",
                         "<command>",
                         "..{username}..",
                         "..{uuid}..",
@@ -41,13 +43,64 @@ public class CommandBlockCommand extends Command {
     public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
+        final String command = context.getString(true, false);
+
+        if (command.isEmpty()) {
+            return getInfo(bot);
+        }
+
         try {
-            runCommand(bot, context, context.getString(true, true), null);
+            runCommand(bot, context, command, null);
         } catch (final PatternSyntaxException e) {
             throw new CommandException(Component.text(e.toString()));
         }
 
         return null;
+    }
+
+    private Component getInfo (final Bot bot) {
+        final Vector3i from = bot.core.from;
+        final Vector3i to = bot.core.to;
+        final Vector3i block = bot.core.block;
+
+        final int layers = Math.max(1, to.getY() - from.getY());
+
+        final StringBuilder commandBuilder = new StringBuilder("/");
+
+        if (bot.serverFeatures.hasEssentials) commandBuilder.append("essentials:");
+        commandBuilder
+                .append("tp ")
+                .append(from.getX())
+                .append(" ")
+                .append(from.getY())
+                .append(" ")
+                .append(from.getZ());
+
+        final String command = commandBuilder.toString();
+
+        return Component.translatable(
+                """
+                        Size: %s
+                        Layers: %s
+                        From: %s
+                        To: %s
+                        Block: %s
+                        Dimension: %s
+                        %s""",
+                Component
+                        .text(256 * layers)
+                        .append(Component.text(" blocks"))
+                        .color(bot.colorPalette.string),
+                Component.text(layers).color(bot.colorPalette.string),
+                Component.text(from.toString()).color(bot.colorPalette.string),
+                Component.text(to.toString()).color(bot.colorPalette.string),
+                Component.text(block.toString()).color(bot.colorPalette.string),
+                Component.text(bot.world.currentDimension).color(bot.colorPalette.string),
+                Component
+                        .text("Click here to teleport to the command core", NamedTextColor.GREEN)
+                        .hoverEvent(HoverEvent.showText(Component.text(command, bot.colorPalette.secondary)))
+                        .clickEvent(ClickEvent.runCommand(command))
+        ).color(bot.colorPalette.secondary);
     }
 
     private void runCommand (final Bot bot, final CommandContext context, final String command, final PlayerEntry player) {
