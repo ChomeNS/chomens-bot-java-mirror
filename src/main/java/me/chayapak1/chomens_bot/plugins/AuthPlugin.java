@@ -14,7 +14,7 @@ public class AuthPlugin implements Listener {
     private final Bot bot;
 
     public boolean isAuthenticating = false;
-    public long startTime;
+    public int seconds = 0;
 
     public AuthPlugin (final Bot bot) {
         this.bot = bot;
@@ -39,7 +39,7 @@ public class AuthPlugin implements Listener {
 
         if (!bot.chomeNSMod.connectedPlayers.contains(target)) return;
 
-        isAuthenticating = false;
+        cleanup();
 
         bot.logger.log(
                 LogType.AUTH,
@@ -57,7 +57,7 @@ public class AuthPlugin implements Listener {
     }
 
     private void timeoutCheck () {
-        if (System.currentTimeMillis() - startTime < bot.config.ownerAuthentication.timeout) return;
+        if (seconds < bot.config.ownerAuthentication.timeout) return;
 
         final PlayerEntry target = bot.players.getEntry(bot.config.ownerName);
 
@@ -66,11 +66,20 @@ public class AuthPlugin implements Listener {
         bot.filterManager.add(target, "Authentication timed out");
     }
 
+    private void cleanup () {
+        isAuthenticating = false;
+        seconds = 0;
+    }
+
+    @Override
+    public void onSecondTick () {
+        if (isAuthenticating) seconds++;
+    }
+
     @Override
     public void onPlayerJoined (final PlayerEntry target) {
         if (!target.profile.getName().equals(bot.config.ownerName) || !bot.options.useCore) return;
 
-        startTime = System.currentTimeMillis();
         isAuthenticating = true;
     }
 
@@ -78,11 +87,11 @@ public class AuthPlugin implements Listener {
     public void onPlayerLeft (final PlayerEntry target) {
         if (!target.profile.getName().equals(bot.config.ownerName)) return;
 
-        isAuthenticating = false;
+        cleanup();
     }
 
     @Override
     public void disconnected (final DisconnectedEvent event) {
-        isAuthenticating = false;
+        cleanup();
     }
 }
