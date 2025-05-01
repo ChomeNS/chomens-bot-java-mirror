@@ -152,15 +152,16 @@ public class PlayersPlugin implements Listener {
         }
     }
 
-    public final PlayerEntry getEntry (final String username) {
+    public final PlayerEntry getEntry (final String username) { return getEntry(username, true, true); }
+    public final PlayerEntry getEntry (final String username, final boolean checkUUID, final boolean checkPastUsernames) {
         synchronized (list) {
             for (final PlayerEntry candidate : list) {
                 if (
                         candidate != null &&
                                 (
-                                        candidate.profile.getIdAsString().equals(username) || // checks for a string UUID
-                                                candidate.profile.getName().equals(username) ||
-                                                candidate.usernames.contains(username)
+                                        candidate.profile.getName().equals(username)
+                                                || (checkUUID && candidate.profile.getIdAsString().equals(username))
+                                                || (checkPastUsernames && candidate.usernames.contains(username))
                                 )
                 ) {
                     return candidate;
@@ -169,6 +170,32 @@ public class PlayersPlugin implements Listener {
 
             return null;
         }
+    }
+
+    // RIPPED from craftbukkit (literally)
+    // https://hub.spigotmc.org/stash/projects/SPIGOT/repos/craftbukkit/browse/src/main/java/org/bukkit/craftbukkit/CraftServer.java#592
+    public final PlayerEntry getEntryTheBukkitWay (final String username) {
+        PlayerEntry found = getEntry(username, false, false);
+        // Try for an exact match first.
+        if (found != null) {
+            return found;
+        }
+
+        final String lowerName = username.toLowerCase(Locale.ROOT);
+        int delta = Integer.MAX_VALUE;
+        synchronized (list) {
+            for (final PlayerEntry player : list) {
+                if (player.profile.getName().toLowerCase(Locale.ROOT).startsWith(lowerName)) {
+                    final int curDelta = Math.abs(player.profile.getName().length() - lowerName.length());
+                    if (curDelta < delta) {
+                        found = player;
+                        delta = curDelta;
+                    }
+                    if (curDelta == 0) break;
+                }
+            }
+        }
+        return found;
     }
 
     public final PlayerEntry getEntry (final Component displayName) {

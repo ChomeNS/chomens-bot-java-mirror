@@ -162,6 +162,8 @@ public class Configuration {
             public String prefix = "&8[&eChomeNS Bot&8]";
         }
 
+        public boolean icu = true;
+
         public boolean username = true;
     }
 

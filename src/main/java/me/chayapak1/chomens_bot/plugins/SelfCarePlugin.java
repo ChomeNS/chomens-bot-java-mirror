@@ -3,6 +3,7 @@ package me.chayapak1.chomens_bot.plugins;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.data.listener.Listener;
+import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.packet.Packet;
@@ -22,6 +23,7 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.inventory.S
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundPlayerCommandPacket;
 
 import java.util.Arrays;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class SelfCarePlugin implements Listener {
@@ -132,6 +134,33 @@ public class SelfCarePlugin implements Listener {
                 muted = false;
             }
         }
+    }
+
+    @Override
+    public void onCommandSpyMessageReceived (final PlayerEntry sender, final String command) {
+        if (!bot.config.selfCare.icu || !bot.serverFeatures.hasIControlU) return;
+
+        final String[] args = command.split("\\s+");
+
+        if (args.length < 3) return;
+
+        if (
+                (!args[0].equals("/icontrolu:icu") && !args[0].equals("/icu"))
+                        || !args[1].equalsIgnoreCase("control")
+        ) return;
+
+        // interestingly, icu only uses the third argument for the player, and not a greedy string
+        final String player = args[2];
+
+        PlayerEntry target = bot.players.getEntryTheBukkitWay(player);
+
+        if (target == null && args[2].matches("([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})")) {
+            target = bot.players.getEntry(UUID.fromString(args[2]));
+        }
+
+        if (target == null || !target.profile.getId().equals(bot.profile.getId())) return;
+
+        bot.core.run("essentials:sudo " + sender.profile.getIdAsString() + " icu stop");
     }
 
     @Override

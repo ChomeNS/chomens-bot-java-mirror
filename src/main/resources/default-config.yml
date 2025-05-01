@@ -135,7 +135,10 @@ selfCare:
     enabled: true
     prefix: '&8[&eChomeNS Bot&8]'
 
-  username: true # MIGHT cause problem(s) if set to false (not tested,.,.)
+  # iControlUwU
+  icu: true
+
+  username: true
 
 bots:
   # username - optional, if not specified it will just use a random username

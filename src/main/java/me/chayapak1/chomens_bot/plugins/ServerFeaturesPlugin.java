@@ -16,6 +16,7 @@ public class ServerFeaturesPlugin implements Listener {
 
     public boolean hasEssentials = false;
     public boolean hasExtras = false;
+    public boolean hasIControlU = false;
 
     public ServerFeaturesPlugin (final Bot bot) {
         this.bot = bot;
@@ -57,6 +58,7 @@ public class ServerFeaturesPlugin implements Listener {
             switch (key) {
                 case "extras" -> hasExtras = true;
                 case "essentials" -> hasEssentials = true;
+                case "icontrolu" -> hasIControlU = true;
             }
         }
     }
