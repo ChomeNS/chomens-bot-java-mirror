@@ -425,8 +425,6 @@ public class CorePlugin implements Listener {
     }
 
     private void incrementBlock (final int times) {
-        if (times > 256) return;
-
         final int currentIndex = index.get();
 
         final int x = from.getX() + (currentIndex & 15);
@@ -437,7 +435,7 @@ public class CorePlugin implements Listener {
 
         index.set((currentIndex + 1) % (256 * Math.max(1, to.getY() - from.getY())));
 
-        if (!isCommandBlockState(bot.world.getBlock(x, y, z))) {
+        if (times <= 256 && !isCommandBlockState(bot.world.getBlock(x, y, z))) {
             incrementBlock(times + 1);
         }
     }
