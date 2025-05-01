@@ -8,6 +8,7 @@ import me.chayapak1.chomens_bot.chomeNSMod.Packet;
 import me.chayapak1.chomens_bot.chomeNSMod.PacketHandler;
 import me.chayapak1.chomens_bot.chomeNSMod.Types;
 import me.chayapak1.chomens_bot.chomeNSMod.clientboundPackets.ClientboundHandshakePacket;
+import me.chayapak1.chomens_bot.chomeNSMod.clientboundPackets.ClientboundMessagePacket;
 import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundRunCommandPacket;
 import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundRunCoreCommandPacket;
 import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundSuccessfulHandshakePacket;
@@ -301,5 +302,9 @@ public class ChomeNSModIntegrationPlugin implements Listener {
     public void onPlayerLeft (final PlayerEntry target) {
         connectedPlayers.removeIf(player -> player.equals(target));
         receivedParts.remove(target);
+    }
+
+    public void sendMessage (final PlayerEntry target, final Component message) {
+        send(target, new ClientboundMessagePacket(message));
     }
 }

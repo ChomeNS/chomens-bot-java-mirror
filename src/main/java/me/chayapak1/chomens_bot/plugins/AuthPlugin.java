@@ -48,11 +48,11 @@ public class AuthPlugin implements Listener {
                         .color(NamedTextColor.GREEN)
         );
 
-        bot.chat.tellraw(
+        bot.chomeNSMod.sendMessage(
+                target,
                 Component
                         .text("You have been verified")
-                        .color(NamedTextColor.GREEN),
-                target.profile.getId()
+                        .color(NamedTextColor.GREEN)
         );
     }
 
