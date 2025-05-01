@@ -158,8 +158,6 @@ public class CorePlugin implements Listener {
 
         if (!bot.serverFeatures.hasNamespaces) command = StringUtilities.removeNamespace(command);
 
-        incrementBlock(0);
-
         if (bot.serverFeatures.hasExtras) {
             bot.session.send(new ServerboundSetCommandBlockPacket(
                     block,
@@ -188,6 +186,8 @@ public class CorePlugin implements Listener {
                     true
             ));
         }
+
+        incrementBlock(0);
     }
 
     public void run (final String command) {
