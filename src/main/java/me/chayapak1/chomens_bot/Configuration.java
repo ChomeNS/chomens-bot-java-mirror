@@ -39,6 +39,8 @@ public class Configuration {
 
     public boolean announceClearChatUsername = false;
 
+    public boolean rainbowArmor = true;
+
     public List<String> trusted = new ArrayList<>();
     public SelfCare selfCare = new SelfCare();
 

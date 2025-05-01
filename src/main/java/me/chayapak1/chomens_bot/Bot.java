@@ -114,6 +114,7 @@ public class Bot extends SessionAdapter {
     public final WhitelistPlugin whitelist;
     public final PlayersDatabasePlugin playersDatabase;
     public final IPFilterPlugin ipFilter;
+    public final RainbowArmorPlugin rainbowArmor;
 
     public Bot (
             final Configuration.BotOption botOption,
@@ -171,6 +172,7 @@ public class Bot extends SessionAdapter {
         this.whitelist = new WhitelistPlugin(this);
         this.playersDatabase = new PlayersDatabasePlugin(this);
         this.ipFilter = new IPFilterPlugin(this);
+        this.rainbowArmor = new RainbowArmorPlugin(this);
     }
 
     protected void connect () {

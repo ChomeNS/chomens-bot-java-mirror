@@ -90,6 +90,9 @@ ownerAuthentication:
 # will tellraw `{player} cleared the chat`
 announceClearChatUsername: false
 
+# literal rainbow armor using leather armors
+rainbowArmor: true
+
 trusted:
   - 'player name'
 
