@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.commands;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
@@ -13,7 +14,6 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +43,7 @@ public class HelpCommand extends Command {
     }
 
     public Component getCommandList (final CommandContext context) throws CommandException {
-        final List<Component> list = new ArrayList<>();
+        final List<Component> list = new ObjectArrayList<>();
 
         for (final TrustLevel level : TrustLevel.values()) {
             list.addAll(getCommandListByTrustLevel(context, level));
@@ -68,9 +68,9 @@ public class HelpCommand extends Command {
     }
 
     public List<Component> getCommandListByTrustLevel (final CommandContext context, final TrustLevel trustLevel) throws CommandException {
-        final List<Component> list = new ArrayList<>();
+        final List<Component> list = new ObjectArrayList<>();
 
-        final List<String> commandNames = new ArrayList<>();
+        final List<String> commandNames = new ObjectArrayList<>();
 
         for (final Command command : CommandHandlerPlugin.COMMANDS) {
             if (command.trustLevel != trustLevel || (command.consoleOnly && !(context instanceof ConsoleCommandContext)))
@@ -113,7 +113,7 @@ public class HelpCommand extends Command {
             ) continue;
 
             final String actualCommandName = command.name.toLowerCase();
-            final List<Component> usages = new ArrayList<>();
+            final List<Component> usages = new ObjectArrayList<>();
 
             usages.add(
                     Component.empty()

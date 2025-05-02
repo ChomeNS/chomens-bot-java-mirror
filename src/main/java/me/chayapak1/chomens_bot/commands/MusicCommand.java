@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.commands;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
@@ -26,7 +27,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.nio.file.*;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -119,18 +119,18 @@ public class MusicCommand extends Command {
                 if (stringPath.contains(separator) && !stringPath.isEmpty()) {
                     final String[] splitPath = stringPath.split(separator);
 
-                    final List<String> splitPathClone = new ArrayList<>(Arrays.stream(splitPath).toList());
+                    final List<String> splitPathClone = new ObjectArrayList<>(Arrays.stream(splitPath).toList());
                     splitPathClone.removeLast();
 
                     final Path realPath = Path.of(ROOT.toString(), String.join(separator, splitPathClone));
 
                     try (final DirectoryStream<Path> stream = Files.newDirectoryStream(realPath)) {
-                        final List<Path> songsPaths = new ArrayList<>();
+                        final List<Path> songsPaths = new ObjectArrayList<>();
                         for (final Path eachPath : stream) songsPaths.add(eachPath);
 
                         PathUtilities.sort(songsPaths);
 
-                        final List<String> songs = new ArrayList<>();
+                        final List<String> songs = new ObjectArrayList<>();
                         for (final Path eachPath : songsPaths) songs.add(eachPath.getFileName().toString());
 
                         final String lowerCaseFile = splitPath[splitPath.length - 1].toLowerCase();
@@ -149,12 +149,12 @@ public class MusicCommand extends Command {
                     }
                 } else {
                     try (final DirectoryStream<Path> stream = Files.newDirectoryStream(ROOT)) {
-                        final List<Path> songsPaths = new ArrayList<>();
+                        final List<Path> songsPaths = new ObjectArrayList<>();
                         for (final Path eachPath : stream) songsPaths.add(eachPath);
 
                         PathUtilities.sort(songsPaths);
 
-                        final List<String> songs = new ArrayList<>();
+                        final List<String> songs = new ObjectArrayList<>();
                         for (final Path eachPath : songsPaths) songs.add(eachPath.getFileName().toString());
 
                         final String[] matchedArray = songs.stream()
@@ -283,12 +283,12 @@ public class MusicCommand extends Command {
         if (!path.normalize().startsWith(ROOT.toString())) throw new CommandException(Component.text("no"));
 
         try (final DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
-            final List<Path> paths = new ArrayList<>();
+            final List<Path> paths = new ObjectArrayList<>();
             for (final Path eachPath : stream) paths.add(eachPath);
 
             PathUtilities.sort(paths);
 
-            final List<Component> fullList = new ArrayList<>();
+            final List<Component> fullList = new ObjectArrayList<>();
             int i = 0;
             for (final Path eachPath : paths) {
                 final boolean isDirectory = Files.isDirectory(eachPath);
@@ -327,7 +327,7 @@ public class MusicCommand extends Command {
 
             while (index <= fullList.size()) {
                 // we MUST make a new copy of the list else everything will fard..,.
-                final List<Component> list = new ArrayList<>(fullList).subList(index, Math.min(index + eachSize, fullList.size()));
+                final List<Component> list = new ObjectArrayList<>(fullList).subList(index, Math.min(index + eachSize, fullList.size()));
 
                 final Component component = Component.join(JoinConfiguration.separator(Component.space()), list);
                 context.sendOutput(component);
@@ -380,7 +380,7 @@ public class MusicCommand extends Command {
         final Bot bot = context.bot;
         final List<Song> queue = bot.music.songQueue;
 
-        final List<Component> queueWithNames = new ArrayList<>();
+        final List<Component> queueWithNames = new ObjectArrayList<>();
         int i = 0;
         for (final Song song : queue) {
             queueWithNames.add(
@@ -530,7 +530,7 @@ public class MusicCommand extends Command {
 
         if (currentSong == null) throw new CommandException(Component.text("No song is currently playing"));
 
-        final List<Component> components = new ArrayList<>();
+        final List<Component> components = new ObjectArrayList<>();
 
         final TextColor keyColor = bot.colorPalette.secondary;
         final TextColor valueColor = bot.colorPalette.string;

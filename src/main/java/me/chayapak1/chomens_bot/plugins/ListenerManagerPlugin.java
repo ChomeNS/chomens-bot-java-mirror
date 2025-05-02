@@ -1,11 +1,11 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import net.kyori.adventure.text.Component;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -13,7 +13,7 @@ import java.util.function.Function;
 public class ListenerManagerPlugin {
     private final Bot bot;
 
-    private final List<Listener> listeners = Collections.synchronizedList(new LinkedList<>());
+    private final List<Listener> listeners = Collections.synchronizedList(new ObjectArrayList<>());
 
     public ListenerManagerPlugin (final Bot bot) {
         this.bot = bot;

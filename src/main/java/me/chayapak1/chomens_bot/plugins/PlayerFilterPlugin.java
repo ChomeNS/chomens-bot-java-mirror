@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.data.filter.FilteredPlayer;
@@ -22,7 +23,7 @@ public class PlayerFilterPlugin implements Listener {
     private static final String REMOVE_FILTER = "DELETE FROM filters WHERE name = ?;";
     private static final String CLEAR_FILTER = "DELETE FROM filters;";
 
-    public static List<FilteredPlayer> localList = new ArrayList<>();
+    public static List<FilteredPlayer> localList = new ObjectArrayList<>();
 
     static {
         if (Main.database != null) {

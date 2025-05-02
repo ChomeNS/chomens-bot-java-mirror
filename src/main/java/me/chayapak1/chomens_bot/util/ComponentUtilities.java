@@ -3,6 +3,7 @@ package me.chayapak1.chomens_bot.util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.kyori.adventure.text.*;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
@@ -12,7 +13,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 public class ComponentUtilities {
     // component parsing
     // rewritten from chipmunkbot, a lot of stuff has changed, and also ANSI and section signs support, etc...
-    public static final Map<String, String> LANGUAGE = new HashMap<>();
+    public static final Map<String, String> LANGUAGE = new Object2ObjectOpenHashMap<>();
 
     private static final List<String> LANGUAGES = List.of("language.json", "voiceChatLanguage.json");
 
@@ -34,7 +34,7 @@ public class ComponentUtilities {
     }
 
     private static Map<String, String> loadJsonStringMap (final String name) {
-        final Map<String, String> map = new HashMap<>();
+        final Map<String, String> map = new Object2ObjectOpenHashMap<>();
 
         final InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(name);
         assert is != null;
@@ -75,7 +75,7 @@ public class ComponentUtilities {
 
         public static final int MAX_DEPTH = 256;
 
-        public static final Map<String, String> ANSI_MAP = new HashMap<>();
+        public static final Map<String, String> ANSI_MAP = new Object2ObjectOpenHashMap<>();
 
         static {
             ANSI_MAP.put("0", "\u001b[38;2;0;0;0m");
@@ -102,7 +102,7 @@ public class ComponentUtilities {
             ANSI_MAP.put("r", "\u001b[0m");
         }
 
-        public static final Map<String, String> DISCORD_ANSI_MAP = new HashMap<>();
+        public static final Map<String, String> DISCORD_ANSI_MAP = new Object2ObjectOpenHashMap<>();
 
         static {
             // map totallynotskidded™ from https://github.com/PrismarineJS/prismarine-chat/blob/master/index.js#L10
@@ -134,7 +134,7 @@ public class ComponentUtilities {
             DISCORD_ANSI_MAP.put("r", "\u001b[0m");
         }
 
-        public static final Map<NamedTextColor, String> NAMED_TEXT_COLOR_MAP = new HashMap<>();
+        public static final Map<NamedTextColor, String> NAMED_TEXT_COLOR_MAP = new Object2ObjectOpenHashMap<>();
 
         static {
             NAMED_TEXT_COLOR_MAP.put(NamedTextColor.BLACK, "0");

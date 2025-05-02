@@ -2,6 +2,8 @@ package me.chayapak1.chomens_bot.plugins;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.chomeNSMod.Encryptor;
 import me.chayapak1.chomens_bot.chomeNSMod.Packet;
@@ -38,7 +40,7 @@ public class ChomeNSModIntegrationPlugin implements Listener {
 
     private static final SecureRandom RANDOM = new SecureRandom();
 
-    public static final List<Class<? extends Packet>> SERVERBOUND_PACKETS = List.of(
+    public static final List<Class<? extends Packet>> SERVERBOUND_PACKETS = ObjectList.of(
             ServerboundSuccessfulHandshakePacket.class,
             ServerboundRunCoreCommandPacket.class,
             ServerboundRunCommandPacket.class
@@ -48,11 +50,11 @@ public class ChomeNSModIntegrationPlugin implements Listener {
 
     private final PacketHandler handler;
 
-    public final List<PlayerEntry> connectedPlayers = Collections.synchronizedList(new ArrayList<>());
+    public final List<PlayerEntry> connectedPlayers = Collections.synchronizedList(new ObjectArrayList<>());
 
     private final Map<PlayerEntry, Map<Integer, ByteBuf>> receivedParts = new ConcurrentHashMap<>();
 
-    private final List<PayloadMetadata> seenMetadata = Collections.synchronizedList(new ArrayList<>());
+    private final List<PayloadMetadata> seenMetadata = Collections.synchronizedList(new ObjectArrayList<>());
 
     public ChomeNSModIntegrationPlugin (final Bot bot) {
         this.bot = bot;

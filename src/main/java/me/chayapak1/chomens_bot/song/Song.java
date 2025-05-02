@@ -1,17 +1,18 @@
 package me.chayapak1.chomens_bot.song;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.chayapak1.chomens_bot.Bot;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static me.chayapak1.chomens_bot.util.StringUtilities.isNotNullAndNotBlank;
 
 // Author: hhhzzzsss & _ChipMC_ but i changed most of the stuff
 public class Song {
-    public final ArrayList<Note> notes = new ArrayList<>();
+    public final List<Note> notes = new ObjectArrayList<>();
     public final String originalName;
     public String name;
     public String requester = "Unknown";
@@ -22,7 +23,7 @@ public class Song {
     public double time = 0; // Time since start of song
     public long loopPosition = 0; // Milliseconds into the song to start looping
 
-    public final Map<Long, String> lyrics = new HashMap<>();
+    public final Map<Long, String> lyrics = new Object2ObjectOpenHashMap<>();
 
     public String songName;
     public String songAuthor;

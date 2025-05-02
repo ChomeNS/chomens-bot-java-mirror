@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
@@ -23,9 +24,9 @@ import java.util.concurrent.TimeUnit;
 public class PlayersPlugin implements Listener {
     private final Bot bot;
 
-    public final List<PlayerEntry> list = Collections.synchronizedList(new ArrayList<>());
+    public final List<PlayerEntry> list = Collections.synchronizedList(new ObjectArrayList<>());
 
-    private final List<PlayerEntry> pendingLeftPlayers = Collections.synchronizedList(new ArrayList<>());
+    private final List<PlayerEntry> pendingLeftPlayers = Collections.synchronizedList(new ObjectArrayList<>());
 
     public PlayersPlugin (final Bot bot) {
         this.bot = bot;

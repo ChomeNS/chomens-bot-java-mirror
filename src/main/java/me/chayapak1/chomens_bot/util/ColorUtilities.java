@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.util;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextFormat;
@@ -13,8 +14,8 @@ import java.util.stream.Collectors;
 public class ColorUtilities {
     private static final Map<TextFormat, Character> formatToLegacyMap = CharacterAndFormat.defaults().stream()
             .collect(Collectors.toUnmodifiableMap(CharacterAndFormat::format, CharacterAndFormat::character));
-    private static final Map<Integer, String> ansiToIrcMap = new HashMap<>();
-    private static final Map<Integer, String> ansiStyleToIrcMap = new HashMap<>();
+    private static final Map<Integer, String> ansiToIrcMap = new Object2ObjectOpenHashMap<>();
+    private static final Map<Integer, String> ansiStyleToIrcMap = new Object2ObjectOpenHashMap<>();
 
     public static TextColor getColorByString (final String _color) {
         final String color = _color.toLowerCase();

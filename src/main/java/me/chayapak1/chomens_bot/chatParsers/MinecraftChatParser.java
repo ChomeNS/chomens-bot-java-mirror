@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.chatParsers;
 
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.chat.ChatParser;
 import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
@@ -16,7 +17,7 @@ import java.util.UUID;
 public class MinecraftChatParser implements ChatParser {
     private final Bot bot;
 
-    private static final List<String> keys = List.of(
+    private static final List<String> keys = ObjectList.of(
             "chat.type.text",
             "chat.type.announcement",
             "commands.message.display.incoming",

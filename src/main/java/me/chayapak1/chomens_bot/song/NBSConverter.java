@@ -3,6 +3,8 @@ package me.chayapak1.chomens_bot.song;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.util.StringUtilities;
 
@@ -13,7 +15,9 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 // Author: hhhzzzsss
 public class NBSConverter implements Converter {
@@ -36,7 +40,7 @@ public class NBSConverter implements Converter {
             Instrument.PLING,
     };
 
-    public static final Map<String, String> CUSTOM_INSTRUMENT_REPLACEMENTS = new HashMap<>();
+    public static final Map<String, String> CUSTOM_INSTRUMENT_REPLACEMENTS = new Object2ObjectOpenHashMap<>();
 
     static {
         CUSTOM_INSTRUMENT_REPLACEMENTS.put(".*glass.*", "block.glass.break");
@@ -117,7 +121,7 @@ public class NBSConverter implements Converter {
             loopStartTick = buffer.getShort();
         }
 
-        final ArrayList<NBSNote> nbsNotes = new ArrayList<>();
+        final List<NBSNote> nbsNotes = new ObjectArrayList<>();
         long tick = -1;
         while (true) {
             final short tickJumps = buffer.getShort();
@@ -143,7 +147,7 @@ public class NBSConverter implements Converter {
             }
         }
 
-        final ArrayList<NBSLayer> nbsLayers = new ArrayList<>();
+        final List<NBSLayer> nbsLayers = new ObjectArrayList<>();
         if (buffer.hasRemaining()) {
             for (int i = 0; i < layerCount; i++) {
                 final NBSLayer layer = new NBSLayer();
@@ -159,7 +163,7 @@ public class NBSConverter implements Converter {
             }
         }
 
-        final ArrayList<NBSCustomInstrument> customInstruments = new ArrayList<>();
+        final List<NBSCustomInstrument> customInstruments = new ObjectArrayList<>();
         if (buffer.hasRemaining()) {
             final byte customInstrumentCount = buffer.get();
             for (int i = 0; i < customInstrumentCount; i++) {
@@ -288,7 +292,7 @@ public class NBSConverter implements Converter {
     private static final List<String> sounds = loadJsonStringArray("sounds.json");
 
     private static List<String> loadJsonStringArray (final String name) {
-        final List<String> list = new ArrayList<>();
+        final List<String> list = new ObjectArrayList<>();
 
         final InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(name);
         assert is != null;

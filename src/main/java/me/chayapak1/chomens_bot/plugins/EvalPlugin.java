@@ -4,13 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import io.socket.client.IO;
 import io.socket.client.Socket;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.eval.EvalFunction;
 import me.chayapak1.chomens_bot.data.eval.EvalOutput;
 import me.chayapak1.chomens_bot.evalFunctions.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -24,7 +24,7 @@ public class EvalPlugin {
 
     private int transactionId = 0;
 
-    private final Map<Integer, CompletableFuture<EvalOutput>> futures = new HashMap<>();
+    private final Map<Integer, CompletableFuture<EvalOutput>> futures = new Object2ObjectOpenHashMap<>();
 
     public final List<EvalFunction> functions = new ArrayList<>();
 

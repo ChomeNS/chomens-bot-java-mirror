@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.song;
 
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.util.DownloadUtilities;
 import net.kyori.adventure.text.Component;
@@ -16,7 +17,7 @@ import java.util.stream.Stream;
 // Author: _ChipMC_ & hhhzzzsss but modified
 public class SongLoaderThread extends Thread {
     // should the converters be here?
-    public static final List<Converter> converters = List.of(
+    public static final List<Converter> converters = ObjectList.of(
             new MidiConverter(),
             new NBSConverter(),
             new TextFileConverter(),

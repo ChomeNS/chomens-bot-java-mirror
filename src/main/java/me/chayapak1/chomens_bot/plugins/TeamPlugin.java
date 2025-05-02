@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.team.Team;
@@ -14,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class TeamPlugin implements Listener {
-    public final List<Team> teams = Collections.synchronizedList(new ArrayList<>());
+    public final List<Team> teams = Collections.synchronizedList(new ObjectArrayList<>());
 
     public TeamPlugin (final Bot bot) {
         bot.listener.addListener(this);

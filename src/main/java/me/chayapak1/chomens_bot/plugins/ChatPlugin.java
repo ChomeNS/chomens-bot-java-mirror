@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.plugins;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.chatParsers.KaboomChatParser;
 import me.chayapak1.chomens_bot.chatParsers.MinecraftChatParser;
@@ -34,7 +35,10 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.Serverbound
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.BitSet;
+import java.util.List;
+import java.util.Queue;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -50,9 +54,9 @@ public class ChatPlugin implements Listener {
 
     private final Bot bot;
 
-    private final List<ChatParser> chatParsers = new ArrayList<>();
+    private final List<ChatParser> chatParsers = new ObjectArrayList<>();
 
-    public final List<Component> chatTypes = new ArrayList<>();
+    public final List<Component> chatTypes = new ObjectArrayList<>();
 
     private final Queue<String> queue = new ConcurrentLinkedQueue<>();
 
@@ -341,8 +345,8 @@ public class ChatPlugin implements Listener {
 
         final Matcher colorCodeMatcher = COLOR_CODE_PATTERN.matcher(message);
 
-        final List<Integer> colorCodePositions = new ArrayList<>();
-        final List<String> colorCodes = new ArrayList<>();
+        final List<Integer> colorCodePositions = new ObjectArrayList<>();
+        final List<String> colorCodes = new ObjectArrayList<>();
 
         while (colorCodeMatcher.find()) {
             colorCodePositions.add(colorCodeMatcher.start());

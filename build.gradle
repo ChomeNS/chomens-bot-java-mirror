@@ -48,6 +48,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.3'
     implementation 'org.mariadb.jdbc:mariadb-java-client:3.5.2'
     implementation 'org.jline:jline:3.29.0'
+    implementation 'it.unimi.dsi:fastutil:8.5.15'
     implementation 'ch.qos.logback:logback-classic:1.5.17'
     implementation 'com.github.pircbotx:pircbotx:2.3.1'
     implementation 'com.github.ricksbrown:cowsay:1.1.0'

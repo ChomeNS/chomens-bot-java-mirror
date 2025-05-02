@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.chayapak1.chomens_bot.plugins.ConsolePlugin;
 import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
 import me.chayapak1.chomens_bot.plugins.DiscordPlugin;
@@ -27,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 public class Main {
     public static final Path stopReasonFilePath = Path.of("shutdown_reason.txt");
 
-    public static final List<Bot> bots = new ArrayList<>();
+    public static final List<Bot> bots = new ObjectArrayList<>();
 
     public static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(
             Math.max(1, Runtime.getRuntime().availableProcessors() / 2),

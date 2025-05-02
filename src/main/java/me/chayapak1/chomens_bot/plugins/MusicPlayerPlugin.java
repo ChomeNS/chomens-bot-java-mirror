@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.bossbar.BotBossBar;
 import me.chayapak1.chomens_bot.data.listener.Listener;
@@ -25,7 +26,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -52,7 +52,7 @@ public class MusicPlayerPlugin implements Listener {
     private final Bot bot;
 
     public Song currentSong;
-    public final List<Song> songQueue = Collections.synchronizedList(new LinkedList<>());
+    public final List<Song> songQueue = Collections.synchronizedList(new ObjectArrayList<>());
     public SongLoaderThread loaderThread = null;
     public Loop loop = Loop.OFF;
 

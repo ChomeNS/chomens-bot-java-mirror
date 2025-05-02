@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
@@ -22,7 +23,7 @@ public class QueryPlugin implements Listener {
 
     public AtomicLong nextTransactionId = new AtomicLong(0);
     public final Map<Long, CompletableFuture<String>> transactions = new ConcurrentHashMap<>();
-    public final List<UUID> ids = Collections.synchronizedList(new ArrayList<>());
+    public final List<UUID> ids = Collections.synchronizedList(new ObjectArrayList<>());
 
     public final Queue<Component> cargosQueue = new ConcurrentLinkedQueue<>();
 

@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.chunk.ChunkColumn;
 import me.chayapak1.chomens_bot.data.chunk.ChunkPos;
@@ -17,7 +18,6 @@ import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.Clientbound
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.*;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +31,7 @@ public class WorldPlugin implements Listener {
 
     public String currentDimension = "";
 
-    private final Map<ChunkPos, ChunkColumn> chunks = new HashMap<>();
+    private final Map<ChunkPos, ChunkColumn> chunks = new Object2ObjectOpenHashMap<>();
 
     public List<RegistryEntry> registry = null;
 

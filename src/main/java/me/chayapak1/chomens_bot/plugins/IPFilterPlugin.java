@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.data.listener.Listener;
@@ -9,7 +10,6 @@ import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -20,7 +20,7 @@ public class IPFilterPlugin implements Listener {
     private static final String REMOVE_FILTER = "DELETE FROM ipFilters WHERE ip = ?;";
     private static final String CLEAR_FILTER = "DELETE FROM ipFilters;";
 
-    public static Map<String, String> localList = new LinkedHashMap<>();
+    public static Map<String, String> localList = new Object2ObjectOpenHashMap<>();
 
     static {
         if (Main.database != null) {
@@ -71,7 +71,7 @@ public class IPFilterPlugin implements Listener {
     }
 
     public static Map<String, String> list () {
-        final Map<String, String> output = new LinkedHashMap<>();
+        final Map<String, String> output = new Object2ObjectOpenHashMap<>();
 
         try (final ResultSet result = Main.database.query(LIST_FILTERS)) {
             if (result == null) return output;

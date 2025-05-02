@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
@@ -20,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CommandHandlerPlugin implements Listener {
-    public static final List<Command> COMMANDS = List.of(
+    public static final List<Command> COMMANDS = ObjectList.of(
             new CommandBlockCommand(),
             new CowsayCommand(),
             new EchoCommand(),
