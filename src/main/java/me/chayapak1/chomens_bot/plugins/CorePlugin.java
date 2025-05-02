@@ -234,7 +234,7 @@ public class CorePlugin implements Listener {
 
         final CompletableFuture<Component> trackedFuture = new CompletableFuture<>();
 
-        final CompletableFuture<String> future = bot.query.block(useCargo, coreBlock, "LastOutput");
+        final CompletableFuture<String> future = bot.query.block(useCargo, coreBlock, "LastOutput", true);
 
         future.thenApply(output -> {
             if (output == null) return null;

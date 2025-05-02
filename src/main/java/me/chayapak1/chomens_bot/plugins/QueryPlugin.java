@@ -5,6 +5,7 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.*;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.apache.commons.lang3.tuple.Triple;
 import org.cloudburstmc.math.vector.Vector3i;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
@@ -117,25 +118,30 @@ public class QueryPlugin implements Listener {
         final List<Component> children = cargo.children();
 
         if (
-                children.size() > 2 ||
-                        !(children.getFirst() instanceof final TextComponent firstChild)
+                children.size() > 3 ||
+                        !(children.get(0) instanceof final TextComponent transactionIdTextComponent) ||
+                        !(children.get(1) instanceof final TextComponent interpretTextComponent)
         ) return;
 
         try {
-            final long transactionId = Long.parseLong(firstChild.content());
+            final long transactionId = Long.parseLong(transactionIdTextComponent.content());
 
             if (!transactions.containsKey(transactionId)) return;
+
+            final boolean interpret = Boolean.parseBoolean(interpretTextComponent.content());
 
             final CompletableFuture<String> future = transactions.get(transactionId);
 
             transactions.remove(transactionId);
 
-            if (children.size() == 1) {
+            if (children.size() == 2) {
                 future.complete("");
-            } else if (!(children.get(1) instanceof TextComponent)) {
+            } else if (!interpret && !(children.get(2) instanceof TextComponent)) {
                 future.complete(null);
             } else {
-                final String stringOutput = ((TextComponent) children.get(1)).content();
+                final String stringOutput = interpret
+                        ? GsonComponentSerializer.gson().serialize(children.get(2)) // seems very
+                        : ((TextComponent) children.get(2)).content();
 
                 future.complete(stringOutput);
             }
@@ -154,9 +160,9 @@ public class QueryPlugin implements Listener {
         return Triple.of(future, transactionId, id);
     }
 
-    public CompletableFuture<String> block (final Vector3i location, final String path) { return block(false, location, path); }
+    public CompletableFuture<String> block (final Vector3i location, final String path) { return block(false, location, path, false); }
 
-    public CompletableFuture<String> block (final boolean useCargo, final Vector3i location, final String path) {
+    public CompletableFuture<String> block (final boolean useCargo, final Vector3i location, final String path, final boolean interpret) {
         final Triple<CompletableFuture<String>, Long, UUID> triple = getFutureAndId();
 
         final UUID id = triple.getRight();
@@ -165,9 +171,12 @@ public class QueryPlugin implements Listener {
         final Component component = Component
                 .text(id.toString())
                 .append(Component.text(transactionId))
+                .append(Component.text(interpret))
                 .append(
                         Component.blockNBT(
                                 path,
+
+                                interpret,
 
                                 BlockNBTComponent.WorldPos.worldPos(
                                         BlockNBTComponent.WorldPos.Coordinate.absolute(location.getX()),
@@ -194,6 +203,7 @@ public class QueryPlugin implements Listener {
         final Component component = Component
                 .text(id.toString())
                 .append(Component.text(transactionId))
+                .append(Component.text(false))
                 .append(
                         Component.entityNBT(
                                 path,
