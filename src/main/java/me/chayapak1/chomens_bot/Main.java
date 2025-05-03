@@ -53,39 +53,7 @@ public class Main {
     public static IRCPlugin irc;
 
     public static void main (final String[] args) throws IOException {
-        final Path configPath = Path.of("config.yml");
-
-        final Constructor constructor = new Constructor(Configuration.class, new LoaderOptions());
-        final Yaml yaml = new Yaml(constructor);
-
-        if (!Files.exists(configPath)) {
-            // creates config file from default-config.yml
-            final InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("default-config.yml");
-
-            if (is == null) System.exit(1);
-
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            final StringBuilder stringBuilder = new StringBuilder();
-            while (reader.ready()) {
-                final char character = (char) reader.read();
-                stringBuilder.append(character);
-            }
-            final String defaultConfig = stringBuilder.toString();
-
-            // writes it
-            final BufferedWriter configWriter = Files.newBufferedWriter(configPath);
-            configWriter.write(defaultConfig);
-            configWriter.close();
-
-            LoggerUtilities.log("config.yml file was not found, so the default one was created. Please modify it to your needs.");
-
-            System.exit(1);
-        }
-
-        final InputStream opt = Files.newInputStream(configPath);
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(opt));
-
-        config = yaml.load(reader);
+        loadConfig();
 
         final Thread shutdownThread = new Thread(Main::handleShutdown, "ChomeNS Bot Shutdown Thread");
         Runtime.getRuntime().addShutdownHook(shutdownThread);
@@ -123,7 +91,43 @@ public class Main {
         }
     }
 
-    public static void initializeBots () {
+    private static void loadConfig () throws IOException {
+        final Path configPath = Path.of("config.yml");
+
+        final Constructor constructor = new Constructor(Configuration.class, new LoaderOptions());
+        final Yaml yaml = new Yaml(constructor);
+
+        if (!Files.exists(configPath)) {
+            // creates config file from default-config.yml
+            final InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("default-config.yml");
+
+            if (is == null) System.exit(1);
+
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            final StringBuilder stringBuilder = new StringBuilder();
+            while (reader.ready()) {
+                final char character = (char) reader.read();
+                stringBuilder.append(character);
+            }
+            final String defaultConfig = stringBuilder.toString();
+
+            // writes it
+            final BufferedWriter configWriter = Files.newBufferedWriter(configPath);
+            configWriter.write(defaultConfig);
+            configWriter.close();
+
+            LoggerUtilities.log("config.yml file was not found, so the default one was created. Please modify it to your needs.");
+
+            System.exit(1);
+        }
+
+        final InputStream opt = Files.newInputStream(configPath);
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(opt));
+
+        config = yaml.load(reader);
+    }
+
+    private static void initializeBots () {
         alreadyStarted = true;
 
         try {
