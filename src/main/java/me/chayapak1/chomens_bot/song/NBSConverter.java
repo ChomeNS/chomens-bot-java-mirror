@@ -15,11 +15,14 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-// Author: hhhzzzsss
+// Author: hhhzzzsss but modified quite a lot
+
+@SuppressWarnings("unused")
 public class NBSConverter implements Converter {
     public static final Instrument[] INSTRUMENT_INDEX = new Instrument[] {
             Instrument.HARP,
@@ -76,6 +79,8 @@ public class NBSConverter implements Converter {
         public boolean key = false;
     }
 
+    private record TempoSection(long startTick, double tempo) { }
+
     @Override
     public Song getSongFromBytes (final byte[] bytes, final String fileName, final Bot bot) throws IOException {
         final ByteBuffer buffer = ByteBuffer.wrap(bytes);
@@ -101,7 +106,7 @@ public class NBSConverter implements Converter {
         final String songAuthor = getString(buffer, bytes.length);
         final String songOriginalAuthor = getString(buffer, bytes.length);
         final String songDescription = getString(buffer, bytes.length);
-        double tempo = buffer.getShort();
+        final double tempo = buffer.getShort();
         final byte autoSaving = buffer.get();
         final byte autoSavingDuration = buffer.get();
         final byte timeSignature = buffer.get();
@@ -195,10 +200,15 @@ public class NBSConverter implements Converter {
                 stringLayerNames.substring(0, Math.max(0, stringLayerNames.length() - 1)),
                 true
         );
+
+        final List<TempoSection> tempoSections = new ArrayList<>();
+        tempoSections.add(new TempoSection(0, tempo)); // initial value
+
         if (loop > 0) {
-            song.loopPosition = getMilliTime(loopStartTick, tempo);
-            //      song.loopCount = maxLoopCount;
+            song.loopPosition = getMilliTime(loopStartTick, tempoSections);
+            // song.loopCount = maxLoopCount;
         }
+
         for (final NBSNote note : nbsNotes) {
             boolean isRainbowToggle = false;
             final Instrument instrument;
@@ -222,9 +232,12 @@ public class NBSConverter implements Converter {
                 if (name.equals("Tempo Changer")) {
                     isTempoChanger = true;
 
-                    // causes issues :(
-                    // (more specifically empty gaps after the tempo has been changed)
-                    // tempo = (double) Math.abs(note.pitch) * 100 / 15;
+                    tempoSections.add(
+                            new TempoSection(
+                                    note.tick,
+                                    (double) Math.abs(note.pitch) * 100 / 15
+                            )
+                    );
                 } else if (name.equals("Toggle Rainbow")) {
                     isRainbowToggle = true;
                 }
@@ -262,7 +275,7 @@ public class NBSConverter implements Converter {
                             pitch,
                             key,
                             (float) note.velocity * (float) layerVolume / 10000f,
-                            getMilliTime(note.tick, tempo),
+                            getMilliTime(note.tick, tempoSections),
                             Byte.toUnsignedInt(note.panning),
                             nbsLayers.isEmpty() ? 100 : Byte.toUnsignedInt(nbsLayers.get(note.layer).stereo),
                             isRainbowToggle
@@ -285,16 +298,32 @@ public class NBSConverter implements Converter {
         return StringUtilities.fromUTF8Lossy(arr);
     }
 
-    private static long getMilliTime (final long tick, final double tempo) {
-        return (long) (1000L * tick * 100 / tempo);
+    // Author: ChatGPT (lmao, but it actually works tho, i don't even know how it worked)
+    private static long getMilliTime (final long currentTick, final List<TempoSection> sections) {
+        long totalMillis = 0;
+
+        for (int i = 0; i < sections.size(); i++) {
+            final TempoSection current = sections.get(i);
+            final TempoSection next = (i + 1 < sections.size()) ? sections.get(i + 1) : null;
+
+            final long startTick = current.startTick;
+            final long endTick = (next != null) ? Math.min(next.startTick, currentTick) : currentTick;
+
+            if (currentTick < startTick) break;
+
+            final long ticksInThisSegment = endTick - startTick;
+            totalMillis += (long) (1000L * ticksInThisSegment * 100 / current.tempo);
+        }
+
+        return totalMillis;
     }
 
-    private static final List<String> sounds = loadJsonStringArray("sounds.json");
+    private static final List<String> sounds = loadSounds();
 
-    private static List<String> loadJsonStringArray (final String name) {
+    private static List<String> loadSounds () {
         final List<String> list = new ObjectArrayList<>();
 
-        final InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream(name);
+        final InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("sounds.json");
         assert is != null;
         final BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         final JsonArray json = JsonParser.parseReader(reader).getAsJsonArray();
