@@ -98,30 +98,31 @@ public class SelfCarePlugin implements Listener {
         final boolean kaboom = bot.serverFeatures.hasExtras;
         final boolean hasEssentials = bot.serverFeatures.hasEssentials;
 
-        // chat only
-        if (selfCares.op && permissionLevel < 2) bot.chat.send("/minecraft:op @s[type=player]");
-        else if (selfCares.gamemode && gamemode != GameMode.CREATIVE)
+        final String uuid = bot.profile.getIdAsString();
+
+        if (selfCares.op && permissionLevel < 2) {
+            bot.chat.send("/minecraft:op @s[type=player]");
+        } else if (selfCares.gamemode && gamemode != GameMode.CREATIVE) {
             bot.chat.send("/minecraft:gamemode creative @s[type=player]");
-
-            // core
-        else if (selfCares.cspy && !cspy && kaboom) {
-            if (bot.options.useChat || !bot.options.coreCommandSpy)
+        } else if (selfCares.cspy && !cspy && kaboom) {
+            if (bot.options.useChat || !bot.options.coreCommandSpy) {
                 bot.chat.sendCommandInstantly("commandspy:commandspy on");
-            else bot.core.run("commandspy:commandspy " + bot.username + " on");
-        }
-
-        // back to chat only
-        else if (selfCares.prefix.enabled && !prefix && kaboom)
+            } else {
+                bot.core.run("commandspy:commandspy " + uuid + " on");
+            }
+        } else if (selfCares.prefix.enabled && !prefix && kaboom) {
             bot.chat.send("/extras:prefix " + bot.config.selfCare.prefix.prefix);
-        else if (selfCares.username && (System.currentTimeMillis() - usernameStartTime) >= 2 * 1000 && !username && kaboom)
+        } else if (
+                selfCares.username
+                        && (System.currentTimeMillis() - usernameStartTime) >= 2 * 1000
+                        && !username
+                        && kaboom
+        ) {
             bot.chat.send("/extras:username " + bot.username);
-
-            // core
-        else if (hasEssentials) {
+        } else if (hasEssentials) {
             final String usernameOrBlank = !bot.options.useChat ?
                     bot.username + " " :
                     "";
-            final String uuid = bot.profile.getIdAsString();
 
             if (selfCares.vanish && visible == vanish) {
                 runEssentialsCommand("essentials:vanish " + usernameOrBlank + (visible ? "disable" : "enable"));
