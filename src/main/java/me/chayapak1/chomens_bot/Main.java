@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -53,6 +54,8 @@ public class Main {
     public static IRCPlugin irc;
 
     public static void main (final String[] args) throws IOException {
+        Locale.setDefault(Locale.ROOT);
+
         loadConfig();
 
         final Thread shutdownThread = new Thread(Main::handleShutdown, "ChomeNS Bot Shutdown Thread");
