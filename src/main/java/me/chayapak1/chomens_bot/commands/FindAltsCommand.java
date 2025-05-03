@@ -9,6 +9,7 @@ import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
+import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
 import net.kyori.adventure.text.Component;
 
 import java.util.List;
@@ -46,21 +47,25 @@ public class FindAltsCommand extends Command {
 
         final PlayerEntry playerEntry = bot.players.getEntry(player);
 
-        if (playerEntry == null) {
-            return handle(bot, player, true, player, allServer);
-        } else if (playerEntry.ip != null) {
-            return handle(bot, playerEntry.ip, false, player, allServer);
-        } else {
-            final CompletableFuture<String> future = bot.players.getPlayerIP(playerEntry);
+        DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
+            if (playerEntry == null) {
+                context.sendOutput(handle(bot, player, true, player, allServer));
+            } else if (playerEntry.ip != null) {
+                context.sendOutput(handle(bot, playerEntry.ip, false, player, allServer));
+            } else {
+                final CompletableFuture<String> future = bot.players.getPlayerIP(playerEntry);
 
-            if (future == null) return null;
+                if (future == null) return null;
 
-            future.thenApply(targetIP -> {
-                context.sendOutput(handle(bot, targetIP, false, player, allServer));
+                future.thenApply(targetIP -> {
+                    context.sendOutput(handle(bot, targetIP, false, player, allServer));
 
-                return targetIP;
-            });
-        }
+                    return targetIP;
+                });
+            }
+
+            return null;
+        });
 
         return null;
     }
