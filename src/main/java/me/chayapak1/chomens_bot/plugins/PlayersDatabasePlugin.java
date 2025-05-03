@@ -10,6 +10,7 @@ import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
+import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -182,25 +183,38 @@ public class PlayersDatabasePlugin implements Listener {
     }
 
     @Override
-    public void onPlayerLeft (final PlayerEntry target) {
+    public void disconnected (final DisconnectedEvent event) {
         DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
-            try {
-                final PreparedStatement updatePlayerStatement = Main.database.connection.prepareStatement(UPDATE_PLAYER);
-
-                updatePlayerStatement.setString(1, "$.lastSeen");
-                updatePlayerStatement.setString(2, "$.lastSeen");
-
-                final ObjectNode lastSeenObject = getLastSeenObject();
-
-                updatePlayerStatement.setString(3, objectMapper.writeValueAsString(lastSeenObject));
-
-                updatePlayerStatement.setString(4, target.profile.getName());
-
-                updatePlayerStatement.executeUpdate();
-            } catch (final SQLException | JsonProcessingException e) {
-                bot.logger.error(e);
+            synchronized (bot.players.list) {
+                for (final PlayerEntry target : bot.players.list) {
+                    updateLastSeenEntry(target);
+                }
             }
         });
+    }
+
+    @Override
+    public void onPlayerLeft (final PlayerEntry target) {
+        DatabasePlugin.EXECUTOR_SERVICE.submit(() -> updateLastSeenEntry(target));
+    }
+
+    private void updateLastSeenEntry (final PlayerEntry target) {
+        try {
+            final PreparedStatement updatePlayerStatement = Main.database.connection.prepareStatement(UPDATE_PLAYER);
+
+            updatePlayerStatement.setString(1, "$.lastSeen");
+            updatePlayerStatement.setString(2, "$.lastSeen");
+
+            final ObjectNode lastSeenObject = getLastSeenObject();
+
+            updatePlayerStatement.setString(3, objectMapper.writeValueAsString(lastSeenObject));
+
+            updatePlayerStatement.setString(4, target.profile.getName());
+
+            updatePlayerStatement.executeUpdate();
+        } catch (final SQLException | JsonProcessingException e) {
+            bot.logger.error(e);
+        }
     }
 
     private ObjectNode getLastSeenObject () {

@@ -146,6 +146,7 @@ public class Bot extends SessionAdapter {
         this.world = new WorldPlugin(this);
         this.core = new CorePlugin(this);
         this.team = new TeamPlugin(this);
+        this.playersDatabase = new PlayersDatabasePlugin(this);
         this.players = new PlayersPlugin(this);
         this.tabComplete = new TabCompletePlugin(this);
         this.commandHandler = new CommandHandlerPlugin(this);
@@ -170,7 +171,6 @@ public class Bot extends SessionAdapter {
         // this.screenshare = new ScreensharePlugin(this);
         this.clearChatNameAnnouncer = new ClearChatNameAnnouncerPlugin(this);
         this.whitelist = new WhitelistPlugin(this);
-        this.playersDatabase = new PlayersDatabasePlugin(this);
         this.ipFilter = new IPFilterPlugin(this);
         this.rainbowArmor = new RainbowArmorPlugin(this);
     }
