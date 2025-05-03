@@ -458,8 +458,28 @@ public class CorePlugin implements Listener {
                         Math.abs(botChunkPosX - coreChunkPosX) >= bot.world.simulationDistance ||
                         Math.abs(botChunkPosZ - coreChunkPosZ) >= bot.world.simulationDistance
         ) {
+            // also clear out the old core
+            final String deleteCommand;
+            if (from != null && to != null) {
+                deleteCommand = String.format(
+                        "minecraft:fill %d %d %d %d %d %d air",
+
+                        from.getX(),
+                        from.getY(),
+                        from.getZ(),
+
+                        to.getX(),
+                        to.getY(),
+                        to.getZ()
+                );
+            } else {
+                deleteCommand = null;
+            }
+
             reset();
             refill(false);
+
+            runPlaceBlock(deleteCommand);
         }
 
         if (!ready) {
