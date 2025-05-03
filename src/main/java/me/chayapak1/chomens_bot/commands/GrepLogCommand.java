@@ -2,10 +2,7 @@ package me.chayapak1.chomens_bot.commands;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Main;
-import me.chayapak1.chomens_bot.command.Command;
-import me.chayapak1.chomens_bot.command.CommandContext;
-import me.chayapak1.chomens_bot.command.CommandException;
-import me.chayapak1.chomens_bot.command.TrustLevel;
+import me.chayapak1.chomens_bot.command.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -32,10 +29,10 @@ public class GrepLogCommand extends Command {
             throw new CommandException(Component.text("The bot's Discord integration has to be enabled to use this command."));
         }
 
-        final List<String> flags = context.getFlags(true);
+        final List<String> flags = context.getFlags(true, CommonFlags.IGNORE_CASE, CommonFlags.REGEX);
 
-        final boolean ignoreCase = flags.contains("ignorecase");
-        final boolean regex = flags.contains("regex");
+        final boolean ignoreCase = flags.contains(CommonFlags.IGNORE_CASE);
+        final boolean regex = flags.contains(CommonFlags.REGEX);
 
         final String input = context.getString(true, true);
 

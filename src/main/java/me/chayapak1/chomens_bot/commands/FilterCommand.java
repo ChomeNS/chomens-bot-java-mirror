@@ -1,10 +1,7 @@
 package me.chayapak1.chomens_bot.commands;
 
 import me.chayapak1.chomens_bot.Bot;
-import me.chayapak1.chomens_bot.command.Command;
-import me.chayapak1.chomens_bot.command.CommandContext;
-import me.chayapak1.chomens_bot.command.CommandException;
-import me.chayapak1.chomens_bot.command.TrustLevel;
+import me.chayapak1.chomens_bot.command.*;
 import me.chayapak1.chomens_bot.data.filter.FilteredPlayer;
 import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
 import me.chayapak1.chomens_bot.plugins.PlayerFilterPlugin;
@@ -40,10 +37,10 @@ public class FilterCommand extends Command {
     public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        final List<String> flags = context.getFlags(true);
+        final List<String> flags = context.getFlags(true, CommonFlags.IGNORE_CASE, CommonFlags.REGEX);
 
-        final boolean ignoreCase = flags.contains("ignorecase");
-        final boolean regex = flags.contains("regex");
+        final boolean ignoreCase = flags.contains(CommonFlags.IGNORE_CASE);
+        final boolean regex = flags.contains(CommonFlags.REGEX);
 
         final String action = context.getString(false, true, true);
 

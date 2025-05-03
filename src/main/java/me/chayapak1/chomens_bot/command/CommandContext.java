@@ -15,8 +15,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CommandContext {
-    public static final Component UNKNOWN_ARGUMENT_COMPONENT = Component.text("???").style(Style.style(TextDecoration.UNDERLINED));
-    private static final Pattern FLAGS_PATTERN = Pattern.compile("^\\s*-([^\\s0-9]\\S*)"); // stolen from HBot
+    public static final Component UNKNOWN_ARGUMENT_COMPONENT = Component
+            .text("???")
+            .style(Style.style(TextDecoration.UNDERLINED));
+    private static final Pattern FLAGS_PATTERN = Pattern
+            .compile("^\\s*(?:--|-)([^\\s0-9]\\S*)"); // modified from HBot
 
     public final Bot bot;
 
@@ -179,22 +182,24 @@ public class CommandContext {
         return getString(false, true, true, "action");
     }
 
-    public List<String> getFlags () throws CommandException { return getFlags(false); }
+    public List<String> getFlags (final String... allowedFlags) throws CommandException { return getFlags(false, allowedFlags); }
 
-    public List<String> getFlags (final boolean returnLowerCase) throws CommandException {
+    public List<String> getFlags (final boolean returnLowerCase, final String... allowedFlags) throws CommandException {
         final List<String> flags = new ArrayList<>();
 
-        String flag = getFlag(returnLowerCase);
+        String flag = getFlag(returnLowerCase, allowedFlags);
 
         while (flag != null) {
             flags.add(flag);
-            flag = getFlag(returnLowerCase);
+            flag = getFlag(returnLowerCase, allowedFlags);
         }
 
         return flags;
     }
 
-    private String getFlag (final boolean returnLowerCase) throws CommandException {
+    private String getFlag (final boolean returnLowerCase, final String[] allowedFlagsArray) throws CommandException {
+        final List<String> allowedFlags = Arrays.asList(allowedFlagsArray);
+
         final String string = getString(false, false, returnLowerCase);
 
         if (string.isBlank()) return null;
@@ -202,11 +207,14 @@ public class CommandContext {
         final Matcher matcher = FLAGS_PATTERN.matcher(string);
 
         if (matcher.find()) {
-            return matcher.group(1);
-        } else {
-            argsPosition--; // getString incremented argsPosition
-            return null;
+            final String match = matcher.group(1);
+
+            if (allowedFlags.contains(match)) return match;
         }
+
+        argsPosition--; // getString incremented argsPosition
+
+        return null;
     }
 
     public Integer getInteger (final boolean required) throws CommandException {

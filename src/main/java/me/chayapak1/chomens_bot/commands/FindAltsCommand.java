@@ -18,15 +18,19 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class FindAltsCommand extends Command {
+    // we allow both, since the flag used to be `allserver`
+    private static final String ALL_SERVER_FLAG = "allserver";
+    private static final String ALL_SERVERS_FLAG = "allservers";
+
     public FindAltsCommand () {
         super(
                 "findalts",
                 "Finds players with the same IP address",
-                new String[] { "-allserver <player|ip>", "<player|ip>" },
+                new String[] { "-allservers <player|ip>", "<player|ip>" },
                 new String[] { "alts", "sameip" },
                 TrustLevel.PUBLIC,
                 false,
-                new ChatPacketType[]{ ChatPacketType.DISGUISED }
+                new ChatPacketType[] { ChatPacketType.DISGUISED }
         );
     }
 
@@ -39,9 +43,9 @@ public class FindAltsCommand extends Command {
 
         Main.database.checkOverloaded();
 
-        final List<String> flags = context.getFlags(true);
+        final List<String> flags = context.getFlags(true, ALL_SERVER_FLAG, ALL_SERVERS_FLAG);
 
-        final boolean allServer = flags.contains("allserver");
+        final boolean allServer = flags.contains(ALL_SERVER_FLAG) || flags.contains(ALL_SERVERS_FLAG);
 
         final String player = context.getString(true, true);
 

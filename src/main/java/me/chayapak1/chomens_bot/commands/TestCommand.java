@@ -21,11 +21,10 @@ public class TestCommand extends Command {
     @Override
     public Component execute (final CommandContext context) throws CommandException {
         return Component.translatable(
-                "Hello, World! Username: %s, Sender UUID: %s, Prefix: %s, Flags: %s, Args: %s",
+                "Hello, World! Username: %s, Sender UUID: %s, Prefix: %s, Args: %s",
                 Component.text(context.sender.profile.getName()),
                 Component.text(context.sender.profile.getIdAsString()),
                 Component.text(context.prefix),
-                Component.text(String.join(" ", context.getFlags())),
                 Component.text(context.getString(true, false))
         ).color(NamedTextColor.GREEN);
     }
