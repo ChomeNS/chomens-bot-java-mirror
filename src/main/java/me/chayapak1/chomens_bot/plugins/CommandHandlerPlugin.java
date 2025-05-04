@@ -19,6 +19,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CommandHandlerPlugin implements Listener {
     public static final List<Command> COMMANDS = ObjectList.of(
@@ -83,7 +84,7 @@ public class CommandHandlerPlugin implements Listener {
 
     private final Bot bot;
 
-    private int commandPerSecond = 0;
+    private static final AtomicInteger commandsPerSecond = new AtomicInteger();
 
     public CommandHandlerPlugin (final Bot bot) {
         this.bot = bot;
@@ -93,7 +94,7 @@ public class CommandHandlerPlugin implements Listener {
 
     @Override
     public void onLocalSecondTick () {
-        commandPerSecond = 0;
+        commandsPerSecond.set(0);
     }
 
     // BETTER QUALITY than the js version
@@ -120,9 +121,8 @@ public class CommandHandlerPlugin implements Listener {
 
         final boolean bypass = context instanceof ConsoleCommandContext || context instanceof ChomeNSModCommandContext;
 
-        if (commandPerSecond > 100) return;
-
-        commandPerSecond++;
+        if (commandsPerSecond.get() > 100) return;
+        else commandsPerSecond.getAndIncrement();
 
         final String[] splitInput = input.trim().split("\\s+");
 

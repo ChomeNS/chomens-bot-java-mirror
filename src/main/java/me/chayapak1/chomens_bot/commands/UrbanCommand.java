@@ -26,9 +26,10 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class UrbanCommand extends Command {
-    public int requestsPerSecond = 0;
+    public final AtomicInteger requestsPerSecond = new AtomicInteger();
 
     public UrbanCommand () {
         super(
@@ -41,11 +42,11 @@ public class UrbanCommand extends Command {
                 new ChatPacketType[]{ ChatPacketType.DISGUISED }
         );
 
-        Main.EXECUTOR.scheduleAtFixedRate(() -> requestsPerSecond = 0, 0, 1, TimeUnit.SECONDS);
+        Main.EXECUTOR.scheduleAtFixedRate(() -> requestsPerSecond.set(0), 0, 1, TimeUnit.SECONDS);
     }
 
     public Component execute (final CommandContext context) throws CommandException {
-        if (requestsPerSecond > 3) throw new CommandException(Component.text("Too many requests"));
+        if (requestsPerSecond.get() > 3) throw new CommandException(Component.text("Too many requests"));
 
         final Bot bot = context.bot;
 
@@ -186,7 +187,7 @@ public class UrbanCommand extends Command {
             }
         });
 
-        requestsPerSecond++;
+        requestsPerSecond.getAndIncrement();
 
         return null;
     }

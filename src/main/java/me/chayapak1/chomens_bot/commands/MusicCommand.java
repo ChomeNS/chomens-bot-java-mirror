@@ -2,12 +2,14 @@ package me.chayapak1.chomens_bot.commands;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.command.contexts.ConsoleCommandContext;
 import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
+import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.plugins.MusicPlayerPlugin;
 import me.chayapak1.chomens_bot.song.Instrument;
 import me.chayapak1.chomens_bot.song.Loop;
@@ -31,11 +33,15 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static me.chayapak1.chomens_bot.util.StringUtilities.isNotNullAndNotBlank;
 
-public class MusicCommand extends Command {
+public class MusicCommand extends Command implements Listener {
     private static final Path ROOT = MusicPlayerPlugin.SONG_DIR;
+
+    private static final AtomicInteger commandsPerSecond = new AtomicInteger();
 
     public MusicCommand () {
         super(
@@ -65,10 +71,16 @@ public class MusicCommand extends Command {
                 false,
                 new ChatPacketType[] { ChatPacketType.DISGUISED }
         );
+
+        Main.EXECUTOR.scheduleAtFixedRate(() -> commandsPerSecond.set(0), 0, 1, TimeUnit.SECONDS);
     }
 
     @Override
     public Component execute (final CommandContext context) throws CommandException {
+        // denis check
+        if (commandsPerSecond.get() > 3) return null;
+        else commandsPerSecond.getAndIncrement();
+
         if (context.bot.music.locked && !(context instanceof ConsoleCommandContext))
             throw new CommandException(Component.text("Managing music is currently locked"));
 
