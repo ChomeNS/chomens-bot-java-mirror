@@ -38,11 +38,14 @@ public class CloopCommand extends Command {
 
                 final ChronoUnit unit = context.getEnum(ChronoUnit.class);
 
+                if (unit == ChronoUnit.NANOS && interval < 1000)
+                    throw new CommandException(Component.text("Interval must not be less than 1000 nanoseconds"));
+
                 final String command = context.getString(true, true);
 
                 try {
                     bot.cloop.add(unit, interval, command);
-                } catch (final ArithmeticException e) {
+                } catch (final Exception e) {
                     throw new CommandException(Component.text(e.toString()));
                 }
 
