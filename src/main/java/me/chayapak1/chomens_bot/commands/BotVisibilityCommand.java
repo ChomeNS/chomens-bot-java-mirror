@@ -5,6 +5,7 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
+import me.chayapak1.chomens_bot.selfCares.essentials.VanishSelfCare;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -27,12 +28,15 @@ public class BotVisibilityCommand extends Command {
 
         final String action = context.getString(false, false, false);
 
+        final VanishSelfCare vanish = bot.selfCare.find(VanishSelfCare.class);
+
         if (action.isEmpty()) {
-            bot.selfCare.visible = !bot.selfCare.visible;
+            vanish.visible = !vanish.visible;
+            vanish.needsRunning = true;
 
-            final NamedTextColor greenOrGold = bot.selfCare.visible ? NamedTextColor.GREEN : NamedTextColor.GOLD;
+            final NamedTextColor greenOrGold = vanish.visible ? NamedTextColor.GREEN : NamedTextColor.GOLD;
 
-            final String visibleOrInvisible = bot.selfCare.visible ? "visible" : "invisible";
+            final String visibleOrInvisible = vanish.visible ? "visible" : "invisible";
 
             return Component.empty()
                     .append(Component.text("The bot's visibility is now "))
@@ -41,7 +45,8 @@ public class BotVisibilityCommand extends Command {
         } else {
             switch (action) {
                 case "on", "true" -> {
-                    bot.selfCare.visible = true;
+                    vanish.visible = true;
+                    vanish.needsRunning = true;
 
                     return Component.empty()
                             .append(Component.text("The bot's visibility is now "))
@@ -49,7 +54,8 @@ public class BotVisibilityCommand extends Command {
                             .color(bot.colorPalette.defaultColor);
                 }
                 case "off", "false" -> {
-                    bot.selfCare.visible = false;
+                    vanish.visible = false;
+                    vanish.needsRunning = true;
 
                     return Component.empty()
                             .append(Component.text("The bot's visibility is now "))

@@ -114,12 +114,10 @@ eval:
   address: 'ws://localhost:3069'
 
 selfCare:
-  delay: 225 # NOTE: self care does NOT use chat queue
-
   # vanilla
   op: true
   gamemode: true
-  endCredits: true
+  respawn: true
 
   # essentials
   vanish: true
@@ -135,10 +133,10 @@ selfCare:
     enabled: true
     prefix: '&8[&eChomeNS Bot&8]'
 
+  username: true
+
   # iControlUwU
   icu: true
-
-  username: true
 
 bots:
   # username - optional, if not specified it will just use a random username

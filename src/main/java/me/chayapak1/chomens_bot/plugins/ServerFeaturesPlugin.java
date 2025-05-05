@@ -17,6 +17,7 @@ public class ServerFeaturesPlugin implements Listener {
     public boolean hasEssentials = false;
     public boolean hasExtras = false;
     public boolean hasIControlU = false;
+    public boolean hasCommandSpy = false;
 
     public ServerFeaturesPlugin (final Bot bot) {
         this.bot = bot;
@@ -42,7 +43,7 @@ public class ServerFeaturesPlugin implements Listener {
             if (!name.contains(":")) continue;
 
             // 4 or 2?
-            if (bot.selfCare.permissionLevel < 4) {
+            if (bot.selfCare.data.permissionLevel < 4) {
                 // it'd be weird for servers that allow OP while not having OP
                 if (name.equals("minecraft:op")) hasExtras = true;
 
@@ -59,6 +60,7 @@ public class ServerFeaturesPlugin implements Listener {
                 case "extras" -> hasExtras = true;
                 case "essentials" -> hasEssentials = true;
                 case "icontrolu" -> hasIControlU = true;
+                case "commandspy" -> hasCommandSpy = true;
             }
         }
     }

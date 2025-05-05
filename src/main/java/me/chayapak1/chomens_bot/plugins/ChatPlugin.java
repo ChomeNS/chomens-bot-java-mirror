@@ -303,13 +303,7 @@ public class ChatPlugin implements Listener {
 
         if (message.startsWith("/")) {
             final String slashRemoved = message.substring(1);
-
-            final String removedMessage =
-                    bot.serverFeatures.hasNamespaces ?
-                            slashRemoved :
-                            StringUtilities.removeNamespace(slashRemoved);
-
-            sendCommandInstantly(removedMessage);
+            sendCommandInstantly(slashRemoved);
         } else {
             sendChatInstantly(message);
         }
@@ -318,7 +312,12 @@ public class ChatPlugin implements Listener {
     public void sendCommandInstantly (final String command) {
         if (!bot.loggedIn) return;
 
-        bot.session.send(new ServerboundChatCommandPacket(command));
+        final String namespaceSanitizedCommand =
+                bot.serverFeatures.hasNamespaces ?
+                        command :
+                        StringUtilities.removeNamespace(command);
+
+        bot.session.send(new ServerboundChatCommandPacket(namespaceSanitizedCommand));
     }
 
     public void sendChatInstantly (final String message) {

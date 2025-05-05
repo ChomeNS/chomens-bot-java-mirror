@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.listener.Listener;
+import me.chayapak1.chomens_bot.selfCares.essentials.VanishSelfCare;
 import org.geysermc.mcprotocollib.protocol.data.game.item.ItemStack;
 import org.geysermc.mcprotocollib.protocol.data.game.item.component.*;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.inventory.ServerboundSetCreativeModeSlotPacket;
@@ -20,10 +21,13 @@ public class RainbowArmorPlugin implements Listener {
 
     private final Bot bot;
 
+    private final VanishSelfCare vanish;
+
     private float rainbowHue = 0F;
 
     public RainbowArmorPlugin (final Bot bot) {
         this.bot = bot;
+        this.vanish = bot.selfCare.find(VanishSelfCare.class);
 
         if (!bot.config.rainbowArmor) return;
 
@@ -32,7 +36,7 @@ public class RainbowArmorPlugin implements Listener {
 
     @Override
     public void onTick () {
-        if (!bot.config.rainbowArmor || !bot.selfCare.visible) return;
+        if (!bot.config.rainbowArmor || !vanish.visible) return;
 
         final int increment = 360 / 20;
         final Color color = Color.getHSBColor(rainbowHue / 360.0f, 1, 1);
