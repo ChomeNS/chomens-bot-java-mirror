@@ -547,18 +547,20 @@ public class CorePlugin implements Listener {
         for (int y = from.getY(); y <= to.getY(); y++) {
             for (int z = from.getZ(); z <= to.getZ(); z++) {
                 for (int x = from.getX(); x <= to.getX(); x++) {
-                    final int block = bot.world.getBlock(x, y, z);
+                    try {
+                        final int block = bot.world.getBlock(x, y, z);
 
-                    final Boolean refilled = refilledMap.get(y);
+                        final Boolean refilled = refilledMap.get(y);
 
-                    if (
-                            (!force && isCommandBlockState(block)) ||
-                                    (refilled != null && refilled)
-                    ) continue;
+                        if (
+                                (!force && isCommandBlockState(block)) ||
+                                        (refilled != null && refilled)
+                        ) continue;
+                    } catch (final Exception ignored) { }
 
                     final boolean useChat = positionChangesPerSecond.get() > 10;
 
-                    // bot becomes ChomeNS Mod user when using chat
+                    // bot becomes ChipmunkMod user when using chat
                     final String command = String.format(
                             "%sfill %d %d %d %d %d %d command_block%s",
 
