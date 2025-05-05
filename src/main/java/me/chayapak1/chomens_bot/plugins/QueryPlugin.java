@@ -1,12 +1,12 @@
 package me.chayapak1.chomens_bot.plugins;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.listener.Listener;
-import me.chayapak1.chomens_bot.util.UUIDUtilities;
+import me.chayapak1.chomens_bot.util.RandomStringUtilities;
 import net.kyori.adventure.text.*;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import org.apache.commons.lang3.tuple.Triple;
 import org.cloudburstmc.math.vector.Vector3i;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 
@@ -14,7 +14,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 public class QueryPlugin implements Listener {
@@ -22,9 +21,7 @@ public class QueryPlugin implements Listener {
 
     private final Bot bot;
 
-    public final AtomicLong nextTransactionId = new AtomicLong(0);
-    public final Map<Long, CompletableFuture<String>> transactions = new ConcurrentHashMap<>();
-    public final List<UUID> ids = Collections.synchronizedList(new ObjectArrayList<>());
+    public final Map<String, CompletableFuture<String>> requests = new ConcurrentHashMap<>();
 
     public final Queue<Component> cargosQueue = new ConcurrentLinkedQueue<>();
 
@@ -107,70 +104,53 @@ public class QueryPlugin implements Listener {
     }
 
     private void processCargo (final Component cargo) {
-        if (!(cargo instanceof final TextComponent textComponent)) return;
+        if (!(cargo instanceof final TextComponent idTextComponent)) return;
 
-        final UUID inputId = UUIDUtilities.tryParse(textComponent.content());
+        final String id = idTextComponent.content();
 
-        if (inputId == null || !ids.contains(inputId)) return;
-
-        ids.remove(inputId);
+        final CompletableFuture<String> future = requests.get(id);
+        if (future == null) return;
+        requests.remove(id);
 
         final List<Component> children = cargo.children();
-
         if (
-                children.size() > 3 ||
-                        !(children.get(0) instanceof final TextComponent transactionIdTextComponent) ||
-                        !(children.get(1) instanceof final TextComponent interpretTextComponent)
+                children.size() > 2 ||
+                        !(children.getFirst() instanceof final TextComponent interpretTextComponent)
         ) return;
 
-        try {
-            final long transactionId = Long.parseLong(transactionIdTextComponent.content());
+        final boolean interpret = Boolean.parseBoolean(interpretTextComponent.content());
 
-            if (!transactions.containsKey(transactionId)) return;
+        if (children.size() == 1) {
+            future.complete("");
+        } else if (!interpret && !(children.get(1) instanceof TextComponent)) {
+            future.complete(null);
+        } else {
+            final String stringOutput = interpret
+                    ? GsonComponentSerializer.gson().serialize(children.get(1)) // seems very
+                    : ((TextComponent) children.get(1)).content();
 
-            final boolean interpret = Boolean.parseBoolean(interpretTextComponent.content());
-
-            final CompletableFuture<String> future = transactions.get(transactionId);
-
-            transactions.remove(transactionId);
-
-            if (children.size() == 2) {
-                future.complete("");
-            } else if (!interpret && !(children.get(2) instanceof TextComponent)) {
-                future.complete(null);
-            } else {
-                final String stringOutput = interpret
-                        ? GsonComponentSerializer.gson().serialize(children.get(2)) // seems very
-                        : ((TextComponent) children.get(2)).content();
-
-                future.complete(stringOutput);
-            }
-        } catch (final NumberFormatException ignored) { }
+            future.complete(stringOutput);
+        }
     }
 
-    private Triple<CompletableFuture<String>, Long, UUID> getFutureAndId () {
-        final long transactionId = nextTransactionId.getAndIncrement();
+    private ObjectObjectImmutablePair<String, CompletableFuture<String>> getFutureAndId () {
+        final String id = RandomStringUtilities.generate(16);
 
         final CompletableFuture<String> future = new CompletableFuture<>();
-        transactions.put(transactionId, future);
+        requests.put(id, future);
 
-        final UUID id = UUID.randomUUID();
-        ids.add(id);
-
-        return Triple.of(future, transactionId, id);
+        return ObjectObjectImmutablePair.of(id, future);
     }
 
     public CompletableFuture<String> block (final Vector3i location, final String path) { return block(false, location, path, false); }
 
     public CompletableFuture<String> block (final boolean useCargo, final Vector3i location, final String path, final boolean interpret) {
-        final Triple<CompletableFuture<String>, Long, UUID> triple = getFutureAndId();
+        final Pair<String, CompletableFuture<String>> pair = getFutureAndId();
 
-        final UUID id = triple.getRight();
-        final long transactionId = triple.getMiddle();
+        final String id = pair.left();
 
         final Component component = Component
-                .text(id.toString())
-                .append(Component.text(transactionId))
+                .text(id)
                 .append(Component.text(interpret))
                 .append(
                         Component.blockNBT(
@@ -189,20 +169,18 @@ public class QueryPlugin implements Listener {
         if (useCargo) cargosQueue.add(component);
         else sendQueueComponent(component);
 
-        return triple.getLeft();
+        return pair.right();
     }
 
     public CompletableFuture<String> entity (final String selector, final String path) { return entity(false, selector, path); }
 
     public CompletableFuture<String> entity (final boolean useCargo, final String selector, final String path) {
-        final Triple<CompletableFuture<String>, Long, UUID> triple = getFutureAndId();
+        final Pair<String, CompletableFuture<String>> pair = getFutureAndId();
 
-        final UUID id = triple.getRight();
-        final long transactionId = triple.getMiddle();
+        final String id = pair.left();
 
         final Component component = Component
-                .text(id.toString())
-                .append(Component.text(transactionId))
+                .text(id)
                 .append(Component.text(false))
                 .append(
                         Component.entityNBT(
@@ -214,15 +192,13 @@ public class QueryPlugin implements Listener {
         if (useCargo) cargosQueue.add(component);
         else sendQueueComponent(component);
 
-        return triple.getLeft();
+        return pair.right();
     }
 
     // should there be storage query?
 
     @Override
     public void disconnected (final DisconnectedEvent event) {
-        nextTransactionId.set(0);
-        transactions.clear();
-        ids.clear();
+        requests.clear();
     }
 }
