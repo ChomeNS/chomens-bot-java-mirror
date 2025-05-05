@@ -38,4 +38,10 @@ public class VanishSelfCare extends EssentialsSelfCare {
     public void run () {
         this.runCommand("essentials:vanish " + getUsernameOrBlank() + (this.visible ? "disable" : "enable"));
     }
+
+    @Override
+    public void cleanup () {
+        super.cleanup();
+        this.isVanished = false;
+    }
 }
