@@ -122,10 +122,13 @@ public class CorePlugin implements Listener {
     }
 
     @Override
+    public void onLocalSecondTick () {
+        resizeTick();
+    }
+
+    @Override
     public void onSecondTick () {
         checkCoreTick();
-
-        resizeTick();
 
         exists = isCoreExists();
 
@@ -362,9 +365,7 @@ public class CorePlugin implements Listener {
 
         if (oldSize.getY() != toSize.getY()) {
             recalculateRelativePositions();
-
-            // this will be run just after this function finishes, since it runs in the same interval
-            shouldRefill = true;
+            refill(false);
         }
     }
 
