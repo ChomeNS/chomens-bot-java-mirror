@@ -22,7 +22,7 @@ public class QueryPlugin implements Listener {
 
     private final Bot bot;
 
-    public AtomicLong nextTransactionId = new AtomicLong(0);
+    public final AtomicLong nextTransactionId = new AtomicLong(0);
     public final Map<Long, CompletableFuture<String>> transactions = new ConcurrentHashMap<>();
     public final List<UUID> ids = Collections.synchronizedList(new ObjectArrayList<>());
 
