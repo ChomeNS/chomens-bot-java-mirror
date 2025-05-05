@@ -44,7 +44,7 @@ public class Main {
 
     private static boolean alreadyStarted = false;
 
-    private static boolean stopping = false;
+    public static boolean stopping = false;
 
     private static int backupFailTimes = 0;
 
@@ -180,8 +180,7 @@ public class Main {
 
     public static void stop (final int exitCode, final String reason, final String type, final boolean callSystemExit) {
         if (stopping) return;
-
-        stopping = true;
+        else stopping = true;
 
         final String stoppingMessage = String.format(
                 "%s (%s)",

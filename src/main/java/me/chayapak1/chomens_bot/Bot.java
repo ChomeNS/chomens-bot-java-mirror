@@ -363,6 +363,8 @@ public class Bot extends SessionAdapter {
 
         if (printDisconnectedCause && cause != null) logger.error(cause);
 
+        if (Main.stopping) return;
+
         if (!isTransferring) cookies.clear();
 
         int reconnectDelay = options.reconnectDelay;
