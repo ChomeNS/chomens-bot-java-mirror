@@ -16,7 +16,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PlayersDatabasePlugin implements Listener {
@@ -184,13 +186,15 @@ public class PlayersDatabasePlugin implements Listener {
 
     @Override
     public void disconnected (final DisconnectedEvent event) {
-        DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
-            synchronized (bot.players.list) {
-                for (final PlayerEntry target : bot.players.list) {
+        synchronized (bot.players.list) {
+            final List<PlayerEntry> clonedList = new ArrayList<>(bot.players.list);
+
+            DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
+                for (final PlayerEntry target : clonedList) {
                     updateLastSeenEntry(target);
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
