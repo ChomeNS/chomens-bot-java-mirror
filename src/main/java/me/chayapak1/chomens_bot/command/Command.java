@@ -66,6 +66,7 @@ public abstract class Command {
                 ", aliases=" + Arrays.toString(aliases) +
                 ", trustLevel=" + trustLevel +
                 ", consoleOnly=" + consoleOnly +
+                ", disallowedPacketTypes=" + Arrays.toString(disallowedPacketTypes) +
                 '}';
     }
 }
