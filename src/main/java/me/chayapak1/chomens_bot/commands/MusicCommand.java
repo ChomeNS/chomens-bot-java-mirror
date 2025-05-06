@@ -365,12 +365,14 @@ public class MusicCommand extends Command implements Listener {
         final MusicPlayerPlugin music = bot.music;
         if (music.currentSong == null) throw new CommandException(Component.translatable("commands.music.error.not_playing"));
 
+        final String name = music.currentSong.name;
+
         music.skip();
 
         return Component.translatable(
                 "commands.music.skip",
                 bot.colorPalette.defaultColor,
-                Component.text(music.currentSong.name, bot.colorPalette.secondary)
+                Component.text(name, bot.colorPalette.secondary)
         );
     }
 
