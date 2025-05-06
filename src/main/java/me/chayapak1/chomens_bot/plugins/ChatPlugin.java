@@ -93,7 +93,7 @@ public class ChatPlugin implements Listener {
         if (
                 packet.isOverlay() ||
                         (component instanceof final TextComponent t_component
-                                && t_component.content().length() > 15_000)
+                                && t_component.content().length() > 20_000)
         ) return;
 
         if (component instanceof final TranslatableComponent t_component) {
@@ -121,6 +121,8 @@ public class ChatPlugin implements Listener {
         }
 
         final String string = ComponentUtilities.stringify(component);
+        if (string.endsWith("\n".repeat(10) + "The chat has been cleared")) return; // ignores clear chat message
+
         final String ansi = ComponentUtilities.stringifyAnsi(component);
 
         final PlayerMessage finalPlayerMessage = playerMessage; // ???
