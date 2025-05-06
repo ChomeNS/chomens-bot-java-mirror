@@ -107,34 +107,32 @@ public class QueryPlugin implements Listener {
         if (!(cargo instanceof final TextComponent idTextComponent)) return;
 
         final String id = idTextComponent.content();
+        if (id.length() != 16) return;
 
         final CompletableFuture<String> future = requests.get(id);
         if (future == null) return;
         requests.remove(id);
 
+        final boolean interpret = id.endsWith("1");
+
         final List<Component> children = cargo.children();
-        if (
-                children.size() > 2 ||
-                        !(children.getFirst() instanceof final TextComponent interpretTextComponent)
-        ) return;
+        if (children.size() > 1) return;
 
-        final boolean interpret = Boolean.parseBoolean(interpretTextComponent.content());
-
-        if (children.size() == 1) {
+        if (children.isEmpty()) {
             future.complete("");
-        } else if (!interpret && !(children.get(1) instanceof TextComponent)) {
+        } else if (!interpret && !(children.getFirst() instanceof TextComponent)) {
             future.complete(null);
         } else {
             final String stringOutput = interpret
-                    ? GsonComponentSerializer.gson().serialize(children.get(1)) // seems very
-                    : ((TextComponent) children.get(1)).content();
+                    ? GsonComponentSerializer.gson().serialize(children.getFirst()) // seems very
+                    : ((TextComponent) children.getFirst()).content();
 
             future.complete(stringOutput);
         }
     }
 
-    private ObjectObjectImmutablePair<String, CompletableFuture<String>> getFutureAndId () {
-        final String id = RandomStringUtilities.generate(16);
+    private ObjectObjectImmutablePair<String, CompletableFuture<String>> getFutureAndId (final boolean interpret) {
+        final String id = RandomStringUtilities.generate(15) + (interpret ? "1" : "0");
 
         final CompletableFuture<String> future = new CompletableFuture<>();
         requests.put(id, future);
@@ -145,13 +143,12 @@ public class QueryPlugin implements Listener {
     public CompletableFuture<String> block (final Vector3i location, final String path) { return block(false, location, path, false); }
 
     public CompletableFuture<String> block (final boolean useCargo, final Vector3i location, final String path, final boolean interpret) {
-        final Pair<String, CompletableFuture<String>> pair = getFutureAndId();
+        final Pair<String, CompletableFuture<String>> pair = getFutureAndId(interpret);
 
         final String id = pair.left();
 
         final Component component = Component
                 .text(id)
-                .append(Component.text(interpret))
                 .append(
                         Component.blockNBT(
                                 path,
@@ -175,13 +172,12 @@ public class QueryPlugin implements Listener {
     public CompletableFuture<String> entity (final String selector, final String path) { return entity(false, selector, path); }
 
     public CompletableFuture<String> entity (final boolean useCargo, final String selector, final String path) {
-        final Pair<String, CompletableFuture<String>> pair = getFutureAndId();
+        final Pair<String, CompletableFuture<String>> pair = getFutureAndId(false);
 
         final String id = pair.left();
 
         final Component component = Component
                 .text(id)
-                .append(Component.text(false))
                 .append(
                         Component.entityNBT(
                                 path,
