@@ -32,7 +32,6 @@ public class TranslateCommand extends Command {
     public TranslateCommand () {
         super(
                 "translate",
-                "Translates a message using Google Translate",
                 new String[] { "<from> <to> <message>" },
                 new String[] {},
                 TrustLevel.PUBLIC,
@@ -66,10 +65,10 @@ public class TranslateCommand extends Command {
                 context.sendOutput(
                         Component
                                 .translatable(
-                                        "Result: %s",
-                                        Component.text(result.translation()).color(NamedTextColor.GREEN)
+                                        "commands.translate.result",
+                                        bot.colorPalette.secondary,
+                                        Component.text(result.translation(), NamedTextColor.GREEN)
                                 )
-                                .color(bot.colorPalette.secondary)
                 );
             } catch (final Exception e) {
                 context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));

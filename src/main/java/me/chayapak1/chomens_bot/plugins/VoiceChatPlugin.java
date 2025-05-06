@@ -7,6 +7,7 @@ import me.chayapak1.chomens_bot.data.logging.LogType;
 import me.chayapak1.chomens_bot.data.voiceChat.ClientGroup;
 import me.chayapak1.chomens_bot.data.voiceChat.RawUdpPacket;
 import me.chayapak1.chomens_bot.util.FriendlyByteBuf;
+import me.chayapak1.chomens_bot.util.I18nUtilities;
 import me.chayapak1.chomens_bot.voiceChat.InitializationData;
 import me.chayapak1.chomens_bot.voiceChat.NetworkMessage;
 import me.chayapak1.chomens_bot.voiceChat.customPayload.JoinGroupPacket;
@@ -91,7 +92,7 @@ public class VoiceChatPlugin implements Listener, Runnable {
             try {
                 socket.open();
             } catch (final Exception e) {
-                bot.logger.error("Failed to create Simple Voice Chat connection!");
+                bot.logger.error(I18nUtilities.get("voicechat.failed_connecting"));
                 bot.logger.error(e);
                 return;
             }
@@ -135,7 +136,7 @@ public class VoiceChatPlugin implements Listener, Runnable {
                     bot.logger.log(
                             LogType.SIMPLE_VOICE_CHAT,
                             Component.translatable(
-                                    "Successfully connected to Simple Voice Chat address: %s",
+                                    I18nUtilities.get("voicechat.connected"),
                                     Component.text(socketAddress.toString())
                             )
                     );

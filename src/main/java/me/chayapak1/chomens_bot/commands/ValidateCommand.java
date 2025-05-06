@@ -12,7 +12,6 @@ public class ValidateCommand extends Command {
     public ValidateCommand () {
         super(
                 "validate",
-                "Validates/shows your trust level",
                 new String[] { "" },
                 new String[] { "checkhash" },
                 TrustLevel.TRUSTED
@@ -23,21 +22,23 @@ public class ValidateCommand extends Command {
     public Component execute (final CommandContext context) {
         // <red>Trusted - 1
         // <dark_red>Admin - 2
-        // .......
+        // ...
         final Component trustLevelComponent = context.trustLevel.component
                 .append(Component.text(" - "))
                 .append(Component.text(context.trustLevel.level));
 
         if (context instanceof DiscordCommandContext) return Component
-                .translatable("You are trusted! (%s)")
-                .arguments(trustLevelComponent)
-                .color(NamedTextColor.GREEN);
+                .translatable(
+                        "commands.validate.discord",
+                        NamedTextColor.GREEN,
+                        trustLevelComponent
+                );
         else if (context instanceof ConsoleCommandContext) return Component
-                .text("You are the console! You have no trust level")
-                .color(NamedTextColor.GREEN);
-        else return Component
-                    .translatable("Valid hash (%s)")
-                    .arguments(trustLevelComponent)
-                    .color(NamedTextColor.GREEN);
+                .translatable("commands.validate.console", NamedTextColor.GREEN);
+        else return Component.translatable(
+                    "commands.validate.player",
+                    NamedTextColor.GREEN,
+                    trustLevelComponent
+            );
     }
 }

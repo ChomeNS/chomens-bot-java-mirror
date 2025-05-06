@@ -47,10 +47,12 @@ public class DiscordCommandContext extends CommandContext {
 
     @Override
     public void sendOutput (final Component component) {
-        String output = ComponentUtilities.stringifyDiscordAnsi(component);
+        final Component rendered = bot.commandHandler.renderTranslatable(component);
+
+        String output = ComponentUtilities.stringifyDiscordAnsi(rendered);
 
         if (output.length() > 2048) {
-            output = ComponentUtilities.stringify(component);
+            output = ComponentUtilities.stringify(rendered);
 
             event.getMessage().replyFiles(
                     FileUpload.fromData(

@@ -5,13 +5,13 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
+import me.chayapak1.chomens_bot.util.I18nUtilities;
 import net.kyori.adventure.text.Component;
 
 public class EndCommand extends Command {
     public EndCommand () {
         super(
                 "end",
-                "Reconnects the bot",
                 new String[] { "" },
                 new String[] { "reconnect" },
                 TrustLevel.TRUSTED
@@ -24,7 +24,7 @@ public class EndCommand extends Command {
 
         final Bot bot = context.bot;
 
-        bot.session.disconnect("End command");
+        bot.session.disconnect(I18nUtilities.get("commands.end.disconnect_reason"));
 
         return null;
     }

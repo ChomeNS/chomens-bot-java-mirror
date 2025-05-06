@@ -11,7 +11,6 @@ public class ClearChatQueueCommand extends Command {
     public ClearChatQueueCommand () {
         super(
                 "clearchatqueue",
-                "Clears the bots chat queue",
                 new String[] {},
                 new String[] { "ccq" },
                 TrustLevel.PUBLIC
@@ -26,8 +25,9 @@ public class ClearChatQueueCommand extends Command {
 
         bot.chat.clearQueue();
 
-        return Component
-                .text("Cleared the bot's chat queue")
-                .color(bot.colorPalette.defaultColor);
+        return Component.translatable(
+                "commands.clearchatqueue.output",
+                bot.colorPalette.defaultColor
+        );
     }
 }

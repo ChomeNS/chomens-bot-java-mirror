@@ -16,12 +16,11 @@ public class ClearChatCommand extends Command {
     public ClearChatCommand () {
         super(
                 "clearchat",
-                "Clears the chat",
                 new String[] { "[player]" },
                 new String[] { "cc" },
                 TrustLevel.PUBLIC,
                 false,
-                new ChatPacketType[]{ ChatPacketType.DISGUISED }
+                new ChatPacketType[] { ChatPacketType.DISGUISED }
         );
     }
 
@@ -34,7 +33,7 @@ public class ClearChatCommand extends Command {
         if (!name.isEmpty()) {
             final PlayerEntry entry = bot.players.getEntry(name);
 
-            if (entry == null) throw new CommandException(Component.text("Invalid player name"));
+            if (entry == null) throw new CommandException(Component.translatable("commands.generic.error.invalid_player"));
 
             final UUID uuid = entry.profile.getId();
 
@@ -42,10 +41,11 @@ public class ClearChatCommand extends Command {
                     Component.empty()
                             .append(Component.text("\n".repeat(1000)))
                             .append(
-                                    Component.empty()
-                                            .append(Component.text("Your chat has been cleared by "))
-                                            .append(context.displayName())
-                                            .color(NamedTextColor.DARK_GREEN)
+                                    Component.translatable(
+                                            "commands.clearchat.specific",
+                                            NamedTextColor.DARK_GREEN,
+                                            context.displayName()
+                                    )
                             ),
                     uuid
             );
@@ -53,7 +53,7 @@ public class ClearChatCommand extends Command {
             bot.chat.tellraw(
                     Component.empty()
                             .append(Component.text("\n".repeat(1000)))
-                            .append(Component.text("The chat has been cleared").color(NamedTextColor.DARK_GREEN))
+                            .append(Component.translatable("commands.clearchat.everyone").color(NamedTextColor.DARK_GREEN))
             );
         }
 

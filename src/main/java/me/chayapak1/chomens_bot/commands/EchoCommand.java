@@ -12,12 +12,11 @@ public class EchoCommand extends Command {
     public EchoCommand () {
         super(
                 "echo",
-                "Makes the bot say a message",
                 new String[] { "<message>" },
                 new String[] { "say" },
                 TrustLevel.PUBLIC,
                 false,
-                new ChatPacketType[]{ ChatPacketType.DISGUISED }
+                new ChatPacketType[] { ChatPacketType.DISGUISED }
         );
     }
 

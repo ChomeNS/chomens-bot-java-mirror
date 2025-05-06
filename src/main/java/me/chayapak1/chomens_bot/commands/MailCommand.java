@@ -26,7 +26,6 @@ public class MailCommand extends Command {
     public MailCommand () {
         super(
                 "mail",
-                "Sends a mail",
                 new String[] { "send <player> <message>", "sendselecteditem <player>", "read" },
                 new String[] {},
                 TrustLevel.PUBLIC
@@ -38,7 +37,7 @@ public class MailCommand extends Command {
         final Bot bot = context.bot;
 
         if (Main.database == null)
-            throw new CommandException(Component.text("Database is not enabled in the bot's config"));
+            throw new CommandException(Component.translatable("commands.generic.error.database_disabled"));
 
         Main.database.checkOverloaded();
 
@@ -61,7 +60,7 @@ public class MailCommand extends Command {
                             )
                     );
 
-                    context.sendOutput(Component.text("Mail sent!").color(bot.colorPalette.defaultColor));
+                    context.sendOutput(Component.translatable("commands.mail.sent", bot.colorPalette.defaultColor));
                 } catch (final CommandException e) {
                     context.sendOutput(e.message.color(NamedTextColor.RED));
                 }
@@ -77,7 +76,7 @@ public class MailCommand extends Command {
                 future.thenApply(output -> {
                     try {
                         if (output.isEmpty()) {
-                            throw new CommandException(Component.text("Player has no `message` NBT tag in their selected item's minecraft:custom_data"));
+                            throw new CommandException(Component.translatable("commands.mail.sendselecteditem.error.no_item_nbt"));
                         }
 
                         DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
@@ -92,9 +91,7 @@ public class MailCommand extends Command {
                                         )
                                 );
 
-                                context.sendOutput(
-                                        Component.text("Mail sent!").color(bot.colorPalette.defaultColor)
-                                );
+                                context.sendOutput(Component.translatable("commands.mail.sent", bot.colorPalette.defaultColor));
                             } catch (final CommandException e) {
                                 context.sendOutput(e.message.color(NamedTextColor.RED));
                             }
@@ -120,7 +117,7 @@ public class MailCommand extends Command {
                     }
 
                     if (senderMailSize == 0) {
-                        context.sendOutput(Component.text("You have no new mails").color(NamedTextColor.RED));
+                        context.sendOutput(Component.translatable("commands.mail.read.no_new_mails", NamedTextColor.RED));
                         return;
                     }
 
@@ -140,29 +137,24 @@ public class MailCommand extends Command {
 
                         mailsComponent.add(
                                 Component.translatable(
-                                        """
-                                                %s %s Sent by: %s %s
-                                                Contents:
-                                                %s""",
-                                        Component.text(count).color(bot.colorPalette.number),
-                                        Component.text("-").color(NamedTextColor.DARK_GRAY),
+                                        "commands.mail.read.mail_contents",
+                                        Component.text(count, bot.colorPalette.number),
+                                        Component.text("-", NamedTextColor.DARK_GRAY),
 
-                                        Component.text(mail.sentBy()).color(bot.colorPalette.username),
+                                        Component.text(mail.sentBy(), bot.colorPalette.username),
                                         Component
-                                                .text("[Hover here for more info]")
-                                                .color(NamedTextColor.GREEN)
+                                                .translatable("commands.mail.read.hover_more_info", NamedTextColor.GREEN)
                                                 .hoverEvent(
                                                         HoverEvent.showText(
                                                                 Component.translatable(
-                                                                        """
-                                                                                Time sent: %s
-                                                                                Server: %s""",
-                                                                        Component.text(formattedTime).color(bot.colorPalette.string),
-                                                                        Component.text(mail.server()).color(bot.colorPalette.string)
-                                                                ).color(NamedTextColor.GREEN)
+                                                                        "commands.mail.read.hover_info",
+                                                                        NamedTextColor.GREEN,
+                                                                        Component.text(formattedTime, bot.colorPalette.string),
+                                                                        Component.text(mail.server(), bot.colorPalette.string)
+                                                                )
                                                         )
                                                 ),
-                                        Component.text(mail.contents()).color(NamedTextColor.WHITE)
+                                        Component.text(mail.contents(), NamedTextColor.WHITE)
                                 ).color(NamedTextColor.GREEN)
                         );
 
@@ -170,26 +162,28 @@ public class MailCommand extends Command {
                     }
 
                     final Component component = Component.empty()
-                            .append(Component.text("Mails ").color(NamedTextColor.GREEN))
+                            .append(Component.translatable("commands.mail.read.mails_text").color(NamedTextColor.GREEN))
                             .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
                             .append(Component.text(tempFinalSenderMailSize).color(NamedTextColor.GRAY))
                             .append(Component.text(")").color(NamedTextColor.DARK_GRAY))
                             .append(Component.newline())
                             .append(Component.join(JoinConfiguration.newlines(), mailsComponent));
 
+                    final Component renderedComponent = bot.commandHandler.renderTranslatable(component);
+
                     if (context.inGame) {
                         bot.chat.tellraw(
-                                component,
+                                renderedComponent,
                                 context.sender.profile.getId()
                         );
                     } else {
-                        context.sendOutput(component);
+                        context.sendOutput(renderedComponent);
                     }
 
                     bot.mail.clear(sender.profile.getName());
                 });
             }
-            default -> context.sendOutput(Component.text("Invalid action").color(NamedTextColor.RED));
+            default -> throw new CommandException(Component.translatable("commands.generic.error.invalid_action"));
         }
 
         return null;

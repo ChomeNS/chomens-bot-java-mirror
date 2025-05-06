@@ -24,7 +24,6 @@ public class SeenCommand extends Command {
     public SeenCommand () {
         super(
                 "seen",
-                "Shows the last seen of a player",
                 new String[] { "<player>" },
                 new String[] { "lastseen" },
                 TrustLevel.PUBLIC
@@ -36,7 +35,7 @@ public class SeenCommand extends Command {
         final Bot bot = context.bot;
 
         if (Main.database == null)
-            throw new CommandException(Component.text("Database is not enabled in the bot's config"));
+            throw new CommandException(Component.translatable("commands.generic.error.database_disabled"));
 
         Main.database.checkOverloaded();
 
@@ -51,11 +50,12 @@ public class SeenCommand extends Command {
                 online = true;
 
                 onlineComponents.add(
-                        Component.empty()
-                                .append(Component.text(player))
-                                .append(Component.text(" is currently online on "))
-                                .append(Component.text(eachBot.getServerString()))
-                                .color(NamedTextColor.RED)
+                        Component.translatable(
+                                "commands.seen.error.currently_online",
+                                NamedTextColor.RED,
+                                Component.text(player),
+                                Component.text(eachBot.getServerString())
+                        )
                 );
             }
         }
@@ -66,22 +66,22 @@ public class SeenCommand extends Command {
             try {
                 final JsonNode playerElement = bot.playersDatabase.getPlayerData(player);
                 if (playerElement == null) throw new CommandException(Component.translatable(
-                        "%s was never seen",
+                        "commands.seen.error.never_seen",
                         Component.text(player)
                 ));
 
                 final ObjectNode lastSeen = (ObjectNode) playerElement.get("lastSeen");
 
                 if (lastSeen == null || lastSeen.isNull())
-                    throw new CommandException(Component.text("This player doesn't seem to have the last seen entry in the database for some reason."));
+                    throw new CommandException(Component.translatable("commands.seen.error.no_last_seen_entry"));
 
                 final JsonNode time = lastSeen.get("time");
 
                 if (time == null || time.isNull())
-                    throw new CommandException(Component.text("This player doesn't seem to have the `lastSeen.time` entry in the database for some reason."));
+                    throw new CommandException(Component.translatable("commands.seen.error.no_time_entry"));
 
                 final Instant instant = Instant.ofEpochMilli(time.asLong());
-                final ZoneId zoneId = ZoneId.of("UTC"); // should i be doing this?
+                final ZoneId zoneId = ZoneId.of("UTC"); // should i be using this?
                 final OffsetDateTime localDateTime = OffsetDateTime.ofInstant(instant, zoneId);
 
                 final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy, hh:mm:ss a Z");
@@ -89,12 +89,15 @@ public class SeenCommand extends Command {
 
                 final String server = lastSeen.get("server").asText();
 
-                context.sendOutput(Component.translatable(
-                        "%s was last seen at %s on %s",
-                        Component.text(player).color(bot.colorPalette.username),
-                        Component.text(formattedTime).color(bot.colorPalette.string),
-                        Component.text(server).color(bot.colorPalette.string)
-                ).color(bot.colorPalette.defaultColor));
+                context.sendOutput(
+                        Component.translatable(
+                                "commands.seen.output",
+                                bot.colorPalette.defaultColor,
+                                Component.text(player, bot.colorPalette.username),
+                                Component.text(formattedTime, bot.colorPalette.string),
+                                Component.text(server, bot.colorPalette.string)
+                        )
+                );
             } catch (final CommandException e) {
                 context.sendOutput(e.message.color(NamedTextColor.RED));
             }

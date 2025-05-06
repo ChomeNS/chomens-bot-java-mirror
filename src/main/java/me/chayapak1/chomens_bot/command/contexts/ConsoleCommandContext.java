@@ -39,7 +39,8 @@ public class ConsoleCommandContext extends CommandContext {
 
     @Override
     public void sendOutput (final Component component) {
-        bot.logger.log(LogType.COMMAND_OUTPUT, component);
+        final Component rendered = bot.commandHandler.renderTranslatable(component);
+        bot.logger.log(LogType.COMMAND_OUTPUT, rendered, false);
     }
 
     @Override

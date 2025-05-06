@@ -11,7 +11,6 @@ public class TestCommand extends Command {
     public TestCommand () {
         super(
                 "test",
-                "Tests if the bot is working",
                 new String[] { "[args]" },
                 new String[] {},
                 TrustLevel.PUBLIC
@@ -21,7 +20,7 @@ public class TestCommand extends Command {
     @Override
     public Component execute (final CommandContext context) throws CommandException {
         return Component.translatable(
-                "Hello, World! Username: %s, Sender UUID: %s, Prefix: %s, Args: %s",
+                "commands.test.output",
                 Component.text(context.sender.profile.getName()),
                 Component.text(context.sender.profile.getIdAsString()),
                 Component.text(context.prefix),

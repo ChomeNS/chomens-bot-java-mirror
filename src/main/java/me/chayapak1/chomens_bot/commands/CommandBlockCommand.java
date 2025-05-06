@@ -25,7 +25,6 @@ public class CommandBlockCommand extends Command {
     public CommandBlockCommand () {
         super(
                 "cb",
-                "Executes a command in the command core and return its output",
                 new String[] {
                         "",
                         "<command>",
@@ -79,28 +78,23 @@ public class CommandBlockCommand extends Command {
         final String command = commandBuilder.toString();
 
         return Component.translatable(
-                """
-                        Size: %s
-                        Layers: %s
-                        From: %s
-                        To: %s
-                        Block: %s
-                        Dimension: %s
-                        %s""",
-                Component
-                        .text(256 * layers)
-                        .append(Component.text(" blocks"))
-                        .color(bot.colorPalette.string),
+                "commands.cb.info.output",
+                bot.colorPalette.secondary,
+                Component.translatable(
+                        "commands.cb.info.size",
+                        bot.colorPalette.string,
+                        Component.text(256 * layers)
+                ),
                 Component.text(layers).color(bot.colorPalette.string),
                 Component.text(from.toString()).color(bot.colorPalette.string),
                 Component.text(to.toString()).color(bot.colorPalette.string),
                 Component.text(block.toString()).color(bot.colorPalette.string),
                 Component.text(bot.world.currentDimension).color(bot.colorPalette.string),
                 Component
-                        .text("Click here to teleport to the command core", NamedTextColor.GREEN)
+                        .translatable("commands.cb.info.click_to_teleport", NamedTextColor.GREEN)
                         .hoverEvent(HoverEvent.showText(Component.text(command, bot.colorPalette.secondary)))
                         .clickEvent(ClickEvent.runCommand(command))
-        ).color(bot.colorPalette.secondary);
+        );
     }
 
     private void runCommand (final Bot bot, final CommandContext context, final String command, final PlayerEntry player) {
@@ -189,9 +183,9 @@ public class CommandBlockCommand extends Command {
                                                                                     .color(bot.colorPalette.uuid)
                                                                     )
                                                                     .append(Component.newline())
-                                                                    .append(Component.text("Click to copy the username to your clipboard").color(NamedTextColor.GREEN))
+                                                                    .append(Component.translatable("commands.generic.click_to_copy_username", NamedTextColor.GREEN))
                                                                     .append(Component.newline())
-                                                                    .append(Component.text("Shift+Click to insert the UUID into your chat box").color(NamedTextColor.GREEN))
+                                                                    .append(Component.translatable("commands.generic.shift_click_to_insert_uuid", NamedTextColor.GREEN))
                                                     )
                                             )
                                             .clickEvent(ClickEvent.copyToClipboard(player.profile.getName()))

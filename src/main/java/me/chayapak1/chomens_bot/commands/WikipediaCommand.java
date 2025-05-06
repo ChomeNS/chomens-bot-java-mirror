@@ -29,12 +29,11 @@ public class WikipediaCommand extends Command {
     public WikipediaCommand () {
         super(
                 "wikipedia",
-                "Wikipedia in Minecraft",
                 new String[] { "<page>" },
                 new String[] { "wiki" },
                 TrustLevel.PUBLIC,
                 false,
-                new ChatPacketType[]{ ChatPacketType.DISGUISED }
+                new ChatPacketType[] { ChatPacketType.DISGUISED }
         );
     }
 
@@ -84,7 +83,7 @@ public class WikipediaCommand extends Command {
                 if (pageID == -1) {
                     throw new CommandException(
                             Component.translatable(
-                                    "Cannot find page: %s",
+                                    "commands.wikipedia.error.not_found",
                                     Component.text(page)
                             )
                     );
@@ -102,7 +101,7 @@ public class WikipediaCommand extends Command {
                 final String title = pageOutput.get("title").getAsString();
                 final String extracted = HTMLUtilities.toFormattingCodes(pageOutput.get("extract").getAsString());
 
-                if (extracted == null) throw new CommandException(Component.text("No contents found"));
+                if (extracted == null) throw new CommandException(Component.translatable("commands.wikipedia.error.no_contents"));
 
                 component = component
                         .append(
@@ -119,7 +118,7 @@ public class WikipediaCommand extends Command {
 
                 context.sendOutput(component);
             } catch (final NumberFormatException e) {
-                context.sendOutput(Component.text("Failed parsing page ID").color(NamedTextColor.RED));
+                context.sendOutput(Component.translatable("commands.wikipedia.error.fail_page_id_parse").color(NamedTextColor.RED));
                 bot.logger.error(e);
             } catch (final CommandException e) {
                 context.sendOutput(e.message.color(NamedTextColor.RED));

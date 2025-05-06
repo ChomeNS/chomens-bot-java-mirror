@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.command;
 
 import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.Main;
+import me.chayapak1.chomens_bot.util.I18nUtilities;
 import net.dv8tion.jda.api.entities.Role;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -9,10 +10,10 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.List;
 
 public enum TrustLevel {
-    PUBLIC(0, Component.text("Public").color(NamedTextColor.GREEN)),
-    TRUSTED(1, Component.text("Trusted").color(NamedTextColor.RED)),
-    ADMIN(2, Component.text("Admin").color(NamedTextColor.DARK_RED)),
-    OWNER(3, Component.text("Owner").color(NamedTextColor.LIGHT_PURPLE));
+    PUBLIC(0, Component.text(I18nUtilities.get("trust_level.public"), NamedTextColor.GREEN)),
+    TRUSTED(1, Component.text(I18nUtilities.get("trust_level.trusted")).color(NamedTextColor.RED)),
+    ADMIN(2, Component.text(I18nUtilities.get("trust_level.admin")).color(NamedTextColor.DARK_RED)),
+    OWNER(3, Component.text(I18nUtilities.get("trust_level.owner")).color(NamedTextColor.LIGHT_PURPLE));
 
     public final int level;
     public final Component component;

@@ -17,7 +17,6 @@ public class TimeCommand extends Command {
     public TimeCommand () {
         super(
                 "time",
-                "Shows the date and time for the specified timezone",
                 new String[] { "<timezone>" },
                 new String[] { "dateandtime", "date" },
                 TrustLevel.PUBLIC
@@ -38,12 +37,13 @@ public class TimeCommand extends Command {
             final String formattedTime = zonedDateTime.format(formatter);
 
             return Component.translatable(
-                    "The current time for %s is: %s",
+                    "commands.time.output",
+                    bot.colorPalette.defaultColor,
                     Component.text(timezone).color(bot.colorPalette.string),
                     Component.text(formattedTime).color(NamedTextColor.GREEN)
-            ).color(bot.colorPalette.defaultColor);
+            );
         } catch (final DateTimeException e) {
-            throw new CommandException(Component.text("Invalid timezone (case-sensitive)"));
+            throw new CommandException(Component.translatable("commands.time.error.invalid_timezone"));
         }
     }
 }

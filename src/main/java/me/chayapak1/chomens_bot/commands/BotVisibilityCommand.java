@@ -13,7 +13,6 @@ public class BotVisibilityCommand extends Command {
     public BotVisibilityCommand () {
         super(
                 "botvisibility",
-                "Changes the bot's visibility",
                 new String[] { "<true|false>", "<on|off>", "" },
                 new String[] { "botvis", "togglevis", "togglevisibility" },
                 TrustLevel.TRUSTED
@@ -38,31 +37,34 @@ public class BotVisibilityCommand extends Command {
 
             final String visibleOrInvisible = vanish.visible ? "visible" : "invisible";
 
-            return Component.empty()
-                    .append(Component.text("The bot's visibility is now "))
-                    .append(Component.text(visibleOrInvisible).color(greenOrGold))
-                    .color(bot.colorPalette.defaultColor);
+            return Component.translatable(
+                    "commands.botvisibility.message",
+                    bot.colorPalette.defaultColor,
+                    Component.translatable("commands.botvisibility." + visibleOrInvisible, greenOrGold)
+            );
         } else {
             switch (action) {
                 case "on", "true" -> {
                     vanish.visible = true;
                     vanish.needsRunning = true;
 
-                    return Component.empty()
-                            .append(Component.text("The bot's visibility is now "))
-                            .append(Component.text("visible").color(NamedTextColor.GREEN))
-                            .color(bot.colorPalette.defaultColor);
+                    return Component.translatable(
+                            "commands.botvisibility.message",
+                            bot.colorPalette.defaultColor,
+                            Component.translatable("commands.botvisibility.visible", NamedTextColor.GREEN)
+                    );
                 }
                 case "off", "false" -> {
                     vanish.visible = false;
                     vanish.needsRunning = true;
 
-                    return Component.empty()
-                            .append(Component.text("The bot's visibility is now "))
-                            .append(Component.text("invisible").color(NamedTextColor.GOLD))
-                            .color(bot.colorPalette.defaultColor);
+                    return Component.translatable(
+                            "commands.botvisibility.message",
+                            bot.colorPalette.defaultColor,
+                            Component.translatable("commands.botvisibility.invisible", NamedTextColor.GOLD)
+                    );
                 }
-                default -> throw new CommandException(Component.text("Invalid action"));
+                default -> throw new CommandException(Component.translatable("commands.generic.error.invalid_action"));
             }
         }
     }

@@ -12,7 +12,6 @@ public class StopCommand extends Command {
     public StopCommand () {
         super(
                 "stop",
-                "Gracefully stops the bot",
                 new String[] { "[reason]" },
                 new String[] {},
                 TrustLevel.OWNER
@@ -27,6 +26,6 @@ public class StopCommand extends Command {
 
         Main.stop(0, reason.isEmpty() ? null : reason);
 
-        return Component.text("Stopping").color(bot.colorPalette.defaultColor);
+        return Component.translatable("commands.stop.output").color(bot.colorPalette.defaultColor);
     }
 }

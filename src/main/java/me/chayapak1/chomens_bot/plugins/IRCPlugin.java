@@ -6,6 +6,7 @@ import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.contexts.IRCCommandContext;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
+import me.chayapak1.chomens_bot.util.I18nUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -173,7 +174,7 @@ public class IRCPlugin extends ListenerAdapter {
         sendMessage(
                 bot,
                 String.format(
-                        "Successfully connected to: %s",
+                        I18nUtilities.get("info.connected"),
                         bot.getServerString()
                 )
         );

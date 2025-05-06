@@ -4,6 +4,7 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.logging.LogType;
 import me.chayapak1.chomens_bot.util.ExceptionUtilities;
+import me.chayapak1.chomens_bot.util.I18nUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
@@ -44,14 +45,14 @@ public class LoggerPlugin implements Listener {
     public void onConnecting () {
         if (bot.connectAttempts > 10) return;
         else if (bot.connectAttempts == 10) {
-            log("Suppressing connection status messages from now on");
+            log(I18nUtilities.get("info.suppressing"));
 
             return;
         }
 
         log(
                 String.format(
-                        "Connecting to: %s",
+                        I18nUtilities.get("info.connecting"),
                         bot.getServerString(true)
                 )
         );
@@ -61,7 +62,7 @@ public class LoggerPlugin implements Listener {
     public void connected (final ConnectedEvent event) {
         log(
                 String.format(
-                        "Successfully connected to: %s",
+                        I18nUtilities.get("info.connected"),
                         bot.getServerString(true)
                 )
         );
@@ -72,8 +73,7 @@ public class LoggerPlugin implements Listener {
         if (bot.connectAttempts >= 10) return;
 
         final Component message = Component.translatable(
-                "Disconnected from %s, reason: %s",
-                Component.text(bot.getServerString(true)),
+                I18nUtilities.get("info.disconnected"),
                 event.getReason()
         );
 

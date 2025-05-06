@@ -16,7 +16,6 @@ public class EvalCommand extends Command {
     public EvalCommand () {
         super(
                 "eval",
-                "Evaluate JavaScript codes on a Node.JS container running @n8n/vm2",
                 new String[] { "run <code>", "reset" },
                 new String[] {},
                 TrustLevel.PUBLIC,
@@ -29,7 +28,7 @@ public class EvalCommand extends Command {
     public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        if (!bot.eval.connected) throw new CommandException(Component.text("Eval server is not online"));
+        if (!bot.eval.connected) throw new CommandException(Component.translatable("commands.eval.error.offline"));
 
         final String action = context.getAction();
 
@@ -49,9 +48,9 @@ public class EvalCommand extends Command {
             case "reset" -> {
                 bot.eval.reset();
 
-                return Component.text("Reset the eval worker").color(bot.colorPalette.defaultColor);
+                return Component.translatable("commands.eval.reset", bot.colorPalette.defaultColor);
             }
-            default -> throw new CommandException(Component.text("Invalid action"));
+            default -> throw new CommandException(Component.translatable("commands.generic.error.invalid_action"));
         }
 
         return null;

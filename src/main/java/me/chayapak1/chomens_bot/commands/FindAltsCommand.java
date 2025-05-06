@@ -25,7 +25,6 @@ public class FindAltsCommand extends Command {
     public FindAltsCommand () {
         super(
                 "findalts",
-                "Finds players with the same IP address",
                 new String[] { "-allservers <player|ip>", "<player|ip>" },
                 new String[] { "alts", "sameip" },
                 TrustLevel.PUBLIC,
@@ -39,7 +38,7 @@ public class FindAltsCommand extends Command {
         final Bot bot = context.bot;
 
         if (Main.database == null)
-            throw new CommandException(Component.text("Database is not enabled in the bot's config"));
+            throw new CommandException(Component.translatable("commands.generic.error.database_disabled"));
 
         Main.database.checkOverloaded();
 
@@ -82,10 +81,9 @@ public class FindAltsCommand extends Command {
                 .color(bot.colorPalette.username);
 
         Component component = Component
-                .translatable("Possible alts for the %s %s:")
-                .color(bot.colorPalette.defaultColor)
+                .translatable("commands.findalts.output", bot.colorPalette.defaultColor)
                 .arguments(
-                        Component.text(argumentIsIP ? "IP" : "player"),
+                        Component.translatable(argumentIsIP ? "commands.findalts.ip" : "commands.findalts.player"),
                         argumentIsIP ?
                                 playerComponent :
                                 Component.translatable("%s (%s)")

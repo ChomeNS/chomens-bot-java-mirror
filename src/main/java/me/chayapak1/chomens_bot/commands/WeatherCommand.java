@@ -20,7 +20,6 @@ public class WeatherCommand extends Command {
     public WeatherCommand () {
         super(
                 "weather",
-                "Shows the weather in a place",
                 new String[] { "<location>" },
                 new String[] {},
                 TrustLevel.PUBLIC
@@ -48,7 +47,8 @@ public class WeatherCommand extends Command {
             final JsonObject jsonObject = gson.fromJson(jsonOutput, JsonObject.class);
 
             return Component.translatable(
-                    "Current weather for %s, %s:\n%s (%s), feels like %s (%s)\nCondition: %s\nCloud cover: %s\nHumidity: %s\nTime: %s",
+                    "commands.weather.info",
+                    bot.colorPalette.defaultColor,
                     Component.text(jsonObject.get("location").getAsJsonObject().get("name").getAsString()).color(bot.colorPalette.string),
                     Component.text(jsonObject.get("location").getAsJsonObject().get("country").getAsString()).color(bot.colorPalette.string),
                     Component
@@ -131,9 +131,9 @@ public class WeatherCommand extends Command {
                                             .getAsString()
                             )
                             .color(bot.colorPalette.string)
-            ).color(bot.colorPalette.defaultColor);
+            );
         } catch (final Exception e) {
-            throw new CommandException(Component.text("Location \"" + location + "\" not found"));
+            throw new CommandException(Component.translatable("commands.weather.error.not_found", Component.text(location)));
         }
     }
 }

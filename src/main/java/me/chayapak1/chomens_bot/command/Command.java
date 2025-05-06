@@ -7,7 +7,6 @@ import java.util.Arrays;
 
 public abstract class Command {
     public final String name;
-    public final String description;
     public String[] usages;
     public final String[] aliases;
     public final TrustLevel trustLevel;
@@ -16,13 +15,11 @@ public abstract class Command {
 
     public Command (
             final String name,
-            final String description,
             final String[] usages,
             final String[] aliases,
             final TrustLevel trustLevel
     ) {
         this.name = name;
-        this.description = description;
         this.usages = usages;
         this.aliases = aliases;
         this.trustLevel = trustLevel;
@@ -31,14 +28,12 @@ public abstract class Command {
 
     public Command (
             final String name,
-            final String description,
             final String[] usages,
             final String[] aliases,
             final TrustLevel trustLevel,
             final boolean consoleOnly
     ) {
         this.name = name;
-        this.description = description;
         this.usages = usages;
         this.aliases = aliases;
         this.trustLevel = trustLevel;
@@ -47,7 +42,6 @@ public abstract class Command {
 
     public Command (
             final String name,
-            final String description,
             final String[] usages,
             final String[] aliases,
             final TrustLevel trustLevel,
@@ -55,7 +49,6 @@ public abstract class Command {
             final ChatPacketType[] disallowedPacketTypes
     ) {
         this.name = name;
-        this.description = description;
         this.usages = usages;
         this.aliases = aliases;
         this.trustLevel = trustLevel;
@@ -69,7 +62,6 @@ public abstract class Command {
     public String toString () {
         return "Command{" +
                 "name='" + name + '\'' +
-                ", description='" + description + '\'' +
                 ", usages=" + Arrays.toString(usages) +
                 ", aliases=" + Arrays.toString(aliases) +
                 ", trustLevel=" + trustLevel +

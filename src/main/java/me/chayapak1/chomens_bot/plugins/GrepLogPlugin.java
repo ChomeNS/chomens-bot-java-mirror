@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.utils.FileUpload;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.io.*;
@@ -86,7 +85,7 @@ public class GrepLogPlugin {
 
             final long matches = stringifiedResult.lines().count();
 
-            if (matches == 0) throw new CommandException(Component.text("No matches has been found"));
+            if (matches == 0) throw new CommandException(Component.translatable("commands.greplog.error.no_matches_found"));
 
             final String channelId = Main.discord.servers.get(bot.getServerString(true));
             final TextChannel logChannel = Main.discord.jda.getTextChannelById(channelId);
@@ -107,24 +106,15 @@ public class GrepLogPlugin {
 
                         final DecimalFormat formatter = new DecimalFormat("#,###");
 
-                        final Component component = Component.translatable("Found %s matches for %s. You can see the results by clicking %s or in the Discord server.")
+                        final Component component = Component.translatable("commands.greplog.found")
                                 .color(bot.colorPalette.defaultColor)
                                 .arguments(
                                         Component.text(formatter.format(matches)).color(bot.colorPalette.number),
                                         Component.text(input).color(bot.colorPalette.string),
                                         Component
-                                                .text("here")
+                                                .translatable("commands.greplog.here")
                                                 .color(NamedTextColor.GREEN)
-                                                .hoverEvent(
-                                                        HoverEvent.showText(
-                                                                Component
-                                                                        .text("Click! :D")
-                                                                        .color(bot.colorPalette.secondary)
-                                                        )
-                                                )
-                                                .clickEvent(
-                                                        ClickEvent.openUrl(url)
-                                                )
+                                                .clickEvent(ClickEvent.openUrl(url))
                                 );
 
                         context.sendOutput(component);

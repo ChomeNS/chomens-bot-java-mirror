@@ -18,7 +18,6 @@ public class FilterCommand extends Command {
     public FilterCommand () {
         super(
                 "filter",
-                "Filter players",
                 new String[] {
                         "add <player> [reason]",
                         "-ignorecase add <player> [reason]",
@@ -57,7 +56,7 @@ public class FilterCommand extends Command {
                 ) {
                     throw new CommandException(
                             Component.translatable(
-                                    "The player %s is already in the filters",
+                                    "commands.filter.error.already_exists",
                                     Component.text(player)
                             )
                     );
@@ -70,7 +69,7 @@ public class FilterCommand extends Command {
                     } catch (final PatternSyntaxException e) {
                         throw new CommandException(
                                 Component.translatable(
-                                        "Failed to parse filter regex: %s",
+                                        "commands.filter.error.invalid_regex",
                                         Component.text(e.toString())
                                 )
                         );
@@ -81,15 +80,17 @@ public class FilterCommand extends Command {
 
                 if (reason.isEmpty()) {
                     return Component.translatable(
-                            "Added %s to the filters",
+                            "commands.filter.add.no_reason",
+                            bot.colorPalette.defaultColor,
                             Component.text(player).color(bot.colorPalette.username)
-                    ).color(bot.colorPalette.defaultColor);
+                    );
                 } else {
                     return Component.translatable(
-                            "Added %s to the filters with reason %s",
+                            "commands.filter.add.reason",
+                            bot.colorPalette.defaultColor,
                             Component.text(player).color(bot.colorPalette.username),
                             Component.text(reason).color(bot.colorPalette.string)
-                    ).color(bot.colorPalette.defaultColor);
+                    );
                 }
             }
             case "remove" -> {
@@ -99,20 +100,21 @@ public class FilterCommand extends Command {
 
                 final FilteredPlayer player = PlayerFilterPlugin.localList.get(index);
 
-                if (player == null) throw new CommandException(Component.text("Invalid index"));
+                if (player == null) throw new CommandException(Component.translatable("commands.generic.error.invalid_index"));
 
                 DatabasePlugin.EXECUTOR_SERVICE.submit(() -> bot.playerFilter.remove(player.playerName()));
 
                 return Component.translatable(
-                        "Removed %s from the filters",
-                        Component.text(player.playerName()).color(bot.colorPalette.username)
-                ).color(bot.colorPalette.defaultColor);
+                        "commands.filter.remove.output",
+                        bot.colorPalette.defaultColor,
+                        Component.text(player.playerName(), bot.colorPalette.username)
+                );
             }
             case "clear" -> {
                 context.checkOverloadArgs(1);
 
                 DatabasePlugin.EXECUTOR_SERVICE.submit(bot.playerFilter::clear);
-                return Component.text("Cleared the filter").color(bot.colorPalette.defaultColor);
+                return Component.translatable("commands.filter.clear.output").color(bot.colorPalette.defaultColor);
             }
             case "list" -> {
                 context.checkOverloadArgs(1);
@@ -126,8 +128,8 @@ public class FilterCommand extends Command {
                     if (player.ignoreCase() || player.regex()) {
                         final List<Component> args = new ArrayList<>();
 
-                        if (player.ignoreCase()) args.add(Component.text("ignore case"));
-                        if (player.regex()) args.add(Component.text("regex"));
+                        if (player.ignoreCase()) args.add(Component.translatable("commands.filter.list.ignore_case"));
+                        if (player.regex()) args.add(Component.translatable("commands.filter.list.regex"));
 
                         options = options
                                 .append(Component.text("("))
@@ -146,11 +148,12 @@ public class FilterCommand extends Command {
                     if (!player.reason().isEmpty()) {
                         options = options
                                 .append(Component.text("("))
-                                .append(Component.text("reason: ").color(NamedTextColor.GRAY))
                                 .append(
-                                        Component
-                                                .text(player.reason())
-                                                .color(bot.colorPalette.string)
+                                        Component.translatable(
+                                                "commands.filter.list.reason",
+                                                NamedTextColor.GRAY,
+                                                Component.text(player.reason(), bot.colorPalette.string)
+                                        )
                                 )
                                 .append(Component.text(")"));
                     }
@@ -168,16 +171,16 @@ public class FilterCommand extends Command {
                 }
 
                 return Component.empty()
-                        .append(Component.text("Filtered players ").color(NamedTextColor.GREEN))
-                        .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
-                        .append(Component.text(PlayerFilterPlugin.localList.size()).color(NamedTextColor.GRAY))
-                        .append(Component.text(")").color(NamedTextColor.DARK_GRAY))
+                        .append(Component.translatable("commands.filter.list.filtered_players_text", NamedTextColor.GREEN))
+                        .append(Component.text("(", NamedTextColor.DARK_GRAY))
+                        .append(Component.text(PlayerFilterPlugin.localList.size(), NamedTextColor.GRAY))
+                        .append(Component.text(")", NamedTextColor.DARK_GRAY))
                         .append(Component.newline())
                         .append(
                                 Component.join(JoinConfiguration.newlines(), filtersComponents)
                         );
             }
-            default -> throw new CommandException(Component.text("Invalid action"));
+            default -> throw new CommandException(Component.translatable("commands.generic.error.invalid_action"));
         }
     }
 }

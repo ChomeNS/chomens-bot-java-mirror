@@ -62,7 +62,7 @@ public class CommandContext {
             if (required) {
                 throw new CommandException(
                         Component.translatable(
-                                "Expected %s at position %s (%s %s)%s",
+                                "arguments_parsing.error.expected_string",
                                 Component.text(type),
                                 Component.text(argsPosition),
                                 Component.text(prefix + userInputCommandName),
@@ -79,7 +79,7 @@ public class CommandContext {
                                                         Component.translatable("[%s]")
                                                                 .arguments(
                                                                         Component
-                                                                                .text("click for usages")
+                                                                                .translatable("arguments_parsing.hover.usages")
                                                                                 .clickEvent(ClickEvent.suggestCommand(prefix + "help " + this.commandName))
                                                                 )
                                                 ) :
@@ -112,14 +112,10 @@ public class CommandContext {
                     if (greedyString.charAt(pointer - 1) != quote) {
                         throw new CommandException(
                                 Component
-                                        .translatable("Unterminated quote at %s <-- %s")
+                                        .translatable("arguments_parsing.error.unterminated_quote")
                                         .arguments(
-                                                Component
-                                                        .text(greedyString)
-                                                        .color(bot.colorPalette.string),
-                                                Component
-                                                        .text(quote)
-                                                        .color(NamedTextColor.YELLOW)
+                                                Component.text(greedyString, bot.colorPalette.string),
+                                                Component.text(quote, NamedTextColor.YELLOW)
                                         )
                         );
                     }
@@ -139,7 +135,7 @@ public class CommandContext {
                     if (pointer >= greedyString.length()) {
                         throw new CommandException(
                                 Component
-                                        .translatable("Unterminated escape at %s <--")
+                                        .translatable("arguments_parsing.error.unterminated_escape")
                                         .arguments(
                                                 Component
                                                         .text(greedyString)
@@ -225,7 +221,7 @@ public class CommandContext {
         try {
             return Integer.parseInt(string);
         } catch (final NumberFormatException e) {
-            throw new CommandException(Component.text("Invalid integer"));
+            throw new CommandException(Component.translatable("arguments_parsing.error.invalid_type", Component.text("integer")));
         }
     }
 
@@ -237,7 +233,7 @@ public class CommandContext {
         try {
             return Long.parseLong(string);
         } catch (final NumberFormatException e) {
-            throw new CommandException(Component.text("Invalid long"));
+            throw new CommandException(Component.translatable("arguments_parsing.error.invalid_type", Component.text("long")));
         }
     }
 
@@ -252,7 +248,7 @@ public class CommandContext {
             if (!Double.isFinite(parsedDouble) && !allowInfinite) throw new NumberFormatException();
             else return parsedDouble;
         } catch (final NumberFormatException e) {
-            throw new CommandException(Component.text("Invalid double"));
+            throw new CommandException(Component.translatable("arguments_parsing.error.invalid_type", Component.text("double")));
         }
     }
 
@@ -267,7 +263,7 @@ public class CommandContext {
             if (!Float.isFinite(parsedFloat) && !allowInfinite) throw new NumberFormatException();
             else return parsedFloat;
         } catch (final NumberFormatException e) {
-            throw new CommandException(Component.text("Invalid float"));
+            throw new CommandException(Component.translatable("arguments_parsing.error.invalid_type", Component.text("float")));
         }
     }
 
@@ -279,7 +275,7 @@ public class CommandContext {
         return switch (string) {
             case "true" -> true;
             case "false" -> false;
-            default -> throw new CommandException(Component.text("Invalid boolean"));
+            default -> throw new CommandException(Component.translatable("arguments_parsing.error.invalid_type", Component.text("boolean")));
         };
     }
 
@@ -293,7 +289,7 @@ public class CommandContext {
 
             throw new CommandException(
                     Component.translatable(
-                            "Invalid %s. Possible values are: %s",
+                            "arguments_parsing.error.invalid_enum",
                             Component.text(enumClass.getSimpleName()),
                             Component.text(Arrays.toString(values))
                     )
@@ -312,7 +308,7 @@ public class CommandContext {
 
         if (count > maximumArgs) throw new CommandException(
                 Component.translatable(
-                        "Too many arguments, expected %s max",
+                        "arguments_parsing.error.too_many_arguments",
                         Component.text(maximumArgs)
                 )
         );

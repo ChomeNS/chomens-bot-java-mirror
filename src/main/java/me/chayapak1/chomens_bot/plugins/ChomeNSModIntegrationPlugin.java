@@ -20,6 +20,7 @@ import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.logging.LogType;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.Ascii85;
+import me.chayapak1.chomens_bot.util.I18nUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
@@ -186,7 +187,7 @@ public class ChomeNSModIntegrationPlugin implements Listener {
             bot.logger.log(
                     LogType.INFO,
                     Component.translatable(
-                            "Ignoring suspected replay attack payload with metadata: %s",
+                            I18nUtilities.get("chomens_mod.replay_attack"),
                             Component.text(metadata.toString()) // PayloadMetadata has toString()
                     )
             );

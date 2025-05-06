@@ -16,6 +16,7 @@ import me.chayapak1.chomens_bot.song.Loop;
 import me.chayapak1.chomens_bot.song.Note;
 import me.chayapak1.chomens_bot.song.Song;
 import me.chayapak1.chomens_bot.util.Ascii85;
+import me.chayapak1.chomens_bot.util.I18nUtilities;
 import me.chayapak1.chomens_bot.util.PathUtilities;
 import me.chayapak1.chomens_bot.util.TimestampUtilities;
 import net.kyori.adventure.text.Component;
@@ -46,7 +47,6 @@ public class MusicCommand extends Command implements Listener {
     public MusicCommand () {
         super(
                 "music",
-                "Plays music",
                 new String[] {
                         "play <song|URL>",
                         "playitem",
@@ -82,7 +82,7 @@ public class MusicCommand extends Command implements Listener {
         else commandsPerSecond.getAndIncrement();
 
         if (context.bot.music.locked && !(context instanceof ConsoleCommandContext))
-            throw new CommandException(Component.text("Managing music is currently locked"));
+            throw new CommandException(Component.translatable("commands.music.error.locked"));
 
         final String action = context.getAction();
 
@@ -104,14 +104,14 @@ public class MusicCommand extends Command implements Listener {
             case "pause", "resume" -> pause(context);
             case "info" -> info(context);
             case "testsong" -> testSong(context);
-            default -> Component.text("Invalid action").color(NamedTextColor.RED);
+            default -> throw new CommandException(Component.translatable("commands.generic.error.invalid_action"));
         };
     }
 
     public Component play (final CommandContext context) throws CommandException {
         final MusicPlayerPlugin player = context.bot.music;
 
-        if (player.loaderThread != null) throw new CommandException(Component.text("Already loading a song"));
+        if (player.loaderThread != null) throw new CommandException(Component.translatable("commands.music.play.error.already_loading"));
 
         final String stringPath = context.getString(true, true);
 
@@ -151,13 +151,13 @@ public class MusicCommand extends Command implements Listener {
                                 .filter(song -> song.equalsIgnoreCase(lowerCaseFile) || song.toLowerCase().contains(lowerCaseFile))
                                 .toArray(String[]::new);
 
-                        if (matchedArray.length == 0) throw new CommandException(Component.text("Song not found"));
+                        if (matchedArray.length == 0) throw new CommandException(Component.translatable("commands.music.error.song_not_found"));
 
                         final String file = matchedArray[0];
 
                         player.loadSong(Path.of(realPath.toString(), file), context.sender);
                     } catch (final NoSuchFileException e) {
-                        throw new CommandException(Component.text("Directory does not exist"));
+                        throw new CommandException(Component.translatable("commands.music.error.no_directory"));
                     }
                 } else {
                     try (final DirectoryStream<Path> stream = Files.newDirectoryStream(ROOT)) {
@@ -173,7 +173,7 @@ public class MusicCommand extends Command implements Listener {
                                 .filter(song -> song.equalsIgnoreCase(stringPath) || song.toLowerCase().contains(stringPath.toLowerCase()))
                                 .toArray(String[]::new);
 
-                        if (matchedArray.length == 0) throw new CommandException(Component.text("Song not found"));
+                        if (matchedArray.length == 0) throw new CommandException(Component.translatable("commands.music.error.song_not_found"));
 
                         final String file = matchedArray[0];
 
@@ -184,9 +184,9 @@ public class MusicCommand extends Command implements Listener {
                 }
             }
         } catch (final MalformedURLException e) {
-            throw new CommandException(Component.text("Invalid URL"));
+            throw new CommandException(Component.translatable("commands.music.error.invalid_url"));
         } catch (final IndexOutOfBoundsException e) {
-            throw new CommandException(Component.text("Song not found"));
+            throw new CommandException(Component.translatable("commands.music.error.song_not_found"));
         } catch (final CommandException e) {
             throw e;
         } catch (final Exception e) {
@@ -208,7 +208,7 @@ public class MusicCommand extends Command implements Listener {
 
         future.thenApply(output -> {
             if (output.isEmpty()) {
-                context.sendOutput(Component.text("Player has no `SongItemData.SongData` NBT tag in their selected item's minecraft:custom_data").color(NamedTextColor.RED));
+                context.sendOutput(Component.translatable("commands.music.playitem.error.no_item_nbt", NamedTextColor.RED));
                 return null;
             }
 
@@ -224,7 +224,7 @@ public class MusicCommand extends Command implements Listener {
                             context.sender
                     );
                 } catch (final IllegalArgumentException e2) {
-                    context.sendOutput(Component.text("Invalid Base64 or Ascii85 in the selected item").color(NamedTextColor.RED));
+                    context.sendOutput(Component.translatable("commands.music.playitem.invalid_data", NamedTextColor.RED));
                 }
             }
 
@@ -242,7 +242,7 @@ public class MusicCommand extends Command implements Listener {
         bot.music.songQueue.clear();
         bot.music.loaderThread = null;
 
-        return Component.text("Cleared the song queue").color(bot.colorPalette.defaultColor);
+        return Component.translatable("commands.music.stop", bot.colorPalette.defaultColor);
     }
 
     public Component loop (final CommandContext context) throws CommandException {
@@ -256,28 +256,32 @@ public class MusicCommand extends Command implements Listener {
 
         switch (loop) {
             case OFF -> {
-                return Component.empty()
-                        .append(Component.text("Looping is now "))
-                        .append(Component.text("disabled").color(NamedTextColor.RED))
-                        .color(bot.colorPalette.defaultColor);
+                return Component.translatable(
+                        "commands.music.loop.off",
+                        bot.colorPalette.defaultColor,
+                        Component.translatable("commands.music.loop.off.disabled", NamedTextColor.RED)
+                );
             }
             case CURRENT -> {
                 if (bot.music.currentSong != null) {
-                    return Component.empty()
-                            .append(Component.text("Now looping "))
-                            .append(Component.text(bot.music.currentSong.name).color(bot.colorPalette.secondary))
-                            .color(bot.colorPalette.defaultColor);
+                    return Component.translatable(
+                            "commands.music.loop.current.with_song",
+                            bot.colorPalette.defaultColor,
+                            Component.text(bot.music.currentSong.name, bot.colorPalette.secondary)
+                    );
                 } else {
-                    return Component.empty()
-                            .append(Component.text("Will now loop the next song"))
-                            .color(bot.colorPalette.defaultColor);
+                    return Component.translatable(
+                            "commands.music.loop.current.without_song",
+                            bot.colorPalette.defaultColor
+                    );
                 }
             }
             case ALL -> {
-                return Component.text("Now looping every song").color(bot.colorPalette.defaultColor);
+                return Component.translatable("commands.music.loop.all", bot.colorPalette.defaultColor);
             }
-            default -> throw new CommandException(Component.text("Invalid action"));
         }
+
+        return null;
     }
 
     public Component list (final CommandContext context) throws CommandException {
@@ -348,7 +352,7 @@ public class MusicCommand extends Command implements Listener {
                 list.clear();
             }
         } catch (final IOException e) {
-            throw new CommandException(Component.text("Directory doesn't exist"));
+            throw new CommandException(Component.translatable("commands.music.error.no_directory"));
         }
 
         return null;
@@ -359,18 +363,15 @@ public class MusicCommand extends Command implements Listener {
 
         final Bot bot = context.bot;
         final MusicPlayerPlugin music = bot.music;
-        if (music.currentSong == null) throw new CommandException(Component.text("No song is currently playing"));
-
-        context.sendOutput(
-                Component.empty()
-                        .append(Component.text("Skipping "))
-                        .append(Component.text(music.currentSong.name).color(bot.colorPalette.secondary))
-                        .color(bot.colorPalette.defaultColor)
-        );
+        if (music.currentSong == null) throw new CommandException(Component.translatable("commands.music.error.not_playing"));
 
         music.skip();
 
-        return null;
+        return Component.translatable(
+                "commands.music.skip",
+                bot.colorPalette.defaultColor,
+                Component.text(music.currentSong.name, bot.colorPalette.secondary)
+        );
     }
 
     public Component nowPlaying (final CommandContext context) throws CommandException {
@@ -378,12 +379,13 @@ public class MusicCommand extends Command implements Listener {
 
         final Bot bot = context.bot;
         final Song song = bot.music.currentSong;
-        if (song == null) throw new CommandException(Component.text("No song is currently playing"));
+        if (song == null) throw new CommandException(Component.translatable("commands.music.error.not_playing"));
 
-        return Component.empty()
-                .append(Component.text("Now playing "))
-                .append(Component.text(song.name).color(bot.colorPalette.secondary))
-                .color(bot.colorPalette.defaultColor);
+        return Component.translatable(
+                "commands.music.nowplaying",
+                bot.colorPalette.defaultColor,
+                Component.text(song.name, bot.colorPalette.secondary)
+        );
     }
 
     public Component queue (final CommandContext context) throws CommandException {
@@ -396,13 +398,20 @@ public class MusicCommand extends Command implements Listener {
         int i = 0;
         for (final Song song : queue) {
             queueWithNames.add(
-                    Component.text(song.name).color((i++ & 1) == 0 ? bot.colorPalette.primary : bot.colorPalette.secondary)
+                    Component.text(
+                            song.name,
+                            (i++ & 1) == 0
+                                    ? bot.colorPalette.primary
+                                    : bot.colorPalette.secondary
+                    )
             );
         }
 
-        return Component.empty()
-                .append(Component.text("Queue: ").color(NamedTextColor.GREEN))
-                .append(Component.join(JoinConfiguration.separator(Component.text(", ")), queueWithNames));
+        return Component.translatable(
+                "commands.music.queue",
+                NamedTextColor.GREEN,
+                Component.join(JoinConfiguration.commas(true), queueWithNames)
+        );
     }
 
     // lazy fix for java using "goto" as keyword real
@@ -414,17 +423,18 @@ public class MusicCommand extends Command implements Listener {
 
         final long timestamp = TimestampUtilities.parseTimestamp(input);
 
-        if (currentSong == null) throw new CommandException(Component.text("No song is currently playing"));
+        if (currentSong == null) throw new CommandException(Component.translatable("commands.music.error.not_playing"));
 
-        if (timestamp < 0 || timestamp > currentSong.length * bot.music.speed)
-            throw new CommandException(Component.text("Invalid timestamp"));
+        if (timestamp < 0 || timestamp > currentSong.length / bot.music.speed)
+            throw new CommandException(Component.translatable("commands.music.goto.error.invalid_timestamp"));
 
-        currentSong.setTime(timestamp);
+        currentSong.setTime(timestamp / bot.music.speed);
 
-        return Component
-                .text("Set the time to ")
-                .append(Component.text(input).color(bot.colorPalette.number))
-                .color(bot.colorPalette.defaultColor);
+        return Component.translatable(
+                "commands.music.goto",
+                bot.colorPalette.defaultColor,
+                Component.text(input, bot.colorPalette.number)
+        );
     }
 
     public Component pitch (final CommandContext context) throws CommandException {
@@ -436,10 +446,11 @@ public class MusicCommand extends Command implements Listener {
 
         bot.music.pitch = pitch;
 
-        return Component.empty()
-                .append(Component.text("Set the pitch to "))
-                .append(Component.text(pitch).color(bot.colorPalette.number))
-                .color(bot.colorPalette.defaultColor);
+        return Component.translatable(
+                "commands.music.pitch",
+                bot.colorPalette.defaultColor,
+                Component.text(pitch, bot.colorPalette.number)
+        );
     }
 
     public Component speed (final CommandContext context) throws CommandException {
@@ -450,8 +461,8 @@ public class MusicCommand extends Command implements Listener {
 
         final double speed = context.getDouble(true, false);
 
-        if (speed > 5) throw new CommandException(Component.text("Too fast!"));
-        else if (speed < 0) throw new CommandException(Component.text("Invalid speed"));
+        if (speed > 5) throw new CommandException(Component.translatable("commands.music.speed.error.too_fast"));
+        else if (speed < 0) throw new CommandException(Component.translatable("commands.music.speed.error.negative"));
 
         double oldTime = -1;
 
@@ -461,10 +472,11 @@ public class MusicCommand extends Command implements Listener {
 
         if (currentSong != null) currentSong.setTime(oldTime);
 
-        return Component.empty()
-                .append(Component.text("Set the speed to "))
-                .append(Component.text(speed).color(bot.colorPalette.number))
-                .color(bot.colorPalette.defaultColor);
+        return Component.translatable(
+                "commands.music.speed",
+                bot.colorPalette.defaultColor,
+                Component.text(speed, bot.colorPalette.number)
+        );
     }
 
     public Component volume (final CommandContext context) throws CommandException {
@@ -476,10 +488,11 @@ public class MusicCommand extends Command implements Listener {
 
         bot.music.volume = volume;
 
-        return Component.empty()
-                .append(Component.text("Set the volume modifier to "))
-                .append(Component.text(volume).color(bot.colorPalette.number))
-                .color(bot.colorPalette.defaultColor);
+        return Component.translatable(
+                "commands.music.volume",
+                bot.colorPalette.defaultColor,
+                Component.text(volume, bot.colorPalette.number)
+        );
     }
 
     public Component amplify (final CommandContext context) throws CommandException {
@@ -489,15 +502,16 @@ public class MusicCommand extends Command implements Listener {
 
         final int amplify = context.getInteger(true);
 
-        if (amplify > 8) throw new CommandException(Component.text("Too big value"));
-        else if (amplify < 0) throw new CommandException(Component.text("Invalid amplification value"));
+        if (amplify > 8) throw new CommandException(Component.translatable("commands.music.amplify.error.too_big_value"));
+        else if (amplify < 0) throw new CommandException(Component.translatable("commands.music.amplify.error.negative"));
 
         bot.music.amplify = amplify;
 
-        return Component.empty()
-                .append(Component.text("Set the amplification to "))
-                .append(Component.text(amplify).color(bot.colorPalette.number))
-                .color(bot.colorPalette.defaultColor);
+        return Component.translatable(
+                "commands.music.amplify",
+                bot.colorPalette.defaultColor,
+                Component.text(amplify, bot.colorPalette.number)
+        );
     }
 
     public Component noteInstrument (final CommandContext context) throws CommandException {
@@ -507,13 +521,14 @@ public class MusicCommand extends Command implements Listener {
 
         bot.music.instrument = instrument;
 
-        if (!instrument.equals("off")) {
-            return Component.empty()
-                    .append(Component.text("Set the instrument for every note to "))
-                    .append(Component.text(instrument).color(bot.colorPalette.secondary))
-                    .color(bot.colorPalette.defaultColor);
+        if (instrument.equalsIgnoreCase("off")) {
+            return Component.translatable("commands.music.noteinstrument.off", bot.colorPalette.defaultColor);
         } else {
-            return Component.text("Every notes are now using its instrument").color(bot.colorPalette.defaultColor);
+            return Component.translatable(
+                    "commands.music.noteinstrument.set",
+                    bot.colorPalette.defaultColor,
+                    Component.text(instrument)
+            );
         }
     }
 
@@ -523,14 +538,14 @@ public class MusicCommand extends Command implements Listener {
         final Bot bot = context.bot;
         final Song currentSong = bot.music.currentSong;
 
-        if (currentSong == null) throw new CommandException(Component.text("No song is currently playing"));
+        if (currentSong == null) throw new CommandException(Component.translatable("commands.music.error.not_playing"));
 
         if (currentSong.paused) {
             currentSong.play();
-            return Component.text("Resumed the current song").color(bot.colorPalette.defaultColor);
+            return Component.translatable("commands.music.resumed", bot.colorPalette.defaultColor);
         } else {
             currentSong.pause();
-            return Component.text("Paused the current song").color(bot.colorPalette.defaultColor);
+            return Component.translatable("commands.music.paused", bot.colorPalette.defaultColor);
         }
     }
 
@@ -540,7 +555,7 @@ public class MusicCommand extends Command implements Listener {
         final Bot bot = context.bot;
         final Song currentSong = bot.music.currentSong;
 
-        if (currentSong == null) throw new CommandException(Component.text("No song is currently playing"));
+        if (currentSong == null) throw new CommandException(Component.translatable("commands.music.error.not_playing"));
 
         final List<Component> components = new ObjectArrayList<>();
 
@@ -552,18 +567,18 @@ public class MusicCommand extends Command implements Listener {
         final String formattedNotesCount = formatter.format(currentSong.size());
 
         if (isNotNullAndNotBlank(currentSong.name))
-            components.add(Component.translatable("Title/Filename: %s", keyColor, Component.text(currentSong.name, valueColor)));
+            components.add(Component.translatable("commands.music.info.title", keyColor, Component.text(currentSong.name, valueColor)));
         if (isNotNullAndNotBlank(currentSong.requester))
-            components.add(Component.translatable("Requested by: %s", keyColor, Component.text(currentSong.requester, valueColor)));
+            components.add(Component.translatable("commands.music.info.requester", keyColor, Component.text(currentSong.requester, valueColor)));
         if (isNotNullAndNotBlank(currentSong.songAuthor))
-            components.add(Component.translatable("Author: %s", keyColor, Component.text(currentSong.songAuthor, valueColor)));
+            components.add(Component.translatable("commands.music.info.author", keyColor, Component.text(currentSong.songAuthor, valueColor)));
         if (isNotNullAndNotBlank(currentSong.songOriginalAuthor))
-            components.add(Component.translatable("Original author: %s", keyColor, Component.text(currentSong.songOriginalAuthor, valueColor)));
+            components.add(Component.translatable("commands.music.info.original_author", keyColor, Component.text(currentSong.songOriginalAuthor, valueColor)));
         if (isNotNullAndNotBlank(currentSong.tracks))
-            components.add(Component.translatable("Tracks: %s", keyColor, Component.text(currentSong.tracks, valueColor)));
-        components.add(Component.translatable("Notes: %s", keyColor, Component.text(formattedNotesCount, valueColor)));
+            components.add(Component.translatable("commands.music.info.tracks", keyColor, Component.text(currentSong.tracks, valueColor)));
+        components.add(Component.translatable("commands.music.info.notes", keyColor, Component.text(formattedNotesCount, valueColor)));
         if (isNotNullAndNotBlank(currentSong.songDescription))
-            components.add(Component.translatable("Description: %s", keyColor, Component.text(currentSong.songDescription, valueColor)));
+            components.add(Component.translatable("commands.music.info.description", keyColor, Component.text(currentSong.songDescription, valueColor)));
 
         return Component.join(JoinConfiguration.newlines(), components);
     }
@@ -576,10 +591,10 @@ public class MusicCommand extends Command implements Listener {
         final Song song = new Song(
                 "test_song",
                 bot,
-                "Test Song",
+                I18nUtilities.get("commands.music.testsong.title"),
                 "chayapak",
                 "hhhzzzsss",
-                "SongPlayer's test song ported to ChomeNS Bot",
+                I18nUtilities.get("commands.music.testsong.description"),
                 null,
                 false
         );
@@ -613,6 +628,6 @@ public class MusicCommand extends Command implements Listener {
 
         bot.music.songQueue.add(song);
 
-        return Component.text("Test song has been added to the song queue").color(bot.colorPalette.defaultColor);
+        return Component.translatable("commands.music.testsong.output", bot.colorPalette.defaultColor);
     }
 }

@@ -11,7 +11,6 @@ public class CowsayCommand extends Command {
     public CowsayCommand () {
         super(
                 "cowsay",
-                "Moo",
                 new String[] { "<message>" },
                 new String[] {},
                 TrustLevel.PUBLIC

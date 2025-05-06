@@ -12,7 +12,6 @@ public class TPSBarCommand extends Command {
     public TPSBarCommand () {
         super(
                 "tpsbar",
-                "Shows the server's TPS using Minecraft Bossbar",
                 new String[] { "<on|off>" },
                 new String[] { "tps" },
                 TrustLevel.PUBLIC
@@ -30,19 +29,21 @@ public class TPSBarCommand extends Command {
         switch (action) {
             case "on" -> {
                 bot.tps.on();
-                return Component.empty()
-                        .append(Component.text("TPSBar is now "))
-                        .append(Component.text("enabled").color(NamedTextColor.GREEN))
-                        .color(bot.colorPalette.defaultColor);
+                return Component.translatable(
+                        "commands.tpsbar.output",
+                        bot.colorPalette.defaultColor,
+                        Component.translatable("commands.generic.enabled", NamedTextColor.GREEN)
+                );
             }
             case "off" -> {
                 bot.tps.off();
-                return Component.empty()
-                        .append(Component.text("TPSBar is now "))
-                        .append(Component.text("disabled").color(NamedTextColor.RED))
-                        .color(bot.colorPalette.defaultColor);
+                return Component.translatable(
+                        "commands.tpsbar.output",
+                        bot.colorPalette.defaultColor,
+                        Component.translatable("commands.generic.disabled", NamedTextColor.RED)
+                );
             }
-            default -> throw new CommandException(Component.text("Invalid action"));
+            default -> throw new CommandException(Component.translatable("commands.generic.error.invalid_action"));
         }
     }
 }

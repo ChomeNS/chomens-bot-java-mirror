@@ -23,7 +23,7 @@ public class ComponentUtilities {
     // rewritten from chipmunkbot, a lot of stuff has changed, and also ANSI and section signs support, etc...
     public static final Map<String, String> LANGUAGE = new Object2ObjectOpenHashMap<>();
 
-    private static final List<String> LANGUAGES = List.of("language.json", "voiceChatLanguage.json");
+    private static final List<String> LANGUAGES = List.of("minecraftLanguage.json", "voiceChatLanguage.json");
 
     public static final Map<String, String> KEYBINDINGS = loadJsonStringMap("keybinds.json");
 

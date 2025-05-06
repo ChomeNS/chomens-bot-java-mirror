@@ -18,9 +18,10 @@ public class ChomeNSModCommandContext extends CommandContext {
 
     @Override
     public void sendOutput (final Component component) {
+        final Component rendered = bot.commandHandler.renderTranslatable(component);
         bot.chomeNSMod.send(
                 sender,
-                new ClientboundMessagePacket(component)
+                new ClientboundMessagePacket(rendered)
         );
     }
 

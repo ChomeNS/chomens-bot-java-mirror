@@ -19,7 +19,6 @@ public class ServerEvalCommand extends Command {
     public ServerEvalCommand () {
         super(
                 "servereval",
-                "Evaluate codes using LuaJ",
                 new String[] { "<code>" },
                 new String[] {},
                 TrustLevel.OWNER
@@ -36,7 +35,7 @@ public class ServerEvalCommand extends Command {
             if (lua != null) lua.close();
             lua = null;
 
-            return Component.text("Reset the Lua instance").color(bot.colorPalette.defaultColor);
+            return Component.translatable("commands.servereval.reset", bot.colorPalette.defaultColor);
         }
 
         bot.executorService.submit(() -> {

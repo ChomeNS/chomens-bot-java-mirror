@@ -19,7 +19,6 @@ public class IPFilterCommand extends Command {
     public IPFilterCommand () {
         super(
                 "ipfilter",
-                "Filters IPs",
                 new String[] {
                         "add <ip> [reason]",
                         "remove <index>",
@@ -46,7 +45,7 @@ public class IPFilterCommand extends Command {
                 if (IPFilterPlugin.localList.containsKey(ip)) {
                     throw new CommandException(
                             Component.translatable(
-                                    "The IP %s is already in the filters",
+                                    "commands.ipfilter.add.error.already_exists",
                                     Component.text(ip)
                             )
                     );
@@ -56,15 +55,17 @@ public class IPFilterCommand extends Command {
 
                 if (reason.isEmpty()) {
                     return Component.translatable(
-                            "Added %s to the filters",
-                            Component.text(ip).color(bot.colorPalette.number)
-                    ).color(bot.colorPalette.defaultColor);
+                            "commands.filter.add.no_reason",
+                            bot.colorPalette.defaultColor,
+                            Component.text(ip).color(bot.colorPalette.username)
+                    );
                 } else {
                     return Component.translatable(
-                            "Added %s to the filters with reason %s",
-                            Component.text(ip).color(bot.colorPalette.number),
+                            "commands.filter.add.reason",
+                            bot.colorPalette.defaultColor,
+                            Component.text(ip).color(bot.colorPalette.username),
                             Component.text(reason).color(bot.colorPalette.string)
-                    ).color(bot.colorPalette.defaultColor);
+                    );
                 }
             }
             case "remove" -> {
@@ -74,20 +75,21 @@ public class IPFilterCommand extends Command {
 
                 final String targetIP = new ArrayList<>(IPFilterPlugin.localList.keySet()).get(index);
 
-                if (targetIP == null) throw new CommandException(Component.text("Invalid index"));
+                if (targetIP == null) throw new CommandException(Component.translatable("commands.generic.error.invalid_index"));
 
                 DatabasePlugin.EXECUTOR_SERVICE.submit(() -> bot.ipFilter.remove(targetIP));
 
                 return Component.translatable(
-                        "Removed %s from the filters",
-                        Component.text(targetIP).color(bot.colorPalette.number)
-                ).color(bot.colorPalette.defaultColor);
+                        "commands.ipfilter.remove.output",
+                        bot.colorPalette.defaultColor,
+                        Component.text(targetIP, bot.colorPalette.username)
+                );
             }
             case "clear" -> {
                 context.checkOverloadArgs(1);
 
                 DatabasePlugin.EXECUTOR_SERVICE.submit(bot.ipFilter::clear);
-                return Component.text("Cleared the filter").color(bot.colorPalette.defaultColor);
+                return Component.translatable("commands.ipfilter.clear.output").color(bot.colorPalette.defaultColor);
             }
             case "list" -> {
                 context.checkOverloadArgs(1);
@@ -104,11 +106,12 @@ public class IPFilterCommand extends Command {
                     if (!reason.isEmpty()) {
                         reasonComponent = reasonComponent
                                 .append(Component.text("("))
-                                .append(Component.text("reason: ").color(NamedTextColor.GRAY))
                                 .append(
-                                        Component
-                                                .text(reason)
-                                                .color(bot.colorPalette.string)
+                                        Component.translatable(
+                                                "commands.ipfilter.list.reason",
+                                                NamedTextColor.GRAY,
+                                                Component.text(reason, bot.colorPalette.string)
+                                        )
                                 )
                                 .append(Component.text(")"));
                     }
@@ -126,16 +129,16 @@ public class IPFilterCommand extends Command {
                 }
 
                 return Component.empty()
-                        .append(Component.text("Filtered IPs ").color(NamedTextColor.GREEN))
-                        .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
-                        .append(Component.text(IPFilterPlugin.localList.size()).color(NamedTextColor.GRAY))
-                        .append(Component.text(")").color(NamedTextColor.DARK_GRAY))
+                        .append(Component.translatable("commands.ipfilter.list.filtered_ips_text", NamedTextColor.GREEN))
+                        .append(Component.text("(", NamedTextColor.DARK_GRAY))
+                        .append(Component.text(IPFilterPlugin.localList.size(), NamedTextColor.GRAY))
+                        .append(Component.text(")", NamedTextColor.DARK_GRAY))
                         .append(Component.newline())
                         .append(
                                 Component.join(JoinConfiguration.newlines(), filtersComponents)
                         );
             }
-            default -> throw new CommandException(Component.text("Invalid action"));
+            default -> throw new CommandException(Component.translatable("commands.generic.error.invalid_action"));
         }
     }
 }

@@ -16,7 +16,6 @@ public class WhitelistCommand extends Command {
     public WhitelistCommand () {
         super(
                 "whitelist",
-                "Manages whitelist",
                 new String[] { "enable", "disable", "add <player>", "remove <index>", "clear", "list" },
                 new String[] {},
                 TrustLevel.ADMIN
@@ -35,14 +34,14 @@ public class WhitelistCommand extends Command {
 
                 bot.whitelist.enable();
 
-                return Component.text("Enabled whitelist").color(bot.colorPalette.defaultColor);
+                return Component.translatable("commands.whitelist.enable", bot.colorPalette.defaultColor);
             }
             case "disable" -> {
                 context.checkOverloadArgs(1);
 
                 bot.whitelist.disable();
 
-                return Component.text("Disabled whitelist").color(bot.colorPalette.defaultColor);
+                return Component.translatable("commands.whitelist.disable", bot.colorPalette.defaultColor);
             }
             case "add" -> {
                 final String player = context.getString(true, true);
@@ -50,9 +49,10 @@ public class WhitelistCommand extends Command {
                 bot.whitelist.add(player);
 
                 return Component.translatable(
-                        "Added %s to the whitelist",
-                        Component.text(player).color(bot.colorPalette.username)
-                ).color(bot.colorPalette.defaultColor);
+                        "commands.whitelist.add",
+                        bot.colorPalette.defaultColor,
+                        Component.text(player, bot.colorPalette.username)
+                );
             }
             case "remove" -> {
                 try {
@@ -61,11 +61,12 @@ public class WhitelistCommand extends Command {
                     final String player = bot.whitelist.remove(index);
 
                     return Component.translatable(
-                            "Removed %s from the whitelist",
-                            Component.text(player).color(bot.colorPalette.username)
-                    ).color(bot.colorPalette.defaultColor);
-                } catch (final IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
-                    throw new CommandException(Component.text("Invalid index"));
+                            "commands.whitelist.remove",
+                            bot.colorPalette.defaultColor,
+                            Component.text(player, bot.colorPalette.username)
+                    );
+                } catch (final IndexOutOfBoundsException | IllegalArgumentException | NullPointerException e) {
+                    throw new CommandException(Component.translatable("commands.generic.error.invalid_index"));
                 }
             }
             case "clear" -> {
@@ -73,7 +74,7 @@ public class WhitelistCommand extends Command {
 
                 bot.whitelist.clear();
 
-                return Component.text("Cleared the whitelist").color(bot.colorPalette.defaultColor);
+                return Component.translatable("commands.whitelist.clear", bot.colorPalette.defaultColor);
             }
             case "list" -> {
                 context.checkOverloadArgs(1);
@@ -94,7 +95,7 @@ public class WhitelistCommand extends Command {
                 }
 
                 return Component.empty()
-                        .append(Component.text("Whitelisted players ").color(NamedTextColor.GREEN))
+                        .append(Component.translatable("commands.whitelist.whitelisted_players_text").color(NamedTextColor.GREEN))
                         .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
                         .append(Component.text(bot.whitelist.list.size()).color(NamedTextColor.GRAY))
                         .append(Component.text(")").color(NamedTextColor.DARK_GRAY))
@@ -103,7 +104,7 @@ public class WhitelistCommand extends Command {
                                 Component.join(JoinConfiguration.newlines(), playersComponent)
                         );
             }
-            default -> throw new CommandException(Component.text("Invalid action"));
+            default -> throw new CommandException(Component.translatable("commands.generic.error.invalid_action"));
         }
     }
 }

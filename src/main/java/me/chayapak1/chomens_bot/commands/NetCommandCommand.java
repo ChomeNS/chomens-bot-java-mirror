@@ -15,7 +15,6 @@ public class NetCommandCommand extends Command {
     public NetCommandCommand () {
         super(
                 "netcmd",
-                "Runs a command on the specified server(s) and return its output",
                 new String[] { "<servers separated by a comma> <command>" },
                 new String[] { "networkcommand", "irccommand", "remotecommand" },
                 TrustLevel.TRUSTED
@@ -52,7 +51,7 @@ public class NetCommandCommand extends Command {
             }
         }
 
-        if (bots.isEmpty()) throw new CommandException(Component.text("No servers have been found with your input"));
+        if (bots.isEmpty()) throw new CommandException(Component.translatable("commands.netcmd.error.no_servers_found"));
 
         final String command = context.getString(true, true);
 

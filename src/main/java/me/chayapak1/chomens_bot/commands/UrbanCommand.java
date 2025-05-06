@@ -34,7 +34,6 @@ public class UrbanCommand extends Command {
     public UrbanCommand () {
         super(
                 "urban",
-                "Urban Dictionary in Minecraft",
                 new String[] { "<term>" },
                 new String[] {},
                 TrustLevel.PUBLIC,
@@ -46,7 +45,7 @@ public class UrbanCommand extends Command {
     }
 
     public Component execute (final CommandContext context) throws CommandException {
-        if (requestsPerSecond.get() > 3) throw new CommandException(Component.text("Too many requests"));
+        if (requestsPerSecond.get() > 3) throw new CommandException(Component.translatable("commands.urban.error.too_many_requests"));
 
         final Bot bot = context.bot;
 
@@ -69,9 +68,9 @@ public class UrbanCommand extends Command {
 
                 final JsonArray list = jsonObject.getAsJsonArray("list");
 
-                if (list.isEmpty()) context.sendOutput(Component.text("No results found").color(NamedTextColor.RED));
+                if (list.isEmpty()) context.sendOutput(Component.translatable("commands.urban.error.no_results", NamedTextColor.RED));
 
-                Component discordComponent = Component.text("*Showing only 3 results because Discord*").append(Component.newline());
+                Component discordComponent = Component.translatable("commands.urban.discord_warning").append(Component.newline());
 
                 int count = 0;
                 int index = 1;
@@ -81,7 +80,7 @@ public class UrbanCommand extends Command {
                     final JsonObject definitionObject = element.getAsJsonObject();
 
                     final String word = definitionObject.get("word").getAsString();
-                    final String _definition = definitionObject.get("definition").getAsString();
+                    final String originalDefinition = definitionObject.get("definition").getAsString();
 
                     final DecimalFormat formatter = new DecimalFormat("#,###");
 
@@ -90,40 +89,35 @@ public class UrbanCommand extends Command {
                     final String thumbsDown = formatter.format(definitionObject.get("thumbs_down").getAsInt());
                     final String example = definitionObject.get("example").getAsString();
 
-                    // whats the best way to implement this?
+                    // what's the best way to implement this?
                     // also ohio code warning
                     Component definitionComponent = Component.empty();
 
-                    final String definition = _definition.replaceAll("\r\n?", "\n");
+                    final String definition = originalDefinition.replaceAll("\r\n?", "\n");
 
-                    final String[] splittedDefinition = definition.split("[\\[\\]]");
-                    for (int i = 0; i < splittedDefinition.length; i++) {
+                    final String[] splitDefinition = definition.split("[\\[\\]]");
+                    for (int i = 0; i < splitDefinition.length; i++) {
                         final boolean even = i % 2 == 0;
 
                         final String wordWithDefinition = word + " - " + definition;
 
                         final Component globalHoverEvent = Component.translatable(
-                                """
-                                        Written by %s
-                                        Thumbs up: %s
-                                        Thumbs down: %s
-                                        Example: %s""",
-                                Component.text(author).color(bot.colorPalette.string),
-                                Component.text(thumbsUp).color(NamedTextColor.GREEN),
-                                Component.text(thumbsDown).color(NamedTextColor.RED),
-                                Component.text(example.replaceAll("\r\n?", "\n")).color(bot.colorPalette.string)
+                                "commands.urban.hover.info",
+                                Component.text(author, bot.colorPalette.string),
+                                Component.text(thumbsUp, NamedTextColor.GREEN),
+                                Component.text(thumbsDown, NamedTextColor.RED),
+                                Component.text(example.replaceAll("\r\n?", "\n"), bot.colorPalette.string)
                         );
 
                         if (even) {
                             definitionComponent = definitionComponent.append(
                                     Component
-                                            .text(splittedDefinition[i])
-                                            .color(NamedTextColor.GRAY)
+                                            .text(splitDefinition[i], NamedTextColor.GRAY)
                                             .hoverEvent(
                                                     HoverEvent.showText(
                                                             globalHoverEvent
                                                                     .append(Component.newline())
-                                                                    .append(Component.text("Click here to copy the word and the definition to your clipboard").color(NamedTextColor.GREEN))
+                                                                    .append(Component.translatable("commands.urban.hover.copy", NamedTextColor.GREEN))
                                                     )
                                             )
                                             .clickEvent(ClickEvent.copyToClipboard(wordWithDefinition))
@@ -132,17 +126,23 @@ public class UrbanCommand extends Command {
                             final String command = context.prefix +
                                     name +
                                     " " +
-                                    splittedDefinition[i];
+                                    splitDefinition[i];
 
                             definitionComponent = definitionComponent.append(
                                     Component
-                                            .text(splittedDefinition[i])
+                                            .text(splitDefinition[i])
                                             .style(Style.style(TextDecoration.UNDERLINED))
                                             .hoverEvent(
                                                     HoverEvent.showText(
                                                             globalHoverEvent
                                                                     .append(Component.newline())
-                                                                    .append(Component.text("Click here to run " + command).color(NamedTextColor.GREEN))
+                                                                    .append(
+                                                                            Component.translatable(
+                                                                                    "commands.urban.hover.run",
+                                                                                    NamedTextColor.GREEN,
+                                                                                    Component.text(command)
+                                                                            )
+                                                                    )
                                                     )
                                             )
                                             .clickEvent(

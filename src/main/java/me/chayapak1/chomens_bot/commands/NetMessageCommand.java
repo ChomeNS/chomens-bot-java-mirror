@@ -18,7 +18,6 @@ public class NetMessageCommand extends Command {
     public NetMessageCommand () {
         super(
                 "netmsg",
-                "Broadcasts a message to all of the servers that the bot is connected",
                 new String[] { "<message>" },
                 new String[] { "networkmessage", "irc" },
                 TrustLevel.PUBLIC,
@@ -46,7 +45,7 @@ public class NetMessageCommand extends Command {
                                 Component.empty()
                                         .append(Component.text(originServerAddress).color(NamedTextColor.GRAY))
                                         .append(Component.newline())
-                                        .append(Component.text("Click here to copy the server host and port to your clipboard").color(NamedTextColor.GREEN))
+                                        .append(Component.translatable("commands.netmsg.hover.copy_server_to_clipboard", NamedTextColor.GREEN))
                         )
                 );
 
@@ -68,9 +67,10 @@ public class NetMessageCommand extends Command {
                         .clickEvent(ClickEvent.copyToClipboard(rawMessage))
                         .hoverEvent(
                                 HoverEvent.showText(
-                                        Component
-                                                .text("Click here to copy the message to your clipboard")
-                                                .color(NamedTextColor.GREEN)
+                                        Component.translatable(
+                                                "commands.generic.copy_to_copy_message",
+                                                NamedTextColor.GREEN
+                                        )
                                 )
                         )
         ).color(NamedTextColor.DARK_GRAY);

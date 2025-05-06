@@ -8,6 +8,7 @@ import me.chayapak1.chomens_bot.plugins.DiscordPlugin;
 import me.chayapak1.chomens_bot.plugins.IRCPlugin;
 import me.chayapak1.chomens_bot.util.ArrayUtilities;
 import me.chayapak1.chomens_bot.util.HttpUtilities;
+import me.chayapak1.chomens_bot.util.I18nUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import org.yaml.snakeyaml.LoaderOptions;
@@ -147,7 +148,7 @@ public class Main {
             if (config.discord.enabled) discord = new DiscordPlugin(config);
             if (config.irc.enabled) irc = new IRCPlugin(config);
 
-            LoggerUtilities.log("Initialized all bots. Now connecting");
+            LoggerUtilities.log(I18nUtilities.get("initialized"));
 
             for (final Bot bot : bots) bot.connect();
         } catch (final Exception e) {
@@ -183,9 +184,9 @@ public class Main {
         else stopping = true;
 
         final String stoppingMessage = String.format(
-                "%s (%s)",
-                type != null ? type : "Stopping..",
-                reason != null ? reason : "No reason given"
+                I18nUtilities.get("info.stopping.generic"),
+                type != null ? type : I18nUtilities.get("info.stopping"),
+                reason != null ? reason : I18nUtilities.get("info.no_reason")
         );
 
         LoggerUtilities.log(stoppingMessage);

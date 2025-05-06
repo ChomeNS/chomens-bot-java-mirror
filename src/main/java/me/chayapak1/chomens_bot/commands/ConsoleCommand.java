@@ -16,7 +16,6 @@ public class ConsoleCommand extends Command {
     public ConsoleCommand () {
         super(
                 "console",
-                "Controls stuff about console",
                 new String[] {
                         "server <server>",
                         "logtoconsole <true|false>",
@@ -48,9 +47,11 @@ public class ConsoleCommand extends Command {
 
                 if (server.equalsIgnoreCase("all")) {
                     Main.console.consoleServer = "all";
-                    return Component.text(
-                            "Set the console server to all servers"
-                    ).color(bot.colorPalette.defaultColor);
+                    return Component.translatable(
+                            "commands.console.server.set",
+                            bot.colorPalette.defaultColor,
+                            Component.translatable("commands.console.server.all_servers")
+                    );
                 }
 
                 try {
@@ -61,11 +62,17 @@ public class ConsoleCommand extends Command {
                             .orElse("all");
 
                     return Component.translatable(
-                            "Set the console server to %s",
+                            "commands.console.server.set",
+                            bot.colorPalette.defaultColor,
                             Component.text(Main.console.consoleServer)
-                    ).color(bot.colorPalette.defaultColor);
+                    );
                 } catch (final ArrayIndexOutOfBoundsException e) {
-                    throw new CommandException(Component.text("Invalid server: " + server));
+                    throw new CommandException(
+                            Component.translatable(
+                                    "commands.console.server.error.invalid_server",
+                                    Component.text(server)
+                            )
+                    );
                 }
             }
             case "logtoconsole" -> {
@@ -76,9 +83,12 @@ public class ConsoleCommand extends Command {
                 bot.logger.logToConsole = bool;
 
                 return Component.translatable(
-                        "Logging to console is now %s",
-                        bool ? Component.text("enabled").color(NamedTextColor.GREEN) : Component.text("disabled").color(NamedTextColor.RED)
-                ).color(bot.colorPalette.defaultColor);
+                        "commands.console.logtoconsole.set",
+                        bot.colorPalette.defaultColor,
+                        bool
+                                ? Component.translatable("commands.generic.enabled").color(NamedTextColor.GREEN)
+                                : Component.translatable("commands.generic.disabled").color(NamedTextColor.RED)
+                );
             }
             case "printdisconnectedreason" -> {
                 context.checkOverloadArgs(2);
@@ -88,9 +98,12 @@ public class ConsoleCommand extends Command {
                 bot.printDisconnectedCause = bool;
 
                 return Component.translatable(
-                        "Printing the disconnected cause is now %s",
-                        bool ? Component.text("enabled").color(NamedTextColor.GREEN) : Component.text("disabled").color(NamedTextColor.RED)
-                ).color(bot.colorPalette.defaultColor);
+                        "commands.console.printdisconnectedreason.set",
+                        bot.colorPalette.defaultColor,
+                        bool
+                                ? Component.translatable("commands.generic.enabled").color(NamedTextColor.GREEN)
+                                : Component.translatable("commands.generic.disabled").color(NamedTextColor.RED)
+                );
             }
         }
 

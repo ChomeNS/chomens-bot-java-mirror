@@ -31,11 +31,12 @@ public class PlayerCommandContext extends CommandContext {
     }
 
     @Override
-    public void sendOutput (final Component message) {
+    public void sendOutput (final Component component) {
+        final Component rendered = bot.commandHandler.renderTranslatable(component);
         bot.chat.tellraw(
                 Component.translatable(
                         "%s",
-                        message,
+                        rendered,
                         Component.text("chomens_bot_command_output" + ((commandName != null) ? "_" + commandName : ""))
                 ),
                 selector

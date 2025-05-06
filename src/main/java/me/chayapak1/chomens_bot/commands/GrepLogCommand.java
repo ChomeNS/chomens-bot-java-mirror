@@ -14,7 +14,6 @@ public class GrepLogCommand extends Command {
     public GrepLogCommand () {
         super(
                 "greplog",
-                "Queries the bot's logs",
                 new String[] { "<input>", "-ignorecase ...", "-regex ...", "stop" },
                 new String[] { "logquery", "findlog" },
                 TrustLevel.PUBLIC
@@ -26,7 +25,7 @@ public class GrepLogCommand extends Command {
         final Bot bot = context.bot;
 
         if (Main.discord == null || Main.discord.jda == null) {
-            throw new CommandException(Component.text("The bot's Discord integration has to be enabled to use this command."));
+            throw new CommandException(Component.translatable("commands.generic.error.discord_disabled"));
         }
 
         final List<String> flags = context.getFlags(true, CommonFlags.IGNORE_CASE, CommonFlags.REGEX);
@@ -37,26 +36,23 @@ public class GrepLogCommand extends Command {
         final String input = context.getString(true, true);
 
         if (input.equalsIgnoreCase("stop")) {
-            if (thread == null) throw new CommandException(Component.text("There is no query process running"));
+            if (thread == null) throw new CommandException(Component.translatable("commands.greplog.error.not_running"));
 
             bot.grepLog.running = false;
             bot.grepLog.pattern = null;
 
             thread = null;
 
-            return Component.text("Stopped querying the logs").color(bot.colorPalette.defaultColor);
+            return Component.translatable("commands.greplog.stopped").color(bot.colorPalette.defaultColor);
         }
 
-        if (thread != null) throw new CommandException(Component.text("Another query is already running"));
+        if (thread != null) throw new CommandException(Component.translatable("commands.greplog.error.already_running"));
 
         context.sendOutput(
                 Component
-                        .translatable("Started querying the logs for %s")
-                        .color(bot.colorPalette.defaultColor)
+                        .translatable("commands.greplog.started", bot.colorPalette.defaultColor)
                         .arguments(
-                                Component
-                                        .text(input)
-                                        .color(bot.colorPalette.string)
+                                Component.text(input, bot.colorPalette.string)
                         )
         );
 

@@ -16,13 +16,12 @@ public class KickCommand extends Command {
     public KickCommand () {
         super(
                 "kick",
-                "Kicks a player",
                 new String[] {},
                 new String[] {},
                 TrustLevel.TRUSTED
         );
 
-        final String allMethods = String.join("|", Arrays.stream(Kick.values()).map(Enum::name).toList());
+        final String allMethods = String.join(" | ", Arrays.stream(Kick.values()).map(Enum::name).toList());
 
         this.usages = new String[] { "<" + allMethods + "> <player>" };
     }
@@ -35,21 +34,18 @@ public class KickCommand extends Command {
 
         final PlayerEntry entry = bot.players.getEntry(context.getString(true, true));
 
-        if (entry == null) throw new CommandException(Component.text("Invalid player name"));
+        if (entry == null) throw new CommandException(Component.translatable("commands.generic.error.invalid_player"));
 
         final String name = entry.profile.getName();
         final UUID uuid = entry.profile.getId();
 
         bot.exploits.kick(method, uuid);
 
-        return Component.empty()
-                .append(Component.text("Kicking player"))
-                .append(Component.space())
-                .append(Component.text(name).color(bot.colorPalette.username))
-                .append(Component.space())
-                .append(Component.text("with method"))
-                .append(Component.space())
-                .append(Component.text(method.name()).color(bot.colorPalette.string))
-                .color(bot.colorPalette.defaultColor);
+        return Component.translatable(
+                "commands.kick.output",
+                bot.colorPalette.defaultColor,
+                Component.text(name, bot.colorPalette.username),
+                Component.text(method.toString(), bot.colorPalette.string)
+        );
     }
 }

@@ -19,7 +19,6 @@ public class ListCommand extends Command {
     public ListCommand () {
         super(
                 "list",
-                "Lists all players in the server (including vanished)",
                 new String[] {},
                 new String[] { "players" },
                 TrustLevel.PUBLIC
@@ -57,12 +56,14 @@ public class ListCommand extends Command {
                     .append(Component.newline())
                     .append(Component.newline())
                     .append(
-                            entry.usernames.isEmpty() ?
-                                    Component
-                                            .text("No other usernames associated")
-                                            .color(NamedTextColor.GRAY) :
-                                    Component.translatable(
-                                            "Usernames: %s",
+                            entry.usernames.isEmpty()
+                                    ? Component.translatable(
+                                            "commands.list.no_other_usernames",
+                                            NamedTextColor.GRAY
+                                    )
+                                    : Component.translatable(
+                                            "commands.list.with_usernames",
+                                            bot.colorPalette.secondary,
                                             Component
                                                     .join(
                                                             JoinConfiguration.commas(true),
@@ -72,68 +73,55 @@ public class ListCommand extends Command {
                                                                     .toList()
                                                     )
                                                     .color(bot.colorPalette.string)
-                                    ).color(bot.colorPalette.secondary)
+                                    )
                     )
                     .append(Component.newline())
                     .append(
                             Component.translatable(
-                                    "Vanished: %s",
-                                    Component
-                                            .text(!entry.listed)
-                                            .color(bot.colorPalette.string)
-                            ).color(bot.colorPalette.secondary)
+                                    "commands.list.vanished",
+                                    bot.colorPalette.secondary,
+                                    Component.text(!entry.listed, bot.colorPalette.string)
+                            )
                     )
                     .append(Component.newline())
                     .append(
                             Component.translatable(
-                                    "Latency: %s",
+                                    "commands.list.latency",
+                                    bot.colorPalette.secondary,
                                     Component
-                                            .text(entry.latency)
+                                            .text(entry.latency, bot.colorPalette.string) // using number color palette will not blend in (GOLD)
                                             .append(Component.text("ms"))
-                                            .color(bot.colorPalette.string) // using number color palette will not blend in (GOLD)
-                            ).color(bot.colorPalette.secondary)
+                            )
                     )
                     .append(Component.newline())
                     .append(
                             Component.translatable(
-                                    "Game Mode: %s",
-                                    Component
-                                            .text(entry.gamemode.name())
-                                            .color(bot.colorPalette.string)
-                            ).color(bot.colorPalette.secondary)
+                                    "commands.list.game_mode",
+                                    bot.colorPalette.secondary,
+                                    Component.text(entry.gamemode.name(), bot.colorPalette.string)
+                            )
                     )
                     .append(Component.newline())
                     .append(
                             Component.translatable(
-                                    "IP Address: %s",
-                                    Component
-                                            .text(entry.ip == null ? "N/A" : entry.ip)
-                                            .color(bot.colorPalette.string)
-                            ).color(bot.colorPalette.secondary)
+                                    "commands.list.ip_address",
+                                    bot.colorPalette.secondary,
+                                    Component.text(entry.ip == null ? "N/A" : entry.ip, bot.colorPalette.string)
+                            )
                     )
                     .append(Component.newline())
                     .append(Component.newline())
-                    .append(Component.text("Click to copy the username to your clipboard").color(NamedTextColor.GREEN))
+                    .append(Component.translatable("commands.generic.click_to_copy_username", NamedTextColor.GREEN))
                     .append(Component.newline())
-                    .append(Component.text("Shift+Click to insert the UUID into your chat box").color(NamedTextColor.GREEN));
+                    .append(Component.translatable("commands.generic.shift_click_to_insert_uuid", NamedTextColor.GREEN));
 
             playersComponent.add(
-                    Component.translatable(
+                    Component
+                            .translatable(
                                     "%s",
                                     entry.displayName == null ?
                                             Component.text(entry.profile.getName()) :
-                                            entry.displayName,
-                                    Component
-                                            .text(entry.profile.getIdAsString())
-                                            .hoverEvent(
-                                                    HoverEvent.showText(
-                                                            Component.text("Click here to copy the UUID to your clipboard").color(NamedTextColor.GREEN)
-                                                    )
-                                            )
-                                            .clickEvent(
-                                                    ClickEvent.copyToClipboard(entry.profile.getIdAsString())
-                                            )
-                                            .color(bot.colorPalette.uuid)
+                                            entry.displayName
                             )
                             .hoverEvent(
                                     HoverEvent.showText(hoverEvent)
@@ -146,7 +134,7 @@ public class ListCommand extends Command {
         }
 
         return Component.empty()
-                .append(Component.text("Players ").color(NamedTextColor.GREEN))
+                .append(Component.translatable("commands.list.players_text").color(NamedTextColor.GREEN))
                 .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
                 .append(Component.text(list.size()).color(NamedTextColor.GRAY))
                 .append(Component.text(")").color(NamedTextColor.DARK_GRAY))

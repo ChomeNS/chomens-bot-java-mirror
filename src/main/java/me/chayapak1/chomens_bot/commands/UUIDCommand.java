@@ -16,7 +16,6 @@ public class UUIDCommand extends Command {
     public UUIDCommand () {
         super(
                 "uuid",
-                "Shows your UUID or other player's UUID",
                 new String[] { "[username]" },
                 new String[] {},
                 TrustLevel.PUBLIC
@@ -44,39 +43,45 @@ public class UUIDCommand extends Command {
             }
 
             return Component.translatable(
-                    "%s's UUID: %s",
+                    "commands.uuid.other",
+                    NamedTextColor.GREEN,
                     Component.text(name),
                     Component
-                            .text(uuid)
+                            .text(uuid, bot.colorPalette.uuid)
                             .hoverEvent(
                                     HoverEvent.showText(
-                                            Component.text("Click here to copy the UUID to your clipboard").color(NamedTextColor.GREEN)
+                                            Component.translatable(
+                                                    "commands.generic.click_to_copy_uuid",
+                                                    NamedTextColor.GREEN
+                                            )
                                     )
                             )
                             .clickEvent(
                                     ClickEvent.copyToClipboard(uuid)
                             )
-                            .color(bot.colorPalette.uuid)
-            ).color(NamedTextColor.GREEN);
+            );
         } else {
             final PlayerEntry entry = context.sender;
 
             final String uuid = entry.profile.getIdAsString();
 
             return Component.translatable(
-                    "Your UUID: %s",
+                    "commands.uuid.self",
+                    NamedTextColor.GREEN,
                     Component
-                            .text(uuid)
+                            .text(uuid, bot.colorPalette.uuid)
                             .hoverEvent(
                                     HoverEvent.showText(
-                                            Component.text("Click here to copy the UUID to your clipboard").color(NamedTextColor.GREEN)
+                                            Component.translatable(
+                                                    "commands.generic.click_to_copy_uuid",
+                                                    NamedTextColor.GREEN
+                                            )
                                     )
                             )
                             .clickEvent(
                                     ClickEvent.copyToClipboard(uuid)
                             )
-                            .color(bot.colorPalette.uuid)
-            ).color(NamedTextColor.GREEN);
+            );
         }
     }
 }

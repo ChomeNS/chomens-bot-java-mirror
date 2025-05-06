@@ -101,7 +101,9 @@ public class MusicPlayerPlugin implements Listener {
 
     public void loadSong (final URL location, final PlayerEntry sender) {
         if (urlLimit >= bot.config.music.urlRatelimit.limit) {
-            bot.chat.tellraw(Component.text("URL loading is being rate limited!").color(NamedTextColor.RED));
+            bot.chat.tellraw(bot.commandHandler.renderTranslatable(
+                    Component.translatable("commands.music.error.url_ratelimited", NamedTextColor.RED)
+            ));
             return;
         }
 
@@ -118,13 +120,13 @@ public class MusicPlayerPlugin implements Listener {
 
         this.loaderThread = loaderThread;
 
-        bot.chat.tellraw(
+        bot.chat.tellraw(bot.commandHandler.renderTranslatable(
                 Component
                         .translatable(
-                                "Loading %s",
+                                "commands.music.loading",
                                 Component.text(songName, bot.colorPalette.secondary)
                         )
-                        .color(bot.colorPalette.defaultColor),
+                        .color(bot.colorPalette.defaultColor)),
                 BOTH_SELECTOR
         );
 
@@ -148,11 +150,12 @@ public class MusicPlayerPlugin implements Listener {
                 addBossBar();
 
                 currentSong = songQueue.getFirst(); // songQueue.poll();
-                bot.chat.tellraw(
+                bot.chat.tellraw(bot.commandHandler.renderTranslatable(
                         Component.translatable(
-                                "Now playing %s",
+                                "commands.music.nowplaying",
+                                bot.colorPalette.defaultColor,
                                 Component.empty().append(Component.text(currentSong.name)).color(bot.colorPalette.secondary)
-                        ).color(bot.colorPalette.defaultColor),
+                        )),
                         BOTH_SELECTOR
                 );
                 currentSong.play();
@@ -183,11 +186,12 @@ public class MusicPlayerPlugin implements Listener {
                     return;
                 }
 
-                bot.chat.tellraw(
+                bot.chat.tellraw(bot.commandHandler.renderTranslatable(
                         Component.translatable(
-                                "Finished playing %s",
+                                "commands.music.finished",
+                                bot.colorPalette.defaultColor,
                                 Component.empty().append(Component.text(currentSong.name)).color(bot.colorPalette.secondary)
-                        ).color(bot.colorPalette.defaultColor),
+                        )),
                         BOTH_SELECTOR
                 );
 
@@ -293,7 +297,7 @@ public class MusicPlayerPlugin implements Listener {
     public void removeBossBar () {
         final BotBossBar bossBar = bot.bossbar.get(BOSS_BAR_NAME);
 
-        if (bossBar != null) bossBar.setTitle(Component.text("No song is currently playing"));
+        if (bossBar != null) bossBar.setTitle(Component.translatable("commands.music.error.not_playing"));
 
         bot.bossbar.remove(BOSS_BAR_NAME);
     }

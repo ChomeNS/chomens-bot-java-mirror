@@ -11,7 +11,6 @@ public class RefillCoreCommand extends Command {
     public RefillCoreCommand () {
         super(
                 "refillcore",
-                "Refills and resets the bots command core",
                 new String[] {},
                 new String[] { "rc" },
                 TrustLevel.PUBLIC
@@ -27,8 +26,9 @@ public class RefillCoreCommand extends Command {
         bot.core.reset();
         bot.core.refill();
 
-        return Component
-                .text("Refilled the command core")
-                .color(bot.colorPalette.defaultColor);
+        return Component.translatable(
+                "commands.refillcore.output",
+                bot.colorPalette.defaultColor
+        );
     }
 }

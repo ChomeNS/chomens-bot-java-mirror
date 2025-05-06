@@ -6,13 +6,13 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
+import me.chayapak1.chomens_bot.util.I18nUtilities;
 import net.kyori.adventure.text.Component;
 
 public class RestartCommand extends Command {
     public RestartCommand () {
         super(
                 "restart",
-                "Gracefully restarts the bot",
                 new String[] { "[reason]" },
                 new String[] {},
                 TrustLevel.OWNER
@@ -25,8 +25,8 @@ public class RestartCommand extends Command {
 
         final String reason = context.getString(true, false);
 
-        Main.stop(12, reason.isEmpty() ? null : reason, "Restarting..");
+        Main.stop(12, reason.isEmpty() ? null : reason, I18nUtilities.get("info.restarting"));
 
-        return Component.text("Restarting").color(bot.colorPalette.defaultColor);
+        return Component.translatable("commands.restart.output", bot.colorPalette.defaultColor);
     }
 }

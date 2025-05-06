@@ -18,7 +18,6 @@ public class CloopCommand extends Command {
     public CloopCommand () {
         super(
                 "cloop",
-                "Loops commands",
                 new String[] { "add <interval> <ChronoUnit> <command>", "remove <index>", "clear", "list" },
                 new String[] { "commandloop" },
                 TrustLevel.TRUSTED
@@ -39,7 +38,7 @@ public class CloopCommand extends Command {
                 final ChronoUnit unit = context.getEnum(ChronoUnit.class);
 
                 if (unit == ChronoUnit.NANOS && interval < 1000)
-                    throw new CommandException(Component.text("Interval must not be less than 1000 nanoseconds"));
+                    throw new CommandException(Component.translatable("commands.cloop.add.error.too_low_nanoseconds"));
 
                 final String command = context.getString(true, true);
 
@@ -50,11 +49,12 @@ public class CloopCommand extends Command {
                 }
 
                 return Component.translatable(
-                        "Added %s with interval %s %s to the cloops",
+                        "commands.cloop.add.output",
+                        bot.colorPalette.defaultColor,
                         Component.text(command).color(bot.colorPalette.string),
                         Component.text(interval).color(bot.colorPalette.number),
                         Component.text(unit.toString()).color(bot.colorPalette.string)
-                ).color(bot.colorPalette.defaultColor);
+                );
             }
             case "remove" -> {
                 context.checkOverloadArgs(2);
@@ -65,18 +65,18 @@ public class CloopCommand extends Command {
                     final CommandLoop cloop = bot.cloop.remove(index);
 
                     return Component.translatable(
-                            "Removed cloop %s",
+                            "commands.cloop.remove.output",
                             Component.text(cloop.command()).color(bot.colorPalette.string)
                     ).color(bot.colorPalette.defaultColor);
                 } catch (final IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
-                    throw new CommandException(Component.text("Invalid index"));
+                    throw new CommandException(Component.translatable("commands.generic.error.invalid_index"));
                 }
             }
             case "clear" -> {
                 context.checkOverloadArgs(1);
 
                 bot.cloop.clear();
-                return Component.text("Cleared all cloops").color(bot.colorPalette.defaultColor);
+                return Component.translatable("commands.cloop.clear.output", bot.colorPalette.defaultColor);
             }
             case "list" -> {
                 context.checkOverloadArgs(1);
@@ -98,7 +98,7 @@ public class CloopCommand extends Command {
                 }
 
                 return Component.empty()
-                        .append(Component.text("Cloops ").color(NamedTextColor.GREEN))
+                        .append(Component.translatable("commands.cloop.list.cloops_text").color(NamedTextColor.GREEN))
                         .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
                         .append(Component.text(bot.cloop.loops.size()).color(NamedTextColor.GRAY))
                         .append(Component.text(")").color(NamedTextColor.DARK_GRAY))
@@ -107,7 +107,7 @@ public class CloopCommand extends Command {
                                 Component.join(JoinConfiguration.newlines(), cloopsComponent)
                         );
             }
-            default -> throw new CommandException(Component.text("Invalid action"));
+            default -> throw new CommandException(Component.translatable("commands.generic.error.invalid_action"));
         }
     }
 }

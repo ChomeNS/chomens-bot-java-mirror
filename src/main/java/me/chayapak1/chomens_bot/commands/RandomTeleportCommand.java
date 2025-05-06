@@ -15,7 +15,6 @@ public class RandomTeleportCommand extends Command {
     public RandomTeleportCommand () {
         super(
                 "rtp",
-                "Randomly teleports you",
                 new String[] {},
                 new String[] { "randomteleport" },
                 TrustLevel.PUBLIC,
@@ -38,12 +37,11 @@ public class RandomTeleportCommand extends Command {
 
         bot.core.run("essentials:teleport " + sender.profile.getIdAsString() + " " + stringPosition);
 
-        return Component.empty()
-                .append(Component.text("Teleporting "))
-                .append(Component.text(sender.profile.getName()).color(bot.colorPalette.username))
-                .append(Component.text(" to "))
-                .append(Component.text(stringPosition).color(NamedTextColor.GREEN))
-                .append(Component.text("..."))
-                .color(bot.colorPalette.defaultColor);
+        return Component.translatable(
+                "commands.rtp.output",
+                bot.colorPalette.defaultColor,
+                Component.text(sender.profile.getName()).color(bot.colorPalette.username),
+                Component.text(stringPosition).color(NamedTextColor.GREEN)
+        );
     }
 }

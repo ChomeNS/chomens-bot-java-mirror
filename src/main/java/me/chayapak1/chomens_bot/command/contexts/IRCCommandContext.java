@@ -39,7 +39,8 @@ public class IRCCommandContext extends CommandContext {
 
     @Override
     public void sendOutput (final Component component) {
-        Main.irc.sendMessage(bot, ComponentUtilities.stringifyAnsi(component));
+        final Component rendered = bot.commandHandler.renderTranslatable(component);
+        Main.irc.sendMessage(bot, ComponentUtilities.stringifyAnsi(rendered));
     }
 
     @Override

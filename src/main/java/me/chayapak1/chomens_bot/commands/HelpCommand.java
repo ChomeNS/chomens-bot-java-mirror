@@ -22,7 +22,6 @@ public class HelpCommand extends Command {
     public HelpCommand () {
         super(
                 "help",
-                "Shows a command list or usage for a command",
                 new String[] { "[command]" },
                 new String[] { "heko", "cmds", "commands" },
                 TrustLevel.PUBLIC
@@ -57,7 +56,7 @@ public class HelpCommand extends Command {
         );
 
         return Component.empty()
-                .append(Component.text("Commands ").color(NamedTextColor.GRAY))
+                .append(Component.translatable("commands.help.commands_text").color(NamedTextColor.GRAY))
                 .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
                 .append(Component.text(list.size()).color(NamedTextColor.GREEN))
                 .append(Component.text(") ").color(NamedTextColor.DARK_GRAY))
@@ -117,18 +116,31 @@ public class HelpCommand extends Command {
 
             usages.add(
                     Component.empty()
+                            .color(NamedTextColor.GRAY)
                             .append(Component.text(prefix + actualCommandName).color(bot.colorPalette.secondary))
-                            .append(Component.text(
-                                    (command.aliases.length > 0 && !command.aliases[0].isEmpty()) ?
-                                            " (" + String.join(", ", command.aliases) + ")" :
-                                            ""
-                            ).color(NamedTextColor.WHITE))
-                            .append(Component.text(" - " + command.description)).color(NamedTextColor.GRAY)
+                            .append(
+                                    Component
+                                            .text(
+                                                    (command.aliases.length > 0 && !command.aliases[0].isEmpty()) ?
+                                                            " (" + String.join(", ", command.aliases) + ")" :
+                                                            "",
+                                                    NamedTextColor.WHITE
+                                            )
+                            )
+                            .append(Component.text(" - "))
+                            .append(
+                                    Component.translatable(
+                                            String.format(
+                                                    "commands.%s.description",
+                                                    actualCommandName
+                                            )
+                                    )
+                            )
             );
 
             usages.add(
                     Component.empty()
-                            .append(Component.text("Trust level: ").color(NamedTextColor.GREEN))
+                            .append(Component.translatable("commands.help.trust_level").color(NamedTextColor.GREEN))
                             .append(
                                     command.trustLevel.component
                                             .append(Component.text(" - "))
@@ -149,6 +161,6 @@ public class HelpCommand extends Command {
             return Component.join(JoinConfiguration.separator(Component.newline()), usages);
         }
 
-        throw new CommandException(Component.text("Unknown command"));
+        throw new CommandException(Component.translatable("commands.help.error.unknown_command"));
     }
 }

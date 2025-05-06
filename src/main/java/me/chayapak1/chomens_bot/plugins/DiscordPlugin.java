@@ -9,6 +9,7 @@ import me.chayapak1.chomens_bot.discord.GuildMessageEventHandler;
 import me.chayapak1.chomens_bot.discord.MessageLogger;
 import me.chayapak1.chomens_bot.util.CodeBlockUtilities;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
+import me.chayapak1.chomens_bot.util.I18nUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -108,15 +109,15 @@ public class DiscordPlugin {
                 public void onConnecting () {
                     if (bot.connectAttempts > 6) return;
                     else if (bot.connectAttempts == 6) {
-                        sendMessageInstantly("Suppressing connection status messages from now on", channelId);
+                        sendMessageInstantly(I18nUtilities.get("info.suppressing"), channelId);
 
                         return;
                     }
 
                     sendMessageInstantly(
                             String.format(
-                                    "Connecting to: `%s`",
-                                    bot.getServerString()
+                                    I18nUtilities.get("info.connecting"),
+                                    "`" + bot.getServerString().replace("`", "\\`") + "`"
                             ),
                             channelId
                     );
@@ -126,8 +127,8 @@ public class DiscordPlugin {
                 public void connected (final ConnectedEvent event) {
                     sendMessageInstantly(
                             String.format(
-                                    "Successfully connected to: `%s`",
-                                    bot.getServerString()
+                                    I18nUtilities.get("info.connected"),
+                                    "`" + bot.getServerString().replace("`", "\\`") + "`"
                             ),
                             channelId
                     );
@@ -139,10 +140,13 @@ public class DiscordPlugin {
 
                     final String reason = ComponentUtilities.stringifyDiscordAnsi(event.getReason());
                     sendMessageInstantly(
-                            "Disconnected: \n" +
-                                    "```ansi\n" +
-                                    reason.replace("`", "\\`") +
-                                    "\n```",
+                            String.format(
+                                    I18nUtilities.get("info.disconnected"),
+                                    "\n" +
+                                            "```ansi\n" +
+                                            CodeBlockUtilities.escape(reason) +
+                                            "\n```"
+                            ),
                             channelId
                     );
                 }

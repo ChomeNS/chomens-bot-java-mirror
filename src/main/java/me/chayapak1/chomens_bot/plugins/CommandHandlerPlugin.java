@@ -10,13 +10,18 @@ import me.chayapak1.chomens_bot.command.contexts.*;
 import me.chayapak1.chomens_bot.commands.*;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.util.ExceptionUtilities;
+import me.chayapak1.chomens_bot.util.I18nUtilities;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.NamedTextColor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -136,14 +141,20 @@ public class CommandHandlerPlugin implements Listener {
         // so I made it return nothing if we're in game
         if (command == null) {
             if (!inGame)
-                context.sendOutput(Component.text("Unknown command: " + commandName).color(NamedTextColor.RED));
+                context.sendOutput(
+                        Component.translatable(
+                                "command_handler.unknown_command",
+                                NamedTextColor.RED,
+                                Component.text(commandName)
+                        )
+                );
 
             return;
         }
 
         if (!bypass) {
             if (disabled) {
-                context.sendOutput(Component.text("ChomeNS Bot is currently disabled").color(NamedTextColor.RED));
+                context.sendOutput(Component.translatable("command_handler.disabled", NamedTextColor.RED));
                 return;
             } else if (
                     context instanceof final PlayerCommandContext playerContext &&
@@ -157,7 +168,7 @@ public class CommandHandlerPlugin implements Listener {
         final TrustLevel trustLevel = command.trustLevel;
 
         if (trustLevel != TrustLevel.PUBLIC && splitInput.length < 2 && inGame) {
-            context.sendOutput(Component.text("Please provide a hash").color(NamedTextColor.RED));
+            context.sendOutput(Component.translatable("command_handler.no_hash_provided", NamedTextColor.RED));
             return;
         }
 
@@ -173,9 +184,7 @@ public class CommandHandlerPlugin implements Listener {
             if (context instanceof final RemoteCommandContext remote) {
                 if (remote.source.trustLevel.level < trustLevel.level) {
                     context.sendOutput(
-                            Component
-                                    .text("Your don't have enough permission to execute this command!")
-                                    .color(NamedTextColor.RED)
+                            Component.translatable("command_handler.not_enough_roles", NamedTextColor.RED)
                     );
                     return;
                 }
@@ -194,7 +203,7 @@ public class CommandHandlerPlugin implements Listener {
                     context.sendOutput(
                             Component
                                     .translatable(
-                                            "Your current roles don't allow you to execute %s commands!",
+                                            "command_handler.not_enough_roles.trust_level",
                                             Component.text(trustLevel.name())
                                     )
                                     .color(NamedTextColor.RED)
@@ -210,10 +219,10 @@ public class CommandHandlerPlugin implements Listener {
                     context.sendOutput(
                             Component
                                     .translatable(
-                                            "Invalid %s hash",
-                                            Component.text(trustLevel.name())
+                                            "command_handler.invalid_hash",
+                                            NamedTextColor.RED,
+                                            Component.text(trustLevel.toString())
                                     )
-                                    .color(NamedTextColor.RED)
                     );
                     return;
                 }
@@ -227,7 +236,7 @@ public class CommandHandlerPlugin implements Listener {
 
         // should i give access to all bypass contexts instead of only console?
         if (!bypass && command.consoleOnly) {
-            context.sendOutput(Component.text("This command can only be run via console").color(NamedTextColor.RED));
+            context.sendOutput(Component.translatable("command_handler.console_only", NamedTextColor.RED));
             return;
         }
 
@@ -253,19 +262,64 @@ public class CommandHandlerPlugin implements Listener {
                 else
                     context.sendOutput(
                             Component
-                                    .text("An error occurred while trying to execute the command, hover here for stacktrace", NamedTextColor.RED)
+                                    .translatable("command_handler.exception", NamedTextColor.RED)
                                     .hoverEvent(
                                             HoverEvent.showText(
-                                                    Component
-                                                            .text(stackTrace)
-                                                            .color(NamedTextColor.RED)
+                                                    Component.text(stackTrace, NamedTextColor.RED)
                                             )
                                     )
-                                    .color(NamedTextColor.RED)
                     );
             } else {
-                context.sendOutput(Component.text(stackTrace).color(NamedTextColor.RED));
+                context.sendOutput(Component.text(stackTrace, NamedTextColor.RED));
             }
+        }
+    }
+
+    public Component renderTranslatable (final Component original) {
+        final List<Component> renderedChildren = new ArrayList<>();
+        final List<TranslationArgument> renderedArguments = new ArrayList<>();
+
+        for (final Component child : original.children()) {
+            final Component rendered = renderTranslatable(child);
+            renderedChildren.add(rendered);
+        }
+
+        if (original instanceof final TranslatableComponent translatableComponent) {
+            for (final TranslationArgument argument : translatableComponent.arguments()) {
+                final Component rendered = renderTranslatable(argument.asComponent());
+                renderedArguments.add(TranslationArgument.component(rendered));
+            }
+        }
+
+        final HoverEvent<?> hoverEvent = original.hoverEvent();
+        final HoverEventSource<Component> hoverEventSource;
+        if (
+                hoverEvent != null
+                    && hoverEvent.action() == HoverEvent.Action.SHOW_TEXT
+                    && hoverEvent.value() instanceof final Component hoverComponent
+        ) {
+            final Component rendered = renderTranslatable(hoverComponent);
+            hoverEventSource = HoverEvent.showText(rendered);
+        } else {
+            hoverEventSource = null;
+        }
+
+        if (original instanceof final TranslatableComponent translatableComponent) {
+            final String translated = I18nUtilities.get(translatableComponent.key());
+
+            return translatableComponent
+                    .key(
+                            (translated == null ? "" : "chomens_bot.") + // sometimes we can collide with minecraft's
+                                    translatableComponent.key()
+                    )
+                    .fallback(translated)
+                    .children(renderedChildren)
+                    .arguments(renderedArguments)
+                    .hoverEvent(hoverEventSource);
+        } else {
+            return original
+                    .children(renderedChildren)
+                    .hoverEvent(hoverEventSource);
         }
     }
 }

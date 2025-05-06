@@ -8,11 +8,11 @@ import me.chayapak1.chomens_bot.command.TrustLevel;
 import net.kyori.adventure.text.Component;
 import org.cloudburstmc.math.vector.Vector3i;
 
+// this command uses english
 public class ScreenshareCommand extends Command {
     public ScreenshareCommand () {
         super(
                 "screenshare",
-                "Shares my screen",
                 new String[] {
                         "start <x> <y> <z>",
                         "stop",
@@ -82,7 +82,7 @@ public class ScreenshareCommand extends Command {
                             .append(Component.text(fps).color(bot.colorPalette.number))
                             .color(bot.colorPalette.defaultColor);
                 }
-                default -> throw new CommandException(Component.text("Invalid action"));
+                default -> throw new CommandException(Component.translatable("commands.generic.error.invalid_action"));
             }
         } catch (final NumberFormatException e) {
             throw new CommandException(Component.text("Invalid integer"));

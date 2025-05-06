@@ -4,6 +4,7 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.logging.LogType;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
+import me.chayapak1.chomens_bot.util.I18nUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
@@ -44,14 +45,14 @@ public class AuthPlugin implements Listener {
         bot.logger.log(
                 LogType.AUTH,
                 Component
-                        .text("Player has been verified")
+                        .text(I18nUtilities.get("auth.logger_verified"))
                         .color(NamedTextColor.GREEN)
         );
 
         bot.chomeNSMod.sendMessage(
                 target,
                 Component
-                        .text("You have been verified")
+                        .text(I18nUtilities.get("auth.player_verified"))
                         .color(NamedTextColor.GREEN)
         );
     }
@@ -63,7 +64,7 @@ public class AuthPlugin implements Listener {
 
         if (target == null) return;
 
-        bot.filterManager.add(target, "Authentication timed out");
+        bot.filterManager.add(target, I18nUtilities.get("auth.timed_out"));
     }
 
     private void cleanup () {

@@ -4,6 +4,7 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.logging.LogType;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
+import me.chayapak1.chomens_bot.util.I18nUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -87,9 +88,10 @@ public class TrustedPlugin implements Listener {
 
         broadcast(
                 Component.translatable(
-                        "Trusted player %s is now online",
-                        Component.text(target.profile.getName()).color(bot.colorPalette.username)
-                ).color(bot.colorPalette.defaultColor),
+                        I18nUtilities.get("trusted_broadcast.online"),
+                        bot.colorPalette.defaultColor,
+                        Component.text(target.profile.getName(), bot.colorPalette.username)
+                ),
                 target.profile.getId()
         );
     }
@@ -100,9 +102,10 @@ public class TrustedPlugin implements Listener {
 
         broadcast(
                 Component.translatable(
-                        "Trusted player %s is now offline",
-                        Component.text(target.profile.getName()).color(bot.colorPalette.username)
-                ).color(bot.colorPalette.defaultColor)
+                        I18nUtilities.get("trusted_broadcast.offline"),
+                        bot.colorPalette.defaultColor,
+                        Component.text(target.profile.getName(), bot.colorPalette.username)
+                )
         );
     }
 }
