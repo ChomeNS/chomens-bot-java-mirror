@@ -4,16 +4,18 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import org.geysermc.mcprotocollib.network.Session;
+import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundCommandSuggestionsPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.ServerboundCommandSuggestionPacket;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TabCompletePlugin implements Listener {
     private final Bot bot;
-    private int nextTransactionId = 0;
+    private final AtomicInteger nextTransactionId = new AtomicInteger();
     private final Map<Integer, CompletableFuture<ClientboundCommandSuggestionsPacket>> transactions = new Object2ObjectOpenHashMap<>();
 
     public TabCompletePlugin (final Bot bot) {
@@ -22,10 +24,10 @@ public class TabCompletePlugin implements Listener {
         bot.listener.addListener(this);
     }
 
-    public CompletableFuture<ClientboundCommandSuggestionsPacket> tabComplete (final String command) {
+    public CompletableFuture<ClientboundCommandSuggestionsPacket> complete (final String command) {
         if (!bot.loggedIn) return null;
 
-        final int transactionId = nextTransactionId++;
+        final int transactionId = nextTransactionId.getAndIncrement();
 
         bot.session.send(new ServerboundCommandSuggestionPacket(transactionId, command));
 
@@ -43,8 +45,13 @@ public class TabCompletePlugin implements Listener {
     private void packetReceived (final ClientboundCommandSuggestionsPacket packet) {
         final int id = packet.getTransactionId();
 
-        if (!transactions.containsKey(id)) return;
+        final CompletableFuture<ClientboundCommandSuggestionsPacket> future = transactions.remove(id);
+        if (future != null) future.complete(packet);
+    }
 
-        transactions.remove(id).complete(packet);
+    @Override
+    public void disconnected (final DisconnectedEvent event) {
+        nextTransactionId.set(0);
+        transactions.clear();
     }
 }
