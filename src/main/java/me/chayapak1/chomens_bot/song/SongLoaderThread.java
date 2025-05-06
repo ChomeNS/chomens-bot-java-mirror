@@ -124,7 +124,7 @@ public class SongLoaderThread extends Thread {
         }
 
         if (song == null) {
-            exception = new SongLoaderException(Component.translatable("Invalid format"));
+            exception = new SongLoaderException(Component.translatable("commands.music.error.invalid_format"));
 
             failed();
         } else {
@@ -141,22 +141,37 @@ public class SongLoaderThread extends Thread {
     private void showAddedToQueue () {
         if (isFolder) {
             bot.chat.tellraw(
-                    Component.text(
-                            "Added folder to the song queue"
-                    ).color(bot.colorPalette.defaultColor)
+                    bot.commandHandler.renderTranslatable(
+                            Component.translatable(
+                                    "commands.music.loading.added_folder_to_queue",
+                                    bot.colorPalette.defaultColor
+                            )
+                    )
             );
         } else {
             bot.chat.tellraw(
-                    Component.translatable(
-                            "Added %s to the song queue",
-                            Component.empty().append(Component.text(song.name)).color(bot.colorPalette.secondary)
-                    ).color(bot.colorPalette.defaultColor)
+                    bot.commandHandler.renderTranslatable(
+                            Component.translatable(
+                                    "commands.music.loading.added_song_to_queue",
+                                    bot.colorPalette.defaultColor,
+                                    Component.empty()
+                                            .append(Component.text(song.name, bot.colorPalette.secondary))
+                            )
+                    )
             );
         }
     }
 
     private void failed () {
-        bot.chat.tellraw(Component.translatable("Failed to load song: %s", exception.message).color(NamedTextColor.RED));
+        bot.chat.tellraw(
+                bot.commandHandler.renderTranslatable(
+                        Component.translatable(
+                                "commands.music.error.loading_failed",
+                                NamedTextColor.RED,
+                                exception.message
+                        )
+                )
+        );
         bot.music.loaderThread = null;
     }
 }
