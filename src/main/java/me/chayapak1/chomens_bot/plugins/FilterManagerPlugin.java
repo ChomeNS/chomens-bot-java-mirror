@@ -5,9 +5,7 @@ import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
-import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
-import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.tuple.Pair;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 
@@ -40,16 +38,18 @@ public class FilterManagerPlugin implements Listener {
     }
 
     @Override
-    public void onPlayerDisplayNameUpdated (final PlayerEntry target, final Component displayName) {
-        final Pair<PlayerEntry, String> player = getFilteredFromName(target.profile.getName());
+    public void onTick () {
+        for (final PlayerEntry filtered : list.keySet()) {
+            deOp(filtered);
+            gameMode(filtered);
+            clear(filtered);
+        }
+    }
 
-        if (player == null) return;
-
-        // we use the stringified instead of the component because you can configure the OP and DeOP tag in
-        // the extras config
-        final String stringifiedDisplayName = ComponentUtilities.stringify(displayName);
-
-        if (stringifiedDisplayName.startsWith("[OP] ")) deOp(target);
+    private void kick () {
+        for (final PlayerEntry filtered : list.keySet()) {
+            bot.exploits.kick(filtered.profile.getId());
+        }
     }
 
     @Override
@@ -118,12 +118,6 @@ public class FilterManagerPlugin implements Listener {
 
     public void clear (final PlayerEntry target) {
         bot.core.run("minecraft:clear " + UUIDUtilities.selector(target.profile.getId()));
-    }
-
-    public void kick () {
-        for (final PlayerEntry filtered : list.keySet()) {
-            bot.exploits.kick(filtered.profile.getId());
-        }
     }
 
     public void add (final PlayerEntry entry, final String reason) {
