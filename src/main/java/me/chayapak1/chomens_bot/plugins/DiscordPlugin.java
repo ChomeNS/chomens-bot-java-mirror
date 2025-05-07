@@ -33,16 +33,21 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 
 public class DiscordPlugin {
+    private static final int MAX_ANSI_MESSAGE_LENGTH = 2_000 - ("""
+            ```ansi
+            
+            ```"""
+    ).length(); // kinda sus
+
+    private static final int LOG_DELAY = 2 * 1000;
+
     public JDA jda;
 
-    public Configuration.Discord options;
-
+    public final Configuration.Discord options;
     public final Map<String, String> servers;
 
     public final String prefix;
-
     public final Component messagePrefix;
-
     public final String discordUrl;
 
     public DiscordPlugin (final Configuration config) {
@@ -91,7 +96,7 @@ public class DiscordPlugin {
             bot.listener.addListener(new Listener() {
                 @Override
                 public boolean onSystemMessageReceived (final Component component, final String string, final String _ansi) {
-                    if (string.length() > 2000 - 12) {
+                    if (string.length() > MAX_ANSI_MESSAGE_LENGTH) {
                         sendMessage(CodeBlockUtilities.escape(string), channelId);
                     } else {
                         final String ansi = ComponentUtilities.stringifyDiscordAnsi(component);
@@ -219,38 +224,38 @@ public class DiscordPlugin {
                             && currentTime - data.nextLogTime.get() < (5 * 1000)
             ) continue;
 
-            final long logDelay = 2000;
-
-            data.nextLogTime.set(currentTime + logDelay);
+            data.nextLogTime.set(currentTime + LOG_DELAY);
 
             final String message;
 
             final StringBuilder logMessages = data.logMessages;
 
-            final Matcher inviteMatcher = Message.INVITE_PATTERN.matcher(logMessages.toString());
+            final StringBuilder messageBuilder;
 
-            final StringBuilder messageBuilder = new StringBuilder();
+            if (logMessages.length() < 4096) { // we obviously don't want to use regex on big strings, or it will take 69 years
+                messageBuilder = new StringBuilder();
 
-            while (inviteMatcher.find()) {
-                inviteMatcher.appendReplacement(
-                        messageBuilder,
-                        Matcher.quoteReplacement(
-                                inviteMatcher.group()
-                                        // fixes discord.gg (and some more discord urls) showing invite
-                                        .replace(".", "\u200b.")
-                        )
-                );
+                final Matcher inviteMatcher = Message.INVITE_PATTERN.matcher(logMessages.toString());
+
+                while (inviteMatcher.find()) {
+                    inviteMatcher.appendReplacement(
+                            messageBuilder,
+                            Matcher.quoteReplacement(
+                                    inviteMatcher.group()
+                                            // fixes discord.gg (and some more discord urls) showing invite
+                                            .replace(".", "\u200b.")
+                            )
+                    );
+                }
+
+                inviteMatcher.appendTail(messageBuilder);
+
+                message = messageBuilder.substring(0, Math.min(messageBuilder.length(), MAX_ANSI_MESSAGE_LENGTH));
+            } else {
+                message = logMessages.toString()
+                        .replace(".", "\u200b.")
+                        .substring(0, Math.min(logMessages.length(), MAX_ANSI_MESSAGE_LENGTH));
             }
-
-            inviteMatcher.appendTail(messageBuilder);
-
-            final int maxLength = 2_000 - ("""
-                    ```ansi
-                    
-                    ```"""
-            ).length(); // kinda sus
-
-            message = messageBuilder.substring(0, Math.min(messageBuilder.length(), maxLength));
 
             logMessages.setLength(0);
 
