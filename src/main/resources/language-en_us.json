@@ -107,6 +107,8 @@
   "commands.help.description": "Shows a command list or usage for a command",
   "commands.help.commands_text": "Commands ",
   "commands.help.trust_level": "Trust level: ",
+  "commands.help.hover.click_to_command": "Click to suggest: %s",
+  "commands.help.hover.shift_click_to_help_command": "Shift+Click to suggest: %s",
   "commands.help.error.unknown_command": "Unknown command",
 
   "commands.info.description": "Shows an info about various things",

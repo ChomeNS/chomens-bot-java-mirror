@@ -41,7 +41,7 @@ public class HelpCommand extends Command {
         }
     }
 
-    public Component getCommandList (final CommandContext context) throws CommandException {
+    public Component getCommandList (final CommandContext context) {
         final List<Component> list = new ObjectArrayList<>();
 
         for (final TrustLevel level : TrustLevel.values()) {
@@ -66,7 +66,9 @@ public class HelpCommand extends Command {
                 .append(Component.join(JoinConfiguration.separator(Component.space()), list));
     }
 
-    public List<Component> getCommandListByTrustLevel (final CommandContext context, final TrustLevel trustLevel) throws CommandException {
+    public List<Component> getCommandListByTrustLevel (final CommandContext context, final TrustLevel trustLevel) {
+        final Bot bot = context.bot;
+
         final List<Component> list = new ObjectArrayList<>();
 
         final List<String> commandNames = new ObjectArrayList<>();
@@ -81,19 +83,42 @@ public class HelpCommand extends Command {
         Collections.sort(commandNames);
 
         for (final String name : commandNames) {
+            final String clickSuggestion = context.prefix + name; // *command
+            final String insertionSuggestion = context.prefix + this.name + " " + name; // *help <command>
             list.add(
                     Component
                             .text(name)
                             .color(trustLevel.component.color())
                             .clickEvent(
-                                    ClickEvent.suggestCommand(context.prefix + name) // *command
+                                    ClickEvent.suggestCommand(clickSuggestion)
                             )
-                            .insertion(context.prefix + this.name + " " + name) // *help <command>
+                            .insertion(insertionSuggestion)
                             .hoverEvent(
+                                    HoverEvent.showText(
+                                            Component.empty()
+                                                    .color(NamedTextColor.GREEN)
+                                                    .append(
+                                                            Component.translatable(
+                                                                    "commands.help.hover.click_to_command",
+                                                                    Component.text(clickSuggestion, bot.colorPalette.string)
+                                                            )
+                                                    )
+                                                    .append(Component.newline())
+                                                    .append(
+                                                            Component.translatable(
+                                                                    "commands.help.hover.shift_click_to_help_command",
+                                                                    Component.text(insertionSuggestion, bot.colorPalette.string)
+                                                            )
+                                                    )
+                                    )
+                            )
+
+                    // there are too many commands and having hover being the usages will make the command length > 32767 :(
+                            /* .hoverEvent(
                                     HoverEvent.showText(
                                             getUsages(context, name)
                                     )
-                            )
+                            ) */
             );
         }
 
