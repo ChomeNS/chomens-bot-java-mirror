@@ -33,27 +33,32 @@ public class ClearChatCommand extends Command {
         if (!name.isEmpty()) {
             final PlayerEntry entry = bot.players.getEntry(name);
 
-            if (entry == null) throw new CommandException(Component.translatable("commands.generic.error.invalid_player"));
+            if (entry == null)
+                throw new CommandException(Component.translatable("commands.generic.error.invalid_player"));
 
             final UUID uuid = entry.profile.getId();
 
             bot.chat.tellraw(
-                    Component.empty()
-                            .append(Component.text("\n".repeat(1000)))
-                            .append(
-                                    Component.translatable(
-                                            "commands.clearchat.specific",
-                                            NamedTextColor.DARK_GREEN,
-                                            context.displayName()
+                    bot.commandHandler.renderTranslatable(
+                            Component.empty()
+                                    .append(Component.text("\n".repeat(1000)))
+                                    .append(
+                                            Component.translatable(
+                                                    "commands.clearchat.specific",
+                                                    NamedTextColor.DARK_GREEN,
+                                                    context.displayName()
+                                            )
                                     )
-                            ),
+                    ),
                     uuid
             );
         } else {
             bot.chat.tellraw(
-                    Component.empty()
-                            .append(Component.text("\n".repeat(1000)))
-                            .append(Component.translatable("commands.clearchat.everyone").color(NamedTextColor.DARK_GREEN))
+                    bot.commandHandler.renderTranslatable(
+                            Component.empty()
+                                    .append(Component.text("\n".repeat(1000)))
+                                    .append(Component.translatable("commands.clearchat.everyone", NamedTextColor.DARK_GREEN))
+                    )
             );
         }
 
