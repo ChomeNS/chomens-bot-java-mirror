@@ -25,7 +25,7 @@ public class BruhifyPlugin implements Listener {
     }
 
     @Override
-    public void onTick () {
+    public void onLocalTick () {
         if (bruhifyText.isBlank()) return;
 
         final int increment = 360 / Math.max(bruhifyText.length(), 20);

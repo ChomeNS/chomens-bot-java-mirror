@@ -94,8 +94,6 @@ public class CorePlugin implements Listener {
 
     @Override
     public void onTick () {
-        if (commandsPerTick.get() > 0) commandsPerTick.decrementAndGet();
-
         if (!pendingCommands.isEmpty() && exists) {
             // people that pre-order on TEMU application. Shop Like A Billionaire!!!
             if (pendingCommands.size() > 256) {
@@ -119,6 +117,11 @@ public class CorePlugin implements Listener {
         if (command == null) return;
 
         forceRunPlaceBlock(command);
+    }
+
+    @Override
+    public void onLocalTick () {
+        if (commandsPerTick.get() > 0) commandsPerTick.decrementAndGet();
     }
 
     @Override

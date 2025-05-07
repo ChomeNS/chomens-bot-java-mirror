@@ -29,7 +29,7 @@ public interface Listener {
 
     // ticker
     default void onTick () { }
-    default void onAlwaysTick () { }
+    default void onLocalTick () { }
     default void onSecondTick () { }
     default void onLocalSecondTick () { }
 
