@@ -18,7 +18,7 @@ public class RemoteCommandContext extends CommandContext {
 
     @Override
     public void sendOutput (final Component component) {
-        final Component rendered = bot.commandHandler.renderTranslatable(component);
+        // we do not need rendering here, since that is handled by the source
         source.sendOutput(
                 Component
                         .translatable(
@@ -26,7 +26,7 @@ public class RemoteCommandContext extends CommandContext {
                                 Component.text(targetBot.getServerString(), NamedTextColor.GRAY),
                                 Component.empty()
                                         .color(NamedTextColor.WHITE)
-                                        .append(rendered)
+                                        .append(component)
                         )
                         .color(NamedTextColor.DARK_GRAY)
         );
