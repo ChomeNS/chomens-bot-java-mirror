@@ -5,6 +5,7 @@ import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
+import me.chayapak1.chomens_bot.util.I18nUtilities;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.auth.GameProfile;
@@ -39,7 +40,7 @@ public class IRCCommandContext extends CommandContext {
 
     @Override
     public void sendOutput (final Component component) {
-        final Component rendered = bot.commandHandler.renderTranslatable(component);
+        final Component rendered = I18nUtilities.render(component);
         Main.irc.sendMessage(bot, ComponentUtilities.stringifyAnsi(rendered));
     }
 

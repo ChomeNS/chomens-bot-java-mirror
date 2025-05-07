@@ -3,6 +3,7 @@ package me.chayapak1.chomens_bot.song;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.util.DownloadUtilities;
+import me.chayapak1.chomens_bot.util.I18nUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -141,7 +142,7 @@ public class SongLoaderThread extends Thread {
     private void showAddedToQueue () {
         if (isFolder) {
             bot.chat.tellraw(
-                    bot.commandHandler.renderTranslatable(
+                    I18nUtilities.render(
                             Component.translatable(
                                     "commands.music.loading.added_folder_to_queue",
                                     bot.colorPalette.defaultColor
@@ -150,7 +151,7 @@ public class SongLoaderThread extends Thread {
             );
         } else {
             bot.chat.tellraw(
-                    bot.commandHandler.renderTranslatable(
+                    I18nUtilities.render(
                             Component.translatable(
                                     "commands.music.loading.added_song_to_queue",
                                     bot.colorPalette.defaultColor,
@@ -164,7 +165,7 @@ public class SongLoaderThread extends Thread {
 
     private void failed () {
         bot.chat.tellraw(
-                bot.commandHandler.renderTranslatable(
+                I18nUtilities.render(
                         Component.translatable(
                                 "commands.music.error.loading_failed",
                                 NamedTextColor.RED,

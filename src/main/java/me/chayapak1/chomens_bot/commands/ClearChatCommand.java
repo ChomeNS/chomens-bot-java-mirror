@@ -7,6 +7,7 @@ import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
+import me.chayapak1.chomens_bot.util.I18nUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -39,7 +40,7 @@ public class ClearChatCommand extends Command {
             final UUID uuid = entry.profile.getId();
 
             bot.chat.tellraw(
-                    bot.commandHandler.renderTranslatable(
+                    I18nUtilities.render(
                             Component.empty()
                                     .append(Component.text("\n".repeat(1000)))
                                     .append(
@@ -54,7 +55,7 @@ public class ClearChatCommand extends Command {
             );
         } else {
             bot.chat.tellraw(
-                    bot.commandHandler.renderTranslatable(
+                    I18nUtilities.render(
                             Component.empty()
                                     .append(Component.text("\n".repeat(1000)))
                                     .append(Component.translatable("commands.clearchat.everyone", NamedTextColor.DARK_GREEN))

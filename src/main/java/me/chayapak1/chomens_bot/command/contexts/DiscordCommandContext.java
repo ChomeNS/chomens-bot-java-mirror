@@ -5,6 +5,7 @@ import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.CodeBlockUtilities;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
+import me.chayapak1.chomens_bot.util.I18nUtilities;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -47,7 +48,7 @@ public class DiscordCommandContext extends CommandContext {
 
     @Override
     public void sendOutput (final Component component) {
-        final Component rendered = bot.commandHandler.renderTranslatable(component);
+        final Component rendered = I18nUtilities.render(component);
 
         String output = ComponentUtilities.stringifyDiscordAnsi(rendered);
 

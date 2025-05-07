@@ -10,18 +10,13 @@ import me.chayapak1.chomens_bot.command.contexts.*;
 import me.chayapak1.chomens_bot.commands.*;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.util.ExceptionUtilities;
-import me.chayapak1.chomens_bot.util.I18nUtilities;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TranslatableComponent;
-import net.kyori.adventure.text.TranslationArgument;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.event.HoverEventSource;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -272,54 +267,6 @@ public class CommandHandlerPlugin implements Listener {
             } else {
                 context.sendOutput(Component.text(stackTrace, NamedTextColor.RED));
             }
-        }
-    }
-
-    public Component renderTranslatable (final Component original) {
-        final List<Component> renderedChildren = new ArrayList<>();
-        final List<TranslationArgument> renderedArguments = new ArrayList<>();
-
-        for (final Component child : original.children()) {
-            final Component rendered = renderTranslatable(child);
-            renderedChildren.add(rendered);
-        }
-
-        if (original instanceof final TranslatableComponent translatableComponent) {
-            for (final TranslationArgument argument : translatableComponent.arguments()) {
-                final Component rendered = renderTranslatable(argument.asComponent());
-                renderedArguments.add(TranslationArgument.component(rendered));
-            }
-        }
-
-        final HoverEvent<?> hoverEvent = original.hoverEvent();
-        final HoverEventSource<Component> hoverEventSource;
-        if (
-                hoverEvent != null
-                    && hoverEvent.action() == HoverEvent.Action.SHOW_TEXT
-                    && hoverEvent.value() instanceof final Component hoverComponent
-        ) {
-            final Component rendered = renderTranslatable(hoverComponent);
-            hoverEventSource = HoverEvent.showText(rendered);
-        } else {
-            hoverEventSource = null;
-        }
-
-        if (original instanceof final TranslatableComponent translatableComponent) {
-            final String translated = I18nUtilities.get(translatableComponent.key());
-
-            return translatableComponent
-                    .key(
-                            (translated == null ? "" : "chomens_bot.") + // sometimes we can collide with minecraft's
-                                    translatableComponent.key()
-                    )
-                    .fallback(translated)
-                    .children(renderedChildren)
-                    .arguments(renderedArguments)
-                    .hoverEvent(hoverEventSource);
-        } else {
-            return original
-                    .children(renderedChildren)
-                    .hoverEvent(hoverEventSource);
         }
     }
 }

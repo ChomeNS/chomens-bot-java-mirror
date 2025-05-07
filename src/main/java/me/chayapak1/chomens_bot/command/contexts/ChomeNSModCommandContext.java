@@ -4,6 +4,7 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.chomeNSMod.clientboundPackets.ClientboundMessagePacket;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
+import me.chayapak1.chomens_bot.util.I18nUtilities;
 import net.kyori.adventure.text.Component;
 
 public class ChomeNSModCommandContext extends CommandContext {
@@ -18,7 +19,7 @@ public class ChomeNSModCommandContext extends CommandContext {
 
     @Override
     public void sendOutput (final Component component) {
-        final Component rendered = bot.commandHandler.renderTranslatable(component);
+        final Component rendered = I18nUtilities.render(component);
         bot.chomeNSMod.send(
                 sender,
                 new ClientboundMessagePacket(rendered)

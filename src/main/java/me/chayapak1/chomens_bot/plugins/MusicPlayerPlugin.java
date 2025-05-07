@@ -9,6 +9,7 @@ import me.chayapak1.chomens_bot.song.Loop;
 import me.chayapak1.chomens_bot.song.Note;
 import me.chayapak1.chomens_bot.song.Song;
 import me.chayapak1.chomens_bot.song.SongLoaderThread;
+import me.chayapak1.chomens_bot.util.I18nUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import me.chayapak1.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
@@ -101,7 +102,7 @@ public class MusicPlayerPlugin implements Listener {
 
     public void loadSong (final URL location, final PlayerEntry sender) {
         if (urlLimit >= bot.config.music.urlRatelimit.limit) {
-            bot.chat.tellraw(bot.commandHandler.renderTranslatable(
+            bot.chat.tellraw(I18nUtilities.render(
                     Component.translatable("commands.music.error.url_ratelimited", NamedTextColor.RED)
             ));
             return;
@@ -120,7 +121,7 @@ public class MusicPlayerPlugin implements Listener {
 
         this.loaderThread = loaderThread;
 
-        bot.chat.tellraw(bot.commandHandler.renderTranslatable(
+        bot.chat.tellraw(I18nUtilities.render(
                 Component
                         .translatable(
                                 "commands.music.loading",
@@ -150,7 +151,7 @@ public class MusicPlayerPlugin implements Listener {
                 addBossBar();
 
                 currentSong = songQueue.getFirst(); // songQueue.poll();
-                bot.chat.tellraw(bot.commandHandler.renderTranslatable(
+                bot.chat.tellraw(I18nUtilities.render(
                         Component.translatable(
                                 "commands.music.nowplaying",
                                 bot.colorPalette.defaultColor,
@@ -186,7 +187,7 @@ public class MusicPlayerPlugin implements Listener {
                     return;
                 }
 
-                bot.chat.tellraw(bot.commandHandler.renderTranslatable(
+                bot.chat.tellraw(I18nUtilities.render(
                         Component.translatable(
                                 "commands.music.finished",
                                 bot.colorPalette.defaultColor,

@@ -9,6 +9,7 @@ import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.mail.Mail;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
+import me.chayapak1.chomens_bot.util.I18nUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -169,7 +170,7 @@ public class MailCommand extends Command {
                             .append(Component.newline())
                             .append(Component.join(JoinConfiguration.newlines(), mailsComponent));
 
-                    final Component renderedComponent = bot.commandHandler.renderTranslatable(component);
+                    final Component renderedComponent = I18nUtilities.render(component);
 
                     if (context.inGame) {
                         bot.chat.tellraw(
