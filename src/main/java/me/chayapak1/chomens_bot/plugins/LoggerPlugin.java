@@ -43,7 +43,7 @@ public class LoggerPlugin implements Listener {
 
     @Override
     public void onConnecting () {
-        if (bot.connectAttempts > 10) return;
+        if (!bot.options.logConnectionStatusMessages || bot.connectAttempts > 10) return;
         else if (bot.connectAttempts == 10) {
             log(I18nUtilities.get("info.suppressing"));
 
@@ -70,7 +70,7 @@ public class LoggerPlugin implements Listener {
 
     @Override
     public void disconnected (final DisconnectedEvent event) {
-        if (bot.connectAttempts >= 10) return;
+        if (!bot.options.logConnectionStatusMessages || bot.connectAttempts >= 10) return;
 
         final Component message = Component.translatable(
                 I18nUtilities.get("info.disconnected"),

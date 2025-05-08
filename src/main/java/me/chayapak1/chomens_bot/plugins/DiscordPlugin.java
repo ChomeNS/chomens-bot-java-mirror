@@ -112,7 +112,7 @@ public class DiscordPlugin {
 
                 @Override
                 public void onConnecting () {
-                    if (bot.connectAttempts > 6) return;
+                    if (!bot.options.logConnectionStatusMessages || bot.connectAttempts > 6) return;
                     else if (bot.connectAttempts == 6) {
                         sendMessageInstantly(I18nUtilities.get("info.suppressing"), channelId);
 
@@ -141,7 +141,7 @@ public class DiscordPlugin {
 
                 @Override
                 public void disconnected (final DisconnectedEvent event) {
-                    if (bot.connectAttempts >= 6) return;
+                    if (!bot.options.logConnectionStatusMessages || bot.connectAttempts >= 6) return;
 
                     final String reason = ComponentUtilities.stringifyDiscordAnsi(event.getReason());
                     sendMessageInstantly(

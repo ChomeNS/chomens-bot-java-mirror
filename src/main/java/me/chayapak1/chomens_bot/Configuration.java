@@ -176,6 +176,7 @@ public class Configuration {
         public boolean useChat = false;
         public boolean useSNBTComponents = true;
         public boolean coreCommandSpy = true;
+        public boolean logConnectionStatusMessages = true;
         public boolean resolveSRV = true;
         public int reconnectDelay = 2000;
         public int chatQueueDelay = 125;
