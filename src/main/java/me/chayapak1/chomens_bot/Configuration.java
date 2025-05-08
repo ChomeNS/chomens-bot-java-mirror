@@ -78,7 +78,7 @@ public class Configuration {
     }
 
     public static class Core {
-        public String customName = "{text:'@'}";
+        public String customName = "{\"text\":\"@\"}";
     }
 
     public static class Position {
