@@ -129,7 +129,7 @@ public class PlayersPlugin implements Listener {
 
                 if (!string.startsWith("- IP Address: ")) return output;
 
-                string = string.trim().substring("- IP Address: ".length());
+                string = string.substring("- IP Address: ".length());
                 if (string.startsWith("/")) string = string.substring(1);
 
                 outputFuture.complete(string);
@@ -381,7 +381,6 @@ public class PlayersPlugin implements Listener {
             }
         } else {
             pendingLeftPlayers.add(target);
-
             check(target);
         }
     }
