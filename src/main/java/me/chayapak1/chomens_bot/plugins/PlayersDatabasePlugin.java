@@ -186,6 +186,8 @@ public class PlayersDatabasePlugin implements Listener {
 
     @Override
     public void disconnected (final DisconnectedEvent event) {
+        if (Main.stopping) return;
+
         synchronized (bot.players.list) {
             final List<PlayerEntry> clonedList = new ArrayList<>(bot.players.list);
 

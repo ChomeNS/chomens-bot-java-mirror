@@ -192,9 +192,7 @@ public class Main {
         LoggerUtilities.log(stoppingMessage);
 
         EXECUTOR.shutdown();
-
         EXECUTOR_SERVICE.shutdown();
-
         if (database != null) database.stop();
 
         final ArrayList<Bot> copiedList;

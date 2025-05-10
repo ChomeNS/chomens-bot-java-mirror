@@ -74,6 +74,10 @@ public class FileLoggerUtilities {
         }
     }
 
+    public static void stop () {
+        executor.shutdown();
+    }
+
     private static void tick () {
         if (freezeTime <= System.currentTimeMillis() && spamLevel > 0) {
             spamLevel--;
