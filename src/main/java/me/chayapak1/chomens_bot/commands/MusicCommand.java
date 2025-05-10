@@ -24,6 +24,7 @@ import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import org.cloudburstmc.math.vector.Vector3d;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -597,8 +598,7 @@ public class MusicCommand extends Command implements Listener {
                 "chayapak",
                 "hhhzzzsss",
                 I18nUtilities.get("commands.music.testsong.description"),
-                null,
-                false
+                null
         );
 
         int instrumentId = 0;
@@ -613,8 +613,7 @@ public class MusicCommand extends Command implements Listener {
                             j,
                             1,
                             i * 50,
-                            -1,
-                            100,
+                            Vector3d.ZERO,
                             false
                     )
             );

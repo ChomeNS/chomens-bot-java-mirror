@@ -124,13 +124,13 @@ public class MusicPlayerPlugin implements Listener {
         this.loaderThread = loaderThread;
 
         bot.chat.tellraw(I18nUtilities.render(
-                Component
-                        .translatable(
-                                "commands.music.loading",
-                                Component.text(songName, bot.colorPalette.secondary)
-                        )
-                        .color(bot.colorPalette.defaultColor)),
-                BOTH_SELECTOR
+                                 Component
+                                         .translatable(
+                                                 "commands.music.loading",
+                                                 Component.text(songName, bot.colorPalette.secondary)
+                                         )
+                                         .color(bot.colorPalette.defaultColor)),
+                         BOTH_SELECTOR
         );
 
         this.loaderThread.start();
@@ -160,12 +160,12 @@ public class MusicPlayerPlugin implements Listener {
 
                 currentSong = songQueue.getFirst(); // songQueue.poll();
                 bot.chat.tellraw(I18nUtilities.render(
-                        Component.translatable(
-                                "commands.music.nowplaying",
-                                bot.colorPalette.defaultColor,
-                                Component.empty().append(Component.text(currentSong.name)).color(bot.colorPalette.secondary)
-                        )),
-                        BOTH_SELECTOR
+                                         Component.translatable(
+                                                 "commands.music.nowplaying",
+                                                 bot.colorPalette.defaultColor,
+                                                 Component.empty().append(Component.text(currentSong.name)).color(bot.colorPalette.secondary)
+                                         )),
+                                 BOTH_SELECTOR
                 );
                 currentSong.play();
             }
@@ -199,12 +199,12 @@ public class MusicPlayerPlugin implements Listener {
                 }
 
                 bot.chat.tellraw(I18nUtilities.render(
-                        Component.translatable(
-                                "commands.music.finished",
-                                bot.colorPalette.defaultColor,
-                                Component.empty().append(Component.text(currentSong.name)).color(bot.colorPalette.secondary)
-                        )),
-                        BOTH_SELECTOR
+                                         Component.translatable(
+                                                 "commands.music.finished",
+                                                 bot.colorPalette.defaultColor,
+                                                 Component.empty().append(Component.text(currentSong.name)).color(bot.colorPalette.secondary)
+                                         )),
+                                 BOTH_SELECTOR
                 );
 
                 if (loop == Loop.ALL) {
@@ -410,7 +410,7 @@ public class MusicPlayerPlugin implements Listener {
 
                 double key = note.shiftedPitch;
 
-                final Vector3d blockPosition = getBlockPosition(note);
+                final Vector3d blockPosition = note.position;
 
                 final double notShiftedFloatingPitch = 0.5 * Math.pow(2, (note.pitch + (pitch / 10)) / 12);
 
@@ -465,40 +465,5 @@ public class MusicPlayerPlugin implements Listener {
                 bot.logger.error(e);
             }
         }
-    }
-
-    private Vector3d getBlockPosition (final Note note) {
-        final Vector3d blockPosition;
-
-        if (currentSong.nbs) {
-            final double value;
-
-            if (note.stereo == 100 && note.panning != 100) value = note.panning;
-            else if (note.panning == 100 && note.stereo != 100) value = note.stereo;
-            else value = (double) (note.stereo + note.panning) / 2;
-
-            final double xPos;
-
-            if (value > 100) xPos = (value - 100) / -100;
-            else if (value == 100) xPos = 0;
-            else xPos = ((value - 100) * -1) / 100;
-
-            blockPosition = Vector3d.from(xPos * 2, 0, 0);
-        } else {
-            final double originalPitch = note.originalPitch;
-
-            double xPos = -(double) originalPitch / 768;
-            if (originalPitch > 25) xPos = Math.abs(xPos);
-
-            double yPos = -(double) originalPitch / 35;
-            if (originalPitch < 75) yPos = -yPos;
-
-            double zPos = -(double) originalPitch / 40;
-            if (originalPitch < 75) zPos = -zPos;
-
-            blockPosition = Vector3d.from(xPos, yPos, zPos);
-        }
-
-        return blockPosition;
     }
 }

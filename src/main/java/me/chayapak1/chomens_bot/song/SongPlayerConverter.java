@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.song;
 
 import me.chayapak1.chomens_bot.Bot;
+import org.cloudburstmc.math.vector.Vector3d;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
@@ -43,7 +44,7 @@ public class SongPlayerConverter implements Converter {
         final int loopCount = buffer.get() & 0xFF;
         final long loopPosition = buffer.getLong();
 
-        final Song song = new Song(fileName, bot, !songName.trim().isEmpty() ? songName : null, null, null, null, null, false);
+        final Song song = new Song(fileName, bot, !songName.trim().isEmpty() ? songName : null, null, null, null, null);
         song.length = songLength;
         //        song.looping = loop > 0;
         //        song.loopCount = loopCount;
@@ -54,7 +55,17 @@ public class SongPlayerConverter implements Converter {
             final int noteId = buffer.getShort();
             if (noteId >= 0 && noteId < 400) {
                 time += getVarLong(buffer);
-                song.add(new Note(Instrument.fromId(noteId / 25), noteId % 25, noteId % 25, 1, time, -1, 100, false));
+                song.add(
+                        new Note(
+                                Instrument.fromId(noteId / 25),
+                                noteId % 25,
+                                noteId % 25,
+                                1,
+                                time,
+                                Vector3d.ZERO,
+                                false
+                        )
+                );
             } else if ((noteId & 0xFFFF) == 0xFFFF) {
                 break;
             } else {

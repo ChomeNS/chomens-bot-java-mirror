@@ -13,9 +13,12 @@ import static me.chayapak1.chomens_bot.util.StringUtilities.isNotNullAndNotBlank
 // Author: hhhzzzsss & _ChipMC_ but i changed most of the stuff
 public class Song {
     public final List<Note> notes = new ObjectArrayList<>();
+
     public final String originalName;
     public String name;
+
     public String requester = "Unknown";
+
     public int position = 0; // Current note index
     public boolean paused = true;
     public double startTime = 0; // Start time in millis since unix epoch
@@ -32,14 +35,20 @@ public class Song {
 
     public final String tracks;
 
-    public final boolean nbs;
-
     //  public int loopCount = 0; // Number of times to loop
     //  public int currentLoop = 0; // Number of loops so far
 
     private final Bot bot;
 
-    public Song (final String originalName, final Bot bot, final String songName, final String songAuthor, final String songOriginalAuthor, final String songDescription, final String tracks, final boolean nbs) {
+    public Song (
+            final String originalName,
+            final Bot bot,
+            final String songName,
+            final String songAuthor,
+            final String songOriginalAuthor,
+            final String songDescription,
+            final String tracks
+    ) {
         this.originalName = originalName;
         this.bot = bot;
         this.songName = songName;
@@ -47,7 +56,6 @@ public class Song {
         this.songOriginalAuthor = songOriginalAuthor;
         this.songDescription = songDescription;
         this.tracks = tracks;
-        this.nbs = nbs;
 
         updateName();
     }

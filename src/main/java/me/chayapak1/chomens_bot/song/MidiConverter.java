@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.song;
 
 import me.chayapak1.chomens_bot.Bot;
+import org.cloudburstmc.math.vector.Vector3d;
 
 import javax.sound.midi.*;
 import java.io.ByteArrayInputStream;
@@ -18,7 +19,6 @@ public class MidiConverter implements Converter {
     public static final int TRACK_NAME = 0x03;
     public static final int LYRICS = 0x05;
     public static final int VOLUME_CONTROL_MSB = 0x07;
-    public static final int PAN_CONTROL_MSB = 0x0A;
     public static final int SET_INSTRUMENT = 0xC0;
     public static final int SET_TEMPO = 0x51;
     public static final int RESET_CONTROLS = 0x79;
@@ -82,14 +82,12 @@ public class MidiConverter implements Converter {
         if (stringText.endsWith("\n")) stringText = stringText.substring(0, stringText.length() - 1);
         if (stringTracks.endsWith("\n")) stringTracks = stringTracks.substring(0, stringTracks.length() - 1);
 
-        final Song song = new Song(name, bot, songName, null, null, stringText, stringTracks, false);
+        final Song song = new Song(name, bot, songName, null, null, stringText, stringTracks);
 
         tempoEvents.sort(Comparator.comparingLong(MidiEvent::getTick));
 
         final int[] channelVolumes = new int[16];
-        final int[] channelPans = new int[16];
         Arrays.fill(channelVolumes, 127);
-        Arrays.fill(channelPans, 64);
 
         for (final Track track : sequence.getTracks()) {
             long microTime = 0;
@@ -124,16 +122,15 @@ public class MidiConverter implements Converter {
                         final int pitch = sm.getData1();
                         final int velocity = sm.getData2();
                         final float effectiveVelocity = (float) velocity * channelVolumes[sm.getChannel()] / 127;
-                        final int pan = channelPans[sm.getChannel()];
                         final long deltaTick = event.getTick() - prevTick;
                         prevTick = event.getTick();
                         microTime += (mpq / tpq) * deltaTick;
 
                         final Note note;
                         if (sm.getChannel() == 9) {
-                            note = getMidiPercussionNote(pitch, effectiveVelocity, microTime, pan);
+                            note = getMidiPercussionNote(pitch, effectiveVelocity, microTime);
                         } else {
-                            note = getMidiInstrumentNote(ids[sm.getChannel()], pitch, effectiveVelocity, microTime, pan);
+                            note = getMidiInstrumentNote(ids[sm.getChannel()], pitch, effectiveVelocity, microTime);
                         }
                         if (note != null) {
                             song.add(note);
@@ -154,15 +151,11 @@ public class MidiConverter implements Converter {
                     } else if (sm.getCommand() == ShortMessage.CONTROL_CHANGE) {
                         if (sm.getData1() == VOLUME_CONTROL_MSB) {
                             channelVolumes[sm.getChannel()] = sm.getData2();
-                        } else if (sm.getData1() == PAN_CONTROL_MSB) {
-                            channelPans[sm.getChannel()] = sm.getData2();
                         } else if (sm.getData1() == RESET_CONTROLS) {
                             channelVolumes[sm.getChannel()] = 127;
-                            channelPans[sm.getChannel()] = 64;
                         }
                     } else if (sm.getCommand() == SYSTEM_RESET) {
                         Arrays.fill(channelVolumes, 127);
-                        Arrays.fill(channelPans, 64);
                     }
                 }
 
@@ -177,7 +170,7 @@ public class MidiConverter implements Converter {
         return song;
     }
 
-    public static Note getMidiInstrumentNote (final int midiInstrument, final int midiPitch, final float velocity, final long microTime, final int panning) {
+    public static Note getMidiInstrumentNote (final int midiInstrument, final int midiPitch, final float velocity, final long microTime) {
         Instrument shiftedInstrument = null;
         final Instrument[] instrumentList = instrumentMap.get(midiInstrument);
         if (instrumentList != null) {
@@ -226,10 +219,10 @@ public class MidiConverter implements Converter {
         final float volume = velocity / 127.0f;
         final long time = microTime / 1000L;
 
-        return new Note(instrumentList[0], shiftedInstrument, pitch, shiftedInstrumentPitch, midiPitch, volume, time, (int) ((panning - 64) / (float) 64) * 100, 100);
+        return new Note(instrumentList[0], shiftedInstrument, pitch, shiftedInstrumentPitch, midiPitch, volume, time, getPosition(midiPitch));
     }
 
-    private static Note getMidiPercussionNote (final int midiPitch, final float velocity, final long microTime, final int panning) {
+    private static Note getMidiPercussionNote (final int midiPitch, final float velocity, final long microTime) {
         if (percussionMap.containsKey(midiPitch)) {
             final int noteId = percussionMap.get(midiPitch);
             final int pitch = noteId % 25;
@@ -237,9 +230,24 @@ public class MidiConverter implements Converter {
             final Instrument instrument = Instrument.fromId(noteId / 25);
             final long time = microTime / 1000L;
 
-            return new Note(instrument, pitch, midiPitch, volume, time, (int) ((panning - 64) / (float) 64) * 100, 100, false);
+            return new Note(instrument, pitch, midiPitch, volume, time, getPosition(midiPitch), false);
         }
         return null;
+    }
+
+    private static Vector3d getPosition (final int originalPitch) {
+        // magic numbers lol
+
+        double xPos = -(double) originalPitch / 768;
+        if (originalPitch > 25) xPos = Math.abs(xPos);
+
+        double yPos = -(double) originalPitch / 35;
+        if (originalPitch < 75) yPos = -yPos;
+
+        double zPos = -(double) originalPitch / 40;
+        if (originalPitch < 75) zPos = -zPos;
+
+        return Vector3d.from(xPos, yPos, zPos);
     }
 
     public static final HashMap<Integer, Instrument[]> instrumentMap = new HashMap<>();

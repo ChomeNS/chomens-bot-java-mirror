@@ -1,5 +1,7 @@
 package me.chayapak1.chomens_bot.song;
 
+import org.cloudburstmc.math.vector.Vector3d;
+
 // Author: hhhzzzsss
 public class Note implements Comparable<Note> {
     public final Instrument instrument;
@@ -9,8 +11,7 @@ public class Note implements Comparable<Note> {
     public final double originalPitch;
     public final float volume;
     public final double time;
-    public final int panning;
-    public final int stereo;
+    public final Vector3d position;
     public final boolean isRainbowToggle;
 
     public Note (
@@ -19,8 +20,7 @@ public class Note implements Comparable<Note> {
             final double originalPitch,
             final float volume,
             final double time,
-            final int panning,
-            final int stereo,
+            final Vector3d position,
             final boolean isRainbowToggle
     ) {
         this.instrument = instrument;
@@ -30,8 +30,7 @@ public class Note implements Comparable<Note> {
         this.originalPitch = originalPitch;
         this.volume = volume;
         this.time = time;
-        this.panning = panning;
-        this.stereo = stereo;
+        this.position = position;
         this.isRainbowToggle = isRainbowToggle;
     }
 
@@ -43,8 +42,7 @@ public class Note implements Comparable<Note> {
             final double originalPitch,
             final float volume,
             final double time,
-            final int panning,
-            final int stereo
+            final Vector3d position
     ) {
         this.instrument = instrument;
         this.shiftedInstrument = shiftedInstrument;
@@ -53,8 +51,7 @@ public class Note implements Comparable<Note> {
         this.originalPitch = originalPitch;
         this.volume = volume;
         this.time = time;
-        this.panning = panning;
-        this.stereo = stereo;
+        this.position = position;
         this.isRainbowToggle = false;
     }
 

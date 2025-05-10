@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.util.StringUtilities;
+import org.cloudburstmc.math.vector.Vector3d;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -197,8 +198,7 @@ public class NBSConverter implements Converter {
                 songAuthor,
                 songOriginalAuthor,
                 songDescription,
-                stringLayerNames.substring(0, Math.max(0, stringLayerNames.length() - 1)),
-                true
+                stringLayerNames.substring(0, Math.max(0, stringLayerNames.length() - 1))
         );
 
         final List<TempoSection> tempoSections = new ArrayList<>();
@@ -276,8 +276,10 @@ public class NBSConverter implements Converter {
                             key,
                             (float) note.velocity * (float) layerVolume / 10000f,
                             getMilliTime(note.tick, tempoSections),
-                            Byte.toUnsignedInt(note.panning),
-                            nbsLayers.isEmpty() ? 100 : Byte.toUnsignedInt(nbsLayers.get(note.layer).stereo),
+                            getPosition(
+                                    Byte.toUnsignedInt(note.panning),
+                                    nbsLayers.isEmpty() ? 100 : Byte.toUnsignedInt(nbsLayers.get(note.layer).stereo)
+                            ),
                             isRainbowToggle
                     )
             );
@@ -286,6 +288,22 @@ public class NBSConverter implements Converter {
         song.length = song.get(song.size() - 1).time + 50;
 
         return song;
+    }
+
+    private Vector3d getPosition (final int panning, final int stereo) {
+        final double value;
+
+        if (stereo == 100 && panning != 100) value = panning;
+        else if (panning == 100 && stereo != 100) value = stereo;
+        else value = (double) (stereo + panning) / 2;
+
+        final double xPos;
+
+        if (value > 100) xPos = (value - 100) / -100;
+        else if (value == 100) xPos = 0;
+        else xPos = ((value - 100) * -1) / 100;
+
+        return Vector3d.from(xPos * 2, 0, 0);
     }
 
     private static String getString (final ByteBuffer buffer, final int maxSize) throws IOException {

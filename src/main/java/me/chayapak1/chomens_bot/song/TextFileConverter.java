@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.song;
 
 import me.chayapak1.chomens_bot.Bot;
+import org.cloudburstmc.math.vector.Vector3d;
 
 import java.nio.charset.StandardCharsets;
 
@@ -13,7 +14,7 @@ public class TextFileConverter implements Converter {
 
         int length = 0;
 
-        final Song song = new Song(fileName, bot, null, null, null, null, null, false);
+        final Song song = new Song(fileName, bot, null, null, null, null, null);
 
         for (final String line : data.split("\r\n|\r|\n")) {
             if (line.isBlank()) continue;
@@ -62,8 +63,7 @@ public class TextFileConverter implements Converter {
                             pitch,
                             volume,
                             time,
-                            -1,
-                            100,
+                            Vector3d.ZERO,
                             false
                     )
             );
