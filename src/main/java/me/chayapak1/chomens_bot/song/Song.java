@@ -3,6 +3,7 @@ package me.chayapak1.chomens_bot.song;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.command.CommandContext;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +18,7 @@ public class Song {
     public final String originalName;
     public String name;
 
-    public String requester = "Unknown";
+    public CommandContext context = null;
 
     public int position = 0; // Current note index
     public boolean paused = true;

@@ -2,8 +2,8 @@ package me.chayapak1.chomens_bot.song;
 
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.util.DownloadUtilities;
-import me.chayapak1.chomens_bot.util.I18nUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -34,7 +34,7 @@ public class SongLoaderThread extends Thread {
 
     private final Bot bot;
 
-    private final String requester;
+    public final CommandContext context;
 
     private final boolean isUrl;
 
@@ -44,34 +44,44 @@ public class SongLoaderThread extends Thread {
 
     private boolean isFolder = false;
 
-    public SongLoaderThread (final URL location, final Bot bot, final String requester) {
+    public SongLoaderThread (final URL location, final Bot bot, final CommandContext context) {
         this.bot = bot;
-        this.requester = requester;
+        this.context = context;
         isUrl = true;
         songUrl = location;
 
         fileName = location.getFile();
+
+        updateName();
     }
 
-    public SongLoaderThread (final Path location, final Bot bot, final String requester) {
+    public SongLoaderThread (final Path location, final Bot bot, final CommandContext context) {
         this.bot = bot;
-        this.requester = requester;
+        this.context = context;
         isUrl = false;
         songPath = location;
 
         isFolder = Files.isDirectory(songPath);
 
         fileName = location.getFileName().toString();
+
+        updateName();
     }
 
-    public SongLoaderThread (final byte[] data, final Bot bot, final String requester) {
+    public SongLoaderThread (final byte[] data, final Bot bot, final CommandContext context) {
         this.bot = bot;
-        this.requester = requester;
+        this.context = context;
         this.data = data;
         this.isItem = true;
         this.isUrl = false;
 
-        fileName = requester + "'s song item";
+        fileName = context.sender.profile.getName() + "'s song item";
+
+        updateName();
+    }
+
+    private void updateName () {
+        setName("SongLoaderThread for " + fileName);
     }
 
     @Override
@@ -103,7 +113,7 @@ public class SongLoaderThread extends Thread {
                 name = fileName == null ? "(root)" : fileName.toString();
             } else if (isItem) {
                 bytes = data;
-                name = requester + "'s song item";
+                name = context.sender.profile.getName() + "'s song item";
             } else {
                 bytes = Files.readAllBytes(songPath);
                 name = !isFolder ? fileName : songPath.getFileName().toString();
@@ -129,7 +139,7 @@ public class SongLoaderThread extends Thread {
 
             failed();
         } else {
-            song.requester = requester;
+            song.context = context;
 
             bot.music.songQueue.add(song);
 
@@ -141,36 +151,30 @@ public class SongLoaderThread extends Thread {
 
     private void showAddedToQueue () {
         if (isFolder) {
-            bot.chat.tellraw(
-                    I18nUtilities.render(
-                            Component.translatable(
-                                    "commands.music.loading.added_folder_to_queue",
-                                    bot.colorPalette.defaultColor
-                            )
+            context.sendOutput(
+                    Component.translatable(
+                            "commands.music.loading.added_folder_to_queue",
+                            bot.colorPalette.defaultColor
                     )
             );
         } else {
-            bot.chat.tellraw(
-                    I18nUtilities.render(
-                            Component.translatable(
-                                    "commands.music.loading.added_song_to_queue",
-                                    bot.colorPalette.defaultColor,
-                                    Component.empty()
-                                            .append(Component.text(song.name, bot.colorPalette.secondary))
-                            )
+            context.sendOutput(
+                    Component.translatable(
+                            "commands.music.loading.added_song_to_queue",
+                            bot.colorPalette.defaultColor,
+                            Component.empty()
+                                    .append(Component.text(song.name, bot.colorPalette.secondary))
                     )
             );
         }
     }
 
     private void failed () {
-        bot.chat.tellraw(
-                I18nUtilities.render(
-                        Component.translatable(
-                                "commands.music.error.loading_failed",
-                                NamedTextColor.RED,
-                                exception.message
-                        )
+        context.sendOutput(
+                Component.translatable(
+                        "commands.music.error.loading_failed",
+                        NamedTextColor.RED,
+                        exception.message
                 )
         );
         bot.music.loaderThread = null;

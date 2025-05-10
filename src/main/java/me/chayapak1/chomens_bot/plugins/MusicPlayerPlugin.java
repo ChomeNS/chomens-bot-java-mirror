@@ -2,14 +2,13 @@ package me.chayapak1.chomens_bot.plugins;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.data.bossbar.BotBossBar;
 import me.chayapak1.chomens_bot.data.listener.Listener;
-import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.song.Loop;
 import me.chayapak1.chomens_bot.song.Note;
 import me.chayapak1.chomens_bot.song.Song;
 import me.chayapak1.chomens_bot.song.SongLoaderThread;
-import me.chayapak1.chomens_bot.util.I18nUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import me.chayapak1.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
@@ -88,25 +87,23 @@ public class MusicPlayerPlugin implements Listener {
         bot.executor.scheduleAtFixedRate(() -> urlLimit = 0, 0, bot.config.music.urlRatelimit.seconds, TimeUnit.SECONDS);
     }
 
-    public void loadSong (final Path location, final PlayerEntry sender) {
+    public void loadSong (final Path location, final CommandContext context) {
         startLoadingSong(
                 location.getFileName().toString(),
-                new SongLoaderThread(location, bot, sender.profile.getName())
+                new SongLoaderThread(location, bot, context)
         );
     }
 
-    public void loadSong (final byte[] data, final PlayerEntry sender) {
+    public void loadSong (final byte[] data, final CommandContext context) {
         startLoadingSong(
-                sender.profile.getName() + "'s song item",
-                new SongLoaderThread(data, bot, sender.profile.getName())
+                context.sender.profile.getName() + "'s song item",
+                new SongLoaderThread(data, bot, context)
         );
     }
 
-    public void loadSong (final URL location, final PlayerEntry sender) {
+    public void loadSong (final URL location, final CommandContext context) {
         if (urlLimit >= bot.config.music.urlRatelimit.limit) {
-            bot.chat.tellraw(I18nUtilities.render(
-                    Component.translatable("commands.music.error.url_ratelimited", NamedTextColor.RED)
-            ));
+            context.sendOutput(Component.translatable("commands.music.error.url_ratelimited", NamedTextColor.RED));
             return;
         }
 
@@ -114,7 +111,7 @@ public class MusicPlayerPlugin implements Listener {
 
         startLoadingSong(
                 location.toString(),
-                new SongLoaderThread(location, bot, sender.profile.getName())
+                new SongLoaderThread(location, bot, context)
         );
     }
 
@@ -123,14 +120,13 @@ public class MusicPlayerPlugin implements Listener {
 
         this.loaderThread = loaderThread;
 
-        bot.chat.tellraw(I18nUtilities.render(
-                                 Component
-                                         .translatable(
-                                                 "commands.music.loading",
-                                                 Component.text(songName, bot.colorPalette.secondary)
-                                         )
-                                         .color(bot.colorPalette.defaultColor)),
-                         BOTH_SELECTOR
+        loaderThread.context.sendOutput(
+                Component
+                        .translatable(
+                                "commands.music.loading",
+                                bot.colorPalette.defaultColor,
+                                Component.text(songName, bot.colorPalette.secondary)
+                        )
         );
 
         this.loaderThread.start();
@@ -159,13 +155,12 @@ public class MusicPlayerPlugin implements Listener {
                 addBossBar();
 
                 currentSong = songQueue.getFirst(); // songQueue.poll();
-                bot.chat.tellraw(I18nUtilities.render(
-                                         Component.translatable(
-                                                 "commands.music.nowplaying",
-                                                 bot.colorPalette.defaultColor,
-                                                 Component.empty().append(Component.text(currentSong.name)).color(bot.colorPalette.secondary)
-                                         )),
-                                 BOTH_SELECTOR
+                currentSong.context.sendOutput(
+                        Component.translatable(
+                                "commands.music.nowplaying",
+                                bot.colorPalette.defaultColor,
+                                Component.empty().append(Component.text(currentSong.name)).color(bot.colorPalette.secondary)
+                        )
                 );
                 currentSong.play();
             }
@@ -198,13 +193,12 @@ public class MusicPlayerPlugin implements Listener {
                     return;
                 }
 
-                bot.chat.tellraw(I18nUtilities.render(
-                                         Component.translatable(
-                                                 "commands.music.finished",
-                                                 bot.colorPalette.defaultColor,
-                                                 Component.empty().append(Component.text(currentSong.name)).color(bot.colorPalette.secondary)
-                                         )),
-                                 BOTH_SELECTOR
+                currentSong.context.sendOutput(
+                        Component.translatable(
+                                "commands.music.finished",
+                                bot.colorPalette.defaultColor,
+                                Component.empty().append(Component.text(currentSong.name)).color(bot.colorPalette.secondary)
+                        )
                 );
 
                 if (loop == Loop.ALL) {

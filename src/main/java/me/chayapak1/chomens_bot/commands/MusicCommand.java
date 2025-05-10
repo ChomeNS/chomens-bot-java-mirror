@@ -121,7 +121,7 @@ public class MusicCommand extends Command implements Listener {
         try {
             path = Path.of(ROOT.toString(), stringPath);
 
-            if (path.toString().contains("http")) player.loadSong(new URI(stringPath).toURL(), context.sender);
+            if (path.toString().contains("http")) player.loadSong(new URI(stringPath).toURL(), context);
             else {
                 // among us protection!!!11
                 if (!path.normalize().startsWith(ROOT.toString())) throw new CommandException(Component.text("no"));
@@ -156,7 +156,7 @@ public class MusicCommand extends Command implements Listener {
 
                         final String file = matchedArray[0];
 
-                        player.loadSong(Path.of(realPath.toString(), file), context.sender);
+                        player.loadSong(Path.of(realPath.toString(), file), context);
                     } catch (final NoSuchFileException e) {
                         throw new CommandException(Component.translatable("commands.music.error.no_directory"));
                     }
@@ -178,7 +178,7 @@ public class MusicCommand extends Command implements Listener {
 
                         final String file = matchedArray[0];
 
-                        player.loadSong(Path.of(ROOT.toString(), file), context.sender);
+                        player.loadSong(Path.of(ROOT.toString(), file), context);
                     } catch (final NoSuchFileException e) {
                         throw new CommandException(Component.text("this will never happen ok??"));
                     }
@@ -216,13 +216,13 @@ public class MusicCommand extends Command implements Listener {
             try {
                 bot.music.loadSong(
                         Base64.getDecoder().decode(output),
-                        context.sender
+                        context
                 );
             } catch (final IllegalArgumentException e) {
                 try {
                     bot.music.loadSong(
                             Ascii85.decode(output),
-                            context.sender
+                            context
                     );
                 } catch (final IllegalArgumentException e2) {
                     context.sendOutput(Component.translatable("commands.music.playitem.invalid_data", NamedTextColor.RED));
@@ -571,8 +571,8 @@ public class MusicCommand extends Command implements Listener {
 
         if (isNotNullAndNotBlank(currentSong.name))
             components.add(Component.translatable("commands.music.info.title", keyColor, Component.text(currentSong.name, valueColor)));
-        if (isNotNullAndNotBlank(currentSong.requester))
-            components.add(Component.translatable("commands.music.info.requester", keyColor, Component.text(currentSong.requester, valueColor)));
+        if (currentSong.context != null && isNotNullAndNotBlank(currentSong.context.sender.profile.getName()))
+            components.add(Component.translatable("commands.music.info.requester", keyColor, Component.text(currentSong.context.sender.profile.getName(), valueColor)));
         if (isNotNullAndNotBlank(currentSong.songAuthor))
             components.add(Component.translatable("commands.music.info.author", keyColor, Component.text(currentSong.songAuthor, valueColor)));
         if (isNotNullAndNotBlank(currentSong.songOriginalAuthor))
