@@ -64,16 +64,18 @@ public class MusicPlayerPlugin implements Listener {
     public float volume = 0;
     public int amplify = 1;
 
+    public String instrument = "off";
+
     public boolean rainbow = false; // nbs easter egg
     private float rainbowHue = 0F;
 
-    public String instrument = "off";
+    public BossBarColor bossBarColor = BossBarColor.YELLOW;
 
     private int urlLimit = 0;
 
     public boolean locked = false; // this can be set through servereval
 
-    public BossBarColor bossBarColor = BossBarColor.YELLOW;
+    private boolean isStopping = false;
 
     public String currentLyrics = "";
 
@@ -139,6 +141,12 @@ public class MusicPlayerPlugin implements Listener {
         if (currentSong != null) currentSong.play();
     }
 
+    @Override
+    public void disconnected (final DisconnectedEvent event) {
+        if (currentSong != null) currentSong.pause(); // nice.
+        loaderThread = null;
+    }
+
     // this needs a separate ticker because we need
     // the song to be playing without lag
     private void onMusicTick () {
@@ -162,7 +170,10 @@ public class MusicPlayerPlugin implements Listener {
                 currentSong.play();
             }
 
-            if (!currentSong.finished()) {
+            if (isStopping) {
+                currentSong = null;
+                isStopping = false;
+            } else if (!currentSong.finished()) {
                 handleLyrics();
 
                 BotBossBar bossBar = bot.bossbar.get(BOSS_BAR_NAME);
@@ -381,13 +392,7 @@ public class MusicPlayerPlugin implements Listener {
 
     public void stopPlaying () {
         removeBossBar();
-        currentSong = null;
-    }
-
-    @Override
-    public void disconnected (final DisconnectedEvent event) {
-        if (currentSong != null) currentSong.pause(); // nice.
-        loaderThread = null;
+        isStopping = true;
     }
 
     public void handlePlaying () {
