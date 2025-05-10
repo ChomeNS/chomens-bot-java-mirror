@@ -44,14 +44,12 @@ public class ConsolePlugin implements Completer {
 
         reader.option(LineReader.Option.DISABLE_EVENT_EXPANSION, true);
 
-        final String prompt = "> ";
-
         final Thread thread = new Thread(
                 () -> {
                     while (true) {
                         String line = null;
                         try {
-                            line = reader.readLine(prompt);
+                            line = reader.readLine(getPrompt());
                         } catch (final Exception e) {
                             System.exit(1);
                         }
@@ -63,6 +61,15 @@ public class ConsolePlugin implements Completer {
         );
 
         thread.start();
+    }
+
+    private String getPrompt () {
+        // [all] > input
+        // [localhost:25565] > input
+        return String.format(
+                "[%s] > ",
+                consoleServer
+        );
     }
 
     @Override
