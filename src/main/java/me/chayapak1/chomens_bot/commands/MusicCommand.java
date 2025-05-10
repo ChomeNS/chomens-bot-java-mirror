@@ -598,7 +598,8 @@ public class MusicCommand extends Command implements Listener {
                 "chayapak",
                 "hhhzzzsss",
                 I18nUtilities.get("commands.music.testsong.description"),
-                null
+                null,
+                false
         );
 
         int instrumentId = 0;

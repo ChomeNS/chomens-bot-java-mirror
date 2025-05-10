@@ -198,7 +198,8 @@ public class NBSConverter implements Converter {
                 songAuthor,
                 songOriginalAuthor,
                 songDescription,
-                stringLayerNames.substring(0, Math.max(0, stringLayerNames.length() - 1))
+                stringLayerNames.substring(0, Math.max(0, stringLayerNames.length() - 1)),
+                true
         );
 
         final List<TempoSection> tempoSections = new ArrayList<>();

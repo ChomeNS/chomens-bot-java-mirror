@@ -82,7 +82,7 @@ public class MidiConverter implements Converter {
         if (stringText.endsWith("\n")) stringText = stringText.substring(0, stringText.length() - 1);
         if (stringTracks.endsWith("\n")) stringTracks = stringTracks.substring(0, stringTracks.length() - 1);
 
-        final Song song = new Song(name, bot, songName, null, null, stringText, stringTracks);
+        final Song song = new Song(name, bot, songName, null, null, stringText, stringTracks, false);
 
         tempoEvents.sort(Comparator.comparingLong(MidiEvent::getTick));
 

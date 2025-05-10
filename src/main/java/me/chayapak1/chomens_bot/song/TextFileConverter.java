@@ -14,7 +14,7 @@ public class TextFileConverter implements Converter {
 
         int length = 0;
 
-        final Song song = new Song(fileName, bot, null, null, null, null, null);
+        final Song song = new Song(fileName, bot, null, null, null, null, null, false);
 
         for (final String line : data.split("\r\n|\r|\n")) {
             if (line.isBlank()) continue;

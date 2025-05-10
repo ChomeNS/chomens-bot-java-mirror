@@ -44,7 +44,7 @@ public class SongPlayerConverter implements Converter {
         final int loopCount = buffer.get() & 0xFF;
         final long loopPosition = buffer.getLong();
 
-        final Song song = new Song(fileName, bot, !songName.trim().isEmpty() ? songName : null, null, null, null, null);
+        final Song song = new Song(fileName, bot, !songName.trim().isEmpty() ? songName : null, null, null, null, null, false);
         song.length = songLength;
         //        song.looping = loop > 0;
         //        song.loopCount = loopCount;

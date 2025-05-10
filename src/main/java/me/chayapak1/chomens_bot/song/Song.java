@@ -40,6 +40,8 @@ public class Song {
 
     private final Bot bot;
 
+    public final boolean nbs;
+
     public Song (
             final String originalName,
             final Bot bot,
@@ -47,7 +49,8 @@ public class Song {
             final String songAuthor,
             final String songOriginalAuthor,
             final String songDescription,
-            final String tracks
+            final String tracks,
+            final boolean nbs
     ) {
         this.originalName = originalName;
         this.bot = bot;
@@ -56,6 +59,7 @@ public class Song {
         this.songOriginalAuthor = songOriginalAuthor;
         this.songDescription = songDescription;
         this.tracks = tracks;
+        this.nbs = nbs;
 
         updateName();
     }
