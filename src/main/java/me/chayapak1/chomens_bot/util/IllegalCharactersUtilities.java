@@ -3,7 +3,7 @@ package me.chayapak1.chomens_bot.util;
 public class IllegalCharactersUtilities {
     public static boolean isInvalidChatCharacter (final char character) {
         // RIPPED straight from minecraft code
-        return character == 167 || character <= ' ' || character == 127;
+        return character == 167 || character < ' ' || character == 127;
     }
 
     public static boolean isValidChatString (final String string) {
