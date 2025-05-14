@@ -17,12 +17,14 @@ public class PrefixSelfCare extends SelfCare {
 
     @Override
     public void onMessageReceived (final Component component, final String string) {
-        if (string.equals("You now have the tag: " + bot.config.selfCare.prefix.prefix)) {
+        if (
+                string.equals("You now have the tag: " + bot.config.selfCare.prefix.prefix)
+                    || string.equals("Something went wrong while saving the prefix. Please check console.")
+        ) {
             this.needsRunning = false;
         } else if (
                 string.startsWith("You no longer have a tag")
                         || string.startsWith("You now have the tag: ")
-                        || string.equals("Something went wrong while saving the prefix. Please check console.")
         ) {
             this.needsRunning = true;
         }
