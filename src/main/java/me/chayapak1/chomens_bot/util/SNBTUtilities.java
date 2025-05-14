@@ -157,23 +157,37 @@ public class SNBTUtilities {
 
     // don't wrap the string with quotes when not needed
     // like {abc:def} instead of {abc:'def'}
+    // or some Advanced ones like `abc123.among.us__69` will also return false
     public static boolean needQuotes (final String string) {
         if (
-                string.isBlank()
+                string == null
+                        || string.isBlank()
                         // booleans can get interpreted too
                         || string.equalsIgnoreCase("true")
                         || string.equalsIgnoreCase("false")
-        ) return true;
-
-        for (int i = 0; i < string.length(); i++) {
-            final char c = string.charAt(i);
-            // even though we can do like `abc123.among.us__69` without quotes
-            // i am too lazy to implement that
-            if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))) {
-                return true;
-            }
+        ) {
+            return true;
         }
 
+        final char firstChar = string.charAt(0);
+
+        // cannot start with digit, '.', or '+'
+        if (Character.isDigit(firstChar) || firstChar == '.' || firstChar == '+') {
+            return true;
+        }
+
+        for (int i = 0; i < string.length(); i++) {
+            if (!isAllowedChar(string.charAt(i))) return true;
+        }
+
+        // check PASSED
         return false;
+    }
+
+    private static boolean isAllowedChar (final char c) {
+        return (c >= 'a' && c <= 'z')
+                || (c >= 'A' && c <= 'Z')
+                || (c >= '0' && c <= '9')
+                || c == '_' || c == '-' || c == '.';
     }
 }
