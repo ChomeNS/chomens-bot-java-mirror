@@ -7,6 +7,7 @@ import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.util.ChatMessageUtilities;
+import me.chayapak1.chomens_bot.util.I18nUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -55,6 +56,7 @@ public class NetMessageCommand extends Command {
 
         final Component component = Component.translatable(
                 "[%s]%s%s%s› %s",
+                NamedTextColor.DARK_GRAY,
                 serverNameComponent,
                 Component.space(),
                 context.sender.displayName == null ?
@@ -68,16 +70,16 @@ public class NetMessageCommand extends Command {
                         .hoverEvent(
                                 HoverEvent.showText(
                                         Component.translatable(
-                                                "commands.generic.copy_to_copy_message",
+                                                "commands.generic.click_to_copy_message",
                                                 NamedTextColor.GREEN
                                         )
                                 )
                         )
-        ).color(NamedTextColor.DARK_GRAY);
+        );
 
         for (final Bot eachBot : bots) {
             if (!eachBot.loggedIn) continue;
-            eachBot.chat.tellraw(component);
+            eachBot.chat.tellraw(I18nUtilities.render(component));
         }
 
         return null;
