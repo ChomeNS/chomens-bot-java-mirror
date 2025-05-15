@@ -602,6 +602,8 @@ public class MusicCommand extends Command implements Listener {
                 false
         );
 
+        song.context = context;
+
         int instrumentId = 0;
         int j = 0;
         for (int i = 0; i < 400; i++) {
