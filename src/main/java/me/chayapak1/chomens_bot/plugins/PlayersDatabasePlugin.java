@@ -27,8 +27,8 @@ public class PlayersDatabasePlugin implements Listener {
     private static final String UPDATE_PLAYER = "UPDATE players SET data = JSON_SET(data, ?, JSON_MERGE_PATCH(JSON_EXTRACT(data, ?), ?)) WHERE username = ?;";
     private static final String GET_DATA = "SELECT data FROM players WHERE username = ?;";
     private static final String GET_IP = "SELECT JSON_UNQUOTE(JSON_VALUE(data, ?)) AS ip FROM players WHERE username = ?;";
-    private static final String FIND_ALTS_SINGLE_SERVER = "SELECT * FROM players WHERE JSON_CONTAINS(JSON_EXTRACT(data, '$.ips'), JSON_OBJECT(?, ?));";
-    private static final String FIND_ALTS_ALL_SERVERS = "SELECT * FROM players WHERE JSON_SEARCH(JSON_EXTRACT(data, '$.ips'), 'one', ?) IS NOT NULL;";
+    private static final String FIND_ALTS_SINGLE_SERVER = "SELECT * FROM players WHERE JSON_CONTAINS(JSON_EXTRACT(data, '$.ips'), JSON_OBJECT(?, ?)) LIMIT ?;";
+    private static final String FIND_ALTS_ALL_SERVERS = "SELECT * FROM players WHERE JSON_SEARCH(JSON_EXTRACT(data, '$.ips'), 'one', ?) IS NOT NULL LIMIT ?;";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -101,9 +101,7 @@ public class PlayersDatabasePlugin implements Listener {
         }
     }
 
-    public Map<String, JsonNode> findPlayerAlts (final String ip) { return findPlayerAlts(ip, false); }
-
-    public Map<String, JsonNode> findPlayerAlts (final String ip, final boolean allServer) {
+    public Map<String, JsonNode> findPlayerAlts (final String ip, final boolean allServer, final int limit) {
         try {
             final Map<String, JsonNode> output = new HashMap<>();
 
@@ -113,11 +111,13 @@ public class PlayersDatabasePlugin implements Listener {
                 statement = Main.database.connection.prepareStatement(FIND_ALTS_ALL_SERVERS);
 
                 statement.setString(1, ip);
+                statement.setInt(2, limit);
             } else {
                 statement = Main.database.connection.prepareStatement(FIND_ALTS_SINGLE_SERVER);
 
                 statement.setString(1, bot.getServerString(true));
                 statement.setString(2, ip);
+                statement.setInt(3, limit);
             }
 
             final ResultSet result = statement.executeQuery();

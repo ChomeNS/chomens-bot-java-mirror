@@ -8,19 +8,19 @@ import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
-import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
 import net.kyori.adventure.text.Component;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 public class FindAltsCommand extends Command {
     // we allow both, since the flag used to be `allserver`
     private static final String ALL_SERVER_FLAG = "allserver";
     private static final String ALL_SERVERS_FLAG = "allservers";
+
+    private static final int LIMIT = 200;
 
     public FindAltsCommand () {
         super(
@@ -48,23 +48,13 @@ public class FindAltsCommand extends Command {
 
         final String player = context.getString(true, true);
 
-        final PlayerEntry playerEntry = bot.players.getEntry(player);
-
         DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
-            if (playerEntry == null) {
-                context.sendOutput(handle(bot, player, true, player, allServer));
-            } else if (playerEntry.ip != null) {
-                context.sendOutput(handle(bot, playerEntry.ip, false, player, allServer));
+            final String ipFromUsername = bot.playersDatabase.getPlayerIP(player);
+
+            if (ipFromUsername == null) {
+                context.sendOutput(handle(bot, player, player, allServer));
             } else {
-                final CompletableFuture<String> future = bot.players.getPlayerIP(playerEntry);
-
-                if (future == null) return null;
-
-                future.thenApply(targetIP -> {
-                    context.sendOutput(handle(bot, targetIP, false, player, allServer));
-
-                    return targetIP;
-                });
+                context.sendOutput(handle(bot, ipFromUsername, player, allServer));
             }
 
             return null;
@@ -73,26 +63,26 @@ public class FindAltsCommand extends Command {
         return null;
     }
 
-    private Component handle (final Bot bot, final String targetIP, final boolean argumentIsIP, final String player, final boolean allServer) {
-        final Map<String, JsonNode> altsMap = bot.playersDatabase.findPlayerAlts(targetIP, allServer);
+    private Component handle (final Bot bot, final String targetIP, final String player, final boolean allServer) {
+        final Map<String, JsonNode> altsMap = bot.playersDatabase.findPlayerAlts(targetIP, allServer, LIMIT);
 
-        final Component playerComponent = Component
-                .text(player)
-                .color(bot.colorPalette.username);
+        final Component playerComponent = Component.text(player, bot.colorPalette.username);
+
+        final boolean isIP = targetIP.equals(player);
 
         Component component = Component
                 .translatable("commands.findalts.output", bot.colorPalette.defaultColor)
                 .arguments(
-                        Component.translatable(argumentIsIP ? "commands.findalts.ip" : "commands.findalts.player"),
-                        argumentIsIP ?
+                        Component.translatable(isIP ? "commands.findalts.ip" : "commands.findalts.player"),
+                        isIP ?
                                 playerComponent :
-                                Component.translatable("%s (%s)")
-                                        .arguments(
-                                                playerComponent,
-                                                Component
-                                                        .text(targetIP)
-                                                        .color(bot.colorPalette.number)
-                                        )
+                                Component.translatable(
+                                        "%s (%s)",
+                                        playerComponent,
+                                        Component
+                                                .text(targetIP)
+                                                .color(bot.colorPalette.number)
+                                )
                 )
                 .appendNewline();
 
