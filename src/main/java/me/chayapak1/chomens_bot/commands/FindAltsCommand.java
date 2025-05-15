@@ -8,6 +8,7 @@ import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
+import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
 import net.kyori.adventure.text.Component;
 
@@ -49,7 +50,12 @@ public class FindAltsCommand extends Command {
         final String player = context.getString(true, true);
 
         DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
-            final String ipFromUsername = bot.playersDatabase.getPlayerIP(player);
+            final PlayerEntry playerInTheServer = bot.players.getEntry(player);
+
+            final String ipFromUsername;
+
+            if (playerInTheServer == null || playerInTheServer.ip == null) ipFromUsername = bot.playersDatabase.getPlayerIP(player);
+            else ipFromUsername = playerInTheServer.ip;
 
             if (ipFromUsername == null) {
                 context.sendOutput(handle(bot, player, player, allServer));
