@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
     public static final Path stopReasonFilePath = Path.of("shutdown_reason.txt");
@@ -207,25 +208,26 @@ public class Main {
 
         final boolean[] stoppedDiscord = new boolean[copiedList.size()];
 
-        int botIndex = 0;
+        final AtomicInteger botIndex = new AtomicInteger();
         for (final Bot bot : copiedList) {
             try {
                 if (discordEnabled) {
-                    final String channelId = Main.discord.servers.get(bot.getServerString(true));
+                    final String channelId = Main.discord.findChannelId(bot.options.discordChannel);
 
                     final MessageCreateAction messageAction = Main.discord.sendMessageInstantly(stoppingMessage, channelId, false);
 
-                    final int finalBotIndex = botIndex;
+                    final int currentIndex = botIndex.get();
+
                     messageAction.queue(
-                            (message) -> stoppedDiscord[finalBotIndex] = true,
-                            (error) -> stoppedDiscord[finalBotIndex] = true // should i also set this to true on fail?
+                            (message) -> stoppedDiscord[currentIndex] = true,
+                            (error) -> stoppedDiscord[currentIndex] = true // should i also set this to true on fail?
                     );
                 }
 
                 bot.stop();
             } catch (final Exception ignored) { }
 
-            botIndex++;
+            botIndex.getAndIncrement();
         }
 
         if (discordEnabled) {

@@ -49,8 +49,6 @@ discord:
   ownerRoleName: 'Owner'
   statusMessage: 'Say Gex'
   inviteLink: 'https://discord.gg/xdgCkUyaA4'
-  servers:
-    localhost:25565: 'channel id'
 
 irc:
   enabled: false
@@ -59,8 +57,6 @@ irc:
   port: 6665
   name: 'chomens_bot'
   password: ''
-  servers:
-    localhost:25565: '#chomens/localhost' # channel name
 
 music:
   urlRatelimit:
@@ -141,6 +137,8 @@ selfCare:
 bots:
   # username - optional, if not specified it will just use a random username
   # serverName - name it whatever you like, it will be used as server name in trusted broadcast and in console
+  # discordChannel - the channel name like `localhost` (without #) for use with discord
+  # ircChannel - same as discordChannel but for irc
   # hidden - if enabled, the server address will not show anywhere in the bot, including discord, netmsg, etc., except console
   # useCore - if enabled it just sends the command using chat instead of using core. recommended to enable useChat too when this is disabled
   # useCorePlaceBlock - uses the place block core instead of the main core. only used if useCore is enabled
@@ -155,13 +153,17 @@ bots:
   - host: 'localhost'
     port: 25565
     serverName: 'Localhost'
+    # be sure to set discordChannel and/or ircChannel here if you use the discord integration
     reconnectDelay: 2000
     chatQueueDelay: 125
+
   # or with the optional ones
   # - host: 'localhost'
   #   port: 25565
   #   username: 'ChomeNS_Bot'
   #   serverName: 'Localhost'
+  #   discordChannel: 'localhost'
+  #   ircChannel: '#chomens/localhost'
   #   hidden: false
   #   useCore: true
   #   useCorePlaceBlock: false

@@ -14,6 +14,7 @@ import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -24,7 +25,9 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -44,16 +47,16 @@ public class DiscordPlugin {
     public JDA jda;
 
     public final Configuration.Discord options;
-    public final Map<String, String> servers;
 
     public final String prefix;
     public final Component messagePrefix;
+    public final String serverId;
     public final String discordUrl;
 
     public DiscordPlugin (final Configuration config) {
         this.options = config.discord;
         this.prefix = options.prefix;
-        this.servers = options.servers;
+        this.serverId = config.discord.serverId;
         this.discordUrl = config.discord.inviteLink;
         this.messagePrefix = Component.empty()
                 .append(Component.text("ChomeNS ").color(NamedTextColor.YELLOW))
@@ -89,7 +92,9 @@ public class DiscordPlugin {
         Main.EXECUTOR.scheduleAtFixedRate(this::onDiscordTick, 0, 50, TimeUnit.MILLISECONDS);
 
         for (final Bot bot : Main.bots) {
-            final String channelId = servers.get(bot.getServerString(true));
+            final String channelId = findChannelId(bot.options.discordChannel);
+
+            if (channelId == null) continue;
 
             logData.put(channelId, new LogData());
 
@@ -159,6 +164,16 @@ public class DiscordPlugin {
         }
     }
 
+    public @Nullable String findChannelId (final String channelName) {
+        final Guild guild = jda.getGuildById(serverId);
+        if (guild == null) return null;
+
+        final List<TextChannel> channels = guild.getTextChannelsByName(channelName, true);
+        if (channels.isEmpty()) return null;
+
+        return channels.getFirst().getId();
+    }
+
     // based from HBot (and modified quite a bit)
     private final Map<String, LogData> logData = new ConcurrentHashMap<>();
 
@@ -211,7 +226,9 @@ public class DiscordPlugin {
 
     public void onDiscordTick () {
         for (final Bot bot : Main.bots) {
-            final String channelId = servers.get(bot.getServerString(true));
+            final String channelId = findChannelId(bot.options.discordChannel);
+
+            if (channelId == null) continue;
 
             final LogData data = logData.get(channelId);
 

@@ -26,16 +26,12 @@ import java.util.concurrent.TimeUnit;
 public class IRCPlugin extends ListenerAdapter {
     private final Configuration.IRC ircConfig;
 
-    private final Map<String, String> servers;
-
     public final Map<String, List<String>> messageQueue = new HashMap<>();
 
     private PircBotX bot;
 
     public IRCPlugin (final Configuration config) {
         this.ircConfig = config.irc;
-
-        this.servers = ircConfig.servers;
 
         if (!ircConfig.enabled) return;
 
@@ -51,8 +47,10 @@ public class IRCPlugin extends ListenerAdapter {
         if (!ircConfig.password.isEmpty())
             builder.addCapHandler(new SASLCapHandler(ircConfig.name, ircConfig.password, true));
 
-        for (final Map.Entry<String, String> entry : ircConfig.servers.entrySet())
-            builder.addAutoJoinChannel(entry.getValue());
+        for (final Bot bot : Main.bots) {
+            final String channel = bot.options.ircChannel;
+            if (channel != null) builder.addAutoJoinChannel(channel);
+        }
 
         final org.pircbotx.Configuration configuration = builder.buildConfiguration();
 
@@ -87,76 +85,61 @@ public class IRCPlugin extends ListenerAdapter {
 
     @Override
     public void onMessage (final MessageEvent event) {
-        Bot serverBot = null;
+        for (final Bot bot : Main.bots) {
+            if (!bot.options.ircChannel.equals(event.getChannel().getName())) continue;
 
-        String targetChannel = null;
+            final String commandPrefix = ircConfig.prefix;
 
-        for (final Map.Entry<String, String> entry : servers.entrySet()) {
-            if (entry.getValue().equals(event.getChannel().getName())) {
-                serverBot = Main.bots.stream()
-                        .filter(eachBot -> entry.getKey().equals(eachBot.getServerString(true)))
-                        .findFirst()
-                        .orElse(null);
+            final User user = event.getUser();
 
-                targetChannel = entry.getValue();
+            if (user == null) return;
 
-                break;
+            final String name = user.getRealName().isBlank() ? user.getNick() : user.getRealName();
+            final String message = event.getMessage();
+
+            if (message.startsWith(commandPrefix)) {
+                final String noPrefix = message.substring(commandPrefix.length());
+
+                final IRCCommandContext context = new IRCCommandContext(bot, commandPrefix, name);
+
+                bot.commandHandler.executeCommand(noPrefix, context);
+
+                return;
             }
+
+            final Component prefix = Component
+                    .text(event.getChannel().getName())
+                    .hoverEvent(
+                            HoverEvent.showText(
+                                    Component
+                                            .empty()
+                                            .append(Component.text("on "))
+                                            .append(Component.text(ircConfig.host))
+                                            .append(Component.text(":"))
+                                            .append(Component.text(ircConfig.port))
+                                            .color(NamedTextColor.GRAY)
+                            )
+                    )
+                    .color(NamedTextColor.BLUE);
+
+            final Component username = Component
+                    .text(name)
+                    .hoverEvent(HoverEvent.showText(Component.text(event.getUser().getHostname()).color(NamedTextColor.RED)))
+                    .color(NamedTextColor.RED);
+
+            final Component messageComponent = Component
+                    .text(message)
+                    .color(NamedTextColor.GRAY);
+
+            final Component component = Component.translatable(
+                    "[%s] %s › %s",
+                    prefix,
+                    username,
+                    messageComponent
+            ).color(NamedTextColor.DARK_GRAY);
+
+            bot.chat.tellraw(component);
         }
-
-        if (serverBot == null) return;
-
-        final String commandPrefix = ircConfig.prefix;
-
-        final User user = event.getUser();
-
-        if (user == null) return;
-
-        final String name = user.getRealName().isBlank() ? user.getNick() : user.getRealName();
-        final String message = event.getMessage();
-
-        if (message.startsWith(commandPrefix)) {
-            final String noPrefix = message.substring(commandPrefix.length());
-
-            final IRCCommandContext context = new IRCCommandContext(serverBot, commandPrefix, name);
-
-            serverBot.commandHandler.executeCommand(noPrefix, context);
-
-            return;
-        }
-
-        final Component prefix = Component
-                .text(targetChannel)
-                .hoverEvent(
-                        HoverEvent.showText(
-                                Component
-                                        .empty()
-                                        .append(Component.text("on "))
-                                        .append(Component.text(ircConfig.host))
-                                        .append(Component.text(":"))
-                                        .append(Component.text(ircConfig.port))
-                                        .color(NamedTextColor.GRAY)
-                        )
-                )
-                .color(NamedTextColor.BLUE);
-
-        final Component username = Component
-                .text(name)
-                .hoverEvent(HoverEvent.showText(Component.text(event.getUser().getHostname()).color(NamedTextColor.RED)))
-                .color(NamedTextColor.RED);
-
-        final Component messageComponent = Component
-                .text(message)
-                .color(NamedTextColor.GRAY);
-
-        final Component component = Component.translatable(
-                "[%s] %s › %s",
-                prefix,
-                username,
-                messageComponent
-        ).color(NamedTextColor.DARK_GRAY);
-
-        serverBot.chat.tellraw(component);
     }
 
     private void systemMessageReceived (final Bot bot, final String ansi) {
@@ -202,12 +185,6 @@ public class IRCPlugin extends ListenerAdapter {
         } catch (final Exception ignored) { }
     }
 
-    private void addMessageToQueue (final Bot bot, final String message) {
-        final String channel = servers.get(bot.getServerString(true));
-
-        addMessageToQueue(channel, message);
-    }
-
     private void addMessageToQueue (final String channel, final String message) {
         final List<String> split = new ArrayList<>(Arrays.asList(message.split("\n")));
 
@@ -221,12 +198,7 @@ public class IRCPlugin extends ListenerAdapter {
     }
 
     public void sendMessage (final Bot bot, final String message) {
-        final String hostAndPort = bot.getServerString(true);
-
-        final String channel = servers.get(hostAndPort);
-
-        if (channel == null) return;
-
-        addMessageToQueue(channel, message);
+        final String channel = bot.options.ircChannel;
+        if (channel != null) addMessageToQueue(channel, message);
     }
 }

@@ -1,9 +1,7 @@
 package me.chayapak1.chomens_bot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Configuration {
     public List<String> prefixes;
@@ -104,13 +102,17 @@ public class Configuration {
         public String serverId;
         public boolean enableDiscordHashing = true;
         public String token;
-        public Map<String, String> servers = new HashMap<>();
         public EmbedColors embedColors = new EmbedColors();
         public String trustedRoleName = "Trusted";
         public String adminRoleName = "Admin";
         public String ownerRoleName = "Owner";
         public String statusMessage = "Oh hi!";
         public String inviteLink = "https://discord.gg/xdgCkUyaA4";
+
+        public static class EmbedColors {
+            public String normal = "#FFFF00";
+            public String error = "#FF0000";
+        }
     }
 
     public static class IRC {
@@ -120,7 +122,6 @@ public class Configuration {
         public int port;
         public String name = "chomens-bot";
         public String password = "";
-        public Map<String, String> servers = new HashMap<>();
     }
 
     public static class Music {
@@ -130,11 +131,6 @@ public class Configuration {
             public int seconds = 15;
             public int limit = 7;
         }
-    }
-
-    public static class EmbedColors {
-        public String normal = "#FFFF00";
-        public String error = "#FF0000";
     }
 
     public static class Eval {
@@ -170,6 +166,8 @@ public class Configuration {
         public int port;
         public String username;
         public String serverName;
+        public String discordChannel;
+        public String ircChannel;
         public boolean hidden = false;
         public boolean useCore = true;
         public boolean useCorePlaceBlock = false;
