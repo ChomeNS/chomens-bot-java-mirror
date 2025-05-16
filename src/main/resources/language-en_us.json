@@ -211,7 +211,9 @@
   "commands.netmsg.hover.copy_server_to_clipboard": "Click here to copy the server host and port to your clipboard",
 
   "commands.rtp.description": "Randomly teleports you",
-  "commands.rtp.output": "Teleporting %s to %s",
+  "commands.rtp.teleporting_no_location": "Teleporting %s to a random location...",
+  "commands.rtp.teleporting_location": "Teleporting %s to %s",
+  "commands.rtp.to_sender": "You are being teleported to %s, this might take a few seconds depending on the server's performance",
 
   "commands.refillcore.description": "Refills and resets the bots command core",
   "commands.refillcore.output": "Refilled the command core",

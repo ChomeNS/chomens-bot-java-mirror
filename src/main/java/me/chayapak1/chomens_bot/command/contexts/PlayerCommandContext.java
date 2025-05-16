@@ -5,6 +5,7 @@ import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.I18nUtilities;
+import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
 
 public class PlayerCommandContext extends CommandContext {
@@ -33,7 +34,16 @@ public class PlayerCommandContext extends CommandContext {
 
     @Override
     public void sendOutput (final Component component) {
+        sendOutput(component, false);
+    }
+
+    public void sendOutput (final Component component, final boolean onlyToSender) {
         final Component rendered = I18nUtilities.render(component);
+
+        final String selector = onlyToSender
+                ? UUIDUtilities.selector(this.sender.profile.getId())
+                : this.selector;
+
         bot.chat.tellraw(
                 Component.translatable(
                         "%s",
