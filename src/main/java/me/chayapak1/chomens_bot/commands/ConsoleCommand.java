@@ -18,6 +18,7 @@ public class ConsoleCommand extends Command {
                 "console",
                 new String[] {
                         "server <server>",
+                        "discord <message>",
                         "logtoconsole <true|false>",
                         "printdisconnectedreason <true|false>"
                 },
@@ -74,6 +75,21 @@ public class ConsoleCommand extends Command {
                             )
                     );
                 }
+            }
+            case "discord" -> {
+                if (Main.discord == null || Main.discord.jda == null) {
+                    throw new CommandException(Component.translatable("commands.generic.error.discord_disabled"));
+                }
+
+                final String channelId = Main.discord.findChannelId(context.bot.options.discordChannel);
+
+                if (channelId == null) return null;
+
+                final String message = context.getString(true, true);
+
+                Main.discord.sendMessageInstantly(message, channelId, true);
+
+                return null;
             }
             case "logtoconsole" -> {
                 context.checkOverloadArgs(2);
