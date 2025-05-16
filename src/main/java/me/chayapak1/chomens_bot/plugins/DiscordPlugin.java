@@ -165,6 +165,8 @@ public class DiscordPlugin {
     }
 
     public @Nullable String findChannelId (final String channelName) {
+        if (channelName == null) return null;
+
         final Guild guild = jda.getGuildById(serverId);
         if (guild == null) return null;
 
