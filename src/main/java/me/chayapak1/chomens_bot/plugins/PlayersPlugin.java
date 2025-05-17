@@ -111,7 +111,7 @@ public class PlayersPlugin implements Listener {
                 return;
             }
 
-            final CompletableFuture<Component> trackedCoreFuture = bot.core.runTracked(true, "essentials:seen " + target.profile.getIdAsString());
+            final CompletableFuture<Component> trackedCoreFuture = bot.core.runTracked("essentials:seen " + target.profile.getIdAsString());
 
             if (trackedCoreFuture == null) {
                 outputFuture.complete(null);
@@ -291,11 +291,11 @@ public class PlayersPlugin implements Listener {
         bot.listener.dispatch(listener -> listener.onPlayerDisplayNameUpdated(target, displayName));
     }
 
-    private CompletableFuture<String> getLastKnownName (final String uuid) {
-        return bot.query.entity(true, uuid, "bukkit.lastKnownName");
+    private CompletableFuture<String> getLastKnownName (final boolean useCargo, final String uuid) {
+        return bot.query.entity(useCargo, uuid, "bukkit.lastKnownName");
     }
 
-    private void check (final PlayerEntry target) {
+    private void check (final boolean useCargo, final PlayerEntry target) {
         final PlayerEntry pending = pendingLeftPlayers.stream()
                 .filter(player -> player.equals(target))
                 .findAny()
@@ -303,7 +303,7 @@ public class PlayersPlugin implements Listener {
 
         if (pending != null) pendingLeftPlayers.remove(pending);
 
-        final CompletableFuture<String> future = getLastKnownName(target.profile.getIdAsString());
+        final CompletableFuture<String> future = getLastKnownName(useCargo, target.profile.getIdAsString());
 
         future.thenApply(lastKnownName -> {
             // checking for empty string means
@@ -364,7 +364,7 @@ public class PlayersPlugin implements Listener {
             return;
 
         for (final PlayerEntry target : new ArrayList<>(list)) {
-            check(target);
+            check(true, target);
         }
     }
 
@@ -381,7 +381,7 @@ public class PlayersPlugin implements Listener {
             }
         } else {
             pendingLeftPlayers.add(target);
-            check(target);
+            check(false, target);
         }
     }
 
