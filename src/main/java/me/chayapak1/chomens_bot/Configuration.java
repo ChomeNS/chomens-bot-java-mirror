@@ -46,7 +46,7 @@ public class Configuration {
 
     public static class OwnerAuthentication {
         public boolean enabled = false;
-        public int timeout = 10 * 1000;
+        public int timeout = 10;
     }
 
     public static class Backup {

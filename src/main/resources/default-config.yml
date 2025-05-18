@@ -80,7 +80,7 @@ consoleChatFormat: '{"translate":"chat.type.text","with":["OWNER_NAME","MESSAGE"
 
 ownerAuthentication:
   enabled: false
-  timeout: 10000 # 10 seconds - 10 * 1000
+  timeout: 10 # in seconds !!! not milliseconds
 
 # if this is enabled when someone does a clear chat command the bot
 # will tellraw `{player} cleared the chat`
