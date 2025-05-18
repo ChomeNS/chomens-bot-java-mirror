@@ -42,7 +42,9 @@ repositories {
 
 dependencies {
     implementation 'org.geysermc.mcprotocollib:protocol:1.21.5-SNAPSHOT'
-    implementation 'net.kyori:adventure-text-serializer-legacy:4.19.0'
+    implementation 'net.kyori:adventure-text-serializer-plain:4.21.0'
+    implementation 'net.kyori:adventure-text-serializer-legacy:4.21.0'
+    implementation 'net.kyori:adventure-text-serializer-ansi:4.21.0'
     implementation 'com.google.code.gson:gson:2.12.1'
     implementation 'com.google.guava:guava:33.4.0-jre'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.3'

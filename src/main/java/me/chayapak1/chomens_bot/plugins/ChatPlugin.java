@@ -388,7 +388,7 @@ public class ChatPlugin implements Listener {
         if (bot.options.useChat) {
             if (!targets.equals("@a")) return; // worst fix of all time!1!
 
-            final String stringified = ComponentUtilities.stringifySectionSign(component).replace("§", "&");
+            final String stringified = ComponentUtilities.stringifyLegacy(component).replace("§", "&");
             send(stringified);
         } else {
             bot.core.run("minecraft:tellraw " + targets + " " + SNBTUtilities.fromComponent(bot, component));
