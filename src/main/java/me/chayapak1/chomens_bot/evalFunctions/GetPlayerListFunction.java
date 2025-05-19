@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.eval.EvalFunction;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import me.chayapak1.chomens_bot.util.SNBTUtilities;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class GetPlayerListFunction extends EvalFunction {
             object.addProperty("uuid", entry.profile.getIdAsString());
             object.addProperty("username", entry.profile.getName());
             if (entry.displayName != null)
-                object.addProperty("displayName", GsonComponentSerializer.gson().serialize(entry.displayName));
+                object.addProperty("displayName", SNBTUtilities.fromComponent(false, entry.displayName));
 
             array.add(object);
         }

@@ -1,13 +1,13 @@
 package me.chayapak1.chomens_bot.util;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import me.chayapak1.chomens_bot.Bot;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.json.JSONOptions;
 
 import java.util.Map;
+import java.util.Set;
 
 // for 1.21.5 SNBT components, not sure how performant this is
 // since i'm not good at writing performant code, but this should
@@ -16,6 +16,15 @@ import java.util.Map;
 // with some tests on my laptop, the output of help command can take as much as 43 ms (truly advanced)
 // but some small components can be as low as 8764 nanoseconds
 public class SNBTUtilities {
+    private static final GsonComponentSerializer SERIALIZER_1_21_4 =
+            GsonComponentSerializer.builder()
+                    .options(JSONOptions.byDataVersion().at(4174)) // 24w44a, 1.21.4
+                    .build();
+    private static final GsonComponentSerializer SERIALIZER_1_21_5 =
+            GsonComponentSerializer.builder()
+                    .options(JSONOptions.byDataVersion().at(4298)) // 25w02a, 1.21.5, uses snake case for events
+                    .build();
+
     private static final String QUOTE = "'";
 
     private static final String COMMA = ",";
@@ -27,12 +36,9 @@ public class SNBTUtilities {
     private static final String BEGIN_ARRAY = "[";
     private static final String END_ARRAY = "]";
 
-    public static String fromComponent (final Bot bot, final Component component) {
-        if (!bot.options.useSNBTComponents) return GsonComponentSerializer.gson().serialize(component);
-
-        final JsonElement json = GsonComponentSerializer.gson().serializeToTree(component);
-
-        return fromJson(json);
+    public static String fromComponent (final boolean useSNBTComponents, final Component component) {
+        if (!useSNBTComponents) return SERIALIZER_1_21_4.serialize(component);
+        else return fromJson(SERIALIZER_1_21_5.serializeToTree(component));
     }
 
     // RIPPED from https://minecraft.wiki/w/NBT_format#Conversion_from_JSON
@@ -67,71 +73,16 @@ public class SNBTUtilities {
         } else if (json.isJsonObject()) {
             final StringBuilder stringBuilder = new StringBuilder(BEGIN_OBJECT);
 
-            boolean notEmpty = false;
+            final Set<Map.Entry<String, JsonElement>> entries = json.getAsJsonObject().entrySet();
 
-            for (final Map.Entry<String, JsonElement> entry : json.getAsJsonObject().entrySet()) {
-                notEmpty = true;
-
-                // FIXME: remove all these events fixer after adventure updates to 1.21.5, this is a SUPER lazy and temporary fix
-                if (entry.getKey().equals("hoverEvent") && entry.getValue().isJsonObject()) {
-                    final JsonObject object = entry.getValue().getAsJsonObject();
-                    final String action = object.getAsJsonPrimitive("action").getAsString();
-
-                    final JsonObject fixedObject = new JsonObject();
-
-                    fixedObject.addProperty("action", action);
-
-                    switch (action) {
-                        case "show_text" -> fixedObject.add("value", object.get("contents"));
-                        case "show_item" -> {
-                            final JsonObject contents = object.get("contents").getAsJsonObject();
-                            fixedObject.add("id", contents.get("id"));
-                            fixedObject.add("count", contents.get("count"));
-                            fixedObject.add("components", contents.get("components"));
-                        }
-                        case "show_entity" -> {
-                            final JsonObject contents = object.get("contents").getAsJsonObject();
-                            fixedObject.add("name", contents.get("name"));
-                            fixedObject.add("id", contents.get("id"));
-                            fixedObject.add("uuid", contents.get("uuid"));
-                        }
-                    }
-
-                    stringBuilder.append("hover_event")
-                            .append(COLON)
-                            .append(fromJson(fixedObject))
-                            .append(COMMA);
-                } else if (entry.getKey().equals("clickEvent") && entry.getValue().isJsonObject()) {
-                    final JsonObject object = entry.getValue().getAsJsonObject();
-
-                    final String action = object.getAsJsonPrimitive("action").getAsString();
-                    final JsonElement value = object.getAsJsonPrimitive("value");
-
-                    final JsonObject fixedObject = new JsonObject();
-
-                    fixedObject.addProperty("action", action);
-
-                    switch (action) {
-                        case "open_url" -> fixedObject.add("url", value);
-                        case "open_file" -> fixedObject.add("path", value);
-                        case "run_command", "suggest_command" -> fixedObject.add("command", value);
-                        case "change_page" -> fixedObject.add("page", value);
-                        case "copy_to_clipboard" -> fixedObject.add("value", value);
-                    }
-
-                    stringBuilder.append("click_event")
-                            .append(COLON)
-                            .append(fromJson(fixedObject))
-                            .append(COMMA);
-                } else {
-                    stringBuilder.append(entry.getKey()) // no escape :O (optional for adventure)
-                            .append(COLON)
-                            .append(fromJson(entry.getValue()))
-                            .append(COMMA);
-                }
+            for (final Map.Entry<String, JsonElement> entry : entries) {
+                stringBuilder.append(entry.getKey()) // no escape :O (optional for adventure)
+                        .append(COLON)
+                        .append(fromJson(entry.getValue()))
+                        .append(COMMA);
             }
 
-            if (notEmpty) stringBuilder.deleteCharAt(stringBuilder.length() - 1); // removes comma
+            if (!entries.isEmpty()) stringBuilder.deleteCharAt(stringBuilder.length() - 1); // removes comma
 
             stringBuilder.append(END_OBJECT);
 

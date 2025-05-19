@@ -5,8 +5,8 @@ import me.chayapak1.chomens_bot.data.bossbar.BossBar;
 import me.chayapak1.chomens_bot.data.bossbar.BotBossBar;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
-import net.kyori.adventure.text.Component;
 import me.chayapak1.chomens_bot.util.SNBTUtilities;
+import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.network.packet.Packet;
@@ -196,7 +196,7 @@ public class BossbarManagerPlugin implements Listener {
 
         final Component title = bossBar.secret;
 
-        final String stringTitle = SNBTUtilities.fromComponent(bot, title);
+        final String stringTitle = SNBTUtilities.fromComponent(bot.options.useSNBTComponents, title);
 
         bot.core.run("minecraft:bossbar add " + name + " " + stringTitle);
 

@@ -65,7 +65,7 @@ public class BotBossBar extends BossBar {
 
         this.title = title;
 
-        final String serialized = SNBTUtilities.fromComponent(bot, title);
+        final String serialized = SNBTUtilities.fromComponent(bot.options.useSNBTComponents, title);
 
         bot.core.run("minecraft:bossbar set " + id + " name " + serialized);
 

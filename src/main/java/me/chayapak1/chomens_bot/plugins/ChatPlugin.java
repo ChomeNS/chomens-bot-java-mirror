@@ -391,7 +391,7 @@ public class ChatPlugin implements Listener {
             final String stringified = ComponentUtilities.stringifyLegacy(component).replace("§", "&");
             send(stringified);
         } else {
-            bot.core.run("minecraft:tellraw " + targets + " " + SNBTUtilities.fromComponent(bot, component));
+            bot.core.run("minecraft:tellraw " + targets + " " + SNBTUtilities.fromComponent(bot.options.useSNBTComponents, component));
         }
     }
 
@@ -401,7 +401,7 @@ public class ChatPlugin implements Listener {
 
     public void actionBar (final Component component, final String targets) {
         if (bot.options.useChat) return;
-        bot.core.run("minecraft:title " + targets + " actionbar " + SNBTUtilities.fromComponent(bot, component));
+        bot.core.run("minecraft:title " + targets + " actionbar " + SNBTUtilities.fromComponent(bot.options.useSNBTComponents, component));
     }
 
     public void actionBar (final Component component, final UUID uuid) { actionBar(component, UUIDUtilities.selector(uuid)); }

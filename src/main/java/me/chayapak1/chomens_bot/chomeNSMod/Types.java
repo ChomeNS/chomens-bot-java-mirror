@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.chomeNSMod;
 
 import io.netty.buffer.ByteBuf;
+import me.chayapak1.chomens_bot.util.SNBTUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
@@ -46,7 +47,7 @@ public class Types {
     }
 
     public static void writeComponent (final ByteBuf buf, final Component component) {
-        final String stringJSON = GsonComponentSerializer.gson().serialize(component);
+        final String stringJSON = SNBTUtilities.fromComponent(false, component);
 
         writeString(buf, stringJSON);
     }

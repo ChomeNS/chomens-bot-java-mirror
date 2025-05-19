@@ -141,7 +141,7 @@ public class ScreensharePlugin {
             }
 
             for (int i = 0; i < names.size(); i++) {
-                bot.core.run("minecraft:data merge entity @e[tag=" + tags.get(i) + ",limit=1] {text:" + SNBTUtilities.fromComponent(bot, names.get(i)) + "}");
+                bot.core.run("minecraft:data merge entity @e[tag=" + tags.get(i) + ",limit=1] {text:" + SNBTUtilities.fromComponent(bot.options.useSNBTComponents, names.get(i)) + "}");
             }
         }
 

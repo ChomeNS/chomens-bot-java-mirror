@@ -2,8 +2,8 @@ package me.chayapak1.chomens_bot.evalFunctions;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.eval.EvalFunction;
+import me.chayapak1.chomens_bot.util.SNBTUtilities;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -27,6 +27,12 @@ public class CoreFunction extends EvalFunction {
 
         final CompletableFuture<Component> future = bot.core.runTracked(command);
 
-        return new Output(GsonComponentSerializer.gson().serialize(future.get(1, TimeUnit.SECONDS)), true);
+        return new Output(
+                SNBTUtilities.fromComponent(
+                        false,
+                        future.get(1, TimeUnit.SECONDS)
+                ),
+                true
+        );
     }
 }
