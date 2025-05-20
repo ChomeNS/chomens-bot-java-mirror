@@ -13,6 +13,7 @@ import org.cloudburstmc.math.vector.Vector3i;
 import org.cloudburstmc.nbt.NbtMap;
 import org.cloudburstmc.nbt.NbtMapBuilder;
 import org.geysermc.mcprotocollib.network.Session;
+import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.object.Direction;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.Hand;
@@ -498,6 +499,12 @@ public class CorePlugin implements Listener {
     public void onWorldChanged (final String dimension) {
         reset();
         refill();
+    }
+
+    @Override
+    public void connected (final ConnectedEvent event) {
+        // in case we don't have friends like obd and/or hbot (and other bots that turn this gamerule off)
+        pendingCommands.add("minecraft:gamerule commandBlockOutput false");
     }
 
     @Override
