@@ -377,9 +377,11 @@ public class CorePlugin implements Listener {
         for (int y = from.getY(); y <= to.getY(); y++) {
             for (int z = from.getZ(); z <= to.getZ(); z++) {
                 for (int x = from.getX(); x <= to.getX(); x++) {
-                    final int block = bot.world.getBlock(x, y, z);
+                    try {
+                        final int block = bot.world.getBlock(x, y, z);
 
-                    if (!isCommandBlockState(block)) return false;
+                        if (!isCommandBlockState(block)) return false;
+                    } catch (final Exception ignored) { }
                 }
             }
         }
@@ -398,9 +400,11 @@ public class CorePlugin implements Listener {
         for (int y = from.getY(); y <= to.getY(); y++) {
             for (int z = from.getZ(); z <= to.getZ(); z++) {
                 for (int x = from.getX(); x <= to.getX(); x++) {
-                    final int block = bot.world.getBlock(x, y, z);
+                    try {
+                        final int block = bot.world.getBlock(x, y, z);
 
-                    if (isCommandBlockState(block)) return true;
+                        if (isCommandBlockState(block)) return true;
+                    } catch (final Exception ignored) { }
                 }
             }
         }
