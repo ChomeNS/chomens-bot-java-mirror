@@ -130,7 +130,7 @@ public class ComponentUtilities {
 
     public static String stringifyDiscordAnsi (final Component message) {
         return guardedStringify(DISCORD_ANSI_SERIALIZER, message)
-                .replace("9", "3"); // we have to downscale because discord's ANSI doesn't have bright colors
+                .replace("\u001b[9", "\u001b[3"); // we have to downscale because discord's ANSI doesn't have bright colors
     }
 
     public static String deserializeFromDiscordAnsi (final String original) {
