@@ -377,11 +377,9 @@ public class CorePlugin implements Listener {
         for (int y = from.getY(); y <= to.getY(); y++) {
             for (int z = from.getZ(); z <= to.getZ(); z++) {
                 for (int x = from.getX(); x <= to.getX(); x++) {
-                    try {
-                        final int block = bot.world.getBlock(x, y, z);
+                    final int block = bot.world.getBlock(x, y, z);
 
-                        if (!isCommandBlockState(block)) return false;
-                    } catch (final Exception ignored) { }
+                    if (!isCommandBlockState(block)) return false;
                 }
             }
         }
@@ -400,11 +398,9 @@ public class CorePlugin implements Listener {
         for (int y = from.getY(); y <= to.getY(); y++) {
             for (int z = from.getZ(); z <= to.getZ(); z++) {
                 for (int x = from.getX(); x <= to.getX(); x++) {
-                    try {
-                        final int block = bot.world.getBlock(x, y, z);
+                    final int block = bot.world.getBlock(x, y, z);
 
-                        if (isCommandBlockState(block)) return true;
-                    } catch (final Exception ignored) { }
+                    if (isCommandBlockState(block)) return true;
                 }
             }
         }
@@ -560,16 +556,14 @@ public class CorePlugin implements Listener {
         for (int y = from.getY(); y <= to.getY(); y++) {
             for (int z = from.getZ(); z <= to.getZ(); z++) {
                 for (int x = from.getX(); x <= to.getX(); x++) {
-                    try {
-                        final int block = bot.world.getBlock(x, y, z);
+                    final int block = bot.world.getBlock(x, y, z);
 
-                        final Boolean refilled = refilledMap.get(y);
+                    final Boolean refilled = refilledMap.get(y);
 
-                        if (
-                                (!force && isCommandBlockState(block)) ||
-                                        (refilled != null && refilled)
-                        ) continue;
-                    } catch (final Exception ignored) { }
+                    if (
+                            (!force && isCommandBlockState(block)) ||
+                                    (refilled != null && refilled)
+                    ) continue;
 
                     final boolean useChat = positionChangesPerSecond.get() > 10;
 

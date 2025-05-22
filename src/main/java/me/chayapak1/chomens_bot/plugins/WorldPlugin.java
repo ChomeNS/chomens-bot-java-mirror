@@ -136,7 +136,12 @@ public class WorldPlugin implements Listener {
     public int getBlock (final int x, final int y, final int z) {
         final ChunkPos chunkPos = new ChunkPos(Math.floorDiv(x, 16), Math.floorDiv(z, 16));
         final ChunkColumn chunk = chunks.get(chunkPos);
-        return chunk == null ? 0 : chunks.get(chunkPos).getBlock(x & 15, y, z & 15);
+
+        try {
+            return chunk == null ? 0 : chunks.get(chunkPos).getBlock(x & 15, y, z & 15);
+        } catch (final Exception e) {
+            return 0;
+        }
     }
 
     // should this be public?
