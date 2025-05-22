@@ -39,7 +39,7 @@
   "commands.botvisibility.visible": "visible",
   "commands.botvisibility.invisible": "invisible",
 
-  "commands.bruhify.description": "RecycleBots bruhify but actionbar",
+  "commands.bruhify.description": "RecycleBot's bruhify but actionbar",
 
   "commands.clearchat.description": "Clears the chat for everyone or for the specified player",
   "commands.clearchat.specific": "Your chat has been cleared by %s",
@@ -116,7 +116,7 @@
   "commands.info.discord.output": "The Discord invite is: %s",
   "commands.info.server.output": "Hostname: %s\nWorking directory: %s\nOS architecture: %s\nOS version: %s\nOS name: %s\nCPU cores: %s\nCPU model: %s\nThreads: %s\nHeap memory usage: %s\nJVM memory usage: %s",
   "commands.info.botuser.output": "The bot's username is: %s and the UUID is: %s",
-  "commands.info.botlogintime.output": "The bots login time is %s and has been on the server for %s",
+  "commands.info.botlogintime.output": "The bot's login time is %s and has been on the server for %s",
   "commands.info.uptime.output": "The bot's uptime is: %s",
   "commands.info.default.main_output": "%s is an open-source utility bot and a moderation bot made for the %s Minecraft server (and its clones) but also works on vanilla Minecraft servers. It was originally made for fun but I got addicted and made it a full blown bot.",
   "commands.info.default.original_repository": "Original repository: %s",
@@ -215,7 +215,7 @@
   "commands.rtp.teleporting_location": "Teleporting %s to %s",
   "commands.rtp.to_sender": "You are being teleported to %s, this might take a few seconds depending on the server's performance",
 
-  "commands.refillcore.description": "Refills and resets the bots command core",
+  "commands.refillcore.description": "Refills and resets the bot's command core",
   "commands.refillcore.output": "Refilled the command core",
 
   "commands.restart.description": "Gracefully restarts the bot",
