@@ -15,6 +15,8 @@ public enum TrustLevel {
     ADMIN(2, Component.text(I18nUtilities.get("trust_level.admin")).color(NamedTextColor.DARK_RED)),
     OWNER(3, Component.text(I18nUtilities.get("trust_level.owner")).color(NamedTextColor.LIGHT_PURPLE));
 
+    public static final TrustLevel MAX = values()[values().length - 1];
+
     public final int level;
     public final Component component;
 

@@ -279,8 +279,10 @@ public class CommandContext {
         };
     }
 
-    public <T extends Enum<T>> T getEnum (final Class<T> enumClass) throws CommandException {
-        final String string = getString(false, true, enumClass.getSimpleName());
+    public <T extends Enum<T>> T getEnum (final boolean required, final Class<T> enumClass) throws CommandException {
+        final String string = getString(false, required, enumClass.getSimpleName());
+
+        if (string.isEmpty()) return null;
 
         try {
             return Enum.valueOf(enumClass, string.toUpperCase());

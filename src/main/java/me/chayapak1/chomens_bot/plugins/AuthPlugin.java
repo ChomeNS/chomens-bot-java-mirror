@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.logging.LogType;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
@@ -41,6 +42,8 @@ public class AuthPlugin implements Listener {
         if (!bot.chomeNSMod.connectedPlayers.contains(target)) return;
 
         cleanup();
+
+        target.authenticatedTrustLevel = TrustLevel.MAX;
 
         bot.logger.log(
                 LogType.AUTH,

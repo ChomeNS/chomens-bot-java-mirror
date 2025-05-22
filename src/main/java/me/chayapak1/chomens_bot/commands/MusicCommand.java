@@ -251,7 +251,7 @@ public class MusicCommand extends Command implements Listener {
 
         final Bot bot = context.bot;
 
-        final Loop loop = context.getEnum(Loop.class);
+        final Loop loop = context.getEnum(true, Loop.class);
 
         bot.music.loop = loop;
 

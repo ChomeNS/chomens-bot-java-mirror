@@ -35,7 +35,7 @@ public class CloopCommand extends Command {
                 long interval = context.getLong(true);
                 if (interval < 1) interval = 1;
 
-                final ChronoUnit unit = context.getEnum(ChronoUnit.class);
+                final ChronoUnit unit = context.getEnum(true, ChronoUnit.class);
 
                 if (unit == ChronoUnit.NANOS && interval < 1000)
                     throw new CommandException(Component.translatable("commands.cloop.add.error.too_low_nanoseconds"));

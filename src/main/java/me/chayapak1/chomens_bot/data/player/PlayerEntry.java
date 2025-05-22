@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.data.player;
 
+import me.chayapak1.chomens_bot.command.TrustLevel;
 import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.auth.GameProfile;
 import org.geysermc.mcprotocollib.protocol.data.game.PlayerListEntry;
@@ -20,6 +21,7 @@ public class PlayerEntry {
     public final byte[] keySignature;
     public boolean listed;
     public String ip;
+    public TrustLevel authenticatedTrustLevel = TrustLevel.PUBLIC;
 
     public PlayerEntry (
             final GameProfile profile,

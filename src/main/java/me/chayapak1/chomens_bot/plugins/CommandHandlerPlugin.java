@@ -8,6 +8,7 @@ import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.command.contexts.*;
 import me.chayapak1.chomens_bot.commands.*;
+import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.util.ExceptionUtilities;
 import net.dv8tion.jda.api.entities.Member;
@@ -62,7 +63,8 @@ public class CommandHandlerPlugin implements Listener {
             new GrepLogCommand(),
             new FindAltsCommand(),
             new RestartCommand(),
-            new NetCommandCommand()
+            new NetCommandCommand(),
+            new AuthCommand()
     );
 
     public static Command findCommand (final String searchTerm) {
@@ -160,19 +162,27 @@ public class CommandHandlerPlugin implements Listener {
             }
         }
 
+        final TrustLevel authenticatedTrustLevel = context.sender.authenticatedTrustLevel;
+
+        final boolean authenticated = context instanceof final PlayerCommandContext playerContext
+                && playerContext.packetType == ChatPacketType.PLAYER
+                && authenticatedTrustLevel != TrustLevel.PUBLIC;
+
         final TrustLevel trustLevel = command.trustLevel;
 
-        if (trustLevel != TrustLevel.PUBLIC && splitInput.length < 2 && inGame) {
+        if (trustLevel != TrustLevel.PUBLIC && splitInput.length < 2 && inGame && !authenticated) {
             context.sendOutput(Component.translatable("command_handler.no_hash_provided", NamedTextColor.RED));
             return;
         }
 
-        String userHash = "";
-        if (trustLevel != TrustLevel.PUBLIC && inGame) userHash = splitInput[1];
+        final boolean needsHash = trustLevel != TrustLevel.PUBLIC && inGame && !authenticated;
+
+        final String userHash = needsHash ? splitInput[1] : "";
 
         final String[] fullArgs = Arrays.copyOfRange(splitInput, 1, splitInput.length);
-
-        final String[] args = Arrays.copyOfRange(splitInput, (trustLevel != TrustLevel.PUBLIC && inGame) ? 2 : 1, splitInput.length);
+        final String[] args = needsHash
+                ? Arrays.copyOfRange(splitInput, 2, splitInput.length)
+                : fullArgs;
 
         // LoL ohio spaghetti code
         if (command.trustLevel != TrustLevel.PUBLIC && !bypass) {
@@ -207,6 +217,15 @@ public class CommandHandlerPlugin implements Listener {
                 }
 
                 context.trustLevel = userTrustLevel;
+            } else if (authenticated) {
+                if (trustLevel.level > authenticatedTrustLevel.level) {
+                    context.sendOutput(
+                            Component.translatable("command_handler.not_enough_roles", NamedTextColor.RED)
+                    );
+                    return;
+                }
+
+                context.trustLevel = authenticatedTrustLevel;
             } else {
                 final TrustLevel userTrustLevel = bot.hashing.getTrustLevel(userHash, splitInput[0], context.sender);
 
@@ -225,8 +244,7 @@ public class CommandHandlerPlugin implements Listener {
                 context.trustLevel = userTrustLevel;
             }
         } else if (bypass) {
-            final TrustLevel[] values = TrustLevel.values();
-            context.trustLevel = values[values.length - 1]; // highest level
+            context.trustLevel = TrustLevel.MAX;
         }
 
         // should i give access to all bypass contexts instead of only console?

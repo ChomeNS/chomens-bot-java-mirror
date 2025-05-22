@@ -30,7 +30,7 @@ public class KickCommand extends Command {
     public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        final Kick method = context.getEnum(Kick.class);
+        final Kick method = context.getEnum(true, Kick.class);
 
         final PlayerEntry entry = bot.players.getEntry(context.getString(true, true));
 
