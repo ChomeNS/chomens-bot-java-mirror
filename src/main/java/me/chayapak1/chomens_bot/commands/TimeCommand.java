@@ -5,13 +5,13 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
+import me.chayapak1.chomens_bot.util.TimeUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.time.DateTimeException;
+import java.time.Instant;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class TimeCommand extends Command {
     public TimeCommand () {
@@ -30,11 +30,11 @@ public class TimeCommand extends Command {
 
             final String timezone = context.getString(true, true);
 
-            final ZoneId zoneId = ZoneId.of(timezone);
-            final ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId);
-
-            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy, hh:mm:ss a");
-            final String formattedTime = zonedDateTime.format(formatter);
+            final String formattedTime = TimeUtilities.formatTime(
+                    Instant.now().toEpochMilli(),
+                    "EEEE, MMMM d, yyyy, hh:mm:ss a",
+                    ZoneId.of(timezone)
+            );
 
             return Component.translatable(
                     "commands.time.output",

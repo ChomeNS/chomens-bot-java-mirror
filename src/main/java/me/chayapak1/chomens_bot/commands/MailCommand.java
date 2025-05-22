@@ -10,15 +10,14 @@ import me.chayapak1.chomens_bot.data.mail.Mail;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
 import me.chayapak1.chomens_bot.util.I18nUtilities;
+import me.chayapak1.chomens_bot.util.TimeUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -129,12 +128,11 @@ public class MailCommand extends Command {
                     for (final Mail mail : mails) {
                         if (!mail.sentTo().equals(sender.profile.getName())) continue;
 
-                        final Instant instant = Instant.ofEpochMilli(mail.timeSent());
-                        final ZoneId zoneId = ZoneId.systemDefault();
-                        final OffsetDateTime localDateTime = OffsetDateTime.ofInstant(instant, zoneId);
-
-                        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy, hh:mm:ss a Z");
-                        final String formattedTime = localDateTime.format(formatter);
+                        final String formattedTime = TimeUtilities.formatTime(
+                                mail.timeSent(),
+                                "MMMM d, yyyy, hh:mm:ss a Z",
+                                ZoneId.of("UTC")
+                        );
 
                         mailsComponent.add(
                                 Component.translatable(

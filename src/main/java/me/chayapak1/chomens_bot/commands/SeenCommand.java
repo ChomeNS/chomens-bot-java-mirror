@@ -9,14 +9,12 @@ import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
+import me.chayapak1.chomens_bot.util.TimeUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,12 +78,11 @@ public class SeenCommand extends Command {
                 if (time == null || time.isNull())
                     throw new CommandException(Component.translatable("commands.seen.error.no_time_entry"));
 
-                final Instant instant = Instant.ofEpochMilli(time.asLong());
-                final ZoneId zoneId = ZoneId.of("UTC"); // should i be using this?
-                final OffsetDateTime localDateTime = OffsetDateTime.ofInstant(instant, zoneId);
-
-                final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy, hh:mm:ss a Z");
-                final String formattedTime = localDateTime.format(formatter);
+                final String formattedTime = TimeUtilities.formatTime(
+                        time.asLong(),
+                        "EEEE, MMMM d, yyyy, hh:mm:ss a Z",
+                        ZoneId.of("UTC")
+                );
 
                 final String server = lastSeen.get("server").asText();
 

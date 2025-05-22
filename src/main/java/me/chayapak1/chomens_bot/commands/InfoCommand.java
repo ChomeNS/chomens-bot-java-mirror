@@ -6,6 +6,7 @@ import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.util.StringUtilities;
+import me.chayapak1.chomens_bot.util.TimeUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -26,10 +27,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -200,12 +198,13 @@ public class InfoCommand extends Command {
             case "botlogintime" -> {
                 final long loginTime = bot.loginTime;
 
-                final Instant instant = Instant.ofEpochMilli(loginTime);
                 final ZoneId zoneId = ZoneId.of("UTC");
-                final OffsetDateTime localDateTime = OffsetDateTime.ofInstant(instant, zoneId);
 
-                final DateTimeFormatter loginTimeFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy, hh:mm:ss a Z");
-                final String formattedLoginTime = localDateTime.format(loginTimeFormatter);
+                final String formattedLoginTime = TimeUtilities.formatTime(
+                        loginTime,
+                        "MMMM d, yyyy, hh:mm:ss a Z",
+                        zoneId
+                );
 
                 final DateFormat timeSinceFormatter = new SimpleDateFormat("HH 'hours' mm 'minutes' ss 'seconds'");
                 timeSinceFormatter.setTimeZone(TimeZone.getTimeZone(zoneId)); // very important
