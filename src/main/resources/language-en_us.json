@@ -34,8 +34,8 @@
   "commands.generic.error.database_disabled": "Database is not enabled in the bot's configuration",
   "commands.generic.error.discord_disabled": "The bot's Discord integration has to be enabled to use this command",
 
-  "commands.auth.description": "Authenticates yourself or a player so you don't have to input the hash every time you use the bot",
-  "commands.auth.output": "Player %s has been authenticated with trust level %s",
+  "commands.auth.description": "Authenticates yourself so you don't have to input the hash every time you use the bot",
+  "commands.auth.output": "You been authenticated with trust level %s",
   "commands.auth.error.privilege_escalate": "You cannot escalate privileges!",
 
   "commands.botvisibility.description": "Changes the bot's visibility",
