@@ -318,19 +318,19 @@ public class GuildMessageEventHandler extends ListenerAdapter {
                     """
                             Title: %s
                             %s""",
+                    NamedTextColor.GREEN,
                     embed.getTitle() == null ?
                             Component.text("No title").color(NamedTextColor.GRAY) :
                             Component.text(embed.getTitle()).color(bot.colorPalette.string),
                     embed.getDescription() == null ?
                             Component.text("No description").color(NamedTextColor.GRAY) :
-                            Component.text(embed.getDescription()).color(NamedTextColor.WHITE)
-            ).color(NamedTextColor.GREEN);
+                            Component.text(ComponentUtilities.deserializeFromDiscordAnsi(embed.getDescription())).color(NamedTextColor.WHITE)
+            );
 
             extraComponents.add(
                     Component
-                            .text("[Embed]")
+                            .text("[Embed]", NamedTextColor.GREEN)
                             .hoverEvent(HoverEvent.showText(hoverEvent))
-                            .color(NamedTextColor.GREEN)
             );
         }
     }
@@ -341,6 +341,7 @@ public class GuildMessageEventHandler extends ListenerAdapter {
                     Component
                             .translatable(
                                     "[%s]",
+                                    NamedTextColor.GREEN,
                                     Component
                                             .text(sticker.getName())
                                             .hoverEvent(
@@ -356,7 +357,6 @@ public class GuildMessageEventHandler extends ListenerAdapter {
                                                     )
                                             )
                             )
-                            .color(NamedTextColor.GREEN)
             );
         }
     }
