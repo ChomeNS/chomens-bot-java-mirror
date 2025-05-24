@@ -11,7 +11,9 @@ import party.iroiro.luajava.Lua;
 import party.iroiro.luajava.lua54.Lua54;
 import party.iroiro.luajava.value.LuaValue;
 
-import java.util.Arrays;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.concurrent.TimeUnit;
 
 public class ServerEvalCommand extends Command {
     public Lua lua;
@@ -19,7 +21,7 @@ public class ServerEvalCommand extends Command {
     public ServerEvalCommand () {
         super(
                 "servereval",
-                new String[] { "<code>" },
+                new String[] { "reset", "<code>" },
                 new String[] {},
                 TrustLevel.OWNER
         );
@@ -44,19 +46,77 @@ public class ServerEvalCommand extends Command {
 
                 lua.openLibraries();
 
+                lua.set("lua", lua);
                 lua.set("bot", bot);
                 lua.set("context", context);
+                lua.set("shell", new Shell());
 
                 final LuaValue[] values = lua.eval(code);
 
-                final String output = values.length < 1 ? Arrays.toString(values) : values[0].toString();
+                final StringBuilder output = new StringBuilder();
 
-                context.sendOutput(Component.text(output).color(NamedTextColor.GREEN));
+                if (values.length != 1) {
+                    output.append('[');
+
+                    int i = 1;
+                    for (final LuaValue value : values) {
+                        output.append(getString(value));
+                        if (i++ != values.length) output.append(", ");
+                    }
+
+                    output.append(']');
+                } else {
+                    output.append(getString(values[0]));
+                }
+
+                context.sendOutput(Component.text(output.toString(), NamedTextColor.GREEN));
             } catch (final Exception e) {
-                context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
+                context.sendOutput(Component.text(e.toString(), NamedTextColor.RED));
             }
         });
 
         return null;
+    }
+
+    private String getString (final LuaValue luaValue) {
+        final Object javaObject = luaValue.toJavaObject();
+
+        if (javaObject == null) return luaValue.toString();
+        else return javaObject.toString();
+    }
+
+    @SuppressWarnings("unused") // we actually use it in lua itself :)
+    public static final class Shell {
+        public String execute (final String[] command) throws Exception {
+            final ProcessBuilder processBuilder = new ProcessBuilder();
+
+            processBuilder.command(command);
+
+            final Process process = processBuilder.start();
+
+            final StringBuilder output = new StringBuilder();
+
+            final BufferedReader stdoutReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            int character;
+
+            while ((character = stdoutReader.read()) != -1) {
+                final char[] chars = Character.toChars(character);
+                final String string = new String(chars);
+                output.append(string);
+            }
+
+            final BufferedReader stderrReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+            while ((character = stderrReader.read()) != -1) {
+                final char[] chars = Character.toChars(character);
+                final String string = new String(chars);
+                output.append("[STDERR] ").append(string);
+            }
+
+            process.waitFor(10, TimeUnit.SECONDS);
+
+            return output.toString();
+        }
     }
 }
