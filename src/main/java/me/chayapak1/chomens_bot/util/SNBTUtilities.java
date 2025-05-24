@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.util;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import net.kyori.adventure.text.Component;
@@ -57,15 +58,13 @@ public class SNBTUtilities {
         } else if (json.isJsonArray()) {
             final StringBuilder stringBuilder = new StringBuilder(BEGIN_ARRAY);
 
-            boolean notEmpty = false;
+            final JsonArray array = json.getAsJsonArray();
 
-            for (final JsonElement element : json.getAsJsonArray()) {
-                notEmpty = true;
+            int i = 1;
+            for (final JsonElement element : array) {
                 stringBuilder.append(fromJson(element));
-                stringBuilder.append(COMMA);
+                if (i++ != array.size()) stringBuilder.append(COMMA);
             }
-
-            if (notEmpty) stringBuilder.deleteCharAt(stringBuilder.length() - 1); // removes comma
 
             stringBuilder.append(END_ARRAY);
 
@@ -75,14 +74,13 @@ public class SNBTUtilities {
 
             final Set<Map.Entry<String, JsonElement>> entries = json.getAsJsonObject().entrySet();
 
+            int i = 1;
             for (final Map.Entry<String, JsonElement> entry : entries) {
                 stringBuilder.append(entry.getKey()) // no escape :O (optional for adventure)
                         .append(COLON)
-                        .append(fromJson(entry.getValue()))
-                        .append(COMMA);
+                        .append(fromJson(entry.getValue()));
+                if (i++ != entries.size()) stringBuilder.append(COMMA);
             }
-
-            if (!entries.isEmpty()) stringBuilder.deleteCharAt(stringBuilder.length() - 1); // removes comma
 
             stringBuilder.append(END_OBJECT);
 
