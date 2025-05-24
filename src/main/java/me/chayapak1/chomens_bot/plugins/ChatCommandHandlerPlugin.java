@@ -78,12 +78,10 @@ public class ChatCommandHandlerPlugin implements Listener {
         final String displayName = ComponentUtilities.stringify(displayNameComponent);
         final String contents = ComponentUtilities.stringify(messageComponent);
 
-        String prefix = null;
-
-        for (final String eachPrefix : prefixes) {
-            if (!contents.startsWith(eachPrefix)) continue;
-            prefix = eachPrefix;
-        }
+        final String prefix = prefixes.stream()
+                .filter(eachPrefix -> contents.toLowerCase().startsWith(eachPrefix))
+                .findFirst()
+                .orElse(null);
 
         if (prefix == null) return;
 
