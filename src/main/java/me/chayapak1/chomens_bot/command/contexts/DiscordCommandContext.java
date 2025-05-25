@@ -8,8 +8,8 @@ import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.I18nUtilities;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.utils.FileUpload;
 import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.auth.GameProfile;
@@ -17,24 +17,35 @@ import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
 
 import java.awt.*;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Consumer;
 
 public class DiscordCommandContext extends CommandContext {
-    public final MessageReceivedEvent event;
+    public final Member member;
+    public final String name;
+    public final Consumer<FileUpload> replyFiles;
+    public final Consumer<MessageEmbed> replyEmbed;
 
     private final Bot bot;
 
-    public DiscordCommandContext (final Bot bot, final String prefix, final MessageReceivedEvent event) {
+    public DiscordCommandContext (
+            final Bot bot,
+            final String prefix,
+            final Member member,
+            final String name,
+            final Consumer<FileUpload> replyFiles,
+            final Consumer<MessageEmbed> replyEmbed
+    ) {
         super(
                 bot,
                 prefix,
                 new PlayerEntry(
                         new GameProfile(
-                                UUIDUtilities.getOfflineUUID(event.getAuthor().getName()),
-                                event.getAuthor().getName()
+                                UUIDUtilities.getOfflineUUID(name),
+                                name
                         ),
                         GameMode.SURVIVAL,
                         -69420,
-                        Component.text(event.getAuthor().getName()),
+                        Component.text(name),
                         0L,
                         null,
                         new byte[0],
@@ -43,7 +54,10 @@ public class DiscordCommandContext extends CommandContext {
                 false
         );
         this.bot = bot;
-        this.event = event;
+        this.member = member;
+        this.name = name;
+        this.replyFiles = replyFiles;
+        this.replyEmbed = replyEmbed;
     }
 
     @Override
@@ -55,12 +69,12 @@ public class DiscordCommandContext extends CommandContext {
         if (output.length() > 2048) {
             output = ComponentUtilities.stringify(rendered);
 
-            event.getMessage().replyFiles(
+            replyFiles.accept(
                     FileUpload.fromData(
                             output.getBytes(StandardCharsets.UTF_8),
                             String.format("output-%d.txt", System.currentTimeMillis())
                     )
-            ).queue();
+            );
         } else {
             final EmbedBuilder builder = new EmbedBuilder();
             builder.setTitle("Output");
@@ -69,12 +83,12 @@ public class DiscordCommandContext extends CommandContext {
 
             final MessageEmbed embed = builder.build();
 
-            event.getMessage().replyEmbeds(embed).queue();
+            replyEmbed.accept(embed);
         }
     }
 
     @Override
     public Component displayName () {
-        return Component.text(event.getAuthor().getName());
+        return Component.text(name);
     }
 }

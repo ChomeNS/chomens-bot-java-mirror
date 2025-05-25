@@ -59,7 +59,14 @@ public class GuildMessageEventHandler extends ListenerAdapter {
             final String messageString = messageObject.getContentDisplay();
 
             if (messageString.startsWith(prefix)) {
-                final DiscordCommandContext context = new DiscordCommandContext(bot, prefix, event);
+                final DiscordCommandContext context = new DiscordCommandContext(
+                        bot,
+                        prefix,
+                        event.getMember(),
+                        event.getAuthor().getName(),
+                        fileUpload -> messageObject.replyFiles(fileUpload).queue(),
+                        embed -> messageObject.replyEmbeds(embed).queue()
+                );
 
                 bot.commandHandler.executeCommand(messageString.substring(prefix.length()), context);
 

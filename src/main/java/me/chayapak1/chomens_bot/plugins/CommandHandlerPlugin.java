@@ -13,7 +13,6 @@ import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.util.ExceptionUtilities;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -110,17 +109,6 @@ public class CommandHandlerPlugin implements Listener {
     ) {
         final boolean inGame = context instanceof PlayerCommandContext;
 
-        final boolean discord;
-        final MessageReceivedEvent event;
-
-        if (context instanceof final DiscordCommandContext discordContext) {
-            discord = true;
-            event = discordContext.event;
-        } else {
-            discord = false;
-            event = null;
-        }
-
         final boolean bypass = context instanceof ConsoleCommandContext || context instanceof ChomeNSModCommandContext;
 
         if (commandsPerSecond.get() > 100) return;
@@ -195,8 +183,8 @@ public class CommandHandlerPlugin implements Listener {
                 }
 
                 context.trustLevel = remote.source.trustLevel;
-            } else if (discord) {
-                final Member member = event.getMember();
+            } else if (context instanceof final DiscordCommandContext discordCommandContext) {
+                final Member member = discordCommandContext.member;
 
                 if (member == null) return;
 

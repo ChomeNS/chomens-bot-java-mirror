@@ -7,6 +7,7 @@ import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.discord.DirectMessageEventHandler;
 import me.chayapak1.chomens_bot.discord.GuildMessageEventHandler;
 import me.chayapak1.chomens_bot.discord.MessageLogger;
+import me.chayapak1.chomens_bot.discord.SlashCommandHandler;
 import me.chayapak1.chomens_bot.util.CodeBlockUtilities;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.I18nUtilities;
@@ -88,6 +89,7 @@ public class DiscordPlugin {
         new MessageLogger(jda);
         new GuildMessageEventHandler(jda, prefix, messagePrefix);
         new DirectMessageEventHandler(jda, options);
+        new SlashCommandHandler(jda);
 
         Main.EXECUTOR.scheduleAtFixedRate(this::onDiscordTick, 0, 50, TimeUnit.MILLISECONDS);
 
