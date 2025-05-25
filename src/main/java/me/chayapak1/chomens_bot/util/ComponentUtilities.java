@@ -249,7 +249,7 @@ public class ComponentUtilities {
 
                 result.add(Component.text(remaining));
             }
-        } catch (final Exception e) {
+        } catch (final Throwable throwable) {
             result.clear();
             result.add(Component.text(format));
         }

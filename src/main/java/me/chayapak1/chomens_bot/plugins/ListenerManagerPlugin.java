@@ -24,14 +24,14 @@ public class ListenerManagerPlugin {
             for (final Listener listener : listeners) {
                 try {
                     consumer.accept(listener);
-                } catch (final Exception e) {
+                } catch (final Throwable throwable) {
                     bot.logger.error(
                             Component.translatable(
-                                    "Caught exception while trying to dispatch an event to %s!",
+                                    "Caught an error while trying to dispatch an event to %s!",
                                     Component.text(listener.getClass().getSimpleName())
                             )
                     );
-                    bot.logger.error(e);
+                    bot.logger.error(throwable);
                 }
             }
         }
@@ -44,14 +44,14 @@ public class ListenerManagerPlugin {
                     final Boolean result = function.apply(listener);
 
                     if (result != null && !result) break;
-                } catch (final Exception e) {
+                } catch (final Throwable throwable) {
                     bot.logger.error(
                             Component.translatable(
-                                    "Caught exception while trying to dispatch an event with a returning boolean to %s!",
+                                    "Caught an error while trying to dispatch an event with a returning boolean to %s!",
                                     Component.text(listener.getClass().getSimpleName())
                             )
                     );
-                    bot.logger.error(e);
+                    bot.logger.error(throwable);
                 }
             }
         }
