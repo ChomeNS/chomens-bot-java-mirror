@@ -101,13 +101,13 @@ public class ComponentUtilities {
     private static String guardedStringify (final ComponentEncoder<Component, String> serializer, final Component message) {
         try {
             return serializer.serialize(message);
-        } catch (final Exception e) {
+        } catch (final Throwable throwable) {
             return guardedStringify(
                     serializer,
                     Component.translatable(
                             "<Failed to parse component: %s>",
                             NamedTextColor.RED,
-                            Component.text(e.toString())
+                            Component.text(throwable.toString())
                     )
             );
         } finally {
@@ -169,7 +169,9 @@ public class ComponentUtilities {
             return component.content();
         } else {
             // we deserialize then serialize again
-            final TextComponent deserialized = LEGACY_COMPONENT_SERIALIZER.deserialize(content);
+            final TextComponent deserialized = LEGACY_COMPONENT_SERIALIZER
+                    // prevents stack overflow since adventure seems to just ignore invalid codes
+                    .deserialize(content.replaceAll("§[^a-f0-9rlonmk]", ""));
 
             return isDiscord
                     ? stringifyDiscordAnsi(deserialized)
