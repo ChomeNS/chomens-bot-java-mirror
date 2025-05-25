@@ -25,10 +25,10 @@ import java.util.regex.Pattern;
 
 public class ComponentUtilities {
     // component parsing
-    // rewritten from chipmunkbot, a lot of stuff has changed, and also ANSI and section signs support, etc...
-    public static final Map<String, String> LANGUAGE = new Object2ObjectOpenHashMap<>();
-
+    // originally rewritten from ChipmunkBot, but now it entirely uses adventure's serializers
     private static final List<String> LANGUAGES = List.of("minecraftLanguage.json", "voiceChatLanguage.json");
+
+    public static final Map<String, String> LANGUAGE = new Object2ObjectOpenHashMap<>();
 
     public static final Map<String, String> KEYBINDINGS = loadJsonStringMap("keybinds.json");
 
@@ -40,7 +40,6 @@ public class ComponentUtilities {
 
     private static final Pattern ARG_PATTERN = Pattern.compile("%(?:(\\d+)\\$)?([A-Za-z%]|$)");
     private static final Pattern DISCORD_ANSI_PATTERN = Pattern.compile("(\\u001b\\[\\d+m)");
-    private static final Pattern SECTION_SIGN_PATTERN = Pattern.compile("(§.)");
 
     private static final ThreadLocal<Integer> TOTAL_DEPTH = ThreadLocal.withInitial(() -> 0);
 
@@ -169,27 +168,12 @@ public class ComponentUtilities {
         if (!shouldReplaceSectionSignsWithANSI || !content.contains("§")) {
             return component.content();
         } else {
-            try {
-                return SECTION_SIGN_PATTERN
-                        .matcher(component.content())
-                        .replaceAll(match -> {
-                            final String code = match.group(0).substring(1);
+            // we deserialize then serialize again
+            final TextComponent deserialized = LEGACY_COMPONENT_SERIALIZER.deserialize(content);
 
-                            final ANSIStyle[] values = ANSIStyle.values();
-
-                            for (final ANSIStyle value : values) {
-                                if (!code.equals(value.legacyCode)) continue;
-
-                                return isDiscord
-                                        ? value.discordAnsiCode
-                                        : value.ansiCode;
-                            }
-
-                            return match.group(0);
-                        });
-            } catch (final Exception e) {
-                return component.content();
-            }
+            return isDiscord
+                    ? stringifyDiscordAnsi(deserialized)
+                    : stringifyAnsi(deserialized);
         }
     }
 
@@ -272,40 +256,37 @@ public class ComponentUtilities {
     }
 
     public enum ANSIStyle {
-        GREEN("a", "\u001b[38;2;85;255;85m", "\u001b[32m"),
-        AQUA("b", "\u001b[38;2;85;255;255m", "\u001b[36m"),
-        RED("c", "\u001b[38;2;255;85;85m", "\u001b[31m"),
-        LIGHT_PURPLE("d", "\u001b[38;2;255;85;255m", "\u001b[35m"),
-        YELLOW("e", "\u001b[38;2;255;255;85m", "\u001b[33m"),
-        WHITE("f", "\u001b[38;2;255;255;255m", "\u001b[37m"),
-        BLACK("0", "\u001b[38;2;0;0;0m", "\u001b[30m"),
-        DARK_RED("1", "\u001b[38;2;0;0;170m", "\u001b[34m"),
-        DARK_GREEN("2", "\u001b[38;2;0;170;0m", "\u001b[32m"),
-        GOLD("3", "\u001b[38;2;0;170;170m", "\u001b[36m"),
-        DARK_BLUE("4", "\u001b[38;2;170;0;0m", "\u001b[31m"),
-        DARK_PURPLE("5", "\u001b[38;2;170;0;170m", "\u001b[35m"),
-        DARK_AQUA("6", "\u001b[38;2;255;170;0m", "\u001b[33m"),
-        GRAY("7", "\u001b[38;2;170;170;170m", "\u001b[37m"),
-        DARK_GRAY("8", "\u001b[38;2;85;85;85m", "\u001b[30m"),
-        BLUE("9", "\u001b[38;2;85;85;255m", "\u001b[34m"),
-        BOLD("l", "\u001b[1m", "\u001b[1m"),
-        ITALIC("o", "\u001b[3m", "\u001b[3m"),
-        UNDERLINED("n", "\u001b[4m", "\u001b[4m"),
-        STRIKETHROUGH("m", "\u001b[9m", "\u001b[9m"),
-        OBFUSCATED("k", "\u001b[6m", "\u001b[6m"),
-        RESET("r", "\u001b[0m", "\u001b[0m");
+        GREEN("a", "\u001b[32m"),
+        AQUA("b", "\u001b[36m"),
+        RED("c", "\u001b[31m"),
+        LIGHT_PURPLE("d", "\u001b[35m"),
+        YELLOW("e", "\u001b[33m"),
+        WHITE("f", "\u001b[37m"),
+        BLACK("0", "\u001b[30m"),
+        DARK_RED("1", "\u001b[34m"),
+        DARK_GREEN("2", "\u001b[32m"),
+        GOLD("3", "\u001b[36m"),
+        DARK_BLUE("4", "\u001b[31m"),
+        DARK_PURPLE("5", "\u001b[35m"),
+        DARK_AQUA("6", "\u001b[33m"),
+        GRAY("7", "\u001b[37m"),
+        DARK_GRAY("8", "\u001b[30m"),
+        BLUE("9", "\u001b[34m"),
+        BOLD("l", "\u001b[1m"),
+        ITALIC("o", "\u001b[3m"),
+        UNDERLINED("n", "\u001b[4m"),
+        STRIKETHROUGH("m", "\u001b[9m"),
+        OBFUSCATED("k", "\u001b[6m"),
+        RESET("r", "\u001b[0m");
 
         private final String legacyCode;
-        private final String ansiCode;
         private final String discordAnsiCode;
 
         ANSIStyle (
                 final String legacyCode,
-                final String ansiCode,
                 final String discordAnsiCode
         ) {
             this.legacyCode = legacyCode;
-            this.ansiCode = ansiCode;
             this.discordAnsiCode = discordAnsiCode;
         }
     }
