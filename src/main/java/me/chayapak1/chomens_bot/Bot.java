@@ -180,8 +180,6 @@ public class Bot extends SessionAdapter {
     }
 
     private void reconnect () {
-        if (session != null) session = null; // does this do nothing?
-
         connectAttempts++;
 
         this.listener.dispatch(Listener::onConnecting);
@@ -192,7 +190,7 @@ public class Bot extends SessionAdapter {
                     options.username;
         }
 
-        final ClientSession session = ClientNetworkSessionFactory.factory()
+        final ClientNetworkSessionFactory factory = ClientNetworkSessionFactory.factory()
                 .setAddress(host, port)
                 .setProtocol(
                         new MinecraftProtocol(
@@ -202,8 +200,11 @@ public class Bot extends SessionAdapter {
                                 ),
                                 null
                         )
-                )
-                .create();
+                );
+
+        if (this.session != null) factory.setPacketHandlerExecutor(this.session.getPacketHandlerExecutor());
+
+        final ClientSession session = factory.create();
 
         this.session = session;
 
