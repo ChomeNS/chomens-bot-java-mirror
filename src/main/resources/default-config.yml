@@ -9,7 +9,7 @@ commandSpyPrefixes:
 
 consoleCommandPrefix: '.'
 
-# how backup works is that it makes a http request for the address
+# how backup works is that it makes an http request for the address
 # if the address is reachable it will not start the bot
 # if the address is not reachable then it will start the bot
 
@@ -42,7 +42,7 @@ discord:
   enabled: false
   prefix: 'default!'
   serverId : 'id here'
-  enableDiscordHashing: true
+  enableDiscordHashing: true # !!! this also affects the key generation if you disable this
   token: 'token here'
   trustedRoleName: 'Trusted'
   adminRoleName: 'Admin'
@@ -91,11 +91,6 @@ rainbowArmor: true
 
 trusted:
   - 'player name'
-
-keys:
-  trustedKey: 'trusted key here'
-  adminKey: 'admin key here'
-  ownerKey: 'owner key here'
 
 weatherApiKey: 'key here' # weatherapi.com key
 

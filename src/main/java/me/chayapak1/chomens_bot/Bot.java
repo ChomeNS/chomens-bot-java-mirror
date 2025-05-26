@@ -90,7 +90,6 @@ public class Bot extends SessionAdapter {
     public final TabCompletePlugin tabComplete;
     public final CommandHandlerPlugin commandHandler;
     public final ChatCommandHandlerPlugin chatCommandHandler;
-    public final HashingPlugin hashing;
     public final BossbarManagerPlugin bossbar;
     public final MusicPlayerPlugin music;
     public final TPSPlugin tps;
@@ -151,7 +150,6 @@ public class Bot extends SessionAdapter {
         this.tabComplete = new TabCompletePlugin(this);
         this.commandHandler = new CommandHandlerPlugin(this);
         this.chatCommandHandler = new ChatCommandHandlerPlugin(this);
-        this.hashing = new HashingPlugin(this);
         this.bossbar = new BossbarManagerPlugin(this);
         this.music = new MusicPlayerPlugin(this);
         this.tps = new TPSPlugin(this);

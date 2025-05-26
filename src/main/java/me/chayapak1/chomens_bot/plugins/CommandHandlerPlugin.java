@@ -11,6 +11,7 @@ import me.chayapak1.chomens_bot.commands.*;
 import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.util.ExceptionUtilities;
+import me.chayapak1.chomens_bot.util.HashingUtilities;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.kyori.adventure.text.Component;
@@ -215,7 +216,7 @@ public class CommandHandlerPlugin implements Listener {
 
                 context.trustLevel = authenticatedTrustLevel;
             } else {
-                final TrustLevel userTrustLevel = bot.hashing.getTrustLevel(userHash, splitInput[0], context.sender);
+                final TrustLevel userTrustLevel = HashingUtilities.getTrustLevel(userHash, splitInput[0], context.sender);
 
                 if (trustLevel.level > userTrustLevel.level) {
                     context.sendOutput(

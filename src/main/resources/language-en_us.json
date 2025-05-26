@@ -289,6 +289,15 @@
   "commands.wikipedia.error.no_contents": "No contents found",
   "commands.wikipedia.error.fail_page_id_parse": "Failed parsing page ID",
 
+  "hashing.discord_direct_message.hash_generated": "Hash for %s trust level: `%s`",
+  "hashing.discord_direct_message.hash_generated.log": "Generated hash %s (%s) for user %s",
+  "hashing.discord_direct_message.key_generated": "Your key for trust level %s: `%s`, make sure to keep it safe!",
+  "hashing.discord_direct_message.error.no_roles": "You do not have any trusted roles!",
+  "hashing.discord_direct_message.error.no_roles.log": "User %s tried to run hash-related commands in Discord without any trusted roles!",
+  "hashing.discord_direct_message.error.not_in_guild": "You are not in %s!",
+  "hashing.discord_direct_message.error.log_unknown_user": "Got ErrorResponse.UNKNOWN_USER while trying to retrieve member! Weird user. User: %s",
+  "hashing.discord_direct_message.error.key_for_trust_level_already_exists": "You already have a key for the trust level %s! Type `%s` to forcibly reset the key",
+
   "info.connecting": "Connecting to: %s",
   "info.connected": "Successfully connected to: %s",
   "info.disconnected": "Disconnected: %s",

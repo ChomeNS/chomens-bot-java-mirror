@@ -9,7 +9,6 @@ public class Configuration {
 
     public String consoleCommandPrefix;
 
-    public Keys keys = new Keys();
     public Backup backup = new Backup();
 
     public Database database = new Database();
@@ -69,20 +68,8 @@ public class Configuration {
         public List<String> players = new ArrayList<>();
     }
 
-    public static class Keys {
-        public String trustedKey;
-        public String adminKey;
-        public String ownerKey;
-    }
-
     public static class Core {
         public String customName = "{\"text\":\"@\"}";
-    }
-
-    public static class Position {
-        public int x = 0;
-        public int y = 0;
-        public int z = 0;
     }
 
     public static class ColorPalette {

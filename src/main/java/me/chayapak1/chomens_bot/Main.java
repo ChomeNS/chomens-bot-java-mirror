@@ -6,10 +6,7 @@ import me.chayapak1.chomens_bot.plugins.ConsolePlugin;
 import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
 import me.chayapak1.chomens_bot.plugins.DiscordPlugin;
 import me.chayapak1.chomens_bot.plugins.IRCPlugin;
-import me.chayapak1.chomens_bot.util.ArrayUtilities;
-import me.chayapak1.chomens_bot.util.HttpUtilities;
-import me.chayapak1.chomens_bot.util.I18nUtilities;
-import me.chayapak1.chomens_bot.util.LoggerUtilities;
+import me.chayapak1.chomens_bot.util.*;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
@@ -137,6 +134,7 @@ public class Main {
 
         try {
             if (config.database.enabled) database = new DatabasePlugin(config);
+            HashingUtilities.init();
 
             final Configuration.BotOption[] botsOptions = config.bots;
 
