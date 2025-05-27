@@ -2,10 +2,7 @@ package me.chayapak1.chomens_bot;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import me.chayapak1.chomens_bot.plugins.ConsolePlugin;
-import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
-import me.chayapak1.chomens_bot.plugins.DiscordPlugin;
-import me.chayapak1.chomens_bot.plugins.IRCPlugin;
+import me.chayapak1.chomens_bot.plugins.*;
 import me.chayapak1.chomens_bot.util.*;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import org.yaml.snakeyaml.LoaderOptions;
@@ -146,6 +143,7 @@ public class Main {
             console = new ConsolePlugin(config);
             if (config.discord.enabled) discord = new DiscordPlugin(config);
             if (config.irc.enabled) irc = new IRCPlugin(config);
+            EvalPlugin.connect(config.eval.address);
 
             LoggerUtilities.log(I18nUtilities.get("initialized"));
 

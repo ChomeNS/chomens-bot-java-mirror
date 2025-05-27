@@ -7,6 +7,7 @@ import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.eval.EvalOutput;
+import me.chayapak1.chomens_bot.plugins.EvalPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -28,7 +29,7 @@ public class EvalCommand extends Command {
     public Component execute (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
 
-        if (!bot.eval.connected) throw new CommandException(Component.translatable("commands.eval.error.offline"));
+        if (!EvalPlugin.connected) throw new CommandException(Component.translatable("commands.eval.error.offline"));
 
         final String action = context.getAction();
 
@@ -38,16 +39,19 @@ public class EvalCommand extends Command {
 
                 final CompletableFuture<EvalOutput> future = bot.eval.run(command);
 
-                future.thenApply(output -> {
-                    if (output.isError()) context.sendOutput(Component.text(output.output()).color(NamedTextColor.RED));
-                    else context.sendOutput(Component.text(output.output()));
+                // it returns null when the eval server isn't online, even though we have already checked,
+                // i'm just fixing the warning here
+                if (future == null) return null;
 
-                    return output;
+                future.thenApply(result -> {
+                    if (result.isError()) context.sendOutput(Component.text(result.output(), NamedTextColor.RED));
+                    else context.sendOutput(Component.text(result.output()));
+
+                    return result;
                 });
             }
             case "reset" -> {
-                bot.eval.reset();
-
+                EvalPlugin.reset();
                 return Component.translatable("commands.eval.reset", bot.colorPalette.defaultColor);
             }
             default -> throw new CommandException(Component.translatable("commands.generic.error.invalid_action"));

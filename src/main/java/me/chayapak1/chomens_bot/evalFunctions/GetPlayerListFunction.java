@@ -10,12 +10,12 @@ import me.chayapak1.chomens_bot.util.SNBTUtilities;
 import java.util.List;
 
 public class GetPlayerListFunction extends EvalFunction {
-    public GetPlayerListFunction (final Bot bot) {
-        super("getPlayerList", bot);
+    public GetPlayerListFunction () {
+        super("getPlayerList");
     }
 
     @Override
-    public Output execute (final Object... args) {
+    public Output execute (final Bot bot, final Object... args) {
         final List<PlayerEntry> list = bot.players.list;
 
         final JsonArray array = new JsonArray();
