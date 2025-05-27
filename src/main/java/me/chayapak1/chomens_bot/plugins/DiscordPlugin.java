@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.Main;
@@ -15,7 +16,6 @@ import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -26,11 +26,8 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -94,7 +91,7 @@ public class DiscordPlugin {
         Main.EXECUTOR.scheduleAtFixedRate(this::onDiscordTick, 0, 50, TimeUnit.MILLISECONDS);
 
         for (final Bot bot : Main.bots) {
-            final String channelId = findChannelId(bot.options.discordChannel);
+            final String channelId = bot.options.discordChannelId;
 
             if (channelId == null) continue;
 
@@ -166,20 +163,8 @@ public class DiscordPlugin {
         }
     }
 
-    public @Nullable String findChannelId (final String channelName) {
-        if (channelName == null) return null;
-
-        final Guild guild = jda.getGuildById(serverId);
-        if (guild == null) return null;
-
-        final List<TextChannel> channels = guild.getTextChannelsByName(channelName, true);
-        if (channels.isEmpty()) return null;
-
-        return channels.getFirst().getId();
-    }
-
     // based from HBot (and modified quite a bit)
-    private final Map<String, LogData> logData = new ConcurrentHashMap<>();
+    private final Map<String, LogData> logData = new Object2ObjectOpenHashMap<>();
 
     public void sendMessage (final String message, final String channelId) {
         final LogData data = logData.get(channelId);
@@ -230,7 +215,7 @@ public class DiscordPlugin {
 
     public void onDiscordTick () {
         for (final Bot bot : Main.bots) {
-            final String channelId = findChannelId(bot.options.discordChannel);
+            final String channelId = bot.options.discordChannelId;
 
             if (channelId == null) continue;
 

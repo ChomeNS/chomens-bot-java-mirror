@@ -51,7 +51,7 @@ public class GuildMessageEventHandler extends ListenerAdapter {
         if (event.getAuthor().getId().equals(jda.getSelfUser().getId())) return;
 
         for (final Bot bot : Main.bots) {
-            final String channelId = Main.discord.findChannelId(bot.options.discordChannel);
+            final String channelId = bot.options.discordChannelId;
 
             if (channelId == null || !event.getChannel().getId().equals(channelId)) continue;
 

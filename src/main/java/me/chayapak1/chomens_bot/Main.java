@@ -208,7 +208,7 @@ public class Main {
         for (final Bot bot : copiedList) {
             try {
                 if (discordEnabled) {
-                    final String channelId = Main.discord.findChannelId(bot.options.discordChannel);
+                    final String channelId = bot.options.discordChannelId;
 
                     final MessageCreateAction messageAction = Main.discord.sendMessageInstantly(stoppingMessage, channelId, false);
 

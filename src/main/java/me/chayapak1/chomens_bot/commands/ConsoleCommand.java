@@ -81,7 +81,7 @@ public class ConsoleCommand extends Command {
                     throw new CommandException(Component.translatable("commands.generic.error.discord_disabled"));
                 }
 
-                final String channelId = Main.discord.findChannelId(context.bot.options.discordChannel);
+                final String channelId = context.bot.options.discordChannelId;
 
                 if (channelId == null) return null;
 

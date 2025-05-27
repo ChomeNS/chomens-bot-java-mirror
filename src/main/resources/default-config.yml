@@ -132,8 +132,8 @@ selfCare:
 bots:
   # username - optional, if not specified it will just use a random username
   # serverName - name it whatever you like, it will be used as server name in trusted broadcast and in console
-  # discordChannel - the channel name like `localhost` (without #) for use with discord
-  # ircChannel - same as discordChannel but for irc
+  # discordChannelId - the channel ID for use with discord
+  # ircChannel - same as discordChannelId but for irc and is a channel name
   # hidden - if enabled, the server address will not show anywhere in the bot, including discord, netmsg, etc., except console
   # useCore - if enabled it just sends the command using chat instead of using core. recommended to enable useChat too when this is disabled
   # useCorePlaceBlock - uses the place block core instead of the main core. only used if useCore is enabled
@@ -148,7 +148,7 @@ bots:
   - host: 'localhost'
     port: 25565
     serverName: 'Localhost'
-    # be sure to set discordChannel and/or ircChannel here if you use the discord integration
+    # be sure to set discordChannelId and/or ircChannel here if you use the discord integration
     reconnectDelay: 2000
     chatQueueDelay: 125
 
@@ -157,7 +157,7 @@ bots:
   #   port: 25565
   #   username: 'ChomeNS_Bot'
   #   serverName: 'Localhost'
-  #   discordChannel: 'localhost'
+  #   discordChannelId: '1234567890'
   #   ircChannel: '#chomens/localhost'
   #   hidden: false
   #   useCore: true

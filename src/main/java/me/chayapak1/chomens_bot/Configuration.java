@@ -153,7 +153,7 @@ public class Configuration {
         public int port;
         public String username;
         public String serverName;
-        public String discordChannel;
+        public String discordChannelId;
         public String ircChannel;
         public boolean hidden = false;
         public boolean useCore = true;
