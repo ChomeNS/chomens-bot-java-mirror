@@ -56,7 +56,7 @@ public class FilterCommand extends Command {
                 ) {
                     throw new CommandException(
                             Component.translatable(
-                                    "commands.filter.error.already_exists",
+                                    "commands.filter.add.error.already_exists",
                                     Component.text(player)
                             )
                     );
