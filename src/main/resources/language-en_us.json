@@ -150,7 +150,7 @@
   "commands.list.ip_address": "IP address: %s",
   "commands.list.players_text": "Players ",
 
-  "commands.mail.description": "Sends a mail",
+  "commands.mail.description": "Sends a mail to a player",
   "commands.mail.sent": "Mail sent!",
   "commands.mail.sendselecteditem.error.no_item_nbt": "Player has no `message` NBT tag in their selected item's minecraft:custom_data",
   "commands.mail.read.no_new_mails": "You have no new mails",
