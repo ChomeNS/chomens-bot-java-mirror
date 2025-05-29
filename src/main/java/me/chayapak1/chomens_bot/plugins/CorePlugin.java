@@ -3,6 +3,7 @@ package me.chayapak1.chomens_bot.plugins;
 import com.google.gson.JsonSyntaxException;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.listener.Listener;
+import me.chayapak1.chomens_bot.data.selfCare.SelfData;
 import me.chayapak1.chomens_bot.util.MathUtilities;
 import me.chayapak1.chomens_bot.util.StringUtilities;
 import net.kyori.adventure.text.Component;
@@ -16,6 +17,7 @@ import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.object.Direction;
+import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.Hand;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.PlayerAction;
 import org.geysermc.mcprotocollib.protocol.data.game.item.ItemStack;
@@ -97,7 +99,7 @@ public class CorePlugin implements Listener {
     public void onTick () {
         if (!pendingCommands.isEmpty() && exists) {
             // people that pre-order on TEMU application. Shop Like A Billionaire!!!
-            if (pendingCommands.size() > 256) {
+            if (pendingCommands.size() > 256 * 3) {
                 pendingCommands.clear();
             } else {
                 for (final String pendingCommand : pendingCommands) {
@@ -198,7 +200,7 @@ public class CorePlugin implements Listener {
     }
 
     public void run (final String command) {
-        if (!exists) {
+        if (!exists || !hasEnoughPermissions()) {
             // Add to TEMU shopping cart
             pendingCommands.add(command);
             return;
@@ -369,6 +371,14 @@ public class CorePlugin implements Listener {
             recalculateRelativePositions();
             refill(false);
         }
+    }
+
+    public boolean hasEnoughPermissions () {
+        final SelfData data = bot.selfCare.data;
+
+        if (data == null) return false;
+
+        return data.permissionLevel >= 2 && data.gameMode == GameMode.CREATIVE;
     }
 
     public boolean isCoreComplete () {

@@ -140,6 +140,11 @@ public class QueryPlugin implements Listener {
         return ObjectObjectImmutablePair.of(id, future);
     }
 
+    private void addComponent (final Component component, final boolean useCargo) {
+        if (useCargo) cargosQueue.add(component);
+        else sendQueueComponent(component);
+    }
+
     public CompletableFuture<String> block (final Vector3i location, final String path) { return block(false, location, path, false); }
 
     public CompletableFuture<String> block (final boolean useCargo, final Vector3i location, final String path, final boolean interpret) {
@@ -163,8 +168,7 @@ public class QueryPlugin implements Listener {
                         )
                 );
 
-        if (useCargo) cargosQueue.add(component);
-        else sendQueueComponent(component);
+        addComponent(component, useCargo);
 
         return pair.right();
     }
@@ -185,8 +189,7 @@ public class QueryPlugin implements Listener {
                         )
                 );
 
-        if (useCargo) cargosQueue.add(component);
-        else sendQueueComponent(component);
+        addComponent(component, useCargo);
 
         return pair.right();
     }
@@ -196,5 +199,6 @@ public class QueryPlugin implements Listener {
     @Override
     public void disconnected (final DisconnectedEvent event) {
         requests.clear();
+        cargosQueue.clear();
     }
 }
