@@ -21,7 +21,6 @@ import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
 import org.cloudburstmc.nbt.NbtMap;
 import org.cloudburstmc.nbt.NbtType;
 import org.geysermc.mcprotocollib.network.Session;
-import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 import org.geysermc.mcprotocollib.network.packet.Packet;
 import org.geysermc.mcprotocollib.protocol.codec.NbtComponentSerializer;
 import org.geysermc.mcprotocollib.protocol.data.DefaultComponentSerializer;
@@ -137,6 +136,8 @@ public class ChatPlugin implements Listener {
     private void packetReceived (final ClientboundRegistryDataPacket packet) {
         if (!packet.getRegistry().key().equals(Key.key(CHAT_TYPE_REGISTRY_KEY))) return;
 
+        chatTypes.clear();
+
         for (final RegistryEntry entry : packet.getEntries()) {
             final NbtMap data = entry.getData();
 
@@ -179,11 +180,6 @@ public class ChatPlugin implements Listener {
         }
     }
 
-    @Override
-    public void disconnected (final DisconnectedEvent event) {
-        chatTypes.clear();
-    }
-
     private Component getComponentByChatType (final int chatType, final Component target, final Component sender, final Component content) {
         final Component type = chatTypes.get(chatType);
 
@@ -214,27 +210,30 @@ public class ChatPlugin implements Listener {
 
         final Component unsignedContent = packet.getUnsignedContent();
 
+        final Component chatTypeComponent = getComponentByChatType(
+                packet.getChatType().id(),
+                packet.getTargetName(),
+                packet.getName(),
+                playerMessage.contents()
+        );
+
+        final String string;
+        final String ansi;
+        final Component systemComponent;
+
+        if (chatTypeComponent != null && unsignedContent == null) {
+            string = ComponentUtilities.stringify(chatTypeComponent);
+            ansi = ComponentUtilities.stringifyAnsi(chatTypeComponent);
+            systemComponent = chatTypeComponent;
+        } else {
+            string = ComponentUtilities.stringify(unsignedContent);
+            ansi = ComponentUtilities.stringifyAnsi(unsignedContent);
+            systemComponent = unsignedContent;
+        }
+
         bot.listener.dispatchWithCheck(listener -> {
             if (!listener.onPlayerMessageReceived(playerMessage, ChatPacketType.PLAYER)) return false;
-
-            final Component chatTypeComponent = getComponentByChatType(
-                    packet.getChatType().id(),
-                    packet.getTargetName(),
-                    packet.getName(),
-                    playerMessage.contents()
-            );
-
-            if (chatTypeComponent != null && unsignedContent == null) {
-                final String string = ComponentUtilities.stringify(chatTypeComponent);
-                final String ansi = ComponentUtilities.stringifyAnsi(chatTypeComponent);
-
-                return listener.onSystemMessageReceived(chatTypeComponent, string, ansi);
-            } else {
-                final String string = ComponentUtilities.stringify(unsignedContent);
-                final String ansi = ComponentUtilities.stringifyAnsi(unsignedContent);
-
-                return listener.onSystemMessageReceived(unsignedContent, string, ansi);
-            }
+            return listener.onSystemMessageReceived(systemComponent, string, ansi);
         });
     }
 
