@@ -131,6 +131,7 @@ public class Configuration {
 
         public boolean vanish = true;
         public boolean nickname = true;
+        public boolean god = true;
         public boolean socialspy = true;
         public boolean mute = true;
 
@@ -175,6 +176,9 @@ public class Configuration {
 
             public String nickNameRemove = "You no longer have a nickname.";
             public String nickNameSet = "Your nickname is now ";
+
+            public String godModeEnable = "God mode enabled.";
+            public String godModeDisable = "God mode disabled.";
 
             public String socialSpyEnable = "SocialSpy for %s: enabled";
             public String socialSpyDisable = "SocialSpy for %s: disabled";

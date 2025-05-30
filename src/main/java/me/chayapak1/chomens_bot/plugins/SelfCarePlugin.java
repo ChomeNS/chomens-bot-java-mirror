@@ -5,10 +5,7 @@ import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.data.selfCare.SelfCare;
 import me.chayapak1.chomens_bot.data.selfCare.SelfData;
-import me.chayapak1.chomens_bot.selfCares.essentials.MuteSelfCare;
-import me.chayapak1.chomens_bot.selfCares.essentials.NicknameSelfCare;
-import me.chayapak1.chomens_bot.selfCares.essentials.SocialSpySelfCare;
-import me.chayapak1.chomens_bot.selfCares.essentials.VanishSelfCare;
+import me.chayapak1.chomens_bot.selfCares.essentials.*;
 import me.chayapak1.chomens_bot.selfCares.kaboom.commandSpy.CommandSpySelfCare;
 import me.chayapak1.chomens_bot.selfCares.kaboom.extras.PrefixSelfCare;
 import me.chayapak1.chomens_bot.selfCares.kaboom.extras.UsernameSelfCare;
@@ -59,6 +56,7 @@ public class SelfCarePlugin implements Listener {
         // essentials
         selfCares.add(new VanishSelfCare(bot));
         selfCares.add(new NicknameSelfCare(bot));
+        selfCares.add(new GodModeSelfCare(bot));
         selfCares.add(new SocialSpySelfCare(bot));
         selfCares.add(new MuteSelfCare(bot));
 
