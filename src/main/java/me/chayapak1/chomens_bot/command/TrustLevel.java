@@ -8,6 +8,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.List;
+import java.util.Map;
 
 public enum TrustLevel {
     PUBLIC(0, Component.text(I18nUtilities.get("trust_level.public"), NamedTextColor.GREEN)),
@@ -26,27 +27,21 @@ public enum TrustLevel {
     }
 
     public static TrustLevel fromDiscordRoles (final List<Role> roles) {
-        if (Main.discord == null) return PUBLIC;
+        if (Main.discord == null || Main.discord.options == null) return PUBLIC;
 
         final Configuration.Discord options = Main.discord.options;
 
-        if (options == null) return PUBLIC;
-
-        TrustLevel userTrustLevel = PUBLIC;
+        final Map<String, TrustLevel> roleToLevel = Map.of(
+                options.ownerRoleName.toLowerCase(), OWNER,
+                options.adminRoleName.toLowerCase(), ADMIN,
+                options.trustedRoleName.toLowerCase(), TRUSTED
+        );
 
         for (final Role role : roles) {
-            if (role.getName().equalsIgnoreCase(options.ownerRoleName)) {
-                userTrustLevel = OWNER;
-                break;
-            } else if (role.getName().equalsIgnoreCase(options.adminRoleName)) {
-                userTrustLevel = ADMIN;
-                break;
-            } else if (role.getName().equalsIgnoreCase(options.trustedRoleName)) {
-                userTrustLevel = TRUSTED;
-                break;
-            }
+            final TrustLevel level = roleToLevel.get(role.getName().toLowerCase());
+            if (level != null) return level;
         }
 
-        return userTrustLevel;
+        return PUBLIC;
     }
 }

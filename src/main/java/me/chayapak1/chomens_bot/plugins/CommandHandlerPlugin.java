@@ -13,7 +13,6 @@ import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.util.ExceptionUtilities;
 import me.chayapak1.chomens_bot.util.HashingUtilities;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -73,7 +72,7 @@ public class CommandHandlerPlugin implements Listener {
         for (final Command command : COMMANDS) {
             if (
                     command.name.equals(searchTerm.toLowerCase()) ||
-                            Arrays.stream(command.aliases).toList().contains(searchTerm.toLowerCase())
+                            Arrays.asList(command.aliases).contains(searchTerm.toLowerCase())
             ) {
                 return command;
             }
@@ -86,7 +85,7 @@ public class CommandHandlerPlugin implements Listener {
 
     private final Bot bot;
 
-    private static final AtomicInteger commandsPerSecond = new AtomicInteger();
+    private final AtomicInteger commandsPerSecond = new AtomicInteger();
 
     public CommandHandlerPlugin (final Bot bot) {
         this.bot = bot;
@@ -104,27 +103,18 @@ public class CommandHandlerPlugin implements Listener {
     // and also not really optimized
     // (sometimes execution time can be as high as 19 ms,
     // though it can also be as low as 4000 ns)
-    public void executeCommand (
-            final String input,
-            final CommandContext context
-    ) {
-        final boolean inGame = context instanceof PlayerCommandContext;
-
-        final boolean bypass = context instanceof ConsoleCommandContext || context instanceof ChomeNSModCommandContext;
-
+    public void executeCommand (final String input, final CommandContext context) {
         if (commandsPerSecond.get() > 100) return;
         else commandsPerSecond.getAndIncrement();
 
-        final String[] splitInput = input.trim().split("\\s+");
+        final boolean inGame = context instanceof PlayerCommandContext;
+        final boolean bypass = isBypassContext(context);
 
+        final String[] splitInput = input.trim().split("\\s+");
         if (splitInput.length == 0) return;
 
         final String commandName = splitInput[0];
-
         final Command command = findCommand(commandName);
-
-        // I think this is kinda annoying when you correct spelling mistakes or something,
-        // so I made it return nothing if we're in game
         if (command == null) {
             if (!inGame)
                 context.sendOutput(
@@ -134,145 +124,145 @@ public class CommandHandlerPlugin implements Listener {
                                 Component.text(commandName)
                         )
                 );
-
             return;
         }
 
-        if (!bypass) {
-            if (disabled) {
-                context.sendOutput(Component.translatable("command_handler.disabled", NamedTextColor.RED));
-                return;
-            } else if (
-                    context instanceof final PlayerCommandContext playerContext &&
-                            command.disallowedPacketTypes != null &&
-                            Arrays.asList(command.disallowedPacketTypes).contains(playerContext.packetType)
-            ) {
-                return;
-            }
-        }
+        if (!bypass && !isCommandAllowed(context, command)) return;
 
         final TrustLevel authenticatedTrustLevel = context.sender.authenticatedTrustLevel;
-
-        final boolean authenticated = context instanceof final PlayerCommandContext playerContext
-                && playerContext.packetType == ChatPacketType.PLAYER
-                && authenticatedTrustLevel != TrustLevel.PUBLIC;
-
-        final TrustLevel trustLevel = command.trustLevel;
-
-        if (trustLevel != TrustLevel.PUBLIC && splitInput.length < 2 && inGame && !authenticated) {
-            context.sendOutput(Component.translatable("command_handler.no_hash_provided", NamedTextColor.RED));
-            return;
-        }
-
-        final boolean needsHash = trustLevel != TrustLevel.PUBLIC && inGame && !authenticated;
+        final boolean authenticated = isAuthenticated(context, authenticatedTrustLevel);
+        final boolean needsHash = needsHash(command, inGame, authenticated, splitInput.length);
 
         final String userHash = needsHash ? splitInput[1] : "";
-
         final String[] fullArgs = Arrays.copyOfRange(splitInput, 1, splitInput.length);
-        final String[] args = needsHash
-                ? Arrays.copyOfRange(splitInput, 2, splitInput.length)
-                : fullArgs;
+        final String[] args = needsHash ? Arrays.copyOfRange(splitInput, 2, splitInput.length) : fullArgs;
 
-        // LoL ohio spaghetti code
-        if (command.trustLevel != TrustLevel.PUBLIC && !bypass) {
-            if (context instanceof final RemoteCommandContext remote) {
-                if (remote.source.trustLevel.level < trustLevel.level) {
-                    context.sendOutput(
-                            Component.translatable("command_handler.not_enough_roles", NamedTextColor.RED)
-                    );
-                    return;
-                }
+        if (!checkTrustLevel(context, command, userHash, authenticated, bypass))
+            return;
 
-                context.trustLevel = remote.source.trustLevel;
-            } else if (context instanceof final DiscordCommandContext discordCommandContext) {
-                final Member member = discordCommandContext.member;
-
-                if (member == null) return;
-
-                final List<Role> roles = member.getRoles();
-
-                final TrustLevel userTrustLevel = TrustLevel.fromDiscordRoles(roles);
-
-                if (trustLevel.level > userTrustLevel.level) {
-                    context.sendOutput(
-                            Component
-                                    .translatable(
-                                            "command_handler.not_enough_roles.trust_level",
-                                            Component.text(trustLevel.name())
-                                    )
-                                    .color(NamedTextColor.RED)
-                    );
-                    return;
-                }
-
-                context.trustLevel = userTrustLevel;
-            } else if (authenticated) {
-                if (trustLevel.level > authenticatedTrustLevel.level) {
-                    context.sendOutput(
-                            Component.translatable("command_handler.not_enough_roles", NamedTextColor.RED)
-                    );
-                    return;
-                }
-
-                context.trustLevel = authenticatedTrustLevel;
-            } else {
-                final TrustLevel userTrustLevel = HashingUtilities.getTrustLevel(userHash, splitInput[0], context.sender);
-
-                if (trustLevel.level > userTrustLevel.level) {
-                    context.sendOutput(
-                            Component
-                                    .translatable(
-                                            "command_handler.invalid_hash",
-                                            NamedTextColor.RED,
-                                            Component.text(trustLevel.toString())
-                                    )
-                    );
-                    return;
-                }
-
-                context.trustLevel = userTrustLevel;
-            }
-        } else if (bypass) {
-            context.trustLevel = TrustLevel.MAX;
-        }
-
-        // should i give access to all bypass contexts instead of only console?
         if (!bypass && command.consoleOnly) {
             context.sendOutput(Component.translatable("command_handler.console_only", NamedTextColor.RED));
             return;
         }
 
-        // should these be here?
         context.fullArgs = fullArgs;
         context.args = args;
         context.commandName = command.name;
         context.userInputCommandName = commandName;
 
+        handleExecution(command, context, inGame);
+    }
+
+    private boolean isBypassContext (final CommandContext context) {
+        return context instanceof ConsoleCommandContext || context instanceof ChomeNSModCommandContext;
+    }
+
+    private boolean isAuthenticated (final CommandContext context, final TrustLevel authenticatedTrustLevel) {
+        return context instanceof final PlayerCommandContext playerContext
+                && playerContext.packetType == ChatPacketType.PLAYER
+                && authenticatedTrustLevel != TrustLevel.PUBLIC;
+    }
+
+    private boolean needsHash (final Command command, final boolean inGame, final boolean authenticated, final int inputLength) {
+        return command.trustLevel != TrustLevel.PUBLIC && inGame && !authenticated && inputLength < 2;
+    }
+
+    private boolean checkTrustLevel (
+            final CommandContext context,
+            final Command command,
+            final String userHash,
+            final boolean authenticated,
+            final boolean bypass
+    ) {
+        final TrustLevel requiredLevel = command.trustLevel;
+
+        if (requiredLevel == TrustLevel.PUBLIC || bypass) {
+            context.trustLevel = bypass ? TrustLevel.MAX : TrustLevel.PUBLIC;
+            return true;
+        }
+
+        if (context instanceof final RemoteCommandContext remote) {
+            if (remote.source.trustLevel.level < requiredLevel.level) {
+                context.sendOutput(Component.translatable("command_handler.not_enough_roles", NamedTextColor.RED));
+                return false;
+            }
+            context.trustLevel = remote.source.trustLevel;
+            return true;
+        }
+
+        if (context instanceof final DiscordCommandContext discord) {
+            final Member member = discord.member;
+            if (member == null) return false;
+
+            final TrustLevel userLevel = TrustLevel.fromDiscordRoles(member.getRoles());
+            if (userLevel.level < requiredLevel.level) {
+                context.sendOutput(
+                        Component.translatable(
+                                "command_handler.not_enough_roles.trust_level",
+                                NamedTextColor.RED,
+                                Component.text(requiredLevel.name())
+                        )
+                );
+                return false;
+            }
+            context.trustLevel = userLevel;
+            return true;
+        }
+
+        if (authenticated) {
+            final TrustLevel authLevel = context.sender.authenticatedTrustLevel;
+            if (authLevel.level < requiredLevel.level) {
+                context.sendOutput(Component.translatable("command_handler.not_enough_roles", NamedTextColor.RED));
+                return false;
+            }
+            context.trustLevel = authLevel;
+            return true;
+        }
+
+        final TrustLevel hashLevel = HashingUtilities.getTrustLevel(userHash, command.name, context.sender);
+        if (hashLevel.level < requiredLevel.level) {
+            context.sendOutput(
+                    Component.translatable(
+                            "command_handler.invalid_hash",
+                            NamedTextColor.RED,
+                            Component.text(requiredLevel.toString())
+                    )
+            );
+            return false;
+        }
+
+        context.trustLevel = hashLevel;
+        return true;
+    }
+
+    private boolean isCommandAllowed (final CommandContext context, final Command command) {
+        if (disabled) {
+            context.sendOutput(Component.translatable("command_handler.disabled", NamedTextColor.RED));
+            return false;
+        }
+
+        return !(context instanceof final PlayerCommandContext playerContext) ||
+                command.disallowedPacketTypes == null ||
+                !Arrays.asList(command.disallowedPacketTypes).contains(playerContext.packetType);
+    }
+
+    private void handleExecution (final Command command, final CommandContext context, final boolean inGame) {
         try {
             final Component output = command.execute(context);
-
             if (output != null) context.sendOutput(output);
         } catch (final CommandException e) {
-            context.sendOutput(e.message.color(NamedTextColor.RED));
+            context.sendOutput(e.message.colorIfAbsent(NamedTextColor.RED));
         } catch (final Exception e) {
             bot.logger.error(e);
-
             final String stackTrace = ExceptionUtilities.getStacktrace(e);
-            if (inGame) {
-                if (bot.options.useChat || !bot.options.useCore)
-                    context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
-                else
-                    context.sendOutput(
-                            Component
-                                    .translatable("command_handler.exception", NamedTextColor.RED)
-                                    .hoverEvent(
-                                            HoverEvent.showText(
-                                                    Component.text(stackTrace, NamedTextColor.RED)
-                                            )
-                                    )
-                    );
+            if (inGame && (bot.options.useChat || !bot.options.useCore)) {
+                context.sendOutput(Component.text(e.toString(), NamedTextColor.RED));
             } else {
-                context.sendOutput(Component.text(stackTrace, NamedTextColor.RED));
+                context.sendOutput(
+                        Component
+                                .translatable("command_handler.exception", NamedTextColor.RED)
+                                .hoverEvent(HoverEvent.showText(Component.text(stackTrace, NamedTextColor.RED)))
+                );
             }
         }
     }
