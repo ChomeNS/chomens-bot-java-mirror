@@ -76,7 +76,7 @@ public class FilterCommand extends Command {
                     }
                 }
 
-                DatabasePlugin.EXECUTOR_SERVICE.submit(() -> bot.playerFilter.add(player, reason, regex, ignoreCase));
+                DatabasePlugin.EXECUTOR_SERVICE.execute(() -> bot.playerFilter.add(player, reason, regex, ignoreCase));
 
                 if (reason.isEmpty()) {
                     return Component.translatable(
@@ -102,7 +102,7 @@ public class FilterCommand extends Command {
 
                 if (player == null) throw new CommandException(Component.translatable("commands.generic.error.invalid_index"));
 
-                DatabasePlugin.EXECUTOR_SERVICE.submit(() -> bot.playerFilter.remove(player.playerName()));
+                DatabasePlugin.EXECUTOR_SERVICE.execute(() -> bot.playerFilter.remove(player.playerName()));
 
                 return Component.translatable(
                         "commands.filter.remove.output",
@@ -113,7 +113,7 @@ public class FilterCommand extends Command {
             case "clear" -> {
                 context.checkOverloadArgs(1);
 
-                DatabasePlugin.EXECUTOR_SERVICE.submit(bot.playerFilter::clear);
+                DatabasePlugin.EXECUTOR_SERVICE.execute(bot.playerFilter::clear);
                 return Component.translatable("commands.filter.clear.output").color(bot.colorPalette.defaultColor);
             }
             case "list" -> {

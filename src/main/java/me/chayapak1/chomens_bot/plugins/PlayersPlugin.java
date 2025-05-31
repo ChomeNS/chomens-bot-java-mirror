@@ -96,7 +96,7 @@ public class PlayersPlugin implements Listener {
     public CompletableFuture<String> getPlayerIP (final PlayerEntry target, final boolean forceSeen) {
         final CompletableFuture<String> outputFuture = new CompletableFuture<>();
 
-        DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
+        DatabasePlugin.EXECUTOR_SERVICE.execute(() -> {
             if (!forceSeen) {
                 final String databaseIP = bot.playersDatabase.getPlayerIP(target.profile.getName());
 

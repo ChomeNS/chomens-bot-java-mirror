@@ -36,7 +36,7 @@ public class PlayersDatabasePlugin implements Listener {
 
     static {
         if (Main.database != null) {
-            DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
+            DatabasePlugin.EXECUTOR_SERVICE.execute(() -> {
                 try {
                     Main.database.execute(CREATE_TABLE);
                 } catch (final SQLException e) {
@@ -138,7 +138,7 @@ public class PlayersDatabasePlugin implements Listener {
 
     @Override
     public void onPlayerJoined (final PlayerEntry target) {
-        DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
+        DatabasePlugin.EXECUTOR_SERVICE.execute(() -> {
             try {
                 final PreparedStatement insertPlayerStatement = Main.database.connection.prepareStatement(INSERT_PLAYER);
 
@@ -163,7 +163,7 @@ public class PlayersDatabasePlugin implements Listener {
 
     @Override
     public void onQueriedPlayerIP (final PlayerEntry target, final String ip) {
-        DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
+        DatabasePlugin.EXECUTOR_SERVICE.execute(() -> {
             try {
                 final PreparedStatement updatePlayerStatement = Main.database.connection.prepareStatement(UPDATE_PLAYER);
 
@@ -191,7 +191,7 @@ public class PlayersDatabasePlugin implements Listener {
         synchronized (bot.players.list) {
             final List<PlayerEntry> clonedList = new ArrayList<>(bot.players.list);
 
-            DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
+            DatabasePlugin.EXECUTOR_SERVICE.execute(() -> {
                 for (final PlayerEntry target : clonedList) {
                     updateLastSeenEntry(target);
                 }
@@ -201,7 +201,7 @@ public class PlayersDatabasePlugin implements Listener {
 
     @Override
     public void onPlayerLeft (final PlayerEntry target) {
-        DatabasePlugin.EXECUTOR_SERVICE.submit(() -> updateLastSeenEntry(target));
+        DatabasePlugin.EXECUTOR_SERVICE.execute(() -> updateLastSeenEntry(target));
     }
 
     private void updateLastSeenEntry (final PlayerEntry target) {

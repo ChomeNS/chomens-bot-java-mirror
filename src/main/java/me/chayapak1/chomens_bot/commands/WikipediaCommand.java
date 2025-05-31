@@ -44,7 +44,7 @@ public class WikipediaCommand extends Command {
 
         final Gson gson = new Gson();
 
-        bot.executorService.submit(() -> {
+        bot.executorService.execute(() -> {
             try {
                 Component component = Component.empty();
 

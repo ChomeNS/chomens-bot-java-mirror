@@ -65,7 +65,7 @@ public class EvalPlugin {
                     socket.on(
                             BRIDGE_PREFIX + function.name + ":" + bot.getServerString(true),
                             functionArgs ->
-                                    Main.EXECUTOR_SERVICE.submit(() -> {
+                                    Main.EXECUTOR_SERVICE.execute(() -> {
                                         try {
                                             final EvalFunction.Output output = function.execute(bot, functionArgs);
                                             if (output == null) return;

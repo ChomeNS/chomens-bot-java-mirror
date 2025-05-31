@@ -49,7 +49,7 @@ public class TranslateCommand extends Command {
 
         final String message = context.getString(true, true);
 
-        bot.executorService.submit(() -> {
+        bot.executorService.execute(() -> {
             try {
                 final URL url = new URI(
                         String.format(

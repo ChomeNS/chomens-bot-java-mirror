@@ -49,7 +49,7 @@ public class FindAltsCommand extends Command {
 
         final String player = context.getString(true, true);
 
-        DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
+        DatabasePlugin.EXECUTOR_SERVICE.execute(() -> {
             final PlayerEntry playerInTheServer = bot.players.getEntry(player);
 
             final String ipFromUsername;
@@ -62,8 +62,6 @@ public class FindAltsCommand extends Command {
             } else {
                 context.sendOutput(handle(bot, ipFromUsername, player, allServer));
             }
-
-            return null;
         });
 
         return null;

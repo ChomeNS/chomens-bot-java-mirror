@@ -313,8 +313,8 @@ public class Bot extends SessionAdapter {
     }
 
     private void packetSent (final ServerboundLoginAcknowledgedPacket ignoredPacket) {
-        // doesn't work without submitting it somewhere :(
-        executorService.submit(() -> {
+        // doesn't work without executing
+        session.getPacketHandlerExecutor().execute(() -> {
             // for voicechat
             session.send(new ServerboundCustomPayloadPacket(
                     Key.key("minecraft:brand"),

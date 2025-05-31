@@ -24,7 +24,7 @@ public class IPFilterPlugin implements Listener {
 
     static {
         if (Main.database != null) {
-            DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
+            DatabasePlugin.EXECUTOR_SERVICE.execute(() -> {
                 try {
                     Main.database.execute(CREATE_TABLE);
                 } catch (final SQLException e) {
@@ -108,7 +108,7 @@ public class IPFilterPlugin implements Listener {
     private void checkAllPlayers () {
         if (localList.isEmpty()) return;
 
-        bot.executorService.submit(() -> {
+        bot.executorService.execute(() -> {
             synchronized (bot.players.list) {
                 for (final PlayerEntry entry : bot.players.list) check(entry);
             }

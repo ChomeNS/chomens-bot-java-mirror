@@ -27,7 +27,7 @@ public class PlayerFilterPlugin implements Listener {
 
     static {
         if (Main.database != null) {
-            DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
+            DatabasePlugin.EXECUTOR_SERVICE.execute(() -> {
                 try {
                     Main.database.execute(CREATE_TABLE);
                 } catch (final SQLException e) {
@@ -127,7 +127,7 @@ public class PlayerFilterPlugin implements Listener {
 
     @Override
     public void onPlayerJoined (final PlayerEntry target) {
-        bot.executorService.submit(() -> {
+        bot.executorService.execute(() -> {
             final FilteredPlayer player = getPlayer(target.profile.getName());
 
             if (player == null) return;

@@ -48,7 +48,7 @@ public class MailCommand extends Command {
         final String action = context.getAction();
 
         switch (action) {
-            case "send" -> DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
+            case "send" -> DatabasePlugin.EXECUTOR_SERVICE.execute(() -> {
                 try {
                     bot.mail.send(
                             new Mail(
@@ -79,7 +79,7 @@ public class MailCommand extends Command {
                             throw new CommandException(Component.translatable("commands.mail.sendselecteditem.error.no_item_nbt"));
                         }
 
-                        DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
+                        DatabasePlugin.EXECUTOR_SERVICE.execute(() -> {
                             try {
                                 bot.mail.send(
                                         new Mail(
@@ -107,7 +107,7 @@ public class MailCommand extends Command {
             case "read" -> {
                 context.checkOverloadArgs(1);
 
-                DatabasePlugin.EXECUTOR_SERVICE.submit(() -> {
+                DatabasePlugin.EXECUTOR_SERVICE.execute(() -> {
                     final List<Mail> mails = bot.mail.list();
 
                     int senderMailSize = 0;

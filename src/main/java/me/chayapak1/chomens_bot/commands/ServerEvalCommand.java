@@ -40,7 +40,7 @@ public class ServerEvalCommand extends Command {
             return Component.translatable("commands.servereval.reset", bot.colorPalette.defaultColor);
         }
 
-        bot.executorService.submit(() -> {
+        bot.executorService.execute(() -> {
             try {
                 if (lua == null) lua = new Lua54();
 

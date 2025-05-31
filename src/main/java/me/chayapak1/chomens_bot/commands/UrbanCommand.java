@@ -55,7 +55,7 @@ public class UrbanCommand extends Command {
 
         final Gson gson = new Gson();
 
-        bot.executorService.submit(() -> {
+        bot.executorService.execute(() -> {
             try {
                 final URL url = new URI(
                         "https://api.urbandictionary.com/v0/define?term=" +

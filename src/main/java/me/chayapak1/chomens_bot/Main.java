@@ -190,6 +190,7 @@ public class Main {
 
         EXECUTOR.shutdown();
         EXECUTOR_SERVICE.shutdown();
+        FileLoggerUtilities.stop();
         if (database != null) database.stop();
 
         final ArrayList<Bot> copiedList;
