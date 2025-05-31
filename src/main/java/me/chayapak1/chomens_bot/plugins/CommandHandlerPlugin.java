@@ -137,7 +137,7 @@ public class CommandHandlerPlugin implements Listener {
         final String[] fullArgs = Arrays.copyOfRange(splitInput, 1, splitInput.length);
         final String[] args = needsHash ? Arrays.copyOfRange(splitInput, 2, splitInput.length) : fullArgs;
 
-        if (!checkTrustLevel(context, command, userHash, authenticated, bypass))
+        if (!checkTrustLevel(context, commandName, command, userHash, authenticated, bypass))
             return;
 
         if (!bypass && command.consoleOnly) {
@@ -164,11 +164,12 @@ public class CommandHandlerPlugin implements Listener {
     }
 
     private boolean needsHash (final Command command, final boolean inGame, final boolean authenticated, final int inputLength) {
-        return command.trustLevel != TrustLevel.PUBLIC && inGame && !authenticated && inputLength < 2;
+        return command.trustLevel != TrustLevel.PUBLIC && inGame && !authenticated && inputLength >= 2;
     }
 
     private boolean checkTrustLevel (
             final CommandContext context,
+            final String userCommandName,
             final Command command,
             final String userHash,
             final boolean authenticated,
@@ -219,7 +220,7 @@ public class CommandHandlerPlugin implements Listener {
             return true;
         }
 
-        final TrustLevel hashLevel = HashingUtilities.getTrustLevel(userHash, command.name, context.sender);
+        final TrustLevel hashLevel = HashingUtilities.getTrustLevel(userHash, userCommandName, context.sender);
         if (hashLevel.level < requiredLevel.level) {
             context.sendOutput(
                     Component.translatable(
