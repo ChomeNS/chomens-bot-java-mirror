@@ -1,13 +1,14 @@
 package me.chayapak1.chomens_bot.data.player;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import net.kyori.adventure.text.Component;
 import org.geysermc.mcprotocollib.auth.GameProfile;
 import org.geysermc.mcprotocollib.protocol.data.game.PlayerListEntry;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.player.GameMode;
+import org.jetbrains.annotations.NotNull;
 
 import java.security.PublicKey;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerEntry {
@@ -15,13 +16,10 @@ public class PlayerEntry {
     public GameMode gamemode;
     public int latency;
     public Component displayName;
-    public final List<String> usernames = new ArrayList<>();
     public final long expiresAt;
     public PublicKey publicKey;
     public final byte[] keySignature;
-    public boolean listed;
-    public String ip;
-    public TrustLevel authenticatedTrustLevel = TrustLevel.PUBLIC;
+    public PersistingData persistingData;
 
     public PlayerEntry (
             final GameProfile profile,
@@ -40,7 +38,7 @@ public class PlayerEntry {
         this.expiresAt = expiresAt;
         this.publicKey = publicKey;
         this.keySignature = keySignature;
-        this.listed = listed;
+        this.persistingData = new PersistingData(listed);
     }
 
     public PlayerEntry (final PlayerListEntry entry) {
@@ -50,10 +48,48 @@ public class PlayerEntry {
     @Override
     public String toString () {
         return "PlayerEntry{" +
-                "gamemode=" + gamemode +
+                "profile=" + profile +
+                ", gamemode=" + gamemode +
                 ", latency=" + latency +
-                ", listed=" + listed +
-                ", displayName=" + displayName +
+                ", persistingData=" + persistingData +
                 '}';
+    }
+
+    public static final class PersistingData {
+        public final List<String> usernames = new ObjectArrayList<>();
+        public boolean listed;
+        public String ip = null;
+        public TrustLevel authenticatedTrustLevel = TrustLevel.PUBLIC;
+
+        public PersistingData (final boolean listed) {
+            this.listed = listed;
+        }
+
+        public PersistingData (final PersistingData friend) {
+            this.usernames.addAll(friend.usernames);
+            this.listed = friend.listed;
+            this.ip = friend.ip;
+            this.authenticatedTrustLevel = friend.authenticatedTrustLevel;
+        }
+
+        public PersistingData (final PlayerEntry oldEntry) {
+            final PersistingData friend = oldEntry.persistingData;
+
+            this.usernames.addAll(oldEntry.persistingData.usernames);
+            this.usernames.addLast(oldEntry.profile.getName());
+            this.listed = friend.listed;
+            this.ip = friend.ip;
+            this.authenticatedTrustLevel = friend.authenticatedTrustLevel;
+        }
+
+        @Override
+        public @NotNull String toString () {
+            return "PersistingData{" +
+                    "usernames=" + usernames +
+                    ", listed=" + listed +
+                    ", ip='" + ip + '\'' +
+                    ", authenticatedTrustLevel=" + authenticatedTrustLevel +
+                    '}';
+        }
     }
 }

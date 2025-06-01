@@ -129,7 +129,7 @@ public class CommandHandlerPlugin implements Listener {
 
         if (!bypass && !isCommandAllowed(context, command)) return;
 
-        final TrustLevel authenticatedTrustLevel = context.sender.authenticatedTrustLevel;
+        final TrustLevel authenticatedTrustLevel = context.sender.persistingData.authenticatedTrustLevel;
         final boolean authenticated = isAuthenticated(context, authenticatedTrustLevel);
         final boolean needsHash = needsHash(command, inGame, authenticated, splitInput.length);
 
@@ -211,7 +211,7 @@ public class CommandHandlerPlugin implements Listener {
         }
 
         if (authenticated) {
-            final TrustLevel authLevel = context.sender.authenticatedTrustLevel;
+            final TrustLevel authLevel = context.sender.persistingData.authenticatedTrustLevel;
             if (authLevel.level < requiredLevel.level) {
                 context.sendOutput(Component.translatable("command_handler.not_enough_roles", NamedTextColor.RED));
                 return false;

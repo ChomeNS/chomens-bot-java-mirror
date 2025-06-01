@@ -39,20 +39,20 @@ public class AuthCommand extends Command {
         if (allowSettingOthers && !targetString.isEmpty()) target = bot.players.getEntry(targetString);
         if (target == null) target = context.sender;
 
-        target.authenticatedTrustLevel = trustLevel;
+        target.persistingData.authenticatedTrustLevel = trustLevel;
 
         if (target.equals(context.sender)) {
             return Component.translatable(
                     "commands.auth.self",
                     bot.colorPalette.defaultColor,
-                    target.authenticatedTrustLevel.component
+                    target.persistingData.authenticatedTrustLevel.component
             );
         } else {
             return Component.translatable(
                     "commands.auth.others",
                     bot.colorPalette.defaultColor,
                     Component.text(target.profile.getName(), bot.colorPalette.username),
-                    target.authenticatedTrustLevel.component
+                    target.persistingData.authenticatedTrustLevel.component
             );
         }
     }

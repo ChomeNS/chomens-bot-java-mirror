@@ -36,7 +36,7 @@ public class ValidateCommand extends Command {
         else if (context instanceof ConsoleCommandContext) return Component
                 .translatable("commands.validate.console", NamedTextColor.GREEN);
         else return Component.translatable(
-                    context.sender.authenticatedTrustLevel != TrustLevel.PUBLIC
+                    context.sender.persistingData.authenticatedTrustLevel != TrustLevel.PUBLIC
                             ? "commands.validate.player_authenticated"
                             : "commands.validate.player",
                     NamedTextColor.GREEN,

@@ -63,7 +63,7 @@ public class IPFilterPlugin implements Listener {
     private void check (final PlayerEntry target) {
         if (bot.options.useCorePlaceBlock) return; // it will spam the place block core so i ignored this
 
-        final String ip = target.ip;
+        final String ip = target.persistingData.ip;
 
         if (ip == null) return;
 

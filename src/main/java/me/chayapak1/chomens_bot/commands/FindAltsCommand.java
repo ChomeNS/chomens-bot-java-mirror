@@ -54,8 +54,9 @@ public class FindAltsCommand extends Command {
 
             final String ipFromUsername;
 
-            if (playerInTheServer == null || playerInTheServer.ip == null) ipFromUsername = bot.playersDatabase.getPlayerIP(player);
-            else ipFromUsername = playerInTheServer.ip;
+            if (playerInTheServer == null || playerInTheServer.persistingData.ip == null)
+                ipFromUsername = bot.playersDatabase.getPlayerIP(player);
+            else ipFromUsername = playerInTheServer.persistingData.ip;
 
             if (ipFromUsername == null) {
                 context.sendOutput(handle(bot, player, player, allServer));

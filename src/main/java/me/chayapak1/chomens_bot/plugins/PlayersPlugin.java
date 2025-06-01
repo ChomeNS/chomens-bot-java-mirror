@@ -78,12 +78,12 @@ public class PlayersPlugin implements Listener {
     }
 
     private void queryPlayersIP (final PlayerEntry target) {
-        if (target.ip != null) return;
+        if (target.persistingData.ip != null) return;
 
         final CompletableFuture<String> future = getPlayerIP(target, true);
 
         future.thenApply(ip -> {
-            target.ip = ip;
+            target.persistingData.ip = ip;
 
             bot.listener.dispatch(listener -> listener.onQueriedPlayerIP(target, ip));
 
@@ -162,7 +162,7 @@ public class PlayersPlugin implements Listener {
                                 (
                                         candidate.profile.getName().equals(username)
                                                 || (checkUUID && candidate.profile.getIdAsString().equals(username))
-                                                || (checkPastUsernames && candidate.usernames.contains(username))
+                                                || (checkPastUsernames && candidate.persistingData.usernames.contains(username))
                                 )
                 ) {
                     return candidate;
@@ -228,7 +228,7 @@ public class PlayersPlugin implements Listener {
         final PlayerEntry target = getEntry(newEntry);
         if (target == null) return;
 
-        target.listed = newEntry.isListed();
+        target.persistingData.listed = newEntry.isListed();
     }
 
     private void addPlayer (final PlayerListEntry newEntry) {
@@ -241,10 +241,8 @@ public class PlayersPlugin implements Listener {
         if (duplicate != null) {
             list.removeIf(entry -> entry.equals(duplicate));
 
-            target.listed = true;
-
-            target.usernames.addAll(duplicate.usernames);
-            target.ip = duplicate.ip;
+            target.persistingData = new PlayerEntry.PersistingData(duplicate.persistingData);
+            target.persistingData.listed = true;
 
             list.add(target);
 
@@ -330,13 +328,10 @@ public class PlayersPlugin implements Listener {
                         target.expiresAt,
                         target.publicKey,
                         target.keySignature,
-                        target.listed
+                        target.persistingData.listed
                 );
 
-                newTarget.usernames.addAll(target.usernames);
-                newTarget.usernames.addLast(target.profile.getName());
-
-                newTarget.ip = target.ip;
+                newTarget.persistingData = new PlayerEntry.PersistingData(target);
 
                 list.removeIf(entry -> entry.profile.getId().equals(target.profile.getId()));
 
@@ -349,7 +344,7 @@ public class PlayersPlugin implements Listener {
                 // we already passed all the left and username check,
                 // so the only one left is vanish
 
-                target.listed = false;
+                target.persistingData.listed = false;
 
                 bot.listener.dispatch(listener -> listener.onPlayerVanished(target));
             }

@@ -43,7 +43,7 @@ public class AuthPlugin implements Listener {
 
         cleanup();
 
-        target.authenticatedTrustLevel = TrustLevel.MAX;
+        target.persistingData.authenticatedTrustLevel = TrustLevel.MAX;
 
         bot.logger.log(
                 LogType.AUTH,

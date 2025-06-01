@@ -56,7 +56,7 @@ public class ListCommand extends Command {
                     .append(Component.newline())
                     .append(Component.newline())
                     .append(
-                            entry.usernames.isEmpty()
+                            entry.persistingData.usernames.isEmpty()
                                     ? Component.translatable(
                                             "commands.list.no_other_usernames",
                                             NamedTextColor.GRAY
@@ -67,7 +67,7 @@ public class ListCommand extends Command {
                                             Component
                                                     .join(
                                                             JoinConfiguration.commas(true),
-                                                            entry.usernames
+                                                            entry.persistingData.usernames
                                                                     .stream()
                                                                     .map(Component::text)
                                                                     .toList()
@@ -80,7 +80,7 @@ public class ListCommand extends Command {
                             Component.translatable(
                                     "commands.list.vanished",
                                     bot.colorPalette.secondary,
-                                    Component.text(!entry.listed, bot.colorPalette.string)
+                                    Component.text(!entry.persistingData.listed, bot.colorPalette.string)
                             )
                     )
                     .append(Component.newline())
@@ -106,7 +106,12 @@ public class ListCommand extends Command {
                             Component.translatable(
                                     "commands.list.ip_address",
                                     bot.colorPalette.secondary,
-                                    Component.text(entry.ip == null ? "N/A" : entry.ip, bot.colorPalette.string)
+                                    Component.text(
+                                            entry.persistingData.ip == null
+                                                    ? "N/A"
+                                                    : entry.persistingData.ip,
+                                            bot.colorPalette.string
+                                    )
                             )
                     )
                     .append(Component.newline())
