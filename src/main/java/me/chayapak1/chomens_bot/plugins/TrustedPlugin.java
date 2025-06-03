@@ -29,10 +29,11 @@ public class TrustedPlugin implements Listener {
     public void broadcast (final Component message, final UUID exceptTarget) {
         final Component component = Component.translatable(
                 "[%s] [%s] %s",
-                Component.text("ChomeNS Bot").color(bot.colorPalette.primary),
-                Component.text(this.bot.options.serverName).color(NamedTextColor.GRAY),
-                message.color(NamedTextColor.WHITE)
-        ).color(NamedTextColor.DARK_GRAY);
+                NamedTextColor.DARK_GRAY,
+                Component.text("ChomeNS Bot", bot.colorPalette.primary),
+                Component.text(this.bot.options.serverName, NamedTextColor.GRAY),
+                message.colorIfAbsent(NamedTextColor.WHITE)
+        );
 
         LoggerUtilities.log(LogType.TRUSTED_BROADCAST, component);
 
@@ -41,12 +42,8 @@ public class TrustedPlugin implements Listener {
 
             for (final String player : list) {
                 final PlayerEntry entry = bot.players.getEntry(player);
-
-                if (entry == null) continue;
-
-                if (entry.profile.getId() == exceptTarget) continue;
-
-                bot.chat.tellraw(component, player);
+                if (entry == null || entry.profile.getId() == exceptTarget) continue;
+                bot.chat.tellraw(component, entry.profile.getId());
             }
         }
     }
@@ -62,8 +59,9 @@ public class TrustedPlugin implements Listener {
         if (!target.profile.getName().equals(bot.config.ownerName)) {
             component = Component.translatable(
                     "Hello, %s!",
-                    Component.text(target.profile.getName()).color(bot.colorPalette.username)
-            ).color(NamedTextColor.GREEN);
+                    NamedTextColor.GREEN,
+                    Component.text(target.profile.getName(), bot.colorPalette.username)
+            );
         } else {
             final LocalDateTime now = LocalDateTime.now();
 
@@ -75,10 +73,11 @@ public class TrustedPlugin implements Listener {
                             Hello, %s!
                             Time: %s
                             Online players: %s""",
-                    Component.text(target.profile.getName()).color(bot.colorPalette.username),
-                    Component.text(formattedTime).color(bot.colorPalette.string),
-                    Component.text(bot.players.list.size()).color(bot.colorPalette.number)
-            ).color(NamedTextColor.GREEN);
+                    NamedTextColor.GREEN,
+                    Component.text(target.profile.getName(), bot.colorPalette.username),
+                    Component.text(formattedTime, bot.colorPalette.string),
+                    Component.text(bot.players.list.size(), bot.colorPalette.number)
+            );
         }
 
         bot.chat.tellraw(
