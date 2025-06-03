@@ -138,4 +138,16 @@ public class StringUtilities {
         }
         return result;
     }
+
+    // https://stackoverflow.com/questions/2282728/java-replacelast
+    public static String replaceLast (final String string, final String toReplace, final String replacement) {
+        final int pos = string.lastIndexOf(toReplace);
+        if (pos > -1) {
+            return string.substring(0, pos)
+                    + replacement
+                    + string.substring(pos + toReplace.length());
+        } else {
+            return string;
+        }
+    }
 }

@@ -123,13 +123,16 @@ public class ComponentUtilities {
         return guardedStringify(LEGACY_COMPONENT_SERIALIZER, message);
     }
 
-    public static String stringifyAnsi (final Component message) {
-        return guardedStringify(TRUE_COLOR_ANSI_SERIALIZER, message);
+    public static String stringifyAnsi (final Component message) { return stringifyAnsi(message, true); }
+    public static String stringifyAnsi (final Component message, final boolean resetEnd) {
+        return guardedStringify(TRUE_COLOR_ANSI_SERIALIZER, message) + (resetEnd ? "\u001b[0m" : "");
     }
 
-    public static String stringifyDiscordAnsi (final Component message) {
+    public static String stringifyDiscordAnsi (final Component message) { return stringifyDiscordAnsi(message, true); }
+    public static String stringifyDiscordAnsi (final Component message, final boolean resetEnd) {
         return guardedStringify(DISCORD_ANSI_SERIALIZER, message)
-                .replace("\u001b[9", "\u001b[3"); // we have to downscale because discord's ANSI doesn't have bright colors
+                .replace("\u001b[9", "\u001b[3") // we have to downscale because discord's ANSI doesn't have bright colors
+                + (resetEnd ? "\u001b[0m" : "");
     }
 
     public static String deserializeFromDiscordAnsi (final String original) {
@@ -168,14 +171,36 @@ public class ComponentUtilities {
         if (!shouldReplaceSectionSignsWithANSI || !content.contains("§")) {
             return component.content();
         } else {
-            // we deserialize then serialize again
-            final TextComponent deserialized = LEGACY_COMPONENT_SERIALIZER
-                    // prevents stack overflow since adventure seems to just ignore invalid codes
-                    .deserialize(content.replaceAll("§[^a-f0-9rlonmk]", ""));
+            // this area is pretty hacky !!! AdminEvil is in your walls while you are reading this
 
-            return isDiscord
-                    ? stringifyDiscordAnsi(deserialized)
-                    : stringifyAnsi(deserialized);
+            final String formatting = LEGACY_COMPONENT_SERIALIZER
+                    // we need to use " " instead of an empty string because adventure checks if the string is
+                    // empty using `isEmpty()`
+                    .serialize(component.content(" ").children(List.of()))
+                    .trim();
+
+            final TextComponent deserialized = LEGACY_COMPONENT_SERIALIZER
+                    .deserialize(
+                            content
+                                    // prevents stack overflow since adventure seems to just leave invalid codes
+                                    // this also prevents adventure from determining that it's their kyori format
+                                    // (with things like &#123456abc) and instead behaves like minecraft:
+                                    // §#123456abc -> 123456abc
+                                    .replaceAll("§[^a-f0-9rlonmk]", "")
+                                    // this is necessary since if you don't replace §r with the component formatting,
+                                    // adventure will just use the reset character, which makes the text white,
+                                    // and that's not what we want
+                                    .replace("§r", formatting)
+                    );
+
+            // goofy code
+            return StringUtilities.replaceLast(
+                    isDiscord
+                            ? stringifyDiscordAnsi(deserialized, false)
+                            : stringifyAnsi(deserialized, false),
+                    "\u001b[0m",
+                    ""
+            ) + mapText(Component.text(formatting), true, isDiscord);
         }
     }
 
