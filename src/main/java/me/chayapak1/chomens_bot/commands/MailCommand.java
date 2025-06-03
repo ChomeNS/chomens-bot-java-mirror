@@ -62,7 +62,7 @@ public class MailCommand extends Command {
 
                     context.sendOutput(Component.translatable("commands.mail.sent", bot.colorPalette.defaultColor));
                 } catch (final CommandException e) {
-                    context.sendOutput(e.message.color(NamedTextColor.RED));
+                    context.sendOutput(e.message.colorIfAbsent(NamedTextColor.RED));
                 }
             });
             case "sendselecteditem" -> {
@@ -93,11 +93,11 @@ public class MailCommand extends Command {
 
                                 context.sendOutput(Component.translatable("commands.mail.sent", bot.colorPalette.defaultColor));
                             } catch (final CommandException e) {
-                                context.sendOutput(e.message.color(NamedTextColor.RED));
+                                context.sendOutput(e.message.colorIfAbsent(NamedTextColor.RED));
                             }
                         });
                     } catch (final CommandException e) {
-                        context.sendOutput(e.message.color(NamedTextColor.RED));
+                        context.sendOutput(e.message.colorIfAbsent(NamedTextColor.RED));
                         return null;
                     }
 
@@ -137,6 +137,7 @@ public class MailCommand extends Command {
                         mailsComponent.add(
                                 Component.translatable(
                                         "commands.mail.read.mail_contents",
+                                        NamedTextColor.GREEN,
                                         Component.text(count, bot.colorPalette.number),
                                         Component.text("-", NamedTextColor.DARK_GRAY),
 
@@ -154,17 +155,17 @@ public class MailCommand extends Command {
                                                         )
                                                 ),
                                         Component.text(mail.contents(), NamedTextColor.WHITE)
-                                ).color(NamedTextColor.GREEN)
+                                )
                         );
 
                         count++;
                     }
 
                     final Component component = Component.empty()
-                            .append(Component.translatable("commands.mail.read.mails_text").color(NamedTextColor.GREEN))
-                            .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
-                            .append(Component.text(tempFinalSenderMailSize).color(NamedTextColor.GRAY))
-                            .append(Component.text(")").color(NamedTextColor.DARK_GRAY))
+                            .append(Component.translatable("commands.mail.read.mails_text", NamedTextColor.GREEN))
+                            .append(Component.text("(", NamedTextColor.DARK_GRAY))
+                            .append(Component.text(tempFinalSenderMailSize, NamedTextColor.GRAY))
+                            .append(Component.text(")", NamedTextColor.DARK_GRAY))
                             .append(Component.newline())
                             .append(Component.join(JoinConfiguration.newlines(), mailsComponent));
 

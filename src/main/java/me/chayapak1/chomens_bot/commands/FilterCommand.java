@@ -82,14 +82,14 @@ public class FilterCommand extends Command {
                     return Component.translatable(
                             "commands.filter.add.no_reason",
                             bot.colorPalette.defaultColor,
-                            Component.text(player).color(bot.colorPalette.username)
+                            Component.text(player, bot.colorPalette.username)
                     );
                 } else {
                     return Component.translatable(
                             "commands.filter.add.reason",
                             bot.colorPalette.defaultColor,
-                            Component.text(player).color(bot.colorPalette.username),
-                            Component.text(reason).color(bot.colorPalette.string)
+                            Component.text(player, bot.colorPalette.username),
+                            Component.text(reason, bot.colorPalette.string)
                     );
                 }
             }
@@ -114,7 +114,7 @@ public class FilterCommand extends Command {
                 context.checkOverloadArgs(1);
 
                 DatabasePlugin.EXECUTOR_SERVICE.execute(bot.playerFilter::clear);
-                return Component.translatable("commands.filter.clear.output").color(bot.colorPalette.defaultColor);
+                return Component.translatable("commands.filter.clear.output", bot.colorPalette.defaultColor);
             }
             case "list" -> {
                 context.checkOverloadArgs(1);
@@ -161,10 +161,11 @@ public class FilterCommand extends Command {
                     filtersComponents.add(
                             Component.translatable(
                                     "%s › %s %s",
-                                    Component.text(index).color(bot.colorPalette.number),
-                                    Component.text(player.playerName()).color(bot.colorPalette.username),
+                                    NamedTextColor.DARK_GRAY,
+                                    Component.text(index, bot.colorPalette.number),
+                                    Component.text(player.playerName(), bot.colorPalette.username),
                                     options
-                            ).color(NamedTextColor.DARK_GRAY)
+                            )
                     );
 
                     index++;

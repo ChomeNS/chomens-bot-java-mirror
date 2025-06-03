@@ -51,9 +51,9 @@ public class CloopCommand extends Command {
                 return Component.translatable(
                         "commands.cloop.add.output",
                         bot.colorPalette.defaultColor,
-                        Component.text(command).color(bot.colorPalette.string),
-                        Component.text(interval).color(bot.colorPalette.number),
-                        Component.text(unit.toString()).color(bot.colorPalette.string)
+                        Component.text(command, bot.colorPalette.string),
+                        Component.text(interval, bot.colorPalette.number),
+                        Component.text(unit.toString(), bot.colorPalette.string)
                 );
             }
             case "remove" -> {
@@ -66,8 +66,9 @@ public class CloopCommand extends Command {
 
                     return Component.translatable(
                             "commands.cloop.remove.output",
-                            Component.text(cloop.command()).color(bot.colorPalette.string)
-                    ).color(bot.colorPalette.defaultColor);
+                            bot.colorPalette.defaultColor,
+                            Component.text(cloop.command(), bot.colorPalette.string)
+                    );
                 } catch (final IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ignored) {
                     throw new CommandException(Component.translatable("commands.generic.error.invalid_index"));
                 }
@@ -88,20 +89,21 @@ public class CloopCommand extends Command {
                     cloopsComponent.add(
                             Component.translatable(
                                     "%s › %s (%s %s)",
-                                    Component.text(index).color(bot.colorPalette.number),
-                                    Component.text(command.command()).color(bot.colorPalette.string),
-                                    Component.text(command.interval()).color(bot.colorPalette.number),
-                                    Component.text(command.unit().toString()).color(bot.colorPalette.string)
-                            ).color(NamedTextColor.DARK_GRAY)
+                                    NamedTextColor.DARK_GRAY,
+                                    Component.text(index, bot.colorPalette.number),
+                                    Component.text(command.command(), bot.colorPalette.string),
+                                    Component.text(command.interval(), bot.colorPalette.number),
+                                    Component.text(command.unit().toString(), bot.colorPalette.string)
+                            )
                     );
                     index++;
                 }
 
                 return Component.empty()
-                        .append(Component.translatable("commands.cloop.list.cloops_text").color(NamedTextColor.GREEN))
-                        .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
-                        .append(Component.text(bot.cloop.loops.size()).color(NamedTextColor.GRAY))
-                        .append(Component.text(")").color(NamedTextColor.DARK_GRAY))
+                        .append(Component.translatable("commands.cloop.list.cloops_text", NamedTextColor.GREEN))
+                        .append(Component.text("(", NamedTextColor.DARK_GRAY))
+                        .append(Component.text(bot.cloop.loops.size(), NamedTextColor.GRAY))
+                        .append(Component.text(")", NamedTextColor.DARK_GRAY))
                         .append(Component.newline())
                         .append(
                                 Component.join(JoinConfiguration.newlines(), cloopsComponent)

@@ -110,8 +110,8 @@ public class GrepLogPlugin {
                         final Component component = Component.translatable("commands.greplog.found")
                                 .color(bot.colorPalette.defaultColor)
                                 .arguments(
-                                        Component.text(formatter.format(matches)).color(bot.colorPalette.number),
-                                        Component.text(input).color(bot.colorPalette.string),
+                                        Component.text(formatter.format(matches), bot.colorPalette.number),
+                                        Component.text(input, bot.colorPalette.string),
                                         Component
                                                 .translatable("commands.greplog.here")
                                                 .color(NamedTextColor.GREEN)

@@ -62,11 +62,12 @@ public class MailPlugin implements Listener {
                 final Component component = Component.translatable(
                         "You have %s new mail%s!\n" +
                                 "Run %s or %s to read",
-                        Component.text(sendToTargetSize).color(NamedTextColor.GREEN),
+                        NamedTextColor.GOLD,
+                        Component.text(sendToTargetSize, NamedTextColor.GREEN),
                         Component.text((sendToTargetSize > 1) ? "s" : ""),
-                        Component.text(bot.config.commandSpyPrefixes.getFirst() + "mail read").color(bot.colorPalette.primary),
-                        Component.text(bot.config.prefixes.getFirst() + "mail read").color(bot.colorPalette.primary)
-                ).color(NamedTextColor.GOLD);
+                        Component.text(bot.config.commandSpyPrefixes.getFirst() + "mail read", bot.colorPalette.primary),
+                        Component.text(bot.config.prefixes.getFirst() + "mail read", bot.colorPalette.primary)
+                );
 
                 bot.chat.tellraw(component, target.profile.getId());
             }

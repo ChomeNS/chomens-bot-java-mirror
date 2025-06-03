@@ -12,9 +12,9 @@ import java.util.Map;
 
 public enum TrustLevel {
     PUBLIC(0, Component.text(I18nUtilities.get("trust_level.public"), NamedTextColor.GREEN)),
-    TRUSTED(1, Component.text(I18nUtilities.get("trust_level.trusted")).color(NamedTextColor.RED)),
-    ADMIN(2, Component.text(I18nUtilities.get("trust_level.admin")).color(NamedTextColor.DARK_RED)),
-    OWNER(3, Component.text(I18nUtilities.get("trust_level.owner")).color(NamedTextColor.LIGHT_PURPLE));
+    TRUSTED(1, Component.text(I18nUtilities.get("trust_level.trusted"), NamedTextColor.RED)),
+    ADMIN(2, Component.text(I18nUtilities.get("trust_level.admin"), NamedTextColor.DARK_RED)),
+    OWNER(3, Component.text(I18nUtilities.get("trust_level.owner"), NamedTextColor.LIGHT_PURPLE));
 
     public static final TrustLevel MAX = values()[values().length - 1];
 

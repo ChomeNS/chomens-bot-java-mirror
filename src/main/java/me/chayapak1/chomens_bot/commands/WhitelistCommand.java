@@ -86,19 +86,20 @@ public class WhitelistCommand extends Command {
                     playersComponent.add(
                             Component.translatable(
                                     "%s › %s",
-                                    Component.text(index).color(bot.colorPalette.number),
-                                    Component.text(player).color(bot.colorPalette.username)
-                            ).color(NamedTextColor.DARK_GRAY)
+                                    NamedTextColor.DARK_GRAY,
+                                    Component.text(index, bot.colorPalette.number),
+                                    Component.text(player, bot.colorPalette.username)
+                            )
                     );
 
                     index++;
                 }
 
                 return Component.empty()
-                        .append(Component.translatable("commands.whitelist.whitelisted_players_text").color(NamedTextColor.GREEN))
-                        .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
-                        .append(Component.text(bot.whitelist.list.size()).color(NamedTextColor.GRAY))
-                        .append(Component.text(")").color(NamedTextColor.DARK_GRAY))
+                        .append(Component.translatable("commands.whitelist.whitelisted_players_text", NamedTextColor.GREEN))
+                        .append(Component.text("(", NamedTextColor.DARK_GRAY))
+                        .append(Component.text(bot.whitelist.list.size(), NamedTextColor.GRAY))
+                        .append(Component.text(")", NamedTextColor.DARK_GRAY))
                         .append(Component.newline())
                         .append(
                                 Component.join(JoinConfiguration.newlines(), playersComponent)

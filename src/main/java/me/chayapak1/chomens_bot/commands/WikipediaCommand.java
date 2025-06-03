@@ -114,16 +114,16 @@ public class WikipediaCommand extends Command {
                                         )
                         )
                         .append(Component.newline())
-                        .append(Component.text(extracted).color(NamedTextColor.GREEN));
+                        .append(Component.text(extracted, NamedTextColor.GREEN));
 
                 context.sendOutput(component);
             } catch (final NumberFormatException e) {
-                context.sendOutput(Component.translatable("commands.wikipedia.error.fail_page_id_parse").color(NamedTextColor.RED));
+                context.sendOutput(Component.translatable("commands.wikipedia.error.fail_page_id_parse", NamedTextColor.RED));
                 bot.logger.error(e);
             } catch (final CommandException e) {
                 context.sendOutput(e.message.color(NamedTextColor.RED));
             } catch (final Exception e) {
-                context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
+                context.sendOutput(Component.text(e.toString(), NamedTextColor.RED));
             }
         });
 

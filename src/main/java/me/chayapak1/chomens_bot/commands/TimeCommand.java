@@ -39,8 +39,8 @@ public class TimeCommand extends Command {
             return Component.translatable(
                     "commands.time.output",
                     bot.colorPalette.defaultColor,
-                    Component.text(timezone).color(bot.colorPalette.string),
-                    Component.text(formattedTime).color(NamedTextColor.GREEN)
+                    Component.text(timezone, bot.colorPalette.string),
+                    Component.text(formattedTime, NamedTextColor.GREEN)
             );
         } catch (final DateTimeException e) {
             throw new CommandException(Component.translatable("commands.time.error.invalid_timezone"));

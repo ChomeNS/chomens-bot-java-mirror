@@ -19,20 +19,22 @@ public class LoggerUtilities {
         if (bot != null) {
             component = Component.translatable(
                     "[%s %s] [%s] [%s] %s",
-                    Component.text(dateTime.format(dateTimeFormatter)).color(NamedTextColor.GRAY),
+                    NamedTextColor.DARK_GRAY,
+                    Component.text(dateTime.format(dateTimeFormatter), NamedTextColor.GRAY),
                     prefix,
-                    Component.text(Thread.currentThread().getName()).color(NamedTextColor.GRAY),
-                    Component.text(bot.options.serverName).color(NamedTextColor.GRAY),
-                    Component.empty().append(message).color(NamedTextColor.WHITE)
-            ).color(NamedTextColor.DARK_GRAY);
+                    Component.text(Thread.currentThread().getName(), NamedTextColor.GRAY),
+                    Component.text(bot.options.serverName, NamedTextColor.GRAY),
+                    Component.empty().append(message.colorIfAbsent(NamedTextColor.WHITE))
+            );
         } else {
             component = Component.translatable(
                     "[%s %s] [%s] %s",
-                    Component.text(dateTime.format(dateTimeFormatter)).color(NamedTextColor.GRAY),
+                    NamedTextColor.DARK_GRAY,
+                    Component.text(dateTime.format(dateTimeFormatter), NamedTextColor.GRAY),
                     prefix,
-                    Component.text(Thread.currentThread().getName()).color(NamedTextColor.GRAY),
-                    Component.empty().append(message).color(NamedTextColor.WHITE)
-            ).color(NamedTextColor.DARK_GRAY);
+                    Component.text(Thread.currentThread().getName(), NamedTextColor.GRAY),
+                    Component.empty().append(message.colorIfAbsent(NamedTextColor.WHITE))
+            );
         }
 
         return component;

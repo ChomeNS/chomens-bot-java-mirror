@@ -57,11 +57,11 @@ public class DiscordPlugin {
         this.serverId = config.discord.serverId;
         this.discordUrl = config.discord.inviteLink;
         this.messagePrefix = Component.empty()
-                .append(Component.text("ChomeNS ").color(NamedTextColor.YELLOW))
-                .append(Component.text("Discord").color(NamedTextColor.BLUE))
+                .append(Component.text("ChomeNS ", NamedTextColor.YELLOW))
+                .append(Component.text("Discord", NamedTextColor.BLUE))
                 .hoverEvent(
                         HoverEvent.showText(
-                                Component.text("Click here to join the Discord server").color(NamedTextColor.GREEN)
+                                Component.text("Click here to join the Discord server", NamedTextColor.GREEN)
                         )
                 )
                 .clickEvent(ClickEvent.openUrl(discordUrl));

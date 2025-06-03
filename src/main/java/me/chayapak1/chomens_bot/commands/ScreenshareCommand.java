@@ -67,7 +67,7 @@ public class ScreenshareCommand extends Command {
 
                     return Component
                             .text("Set the resolution to ")
-                            .append(Component.text(width + "x" + height).color(bot.colorPalette.string))
+                            .append(Component.text(width + "x" + height, bot.colorPalette.string))
                             .color(bot.colorPalette.defaultColor);
                 }
                 case "setfps" -> {
@@ -79,7 +79,7 @@ public class ScreenshareCommand extends Command {
 
                     return Component
                             .text("Set the FPS to ")
-                            .append(Component.text(fps).color(bot.colorPalette.number))
+                            .append(Component.text(fps, bot.colorPalette.number))
                             .color(bot.colorPalette.defaultColor);
                 }
                 default -> throw new CommandException(Component.translatable("commands.generic.error.invalid_action"));

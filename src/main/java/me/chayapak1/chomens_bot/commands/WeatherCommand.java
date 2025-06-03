@@ -49,8 +49,8 @@ public class WeatherCommand extends Command {
             return Component.translatable(
                     "commands.weather.info",
                     bot.colorPalette.defaultColor,
-                    Component.text(jsonObject.get("location").getAsJsonObject().get("name").getAsString()).color(bot.colorPalette.string),
-                    Component.text(jsonObject.get("location").getAsJsonObject().get("country").getAsString()).color(bot.colorPalette.string),
+                    Component.text(jsonObject.get("location").getAsJsonObject().get("name").getAsString(), bot.colorPalette.string),
+                    Component.text(jsonObject.get("location").getAsJsonObject().get("country").getAsString(), bot.colorPalette.string),
                     Component
                             .empty()
                             .append(

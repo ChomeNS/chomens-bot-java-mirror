@@ -80,9 +80,10 @@ public class TPSPlugin implements Listener {
 
             final Component component = Component.translatable(
                     "%s - %s",
-                    Component.text("TPS").color(NamedTextColor.GRAY),
-                    Component.text(formatter.format(tickRate)).color(getColor(tickRate))
-            ).color(NamedTextColor.DARK_GRAY);
+                    NamedTextColor.DARK_GRAY,
+                    Component.text("TPS", NamedTextColor.GRAY),
+                    Component.text(formatter.format(tickRate), getColor(tickRate))
+            );
 
             final BotBossBar bossBar = bot.bossbar.get(bossbarName);
 

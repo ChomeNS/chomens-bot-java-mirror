@@ -102,8 +102,8 @@ public class ConsoleCommand extends Command {
                         "commands.console.logtoconsole.set",
                         bot.colorPalette.defaultColor,
                         bool
-                                ? Component.translatable("commands.generic.enabled").color(NamedTextColor.GREEN)
-                                : Component.translatable("commands.generic.disabled").color(NamedTextColor.RED)
+                                ? Component.translatable("commands.generic.enabled", NamedTextColor.GREEN)
+                                : Component.translatable("commands.generic.disabled", NamedTextColor.RED)
                 );
             }
             case "printdisconnectedreason" -> {
@@ -117,8 +117,8 @@ public class ConsoleCommand extends Command {
                         "commands.console.printdisconnectedreason.set",
                         bot.colorPalette.defaultColor,
                         bool
-                                ? Component.translatable("commands.generic.enabled").color(NamedTextColor.GREEN)
-                                : Component.translatable("commands.generic.disabled").color(NamedTextColor.RED)
+                                ? Component.translatable("commands.generic.enabled", NamedTextColor.GREEN)
+                                : Component.translatable("commands.generic.disabled", NamedTextColor.RED)
                 );
             }
         }

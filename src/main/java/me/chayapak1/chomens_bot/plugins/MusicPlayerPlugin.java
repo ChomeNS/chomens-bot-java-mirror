@@ -159,7 +159,7 @@ public class MusicPlayerPlugin implements Listener {
                         Component.translatable(
                                 "commands.music.nowplaying",
                                 bot.colorPalette.defaultColor,
-                                Component.empty().append(Component.text(currentSong.name)).color(bot.colorPalette.secondary)
+                                Component.empty().append(Component.text(currentSong.name, bot.colorPalette.secondary))
                         )
                 );
                 currentSong.play();
@@ -197,7 +197,7 @@ public class MusicPlayerPlugin implements Listener {
                         Component.translatable(
                                 "commands.music.finished",
                                 bot.colorPalette.defaultColor,
-                                Component.empty().append(Component.text(currentSong.name)).color(bot.colorPalette.secondary)
+                                Component.empty().append(Component.text(currentSong.name, bot.colorPalette.secondary))
                         )
                 );
 
@@ -329,30 +329,34 @@ public class MusicPlayerPlugin implements Listener {
         }
 
         Component component = Component.empty()
-                .append(Component.empty().append(Component.text(currentSong.name)).color(nameColor))
-                .append(Component.text(" | ").color(NamedTextColor.DARK_GRAY))
+                .append(Component.empty().append(Component.text(currentSong.name, nameColor)))
+                .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
                 .append(
                         Component
-                                .translatable("%s / %s",
-                                              formatTime((long) (currentSong.time / speed)).color(NamedTextColor.GRAY),
-                                              formatTime((long) (currentSong.length / speed)).color(NamedTextColor.GRAY)).color(NamedTextColor.DARK_GRAY)
+                                .translatable(
+                                        "%s / %s",
+                                        NamedTextColor.DARK_GRAY,
+                                        formatTime((long) (currentSong.time / speed)).colorIfAbsent(NamedTextColor.GRAY),
+                                        formatTime((long) (currentSong.length / speed)).colorIfAbsent(NamedTextColor.GRAY)
+                                )
                 );
 
         if (!bot.core.hasRateLimit()) {
             component = component
-                    .append(Component.text(" | ").color(NamedTextColor.DARK_GRAY))
+                    .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
                     .append(
                             Component.translatable(
                                     "%s / %s",
+                                    NamedTextColor.DARK_GRAY,
                                     Component.text(FORMATTER.format(currentSong.position), NamedTextColor.GRAY),
                                     Component.text(FORMATTER.format(currentSong.size()), NamedTextColor.GRAY)
-                            ).color(NamedTextColor.DARK_GRAY)
+                            )
                     );
 
             if (!currentLyrics.isBlank()) {
                 component = component
                         .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
-                        .append(Component.text(currentLyrics).color(NamedTextColor.BLUE));
+                        .append(Component.text(currentLyrics, NamedTextColor.BLUE));
             }
         }
 

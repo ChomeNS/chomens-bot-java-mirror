@@ -159,9 +159,10 @@ public class UrbanCommand extends Command {
                                 .append(
                                         Component.translatable(
                                                 "%s - %s",
-                                                Component.text(word).color(NamedTextColor.GRAY),
+                                                NamedTextColor.DARK_GRAY,
+                                                Component.text(word, NamedTextColor.GRAY),
                                                 definitionComponent
-                                        ).color(NamedTextColor.DARK_GRAY)
+                                        )
                                 )
                                 .append(Component.newline());
 
@@ -169,10 +170,11 @@ public class UrbanCommand extends Command {
                     } else {
                         final Component component = Component.translatable(
                                 "[%s] %s - %s",
-                                Component.text(index).color(NamedTextColor.GREEN),
-                                Component.text(word).color(NamedTextColor.GRAY),
+                                NamedTextColor.DARK_GRAY,
+                                Component.text(index, NamedTextColor.GREEN),
+                                Component.text(word, NamedTextColor.GRAY),
                                 definitionComponent
-                        ).color(NamedTextColor.DARK_GRAY);
+                        );
 
                         context.sendOutput(component);
                     }
@@ -183,7 +185,7 @@ public class UrbanCommand extends Command {
                 if (discord && !list.isEmpty()) context.sendOutput(discordComponent);
             } catch (final Exception e) {
                 bot.logger.error(e);
-                context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
+                context.sendOutput(Component.text(e.toString(), NamedTextColor.RED));
             }
         });
 

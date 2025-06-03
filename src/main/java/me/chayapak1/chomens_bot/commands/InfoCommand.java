@@ -85,9 +85,8 @@ public class InfoCommand extends Command {
                         "commands.info.discord.output",
                         bot.colorPalette.defaultColor,
                         Component
-                                .text(link)
+                                .text(link, NamedTextColor.BLUE)
                                 .clickEvent(ClickEvent.openUrl(link))
-                                .color(NamedTextColor.BLUE)
                 );
             }
             case "server" -> {
@@ -128,8 +127,8 @@ public class InfoCommand extends Command {
                         .filter(line -> line.startsWith("model name"))
                         .findFirst();
                 final Component cpuModel = modelName
-                        .map(s -> Component.text(s.split("\t: ")[1]).color(color))
-                        .orElseGet(() -> Component.text("N/A").color(color));
+                        .map(s -> Component.text(s.split("\t: ")[1], color))
+                        .orElseGet(() -> Component.text("N/A", color));
 
                 InetAddress localHost = null;
 
@@ -140,26 +139,28 @@ public class InfoCommand extends Command {
                 component = Component.translatable(
                         "commands.info.server.output",
                         bot.colorPalette.secondary,
-                        Component.text(localHost == null ? "N/A" : localHost.getHostName()).color(color),
-                        Component.text(System.getProperty("user.dir")).color(color),
-                        Component.text(os.getArch()).color(color),
-                        Component.text(os.getVersion()).color(color),
-                        Component.text(os.getName()).color(color),
-                        Component.text(String.valueOf(Runtime.getRuntime().availableProcessors())).color(color),
+                        Component.text(localHost == null ? "N/A" : localHost.getHostName(), color),
+                        Component.text(System.getProperty("user.dir"), color),
+                        Component.text(os.getArch(), color),
+                        Component.text(os.getVersion(), color),
+                        Component.text(os.getName(), color),
+                        Component.text(String.valueOf(Runtime.getRuntime().availableProcessors()), color),
                         cpuModel,
-                        Component.text(String.valueOf(Thread.activeCount())).color(color),
+                        Component.text(String.valueOf(Thread.activeCount()), color),
                         Component
                                 .translatable(
                                         "%s MB / %s MB",
+                                        color,
                                         Component.text(heapUsage.getUsed() / 1024L / 1024L),
                                         Component.text(heapUsage.getMax() / 1024L / 1024L)
-                                ).color(color),
+                                ),
                         Component
                                 .translatable(
                                         "%s MB / %s MB",
+                                        color,
                                         Component.text((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024L / 1024L),
                                         Component.text(Runtime.getRuntime().totalMemory() / 1024L / 1024L)
-                                ).color(color)
+                                )
                 );
 
                 return component;
@@ -247,7 +248,7 @@ public class InfoCommand extends Command {
                         .translatable(
                                 "commands.info.default.main_output",
                                 bot.colorPalette.defaultColor,
-                                Component.text("ChomeNS Bot").color(NamedTextColor.YELLOW),
+                                Component.text("ChomeNS Bot", NamedTextColor.YELLOW),
                                 Component
                                         .text("Kaboom")
                                         .style(

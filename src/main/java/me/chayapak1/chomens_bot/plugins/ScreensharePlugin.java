@@ -132,7 +132,7 @@ public class ScreensharePlugin {
                 Component name = Component.empty();
 
                 for (int x = 0; x < width; x++) {
-                    final Component pixel = Component.text("█").color(TextColor.fromHexString(screen[x][y]));
+                    final Component pixel = Component.text("█", TextColor.fromHexString(screen[x][y]));
 
                     name = name.append(pixel);
                 }

@@ -71,7 +71,7 @@ public class TranslateCommand extends Command {
                                 )
                 );
             } catch (final Exception e) {
-                context.sendOutput(Component.text(e.toString()).color(NamedTextColor.RED));
+                context.sendOutput(Component.text(e.toString(), NamedTextColor.RED));
             }
         });
 

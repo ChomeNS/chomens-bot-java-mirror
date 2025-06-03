@@ -52,7 +52,7 @@ public class ListCommand extends Command {
             final Component hoverEvent = Component
                     .text(entry.profile.getName())
                     .append(Component.newline())
-                    .append(Component.text(entry.profile.getIdAsString()).color(bot.colorPalette.uuid))
+                    .append(Component.text(entry.profile.getIdAsString(), bot.colorPalette.uuid))
                     .append(Component.newline())
                     .append(Component.newline())
                     .append(
@@ -139,10 +139,10 @@ public class ListCommand extends Command {
         }
 
         return Component.empty()
-                .append(Component.translatable("commands.list.players_text").color(NamedTextColor.GREEN))
-                .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
-                .append(Component.text(list.size()).color(NamedTextColor.GRAY))
-                .append(Component.text(")").color(NamedTextColor.DARK_GRAY))
+                .append(Component.translatable("commands.list.players_text", NamedTextColor.GREEN))
+                .append(Component.text("(", NamedTextColor.DARK_GRAY))
+                .append(Component.text(list.size(), NamedTextColor.GRAY))
+                .append(Component.text(")", NamedTextColor.DARK_GRAY))
                 .append(Component.newline())
                 .append(
                         Component.join(JoinConfiguration.newlines(), playersComponent)

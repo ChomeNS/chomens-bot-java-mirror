@@ -43,7 +43,7 @@ public class GrepLogCommand extends Command {
 
             thread = null;
 
-            return Component.translatable("commands.greplog.stopped").color(bot.colorPalette.defaultColor);
+            return Component.translatable("commands.greplog.stopped", bot.colorPalette.defaultColor);
         }
 
         if (thread != null) throw new CommandException(Component.translatable("commands.greplog.error.already_running"));

@@ -81,23 +81,23 @@ public class GuildMessageEventHandler extends ListenerAdapter {
                 for (final MessageSnapshot snapshot : messageObject.getMessageSnapshots()) {
                     final Component messageComponent = getForwardedMessageComponent(bot, snapshot);
 
-                    output = Component
-                            .translatable(
-                                    "[%s] %s › %s",
-                                    this.messagePrefix,
-                                    Component
-                                            .translatable(
-                                                    "%s forwarded",
-                                                    Component.text(
-                                                            messageObject.getMember() == null ?
-                                                                    messageObject.getAuthor().getName() :
-                                                                    messageObject.getMember().getEffectiveName()
-                                                    ).color(NamedTextColor.RED)
+                    output = Component.translatable(
+                            "[%s] %s › %s",
+                            NamedTextColor.DARK_GRAY,
+                            this.messagePrefix,
+                            Component
+                                    .translatable(
+                                            "%s forwarded",
+                                            NamedTextColor.GRAY,
+                                            Component.text(
+                                                    messageObject.getMember() == null ?
+                                                            messageObject.getAuthor().getName() :
+                                                            messageObject.getMember().getEffectiveName(),
+                                                    NamedTextColor.RED
                                             )
-                                            .color(NamedTextColor.GRAY),
-                                    messageComponent.color(NamedTextColor.GRAY)
-                            )
-                            .color(NamedTextColor.DARK_GRAY);
+                                    ),
+                            messageComponent.color(NamedTextColor.GRAY)
+                    );
                 }
             } else {
                 final Message reference = event.getMessage().getReferencedMessage();
@@ -106,7 +106,7 @@ public class GuildMessageEventHandler extends ListenerAdapter {
                     output = output
                             .append(
                                     Component.empty()
-                                            .append(Component.text("Replying to ").color(NamedTextColor.GRAY))
+                                            .append(Component.text("Replying to ", NamedTextColor.GRAY))
                                             .append(getMessageComponent(bot, reference))
                                             .decorate(TextDecoration.ITALIC)
                             )
@@ -175,7 +175,7 @@ public class GuildMessageEventHandler extends ListenerAdapter {
         Component rolesComponent = Component.empty();
         if (!roles.isEmpty()) {
             rolesComponent = rolesComponent
-                    .append(Component.text("Roles:").color(NamedTextColor.GRAY))
+                    .append(Component.text("Roles:", NamedTextColor.GRAY))
                     .append(Component.newline());
 
             final List<Component> rolesList = new ArrayList<>();
@@ -200,7 +200,7 @@ public class GuildMessageEventHandler extends ListenerAdapter {
 
             rolesComponent = rolesComponent.append(Component.join(JoinConfiguration.newlines(), rolesList));
         } else {
-            rolesComponent = rolesComponent.append(Component.text("No roles").color(NamedTextColor.GRAY));
+            rolesComponent = rolesComponent.append(Component.text("No roles", NamedTextColor.GRAY));
         }
 
         Component nameComponent = Component
@@ -214,10 +214,11 @@ public class GuildMessageEventHandler extends ListenerAdapter {
                                                 %s
                                                 
                                                 %s""",
-                                        Component.text(username).color(NamedTextColor.WHITE),
+                                        NamedTextColor.DARK_GRAY,
+                                        Component.text(username, NamedTextColor.WHITE),
                                         rolesComponent,
-                                        Component.text("Click here to copy the tag to your clipboard").color(NamedTextColor.GREEN)
-                                ).color(NamedTextColor.DARK_GRAY)
+                                        Component.text("Click here to copy the tag to your clipboard", NamedTextColor.GREEN)
+                                )
                         )
                 );
 
@@ -273,10 +274,11 @@ public class GuildMessageEventHandler extends ListenerAdapter {
 
         return Component.translatable(
                 "[%s] %s › %s",
+                NamedTextColor.DARK_GRAY,
                 messagePrefix,
                 nameComponent,
                 messageComponent
-        ).color(NamedTextColor.DARK_GRAY);
+        );
     }
 
     private String replaceMessageContent (final String content) {
@@ -327,11 +329,11 @@ public class GuildMessageEventHandler extends ListenerAdapter {
                             %s""",
                     NamedTextColor.GREEN,
                     embed.getTitle() == null ?
-                            Component.text("No title").color(NamedTextColor.GRAY) :
-                            Component.text(embed.getTitle()).color(bot.colorPalette.string),
+                            Component.text("No title", NamedTextColor.GRAY) :
+                            Component.text(embed.getTitle(), bot.colorPalette.string),
                     embed.getDescription() == null ?
-                            Component.text("No description").color(NamedTextColor.GRAY) :
-                            Component.text(ComponentUtilities.deserializeFromDiscordAnsi(embed.getDescription())).color(NamedTextColor.WHITE)
+                            Component.text("No description", NamedTextColor.GRAY) :
+                            Component.text(ComponentUtilities.deserializeFromDiscordAnsi(embed.getDescription()), NamedTextColor.WHITE)
             );
 
             extraComponents.add(

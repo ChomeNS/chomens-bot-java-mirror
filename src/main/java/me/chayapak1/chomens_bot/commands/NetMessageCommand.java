@@ -44,7 +44,7 @@ public class NetMessageCommand extends Command {
                 .hoverEvent(
                         HoverEvent.showText(
                                 Component.empty()
-                                        .append(Component.text(originServerAddress).color(NamedTextColor.GRAY))
+                                        .append(Component.text(originServerAddress, NamedTextColor.GRAY))
                                         .append(Component.newline())
                                         .append(Component.translatable("commands.netmsg.hover.copy_server_to_clipboard", NamedTextColor.GREEN))
                         )
@@ -60,7 +60,7 @@ public class NetMessageCommand extends Command {
                 serverNameComponent,
                 Component.space(),
                 context.sender.displayName == null ?
-                        Component.text(context.sender.profile.getName()).color(NamedTextColor.GRAY) :
+                        Component.text(context.sender.profile.getName(), NamedTextColor.GRAY) :
                         context.sender.displayName.color(NamedTextColor.GRAY),
                 Component.space(),
                 Component.empty()

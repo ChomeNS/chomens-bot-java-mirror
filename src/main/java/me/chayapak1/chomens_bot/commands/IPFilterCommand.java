@@ -57,14 +57,14 @@ public class IPFilterCommand extends Command {
                     return Component.translatable(
                             "commands.filter.add.no_reason",
                             bot.colorPalette.defaultColor,
-                            Component.text(ip).color(bot.colorPalette.username)
+                            Component.text(ip, bot.colorPalette.username)
                     );
                 } else {
                     return Component.translatable(
                             "commands.filter.add.reason",
                             bot.colorPalette.defaultColor,
-                            Component.text(ip).color(bot.colorPalette.username),
-                            Component.text(reason).color(bot.colorPalette.string)
+                            Component.text(ip, bot.colorPalette.username),
+                            Component.text(reason, bot.colorPalette.string)
                     );
                 }
             }
@@ -89,7 +89,7 @@ public class IPFilterCommand extends Command {
                 context.checkOverloadArgs(1);
 
                 DatabasePlugin.EXECUTOR_SERVICE.execute(bot.ipFilter::clear);
-                return Component.translatable("commands.ipfilter.clear.output").color(bot.colorPalette.defaultColor);
+                return Component.translatable("commands.ipfilter.clear.output", bot.colorPalette.defaultColor);
             }
             case "list" -> {
                 context.checkOverloadArgs(1);
@@ -119,10 +119,11 @@ public class IPFilterCommand extends Command {
                     filtersComponents.add(
                             Component.translatable(
                                     "%s › %s %s",
-                                    Component.text(index).color(bot.colorPalette.number),
-                                    Component.text(ip).color(bot.colorPalette.username),
+                                    NamedTextColor.DARK_GRAY,
+                                    Component.text(index, bot.colorPalette.number),
+                                    Component.text(ip, bot.colorPalette.username),
                                     reasonComponent
-                            ).color(NamedTextColor.DARK_GRAY)
+                            )
                     );
 
                     index++;

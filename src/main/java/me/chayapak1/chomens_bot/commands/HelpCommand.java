@@ -56,13 +56,13 @@ public class HelpCommand extends Command {
         );
 
         return Component.empty()
-                .append(Component.translatable("commands.help.commands_text").color(NamedTextColor.GRAY))
-                .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
-                .append(Component.text(list.size()).color(NamedTextColor.GREEN))
-                .append(Component.text(") ").color(NamedTextColor.DARK_GRAY))
-                .append(Component.text("(").color(NamedTextColor.DARK_GRAY))
+                .append(Component.translatable("commands.help.commands_text", NamedTextColor.GRAY))
+                .append(Component.text("(", NamedTextColor.DARK_GRAY))
+                .append(Component.text(list.size(), NamedTextColor.GREEN))
+                .append(Component.text(") ", NamedTextColor.DARK_GRAY))
+                .append(Component.text("(", NamedTextColor.DARK_GRAY))
                 .append(Component.translatable("%s", trustLevels))
-                .append(Component.text(") - ").color(NamedTextColor.DARK_GRAY))
+                .append(Component.text(") - ", NamedTextColor.DARK_GRAY))
                 .append(Component.join(JoinConfiguration.separator(Component.space()), list));
     }
 
@@ -142,7 +142,7 @@ public class HelpCommand extends Command {
             usages.add(
                     Component.empty()
                             .color(NamedTextColor.GRAY)
-                            .append(Component.text(prefix + actualCommandName).color(bot.colorPalette.secondary))
+                            .append(Component.text(prefix + actualCommandName, bot.colorPalette.secondary))
                             .append(
                                     Component
                                             .text(
@@ -165,7 +165,7 @@ public class HelpCommand extends Command {
 
             usages.add(
                     Component.empty()
-                            .append(Component.translatable("commands.help.trust_level").color(NamedTextColor.GREEN))
+                            .append(Component.translatable("commands.help.trust_level", NamedTextColor.GREEN))
                             .append(
                                     command.trustLevel.component
                                             .append(Component.text(" - "))
@@ -175,10 +175,10 @@ public class HelpCommand extends Command {
 
             for (final String usage : command.usages) {
                 Component usageComponent = Component.empty()
-                        .append(Component.text(prefix + actualCommandName).color(bot.colorPalette.secondary))
+                        .append(Component.text(prefix + actualCommandName, bot.colorPalette.secondary))
                         .append(Component.text(" "));
 
-                usageComponent = usageComponent.append(Component.text(usage).color(bot.colorPalette.string));
+                usageComponent = usageComponent.append(Component.text(usage, bot.colorPalette.string));
 
                 usages.add(usageComponent);
             }

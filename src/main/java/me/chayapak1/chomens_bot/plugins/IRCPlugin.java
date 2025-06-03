@@ -124,7 +124,7 @@ public class IRCPlugin extends ListenerAdapter {
 
             final Component username = Component
                     .text(name)
-                    .hoverEvent(HoverEvent.showText(Component.text(event.getUser().getHostname()).color(NamedTextColor.RED)))
+                    .hoverEvent(HoverEvent.showText(Component.text(event.getUser().getHostname(), NamedTextColor.RED)))
                     .color(NamedTextColor.RED);
 
             final Component messageComponent = Component
@@ -133,10 +133,11 @@ public class IRCPlugin extends ListenerAdapter {
 
             final Component component = Component.translatable(
                     "[%s] %s › %s",
+                    NamedTextColor.DARK_GRAY,
                     prefix,
                     username,
                     messageComponent
-            ).color(NamedTextColor.DARK_GRAY);
+            );
 
             bot.chat.tellraw(component);
         }

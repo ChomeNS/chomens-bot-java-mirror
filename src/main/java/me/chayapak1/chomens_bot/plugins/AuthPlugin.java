@@ -48,15 +48,13 @@ public class AuthPlugin implements Listener {
         bot.logger.log(
                 LogType.AUTH,
                 Component
-                        .text(I18nUtilities.get("auth.logger_verified"))
-                        .color(NamedTextColor.GREEN)
+                        .text(I18nUtilities.get("auth.logger_verified"), NamedTextColor.GREEN)
         );
 
         bot.chomeNSMod.sendMessage(
                 target,
                 Component
-                        .text(I18nUtilities.get("auth.player_verified"))
-                        .color(NamedTextColor.GREEN)
+                        .text(I18nUtilities.get("auth.player_verified"), NamedTextColor.GREEN)
         );
     }
 

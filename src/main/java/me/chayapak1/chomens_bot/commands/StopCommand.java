@@ -26,6 +26,6 @@ public class StopCommand extends Command {
 
         Main.stop(0, reason.isEmpty() ? null : reason);
 
-        return Component.translatable("commands.stop.output").color(bot.colorPalette.defaultColor);
+        return Component.translatable("commands.stop.output", bot.colorPalette.defaultColor);
     }
 }

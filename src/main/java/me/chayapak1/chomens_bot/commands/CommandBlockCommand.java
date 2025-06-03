@@ -85,11 +85,11 @@ public class CommandBlockCommand extends Command {
                         bot.colorPalette.string,
                         Component.text(256 * layers)
                 ),
-                Component.text(layers).color(bot.colorPalette.string),
-                Component.text(from.toString()).color(bot.colorPalette.string),
-                Component.text(to.toString()).color(bot.colorPalette.string),
-                Component.text(block.toString()).color(bot.colorPalette.string),
-                Component.text(bot.world.currentDimension).color(bot.colorPalette.string),
+                Component.text(layers, bot.colorPalette.string),
+                Component.text(from.toString(), bot.colorPalette.string),
+                Component.text(to.toString(), bot.colorPalette.string),
+                Component.text(block.toString(), bot.colorPalette.string),
+                Component.text(bot.world.currentDimension, bot.colorPalette.string),
                 Component
                         .translatable("commands.cb.info.click_to_teleport", NamedTextColor.GREEN)
                         .hoverEvent(HoverEvent.showText(Component.text(command, bot.colorPalette.secondary)))
