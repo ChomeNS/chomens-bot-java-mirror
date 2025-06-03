@@ -21,10 +21,11 @@ public class TestCommand extends Command {
     public Component execute (final CommandContext context) throws CommandException {
         return Component.translatable(
                 "commands.test.output",
+                NamedTextColor.GREEN,
                 Component.text(context.sender.profile.getName()),
                 Component.text(context.sender.profile.getIdAsString()),
                 Component.text(context.prefix),
                 Component.text(context.getString(true, false))
-        ).color(NamedTextColor.GREEN);
+        );
     }
 }
