@@ -141,7 +141,7 @@ public class QueryPlugin implements Listener {
     }
 
     private void addComponent (final Component component, final boolean useCargo) {
-        if (useCargo) cargosQueue.add(component);
+        if (useCargo || !bot.core.hasEnoughPermissions()) cargosQueue.add(component);
         else sendQueueComponent(component);
     }
 
