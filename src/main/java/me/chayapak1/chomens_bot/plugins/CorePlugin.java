@@ -40,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CorePlugin implements Listener {
+    private static final int MAX_PENDING_COMMANDS = 256 * 3;
     public static final int COMMAND_BLOCK_ID = 425;
 
     private final Bot bot;
@@ -97,13 +98,13 @@ public class CorePlugin implements Listener {
 
     @Override
     public void onTick () {
-        if (!pendingCommands.isEmpty() && exists) {
+        if (!pendingCommands.isEmpty() && exists && hasEnoughPermissions()) {
             // people that pre-order on TEMU application. Shop Like A Billionaire!!!
-            if (pendingCommands.size() > 256 * 3) {
+            if (pendingCommands.size() > MAX_PENDING_COMMANDS) {
                 pendingCommands.clear();
             } else {
                 for (final String pendingCommand : pendingCommands) {
-                    run(pendingCommand);
+                    forceRun(pendingCommand);
                 }
 
                 pendingCommands.clear();
@@ -200,7 +201,7 @@ public class CorePlugin implements Listener {
     }
 
     public void run (final String command) {
-        if (!exists || !hasEnoughPermissions()) {
+        if (pendingCommands.size() <= MAX_PENDING_COMMANDS && (!exists || !hasEnoughPermissions())) {
             // Add to TEMU shopping cart
             pendingCommands.add(command);
             return;
