@@ -379,9 +379,9 @@ public class Bot extends SessionAdapter {
             final String stringMessage = ComponentUtilities.stringify(disconnectedEvent.getReason());
 
             if (
-                    stringMessage.equals("Wait 5 seconds before connecting, thanks! :)") ||
-                            stringMessage.equals("You are logging in too fast, try again later.") ||
-                            stringMessage.equals("Connection throttled! Please wait before reconnecting.")
+                    stringMessage.equals("Wait 5 seconds before connecting, thanks! :)")
+                            || stringMessage.equals("You are logging in too fast, try again later.")
+                            || stringMessage.equals("Connection throttled! Please wait before reconnecting.")
             ) reconnectDelay = 1000 * (5 + 2); // 2 seconds extra delay just in case
 
             executor.schedule(this::reconnect, reconnectDelay, TimeUnit.MILLISECONDS);

@@ -24,7 +24,9 @@ public class EndCommand extends Command {
 
         final Bot bot = context.bot;
 
-        bot.session.disconnect(I18nUtilities.get("commands.end.disconnect_reason"));
+        bot.executorService.execute(
+                () -> bot.session.disconnect(I18nUtilities.get("commands.end.disconnect_reason"))
+        );
 
         return null;
     }
