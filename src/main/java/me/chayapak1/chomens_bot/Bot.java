@@ -75,7 +75,7 @@ public class Bot extends SessionAdapter {
     public int connectAttempts = 0;
 
     public boolean loggedIn = false;
-    public long loginTime;
+    public long loginTime = System.currentTimeMillis();
 
     public final ExecutorService executorService = Main.EXECUTOR_SERVICE;
     public final ScheduledExecutorService executor = Main.EXECUTOR;

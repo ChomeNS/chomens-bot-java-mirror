@@ -368,7 +368,10 @@ public class PlayersPlugin implements Listener {
 
         if (target == null) return;
 
-        if (!bot.serverFeatures.hasNamespaces || target.profile.getName().isEmpty() /* LoL empty string username lazy fix */) {
+        if (
+                (System.currentTimeMillis() - bot.loginTime > 5 * 1000 && !bot.serverFeatures.hasNamespaces)
+                        || target.profile.getName().isEmpty() // LoL empty string username lazy fix
+        ) {
             final boolean removed = list.remove(target);
 
             if (removed) {
