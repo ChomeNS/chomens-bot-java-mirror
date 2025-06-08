@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot;
 
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import me.chayapak1.chomens_bot.data.color.ColorPalette;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.plugins.*;
@@ -43,6 +44,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Bot extends SessionAdapter {
+    private static final List<String> NEEDS_DELAY_DISCONNECT_REASON = ObjectList.of(
+            "Wait 5 seconds before connecting, thanks! :)",
+            "You are logging in too fast, try again later.",
+            "Connection throttled! Please wait before reconnecting."
+    );
+
     public final String host;
     public final int port;
 
@@ -366,8 +373,6 @@ public class Bot extends SessionAdapter {
 
         if (!isTransferring) cookies.clear();
 
-        int reconnectDelay = options.reconnectDelay;
-
         if (isTransferring) {
             // for now, it's going to transfer to the same server instead of
             // other servers
@@ -378,11 +383,12 @@ public class Bot extends SessionAdapter {
         } else {
             final String stringMessage = ComponentUtilities.stringify(disconnectedEvent.getReason());
 
-            if (
-                    stringMessage.equals("Wait 5 seconds before connecting, thanks! :)")
-                            || stringMessage.equals("You are logging in too fast, try again later.")
-                            || stringMessage.equals("Connection throttled! Please wait before reconnecting.")
-            ) reconnectDelay = 1000 * (5 + 2); // 2 seconds extra delay just in case
+            final long reconnectDelay;
+
+            if (NEEDS_DELAY_DISCONNECT_REASON.contains(stringMessage))
+                reconnectDelay = TimeUnit.SECONDS.toMillis(5);
+            else
+                reconnectDelay = options.reconnectDelay;
 
             executor.schedule(this::reconnect, reconnectDelay, TimeUnit.MILLISECONDS);
         }
