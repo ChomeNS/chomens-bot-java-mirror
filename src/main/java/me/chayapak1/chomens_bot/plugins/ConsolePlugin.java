@@ -101,13 +101,9 @@ public class ConsolePlugin implements Completer {
 
             if (line.startsWith(prefix)) {
                 final ConsoleCommandContext context = new ConsoleCommandContext(bot, prefix);
-
                 bot.commandHandler.executeCommand(line.substring(prefix.length()), context);
-
                 continue;
             }
-
-            if (!bot.loggedIn) continue;
 
             final Component stylizedMessage = ChatMessageUtilities.applyChatMessageStyling(line);
 
@@ -166,7 +162,7 @@ public class ConsolePlugin implements Completer {
             return super.renderText(component, context);
         }
 
-        @SuppressWarnings("NonExtendableApiUsage") // Windows XP
+        @SuppressWarnings("NonExtendableApiUsage") // we're not extending it silly
         @Override
         protected <B extends ComponentBuilder<?, ?>> void mergeStyle (final Component component, final B builder,
                                                                       final ConsoleFormatContext context) {
