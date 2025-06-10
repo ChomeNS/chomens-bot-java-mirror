@@ -98,17 +98,21 @@ public class FilterCommand extends Command {
 
                 final int index = context.getInteger(true);
 
-                final FilteredPlayer player = PlayerFilterPlugin.localList.get(index);
+                try {
+                    final FilteredPlayer player = PlayerFilterPlugin.localList.get(index);
 
-                if (player == null) throw new CommandException(Component.translatable("commands.generic.error.invalid_index"));
+                    if (player == null) throw new IllegalArgumentException();
 
-                DatabasePlugin.EXECUTOR_SERVICE.execute(() -> bot.playerFilter.remove(player.playerName()));
+                    DatabasePlugin.EXECUTOR_SERVICE.execute(() -> bot.playerFilter.remove(player.playerName()));
 
-                return Component.translatable(
-                        "commands.filter.remove.output",
-                        bot.colorPalette.defaultColor,
-                        Component.text(player.playerName(), bot.colorPalette.username)
-                );
+                    return Component.translatable(
+                            "commands.filter.remove.output",
+                            bot.colorPalette.defaultColor,
+                            Component.text(player.playerName(), bot.colorPalette.username)
+                    );
+                } catch (final IndexOutOfBoundsException | IllegalArgumentException | NullPointerException e) {
+                    throw new CommandException(Component.translatable("commands.generic.error.invalid_index"));
+                }
             }
             case "clear" -> {
                 context.checkOverloadArgs(1);

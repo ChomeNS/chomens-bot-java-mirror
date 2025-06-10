@@ -73,17 +73,21 @@ public class IPFilterCommand extends Command {
 
                 final int index = context.getInteger(true);
 
-                final String targetIP = new ArrayList<>(IPFilterPlugin.localList.keySet()).get(index);
+                try {
+                    final String targetIP = new ArrayList<>(IPFilterPlugin.localList.keySet()).get(index);
 
-                if (targetIP == null) throw new CommandException(Component.translatable("commands.generic.error.invalid_index"));
+                    if (targetIP == null) throw new IllegalArgumentException();
 
-                DatabasePlugin.EXECUTOR_SERVICE.execute(() -> bot.ipFilter.remove(targetIP));
+                    DatabasePlugin.EXECUTOR_SERVICE.execute(() -> bot.ipFilter.remove(targetIP));
 
-                return Component.translatable(
-                        "commands.ipfilter.remove.output",
-                        bot.colorPalette.defaultColor,
-                        Component.text(targetIP, bot.colorPalette.username)
-                );
+                    return Component.translatable(
+                            "commands.ipfilter.remove.output",
+                            bot.colorPalette.defaultColor,
+                            Component.text(targetIP, bot.colorPalette.username)
+                    );
+                } catch (final IndexOutOfBoundsException | IllegalArgumentException | NullPointerException e) {
+                    throw new CommandException(Component.translatable("commands.generic.error.invalid_index"));
+                }
             }
             case "clear" -> {
                 context.checkOverloadArgs(1);
