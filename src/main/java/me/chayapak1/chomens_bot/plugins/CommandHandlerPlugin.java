@@ -256,7 +256,7 @@ public class CommandHandlerPlugin implements Listener {
         } catch (final Exception e) {
             bot.logger.error(e);
             final String stackTrace = ExceptionUtilities.getStacktrace(e);
-            if (inGame && (bot.options.useChat || !bot.options.useCore)) {
+            if (!inGame || bot.options.useChat || !bot.options.useCore) {
                 context.sendOutput(Component.text(e.toString(), NamedTextColor.RED));
             } else {
                 context.sendOutput(
