@@ -17,7 +17,7 @@ public record Key(
     public @NotNull String toString () {
         return "Key{" +
                 "trustLevel=" + trustLevel +
-                ", key='" + key + '\'' +
+                ", key=************" +
                 ", createdAt=" + createdAt +
                 '}';
     }

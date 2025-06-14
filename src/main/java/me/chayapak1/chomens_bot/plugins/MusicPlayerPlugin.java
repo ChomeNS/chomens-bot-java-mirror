@@ -12,6 +12,7 @@ import me.chayapak1.chomens_bot.song.SongLoaderThread;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import me.chayapak1.chomens_bot.util.MathUtilities;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.util.HSVLike;
@@ -328,7 +329,7 @@ public class MusicPlayerPlugin implements Listener {
             bossBarColor = BossBarColor.YELLOW;
         }
 
-        Component component = Component.empty()
+        final TextComponent.Builder component = Component.text()
                 .append(Component.empty().append(Component.text(currentSong.name, nameColor)))
                 .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
                 .append(
@@ -342,7 +343,7 @@ public class MusicPlayerPlugin implements Listener {
                 );
 
         if (!bot.core.hasRateLimit()) {
-            component = component
+            component
                     .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
                     .append(
                             Component.translatable(
@@ -354,7 +355,7 @@ public class MusicPlayerPlugin implements Listener {
                     );
 
             if (!currentLyrics.isBlank()) {
-                component = component
+                component
                         .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
                         .append(Component.text(currentLyrics, NamedTextColor.BLUE));
             }
@@ -363,16 +364,18 @@ public class MusicPlayerPlugin implements Listener {
         if (currentSong.paused) {
             return component
                     .append(Component.text(" | ", NamedTextColor.DARK_GRAY))
-                    .append(Component.text("⏸", NamedTextColor.LIGHT_PURPLE));
+                    .append(Component.text("⏸", NamedTextColor.LIGHT_PURPLE))
+                    .build();
         }
 
         if (loop != Loop.OFF) {
             return component
                     .append(Component.translatable(" | ", NamedTextColor.DARK_GRAY))
-                    .append(Component.translatable("Looping " + ((loop == Loop.CURRENT) ? "current" : "all"), NamedTextColor.LIGHT_PURPLE));
+                    .append(Component.translatable("Looping " + ((loop == Loop.CURRENT) ? "current" : "all"), NamedTextColor.LIGHT_PURPLE))
+                    .build();
         }
 
-        return component;
+        return component.build();
     }
 
     public Component formatTime (final long millis) {

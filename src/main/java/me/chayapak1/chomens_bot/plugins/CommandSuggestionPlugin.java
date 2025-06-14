@@ -43,16 +43,17 @@ public class CommandSuggestionPlugin implements Listener {
 
             final boolean hasAliases = command.aliases.length != 0;
 
-            Component outputComponent = Component
-                    .text(command.name)
+            final TextComponent.Builder outputComponent = Component
+                    .text()
+                    .content(command.name)
                     .append(Component.text(command.trustLevel.name()))
                     .append(Component.text(hasAliases));
 
             if (hasAliases) {
-                for (final String alias : command.aliases) outputComponent = outputComponent.append(Component.text(alias));
+                for (final String alias : command.aliases) outputComponent.append(Component.text(alias));
             }
 
-            output.add(outputComponent);
+            output.add(outputComponent.build());
         }
 
         bot.chat.tellraw(Component.join(JoinConfiguration.noSeparators(), output), player);

@@ -3,6 +3,7 @@ package me.chayapak1.chomens_bot.plugins;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.util.SNBTUtilities;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
 import org.cloudburstmc.math.vector.Vector3i;
 
@@ -129,15 +130,15 @@ public class ScreensharePlugin {
             final ArrayList<Component> names = new ArrayList<>();
 
             for (int y = 0; y < height; y++) {
-                Component name = Component.empty();
+                final TextComponent.Builder name = Component.text();
 
                 for (int x = 0; x < width; x++) {
                     final Component pixel = Component.text("█", TextColor.fromHexString(screen[x][y]));
 
-                    name = name.append(pixel);
+                    name.append(pixel);
                 }
 
-                names.add(name);
+                names.add(name.build());
             }
 
             for (int i = 0; i < names.size(); i++) {

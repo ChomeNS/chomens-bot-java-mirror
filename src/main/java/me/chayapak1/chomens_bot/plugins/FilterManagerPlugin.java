@@ -1,23 +1,25 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.chat.PlayerMessage;
+import me.chayapak1.chomens_bot.data.filter.FilteredPlayer;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
-import org.apache.commons.lang3.tuple.Pair;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class FilterManagerPlugin implements Listener {
     private final Bot bot;
 
-    public final Map<PlayerEntry, String> list = new ConcurrentHashMap<>();
+    public final List<FilteredPlayer> list = Collections.synchronizedList(new ObjectArrayList<>());
 
     public FilterManagerPlugin (final Bot bot) {
         this.bot = bot;
@@ -33,30 +35,39 @@ public class FilterManagerPlugin implements Listener {
     }
 
     private void removeLeftPlayers () {
-        // remove from list if player is not on the server anymore
-        list.entrySet().removeIf(entry -> bot.players.getEntry(entry.getKey().profile.getId()) == null);
+        synchronized (list) {
+            // remove from list if player is not on the server anymore
+            list.removeIf(filteredPlayer -> bot.players.getEntry(filteredPlayer.player().profile.getId()) == null);
+        }
     }
 
     @Override
     public void onTick () {
-        for (final PlayerEntry filtered : list.keySet()) {
-            deOp(filtered);
-            gameMode(filtered);
-            clear(filtered);
+        synchronized (list) {
+            for (final FilteredPlayer filtered : list) {
+                final PlayerEntry target = filtered.player();
+
+                deOp(target);
+                gameMode(target);
+                clear(target);
+            }
         }
     }
 
     private void kick () {
-        for (final PlayerEntry filtered : list.keySet()) {
-            bot.exploits.kick(filtered.profile.getId());
+        synchronized (list) {
+            for (final FilteredPlayer filtered : list) {
+                final PlayerEntry target = filtered.player();
+                bot.exploits.kick(target.profile.getId());
+            }
         }
     }
 
     @Override
     public void onCommandSpyMessageReceived (final PlayerEntry sender, final String command) {
-        final Pair<PlayerEntry, String> player = getFilteredFromName(sender.profile.getName());
+        final FilteredPlayer filtered = getFilteredFromName(sender.profile.getName());
 
-        if (player == null) return;
+        if (filtered == null) return;
 
         if (
                 command.startsWith("/mute") ||
@@ -67,7 +78,7 @@ public class FilterManagerPlugin implements Listener {
                         command.startsWith("/essentials:emute") ||
                         command.startsWith("/essentials:silence") ||
                         command.startsWith("/essentials:esilence")
-        ) mute(sender, player.getRight());
+        ) mute(sender, filtered.reason());
 
         deOp(sender);
         gameMode(sender);
@@ -78,11 +89,11 @@ public class FilterManagerPlugin implements Listener {
     public boolean onPlayerMessageReceived (final PlayerMessage message, final ChatPacketType packetType) {
         if (message.sender().profile.getName() == null) return true;
 
-        final Pair<PlayerEntry, String> player = getFilteredFromName(message.sender().profile.getName());
+        final FilteredPlayer filtered = getFilteredFromName(message.sender().profile.getName());
 
-        if (player == null || message.sender().profile.getId().equals(new UUID(0L, 0L))) return true;
+        if (filtered == null || message.sender().profile.getId().equals(new UUID(0L, 0L))) return true;
 
-        doAll(message.sender(), player.getRight());
+        doAll(message.sender(), filtered.reason());
 
         return true;
     }
@@ -126,18 +137,22 @@ public class FilterManagerPlugin implements Listener {
                         entry.profile.equals(bot.profile) // prevent self-harm !!!!!!
         ) return;
 
-        list.put(entry, reason);
+        list.add(new FilteredPlayer(entry, reason));
 
         doAll(entry, reason);
     }
 
     public void remove (final String name) {
-        list.entrySet().removeIf(filtered -> filtered.getKey().profile.getName().equals(name));
+        synchronized (list) {
+            list.removeIf(filtered -> filtered.player().profile.getName().equals(name));
+        }
     }
 
-    public Pair<PlayerEntry, String> getFilteredFromName (final String name) {
-        for (final Map.Entry<PlayerEntry, String> entry : list.entrySet()) {
-            if (entry.getKey().profile.getName().equals(name)) return Pair.of(entry.getKey(), entry.getValue());
+    public @Nullable FilteredPlayer getFilteredFromName (final String name) {
+        synchronized (list) {
+            for (final FilteredPlayer filtered : list) {
+                if (filtered.player().profile.getName().equals(name)) return filtered;
+            }
         }
 
         return null;

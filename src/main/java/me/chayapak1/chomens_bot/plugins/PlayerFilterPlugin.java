@@ -3,7 +3,7 @@ package me.chayapak1.chomens_bot.plugins;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Main;
-import me.chayapak1.chomens_bot.data.filter.FilteredPlayer;
+import me.chayapak1.chomens_bot.data.filter.PlayerFilter;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
@@ -23,7 +23,7 @@ public class PlayerFilterPlugin implements Listener {
     private static final String REMOVE_FILTER = "DELETE FROM filters WHERE name = ?;";
     private static final String CLEAR_FILTER = "DELETE FROM filters;";
 
-    public static List<FilteredPlayer> localList = new ObjectArrayList<>();
+    public static List<PlayerFilter> localList = new ObjectArrayList<>();
 
     static {
         if (Main.database != null) {
@@ -49,21 +49,21 @@ public class PlayerFilterPlugin implements Listener {
         bot.listener.addListener(this);
     }
 
-    public static List<FilteredPlayer> list () {
-        final List<FilteredPlayer> output = new ArrayList<>();
+    public static List<PlayerFilter> list () {
+        final List<PlayerFilter> output = new ArrayList<>();
 
         try (final ResultSet result = Main.database.query(LIST_FILTERS)) {
             if (result == null) return output;
 
             while (result.next()) {
-                final FilteredPlayer filteredPlayer = new FilteredPlayer(
+                final PlayerFilter playerFilter = new PlayerFilter(
                         result.getString("name"),
                         result.getString("reason"),
                         result.getBoolean("regex"),
                         result.getBoolean("ignoreCase")
                 );
 
-                output.add(filteredPlayer);
+                output.add(playerFilter);
             }
         } catch (final SQLException e) {
             LoggerUtilities.error(e);
@@ -74,29 +74,29 @@ public class PlayerFilterPlugin implements Listener {
         return output;
     }
 
-    private FilteredPlayer getPlayer (final String name) {
-        for (final FilteredPlayer filteredPlayer : localList) {
-            if (matchesPlayer(name, filteredPlayer)) {
-                return filteredPlayer;
+    private PlayerFilter getPlayer (final String name) {
+        for (final PlayerFilter playerFilter : localList) {
+            if (matchesPlayer(name, playerFilter)) {
+                return playerFilter;
             }
         }
 
         return null;
     }
 
-    private List<FilteredPlayer> getPlayers (final String name) {
-        final List<FilteredPlayer> matches = new ArrayList<>();
+    private List<PlayerFilter> getPlayers (final String name) {
+        final List<PlayerFilter> matches = new ArrayList<>();
 
-        for (final FilteredPlayer filteredPlayer : localList) {
-            if (matchesPlayer(name, filteredPlayer)) {
-                matches.add(filteredPlayer);
+        for (final PlayerFilter playerFilter : localList) {
+            if (matchesPlayer(name, playerFilter)) {
+                matches.add(playerFilter);
             }
         }
 
         return matches;
     }
 
-    private boolean matchesPlayer (final String name, final FilteredPlayer player) {
+    private boolean matchesPlayer (final String name, final PlayerFilter player) {
         if (player.regex()) {
             final Pattern pattern = compilePattern(player);
 
@@ -106,7 +106,7 @@ public class PlayerFilterPlugin implements Listener {
         }
     }
 
-    private Pattern compilePattern (final FilteredPlayer player) {
+    private Pattern compilePattern (final PlayerFilter player) {
         try {
             final int flags = player.ignoreCase() ? Pattern.CASE_INSENSITIVE : 0;
 
@@ -118,7 +118,7 @@ public class PlayerFilterPlugin implements Listener {
         }
     }
 
-    private boolean compareNames (final String name, final FilteredPlayer player) {
+    private boolean compareNames (final String name, final PlayerFilter player) {
         final String playerName = player.ignoreCase() ? player.playerName().toLowerCase() : player.playerName();
         final String targetName = player.ignoreCase() ? name.toLowerCase() : name;
 
@@ -128,7 +128,7 @@ public class PlayerFilterPlugin implements Listener {
     @Override
     public void onPlayerJoined (final PlayerEntry target) {
         bot.executorService.execute(() -> {
-            final FilteredPlayer player = getPlayer(target.profile.getName());
+            final PlayerFilter player = getPlayer(target.profile.getName());
 
             if (player == null) return;
 
@@ -152,11 +152,11 @@ public class PlayerFilterPlugin implements Listener {
             bot.logger.error(e);
         }
 
-        final List<FilteredPlayer> matches = getPlayers(playerName);
+        final List<PlayerFilter> matches = getPlayers(playerName);
 
         // loop through all the servers too
         for (final Bot bot : bot.bots) {
-            for (final FilteredPlayer match : matches) {
+            for (final PlayerFilter match : matches) {
                 final PlayerEntry entry = bot.players.getEntry(match.playerName());
 
                 if (entry == null) continue;
@@ -183,7 +183,7 @@ public class PlayerFilterPlugin implements Listener {
     }
 
     public void clear () {
-        for (final FilteredPlayer player : localList) bot.filterManager.remove(player.playerName());
+        for (final PlayerFilter player : localList) bot.filterManager.remove(player.playerName());
 
         try {
             Main.database.update(CLEAR_FILTER);

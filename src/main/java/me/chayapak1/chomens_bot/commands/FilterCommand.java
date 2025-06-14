@@ -2,7 +2,7 @@ package me.chayapak1.chomens_bot.commands;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.*;
-import me.chayapak1.chomens_bot.data.filter.FilteredPlayer;
+import me.chayapak1.chomens_bot.data.filter.PlayerFilter;
 import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
 import me.chayapak1.chomens_bot.plugins.PlayerFilterPlugin;
 import net.kyori.adventure.text.Component;
@@ -50,7 +50,7 @@ public class FilterCommand extends Command {
 
                 if (
                         PlayerFilterPlugin.localList.stream()
-                                .map(FilteredPlayer::playerName)
+                                .map(PlayerFilter::playerName)
                                 .toList()
                                 .contains(player)
                 ) {
@@ -99,7 +99,7 @@ public class FilterCommand extends Command {
                 final int index = context.getInteger(true);
 
                 try {
-                    final FilteredPlayer player = PlayerFilterPlugin.localList.get(index);
+                    final PlayerFilter player = PlayerFilterPlugin.localList.get(index);
 
                     if (player == null) throw new IllegalArgumentException();
 
@@ -126,7 +126,7 @@ public class FilterCommand extends Command {
                 final List<Component> filtersComponents = new ArrayList<>();
 
                 int index = 0;
-                for (final FilteredPlayer player : PlayerFilterPlugin.localList) {
+                for (final PlayerFilter player : PlayerFilterPlugin.localList) {
                     Component options = Component.empty().color(NamedTextColor.DARK_GRAY);
 
                     if (player.ignoreCase() || player.regex()) {

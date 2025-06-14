@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.data.chomeNSMod;
 
 import io.netty.buffer.ByteBuf;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
@@ -31,7 +32,7 @@ public record PayloadMetadata(byte[] nonce, long timestamp) {
     }
 
     @Override
-    public String toString () {
+    public @NotNull String toString () {
         return "PayloadMetadata{" +
                 "nonce=" + Arrays.toString(nonce) +
                 ", timestamp=" + timestamp +
