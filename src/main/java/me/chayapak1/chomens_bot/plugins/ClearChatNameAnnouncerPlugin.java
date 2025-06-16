@@ -19,16 +19,19 @@ public class ClearChatNameAnnouncerPlugin implements Listener {
 
     @Override
     public void onCommandSpyMessageReceived (final PlayerEntry sender, final String command) {
+        if (!bot.config.announceClearChatUsername) return;
+
         if (
-                command.equals("/clearchat") ||
-                        command.equals("/cc") ||
-                        command.equals("/extras:clearchat") ||
-                        command.equals("/extras:cc")
+                command.equals("/clearchat")
+                        || command.equals("/cc")
+                        || command.equals("/extras:clearchat")
+                        || command.equals("/extras:cc")
         ) {
             bot.chat.tellraw(
-                    Component.translatable("%s cleared the chat")
-                            .arguments(Component.selector(sender.profile.getName()))
-                            .color(NamedTextColor.DARK_GREEN)
+                    Component.translatable(
+                            "%s cleared the chat", NamedTextColor.DARK_GREEN,
+                            Component.selector(sender.profile.getIdAsString())
+                    )
             );
         }
     }

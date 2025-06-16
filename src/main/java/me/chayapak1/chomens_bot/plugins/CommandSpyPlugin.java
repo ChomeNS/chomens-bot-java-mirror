@@ -24,21 +24,18 @@ public class CommandSpyPlugin implements Listener {
         final List<Component> children = component.children();
 
         if (
-                !(component instanceof final TextComponent textComponent) ||
-                        children.size() != 2 ||
-                        textComponent.style().isEmpty() ||
-                        (
-                                textComponent.color() != NamedTextColor.AQUA &&
-                                        textComponent.color() != NamedTextColor.YELLOW
-                        ) ||
-                        !(children.getFirst() instanceof TextComponent) ||
-                        !(children.getLast() instanceof TextComponent)
+                !(component instanceof final TextComponent textComponent)
+                        || children.size() != 2
+                        || textComponent.style().isEmpty()
+                        || (textComponent.color() != NamedTextColor.AQUA && textComponent.color() != NamedTextColor.YELLOW)
+                        || !(children.getFirst() instanceof TextComponent)
+                        || !(children.getLast() instanceof TextComponent)
         ) return true;
 
         final String username = textComponent.content();
         final String command = ComponentUtilities.stringify(children.getLast());
 
-        final PlayerEntry sender = bot.players.getEntry(username);
+        final PlayerEntry sender = bot.players.getEntry(username, false, false);
 
         if (sender == null) return true;
 
