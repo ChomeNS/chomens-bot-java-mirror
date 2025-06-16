@@ -83,6 +83,8 @@ public class PlayersPlugin implements Listener {
         final CompletableFuture<String> future = getPlayerIP(target, true);
 
         future.thenApply(ip -> {
+            if (ip == null) return null;
+
             target.persistingData.ip = ip;
 
             bot.listener.dispatch(listener -> listener.onQueriedPlayerIP(target, ip));
@@ -106,7 +108,13 @@ public class PlayersPlugin implements Listener {
                 }
             }
 
-            if (!bot.serverFeatures.hasEssentials) {
+            if (
+                    !bot.serverFeatures.hasEssentials ||
+                            (
+                                    !bot.serverFeatures.serverHasCommand("essentials:seen")
+                                            && !bot.serverFeatures.serverHasCommand("seen")
+                            )
+            ) {
                 outputFuture.complete(null);
                 return;
             }
@@ -154,6 +162,7 @@ public class PlayersPlugin implements Listener {
     }
 
     public final PlayerEntry getEntry (final String username) { return getEntry(username, true, true); }
+
     public final PlayerEntry getEntry (final String username, final boolean checkUUID, final boolean checkPastUsernames) {
         synchronized (list) {
             for (final PlayerEntry candidate : list) {

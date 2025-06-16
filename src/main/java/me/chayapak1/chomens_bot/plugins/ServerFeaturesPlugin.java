@@ -1,5 +1,6 @@
 package me.chayapak1.chomens_bot.plugins;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import org.geysermc.mcprotocollib.network.Session;
@@ -9,8 +10,12 @@ import org.geysermc.mcprotocollib.protocol.data.game.command.CommandNode;
 import org.geysermc.mcprotocollib.protocol.data.game.command.CommandType;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundCommandsPacket;
 
+import java.util.List;
+
 public class ServerFeaturesPlugin implements Listener {
     private final Bot bot;
+
+    private final List<String> commands = new ObjectArrayList<>();
 
     public boolean hasNamespaces = false;
 
@@ -31,12 +36,16 @@ public class ServerFeaturesPlugin implements Listener {
     }
 
     private void packetReceived (final ClientboundCommandsPacket packet) {
+        commands.clear();
+
         for (final CommandNode node : packet.getNodes()) {
             if (!node.isExecutable() || node.getType() != CommandType.LITERAL) continue;
 
             final String name = node.getName();
 
             if (name == null) continue;
+
+            commands.add(name);
 
             if (name.contains(":")) hasNamespaces = true;
 
@@ -65,10 +74,16 @@ public class ServerFeaturesPlugin implements Listener {
         }
     }
 
+    public boolean serverHasCommand (final String command) {
+        return commands.contains(command);
+    }
+
     @Override
     public void disconnected (final DisconnectedEvent event) {
         hasNamespaces = false;
         hasEssentials = false;
         hasExtras = false;
+        hasIControlU = false;
+        hasCommandSpy = false;
     }
 }
