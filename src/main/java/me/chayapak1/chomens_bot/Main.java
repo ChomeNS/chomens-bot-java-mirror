@@ -188,11 +188,6 @@ public class Main {
 
         LoggerUtilities.log(stoppingMessage);
 
-        EXECUTOR.shutdown();
-        EXECUTOR_SERVICE.shutdown();
-        FileLoggerUtilities.stop();
-        if (database != null) database.stop();
-
         final ArrayList<Bot> copiedList;
         synchronized (bots) {
             copiedList = new ArrayList<>(bots);
@@ -237,6 +232,11 @@ public class Main {
 
             if (discord != null && discord.jda != null) discord.jda.shutdown();
         }
+
+        EXECUTOR.shutdown();
+        EXECUTOR_SERVICE.shutdown();
+        FileLoggerUtilities.stop();
+        if (database != null) database.stop();
 
         if (callSystemExit) System.exit(exitCode);
     }
