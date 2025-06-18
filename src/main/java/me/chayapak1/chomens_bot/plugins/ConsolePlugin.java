@@ -95,6 +95,8 @@ public class ConsolePlugin implements Completer {
         if (line == null) return;
 
         for (final Bot bot : allBots) {
+            if (!bot.loggedIn) continue;
+
             final String server = bot.getServerString(true);
 
             if (!server.equals(consoleServer) && !consoleServer.equalsIgnoreCase("all")) continue;
