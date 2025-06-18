@@ -140,6 +140,7 @@ bots:
   # useCorePlaceBlock - uses the place block core instead of the main core. only used if useCore is enabled
   # useChat - when the bot tellraws it will chat instead of using the core to run tellraw
   # useSNBTComponents - if the server is >=1.21.5, it's pretty likely that you can enable this since 1.21.5 supports SNBT components
+  # loginMessage - the message to send when the bot received the login packet, this can also be a command, just prefix it with `/`
   # coreCommandSpy - set to true if server supports enabling player's commandspy through command block, defaults to true
   # logConnectionStatusMessages - logs connecting and disconnected messages to console (and the log file) and discord if set to true, defaults to true
   # resolveSRV - whether to resolve SRV records on the server. the notchian minecraft doesn't resolve them
@@ -165,6 +166,7 @@ bots:
   #   useCorePlaceBlock: false
   #   useChat: false
   #   useSNBTComponents: true
+  #   loginMessage: ''
   #   coreCommandSpy: true
   #   logConnectionStatusMessages: true
   #   resolveSRV: true
