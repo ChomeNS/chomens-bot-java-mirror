@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -30,6 +31,7 @@ public class FileLoggerUtilities {
     public static OutputStreamWriter logWriter;
 
     public static LocalDate currentLogDate;
+    public static final ZoneId zone = ZoneId.of("UTC");
     public static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
     public static String prevEntry = "";
@@ -190,7 +192,7 @@ public class FileLoggerUtilities {
     }
 
     public static String getPrefix (final String type) {
-        final LocalDateTime dateTime = LocalDateTime.now();
+        final LocalDateTime dateTime = LocalDateTime.now(zone);
         return String.format(
                 "[%s %s] ",
                 dateTime.format(dateTimeFormatter),
