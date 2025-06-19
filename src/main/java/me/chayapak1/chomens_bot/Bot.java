@@ -258,8 +258,6 @@ public class Bot extends SessionAdapter {
         this.listener.dispatch(listener -> listener.connected(new ConnectedEvent(session)));
 
         session.send(ServerboundPlayerLoadedPacket.INSTANCE);
-
-        if (!options.loginMessage.isBlank()) this.chat.send(options.loginMessage);
     }
 
     private void packetReceived (final ClientboundCustomQueryPacket packet) {

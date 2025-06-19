@@ -5,6 +5,7 @@ import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.data.selfCare.SelfCare;
 import me.chayapak1.chomens_bot.data.selfCare.SelfData;
+import me.chayapak1.chomens_bot.selfCares.ayunboom.AyunBoomSelfCare;
 import me.chayapak1.chomens_bot.selfCares.essentials.*;
 import me.chayapak1.chomens_bot.selfCares.kaboom.commandSpy.CommandSpySelfCare;
 import me.chayapak1.chomens_bot.selfCares.kaboom.extras.PrefixSelfCare;
@@ -52,6 +53,9 @@ public class SelfCarePlugin implements Listener {
 
         // kaboom - iControlUwU
         selfCares.add(new IControlUSelfCare(bot));
+
+        // ayunboom
+        selfCares.add(new AyunBoomSelfCare(bot));
 
         // essentials
         selfCares.add(new VanishSelfCare(bot));

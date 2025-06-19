@@ -156,6 +156,7 @@ public class Configuration {
         public String serverName;
         public String discordChannelId;
         public String ircChannel;
+        public boolean isAyunBoom = false;
         public boolean hidden = false;
         public boolean useCore = true;
         public boolean useCorePlaceBlock = false;
@@ -166,7 +167,6 @@ public class Configuration {
         public boolean resolveSRV = true;
         public int reconnectDelay = 2000;
         public int chatQueueDelay = 125;
-        public String loginMessage = "";
         public EssentialsMessages essentialsMessages = new EssentialsMessages();
         public CoreRateLimit coreRateLimit = new CoreRateLimit();
 
