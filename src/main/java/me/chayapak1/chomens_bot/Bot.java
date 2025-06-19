@@ -229,8 +229,6 @@ public class Bot extends SessionAdapter {
 
     @Override
     public void packetReceived (final Session session, final Packet packet) {
-        this.listener.dispatch(listener -> listener.packetReceived(session, packet));
-
         switch (packet) {
             case final ClientboundLoginPacket t_packet -> packetReceived(t_packet);
             case final ClientboundLoginFinishedPacket t_packet -> packetReceived(t_packet);
@@ -242,6 +240,8 @@ public class Bot extends SessionAdapter {
             case final ClientboundCustomPayloadPacket t_packet -> packetReceived(t_packet);
             default -> { }
         }
+
+        this.listener.dispatch(listener -> listener.packetReceived(session, packet));
     }
 
     private void packetReceived (final ClientboundLoginFinishedPacket packet) {
@@ -251,6 +251,17 @@ public class Bot extends SessionAdapter {
     }
 
     private void packetReceived (final ClientboundLoginPacket ignoredPacket) {
+        if (loggedIn) {
+            // !!! this will only call OUR disconnect listeners, not MCProtocolLib's
+            this.listener.dispatch(listener -> listener.disconnected(
+                    new DisconnectedEvent(
+                            session,
+                            Component.text("Server didn't send ClientboundDisconnectPacket"),
+                            null
+                    )
+            ));
+        }
+
         loggedIn = true;
         loginTime = System.currentTimeMillis();
         connectAttempts = 0;
