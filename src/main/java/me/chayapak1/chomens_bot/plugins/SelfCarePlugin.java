@@ -35,6 +35,9 @@ public class SelfCarePlugin implements Listener {
     public SelfCarePlugin (final Bot bot) {
         this.bot = bot;
 
+        // ayunboom
+        selfCares.add(new AyunBoomSelfCare(bot));
+
         // vanilla
         selfCares.add(new OperatorSelfCare(bot));
         selfCares.add(new GameModeSelfCare(bot));
@@ -53,9 +56,6 @@ public class SelfCarePlugin implements Listener {
 
         // kaboom - iControlUwU
         selfCares.add(new IControlUSelfCare(bot));
-
-        // ayunboom
-        selfCares.add(new AyunBoomSelfCare(bot));
 
         // essentials
         selfCares.add(new VanishSelfCare(bot));
