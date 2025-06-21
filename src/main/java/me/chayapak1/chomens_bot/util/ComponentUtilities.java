@@ -191,6 +191,8 @@ public class ComponentUtilities {
                                     // adventure will just use the reset character, which makes the text white,
                                     // and that's not what we want
                                     .replace("§r", formatting)
+                                    // prevents stack overflow when the content ends with §
+                                    .replaceFirst("§+$", "")
                     );
 
             // goofy code
