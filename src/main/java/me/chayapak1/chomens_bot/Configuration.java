@@ -156,7 +156,6 @@ public class Configuration {
         public String serverName;
         public String discordChannelId;
         public String ircChannel;
-        public boolean isAyunBoom = false;
         public boolean hidden = false;
         public boolean useCore = true;
         public boolean useCorePlaceBlock = false;

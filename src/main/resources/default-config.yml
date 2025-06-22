@@ -160,7 +160,6 @@ bots:
   #   serverName: 'Localhost'
   #   discordChannelId: '1234567890'
   #   ircChannel: '#chomens/localhost'
-  #   isAyunBoom: false
   #   hidden: false
   #   useCore: true
   #   useCorePlaceBlock: false
