@@ -80,7 +80,7 @@ public class PlayersPlugin implements Listener {
     private void queryPlayersIP (final PlayerEntry target) {
         if (target.persistingData.ip != null) return;
 
-        final CompletableFuture<String> future = getPlayerIP(target, true);
+        final CompletableFuture<String> future = getPlayerIP(target, false);
 
         future.thenApply(ip -> {
             if (ip == null) return null;
@@ -93,57 +93,58 @@ public class PlayersPlugin implements Listener {
         });
     }
 
-    public CompletableFuture<String> getPlayerIP (final PlayerEntry target) { return getPlayerIP(target, false); }
+    public CompletableFuture<String> getPlayerIP (final PlayerEntry target, final boolean fallbackToDatabase) {
+        final CompletableFuture<String> seenFuture = getSeenPlayerIP(target);
 
-    public CompletableFuture<String> getPlayerIP (final PlayerEntry target, final boolean forceSeen) {
+        if (seenFuture != null) return seenFuture;
+        else if (fallbackToDatabase) return getDatabasePlayerIP(target);
+        else return CompletableFuture.completedFuture(null);
+    }
+
+    private CompletableFuture<String> getDatabasePlayerIP (final PlayerEntry target) {
         final CompletableFuture<String> outputFuture = new CompletableFuture<>();
 
-        DatabasePlugin.EXECUTOR_SERVICE.execute(() -> {
-            if (!forceSeen) {
-                final String databaseIP = bot.playersDatabase.getPlayerIP(target.profile.getName());
+        DatabasePlugin.EXECUTOR_SERVICE.execute(
+                () -> outputFuture.complete(bot.playersDatabase.getPlayerIP(target.profile.getName()))
+        );
 
-                if (databaseIP != null) {
-                    outputFuture.complete(databaseIP);
-                    return;
-                }
-            }
+        return outputFuture;
+    }
 
-            if (
-                    !bot.serverFeatures.hasEssentials ||
-                            (
-                                    !bot.serverFeatures.serverHasCommand("essentials:seen")
-                                            && !bot.serverFeatures.serverHasCommand("seen")
-                            )
-            ) {
-                outputFuture.complete(null);
-                return;
-            }
+    private CompletableFuture<String> getSeenPlayerIP (final PlayerEntry target) {
+        final CompletableFuture<String> outputFuture = new CompletableFuture<>();
 
-            final CompletableFuture<Component> trackedCoreFuture = bot.core.runTracked("essentials:seen " + target.profile.getIdAsString());
+        if (
+                !bot.serverFeatures.hasEssentials ||
+                        (
+                                !bot.serverFeatures.serverHasCommand("essentials:seen")
+                                        && !bot.serverFeatures.serverHasCommand("seen")
+                        )
+        ) {
+            return null;
+        }
 
-            if (trackedCoreFuture == null) {
-                outputFuture.complete(null);
-                return;
-            }
+        final CompletableFuture<Component> trackedCoreFuture = bot.core.runTracked("essentials:seen " + target.profile.getIdAsString());
 
-            trackedCoreFuture.completeOnTimeout(null, 5, TimeUnit.SECONDS);
+        if (trackedCoreFuture == null) return null;
 
-            trackedCoreFuture.thenApply(output -> {
-                final List<Component> children = output.children();
+        trackedCoreFuture.completeOnTimeout(null, 5, TimeUnit.SECONDS);
 
-                String string = ComponentUtilities
-                        .stringify(Component.join(JoinConfiguration.separator(Component.empty()), children))
-                        .trim();
+        trackedCoreFuture.thenApply(output -> {
+            final List<Component> children = output.children();
 
-                if (!string.startsWith("- IP Address: ")) return output;
+            String string = ComponentUtilities
+                    .stringify(Component.join(JoinConfiguration.separator(Component.empty()), children))
+                    .trim();
 
-                string = string.substring("- IP Address: ".length());
-                if (string.startsWith("/")) string = string.substring(1);
+            if (!string.startsWith("- IP Address: ")) return null;
 
-                outputFuture.complete(string);
+            string = string.substring("- IP Address: ".length());
+            if (string.startsWith("/")) string = string.substring(1);
 
-                return output;
-            });
+            outputFuture.complete(string);
+
+            return null;
         });
 
         return outputFuture;
@@ -259,9 +260,9 @@ public class PlayersPlugin implements Listener {
         } else {
             list.add(target);
 
-            queryPlayersIP(target);
-
             bot.listener.dispatch(listener -> listener.onPlayerJoined(target));
+
+            queryPlayersIP(target);
         }
     }
 
