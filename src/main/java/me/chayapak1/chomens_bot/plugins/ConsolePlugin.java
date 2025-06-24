@@ -95,8 +95,6 @@ public class ConsolePlugin implements Completer {
         if (line == null) return;
 
         for (final Bot bot : allBots) {
-            if (!bot.loggedIn) continue;
-
             final String server = bot.getServerString(true);
 
             if (!server.equals(consoleServer) && !consoleServer.equalsIgnoreCase("all")) continue;
@@ -106,6 +104,8 @@ public class ConsolePlugin implements Completer {
                 bot.commandHandler.executeCommand(line.substring(prefix.length()), context);
                 continue;
             }
+
+            if (!bot.loggedIn) continue;
 
             final Component stylizedMessage = ChatMessageUtilities.applyChatMessageStyling(line);
 
