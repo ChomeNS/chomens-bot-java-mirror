@@ -8,12 +8,14 @@ import me.chayapak1.chomens_bot.util.MathUtilities;
 import org.cloudburstmc.math.vector.Vector3d;
 import org.geysermc.mcprotocollib.network.Session;
 import org.geysermc.mcprotocollib.network.packet.Packet;
+import org.geysermc.mcprotocollib.protocol.data.game.entity.player.PositionElement;
 import org.geysermc.mcprotocollib.protocol.data.game.entity.type.EntityType;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.*;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.entity.player.ClientboundPlayerPositionPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.level.ServerboundAcceptTeleportationPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundMovePlayerPosPacket;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -73,7 +75,13 @@ public class PositionPlugin implements Listener {
     private void packetReceived (final ClientboundPlayerPositionPacket packet) {
         bot.session.send(new ServerboundAcceptTeleportationPacket(packet.getId()));
 
-        position = packet.getPosition();
+        final List<PositionElement> relatives = packet.getRelatives();
+
+        this.position = packet.getPosition().add(
+                relatives.contains(PositionElement.X) ? this.position.getX() : 0,
+                relatives.contains(PositionElement.Y) ? this.position.getY() : 0,
+                relatives.contains(PositionElement.Z) ? this.position.getZ() : 0
+        );
 
         bot.listener.dispatch(listener -> listener.onPositionChange(position));
     }
