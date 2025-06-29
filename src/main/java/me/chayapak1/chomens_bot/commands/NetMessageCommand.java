@@ -9,6 +9,7 @@ import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.util.ChatMessageUtilities;
 import me.chayapak1.chomens_bot.util.I18nUtilities;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -23,7 +24,7 @@ public class NetMessageCommand extends Command {
                 new String[] { "networkmessage", "irc" },
                 TrustLevel.PUBLIC,
                 false,
-                new ChatPacketType[]{ ChatPacketType.SYSTEM, ChatPacketType.DISGUISED }
+                new ChatPacketType[] { ChatPacketType.SYSTEM, ChatPacketType.DISGUISED }
         );
     }
 
@@ -35,11 +36,11 @@ public class NetMessageCommand extends Command {
         final String originServerName = bot.getServerString();
         final String originServerAddress = bot.getServerString(false);
 
-        Component serverNameComponent = Component
-                .text(originServerName)
+        final TextComponent.Builder serverNameComponent = Component.text()
+                .content(originServerName)
                 .color(NamedTextColor.GRAY);
 
-        if (!bot.options.hidden) serverNameComponent = serverNameComponent
+        if (!bot.options.hidden) serverNameComponent
                 .clickEvent(ClickEvent.copyToClipboard(originServerAddress))
                 .hoverEvent(
                         HoverEvent.showText(
@@ -55,13 +56,12 @@ public class NetMessageCommand extends Command {
         final Component stylizedMessage = ChatMessageUtilities.applyChatMessageStyling(rawMessage);
 
         final Component component = Component.translatable(
-                "[%s]%s%s%s› %s",
-                NamedTextColor.DARK_GRAY,
+                "[%s]%s%s%s› %s", NamedTextColor.DARK_GRAY,
                 serverNameComponent,
                 Component.space(),
                 context.sender.displayName == null ?
                         Component.text(context.sender.profile.getName(), NamedTextColor.GRAY) :
-                        context.sender.displayName.color(NamedTextColor.GRAY),
+                        context.sender.displayName.colorIfAbsent(NamedTextColor.GRAY),
                 Component.space(),
                 Component.empty()
                         .append(stylizedMessage)
@@ -77,10 +77,7 @@ public class NetMessageCommand extends Command {
                         )
         );
 
-        for (final Bot eachBot : bots) {
-            if (!eachBot.loggedIn) continue;
-            eachBot.chat.tellraw(I18nUtilities.render(component));
-        }
+        for (final Bot eachBot : bots) eachBot.chat.tellraw(I18nUtilities.render(component));
 
         return null;
     }
