@@ -6,6 +6,7 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
+import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.mail.Mail;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
@@ -28,7 +29,9 @@ public class MailCommand extends Command {
                 "mail",
                 new String[] { "send <player> <message>", "sendselecteditem <player>", "read" },
                 new String[] {},
-                TrustLevel.PUBLIC
+                TrustLevel.PUBLIC,
+                false,
+                new ChatPacketType[] { ChatPacketType.SYSTEM, ChatPacketType.DISGUISED }
         );
     }
 

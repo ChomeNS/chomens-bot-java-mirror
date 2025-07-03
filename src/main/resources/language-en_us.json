@@ -158,6 +158,7 @@
   "commands.mail.read.hover_more_info": "[Hover here for more info]",
   "commands.mail.read.hover_info": "Time sent: %s\nServer: %s",
   "commands.mail.read.mails_text": "Mails ",
+  "commands.mail.error.spam": "Too many mails are being sent from you!",
 
   "commands.music.description": "Plays music",
   "commands.music.error.locked": "Managing music is currently locked",

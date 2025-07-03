@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Main;
+import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.mail.Mail;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
@@ -74,7 +75,18 @@ public class MailPlugin implements Listener {
         });
     }
 
-    public void send (final Mail mail) {
+    public void send (final Mail mail) throws CommandException {
+        final List<Mail> mails = list();
+
+        int count = 0;
+        for (final Mail eachMail : mails) {
+            if (!eachMail.sentBy().equals(mail.sentBy())) continue;
+
+            if (count > 50) throw new CommandException(Component.translatable("commands.mail.error.spam"));
+
+            count++;
+        }
+
         try {
             final PreparedStatement statement = Main.database.connection.prepareStatement(INSERT_MAIL);
 
