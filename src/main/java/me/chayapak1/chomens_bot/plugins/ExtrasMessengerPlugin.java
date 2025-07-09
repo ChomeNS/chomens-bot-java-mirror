@@ -37,7 +37,7 @@ public class ExtrasMessengerPlugin implements Listener {
 
     public ExtrasMessengerPlugin (final Bot bot) {
         this.bot = bot;
-        this.chomens_namespace = bot.config.namespace + ":"; // Ex. chomens_bot: (then it will be appended by channel)
+        this.chomens_namespace = bot.config.namespace + ":"; // ex. chomens_bot: (then it will be appended by a channel)
 
         bot.listener.addListener(this);
     }

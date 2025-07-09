@@ -31,7 +31,7 @@ import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-// This is inspired from the ChomeNS Bot Proxy which is in the JavaScript version of ChomeNS Bot.
+// This is inspired by the ChomeNS Bot Proxy, which is in the JavaScript version of ChomeNS Bot.
 public class ChomeNSModIntegrationPlugin implements Listener {
     private static final String ID = "chomens_mod";
 

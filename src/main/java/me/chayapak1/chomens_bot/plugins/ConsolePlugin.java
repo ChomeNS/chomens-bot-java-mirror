@@ -194,11 +194,20 @@ public class ConsolePlugin implements Completer {
         private ClickEvent mergeClickEvent (final ClickEvent clickEvent, final ConsoleFormatContext context) {
             if (clickEvent == null) return null;
 
-            final String value = clickEvent.value();
+            if (!clickEvent.action().supports(ClickEvent.Payload.string(""))) return clickEvent;
+
+            final String value = ((ClickEvent.Payload.Text) clickEvent.payload()).value();
             final String arg = context.args().get(value);
             if (arg == null) return clickEvent;
 
-            return ClickEvent.clickEvent(clickEvent.action(), arg);
+            return switch (clickEvent.action()) {
+                case OPEN_URL -> ClickEvent.openUrl(arg);
+                case OPEN_FILE -> ClickEvent.openFile(arg);
+                case RUN_COMMAND -> ClickEvent.runCommand(arg);
+                case SUGGEST_COMMAND -> ClickEvent.suggestCommand(arg);
+                case COPY_TO_CLIPBOARD -> ClickEvent.copyToClipboard(arg);
+                default -> clickEvent;
+            };
         }
     }
 }

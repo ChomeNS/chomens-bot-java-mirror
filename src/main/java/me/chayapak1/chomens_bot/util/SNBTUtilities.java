@@ -19,11 +19,11 @@ import java.util.Set;
 public class SNBTUtilities {
     private static final GsonComponentSerializer SERIALIZER_1_21_4 =
             GsonComponentSerializer.builder()
-                    .options(JSONOptions.byDataVersion().at(4174)) // 24w44a, 1.21.4
+                    .options(JSONOptions.byDataVersion().at(4174)) // 24w44a
                     .build();
-    private static final GsonComponentSerializer SERIALIZER_1_21_5 =
+    private static final GsonComponentSerializer SERIALIZER_1_21_6 =
             GsonComponentSerializer.builder()
-                    .options(JSONOptions.byDataVersion().at(4298)) // 25w02a, 1.21.5, uses snake case for events
+                    .options(JSONOptions.byDataVersion().at(4422)) // 25w15a
                     .build();
 
     private static final String QUOTE = "'";
@@ -39,7 +39,7 @@ public class SNBTUtilities {
 
     public static String fromComponent (final boolean useSNBTComponents, final Component component) {
         if (!useSNBTComponents) return SERIALIZER_1_21_4.serialize(component);
-        else return fromJson(SERIALIZER_1_21_5.serializeToTree(component));
+        else return fromJson(SERIALIZER_1_21_6.serializeToTree(component));
     }
 
     // RIPPED from https://minecraft.wiki/w/NBT_format#Conversion_from_JSON

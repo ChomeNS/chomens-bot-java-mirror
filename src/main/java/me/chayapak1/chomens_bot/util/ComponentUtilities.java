@@ -41,9 +41,11 @@ public class ComponentUtilities {
     private static final Pattern ARG_PATTERN = Pattern.compile("%(?:(\\d+)\\$)?([A-Za-z%]|$)");
     private static final Pattern DISCORD_ANSI_PATTERN = Pattern.compile("(\\u001b\\[\\d+m)");
 
+    // we are using our own total depth counter instead of adventure's
+    // because we don't want to throw an exception when exceeded the depth limit
     private static final ThreadLocal<Integer> TOTAL_DEPTH = ThreadLocal.withInitial(() -> 0);
 
-    private static final int MAX_DEPTH = 512; // same as adventure
+    private static final int MAX_DEPTH = 512;
 
     private static Map<String, String> loadJsonStringMap (final String name) {
         final Map<String, String> map = new Object2ObjectOpenHashMap<>();
@@ -250,9 +252,7 @@ public class ComponentUtilities {
                         throw new IllegalArgumentException();
 
                     final int currentTotalDepth = TOTAL_DEPTH.get();
-
                     if (currentTotalDepth > MAX_DEPTH) return;
-
                     TOTAL_DEPTH.set(currentTotalDepth + 1);
 
                     result.add(
