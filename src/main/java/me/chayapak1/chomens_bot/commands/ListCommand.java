@@ -56,12 +56,12 @@ public class ListCommand extends Command {
                     .append(Component.newline())
                     .append(Component.newline())
                     .append(
-                            entry.persistingData.usernames.isEmpty()
-                                    ? Component.translatable(
+                            entry.persistingData.usernames.isEmpty() ?
+                                    Component.translatable(
                                             "commands.list.no_other_usernames",
                                             NamedTextColor.GRAY
-                                    )
-                                    : Component.translatable(
+                                    ) :
+                                    Component.translatable(
                                             "commands.list.with_usernames",
                                             bot.colorPalette.secondary,
                                             Component
@@ -120,22 +120,33 @@ public class ListCommand extends Command {
                     .append(Component.newline())
                     .append(Component.translatable("commands.generic.shift_click_to_insert_uuid", NamedTextColor.GREEN));
 
-            playersComponent.add(
-                    Component
-                            .translatable(
-                                    "%s",
-                                    entry.displayName == null ?
-                                            Component.text(entry.profile.getName()) :
-                                            entry.displayName
-                            )
-                            .hoverEvent(
-                                    HoverEvent.showText(hoverEvent)
-                            )
-                            .clickEvent(
-                                    ClickEvent.copyToClipboard(entry.profile.getName())
-                            )
-                            .insertion(entry.profile.getIdAsString())
-            );
+            Component component;
+
+            if (context.inGame) {
+                component = Component.translatable(
+                        "%s",
+                        entry.displayName == null ?
+                                Component.text(entry.profile.getName()) :
+                                entry.displayName
+                );
+            } else {
+                component = Component.translatable(
+                        "%s (%s - %s)",
+                        NamedTextColor.DARK_GRAY,
+                        entry.displayName == null ?
+                                Component.text(entry.profile.getName(), NamedTextColor.WHITE) :
+                                entry.displayName.colorIfAbsent(NamedTextColor.WHITE),
+                        Component.text(entry.profile.getName(), NamedTextColor.WHITE),
+                        Component.text(entry.profile.getIdAsString(), bot.colorPalette.uuid)
+                );
+            }
+
+            component = component
+                    .hoverEvent(HoverEvent.showText(hoverEvent))
+                    .clickEvent(ClickEvent.copyToClipboard(entry.profile.getName()))
+                    .insertion(entry.profile.getIdAsString());
+
+            playersComponent.add(component);
         }
 
         return Component.empty()
@@ -144,8 +155,6 @@ public class ListCommand extends Command {
                 .append(Component.text(list.size(), NamedTextColor.GRAY))
                 .append(Component.text(")", NamedTextColor.DARK_GRAY))
                 .append(Component.newline())
-                .append(
-                        Component.join(JoinConfiguration.newlines(), playersComponent)
-                );
+                .append(Component.join(JoinConfiguration.newlines(), playersComponent));
     }
 }
