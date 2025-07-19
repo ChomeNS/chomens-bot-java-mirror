@@ -131,13 +131,19 @@ public class ListCommand extends Command {
                 );
             } else {
                 component = Component.translatable(
-                        "%s (%s - %s)",
+                        "%s (%s - %s - %s)",
                         NamedTextColor.DARK_GRAY,
                         entry.displayName == null ?
                                 Component.text(entry.profile.getName(), NamedTextColor.WHITE) :
                                 entry.displayName.colorIfAbsent(NamedTextColor.WHITE),
                         Component.text(entry.profile.getName(), NamedTextColor.WHITE),
-                        Component.text(entry.profile.getIdAsString(), bot.colorPalette.uuid)
+                        Component.text(entry.profile.getIdAsString(), bot.colorPalette.uuid),
+                        Component.text(
+                                entry.persistingData.ip == null
+                                        ? "N/A"
+                                        : entry.persistingData.ip,
+                                bot.colorPalette.string
+                        )
                 );
             }
 
