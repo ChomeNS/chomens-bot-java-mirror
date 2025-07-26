@@ -106,7 +106,7 @@ public class SNBTUtilities {
 
     // don't wrap the string with quotes when not needed
     // like {abc:def} instead of {abc:'def'}
-    // or some Advanced ones like `abc123.among.us__69` will also return false
+    // or some Advanced ones like `abc123.among--.--us__69` will also return false
     public static boolean needQuotes (final String string) {
         if (
                 string == null
@@ -120,8 +120,8 @@ public class SNBTUtilities {
 
         final char firstChar = string.charAt(0);
 
-        // cannot start with digit, '.', or '+'
-        if (Character.isDigit(firstChar) || firstChar == '.' || firstChar == '+') {
+        // cannot start with 0-9, '-', '.', or '+'
+        if (Character.isDigit(firstChar) || firstChar == '.' || firstChar == '-' || firstChar == '+') {
             return true;
         }
 
