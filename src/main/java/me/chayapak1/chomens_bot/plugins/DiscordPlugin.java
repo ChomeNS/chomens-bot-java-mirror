@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.Main;
+import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.discord.DirectMessageEventHandler;
 import me.chayapak1.chomens_bot.discord.GuildMessageEventHandler;
@@ -99,7 +100,12 @@ public class DiscordPlugin {
 
             bot.listener.addListener(new Listener() {
                 @Override
-                public boolean onSystemMessageReceived (final Component component, final String string, final String _ansi) {
+                public boolean onSystemMessageReceived (
+                        final Component component,
+                        final ChatPacketType packetType,
+                        final String string,
+                        final String unusedAnsi
+                ) {
                     if (string.length() > MAX_ANSI_MESSAGE_LENGTH) {
                         sendMessage(CodeBlockUtilities.escape(string), channelId);
                     } else {

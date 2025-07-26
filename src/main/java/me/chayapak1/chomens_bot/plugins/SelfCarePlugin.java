@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.data.selfCare.SelfCare;
@@ -64,7 +65,12 @@ public class SelfCarePlugin implements Listener {
     }
 
     @Override
-    public boolean onSystemMessageReceived (final Component component, final String string, final String ansi) {
+    public boolean onSystemMessageReceived (
+            final Component component,
+            final ChatPacketType packetType,
+            final String string,
+            final String ansi
+    ) {
         for (final SelfCare selfCare : selfCares) selfCare.onMessageReceived(component, string);
 
         return true;

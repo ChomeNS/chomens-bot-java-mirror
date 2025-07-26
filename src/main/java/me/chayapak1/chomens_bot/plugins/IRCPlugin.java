@@ -4,6 +4,7 @@ import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Configuration;
 import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.contexts.IRCCommandContext;
+import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.util.ColorUtilities;
 import me.chayapak1.chomens_bot.util.I18nUtilities;
@@ -72,7 +73,12 @@ public class IRCPlugin extends ListenerAdapter {
                 }
 
                 @Override
-                public boolean onSystemMessageReceived (final Component component, final String string, final String ansi) {
+                public boolean onSystemMessageReceived (
+                        final Component component,
+                        final ChatPacketType packetType,
+                        final String string,
+                        final String ansi
+                ) {
                     IRCPlugin.this.systemMessageReceived(bot, ansi);
 
                     return true;

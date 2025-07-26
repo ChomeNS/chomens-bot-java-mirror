@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
@@ -20,11 +21,17 @@ public class CommandSpyPlugin implements Listener {
     }
 
     @Override
-    public boolean onSystemMessageReceived (final Component component, final String string, final String ansi) {
+    public boolean onSystemMessageReceived (
+            final Component component,
+            final ChatPacketType packetType,
+            final String string,
+            final String ansi
+    ) {
         final List<Component> children = component.children();
 
         if (
-                !(component instanceof final TextComponent textComponent)
+                packetType != ChatPacketType.SYSTEM
+                        || !(component instanceof final TextComponent textComponent)
                         || children.size() != 2
                         || textComponent.style().isEmpty()
                         || (textComponent.color() != NamedTextColor.AQUA && textComponent.color() != NamedTextColor.YELLOW)

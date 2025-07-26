@@ -60,7 +60,7 @@ public interface Listener {
 
     // chat
     default boolean onPlayerMessageReceived (final PlayerMessage message, final ChatPacketType packetType) { return true; }
-    default boolean onSystemMessageReceived (final Component component, final String string, final String ansi) { return true; }
+    default boolean onSystemMessageReceived (final Component component, final ChatPacketType packetType, final String string, final String ansi) { return true; }
 
     // commandspy
     default void onCommandSpyMessageReceived (final PlayerEntry sender, final String command) { }

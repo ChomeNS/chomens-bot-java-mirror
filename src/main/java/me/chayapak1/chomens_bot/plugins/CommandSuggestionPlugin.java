@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.Command;
+import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
@@ -23,11 +24,17 @@ public class CommandSuggestionPlugin implements Listener {
     }
 
     @Override
-    public boolean onSystemMessageReceived (final Component component, final String string, final String ansi) {
+    public boolean onSystemMessageReceived (
+            final Component component,
+            final ChatPacketType packetType,
+            final String string,
+            final String ansi
+    ) {
         final List<Component> children = component.children();
 
         if (
-                !(component instanceof final TextComponent idComponent)
+                packetType != ChatPacketType.SYSTEM
+                        || !(component instanceof final TextComponent idComponent)
                         || !idComponent.content().equals(id)
                         || children.size() != 1
                         || !(children.getFirst() instanceof final TextComponent playerComponent)

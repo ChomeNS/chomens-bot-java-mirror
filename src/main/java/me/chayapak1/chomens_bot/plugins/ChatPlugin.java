@@ -126,7 +126,7 @@ public class ChatPlugin implements Listener {
 
         final PlayerMessage finalPlayerMessage = playerMessage; // ???
         bot.listener.dispatchWithCheck(listener -> {
-            if (!listener.onSystemMessageReceived(component, string, ansi)) return false;
+            if (!listener.onSystemMessageReceived(component, ChatPacketType.SYSTEM, string, ansi)) return false;
 
             return finalPlayerMessage == null
                     || listener.onPlayerMessageReceived(finalPlayerMessage, ChatPacketType.SYSTEM);
@@ -233,7 +233,7 @@ public class ChatPlugin implements Listener {
 
         bot.listener.dispatchWithCheck(listener -> {
             if (!listener.onPlayerMessageReceived(playerMessage, ChatPacketType.PLAYER)) return false;
-            return listener.onSystemMessageReceived(systemComponent, string, ansi);
+            return listener.onSystemMessageReceived(systemComponent, ChatPacketType.PLAYER, string, ansi);
         });
     }
 
@@ -258,8 +258,8 @@ public class ChatPlugin implements Listener {
             final String string = ComponentUtilities.stringify(chatTypeComponent);
             final String ansi = ComponentUtilities.stringifyAnsi(chatTypeComponent);
 
-            bot.listener.dispatchWithCheck(listener ->
-                                                   listener.onSystemMessageReceived(chatTypeComponent, string, ansi));
+            bot.listener.dispatchWithCheck(listener -> listener.onSystemMessageReceived(
+                    chatTypeComponent, ChatPacketType.DISGUISED, string, ansi));
 
             for (final ChatParser parser : chatParsers) {
                 final PlayerMessage parsed = parser.parse(chatTypeComponent);
@@ -290,7 +290,7 @@ public class ChatPlugin implements Listener {
 
             bot.listener.dispatchWithCheck(listener -> {
                 if (!listener.onPlayerMessageReceived(playerMessage, ChatPacketType.DISGUISED)) return false;
-                return listener.onSystemMessageReceived(component, string, ansi);
+                return listener.onSystemMessageReceived(component, ChatPacketType.DISGUISED, string, ansi);
             });
         }
     }

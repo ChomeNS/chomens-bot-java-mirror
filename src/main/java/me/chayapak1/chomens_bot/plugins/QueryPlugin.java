@@ -3,6 +3,7 @@ package me.chayapak1.chomens_bot.plugins;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.util.RandomStringUtilities;
 import net.kyori.adventure.text.*;
@@ -50,10 +51,16 @@ public class QueryPlugin implements Listener {
     }
 
     @Override
-    public boolean onSystemMessageReceived (final Component component, final String string, final String ansi) {
+    public boolean onSystemMessageReceived (
+            final Component component,
+            final ChatPacketType packetType,
+            final String string,
+            final String ansi
+    ) {
         if (
-                !(component instanceof final TranslatableComponent rootTranslatable) ||
-                        !rootTranslatable.key().equals(ID)
+                packetType != ChatPacketType.SYSTEM
+                        || !(component instanceof final TranslatableComponent rootTranslatable)
+                        || !rootTranslatable.key().equals(ID)
         ) return true;
 
         final List<TranslationArgument> arguments = rootTranslatable.arguments();

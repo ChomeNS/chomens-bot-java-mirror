@@ -14,6 +14,7 @@ import me.chayapak1.chomens_bot.chomeNSMod.clientboundPackets.ClientboundMessage
 import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundRunCommandPacket;
 import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundRunCoreCommandPacket;
 import me.chayapak1.chomens_bot.chomeNSMod.serverboundPackets.ServerboundSuccessfulHandshakePacket;
+import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.chomeNSMod.PayloadMetadata;
 import me.chayapak1.chomens_bot.data.chomeNSMod.PayloadState;
 import me.chayapak1.chomens_bot.data.listener.Listener;
@@ -209,10 +210,16 @@ public class ChomeNSModIntegrationPlugin implements Listener {
     }
 
     @Override
-    public boolean onSystemMessageReceived (final Component component, final String string, final String ansi) {
+    public boolean onSystemMessageReceived (
+            final Component component,
+            final ChatPacketType packetType,
+            final String string,
+            final String ansi
+    ) {
         if (
-                !(component instanceof final TranslatableComponent translatableComponent) ||
-                        !translatableComponent.key().isEmpty()
+                packetType != ChatPacketType.SYSTEM
+                        || !(component instanceof final TranslatableComponent translatableComponent)
+                        || !translatableComponent.key().isEmpty()
         ) return true;
 
         final List<TranslationArgument> arguments = translatableComponent.arguments();

@@ -1,12 +1,14 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.logging.LogType;
 import me.chayapak1.chomens_bot.util.ExceptionUtilities;
 import me.chayapak1.chomens_bot.util.I18nUtilities;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.geysermc.mcprotocollib.network.event.session.ConnectedEvent;
 import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 
@@ -81,8 +83,21 @@ public class LoggerPlugin implements Listener {
     }
 
     @Override
-    public boolean onSystemMessageReceived (final Component component, final String string, final String ansi) {
-        log(LogType.CHAT, component);
+    public boolean onSystemMessageReceived (
+            final Component component,
+            final ChatPacketType packetType,
+            final String string,
+            final String ansi
+    ) {
+        log(
+                LogType.CHAT,
+                Component.translatable(
+                        "[%s] %s",
+                        NamedTextColor.DARK_GRAY,
+                        Component.text(packetType.shortName, NamedTextColor.GRAY),
+                        component.colorIfAbsent(NamedTextColor.WHITE)
+                )
+        );
 
         return true;
     }
