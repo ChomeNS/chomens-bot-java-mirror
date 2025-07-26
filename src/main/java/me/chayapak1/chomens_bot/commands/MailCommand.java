@@ -172,15 +172,15 @@ public class MailCommand extends Command {
                             .append(Component.newline())
                             .append(Component.join(JoinConfiguration.newlines(), mailsComponent));
 
-                    final Component renderedComponent = I18nUtilities.render(component);
-
                     if (context.inGame) {
+                        final Component renderedComponent = I18nUtilities.render(component);
+
                         bot.chat.tellraw(
                                 renderedComponent,
                                 context.sender.profile.getId()
                         );
                     } else {
-                        context.sendOutput(renderedComponent);
+                        context.sendOutput(component);
                     }
 
                     bot.mail.clear(sender.profile.getName());
