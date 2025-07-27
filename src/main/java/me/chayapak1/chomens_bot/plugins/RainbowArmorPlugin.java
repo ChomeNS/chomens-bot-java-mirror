@@ -13,10 +13,10 @@ import java.util.Map;
 
 public class RainbowArmorPlugin implements Listener {
     private static final int[] LEATHER_ARMORS = new int[] {
-            896, // helmet
-            897, // chestplate
-            898, // leggings
-            899 // boots
+            913, // helmet
+            914, // chestplate
+            915, // leggings
+            916 // boots
     };
 
     private final Bot bot;
