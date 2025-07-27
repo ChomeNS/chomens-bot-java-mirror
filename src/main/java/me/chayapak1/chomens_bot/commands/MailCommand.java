@@ -31,7 +31,7 @@ public class MailCommand extends Command {
                 new String[] {},
                 TrustLevel.PUBLIC,
                 false,
-                new ChatPacketType[] { ChatPacketType.SYSTEM, ChatPacketType.DISGUISED }
+                new ChatPacketType[] { ChatPacketType.DISGUISED }
         );
     }
 
