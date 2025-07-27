@@ -25,7 +25,10 @@ public class RestartCommand extends Command {
 
         final String reason = context.getString(true, false);
 
-        Main.stop(12, reason.isEmpty() ? null : reason, I18nUtilities.get("info.restarting"));
+        new Thread(
+                () -> Main.stop(12, reason.isEmpty() ? null : reason, I18nUtilities.get("info.restarting")),
+                "ChomeNS Bot Shutdown Thread"
+        ).start();
 
         return Component.translatable("commands.restart.output", bot.colorPalette.defaultColor);
     }

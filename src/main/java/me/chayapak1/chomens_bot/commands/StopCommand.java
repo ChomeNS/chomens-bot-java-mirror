@@ -24,7 +24,10 @@ public class StopCommand extends Command {
 
         final String reason = context.getString(true, false);
 
-        Main.stop(0, reason.isEmpty() ? null : reason);
+        new Thread(
+                () -> Main.stop(0, reason.isEmpty() ? null : reason),
+                "ChomeNS Bot Shutdown Thread"
+        ).start();
 
         return Component.translatable("commands.stop.output", bot.colorPalette.defaultColor);
     }
