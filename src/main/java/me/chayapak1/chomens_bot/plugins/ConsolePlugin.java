@@ -17,10 +17,13 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.jline.reader.*;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
 public class ConsolePlugin implements Completer {
+    private static final Path HISTORY_PATH = Path.of(".console_history");
     private static final ConsoleFormatRenderer RENDERER = new ConsoleFormatRenderer();
 
     private final List<Bot> allBots;
@@ -40,9 +43,9 @@ public class ConsolePlugin implements Completer {
         this.reader = LineReaderBuilder
                 .builder()
                 .completer(this)
+                .variable(LineReader.HISTORY_FILE, HISTORY_PATH)
+                .option(LineReader.Option.DISABLE_EVENT_EXPANSION, true)
                 .build();
-
-        reader.option(LineReader.Option.DISABLE_EVENT_EXPANSION, true);
 
         final Thread thread = new Thread(
                 () -> {
@@ -55,6 +58,10 @@ public class ConsolePlugin implements Completer {
                         }
 
                         handleLine(line);
+
+                        try {
+                            reader.getHistory().save();
+                        } catch (final IOException ignored) { }
                     }
                 },
                 "Console Thread"
