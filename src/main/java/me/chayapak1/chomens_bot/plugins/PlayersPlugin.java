@@ -318,7 +318,7 @@ public class PlayersPlugin implements Listener {
             // we did get the output from the server, and
             // the player doesn't exist or the NBT path doesn't exist
             // i also check for empty target name for the empty string username kind of people
-            if (lastKnownName.isEmpty() && !target.profile.getName().isEmpty()) {
+            if (lastKnownName == null && !target.profile.getName().isEmpty()) {
                 final boolean removed = list.remove(target);
 
                 // checking if removed prevents the event from being called twice
@@ -326,7 +326,9 @@ public class PlayersPlugin implements Listener {
                 if (removed) {
                     bot.listener.dispatch(listener -> listener.onPlayerLeft(target));
                 }
-            } else if (!lastKnownName.equals(target.profile.getName())) {
+
+                return null;
+            } else if (lastKnownName != null && !lastKnownName.equals(target.profile.getName())) {
                 final PlayerEntry newTarget = new PlayerEntry(
                         new GameProfile(
                                 target.profile.getId(),

@@ -208,7 +208,7 @@ public class MusicCommand extends Command implements Listener {
         );
 
         future.thenApply(output -> {
-            if (output.isEmpty()) {
+            if (output == null) {
                 context.sendOutput(Component.translatable("commands.music.playitem.error.no_item_nbt", NamedTextColor.RED));
                 return null;
             }

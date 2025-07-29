@@ -112,7 +112,7 @@ public class HashingUtilities {
 
     public static String generateDiscordHash (final long userId, final TrustLevel trustLevel) {
         // i wouldn't say it's a hash, it's just a random string
-        final String string = RandomStringUtilities.generate(16);
+        final String string = RandomStringUtilities.generate(16, RandomStringUtilities.ALPHANUMERIC);
 
         discordHashes.putIfAbsent(userId, Pair.of(trustLevel, string));
 
@@ -161,7 +161,7 @@ public class HashingUtilities {
                 }
             }
 
-            final String generatedKey = RandomStringUtilities.generate(48);
+            final String generatedKey = RandomStringUtilities.generate(48, RandomStringUtilities.ALPHANUMERIC);
 
             if (data == null) {
                 data = new KeysData(new ArrayList<>(), userId);

@@ -191,7 +191,7 @@ public class Bot extends SessionAdapter {
 
         if (!isTransferring) {
             username = options.username == null ?
-                    RandomStringUtilities.generate(8) :
+                    RandomStringUtilities.generate(8, RandomStringUtilities.ALPHANUMERIC) :
                     options.username;
         }
 

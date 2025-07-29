@@ -78,7 +78,7 @@ public class MailCommand extends Command {
 
                 future.thenApply(output -> {
                     try {
-                        if (output.isEmpty()) {
+                        if (output == null) {
                             throw new CommandException(Component.translatable("commands.mail.sendselecteditem.error.no_item_nbt"));
                         }
 

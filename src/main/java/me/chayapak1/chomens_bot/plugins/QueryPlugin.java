@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import me.chayapak1.chomens_bot.data.listener.Listener;
+import me.chayapak1.chomens_bot.util.ComponentUtilities;
 import me.chayapak1.chomens_bot.util.RandomStringUtilities;
 import net.kyori.adventure.text.*;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -64,18 +65,13 @@ public class QueryPlugin implements Listener {
         ) return true;
 
         final List<TranslationArgument> arguments = rootTranslatable.arguments();
-
         if (arguments.size() != 1) return false;
 
         final Component cargosComponent = arguments.getFirst().asComponent();
 
-        if (
-                !(cargosComponent instanceof final TextComponent cargosTextComponent) ||
-                        !cargosTextComponent.content().isEmpty()
-        ) return false;
+        if (!(cargosComponent instanceof TextComponent)) return false;
 
         final List<Component> cargos = cargosComponent.children();
-
         for (final Component cargo : cargos) processCargo(cargo);
 
         return false;
@@ -111,10 +107,13 @@ public class QueryPlugin implements Listener {
     }
 
     private void processCargo (final Component cargo) {
-        if (!(cargo instanceof final TextComponent idTextComponent)) return;
+        final String id = cargo.insertion();
 
-        final String id = idTextComponent.content();
-        if (id.length() != 16) return;
+        if (
+                !(cargo instanceof TextComponent)
+                        || id == null
+                        || id.length() != (4 + 1)
+        ) return;
 
         final CompletableFuture<String> future = requests.get(id);
         if (future == null) return;
@@ -122,24 +121,27 @@ public class QueryPlugin implements Listener {
 
         final boolean interpret = id.endsWith("1");
 
-        final List<Component> children = cargo.children();
-        if (children.size() > 1) return;
+        final Component result = cargo.insertion(null);
 
-        if (children.isEmpty()) {
-            future.complete("");
-        } else if (!interpret && !(children.getFirst() instanceof TextComponent)) {
+        if (result.equals(Component.empty())) {
             future.complete(null);
         } else {
             final String stringOutput = interpret
-                    ? GsonComponentSerializer.gson().serialize(children.getFirst()) // seems very
-                    : ((TextComponent) children.getFirst()).content();
+                    ? GsonComponentSerializer.gson().serialize(result) // seems very
+                    : ComponentUtilities.stringify(result);
 
             future.complete(stringOutput);
         }
     }
 
     private ObjectObjectImmutablePair<String, CompletableFuture<String>> getFutureAndId (final boolean interpret) {
-        final String id = RandomStringUtilities.generate(15) + (interpret ? "1" : "0");
+        final String id = String.format(
+                "%s%s",
+                // 4 characters are enough, (26 * 2) ** 4 = 7,311,616 (we need at least 150 * 1000)
+                // (26 * 2 = a-zA-Z, ** 4 = 4 characters)
+                RandomStringUtilities.generate(4, RandomStringUtilities.ALPHABETS_ONLY),
+                interpret ? "1" : "0"
+        );
 
         final CompletableFuture<String> future = new CompletableFuture<>();
         requests.put(id, future);
@@ -159,21 +161,18 @@ public class QueryPlugin implements Listener {
 
         final String id = pair.left();
 
-        final Component component = Component
-                .text(id)
-                .append(
-                        Component.blockNBT(
+        final Component component =
+                Component
+                        .blockNBT(
                                 path,
-
                                 interpret,
-
                                 BlockNBTComponent.WorldPos.worldPos(
                                         BlockNBTComponent.WorldPos.Coordinate.absolute(location.getX()),
                                         BlockNBTComponent.WorldPos.Coordinate.absolute(location.getY()),
                                         BlockNBTComponent.WorldPos.Coordinate.absolute(location.getZ())
                                 )
                         )
-                );
+                        .insertion(id);
 
         addComponent(component, useCargo);
 
@@ -187,21 +186,17 @@ public class QueryPlugin implements Listener {
 
         final String id = pair.left();
 
-        final Component component = Component
-                .text(id)
-                .append(
-                        Component.entityNBT(
-                                path,
-                                selector
-                        )
-                );
+        final Component component =
+                Component
+                        .entityNBT(path, selector)
+                        .insertion(id);
 
         addComponent(component, useCargo);
 
         return pair.right();
     }
 
-    // should there be storage query?
+    // should there be a storage query too? right now it won't be used though...
 
     @Override
     public void disconnected (final DisconnectedEvent event) {
