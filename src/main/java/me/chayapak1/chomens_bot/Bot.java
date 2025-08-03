@@ -5,6 +5,7 @@ import me.chayapak1.chomens_bot.data.color.ColorPalette;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.plugins.*;
 import me.chayapak1.chomens_bot.util.ComponentUtilities;
+import me.chayapak1.chomens_bot.util.MathUtilities;
 import me.chayapak1.chomens_bot.util.RandomStringUtilities;
 import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.key.Key;
@@ -191,7 +192,10 @@ public class Bot extends SessionAdapter {
 
         if (!isTransferring) {
             username = options.username == null ?
-                    RandomStringUtilities.generate(8, RandomStringUtilities.ALPHANUMERIC) :
+                    RandomStringUtilities.generate(
+                            MathUtilities.between(3, 16),
+                            RandomStringUtilities.ALPHANUMERIC
+                    ) :
                     options.username;
         }
 
