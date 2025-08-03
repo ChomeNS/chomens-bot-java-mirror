@@ -84,18 +84,6 @@ public class PlayerFilterPlugin implements Listener {
         return null;
     }
 
-    private List<PlayerFilter> getPlayers (final String name) {
-        final List<PlayerFilter> matches = new ArrayList<>();
-
-        for (final PlayerFilter playerFilter : localList) {
-            if (matchesPlayer(name, playerFilter)) {
-                matches.add(playerFilter);
-            }
-        }
-
-        return matches;
-    }
-
     private boolean matchesPlayer (final String name, final PlayerFilter player) {
         if (player.regex()) {
             final Pattern pattern = compilePattern(player);
@@ -129,9 +117,7 @@ public class PlayerFilterPlugin implements Listener {
     public void onPlayerJoined (final PlayerEntry target) {
         bot.executorService.execute(() -> {
             final PlayerFilter player = getPlayer(target.profile.getName());
-
             if (player == null) return;
-
             bot.filterManager.add(target, player.reason());
         });
     }
@@ -152,16 +138,14 @@ public class PlayerFilterPlugin implements Listener {
             bot.logger.error(e);
         }
 
-        final List<PlayerFilter> matches = getPlayers(playerName);
-
-        // loop through all the servers too
+        // loop through all the servers and check too
         for (final Bot bot : bot.bots) {
-            for (final PlayerFilter match : matches) {
-                final PlayerEntry entry = bot.players.getEntry(match.playerName());
-
-                if (entry == null) continue;
-
-                bot.filterManager.add(entry, match.reason());
+            synchronized (bot.players.list) {
+                for (final PlayerEntry entry : bot.players.list) {
+                    final PlayerFilter player = getPlayer(entry.profile.getName());
+                    if (player == null) continue;
+                    bot.filterManager.add(entry, player.reason());
+                }
             }
         }
     }
@@ -171,9 +155,7 @@ public class PlayerFilterPlugin implements Listener {
 
         try {
             final PreparedStatement statement = Main.database.connection.prepareStatement(REMOVE_FILTER);
-
             statement.setString(1, playerName);
-
             statement.executeUpdate();
 
             list();
@@ -187,7 +169,6 @@ public class PlayerFilterPlugin implements Listener {
 
         try {
             Main.database.update(CLEAR_FILTER);
-
             list();
         } catch (final SQLException e) {
             bot.logger.error(e);
