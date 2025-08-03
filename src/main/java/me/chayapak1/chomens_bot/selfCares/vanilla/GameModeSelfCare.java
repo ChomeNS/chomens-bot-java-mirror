@@ -9,6 +9,7 @@ import org.geysermc.mcprotocollib.protocol.data.game.level.notify.GameEvent;
 import org.geysermc.mcprotocollib.protocol.data.game.level.notify.GameEventValue;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.ClientboundLoginPacket;
 import org.geysermc.mcprotocollib.protocol.packet.ingame.clientbound.level.ClientboundGameEventPacket;
+import org.geysermc.mcprotocollib.protocol.packet.ingame.serverbound.player.ServerboundChangeGameModePacket;
 
 public class GameModeSelfCare extends SelfCare {
     public GameModeSelfCare (final Bot bot) {
@@ -48,6 +49,7 @@ public class GameModeSelfCare extends SelfCare {
 
     @Override
     public void run () {
-        bot.chat.sendCommandInstantly("minecraft:gamemode creative @s[type=player]");
+        // ViaVersion will automatically convert this to /gamemode creative on servers that don't have this packet
+        bot.session.send(new ServerboundChangeGameModePacket(GameMode.CREATIVE));
     }
 }
