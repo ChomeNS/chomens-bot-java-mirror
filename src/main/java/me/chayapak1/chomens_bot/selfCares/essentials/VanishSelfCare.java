@@ -5,7 +5,7 @@ import me.chayapak1.chomens_bot.data.selfCare.EssentialsSelfCare;
 import net.kyori.adventure.text.Component;
 
 public class VanishSelfCare extends EssentialsSelfCare {
-    public boolean visible = false;
+    public boolean visible = !bot.config.selfCare.vanish;
 
     private boolean isVanished = false;
 
