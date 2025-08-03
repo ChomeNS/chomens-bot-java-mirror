@@ -48,7 +48,7 @@ public class TickPlugin implements Listener {
             }
         });
 
-        if (!receivedDebugSample) dispatchTick();
+        if (!receivedDebugSample || bot.selfCare.data.permissionLevel < 2) dispatchTick();
     }
 
     private void tickLocalSecond () {
