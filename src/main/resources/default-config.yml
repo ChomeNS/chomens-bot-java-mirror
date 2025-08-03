@@ -150,8 +150,6 @@ bots:
     port: 25565
     serverName: 'Localhost'
     # be sure to set discordChannelId and/or ircChannel here if you use the discord integration
-    reconnectDelay: 2000
-    chatQueueDelay: 125
 
   # or with the optional ones
   # - host: 'localhost'
@@ -170,6 +168,7 @@ bots:
   #   resolveSRV: true
   #   reconnectDelay: 2000
   #   chatQueueDelay: 125
+  #   selfCareDelay: 1000
   #   coreRateLimit:
   #     limit: 10
   #     reset: 1000 # in milliseconds

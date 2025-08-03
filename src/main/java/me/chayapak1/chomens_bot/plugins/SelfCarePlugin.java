@@ -32,6 +32,8 @@ public class SelfCarePlugin implements Listener {
 
     private final List<SelfCare> selfCares = new ArrayList<>();
 
+    private long lastTickTime = 0;
+
     public SelfCarePlugin (final Bot bot) {
         this.bot = bot;
 
@@ -77,14 +79,14 @@ public class SelfCarePlugin implements Listener {
     }
 
     @Override
-    public void onSecondTick () {
-        if (!bot.loggedIn) return;
+    public void onTick () {
+        if (System.currentTimeMillis() - this.lastTickTime < bot.options.selfCareDelay) return;
 
         for (final SelfCare selfCare : selfCares) {
             if (!selfCare.needsRunning || !selfCare.shouldRun()) continue;
-
             selfCare.run();
 
+            this.lastTickTime = System.currentTimeMillis();
             break; // we do not want to run all of them in parallel
         }
     }

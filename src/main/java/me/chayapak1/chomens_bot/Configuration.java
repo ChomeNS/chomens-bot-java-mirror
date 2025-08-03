@@ -166,6 +166,7 @@ public class Configuration {
         public boolean resolveSRV = true;
         public int reconnectDelay = 2000;
         public int chatQueueDelay = 125;
+        public int selfCareDelay = 1000;
         public EssentialsMessages essentialsMessages = new EssentialsMessages();
         public CoreRateLimit coreRateLimit = new CoreRateLimit();
 
