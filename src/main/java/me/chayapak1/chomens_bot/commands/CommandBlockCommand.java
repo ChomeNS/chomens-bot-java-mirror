@@ -19,8 +19,8 @@ import java.util.regex.PatternSyntaxException;
 
 // based off of HBot's supercb command
 public class CommandBlockCommand extends Command {
-    private static final Pattern USER_PATTERN = Pattern.compile("\\{username\\{(.*?)}}");
-    private static final Pattern UUID_PATTERN = Pattern.compile("\\{uuid\\{(.*?)}}");
+    private static final Pattern USER_PATTERN = Pattern.compile("\\{username\\{([^{}]+(?:\\{[^{}]*}[^{}]*)*)}}");
+    private static final Pattern UUID_PATTERN = Pattern.compile("\\{uuid\\{([^{}]+(?:\\{[^{}]*}[^{}]*)*)}}");
 
     public CommandBlockCommand () {
         super(
