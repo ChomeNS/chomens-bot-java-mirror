@@ -24,7 +24,7 @@ public class DatabasePlugin {
     public DatabasePlugin (final Configuration config) {
         try {
             connection = DriverManager.getConnection(
-                    "jdbc:mariadb://" + config.database.address + "/chomens_bot",
+                    config.database.address,
                     config.database.username,
                     config.database.password
             );

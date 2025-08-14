@@ -57,7 +57,7 @@ public class Configuration {
 
     public static class Database {
         public boolean enabled = false;
-        public String address = "localhost";
+        public String address = "jdbc:mariadb://localhost/chomens_bot";
         public String username = "chomens_bot";
         public String password = "123456";
     }
