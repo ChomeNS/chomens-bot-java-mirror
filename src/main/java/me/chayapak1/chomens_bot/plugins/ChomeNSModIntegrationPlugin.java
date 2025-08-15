@@ -26,6 +26,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.TranslationArgument;
+import org.geysermc.mcprotocollib.network.event.session.DisconnectedEvent;
 
 import java.lang.reflect.InvocationTargetException;
 import java.security.SecureRandom;
@@ -274,10 +275,8 @@ public class ChomeNSModIntegrationPlugin implements Listener {
 
                 if (
                         packet == null ||
-                                (
-                                        !(packet instanceof ServerboundSuccessfulHandshakePacket) &&
-                                                !connectedPlayers.contains(player)
-                                )
+                                (!(packet instanceof ServerboundSuccessfulHandshakePacket) &&
+                                        !connectedPlayers.contains(player))
                 ) return false;
 
                 handlePacket(player, packet);
@@ -308,13 +307,20 @@ public class ChomeNSModIntegrationPlugin implements Listener {
         bot.listener.dispatch(listener -> listener.onChomeNSModPacketReceived(player, packet));
     }
 
+    public void sendMessage (final PlayerEntry target, final Component message) {
+        send(target, new ClientboundMessagePacket(message));
+    }
+
     @Override
     public void onPlayerLeft (final PlayerEntry target) {
         connectedPlayers.removeIf(player -> player.equals(target));
         receivedParts.remove(target);
     }
 
-    public void sendMessage (final PlayerEntry target, final Component message) {
-        send(target, new ClientboundMessagePacket(message));
+    @Override
+    public void disconnected (final DisconnectedEvent event) {
+        connectedPlayers.clear();
+        receivedParts.clear();
+        seenMetadata.clear();
     }
 }
