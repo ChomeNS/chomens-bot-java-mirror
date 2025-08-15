@@ -1,6 +1,7 @@
 package me.chayapak1.chomens_bot.plugins;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.entity.EntityData;
 import me.chayapak1.chomens_bot.data.entity.Rotation;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.data.player.PlayerEntry;
@@ -19,19 +20,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-// some part of the code used to be in a test plugin but i thought it would be useful in the future so i moved it here
+// the player position and rotation tracking are currently unused, but i'll keep it for future use
+@SuppressWarnings("unused")
 public class PositionPlugin implements Listener {
     private final Bot bot;
 
     public Vector3d position = Vector3d.from(0, 0, 0);
 
     public boolean isGoingDownFromHeightLimit = false; // cool variable name
-
     private long tpCommandCooldownTime = 0;
 
-    private final Map<Integer, PlayerEntry> entityIdMap = new ConcurrentHashMap<>();
-    private final Map<Integer, Vector3d> positionMap = new ConcurrentHashMap<>();
-    private final Map<Integer, Rotation> rotationMap = new ConcurrentHashMap<>();
+    public final Map<Integer, EntityData> entityIdToData = new ConcurrentHashMap<>();
 
     public PositionPlugin (final Bot bot) {
         this.bot = bot;
@@ -44,7 +43,7 @@ public class PositionPlugin implements Listener {
         handleHeightLimit();
     }
 
-    // notchian clients also does this, where it sends the current position to the server every second
+    // Notchian clients also do this, where it sends the current position to the server every second
     @Override
     public void onSecondTick () {
         if (isGoingDownFromHeightLimit) return;
@@ -93,109 +92,69 @@ public class PositionPlugin implements Listener {
 
         if (entry == null) return;
 
-        entityIdMap.remove(packet.getEntityId());
-        positionMap.remove(packet.getEntityId());
-        rotationMap.remove(packet.getEntityId());
-
-        entityIdMap.put(packet.getEntityId(), entry);
-        positionMap.put(packet.getEntityId(), Vector3d.from(packet.getX(), packet.getY(), packet.getZ()));
-        rotationMap.put(packet.getEntityId(), new Rotation(packet.getYaw(), packet.getPitch()));
+        entityIdToData.remove(packet.getEntityId());
+        entityIdToData.put(
+                packet.getEntityId(),
+                new EntityData(
+                        entry,
+                        Vector3d.from(packet.getX(), packet.getY(), packet.getZ()),
+                        new Rotation(packet.getYaw(), packet.getPitch())
+                )
+        );
     }
 
     private void packetReceived (final ClientboundRemoveEntitiesPacket packet) {
-        final int[] ids = packet.getEntityIds();
-
-        for (final int id : ids) {
-            entityIdMap.remove(id);
-            positionMap.remove(id);
-            rotationMap.remove(id);
-        }
+        for (final int id : packet.getEntityIds()) entityIdToData.remove(id);
     }
 
     private void packetReceived (final ClientboundEntityPositionSyncPacket packet) {
-        final PlayerEntry player = entityIdMap.get(packet.getId());
-
-        if (player == null) return;
-
-        positionMap.remove(packet.getId());
-        rotationMap.remove(packet.getId());
+        final EntityData data = entityIdToData.get(packet.getId());
+        if (data == null) return;
 
         final Vector3d position = packet.getPosition().add(packet.getDeltaMovement());
         final Rotation rotation = new Rotation(packet.getXRot(), packet.getYRot());
 
-        positionMap.put(packet.getId(), position);
-        rotationMap.put(packet.getId(), rotation);
+        data.position = position;
+        data.rotation = rotation;
 
-        bot.listener.dispatch(listener -> listener.onPlayerMoved(player, position, rotation));
+        bot.listener.dispatch(listener -> listener.onPlayerMoved(data.player, position, rotation));
     }
 
     private void packetReceived (final ClientboundMoveEntityRotPacket packet) {
-        final PlayerEntry player = entityIdMap.get(packet.getEntityId());
-
-        if (player == null) return;
+        final EntityData data = entityIdToData.get(packet.getEntityId());
+        if (data == null) return;
 
         final Rotation rotation = new Rotation(packet.getYaw(), packet.getPitch());
+        data.rotation = rotation;
 
-        rotationMap.put(packet.getEntityId(), rotation);
-
-        bot.listener.dispatch(listener -> listener.onPlayerMoved(player, getPlayerPosition(player.profile.getName()), rotation));
+        bot.listener.dispatch(listener -> listener.onPlayerMoved(data.player, data.position, rotation));
     }
 
     private void packetReceived (final ClientboundMoveEntityPosPacket packet) {
-        final PlayerEntry player = entityIdMap.get(packet.getEntityId());
+        final EntityData data = entityIdToData.get(packet.getEntityId());
+        if (data == null) return;
 
-        if (player == null) return;
+        final Vector3d originalPosition = data.position;
+        final Vector3d newPosition = originalPosition.add(packet.getMoveX(), packet.getMoveY(), packet.getMoveZ());
 
-        final Vector3d lastPosition = positionMap.get(packet.getEntityId());
+        data.position = newPosition;
 
-        positionMap.remove(packet.getEntityId());
-
-        // code ported straight from minecraft
-        final Vector3d position;
-
-        if (packet.getMoveX() != 0 || packet.getMoveY() != 0 || packet.getMoveZ() != 0) {
-            position = lastPosition.add(
-                    packet.getMoveX() == 0 ? 0 : packet.getMoveX(),
-                    packet.getMoveY() == 0 ? 0 : packet.getMoveY(),
-                    packet.getMoveZ() == 0 ? 0 : packet.getMoveZ()
-            );
-        } else {
-            position = lastPosition;
-        }
-
-        positionMap.put(packet.getEntityId(), position);
-
-        bot.listener.dispatch(listener -> listener.onPlayerMoved(player, position, getPlayerRotation(player.profile.getName())));
+        bot.listener.dispatch(listener -> listener.onPlayerMoved(data.player, newPosition, data.rotation));
     }
 
     private void packetReceived (final ClientboundMoveEntityPosRotPacket packet) {
-        final PlayerEntry player = entityIdMap.get(packet.getEntityId());
+        final EntityData data = entityIdToData.get(packet.getEntityId());
+        if (data == null) return;
 
-        if (player == null) return;
-
-        final Vector3d lastPosition = positionMap.get(packet.getEntityId());
-
-        positionMap.remove(packet.getEntityId());
-        rotationMap.remove(packet.getEntityId());
-
-        final Vector3d position;
-
-        if (packet.getMoveX() != 0 || packet.getMoveY() != 0 || packet.getMoveZ() != 0) {
-            position = lastPosition.add(
-                    packet.getMoveX() == 0 ? 0 : packet.getMoveX(),
-                    packet.getMoveY() == 0 ? 0 : packet.getMoveY(),
-                    packet.getMoveZ() == 0 ? 0 : packet.getMoveZ()
-            );
-        } else {
-            position = lastPosition;
-        }
+        final Vector3d originalPosition = data.position;
+        final Vector3d newPosition = originalPosition.add(packet.getMoveX(), packet.getMoveY(), packet.getMoveZ());
 
         final Rotation rotation = new Rotation(packet.getYaw(), packet.getPitch());
 
-        positionMap.put(packet.getEntityId(), position);
-        rotationMap.put(packet.getEntityId(), rotation);
+        data.position = newPosition;
+        data.rotation = rotation;
 
-        bot.listener.dispatch(listener -> listener.onPlayerMoved(player, position, rotation));
+        bot.listener.dispatch(listener -> listener.onPlayerMoved(data.player, position, rotation));
     }
 
     // for now this is used in CorePlugin when placing the command block
@@ -249,30 +208,16 @@ public class PositionPlugin implements Listener {
     }
 
     public Vector3d getPlayerPosition (final String playerName) {
-        int entityId = -1;
-        for (final Map.Entry<Integer, PlayerEntry> entry : entityIdMap.entrySet()) {
-            if (entry.getValue().profile.getName().equals(playerName)) entityId = entry.getKey();
-        }
-
-        if (entityId == -1) return null;
-
-        for (final Map.Entry<Integer, Vector3d> entry : positionMap.entrySet()) {
-            if (entry.getKey() == entityId) return entry.getValue();
+        for (final EntityData data : entityIdToData.values()) {
+            if (data.player.profile.getName().equals(playerName)) return data.position;
         }
 
         return null;
     }
 
     public Rotation getPlayerRotation (final String playerName) {
-        int entityId = -1;
-        for (final Map.Entry<Integer, PlayerEntry> entry : entityIdMap.entrySet()) {
-            if (entry.getValue().profile.getName().equals(playerName)) entityId = entry.getKey();
-        }
-
-        if (entityId == -1) return null;
-
-        for (final Map.Entry<Integer, Rotation> entry : rotationMap.entrySet()) {
-            if (entry.getKey() == entityId) return entry.getValue();
+        for (final EntityData data : entityIdToData.values()) {
+            if (data.player.profile.getName().equals(playerName)) return data.rotation;
         }
 
         return null;
