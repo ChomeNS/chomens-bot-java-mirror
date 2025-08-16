@@ -1,6 +1,6 @@
 package me.chayapak1.chomens_bot.commands;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import it.unimi.dsi.fastutil.Pair;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.Command;
@@ -14,7 +14,6 @@ import net.kyori.adventure.text.Component;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class FindAltsCommand extends Command {
     // we allow both, since the flag used to be `allserver`
@@ -54,9 +53,11 @@ public class FindAltsCommand extends Command {
 
             final String ipFromUsername;
 
-            if (playerInTheServer == null || playerInTheServer.persistingData.ip == null)
+            if (playerInTheServer == null || playerInTheServer.persistingData.ip == null) {
                 ipFromUsername = bot.playersDatabase.getPlayerIP(player);
-            else ipFromUsername = playerInTheServer.persistingData.ip;
+            } else {
+                ipFromUsername = playerInTheServer.persistingData.ip;
+            }
 
             if (ipFromUsername == null) {
                 context.sendOutput(handle(bot, player, player, allServer));
@@ -69,7 +70,7 @@ public class FindAltsCommand extends Command {
     }
 
     private Component handle (final Bot bot, final String targetIP, final String player, final boolean allServer) {
-        final Map<String, JsonNode> altsMap = bot.playersDatabase.findPlayerAlts(targetIP, allServer, LIMIT);
+        final Map<String, Pair<Long, String>> altsMap = bot.playersDatabase.findPlayerAlts(targetIP, allServer, LIMIT);
 
         final Component playerComponent = Component.text(player, bot.colorPalette.username);
 
@@ -84,28 +85,17 @@ public class FindAltsCommand extends Command {
                                 Component.translatable(
                                         "%s (%s)",
                                         playerComponent,
-                                        Component
-                                                .text(targetIP)
-                                                .color(bot.colorPalette.number)
+                                        Component.text(targetIP, bot.colorPalette.number)
                                 )
                 )
                 .appendNewline();
 
         final List<String> sorted = altsMap.entrySet().stream()
-                .limit(200) // only find 200 alts because more than this is simply too many
                 .sorted((a, b) -> {
-                    final JsonNode aTimeNode = Optional.ofNullable(a.getValue().get("lastSeen"))
-                            .map(node -> node.get("time"))
-                            .orElse(null);
-                    final JsonNode bTimeNode = Optional.ofNullable(b.getValue().get("lastSeen"))
-                            .map(node -> node.get("time"))
-                            .orElse(null);
+                    final long aTime = a.getValue().left();
+                    final long bTime = b.getValue().left();
 
-                    if (aTimeNode == null && bTimeNode == null) return 0;
-                    if (aTimeNode == null) return 1;
-                    if (bTimeNode == null) return -1;
-
-                    return Long.compare(bTimeNode.asLong(), aTimeNode.asLong());
+                    return Long.compare(bTime, aTime);
                 })
                 .map(Map.Entry::getKey)
                 .toList();

@@ -1,7 +1,6 @@
 package me.chayapak1.chomens_bot.commands;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import it.unimi.dsi.fastutil.Pair;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.Main;
 import me.chayapak1.chomens_bot.command.Command;
@@ -62,29 +61,20 @@ public class SeenCommand extends Command {
 
         DatabasePlugin.EXECUTOR_SERVICE.execute(() -> {
             try {
-                final JsonNode playerElement = bot.playersDatabase.getPlayerData(player);
-                if (playerElement == null) throw new CommandException(Component.translatable(
+                final Pair<Long, String> pair = bot.playersDatabase.getPlayerLastSeen(player);
+                if (pair == null) throw new CommandException(Component.translatable(
                         "commands.seen.error.never_seen",
                         Component.text(player)
                 ));
 
-                final ObjectNode lastSeen = (ObjectNode) playerElement.get("lastSeen");
-
-                if (lastSeen == null || lastSeen.isNull())
-                    throw new CommandException(Component.translatable("commands.seen.error.no_last_seen_entry"));
-
-                final JsonNode time = lastSeen.get("time");
-
-                if (time == null || time.isNull())
-                    throw new CommandException(Component.translatable("commands.seen.error.no_time_entry"));
+                final long time = pair.left();
+                final String server = pair.right();
 
                 final String formattedTime = TimeUtilities.formatTime(
-                        time.asLong(),
+                        time,
                         "EEEE, MMMM d, yyyy, hh:mm:ss a Z",
                         ZoneId.of("UTC")
                 );
-
-                final String server = lastSeen.get("server").asText();
 
                 context.sendOutput(
                         Component.translatable(
