@@ -9,6 +9,7 @@ import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
 import me.chayapak1.chomens_bot.data.chat.ChatPacketType;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.net.URI;
@@ -63,12 +64,14 @@ public class TranslateCommand extends Command {
                 final Result result = OBJECT_MAPPER.readValue(url, Result.class);
 
                 context.sendOutput(
-                        Component
-                                .translatable(
-                                        "commands.translate.result",
-                                        bot.colorPalette.secondary,
-                                        Component.text(result.translation(), NamedTextColor.GREEN)
-                                )
+                        Component.translatable(
+                                "commands.translate.result",
+                                bot.colorPalette.secondary,
+                                Component
+                                        .text(result.translation(), NamedTextColor.GREEN)
+                                        .clickEvent(ClickEvent.copyToClipboard(result.translation()))
+                                        .insertion(result.translation())
+                        )
                 );
             } catch (final Exception e) {
                 context.sendOutput(Component.text(e.toString(), NamedTextColor.RED));
