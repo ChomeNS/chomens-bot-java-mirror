@@ -123,7 +123,8 @@ public class ExtrasMessengerPlugin implements Listener {
         );
     }
 
-    public void registerChannel (final String channel) {
+    public void registerChannel (final String channel) { registerChannel(channel, true); }
+    public void registerChannel (final String channel, final boolean withNamespace) {
         if (!bot.loggedIn) {
             registeredChannels.add(channel);
             return;
@@ -131,7 +132,8 @@ public class ExtrasMessengerPlugin implements Listener {
 
         final ByteBuf buf = Unpooled.buffer();
 
-        writeString(buf, chomens_namespace + channel);
+        if (withNamespace) writeString(buf, chomens_namespace + channel);
+        else writeString(buf, channel);
 
         bot.session.send(
                 new ServerboundCustomPayloadPacket(

@@ -37,7 +37,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ChomeNSModIntegrationPlugin implements Listener {
     private static final String ID = "chomens_mod";
 
-    private static final int CHUNK_SIZE = 31_000 / 2; // some Magical Number
+    private static final int EXTRAS_MESSAGING_CHUNK_SIZE = 32_600;
+    private static final int ACTION_BAR_CHUNK_SIZE = 31_000 / 2; // some Magical Number
 
     private static final long NONCE_EXPIRATION_MS = 30 * 1000; // 30 seconds
 
@@ -92,13 +93,17 @@ public class ChomeNSModIntegrationPlugin implements Listener {
         final byte[] rawBytes = new byte[buf.readableBytes()];
         buf.readBytes(rawBytes);
 
+        final boolean shouldUseExtrasMessenger = bot.extrasMessenger.isSupported;
+
         try {
             final int messageId = RANDOM.nextInt();
 
             final List<byte[]> chunks = new ArrayList<>();
 
-            for (int i = 0; i < rawBytes.length; i += CHUNK_SIZE) {
-                final int end = Math.min(rawBytes.length, i + CHUNK_SIZE);
+            final int chunkSizeToUse = shouldUseExtrasMessenger ? EXTRAS_MESSAGING_CHUNK_SIZE : ACTION_BAR_CHUNK_SIZE;
+
+            for (int i = 0; i < rawBytes.length; i += chunkSizeToUse) {
+                final int end = Math.min(rawBytes.length, i + chunkSizeToUse);
                 final byte[] chunk = Arrays.copyOfRange(rawBytes, i, end);
                 chunks.add(chunk);
             }
@@ -114,9 +119,6 @@ public class ChomeNSModIntegrationPlugin implements Listener {
                 );
                 return;
             }
-
-            // FIXME: not sure how to implement on the mod side yet
-            final boolean supportsExtrasMessaging = false; // bot.extrasMessenger.isSupported;
 
             int i = 1;
 
@@ -136,9 +138,7 @@ public class ChomeNSModIntegrationPlugin implements Listener {
 
                 final byte[] encrypted = Encryptor.encrypt(toSendBytes, bot.config.chomeNSMod.password);
 
-                if (supportsExtrasMessaging) {
-                    // TODO: test this
-                    // TODO: implement receiver
+                if (shouldUseExtrasMessenger) {
                     bot.extrasMessenger.sendPayload(ID, encrypted);
                 } else {
                     final String ascii85EncryptedPayload = Ascii85.encode(encrypted);
@@ -240,50 +240,67 @@ public class ChomeNSModIntegrationPlugin implements Listener {
                     bot.config.chomeNSMod.password
             );
 
-            final ByteBuf chunkBuf = Unpooled.wrappedBuffer(decrypted);
-
-            final UUID uuid = Types.readUUID(chunkBuf);
-
-            final PlayerEntry player = bot.players.getEntry(uuid);
-
-            if (player == null) return false;
-
-            final int messageId = chunkBuf.readInt();
-            final short payloadStateIndex = chunkBuf.readShort();
-
-            final PayloadState payloadState = PayloadState.values()[payloadStateIndex];
-
-            receivedParts.putIfAbsent(player, new ConcurrentHashMap<>());
-
-            final Map<Integer, ByteBuf> playerReceivedParts = receivedParts.get(player);
-
-            if (!playerReceivedParts.containsKey(messageId)) playerReceivedParts.put(messageId, Unpooled.buffer());
-
-            final ByteBuf buf = playerReceivedParts.get(messageId);
-
-            buf.writeBytes(chunkBuf); // the remaining is the chunk since we read all of them
-
-            playerReceivedParts.put(messageId, buf);
-
-            if (payloadState == PayloadState.DONE) {
-                playerReceivedParts.remove(messageId);
-
-                final byte[] bytes = new byte[buf.readableBytes()];
-                buf.readBytes(bytes);
-
-                final Packet packet = deserialize(bytes);
-
-                if (
-                        packet == null ||
-                                (!(packet instanceof ServerboundSuccessfulHandshakePacket) &&
-                                        !connectedPlayers.contains(player))
-                ) return false;
-
-                handlePacket(player, packet);
-            }
+            handleData(decrypted, false, null);
         } catch (final Exception ignored) { }
 
         return false;
+    }
+
+    @Override
+    public void onExtrasMessageReceived (final UUID sender, final byte[] message) {
+        try {
+            final byte[] decrypted = Encryptor.decrypt(
+                    message,
+                    bot.config.chomeNSMod.password
+            );
+
+            handleData(decrypted, true, sender);
+        } catch (final Exception ignored) { }
+    }
+
+    private void handleData (final byte[] data, final boolean isFromExtrasMessenger, final UUID extrasSenderUUID) {
+        final ByteBuf chunkBuf = Unpooled.wrappedBuffer(data);
+
+        final UUID uuid = isFromExtrasMessenger
+                ? extrasSenderUUID
+                : Types.readUUID(chunkBuf);
+
+        final PlayerEntry player = bot.players.getEntry(uuid);
+        if (player == null) return;
+
+        final int messageId = chunkBuf.readInt();
+        final short payloadStateIndex = chunkBuf.readShort();
+
+        final PayloadState payloadState = PayloadState.values()[payloadStateIndex];
+
+        receivedParts.putIfAbsent(player, new ConcurrentHashMap<>());
+
+        final Map<Integer, ByteBuf> playerReceivedParts = receivedParts.get(player);
+
+        if (!playerReceivedParts.containsKey(messageId)) playerReceivedParts.put(messageId, Unpooled.buffer());
+
+        final ByteBuf buf = playerReceivedParts.get(messageId);
+
+        buf.writeBytes(chunkBuf); // the remaining is the chunk since we read all of them
+
+        playerReceivedParts.put(messageId, buf);
+
+        if (payloadState == PayloadState.DONE) {
+            playerReceivedParts.remove(messageId);
+
+            final byte[] bytes = new byte[buf.readableBytes()];
+            buf.readBytes(bytes);
+
+            final Packet packet = deserialize(bytes);
+
+            if (
+                    packet == null ||
+                            (!(packet instanceof ServerboundSuccessfulHandshakePacket) &&
+                                    !connectedPlayers.contains(player))
+            ) return;
+
+            handlePacket(player, packet);
+        }
     }
 
     private void tryHandshaking () {
