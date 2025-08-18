@@ -164,8 +164,8 @@ public class Configuration {
         public boolean coreCommandSpy = true;
         public boolean logConnectionStatusMessages = true;
         public boolean resolveSRV = true;
-        public int reconnectDelay = 2000;
-        public int chatQueueDelay = 125;
+        public int reconnectDelay = 850;
+        public int chatQueueDelay = 80;
         public int selfCareDelay = 1000;
         public EssentialsMessages essentialsMessages = new EssentialsMessages();
         public CoreRateLimit coreRateLimit = new CoreRateLimit();
