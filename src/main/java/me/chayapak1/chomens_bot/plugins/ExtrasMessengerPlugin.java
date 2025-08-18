@@ -105,12 +105,14 @@ public class ExtrasMessengerPlugin implements Listener {
         }
     }
 
-    public void sendPayload (final String name, final byte[] data) {
+    public void sendPayload (final String channel, final byte[] data) { sendPayload(channel, true, data); }
+    public void sendPayload (final String channel, final boolean withNamespace, final byte[] data) {
         if (!bot.loggedIn) return;
 
         final ByteBuf buf = Unpooled.buffer();
 
-        writeString(buf, chomens_namespace + name);
+        if (withNamespace) writeString(buf, chomens_namespace + channel);
+        else writeString(buf, channel);
         buf.writeBytes(data);
 
         final byte[] byteArray = readByteArrayToEnd(buf);
