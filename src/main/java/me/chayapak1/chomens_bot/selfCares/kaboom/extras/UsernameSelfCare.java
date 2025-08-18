@@ -30,7 +30,9 @@ public class UsernameSelfCare extends SelfCare {
         return // running less than 2 seconds is useless since the bot will just get a cooldown message
                 (System.currentTimeMillis() - usernameStartTime) >= 2 * 1000
                         && (System.currentTimeMillis() - successTime) >= 4 * 1000 // prevents the bot from spamming
-                        && IllegalCharactersUtilities.isValidChatString(username);
+                        && IllegalCharactersUtilities.isValidChatString(username)
+                        && bot.serverFeatures.hasExtras
+                        && bot.config.selfCare.username;
     }
 
     @Override
