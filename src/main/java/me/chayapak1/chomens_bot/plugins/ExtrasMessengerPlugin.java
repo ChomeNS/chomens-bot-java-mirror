@@ -101,7 +101,11 @@ public class ExtrasMessengerPlugin implements Listener {
 
             final byte[] data = readByteArrayToEnd(buf);
 
-            bot.listener.dispatch(listener -> listener.onExtrasMessageReceived(uuid, data));
+            // you cannot trust any Extras message data because it can be
+            // really long and can cause the bot to hang for a while
+            bot.executorService.execute(
+                    () -> bot.listener.dispatch(listener -> listener.onExtrasMessageReceived(uuid, data))
+            );
         }
     }
 
