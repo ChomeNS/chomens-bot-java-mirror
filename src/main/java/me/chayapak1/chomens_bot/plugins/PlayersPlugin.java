@@ -59,7 +59,6 @@ public class PlayersPlugin implements Listener {
                     case UPDATE_GAME_MODE -> updateGameMode(entry);
                     case UPDATE_LATENCY -> updateLatency(entry);
                     case UPDATE_DISPLAY_NAME -> updateDisplayName(entry);
-                    default -> { }
                 }
             }
         }

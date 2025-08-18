@@ -97,6 +97,11 @@ public class SelfCarePlugin implements Listener {
     }
 
     @Override
+    public void onPlayerChangedUsername (final PlayerEntry target, final String from, final String to) {
+        for (final SelfCare selfCare : selfCares) selfCare.onPlayerChangedUsername(target, from, to);
+    }
+
+    @Override
     public void packetReceived (final Session session, final Packet packet) {
         if (packet instanceof final ClientboundLoginPacket t_packet) packetReceived(t_packet);
 

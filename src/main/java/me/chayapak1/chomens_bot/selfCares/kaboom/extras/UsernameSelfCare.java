@@ -1,30 +1,25 @@
 package me.chayapak1.chomens_bot.selfCares.kaboom.extras;
 
 import me.chayapak1.chomens_bot.Bot;
+import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.data.selfCare.SelfCare;
 import me.chayapak1.chomens_bot.util.IllegalCharactersUtilities;
-import net.kyori.adventure.text.Component;
 
 public class UsernameSelfCare extends SelfCare {
-    private long usernameStartTime = System.currentTimeMillis();
+    private long usernameStartTime;
+    private long successTime;
 
     public UsernameSelfCare (final Bot bot) {
         super(bot);
     }
 
     @Override
-    public void onMessageReceived (final Component component, final String string) {
-        if (
-                string.equals("Successfully set your username to \"" + bot.username + "\"")
-                        || string.startsWith("You already have the username \"" + bot.username + "\"")
-        ) {
-            this.needsRunning = false;
-        } else if (
-                string.startsWith("Successfully set your username to \"")
-                        || string.startsWith("You already have the username \"")
-        ) {
-            this.needsRunning = true;
-            this.usernameStartTime = System.currentTimeMillis();
+    public void onPlayerChangedUsername (final PlayerEntry target, final String from, final String to) {
+        if (target.profile.getId().equals(bot.profile.getId())) {
+            this.needsRunning = !to.equals(bot.username);
+
+            if (this.needsRunning) this.usernameStartTime = System.currentTimeMillis();
+            else this.successTime = System.currentTimeMillis();
         }
     }
 
@@ -34,6 +29,7 @@ public class UsernameSelfCare extends SelfCare {
 
         return // running less than 2 seconds is useless since the bot will just get a cooldown message
                 (System.currentTimeMillis() - usernameStartTime) >= 2 * 1000
+                        && (System.currentTimeMillis() - successTime) >= 4 * 1000 // prevents the bot from spamming
                         && IllegalCharactersUtilities.isValidChatString(username);
     }
 

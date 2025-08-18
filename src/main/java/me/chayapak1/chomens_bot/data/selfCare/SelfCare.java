@@ -17,10 +17,9 @@ public abstract class SelfCare {
     public abstract boolean shouldRun ();
 
     public void onPacketReceived (final Packet packet) { }
-
     public void onMessageReceived (final Component component, final String string) { }
-
     public void onCommandSpyMessageReceived (final PlayerEntry sender, final String command) { }
+    public void onPlayerChangedUsername (final PlayerEntry target, final String from, final String to) { }
 
     public void run () { }
 
