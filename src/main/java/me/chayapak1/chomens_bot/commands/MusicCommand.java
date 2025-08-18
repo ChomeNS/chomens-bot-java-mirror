@@ -397,24 +397,26 @@ public class MusicCommand extends Command implements Listener {
         final Bot bot = context.bot;
         final List<Song> queue = bot.music.songQueue;
 
-        final List<Component> queueWithNames = new ObjectArrayList<>();
-        int i = 0;
-        for (final Song song : queue) {
-            queueWithNames.add(
-                    Component.text(
-                            song.name,
-                            (i++ & 1) == 0
-                                    ? bot.colorPalette.primary
-                                    : bot.colorPalette.secondary
-                    )
+        synchronized (queue) {
+            final List<Component> queueWithNames = new ObjectArrayList<>();
+            int i = 0;
+            for (final Song song : queue) {
+                queueWithNames.add(
+                        Component.text(
+                                song.name,
+                                (i++ & 1) == 0
+                                        ? bot.colorPalette.primary
+                                        : bot.colorPalette.secondary
+                        )
+                );
+            }
+
+            return Component.translatable(
+                    "commands.music.queue",
+                    NamedTextColor.GREEN,
+                    Component.join(JoinConfiguration.commas(true), queueWithNames)
             );
         }
-
-        return Component.translatable(
-                "commands.music.queue",
-                NamedTextColor.GREEN,
-                Component.join(JoinConfiguration.commas(true), queueWithNames)
-        );
     }
 
     // lazy fix for java using "goto" as keyword real

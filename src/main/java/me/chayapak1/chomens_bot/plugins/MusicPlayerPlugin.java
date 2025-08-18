@@ -57,6 +57,8 @@ public class MusicPlayerPlugin implements Listener {
     public SongLoaderThread loaderThread = null;
     public Loop loop = Loop.OFF;
 
+    private final Object tickLock = new Object();
+
     // sus nightcore stuff,..,.,.
     public double pitch = 0;
     public double speed = 1;
@@ -84,7 +86,17 @@ public class MusicPlayerPlugin implements Listener {
 
         bot.listener.addListener(this);
 
-        bot.executor.scheduleAtFixedRate(this::onMusicTick, 0, 50, TimeUnit.MILLISECONDS);
+        bot.executor.scheduleAtFixedRate(() -> {
+            if (!bot.loggedIn) return;
+
+            synchronized (tickLock) {
+                try {
+                    onMusicTick();
+                } catch (final Exception e) {
+                    bot.logger.error(e);
+                }
+            }
+        }, 0, 50, TimeUnit.MILLISECONDS);
         bot.executor.scheduleAtFixedRate(() -> urlLimit = 0, 0, bot.config.music.urlRatelimit.seconds, TimeUnit.SECONDS);
     }
 
@@ -147,81 +159,75 @@ public class MusicPlayerPlugin implements Listener {
     // this needs a separate ticker because we need
     // the song to be playing without lag
     private void onMusicTick () {
-        try {
-            if (!bot.loggedIn) return;
+        if (currentSong == null) {
+            if (songQueue.isEmpty()) return; // this line
 
-            if (currentSong == null) {
-                if (songQueue.isEmpty()) return; // this line
+            currentSong = songQueue.getFirst(); // songQueue.poll();
+            currentSong.context.sendOutput(
+                    Component.translatable(
+                            "commands.music.nowplaying",
+                            bot.colorPalette.defaultColor,
+                            Component.empty().append(Component.text(currentSong.name, bot.colorPalette.secondary))
+                    )
+            );
+            currentSong.play();
 
-                addBossBar();
+            addBossBar();
+        }
 
-                currentSong = songQueue.getFirst(); // songQueue.poll();
-                currentSong.context.sendOutput(
-                        Component.translatable(
-                                "commands.music.nowplaying",
-                                bot.colorPalette.defaultColor,
-                                Component.empty().append(Component.text(currentSong.name, bot.colorPalette.secondary))
-                        )
-                );
+        if (isStopping) {
+            currentSong = null;
+            isStopping = false;
+        } else if (!currentSong.finished()) {
+            handleLyrics();
+
+            BotBossBar bossBar = bot.bossbar.get(BOSS_BAR_NAME);
+
+            if (bossBar == null) bossBar = addBossBar();
+
+            if (bossBar != null && bot.options.useCore) {
+                bossBar.setTitle(generateBossBar());
+                bossBar.setColor(bossBarColor);
+                bossBar.setValue((int) Math.floor(((currentSong.time / speed) / 1000)));
+                bossBar.setMax((long) (currentSong.length / speed) / 1000);
+            }
+
+            if (currentSong.paused || bot.core.isRateLimited()) return;
+
+            handlePlaying();
+        } else {
+            currentLyrics = "";
+
+            if (loop == Loop.CURRENT) {
+                currentSong.loop();
+                return;
+            }
+
+            currentSong.context.sendOutput(
+                    Component.translatable(
+                            "commands.music.finished",
+                            bot.colorPalette.defaultColor,
+                            Component.empty().append(Component.text(currentSong.name, bot.colorPalette.secondary))
+                    )
+            );
+
+            if (loop == Loop.ALL) {
+                skip();
+                return;
+            }
+
+            songQueue.removeFirst();
+
+            if (songQueue.isEmpty()) {
+                stopPlaying();
+                return;
+            }
+
+            if (currentSong.size() > 0) {
+                currentSong = songQueue.getFirst();
+                currentSong.setTime(0);
                 currentSong.play();
             }
-
-            if (isStopping) {
-                currentSong = null;
-                isStopping = false;
-            } else if (!currentSong.finished()) {
-                handleLyrics();
-
-                BotBossBar bossBar = bot.bossbar.get(BOSS_BAR_NAME);
-
-                if (bossBar == null) bossBar = addBossBar();
-
-                if (bossBar != null && bot.options.useCore) {
-                    bossBar.setTitle(generateBossBar());
-                    bossBar.setColor(bossBarColor);
-                    bossBar.setValue((int) Math.floor(((currentSong.time / speed) / 1000)));
-                    bossBar.setMax((long) (currentSong.length / speed) / 1000);
-                }
-
-                if (currentSong.paused || bot.core.isRateLimited()) return;
-
-                handlePlaying();
-            } else {
-                currentLyrics = "";
-
-                if (loop == Loop.CURRENT) {
-                    currentSong.loop();
-                    return;
-                }
-
-                currentSong.context.sendOutput(
-                        Component.translatable(
-                                "commands.music.finished",
-                                bot.colorPalette.defaultColor,
-                                Component.empty().append(Component.text(currentSong.name, bot.colorPalette.secondary))
-                        )
-                );
-
-                if (loop == Loop.ALL) {
-                    skip();
-                    return;
-                }
-
-                songQueue.removeFirst();
-
-                if (songQueue.isEmpty()) {
-                    stopPlaying();
-                    return;
-                }
-
-                if (currentSong.size() > 0) {
-                    currentSong = songQueue.getFirst();
-                    currentSong.setTime(0);
-                    currentSong.play();
-                }
-            }
-        } catch (final Exception e) {
-            bot.logger.error(e);
         }
     }
 
@@ -241,8 +247,6 @@ public class MusicPlayerPlugin implements Listener {
     }
 
     public BotBossBar addBossBar () {
-        if (currentSong == null) return null;
-
         rainbow = false;
 
         final BotBossBar bossBar = new BotBossBar(
