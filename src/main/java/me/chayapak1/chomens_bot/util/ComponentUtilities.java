@@ -41,11 +41,11 @@ public class ComponentUtilities {
     private static final Pattern ARG_PATTERN = Pattern.compile("%(?:(\\d+)\\$)?([A-Za-z%]|$)");
     private static final Pattern DISCORD_ANSI_PATTERN = Pattern.compile("(\\u001b\\[\\d+m)");
 
-    // we are using our own total depth counter instead of adventure's
-    // because we don't want to throw an exception when exceeded the depth limit
-    private static final ThreadLocal<Integer> TOTAL_DEPTH = ThreadLocal.withInitial(() -> 0);
+    private static final ThreadLocal<Integer> TOTAL_PLACEHOLDERS = ThreadLocal.withInitial(() -> 0);
+    private static final int PLACEHOLDER_THRESHOLD = 4;
+    private static final long MAX_PARSE_TIME = 200;
 
-    private static final int MAX_DEPTH = 512;
+    private static final ThreadLocal<Long> START_PARSE_TIME = ThreadLocal.withInitial(() -> 0L);
 
     private static Map<String, String> loadJsonStringMap (final String name) {
         final Map<String, String> map = new Object2ObjectOpenHashMap<>();
@@ -102,6 +102,7 @@ public class ComponentUtilities {
 
     private static String guardedStringify (final ComponentEncoder<Component, String> serializer, final Component message) {
         try {
+            START_PARSE_TIME.set(System.currentTimeMillis());
             return serializer.serialize(message);
         } catch (final Throwable throwable) {
             return guardedStringify(
@@ -113,7 +114,7 @@ public class ComponentUtilities {
                     )
             );
         } finally {
-            TOTAL_DEPTH.set(0);
+            TOTAL_PLACEHOLDERS.set(0);
         }
     }
 
@@ -125,16 +126,14 @@ public class ComponentUtilities {
         return guardedStringify(LEGACY_COMPONENT_SERIALIZER, message);
     }
 
-    public static String stringifyAnsi (final Component message) { return stringifyAnsi(message, true); }
-    public static String stringifyAnsi (final Component message, final boolean resetEnd) {
-        return guardedStringify(TRUE_COLOR_ANSI_SERIALIZER, message) + (resetEnd ? "\u001b[0m" : "");
+    public static String stringifyAnsi (final Component message) {
+        return guardedStringify(TRUE_COLOR_ANSI_SERIALIZER, message);
     }
 
-    public static String stringifyDiscordAnsi (final Component message) { return stringifyDiscordAnsi(message, true); }
-    public static String stringifyDiscordAnsi (final Component message, final boolean resetEnd) {
+    public static String stringifyDiscordAnsi (final Component message) {
         return guardedStringify(DISCORD_ANSI_SERIALIZER, message)
-                .replace("\u001b[9", "\u001b[3") // we have to downscale because discord's ANSI doesn't have bright colors
-                + (resetEnd ? "\u001b[0m" : "");
+                // we have to downscale because discord's ANSI doesn't support bright colors as of now
+                .replace("\u001b[9", "\u001b[3");
     }
 
     public static String deserializeFromDiscordAnsi (final String original) {
@@ -197,14 +196,8 @@ public class ComponentUtilities {
                                     .replaceFirst("§+$", "")
                     );
 
-            // goofy code
-            return StringUtilities.replaceLast(
-                    isDiscord
-                            ? stringifyDiscordAnsi(deserialized, false)
-                            : stringifyAnsi(deserialized, false),
-                    "\u001b[0m",
-                    ""
-            ) + mapText(Component.text(formatting), true, isDiscord);
+            return (isDiscord ? stringifyDiscordAnsi(deserialized) : stringifyAnsi(deserialized))
+                    + mapText(Component.text(formatting), true, isDiscord);
         }
     }
 
@@ -251,9 +244,13 @@ public class ComponentUtilities {
                     if (idx < 0 || idx > component.arguments().size())
                         throw new IllegalArgumentException();
 
-                    final int currentTotalDepth = TOTAL_DEPTH.get();
-                    if (currentTotalDepth > MAX_DEPTH) return;
-                    TOTAL_DEPTH.set(currentTotalDepth + 1);
+                    final int currentTotalPlaceholders = TOTAL_PLACEHOLDERS.get();
+                    if (currentTotalPlaceholders > PLACEHOLDER_THRESHOLD
+                            && System.currentTimeMillis() - START_PARSE_TIME.get() > MAX_PARSE_TIME) {
+                        return;
+                    } else {
+                        TOTAL_PLACEHOLDERS.set(currentTotalPlaceholders + 1);
+                    }
 
                     result.add(
                             component.arguments()
