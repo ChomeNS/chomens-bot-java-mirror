@@ -139,7 +139,6 @@ public class BossbarManagerPlugin implements Listener {
 
             if (serverBossBar == null) {
                 bossBar.gotSecret = false;
-
                 addBossBar(bossBar.id, bossBar);
             } else if (!serverBossBar.title.equals(bossBar.title)) {
                 bossBar.setTitle(bossBar.title, true);
@@ -170,6 +169,10 @@ public class BossbarManagerPlugin implements Listener {
 
     @Override
     public void onPlayerJoined (final PlayerEntry target) {
+        refreshPlayers();
+    }
+
+    public void refreshPlayers () {
         if (!enabled || actionBar || !bot.options.useCore) return;
 
         for (final Map.Entry<UUID, BotBossBar> _bossBar : bossBars.entrySet()) {

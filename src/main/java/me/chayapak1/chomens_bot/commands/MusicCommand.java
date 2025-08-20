@@ -105,6 +105,8 @@ public class MusicCommand extends Command implements Listener {
             case "pause", "resume" -> pause(context);
             case "info" -> info(context);
             case "testsong" -> testSong(context);
+            case "listen", "unmute" -> listen(context);
+            case "unlisten", "mute" -> unlisten(context);
             default -> throw new CommandException(Component.translatable("commands.generic.error.invalid_action"));
         };
     }
@@ -116,18 +118,18 @@ public class MusicCommand extends Command implements Listener {
 
         final String stringPath = context.getString(true, true);
 
-        final Path path;
-
         try {
-            path = Path.of(ROOT.toString(), stringPath);
+            final Path joinedPath = Path.of(ROOT.toString(), stringPath);
 
-            if (path.toString().contains("http")) player.loadSong(new URI(stringPath).toURL(), context);
+            if (joinedPath.toString().contains("http")) player.loadSong(new URI(stringPath).toURL(), context);
             else {
                 // among us protection!!!11
-                if (!path.normalize().startsWith(ROOT.toString())) throw new CommandException(Component.text("no"));
+                if (!joinedPath.normalize().startsWith(ROOT.toString())) throw new CommandException(Component.text("no"));
 
                 // ignore my ohio code for autocomplete
                 final String separator = FileSystems.getDefault().getSeparator();
+
+                final Path path;
 
                 if (stringPath.contains(separator) && !stringPath.isEmpty()) {
                     final String[] splitPath = stringPath.split(separator);
@@ -135,53 +137,31 @@ public class MusicCommand extends Command implements Listener {
                     final List<String> splitPathClone = new ObjectArrayList<>(Arrays.stream(splitPath).toList());
                     splitPathClone.removeLast();
 
-                    final Path realPath = Path.of(ROOT.toString(), String.join(separator, splitPathClone));
-
-                    try (final DirectoryStream<Path> stream = Files.newDirectoryStream(realPath)) {
-                        final List<Path> songsPaths = new ObjectArrayList<>();
-                        for (final Path eachPath : stream) songsPaths.add(eachPath);
-
-                        PathUtilities.sort(songsPaths);
-
-                        final List<String> songs = new ObjectArrayList<>();
-                        for (final Path eachPath : songsPaths) songs.add(eachPath.getFileName().toString());
-
-                        final String lowerCaseFile = splitPath[splitPath.length - 1].toLowerCase();
-
-                        final String[] matchedArray = songs.stream()
-                                .filter(song -> song.equalsIgnoreCase(lowerCaseFile) || song.toLowerCase().contains(lowerCaseFile))
-                                .toArray(String[]::new);
-
-                        if (matchedArray.length == 0) throw new CommandException(Component.translatable("commands.music.error.song_not_found"));
-
-                        final String file = matchedArray[0];
-
-                        player.loadSong(Path.of(realPath.toString(), file), context);
-                    } catch (final NoSuchFileException e) {
-                        throw new CommandException(Component.translatable("commands.music.error.no_directory"));
-                    }
+                    path = Path.of(ROOT.toString(), String.join(separator, splitPathClone));
                 } else {
-                    try (final DirectoryStream<Path> stream = Files.newDirectoryStream(ROOT)) {
-                        final List<Path> songsPaths = new ObjectArrayList<>();
-                        for (final Path eachPath : stream) songsPaths.add(eachPath);
+                    path = ROOT;
+                }
 
-                        PathUtilities.sort(songsPaths);
+                try (final DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
+                    final List<Path> songsPaths = new ObjectArrayList<>();
+                    for (final Path eachPath : stream) songsPaths.add(eachPath);
 
-                        final List<String> songs = new ObjectArrayList<>();
-                        for (final Path eachPath : songsPaths) songs.add(eachPath.getFileName().toString());
+                    PathUtilities.sort(songsPaths);
 
-                        final String[] matchedArray = songs.stream()
-                                .filter(song -> song.equalsIgnoreCase(stringPath) || song.toLowerCase().contains(stringPath.toLowerCase()))
-                                .toArray(String[]::new);
+                    final List<String> songs = new ObjectArrayList<>();
+                    for (final Path eachPath : songsPaths) songs.add(eachPath.getFileName().toString());
 
-                        if (matchedArray.length == 0) throw new CommandException(Component.translatable("commands.music.error.song_not_found"));
+                    final String[] matchedArray = songs.stream()
+                            .filter(song -> song.equalsIgnoreCase(stringPath) || song.toLowerCase().contains(stringPath.toLowerCase()))
+                            .toArray(String[]::new);
 
-                        final String file = matchedArray[0];
+                    if (matchedArray.length == 0) throw new CommandException(Component.translatable("commands.music.error.song_not_found"));
 
-                        player.loadSong(Path.of(ROOT.toString(), file), context);
-                    } catch (final NoSuchFileException e) {
-                        throw new CommandException(Component.text("this will never happen ok??"));
-                    }
+                    final String file = matchedArray[0];
+
+                    player.loadSong(Path.of(path.toString(), file), context);
+                } catch (final NoSuchFileException e) {
+                    throw new CommandException(Component.translatable("commands.music.error.no_directory"));
                 }
             }
         } catch (final MalformedURLException e) {
@@ -419,6 +399,34 @@ public class MusicCommand extends Command implements Listener {
         }
     }
 
+    public Component listen (final CommandContext context) throws CommandException {
+        context.checkOverloadArgs(1);
+
+        final Bot bot = context.bot;
+
+        bot.music.addTag(context.sender.profile.getId());
+        bot.bossbar.refreshPlayers();
+
+        return Component.translatable(
+                "commands.music.listen",
+                bot.colorPalette.defaultColor
+        );
+    }
+
+    public Component unlisten (final CommandContext context) throws CommandException {
+        context.checkOverloadArgs(1);
+
+        final Bot bot = context.bot;
+
+        bot.music.removeTag(context.sender.profile.getId());
+        bot.bossbar.refreshPlayers();
+
+        return Component.translatable(
+                "commands.music.unlisten",
+                bot.colorPalette.defaultColor
+        );
+    }
+
     // lazy fix for java using "goto" as keyword real
     public Component goTo (final CommandContext context) throws CommandException {
         final Bot bot = context.bot;
@@ -633,6 +641,7 @@ public class MusicCommand extends Command implements Listener {
         song.length = 400 * 50;
 
         bot.music.songQueue.add(song);
+        bot.music.addTag(context.sender.profile.getId());
 
         return Component.translatable("commands.music.testsong.output", bot.colorPalette.defaultColor);
     }

@@ -3,6 +3,8 @@ package me.chayapak1.chomens_bot.plugins;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import me.chayapak1.chomens_bot.Bot;
 import me.chayapak1.chomens_bot.command.CommandContext;
+import me.chayapak1.chomens_bot.command.contexts.ChomeNSModCommandContext;
+import me.chayapak1.chomens_bot.command.contexts.PlayerCommandContext;
 import me.chayapak1.chomens_bot.data.bossbar.BotBossBar;
 import me.chayapak1.chomens_bot.data.listener.Listener;
 import me.chayapak1.chomens_bot.song.Loop;
@@ -11,6 +13,7 @@ import me.chayapak1.chomens_bot.song.Song;
 import me.chayapak1.chomens_bot.song.SongLoaderThread;
 import me.chayapak1.chomens_bot.util.LoggerUtilities;
 import me.chayapak1.chomens_bot.util.MathUtilities;
+import me.chayapak1.chomens_bot.util.UUIDUtilities;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -28,13 +31,14 @@ import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 // Author: _ChipMC_ & hhhzzzsss
 public class MusicPlayerPlugin implements Listener {
-    public static final String SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic,tag=!custompitch]";
-    public static final String CUSTOM_PITCH_SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic,tag=custompitch]";
-    public static final String BOTH_SELECTOR = "@a[tag=!nomusic,tag=!chomens_bot_nomusic]";
+    public static final String SELECTOR = "@a[tag=!nomusic,tag=%s,tag=!custompitch]";
+    public static final String CUSTOM_PITCH_SELECTOR = "@a[tag=!nomusic,tag=%s,tag=custompitch]";
+    public static final String BOTH_SELECTOR = "@a[tag=!nomusic,tag=%s]";
 
     public static final Path SONG_DIR = Path.of("songs");
 
@@ -51,6 +55,8 @@ public class MusicPlayerPlugin implements Listener {
     }
 
     private final Bot bot;
+
+    public final String musicTag;
 
     public Song currentSong;
     public final List<Song> songQueue = Collections.synchronizedList(new ObjectArrayList<>());
@@ -83,6 +89,7 @@ public class MusicPlayerPlugin implements Listener {
 
     public MusicPlayerPlugin (final Bot bot) {
         this.bot = bot;
+        this.musicTag = bot.config.namespace + "_music";
 
         bot.listener.addListener(this);
 
@@ -116,7 +123,7 @@ public class MusicPlayerPlugin implements Listener {
 
     public void loadSong (final URL location, final CommandContext context) {
         if (urlLimit >= bot.config.music.urlRatelimit.limit) {
-            context.sendOutput(Component.translatable("commands.music.error.url_ratelimited", NamedTextColor.RED));
+            sendOutput(context, Component.translatable("commands.music.error.url_ratelimited", NamedTextColor.RED));
             return;
         }
 
@@ -133,7 +140,8 @@ public class MusicPlayerPlugin implements Listener {
 
         this.loaderThread = loaderThread;
 
-        loaderThread.context.sendOutput(
+        sendOutput(
+                loaderThread.context,
                 Component
                         .translatable(
                                 "commands.music.loading",
@@ -143,6 +151,39 @@ public class MusicPlayerPlugin implements Listener {
         );
 
         this.loaderThread.start();
+
+        if (loaderThread.context instanceof PlayerCommandContext
+                || loaderThread.context instanceof ChomeNSModCommandContext) {
+            addTag(loaderThread.context.sender.profile.getId());
+        }
+    }
+
+    public void sendOutput (final CommandContext context, final Component component) {
+        if (context instanceof final PlayerCommandContext playerContext) {
+            playerContext.sendOutput(component, true);
+        } else {
+            context.sendOutput(component);
+        }
+    }
+
+    public void addTag (final UUID uuid) {
+        bot.core.run(
+                String.format(
+                        "minecraft:tag %s add %s",
+                        UUIDUtilities.selector(uuid),
+                        musicTag
+                )
+        );
+    }
+
+    public void removeTag (final UUID uuid) {
+        bot.core.run(
+                String.format(
+                        "minecraft:tag %s remove %s",
+                        UUIDUtilities.selector(uuid),
+                        musicTag
+                )
+        );
     }
 
     @Override
@@ -163,7 +204,8 @@ public class MusicPlayerPlugin implements Listener {
             if (songQueue.isEmpty()) return; // this line
 
             currentSong = songQueue.getFirst(); // songQueue.poll();
-            currentSong.context.sendOutput(
+            sendOutput(
+                    currentSong.context,
                     Component.translatable(
                             "commands.music.nowplaying",
                             bot.colorPalette.defaultColor,
@@ -185,6 +227,8 @@ public class MusicPlayerPlugin implements Listener {
 
             if (bossBar == null) bossBar = addBossBar();
 
+            if (bossBar != null && !bossBar.gotSecret) addTag(bot.profile.getId());
+
             if (bossBar != null && bot.options.useCore) {
                 bossBar.setTitle(generateBossBar());
                 bossBar.setColor(bossBarColor);
@@ -203,7 +247,8 @@ public class MusicPlayerPlugin implements Listener {
                 return;
             }
 
-            currentSong.context.sendOutput(
+            sendOutput(
+                    currentSong.context,
                     Component.translatable(
                             "commands.music.finished",
                             bot.colorPalette.defaultColor,
@@ -249,9 +294,11 @@ public class MusicPlayerPlugin implements Listener {
     public BotBossBar addBossBar () {
         rainbow = false;
 
+        addTag(bot.profile.getId());
+
         final BotBossBar bossBar = new BotBossBar(
                 Component.empty(),
-                BOTH_SELECTOR,
+                String.format(BOTH_SELECTOR, musicTag),
                 bossBarColor,
                 BossBarDivision.NONE,
                 true,
@@ -435,7 +482,7 @@ public class MusicPlayerPlugin implements Listener {
                 if (shouldCustomPitch) {
                     bot.core.run(
                             "minecraft:execute as " +
-                                    CUSTOM_PITCH_SELECTOR +
+                                    String.format(CUSTOM_PITCH_SELECTOR, musicTag) +
                                     " at @s run playsound " +
                                     (!instrument.equals("off") ? instrument : note.instrument.sound) + ".pitch." + notShiftedFloatingPitch +
                                     " record @s ^" + blockPosition.getX() + " ^" + blockPosition.getY() + " ^" + blockPosition.getZ() + " " +
@@ -457,7 +504,7 @@ public class MusicPlayerPlugin implements Listener {
                 for (int i = 0; i < amplify; i++) {
                     bot.core.run(
                             "minecraft:execute as " +
-                                    (shouldCustomPitch ? SELECTOR : BOTH_SELECTOR) +
+                                    String.format((shouldCustomPitch ? SELECTOR : BOTH_SELECTOR), musicTag) +
                                     " at @s run playsound " +
                                     (!instrument.equals("off") ? instrument : note.shiftedInstrument.sound) +
                                     " record @s ^" + blockPosition.getX() + " ^" + blockPosition.getY() + " ^" + blockPosition.getZ() + " " +

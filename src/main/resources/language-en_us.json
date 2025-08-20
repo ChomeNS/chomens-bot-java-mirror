@@ -209,6 +209,8 @@
   "commands.music.testsong.title": "Test Song",
   "commands.music.testsong.description": "SongPlayer's test song ported to ChomeNS Bot",
   "commands.music.testsong.output": "Test song has been added to the song queue",
+  "commands.music.listen": "You are now listening to the music player",
+  "commands.music.unlisten": "You are no longer listening to the music player",
 
   "commands.netcmd.description": "Runs a command on the specified server(s) and return its output",
   "commands.netcmd.error.no_servers_found": "No servers have been found with your input",

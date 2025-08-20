@@ -151,14 +151,16 @@ public class SongLoaderThread extends Thread {
 
     private void showAddedToQueue () {
         if (isFolder) {
-            context.sendOutput(
+            bot.music.sendOutput(
+                    context,
                     Component.translatable(
                             "commands.music.loading.added_folder_to_queue",
                             bot.colorPalette.defaultColor
                     )
             );
         } else {
-            context.sendOutput(
+            bot.music.sendOutput(
+                    context,
                     Component.translatable(
                             "commands.music.loading.added_song_to_queue",
                             bot.colorPalette.defaultColor,
@@ -170,7 +172,8 @@ public class SongLoaderThread extends Thread {
     }
 
     private void failed () {
-        context.sendOutput(
+        bot.music.sendOutput(
+                context,
                 Component.translatable(
                         "commands.music.error.loading_failed",
                         NamedTextColor.RED,
