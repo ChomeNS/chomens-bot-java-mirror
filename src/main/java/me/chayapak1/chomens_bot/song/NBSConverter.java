@@ -213,7 +213,7 @@ public class NBSConverter implements Converter {
         for (final NBSNote note : nbsNotes) {
             boolean isRainbowToggle = false;
             final Instrument instrument;
-            double key = note.key;
+            final double key;
             if (note.instrument < INSTRUMENT_INDEX.length) {
                 instrument = INSTRUMENT_INDEX[note.instrument];
 
@@ -260,7 +260,7 @@ public class NBSConverter implements Converter {
 
                 instrument = Instrument.of(name);
 
-                key += (double) (customInstrument.pitch + note.pitch) / 100;
+                key = note.key + customInstrument.pitch - 45 + ((double) note.pitch / 100);
             }
 
             byte layerVolume = 100;
