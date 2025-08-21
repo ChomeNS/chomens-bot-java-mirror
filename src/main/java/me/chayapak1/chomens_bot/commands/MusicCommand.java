@@ -65,7 +65,9 @@ public class MusicCommand extends Command implements Listener {
                         "noteinstrument <instrument>",
                         "pause",
                         "resume",
-                        "info"
+                        "info",
+                        "listen",
+                        "unlisten"
                 },
                 new String[] { "song" },
                 TrustLevel.PUBLIC,
