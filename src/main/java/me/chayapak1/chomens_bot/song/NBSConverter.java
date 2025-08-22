@@ -2,6 +2,7 @@ package me.chayapak1.chomens_bot.song;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -15,9 +16,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -43,18 +42,6 @@ public class NBSConverter implements Converter {
             Instrument.BANJO,
             Instrument.PLING,
     };
-
-    public static final Map<String, String> CUSTOM_INSTRUMENT_REPLACEMENTS = new Object2ObjectOpenHashMap<>();
-
-    static {
-        CUSTOM_INSTRUMENT_REPLACEMENTS.put(".*glass.*", "block.glass.break");
-        CUSTOM_INSTRUMENT_REPLACEMENTS.put(".*door.*", "block.wooden_door.open");
-        CUSTOM_INSTRUMENT_REPLACEMENTS.put(".*anvil.*", "block.anvil.fall");
-        CUSTOM_INSTRUMENT_REPLACEMENTS.put(".*piston.*", "block.piston.extend");
-        CUSTOM_INSTRUMENT_REPLACEMENTS.put(".*explode|explosion.*", "entity.generic.explode");
-        CUSTOM_INSTRUMENT_REPLACEMENTS.put(".*eye.*", "block.end_portal_frame.fill");
-        CUSTOM_INSTRUMENT_REPLACEMENTS.put("fizz", "block.fire.extinguish"); // not really sure what this exactly is, but it exists in some NBSes
-    }
 
     public static class NBSNote {
         public long tick;
@@ -226,7 +213,8 @@ public class NBSConverter implements Converter {
                 final NBSCustomInstrument customInstrument = customInstruments.get(index);
 
                 String name = customInstrument.name
-                        .replace("entity.firework.", "entity.firework_rocket."); // this one is special
+                        // firework has been replaced with firework_rocket in newer minecraft versions
+                        .replace("entity.firework.", "entity.firework_rocket.");
 
                 boolean isTempoChanger = false;
 
@@ -243,20 +231,14 @@ public class NBSConverter implements Converter {
                     isRainbowToggle = true;
                 }
 
-                String file = Path.of(customInstrument.file).getFileName().toString();
+                final String file = customInstrument.file
+                        .replaceFirst("minecraft/|Custom/", "")
+                        .replace(".ogg", "");
 
-                // should i hardcode the extension like this?
-                if (file.endsWith(".ogg")) file = file.substring(0, file.length() - ".ogg".length());
-
-                if (!sounds.contains(name) && !sounds.contains(file) && !isTempoChanger) {
-                    final String replacedName = StringUtilities.replaceAllWithMap(name.toLowerCase(), CUSTOM_INSTRUMENT_REPLACEMENTS);
-                    final String replacedFile = StringUtilities.replaceAllWithMap(file.toLowerCase(), CUSTOM_INSTRUMENT_REPLACEMENTS);
-
-                    if (!file.equals(replacedFile)) file = replacedFile;
-                    else if (!name.equals(replacedName)) name = replacedName;
+                if (!isTempoChanger && !isRainbowToggle) {
+                    if (!playSound.contains(name) && minecraftToPlaySound.containsKey(file)) name = minecraftToPlaySound.get(file);
+                    else if (playSound.contains(file) && !minecraftToPlaySound.containsKey(name)) name = file;
                 }
-
-                if (!sounds.contains(name) && sounds.contains(file)) name = file;
 
                 instrument = Instrument.of(name);
 
@@ -317,7 +299,7 @@ public class NBSConverter implements Converter {
         return StringUtilities.fromUTF8Lossy(arr);
     }
 
-    // Author: ChatGPT (lmao, but it actually works tho, i don't even know how it worked)
+    // Author: ChatGPT (lmao, but it actually works tho, I don't even know how it worked)
     private static long getMilliTime (final long currentTick, final List<TempoSection> sections) {
         long totalMillis = 0;
 
@@ -337,20 +319,31 @@ public class NBSConverter implements Converter {
         return totalMillis;
     }
 
-    private static final List<String> sounds = loadSounds();
+    private static final Map<String, String> minecraftToPlaySound = new Object2ObjectOpenHashMap<>();
+    private static final List<String> playSound = new ObjectArrayList<>();
 
-    private static List<String> loadSounds () {
-        final List<String> list = new ObjectArrayList<>();
-
+    static {
         final InputStream is = ClassLoader.getSystemClassLoader().getResourceAsStream("sounds.json");
         assert is != null;
         final BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        final JsonArray json = JsonParser.parseReader(reader).getAsJsonArray();
+        final JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
 
-        for (final JsonElement entry : json) {
-            list.add(entry.getAsString());
+        for (final Map.Entry<String, JsonElement> entry : json.entrySet()) {
+            final String playSoundName = entry.getKey();
+            final JsonObject data = entry.getValue().getAsJsonObject();
+            final JsonArray sounds = data.getAsJsonArray("sounds");
+
+            for (final JsonElement element : sounds) {
+                final String sound;
+                if (element.isJsonObject()) {
+                    final JsonObject object = element.getAsJsonObject();
+                    sound = object.get("name").getAsString();
+                } else {
+                    sound = element.getAsString();
+                }
+                minecraftToPlaySound.put(sound, playSoundName);
+                playSound.add(playSoundName);
+            }
         }
-
-        return Collections.unmodifiableList(list);
     }
 }
