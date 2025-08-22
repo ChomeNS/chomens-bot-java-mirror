@@ -36,9 +36,9 @@ import java.util.concurrent.TimeUnit;
 
 // Author: _ChipMC_ & hhhzzzsss
 public class MusicPlayerPlugin implements Listener {
-    public static final String SELECTOR = "@a[tag=!nomusic,tag=%s,tag=!custompitch]";
-    public static final String CUSTOM_PITCH_SELECTOR = "@a[tag=!nomusic,tag=%s,tag=custompitch]";
-    public static final String BOTH_SELECTOR = "@a[tag=!nomusic,tag=%s]";
+    public static final String SELECTOR = "@a[tag=%s,tag=!custompitch]";
+    public static final String CUSTOM_PITCH_SELECTOR = "@a[tag=%s,tag=custompitch]";
+    public static final String BOTH_SELECTOR = "@a[tag=%s]";
 
     public static final Path SONG_DIR = Path.of("songs");
 
