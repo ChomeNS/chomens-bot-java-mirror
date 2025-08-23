@@ -116,7 +116,8 @@ public class MusicCommand extends Command implements Listener {
     public Component play (final CommandContext context) throws CommandException {
         final MusicPlayerPlugin player = context.bot.music;
 
-        if (player.loaderThread != null) throw new CommandException(Component.translatable("commands.music.play.error.already_loading"));
+        if (player.loaderThread != null)
+            throw new CommandException(Component.translatable("commands.music.play.error.already_loading"));
 
         final String stringPath = context.getString(true, true);
 
@@ -126,12 +127,14 @@ public class MusicCommand extends Command implements Listener {
             if (joinedPath.toString().contains("http")) player.loadSong(new URI(stringPath).toURL(), context);
             else {
                 // among us protection!!!11
-                if (!joinedPath.normalize().startsWith(ROOT.toString())) throw new CommandException(Component.text("no"));
+                if (!joinedPath.normalize().startsWith(ROOT.toString()))
+                    throw new CommandException(Component.text("no"));
 
                 // ignore my ohio code for autocomplete
                 final String separator = FileSystems.getDefault().getSeparator();
 
                 final Path path;
+                final String stringFile;
 
                 if (stringPath.contains(separator) && !stringPath.isEmpty()) {
                     final String[] splitPath = stringPath.split(separator);
@@ -140,8 +143,10 @@ public class MusicCommand extends Command implements Listener {
                     splitPathClone.removeLast();
 
                     path = Path.of(ROOT.toString(), String.join(separator, splitPathClone));
+                    stringFile = splitPath[splitPath.length - 1];
                 } else {
                     path = ROOT;
+                    stringFile = stringPath;
                 }
 
                 try (final DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
@@ -154,10 +159,13 @@ public class MusicCommand extends Command implements Listener {
                     for (final Path eachPath : songsPaths) songs.add(eachPath.getFileName().toString());
 
                     final String[] matchedArray = songs.stream()
-                            .filter(song -> song.equalsIgnoreCase(stringPath) || song.toLowerCase().contains(stringPath.toLowerCase()))
+                            .filter(song ->
+                                            song.equalsIgnoreCase(stringFile)
+                                                    || song.toLowerCase().contains(stringFile.toLowerCase()))
                             .toArray(String[]::new);
 
-                    if (matchedArray.length == 0) throw new CommandException(Component.translatable("commands.music.error.song_not_found"));
+                    if (matchedArray.length == 0)
+                        throw new CommandException(Component.translatable("commands.music.error.song_not_found"));
 
                     final String file = matchedArray[0];
 
@@ -346,7 +354,8 @@ public class MusicCommand extends Command implements Listener {
 
         final Bot bot = context.bot;
         final MusicPlayerPlugin music = bot.music;
-        if (music.currentSong == null) throw new CommandException(Component.translatable("commands.music.error.not_playing"));
+        if (music.currentSong == null)
+            throw new CommandException(Component.translatable("commands.music.error.not_playing"));
 
         final String name = music.currentSong.name;
 
@@ -517,8 +526,10 @@ public class MusicCommand extends Command implements Listener {
 
         final int amplify = context.getInteger(true);
 
-        if (amplify > 8) throw new CommandException(Component.translatable("commands.music.amplify.error.too_big_value"));
-        else if (amplify < 0) throw new CommandException(Component.translatable("commands.music.amplify.error.negative"));
+        if (amplify > 8)
+            throw new CommandException(Component.translatable("commands.music.amplify.error.too_big_value"));
+        else if (amplify < 0)
+            throw new CommandException(Component.translatable("commands.music.amplify.error.negative"));
 
         bot.music.amplify = amplify;
 
