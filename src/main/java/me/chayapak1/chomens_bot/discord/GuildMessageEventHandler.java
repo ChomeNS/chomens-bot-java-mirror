@@ -29,6 +29,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class GuildMessageEventHandler extends ListenerAdapter {
+    // we can use chomens_bot to be global
+    private static final String TELLRAW_SELECTOR = "@a[tag=!nodiscord,tag=!chomens_bot_nodiscord,tag=!chomens_bot_nodiscord_%s]";
+
     private final String prefix;
     private final Component messagePrefix;
 
@@ -116,7 +119,7 @@ public class GuildMessageEventHandler extends ListenerAdapter {
                 output = output.append(getMessageComponent(bot, event.getMessage()));
             }
 
-            bot.chat.tellraw(output);
+            bot.chat.tellraw(output, String.format(TELLRAW_SELECTOR, event.getAuthor().getId()));
         }
     }
 
