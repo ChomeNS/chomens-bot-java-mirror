@@ -309,10 +309,9 @@ public class MusicCommand extends Command implements Listener {
 
                 final String joinedPath = location.equals(ROOT) ?
                         eachPath.getFileName().toString() :
-                        Paths.get(
-                                location.getFileName().toString(),
-                                eachPath.getFileName().toString()
-                        ).toString();
+                        eachPath.toAbsolutePath().toString()
+                                .replace(ROOT.toAbsolutePath().toString(), "")
+                                .substring(1); // it starts with a separator
 
                 fullList.add(
                         Component
