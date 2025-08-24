@@ -162,6 +162,7 @@ public class Configuration {
         public boolean useChat = false;
         public boolean useSNBTComponents = true;
         public boolean coreCommandSpy = true;
+        public boolean forceImpulseCore = false;
         public boolean logConnectionStatusMessages = true;
         public boolean resolveSRV = true;
         public int reconnectDelay = 850;

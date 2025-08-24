@@ -168,7 +168,7 @@ public class CorePlugin implements Listener {
 
         if (!bot.serverFeatures.hasNamespaces) command = StringUtilities.removeNamespace(command);
 
-        if (bot.serverFeatures.hasExtras) {
+        if (bot.serverFeatures.hasExtras && !bot.options.forceImpulseCore) {
             bot.session.send(new ServerboundSetCommandBlockPacket(
                     block,
                     command,

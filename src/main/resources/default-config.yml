@@ -141,6 +141,7 @@ bots:
   # useChat - when the bot tellraws it will chat instead of using the core to run tellraw
   # useSNBTComponents - if the server is >=1.21.5, it's pretty likely that you can enable this since 1.21.5 supports SNBT components
   # coreCommandSpy - set to true if server supports enabling player's commandspy through command block, defaults to true
+  # forceImpulseCore - set to true if the server is a kaboom clone but still has the minecraft command block mechanic
   # logConnectionStatusMessages - logs connecting and disconnected messages to console (and the log file) and discord if set to true, defaults to true
   # resolveSRV - whether to resolve SRV records on the server. the notchian minecraft doesn't resolve them
   # essentialsMessages - the messages in essentials that the bot uses for self care (no example is intentional)
@@ -164,6 +165,7 @@ bots:
   #   useChat: false
   #   useSNBTComponents: true
   #   coreCommandSpy: true
+  #   forceImpulseCore: false
   #   logConnectionStatusMessages: true
   #   resolveSRV: true
   #   reconnectDelay: 2000
