@@ -43,7 +43,6 @@ public class MusicPlayerPlugin implements Listener {
     public static final Path SONG_DIR = Path.of("songs");
 
     private static final String BOSS_BAR_NAME = "music";
-
     private static final DecimalFormat FORMATTER = new DecimalFormat("#,###");
 
     static {
@@ -62,8 +61,6 @@ public class MusicPlayerPlugin implements Listener {
     public final List<Song> songQueue = Collections.synchronizedList(new ObjectArrayList<>());
     public SongLoaderThread loaderThread = null;
     public Loop loop = Loop.OFF;
-
-    private final Object tickLock = new Object();
 
     // sus nightcore stuff,..,.,.
     public double pitch = 0;
@@ -94,16 +91,24 @@ public class MusicPlayerPlugin implements Listener {
         bot.listener.addListener(this);
 
         bot.executor.scheduleAtFixedRate(() -> {
-            if (!bot.loggedIn) return;
-
-            synchronized (tickLock) {
-                try {
-                    onMusicTick();
-                } catch (final Exception e) {
-                    bot.logger.error(e);
-                }
+            try {
+                checkTick();
+            } catch (final Exception e) {
+                bot.logger.error(e);
             }
-        }, 0, 50, TimeUnit.MILLISECONDS);
+        }, 0, 100, TimeUnit.MILLISECONDS);
+        bot.executor.scheduleAtFixedRate(() -> {
+            try {
+                if (currentSong == null
+                        || currentSong.paused
+                        || isStopping
+                        || bot.core.isRateLimited()) return;
+
+                handlePlaying();
+            } catch (final Exception e) {
+                bot.logger.error(e);
+            }
+        }, 0, 25, TimeUnit.MILLISECONDS);
         bot.executor.scheduleAtFixedRate(() -> urlLimit = 0, 0, bot.config.music.urlRatelimit.seconds, TimeUnit.SECONDS);
     }
 
@@ -197,9 +202,9 @@ public class MusicPlayerPlugin implements Listener {
         loaderThread = null;
     }
 
-    // this needs a separate ticker because we need
-    // the song to be playing without lag
-    private void onMusicTick () {
+    private void checkTick () {
+        if (!bot.loggedIn) return;
+
         if (currentSong == null) {
             if (songQueue.isEmpty()) return; // this line
 
@@ -235,10 +240,6 @@ public class MusicPlayerPlugin implements Listener {
                 bossBar.setValue((int) Math.floor(((currentSong.time / speed) / 1000)));
                 bossBar.setMax((long) (currentSong.length / speed) / 1000);
             }
-
-            if (currentSong.paused || bot.core.isRateLimited()) return;
-
-            handlePlaying();
         } else {
             currentLyrics = "";
 
