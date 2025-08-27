@@ -65,6 +65,7 @@ public class NBSConverter implements Converter {
         public String file;
         public byte pitch = 0;
         public boolean key = false;
+        public boolean isRainbowToggle = false;
     }
 
     private record TempoSection(long startTick, double tempo) { }
@@ -156,6 +157,9 @@ public class NBSConverter implements Converter {
             }
         }
 
+        final List<TempoSection> tempoSections = new ArrayList<>();
+        tempoSections.add(new TempoSection(0, tempo)); // initial value
+
         final List<NBSCustomInstrument> customInstruments = new ObjectArrayList<>();
         if (buffer.hasRemaining()) {
             final byte customInstrumentCount = buffer.get();
@@ -165,6 +169,28 @@ public class NBSConverter implements Converter {
                 customInstrument.file = getString(buffer, bytes.length);
                 customInstrument.pitch = buffer.get();
                 customInstrument.key = buffer.get() != 0;
+
+                String processedName = customInstrument.name
+                        // firework has been replaced with firework_rocket in newer minecraft versions
+                        .replace("entity.firework.", "entity.firework_rocket.");
+
+                if (processedName.equals("Toggle Rainbow")) {
+                    customInstrument.isRainbowToggle = true;
+                }
+
+                final String file = customInstrument.file
+                        .replaceFirst("minecraft/|Custom/", "")
+                        .replace(".ogg", "");
+
+                if (!customInstrument.isRainbowToggle) {
+                    if (!playSound.contains(processedName) && minecraftToPlaySound.containsKey(file))
+                        processedName = minecraftToPlaySound.get(file);
+                    else if (playSound.contains(file) && !minecraftToPlaySound.containsKey(processedName))
+                        processedName = file;
+                }
+
+                customInstrument.name = processedName;
+
                 customInstruments.add(customInstrument);
             }
         }
@@ -189,9 +215,6 @@ public class NBSConverter implements Converter {
                 true
         );
 
-        final List<TempoSection> tempoSections = new ArrayList<>();
-        tempoSections.add(new TempoSection(0, tempo)); // initial value
-
         if (loop > 0) {
             song.loopPosition = getMilliTime(loopStartTick, tempoSections);
             // song.loopCount = maxLoopCount;
@@ -212,35 +235,17 @@ public class NBSConverter implements Converter {
 
                 final NBSCustomInstrument customInstrument = customInstruments.get(index);
 
-                String name = customInstrument.name
-                        // firework has been replaced with firework_rocket in newer minecraft versions
-                        .replace("entity.firework.", "entity.firework_rocket.");
-
-                boolean isTempoChanger = false;
-
-                if (name.equals("Tempo Changer")) {
-                    isTempoChanger = true;
-
+                if (customInstrument.name.equals("Tempo Changer")) {
                     tempoSections.add(
                             new TempoSection(
                                     note.tick,
                                     (double) Math.abs(note.pitch) * 100 / 15
                             )
                     );
-                } else if (name.equals("Toggle Rainbow")) {
-                    isRainbowToggle = true;
                 }
 
-                final String file = customInstrument.file
-                        .replaceFirst("minecraft/|Custom/", "")
-                        .replace(".ogg", "");
-
-                if (!isTempoChanger && !isRainbowToggle) {
-                    if (!playSound.contains(name) && minecraftToPlaySound.containsKey(file)) name = minecraftToPlaySound.get(file);
-                    else if (playSound.contains(file) && !minecraftToPlaySound.containsKey(name)) name = file;
-                }
-
-                instrument = Instrument.of(name);
+                isRainbowToggle = customInstrument.isRainbowToggle;
+                instrument = Instrument.of(customInstrument.name);
 
                 key = note.key + customInstrument.pitch - 45 + ((double) note.pitch / 100);
             }
