@@ -5,6 +5,7 @@ import me.chayapak1.chomens_bot.command.Command;
 import me.chayapak1.chomens_bot.command.CommandContext;
 import me.chayapak1.chomens_bot.command.CommandException;
 import me.chayapak1.chomens_bot.command.TrustLevel;
+import me.chayapak1.chomens_bot.data.player.PlayerEntry;
 import me.chayapak1.chomens_bot.plugins.DatabasePlugin;
 import me.chayapak1.chomens_bot.plugins.IPFilterPlugin;
 import net.kyori.adventure.text.Component;
@@ -16,11 +17,14 @@ import java.util.List;
 import java.util.Map;
 
 public class IPFilterCommand extends Command {
+    private static final String FORCE_IP_FLAG = "forceip";
+
     public IPFilterCommand () {
         super(
                 "ipfilter",
                 new String[] {
-                        "add <ip> [reason]",
+                        "add <player/ip> [reason]",
+                        "-forceip add ...",
                         "remove <index>",
                         "clear",
                         "list"
@@ -39,8 +43,15 @@ public class IPFilterCommand extends Command {
 
         switch (action) {
             case "add" -> {
-                final String ip = context.getString(false, true);
+                final List<String> flags = context.getFlags(true, FORCE_IP_FLAG);
+
+                final String rawIP = context.getString(false, true);
                 final String reason = context.getString(true, false);
+
+                final PlayerEntry player = bot.players.getEntry(rawIP);
+                final String ip = (!flags.contains(FORCE_IP_FLAG) && player != null && player.persistingData.ip != null)
+                        ? player.persistingData.ip
+                        : rawIP;
 
                 if (IPFilterPlugin.localList.containsKey(ip)) {
                     throw new CommandException(
