@@ -51,10 +51,12 @@ public class PacketHandler {
     }
 
     private void handlePacket (final PlayerEntry player, final ServerboundRunCommandPacket packet) {
-        final String input = packet.input; // the input is raw, no prefix included
+        final String prefix = packet.prefix;
+        final String input = packet.input;
 
         final ChomeNSModCommandContext context = new ChomeNSModCommandContext(
                 bot,
+                prefix,
                 player
         );
 

@@ -8,10 +8,10 @@ import me.chayapak1.chomens_bot.util.I18nUtilities;
 import net.kyori.adventure.text.Component;
 
 public class ChomeNSModCommandContext extends CommandContext {
-    public ChomeNSModCommandContext (final Bot bot, final PlayerEntry sender) {
+    public ChomeNSModCommandContext (final Bot bot, final String prefix, final PlayerEntry sender) {
         super(
                 bot,
-                ".cbot ", // intentionally hardcoded
+                prefix + "cbot ",
                 sender,
                 true
         );

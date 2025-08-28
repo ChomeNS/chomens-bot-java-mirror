@@ -5,13 +5,16 @@ import me.chayapak1.chomens_bot.chomeNSMod.Packet;
 import me.chayapak1.chomens_bot.chomeNSMod.Types;
 
 public class ServerboundRunCommandPacket implements Packet {
+    public final String prefix;
     public final String input;
 
-    public ServerboundRunCommandPacket (final String input) {
+    public ServerboundRunCommandPacket (final String prefix, final String input) {
+        this.prefix = prefix;
         this.input = input;
     }
 
     public ServerboundRunCommandPacket (final ByteBuf buf) {
+        this.prefix = Types.readString(buf);
         this.input = Types.readString(buf);
     }
 
@@ -22,6 +25,7 @@ public class ServerboundRunCommandPacket implements Packet {
 
     @Override
     public void serialize (final ByteBuf buf) {
+        Types.writeString(buf, this.prefix);
         Types.writeString(buf, this.input);
     }
 }
